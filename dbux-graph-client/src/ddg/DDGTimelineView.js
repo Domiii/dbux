@@ -9,8 +9,11 @@ import forceLayout from 'graphology-layout-force';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import Sigma from 'sigma';
 import { animateNodes } from 'sigma/utils/animate';
+import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+
+const AutoLayoutAnimationDuration = 300;
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   createEl() {
@@ -120,7 +123,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.logger.log('layoutSettings', layoutSettings);
     const positions = forceLayout(this.graph, layoutSettings);
     const rescaledPositions = rescalePositions(positions);
-    animateNodes(this.graph, rescaledPositions, { duration: 300 });
+    // this.logger.log('positions', rescaledPositions);
+    animateNodes(this.graph, rescaledPositions, { duration: AutoLayoutAnimationDuration });
   }
 
   applyFA2() {
@@ -133,19 +137,28 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       settings: sensibleSettings
     });
 
-    // apply default `y`
+    // overwrite with our default `y`
     for (const entityId of Object.keys(positions)) {
       const { y } = this.graph.getNodeAttribute(entityId, 'defaultPosition');
       positions[entityId].y = y;
     }
 
     const rescaledPositions = rescalePositions(positions);
-    animateNodes(this.graph, rescaledPositions, { duration: 300 });
+    // this.logger.log('positions', rescaledPositions);
+    animateNodes(this.graph, rescaledPositions, { duration: AutoLayoutAnimationDuration });
   }
 
   autoLayout() {
-    this.applyForceLayout();
-    // this.applyFA2();
+    const { layoutType } = this.context.doc.state;
+    if (layoutType === LayoutAlgorithmType.ForceLayout) {
+      this.applyForceLayout();
+    }
+    else if (layoutType === LayoutAlgorithmType.ForceAtlas2) {
+      this.applyFA2();
+    }
+    else {
+      this.logger.error(`Unkown layout algotirhm type: ${layoutType}`);
+    }
   }
 
   /** ########################################
