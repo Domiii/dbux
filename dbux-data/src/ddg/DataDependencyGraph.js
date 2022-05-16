@@ -136,9 +136,9 @@ export default class DataDependencyGraph {
   }
 
   _addEdgeToMap(map, id, edge) {
-    let edges = this.inEdgesByDDGNodeId.get(id);
+    let edges = map.get(id);
     if (!edges) {
-      this.inEdgesByDDGNodeId.set(id, edges = []);
+      map.set(id, edges = []);
     }
     edges.push(edge);
   }
@@ -148,7 +148,7 @@ export default class DataDependencyGraph {
    * @param {DDGNode} toNode 
    */
   _addEdge(fromDdgNode, toNode) {
-    const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.entityId, toNode.entityId);
+    const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.ddgNodeId, toNode.ddgNodeId);
 
     this._addEntity(newEdge);
     this.edges.push(newEdge);
@@ -207,6 +207,8 @@ export default class DataDependencyGraph {
     this.edges = [];
 
     this.nodesByDataNodeId = new Map();
+    this.inEdgesByDDGNodeId = new Map();
+    this.outEdgesByDDGNodeId = new Map();
 
     for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);

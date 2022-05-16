@@ -21,11 +21,15 @@ export default class DDGWatchSet {
   // selectedSet;
   /** @type {number[]} */
   watchTraceIds;
+  /** @type {Set<number>} */
+  watchTraceIdSet;
+  /** @type {Set<number>} */
+  watchStaticTraceIdSet;
 
   /**
    * @type {Set<number>}
    */
-  staticDeclarationTids;
+  staticTraceIdSet;
   /**
    * @type {Set<number>}
    */
@@ -47,17 +51,17 @@ export default class DDGWatchSet {
 
     const { dp } = this;
 
-    watchTraceIds = makeUnique(watchTraceIds);
-    this.watchTraceIds = watchTraceIds;
+    this.watchTraceIdSet = new Set(watchTraceIds);
+    this.watchTraceIds = Array.from(this.watchTraceIdSet);
 
     // get all watched declarationTids
-    this.staticDeclarationTids = new Set(
+    this.staticTraceIdSet = new Set(
       watchTraceIds.
         flatMap(watchTraceId => dp.util.getStaticTraceId(watchTraceId)).
         filter(Boolean)
     );
     this.declarationTids = new Set(
-      Array.from(this.staticDeclarationTids).
+      Array.from(this.staticTraceIdSet).
         flatMap(staticTraceId => {
           const allDeclarationTids = dp.util.getTracesOfStaticTrace(staticTraceId).
             map(trace => {
@@ -97,8 +101,20 @@ export default class DDGWatchSet {
 
   isWatchedDataNode(dataNodeId) {
     // const dataNode = this.dp.util.getDataNode(dataNodeId);
+    const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
+    const { staticTraceId } = trace;
+    if (this.staticTraceIdSet.has(staticTraceId)) {
+      return true;
+    }
+
     const declarationTid = this.dp.util.getDataNodeDeclarationTid(dataNodeId);
-    return this.declarationTids.has(declarationTid);
+    if (this.declarationTids.has(declarationTid)) {
+      return true;
+    }
+
+    // TODO: watched ref
+
+    return false;
   }
 
   /**

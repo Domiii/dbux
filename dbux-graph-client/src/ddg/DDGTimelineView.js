@@ -92,18 +92,28 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return;
     }
 
+    // debugger;
+
     // add special nodes at the top and bottom
     this.addNodeLayout(topNodeKey, {
       x: 0,
       y: this.getNodeYTop(),
       fixed: true,
+      
       // hidden: true
+      label: 'top',
+      size: 5,
+      color: "green"
     });
     this.addNodeLayout(bottomNodeKey, {
       x: 0,
       y: this.getNodeYBottom(),
       fixed: true,
+      
       // hidden: true
+      label: 'bottom',
+      size: 5,
+      color: "red"
     });
 
     // add nodes
@@ -183,11 +193,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   getNodeYTop() {
-    return 0;
+    return this.state.nodes.length;
   }
 
   getNodeYBottom() {
-    return this.state.nodes.length;
+    return -this.state.nodes.length;
+    // return 1;
   }
 
   getNodeInitialPosition(node) {
@@ -195,40 +206,45 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
      * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
      * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
      */
-    const x = node.ddgNodeId;
+    const x = node.ddgNodeId / this.state.nodes.length * 0.1;
 
     /**
      * WARNING: if you change this, also change getNodeY{Top,Bottom}
      */
-    const y = node.ddgNodeId;
+    const y = (-2 * node.ddgNodeId + this.state.nodes.length) || 0;
     return { x, y };
   }
 
   applyForceLayout() {
+    // set initial state using FA2
+    this.applyFA2();
+
+    // run standard force-directed algorithm here
     const layoutSettings = {
       maxIterations: 500,
+      /**
+       * @see https://graphology.github.io/standard-library/layout-force.html
+       */
       settings: {
-        isNodeFixed(key, node) {
-          return node.fixed;
-        }
-        // gravity: 0.01,
-        // repulsion: 0.01,
-        // attraction: 0.01
+        gravity: 0.01, // NOTE: if gravity is too large, nodes will move beyond top and bottom
+        repulsion: 0.1,
+        attraction: 0.001
       }
     };
-    this.logger.log('layoutSettings', layoutSettings);
+    // this.logger.log('layoutSettings', layoutSettings);
     const positions = forceLayout(this.graph, layoutSettings);
-    const rescaledPositions = rescalePositions(positions);
-    // this.logger.log('positions', rescaledPositions);
-    animateNodes(this.graph, rescaledPositions, { duration: AutoLayoutAnimationDuration });
+    // const rescaledPositions = rescalePositions(positions);
+    this.logger.log('[force layout] positions', positions);
+    animateNodes(this.graph, positions, { duration: AutoLayoutAnimationDuration });
   }
 
   applyFA2() {
     const sensibleSettings = forceAtlas2.inferSettings(this.graph);
-    sensibleSettings.gravity = 10;
+    sensibleSettings.gravity = 1;
     sensibleSettings.strongGravityMode = false;
-    this.logger.log('sensibleSettings', sensibleSettings);
-    const positions = forceAtlas2(this.graph, {
+    this.logger.log('[FA2] sensibleSettings', sensibleSettings);
+    // const positions = forceAtlas2(this.graph, {
+    forceAtlas2.assign(this.graph, {
       iterations: 200,
       settings: sensibleSettings
     });
@@ -240,9 +256,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     //   positions[nodeId].y = y;
     // }
 
-    const rescaledPositions = rescalePositions(positions);
+    // const rescaledPositions = rescalePositions(positions);
     // this.logger.log('positions', rescaledPositions);
-    animateNodes(this.graph, rescaledPositions, { duration: AutoLayoutAnimationDuration });
+    
+    // animateNodes(this.graph, positions, { duration: AutoLayoutAnimationDuration });
   }
 
   autoLayout = () => {
