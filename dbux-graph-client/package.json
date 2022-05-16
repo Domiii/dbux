@@ -31,10 +31,14 @@
     "@jsplumb/util": "^5.6.2",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
+    "graphology": "^0.24.1",
+    "graphology-layout-force": "^0.2.4",
+    "graphology-layout-forceatlas2": "^0.9.1",
     "html2canvas": "^1.4",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
-    "serialize-javascript": "^5.0.1"
+    "serialize-javascript": "^5.0.1",
+    "sigma": "^2.3.0"
   },
   "devDependencies": {
     "@dbux/panzoom": "^0.7.7-dev.0",
