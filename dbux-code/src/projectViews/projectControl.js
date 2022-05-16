@@ -87,14 +87,20 @@ export function createProjectManager(extensionContext) {
 
   // the folder that contains the sample projects for dbux-practice
   const projectsRoot = pathJoin(dependencyRoot, 'dbux_projects');
+  const samplesRoot = pathJoin(dependencyRoot, 'samples');
   const dbuxLanguage = storageGet(`dbux.language`);
   const stopwatch = getStopwatch();
 
-  debug(`Initializing dbux-projects: projectsRoot = "${path.resolve(projectsRoot)}", dependencyRoot = "${path.resolve(dependencyRoot)}"`);
+  // eslint-disable-next-line max-len
+  debug(`Initializing dbux-projects: projectsRoot = "${path.resolve(projectsRoot)}", dependencyRoot = "${path.resolve(dependencyRoot)}", samplesRoot = "${path.resolve(samplesRoot)}"`);
 
   const cfg = {
     dependencyRoot,
     projectsRoot,
+    /**
+     * NOTE: probably only available in dev mode
+     */
+    samplesRoot,
     dbuxLanguage,
   };
 

@@ -1,4 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import sleep from '@dbux/common/src/util/sleep';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -13,8 +14,8 @@ export default class DDGTimelineView extends HostComponentEndpoint {
 
   }
 
-  handleRefresh() {
-    const trace = traceSelection.selected;
+  async handleRefresh() {
+    let trace = traceSelection.selected;
     if (trace) {
       const { applicationId, contextId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
@@ -22,7 +23,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       const ddgArgs = { applicationId, contextId };
       const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
       if (failureReason) {
-        this.setState({ failureReason, nodes: EmptyArray, edges: EmptyArray });
+        this.setFailure(failureReason);
       }
       else {
         const ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
@@ -32,8 +33,12 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     }
     else {
       const failureReason = 'DDG is empty';
-      this.setState({ failureReason, nodes: EmptyArray, edges: EmptyArray });
+      this.setFailure(failureReason);
     }
+  }
+
+  setFailure(failureReason) {
+    this.setState({ failureReason, nodes: EmptyArray, edges: EmptyArray });
   }
 
   shared() {

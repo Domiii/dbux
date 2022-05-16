@@ -3,15 +3,15 @@
 /** @typedef { import('@dbux/common/src/types/constants/DataNodeType').DataNodeTypeValue } DataNodeTypeValue */
 
 
-// import DDGWatchSet from './DDGWatchSet';
+import DDGWatchSet from './DDGWatchSet';
 // import DDGTimeline from './DDGTimeline';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import DDGBounds from './DDGBounds';
 import DDGNode from './DDGNode';
 import DDGEdge from './DDGEdge';
 import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
-import { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { makeTraceLabel } from '../helpers/makeLabels';
 
 export default class DataDependencyGraph {
@@ -40,13 +40,28 @@ export default class DataDependencyGraph {
    */
   entitiesById;
   /**
-   * @type {DDGEdge[]}
+   * @type {DDGNode[]}
    */
   nodes;
   /**
-   * @type {DDGNode[]}
+   * @type {DDGEdge[]}
    */
   edges;
+
+  /**
+   * @type {Map.<number, DDGNode>}
+   */
+  nodesByDataNodeId;
+
+  /**
+   * @type {Map.<number, DDGEdge[]>}
+   */
+  outEdgesByDDGNodeId;
+
+  /**
+   * @type {Map.<number, DDGEdge[]>}
+   */
+  inEdgesByDDGNodeId;
 
 
   /**
@@ -96,17 +111,50 @@ export default class DataDependencyGraph {
    * @return {DDGNode}
    */
   _getOrCreateDDGNode(dataNode) {
-    let ddgNode = this.nodesByDataNodeId.get(dataNode.nodeId);
+    const dataNodeId = dataNode.nodeId;
+    let ddgNode = this.nodesByDataNodeId.get(dataNodeId);
     if (!ddgNode) {
-      const ddgNodeType = dataNode.type; // TODO!
-      const label = this._getDataNodeLabel(dataNode);
-      ddgNode = new DDGNode(ddgNodeType, dataNode.nodeId, label);
-      this._addEntity(ddgNode);
-      ddgNode.ddgNodeId = this.nodes.length;
-      this.nodes.push(ddgNode);
-      this.nodesByDataNodeId.set(dataNode.nodeId, ddgNode);
+      ddgNode = this._addNode(dataNode);
     }
     return ddgNode;
+  }
+
+  _addNode(dataNode) {
+    const dataNodeId = dataNode.nodeId;
+    const dataNodeType = dataNode.type; // TODO!
+    const label = this._getDataNodeLabel(dataNode);
+
+    const ddgNode = new DDGNode(dataNodeType, dataNodeId, label);
+    ddgNode.watched = this.watchSet.isWatchedDataNode(dataNodeId);
+    ddgNode.ddgNodeId = this.nodes.length;
+
+    this._addEntity(ddgNode);
+    this.nodes.push(ddgNode);
+
+    this.nodesByDataNodeId.set(dataNodeId, ddgNode);
+    return ddgNode;
+  }
+
+  _addEdgeToMap(map, id, edge) {
+    let edges = this.inEdgesByDDGNodeId.get(id);
+    if (!edges) {
+      this.inEdgesByDDGNodeId.set(id, edges = []);
+    }
+    edges.push(edge);
+  }
+
+  /**
+   * @param {DDGNode} fromDdgNode 
+   * @param {DDGNode} toNode 
+   */
+  _addEdge(fromDdgNode, toNode) {
+    const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.entityId, toNode.entityId);
+
+    this._addEntity(newEdge);
+    this.edges.push(newEdge);
+
+    this._addEdgeToMap(this.inEdgesByDDGNodeId, toNode.ddgNodeId, newEdge);
+    this._addEdgeToMap(this.outEdgesByDDGNodeId, fromDdgNode.ddgNodeId, newEdge);
   }
 
   _getDataNodeLabel(dataNode) {
@@ -150,7 +198,7 @@ export default class DataDependencyGraph {
    */
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
-    // this.selectedSet = new DDGWatchSet(this, inputNodes);
+    this.watchSet = new DDGWatchSet(this, watchTraceIds);
     const { dp } = this;
     const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
 
@@ -194,9 +242,7 @@ export default class DataDependencyGraph {
               // get or create DDGNode
               const fromDdgNode = this._getOrCreateDDGNode(fromDataNode);
               const newNode = this._getOrCreateDDGNode(dataNode);
-              const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.entityId, newNode.entityId);
-              this._addEntity(newEdge);
-              this.edges.push(newEdge);
+              this._addEdge(fromDdgNode, newNode);
             }
             else {
               // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
@@ -205,6 +251,17 @@ export default class DataDependencyGraph {
           }
         }
       }
+    }
+
+    /** ########################################
+     * phase 2
+     *  ######################################*/
+    for (const node of this.nodes) {
+      const nIncomingEdges = this.inEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;
+      const nOutgoingEdges = this.outEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;
+
+      node.nInputs = nIncomingEdges;
+      node.nOutputs = nOutgoingEdges;
     }
   }
 }

@@ -15,7 +15,7 @@ let staticContextTypeObj = {
 };
 
 /**
- * @type {Enum | typeof staticContextTypeObj}
+ * @type {(Enum | typeof staticContextTypeObj)}
  */
 const StaticContextType = new Enum(staticContextTypeObj);
 

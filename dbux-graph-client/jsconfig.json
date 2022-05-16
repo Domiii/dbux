@@ -11,6 +11,10 @@
   },
   "include": [
     "src",
-    "src/**/*"
+    "src/**/*",
+    "../node_modules/sigma/**/*",
+    "../node_modules/graphology/**/*",
+    "../node_modules/sigma",
+    "../node_modules/graphology"
   ]
 }

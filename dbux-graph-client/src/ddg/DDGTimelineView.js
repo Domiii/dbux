@@ -7,7 +7,7 @@ import maxBy from 'lodash/maxBy';
 import Graph from 'graphology';
 import forceLayout from 'graphology-layout-force';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import Sigma from 'sigma';
+import { Sigma } from 'sigma';
 import { animateNodes } from 'sigma/utils/animate';
 import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 import { compileHtmlElement } from '../util/domUtil';
@@ -16,6 +16,9 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 const AutoLayoutAnimationDuration = 300;
 const labelSize = 24;
 
+/**
+ * @see https://github.com/jacomyal/sigma.js/blob/main/src/settings.ts#L84
+ */
 const renderSettings = {
   labelColor: { color: '#fff' },
   labelSize,
@@ -23,8 +26,21 @@ const renderSettings = {
   labelRenderedSizeThreshold: 1 // default = 6
 };
 
+const topNodeKey = 'top';
+const bottomNodeKey = 'bottom';
+
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
+  /**
+   * @type {Graph}
+   */
+  graph;
+
+  /**
+   * @type {Sigma}
+   */
+  renderer;
+
   createEl() {
     return compileHtmlElement(/*html*/`<div>
       <div data-el="status"></div>
@@ -50,40 +66,14 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.rebuildGraph();
   }
 
-  buildGraph() {
-    const { nodes, edges } = this.state;
-
-    if (!nodes) {
-      return;
-    }
-
-    // add nodes
-    for (const node of nodes) {
-      this.addNode(node);
-    }
-
-    if (edges) {
-      // add edges
-      // console.log('BezierConnector.type', BezierConnector.type);
-      for (const edge of edges) {
-        this.addEdge(edge);
-      }
-    }
-  }
-
   /** ###########################################################################
-   * graph implementation
-   * NOTE: we might want to replace `jsPlumb` with another library, so let's keep `jsPlumb` code together.
+   * buildGraph
    * ##########################################################################*/
-
-  /** ########################################
-   * sigma.js version
-   *  ######################################*/
 
   initGraphImplementation() {
     this.graph = new Graph();
+    // this.graph.
     this.renderer = new Sigma(this.graph, this.els.view, renderSettings);
-
     // test
     // document.addEventListener('click', this.applyLayout.bind(this));
   }
@@ -95,27 +85,121 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.autoLayout();
   }
 
-  addNode(node) {
-    const label = node.label || `Node#${node.entityId}`;
-    const defaultPosition = this.getNodeDefaultPosition(node);
-    const { x, y } = defaultPosition;
-    this.graph.addNode(node.entityId, { x, y, size: 5, label, color: "blue", defaultPosition, labelColor: { color: '#ff0000' } });
+  buildGraph() {
+    const { nodes, edges } = this.state;
+
+    if (!nodes) {
+      return;
+    }
+
+    // add special nodes at the top and bottom
+    this.addNodeLayout(topNodeKey, {
+      x: 0,
+      y: this.getNodeYTop(),
+      fixed: true,
+      // hidden: true
+    });
+    this.addNodeLayout(bottomNodeKey, {
+      x: 0,
+      y: this.getNodeYBottom(),
+      fixed: true,
+      // hidden: true
+    });
+
+    // add nodes
+    for (const node of nodes) {
+      this.addNodeDefault(node);
+    }
+
+    if (edges) {
+      // add special edges
+      const watchedNodes = this.state.nodes.filter(n => n.watched);
+      for (const n of watchedNodes) {
+        if (!n.nInputs) {
+          // add to top
+          this.addEdge({
+            from: topNodeKey,
+            to: n.ddgNodeId
+          });
+        }
+        if (!n.nOutputs) {
+          this.addEdge({
+            from: n.ddgNodeId,
+            to: bottomNodeKey
+          });
+        }
+      }
+
+      // add default edges
+      for (const edge of edges) {
+        this.addEdge(edge);
+      }
+    }
+  }
+
+  addNodeDefault(node) {
+    const label = node.label || `Node#${node.ddgNodeId}`;
+    const pos = this.getNodeInitialPosition(node);
+    const { x, y } = pos;
+    /**
+     * @type {NodeDisplayData}
+     */
+    const nodeDisplayData = {
+      x,
+      y,
+      label,
+
+      size: 5,
+      color: "blue"
+    };
+    return this.addNodeLayout(node.ddgNodeId, nodeDisplayData);
+  }
+
+  /**
+   * Insert a raw node into the graph (for layouting + rendering purposes)
+   * @param {{ x: number, y: number, fixed, hidden, size, color }} props
+   */
+  addNodeLayout(key, nodeDisplayData) {
+    return this.graph.addNode(key, nodeDisplayData);
   }
 
   addEdge(edge) {
+    /**
+     * `code ./node_modules/graphology/dist/graphology.esm.js:3691`
+     */
     this.graph.addEdge(edge.from, edge.to);
   }
 
-  clearGraph() {
-    this.graph.clear();
+  /**
+   * @return {NodeDisplayData}
+   */
+  getNodeDisplayData(nodeKey) {
+    // see graphology → `findRelevantNodeData` (via `attachNodeAttributesMethods`)
+    return this.graph.getNodeAttribute(nodeKey/* , 'defaultPosition' */);
   }
 
-  getNodeDefaultPosition(node) {
+  /** ###########################################################################
+   * layout computation
+   * ##########################################################################*/
+
+  getNodeYTop() {
+    return 0;
+  }
+
+  getNodeYBottom() {
+    return this.state.nodes.length;
+  }
+
+  getNodeInitialPosition(node) {
     /**
      * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
      * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
      */
-    const x = Math.random();
+    const x = node.ddgNodeId;
+
+    /**
+     * WARNING: if you change this, also change getNodeY{Top,Bottom}
+     */
     const y = node.ddgNodeId;
     return { x, y };
   }
@@ -124,9 +208,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const layoutSettings = {
       maxIterations: 500,
       settings: {
-        gravity: 0.001,
-        repulsion: 0.01,
-        attraction: 0.01
+        isNodeFixed(key, node) {
+          return node.fixed;
+        }
+        // gravity: 0.01,
+        // repulsion: 0.01,
+        // attraction: 0.01
       }
     };
     this.logger.log('layoutSettings', layoutSettings);
@@ -146,11 +233,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       settings: sensibleSettings
     });
 
-    // overwrite with our default `y`
-    for (const entityId of Object.keys(positions)) {
-      const { y } = this.graph.getNodeAttribute(entityId, 'defaultPosition');
-      positions[entityId].y = y;
-    }
+    // // overwrite with our default `y`
+    // for (const nodeId of Object.keys(positions)) {
+    //   // see graphology → `findRelevantNodeData`
+    //   const { y } = this.graph.getNodeAttribute(nodeId, 'defaultPosition');
+    //   positions[nodeId].y = y;
+    // }
 
     const rescaledPositions = rescalePositions(positions);
     // this.logger.log('positions', rescaledPositions);
@@ -168,6 +256,14 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     else {
       this.logger.error(`Unkown layout algorithm type: ${layoutType}`);
     }
+  }
+
+  /** ###########################################################################
+   * misc
+   * ##########################################################################*/
+
+  clearGraph() {
+    this.graph.clear();
   }
 
   public = {
@@ -263,9 +359,9 @@ function rescalePositions(positions) {
   const maxY = maxBy(Object.values(positions), (p) => p.y).y;
   const deltaX = maxX - minX;
   const deltaY = maxY - minY;
-  for (const entityId of Object.keys(positions)) {
-    positions[entityId].x /= deltaX;
-    positions[entityId].y /= deltaY;
+  for (const ddgNodeId of Object.keys(positions)) {
+    positions[ddgNodeId].x /= deltaX;
+    positions[ddgNodeId].y /= deltaY;
   }
   return positions;
 }

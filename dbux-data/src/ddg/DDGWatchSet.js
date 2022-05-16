@@ -22,7 +22,13 @@ export default class DDGWatchSet {
   /** @type {number[]} */
   watchTraceIds;
 
+  /**
+   * @type {Set<number>}
+   */
   staticDeclarationTids;
+  /**
+   * @type {Set<number>}
+   */
   declarationTids;
   refIds;
 
@@ -45,17 +51,17 @@ export default class DDGWatchSet {
     this.watchTraceIds = watchTraceIds;
 
     // get all watched declarationTids
-    this.staticDeclarationTids = makeUnique(
+    this.staticDeclarationTids = new Set(
       watchTraceIds.
         flatMap(watchTraceId => dp.util.getStaticTraceId(watchTraceId)).
         filter(Boolean)
     );
-    this.declarationTids = makeUnique(
-      this.staticDeclarationTids.
+    this.declarationTids = new Set(
+      Array.from(this.staticDeclarationTids).
         flatMap(staticTraceId => {
           const allDeclarationTids = dp.util.getTracesOfStaticTrace(staticTraceId).
-            map(traceId => {
-              return dp.util.getTraceDeclarationTid(traceId);
+            map(trace => {
+              return dp.util.getTraceDeclarationTid(trace.traceId);
             });
           // filter(declarationTid => {
           //   if (!declarationTid) {
@@ -91,7 +97,8 @@ export default class DDGWatchSet {
 
   isWatchedDataNode(dataNodeId) {
     // const dataNode = this.dp.util.getDataNode(dataNodeId);
-    return this.dp.util.getDataNodeDeclarationTid(dataNodeId);
+    const declarationTid = this.dp.util.getDataNodeDeclarationTid(dataNodeId);
+    return this.declarationTids.has(declarationTid);
   }
 
   /**

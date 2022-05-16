@@ -1937,6 +1937,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  isContextFunctionContext(dp, contextId) {
+    const staticContext = dp.util.getStaticContextOfContext(contextId);
+    return staticContext.type === StaticContextType.Function;
+  },
+
+  /** @param {DataProvider} dp */
   getProgramContextFilePath(dp, contextId) {
     const staticContext = dp.util.getStaticContextOfContext(contextId);
     return dp.util.getFilePathFromProgramId(staticContext.programId);

@@ -47,7 +47,7 @@ export class AllApplications {
     this.applicationSelection = new ApplicationSelection(this);
   }
 
-  getAllCount() {
+  getAllActiveCount() {
     return this._activeApplicationsByPath.size;
   }
 
@@ -70,6 +70,9 @@ export class AllApplications {
     return application;
   }
 
+  /**
+   * @return {Application[]}
+   */
   getAllActive() {
     return Array.from(this._activeApplicationsByPath.values());
   }
@@ -236,7 +239,6 @@ export class AllApplications {
 /**
  * @type {AllApplications}
  */
-// eslint-disable-next-line import/no-mutable-exports
 let allApplications;
 try {
   allApplications = new AllApplications();

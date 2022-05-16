@@ -198,8 +198,8 @@
         }
       },
       {
-        "command": "dbux.showDataDependencyGraph",
-        "title": "Dbux Dev: Show Data Dependency Graph",
+        "command": "dbux.testDataDependencyGraph",
+        "title": "Dbux Dev: Test DDG",
         "icon": {
           "light": "resources/light/dependency.svg",
           "dark": "resources/dark/dependency.svg"
@@ -1141,7 +1141,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.showDataDependencyGraph",
+          "command": "dbux.testDataDependencyGraph",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {

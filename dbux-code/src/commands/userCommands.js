@@ -14,6 +14,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { importApplicationFromFile, exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
@@ -36,6 +37,17 @@ import { runFile } from './runCommands';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
+
+async function doImportApplication(filePath) {
+  allApplications.selection.clear();
+
+  await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+    progress.report({ message: `importing from "${path.basename(filePath)}"...` });
+    await sleep(20);
+    await importApplicationFromFile(filePath);
+    await sleep(20);
+  });
+}
 
 
 export function initUserCommands(extensionContext) {
@@ -82,13 +94,7 @@ export function initUserCommands(extensionContext) {
     };
     const filePath = await chooseFile(fileDialogOptions);
     if (filePath) {
-      allApplications.selection.clear();
-
-      await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-        progress.report({ message: 'importing...' });
-        await sleep(100);
-        await importApplicationFromFile(filePath);
-      });
+      await doImportApplication(filePath);
     }
   });
 
@@ -117,11 +123,44 @@ export function initUserCommands(extensionContext) {
   });
 
   // ###########################################################################
-  // show/hide DDG view
+  // testing DDG code
   // ###########################################################################
 
-  // dev-only
-  registerCommand(extensionContext, 'dbux.showDataDependencyGraph', async () => {
+  /**
+   * testing + dev-only
+   * NOTE: this is code for testing → move to test file
+   */
+  registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
+    if (!allApplications.getAllActiveCount()) {
+      // default: load an application, if none active
+      const defaultImportDir = getDefaultExportDirectory();
+      const testFile = 'data-multi1';
+      await doImportApplication(pathResolve(defaultImportDir, testFile + '_data.json.zip'));
+    }
+
+    let trace = traceSelection.selected;
+    if (!trace) {
+      // default: get first active application
+      const firstApplication = allApplications.getAllActive()[0];
+      if (!firstApplication) {
+        this.setFailure('No applications running');
+        return;
+      }
+
+      // default: select first function context
+      // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
+      const dp = firstApplication.dataProvider;
+      const firstFunctionContext = dp.collections.executionContexts.getAllActual().
+        find(context => dp.util.isContextFunctionContext(context.contextId));
+      if (!firstFunctionContext) {
+        this.setFailure('Could not find a function context in application');
+        return;
+      }
+      trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
+      traceSelection.selectTrace(trace);
+      await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
+      // }
+    }
     await showDDGView();
   });
 

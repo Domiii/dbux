@@ -30,11 +30,14 @@ export class CodeApplication extends Application {
 
 /**
  * @param {ExtensionContext} 
+ * 
+ * hackfix: hot-patch the allApplications object
  */
 export function initCodeApplications(/* context */) {
   allApplications.DefaultApplicationClass = CodeApplication;
   allApplications.appRoot = getProjectManager().config.projectsRoot || getCodeDirectory();
   allApplications.projectsRoot = getProjectManager().config.projectsRoot;
+  allApplications.samplesRoot = getProjectManager().config.samplesRoot;
 }
 
 export function getSelectedApplicationInActiveEditor() {

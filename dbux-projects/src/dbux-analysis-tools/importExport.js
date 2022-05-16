@@ -66,11 +66,19 @@ export async function importApplicationFromFile(fpath) {
  */
 export function extractApplicationData(application) {
   const { uuid, createdAt, projectName, experimentId, entryPointPath, applicationId } = application;
+
+  // NOTE: entryPointPath is not a reliable "project folder"
+  //    → so we have to use some extra magic to figure out the actual folder
   const filePathMD5 = crypto.createHash('md5').update(entryPointPath).digest('hex');
+
   const isBuiltInProject = isApplicationBuiltInProject(application);
+  const isBuiltInSample = isApplicationBuiltInSample(application);
   let rootPath;
   if (isBuiltInProject) {
     rootPath = allApplications.projectsRoot;
+  }
+  else if (isBuiltInSample) {
+    rootPath = allApplications.samplesRoot;
   }
   else {
     rootPath = pathGetParent(entryPointPath);
@@ -84,6 +92,7 @@ export function extractApplicationData(application) {
     createdAt,
     uuid,
     isBuiltInProject,
+    isBuiltInSample,
     projectName,
     experimentId,
   };
@@ -94,9 +103,12 @@ export function extractApplicationData(application) {
 const applicationEntryPointPathByHash = new Map();
 
 export async function importApplication(appData, allDpData = EmptyArray) {
-  const { isBuiltInProject, relativeEntryPointPath, filePathMD5, ...other } = appData;
+  const { isBuiltInProject, isBuiltInSample, relativeEntryPointPath, filePathMD5, ...other } = appData;
   let rootPath;
-  if (isBuiltInProject) {
+  if (isBuiltInSample) {
+    rootPath = allApplications.samplesRoot;
+  }
+  else if (isBuiltInProject) {
     rootPath = allApplications.projectsRoot;
   }
   else {
@@ -127,6 +139,13 @@ export async function importApplication(appData, allDpData = EmptyArray) {
  */
 function isApplicationBuiltInProject(app) {
   return app.entryPointPath.startsWith(allApplications.projectsRoot);
+}
+
+/**
+ * @param {Application} app
+ */
+function isApplicationBuiltInSample(app) {
+  return app.entryPointPath.startsWith(allApplications.samplesRoot);
 }
 
 async function askForApplicationRootPath(appData) {

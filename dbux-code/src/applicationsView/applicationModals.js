@@ -13,7 +13,7 @@ import { getSelectedApplicationInActiveEditor } from '../codeUtil/CodeApplicatio
  * @returns {Promise<CodeApplication>}
  */
 export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
-  if (!allApplications.getAllCount()) {
+  if (!allApplications.getAllActiveCount()) {
     showWarningMessage('Failed. You have not run any Dbux-enabled application.');
     return null;
   }

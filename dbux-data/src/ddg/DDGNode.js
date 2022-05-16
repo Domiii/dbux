@@ -1,6 +1,16 @@
 import DDGEntity from './DDGEntity';
 
 export default class DDGNode extends DDGEntity {
+  ddgNodeId;
+  
+  /**
+   * Whether node is watched.
+   * future-work: compress multiple booleans into a bitmask.
+   */
+  watched;
+  nInputs;
+  nOutputs;
+  
   /**
    * @param {number} 
    * @param {number} dataNodeId

@@ -90,9 +90,9 @@ export default class RichWebView extends WebviewWrapper {
       return result === confirmText;
     },
 
-    alert(message, modal = true) {
+    async alert(message, modal = true) {
       const cfg = { modal };
-      showInformationMessage(message, { Ok: null }, cfg);
+      return showInformationMessage(message, { Ok: null }, cfg);
     },
 
     async prompt(message, defaultValue = '') {
