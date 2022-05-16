@@ -492,7 +492,7 @@ export default {
   },
 
   // ###########################################################################
-  // DataNodes
+  // Trace → DataNodes
   // ###########################################################################
 
   /**
@@ -511,27 +511,6 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getPrimitiveDataNodes(dp) {
-    return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
-  },
-
-  /**
-   * @param {DataProvider} dp
-   * @return {DataNode}
-   */
-  getDataNode(dp, dataNodeId) {
-    return dp.collections.dataNodes.getById(dataNodeId);
-  },
-
-  /**
-   * @param {DataProvider} dp
-   * @return {DataNodeTypeValue}
-   */
-  getDataNodeType(dp, dataNodeId) {
-    return dp.collections.dataNodes.getById(dataNodeId).type;
-  },
-
-  /** @param {DataProvider} dp */
   isTraceOwnDataNode(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     const trace = dp.util.getTrace(dataNode.traceId);
@@ -542,18 +521,6 @@ export default {
   getOwnDataNodeOfTrace(dp, traceId) {
     const trace = dp.util.getTrace(traceId);
     return dp.collections.dataNodes.getById(trace.nodeId);
-  },
-
-  /** @param {DataProvider} dp */
-  getTraceDataInputIds(dp, traceId) {
-    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
-    return dataNode?.inputs;
-  },
-
-  /** @param {DataProvider} dp */
-  getFirstInputDataNodeOfTrace(dp, traceId) {
-    const inputIds = dp.util.getTraceDataInputIds(traceId);
-    return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
   },
 
   /**
@@ -568,10 +535,6 @@ export default {
     const { traceId } = dataNode;
     return dp.util.getTrace(traceId);
   },
-
-  // ###########################################################################
-  // trace values
-  // ###########################################################################
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
@@ -598,25 +561,29 @@ export default {
     return dataNode ? dp.util.getDataNodeValueRef(dataNode.nodeId) : null;
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
+  doesTraceHaveValue(dp, traceId) {
+    return !!dp.util.getDataNodeOfTrace(traceId);
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceDataInputIds(dp, traceId) {
+    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
+    return dataNode?.inputs;
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstInputDataNodeOfTrace(dp, traceId) {
+    const inputIds = dp.util.getTraceDataInputIds(traceId);
+    return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
+  },
+
   /** @param {DataProvider} dp */
   getTraceDeclarationTid(dp, traceId) {
     const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
     return dataNode?.varAccess?.declarationTid;
-  },
-
-  /** @param {DataProvider} dp */
-  getDataNodeDeclarationTid(dp, dataNodeId) {
-    const dataNode = dp.util.getDataNode(dataNodeId);
-    return dataNode?.varAccess?.declarationTid;
-  },
-
-  /** @param {DataProvider} dp */
-  getDataNodeDeclarationVarName(dp, dataNodeId) {
-    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
-    if (declarationTid) {
-      return dp.util.getStaticTrace(declarationTid).displayName;
-    }
-    return null;
   },
 
   /** @param {DataProvider} dp */
@@ -643,6 +610,46 @@ export default {
     return dataNode ? dp.util.isDataNodeFunctionValue(dataNode.nodeId) : false;
   },
 
+  /** ###########################################################################
+   * DataNode data
+   *  #########################################################################*/
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode}
+   */
+  getDataNode(dp, dataNodeId) {
+    return dp.collections.dataNodes.getById(dataNodeId);
+  },
+
+  /** @param {DataProvider} dp */
+  getPrimitiveDataNodes(dp) {
+    return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeDeclarationTid(dp, dataNodeId) {
+    const dataNode = dp.util.getDataNode(dataNodeId);
+    return dataNode?.varAccess?.declarationTid;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNodeTypeValue}
+   */
+  getDataNodeType(dp, dataNodeId) {
+    return dp.collections.dataNodes.getById(dataNodeId).type;
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeDeclarationVarName(dp, dataNodeId) {
+    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
+    if (declarationTid) {
+      return dp.util.getStaticTrace(declarationTid).displayName;
+    }
+    return null;
+  },
+
   /** @param {DataProvider} dp */
   isDataNodeTrackableValue(dp, nodeId) {
     const valueRef = dp.util.getDataNodeValueRef(nodeId);
@@ -667,11 +674,13 @@ export default {
     return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
-  /**
+  /** 
+   * A "pass-along" node is
    * @param {DataProvider} dp
    */
-  doesTraceHaveValue(dp, traceId) {
-    return !!dp.util.getDataNodeOfTrace(traceId);
+  isDataNodePassAlong(dp, nodeId) {
+    const dataNode = dp.util.getDataNode(nodeId);
+    return DataNodeType.is.Read(dataNode.type) && dataNode.valueFromId;
   },
 
   /** 
