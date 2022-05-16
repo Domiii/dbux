@@ -73,7 +73,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   initGraphImplementation() {
     this.graph = new Graph();
-    this.renderer = new Sigma(this.graph, this.els.view);
+    this.renderer = new Sigma(this.graph, this.els.view, {
+      labelColor: { color: '#fff' }
+    });
 
     // test
     // document.addEventListener('click', this.applyLayout.bind(this));
@@ -90,7 +92,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const label = node.label || `Node#${node.entityId}`;
     const defaultPosition = this.getNodeDefaultPosition(node);
     const { x, y } = defaultPosition;
-    this.graph.addNode(node.entityId, { x, y, size: 5, label, color: "blue", defaultPosition });
+    this.graph.addNode(node.entityId, { x, y, size: 5, label, color: "blue", defaultPosition, labelColor: { color: '#ff0000' } });
   }
 
   addEdge(edge) {
