@@ -4,12 +4,19 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let documentClickHandler;
 
+/** @typedef { import("./DDGDocument").default } DDGDocument */
+
 class Toolbar extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button title="Toggle Layout algorithm" data-el="layoutButton" class="toolbar-btn btn btn-info" href="#"></button>
+          <button title="Layout (ForceLayout)" data-el="layoutForceBtn" class="toolbar-btn btn btn-info" href="#">
+            ForceLayout
+          </button>
+          <button title="Layout (ForceAtlas2)" data-el="layoutAtlas2Btn" class="toolbar-btn btn btn-info" href="#">
+            ForceAtlas2
+          </button>
         </div>
       </nav>
     `);
@@ -35,15 +42,22 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   decorateButtons() {
-    const {
-      layoutType,
-    } = this.parent.state;
+    // const {
+    //   layoutType,
+    // } = this.parent.state;
 
-    this.els.layoutButton.innerHTML = LayoutAlgorithmType.nameFromForce(layoutType);
+    // this.els.layoutButton.innerHTML = LayoutAlgorithmType.nameFromForce(layoutType);
   }
 
   renderModes() {
 
+  }
+
+  /**
+   * @type {DDGDocument}
+   */
+  get doc() {
+    return this.parent;
   }
 
   // ###########################################################################
@@ -51,15 +65,29 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
-    layoutButton: {
+    layoutForceBtn: {
       async click(evt) {
         evt.preventDefault();
-        const { layoutType } = this.parent.state;
-        await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.nextValue(layoutType));
+        if (!await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.ForceLayout)) {
+          this.doc.timeline.autoLayout();
+        }
       },
 
       focus(evt) { evt.target.blur(); }
     },
+
+    layoutAtlas2Btn: {
+      async click(evt) {
+        evt.preventDefault();
+        if (!await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.ForceAtlas2)) {
+          this.doc.timeline.autoLayout();
+        }
+        // const { layoutType } = this.parent.state;
+        // await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.nextValue(layoutType));
+      },
+
+      focus(evt) { evt.target.blur(); }
+    }
   }
 }
 

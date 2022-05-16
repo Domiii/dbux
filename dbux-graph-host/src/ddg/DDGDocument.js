@@ -42,8 +42,10 @@ export default class DDGDocument extends HostComponentEndpoint {
       for (const [key, val] of Object.entries(update)) {
         this._notifyGraphDocumentModeChanged(key, val);
       }
+      return true;
       // this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphGraphDocumentModeChanged, actualUpdate);
     }
+    return false;
   }
 
   _notifyGraphDocumentModeChanged(modeName, value) {

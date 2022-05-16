@@ -5,9 +5,13 @@ export default class DDGDocument extends ClientComponentEndpoint {
     const el = document.getElementById('root');
     el.innerHTML = /*html*/`<div>
       <div data-mount="Toolbar"></div>
-      <div data-el="DDGDataView"></div>
-      <div data-mount="DDGTimelineView"></div>
+      <div data-el="timeline" data-mount="DDGTimelineView"></div>
     </div>`;
     return el;
+  }
+
+  get timeline() {
+    return this.children.getComponent('DDGTimelineView');
+    // return this.els.timeline;
   }
 }

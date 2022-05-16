@@ -15,7 +15,8 @@ class Toolbar extends HostComponentEndpoint {
 
   public = {
     setLayoutAlgorithm(layoutType) {
-      this.doc.setDocumentMode({ layoutType });
+      const result = this.doc.setDocumentMode({ layoutType });
+      return result;
     },
   }
 }

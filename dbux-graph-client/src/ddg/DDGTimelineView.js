@@ -14,6 +14,15 @@ import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 const AutoLayoutAnimationDuration = 300;
+const labelSize = 24;
+
+const renderSettings = {
+  labelColor: { color: '#fff' },
+  labelSize,
+  edgeLabelSize: labelSize,
+  labelRenderedSizeThreshold: 1 // default = 6
+};
+
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   createEl() {
@@ -73,9 +82,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   initGraphImplementation() {
     this.graph = new Graph();
-    this.renderer = new Sigma(this.graph, this.els.view, {
-      labelColor: { color: '#fff' }
-    });
+    this.renderer = new Sigma(this.graph, this.els.view, renderSettings);
 
     // test
     // document.addEventListener('click', this.applyLayout.bind(this));
@@ -150,7 +157,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     animateNodes(this.graph, rescaledPositions, { duration: AutoLayoutAnimationDuration });
   }
 
-  autoLayout() {
+  autoLayout = () => {
     const { layoutType } = this.context.doc.state;
     if (layoutType === LayoutAlgorithmType.ForceLayout) {
       this.applyForceLayout();
@@ -159,9 +166,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.applyFA2();
     }
     else {
-      this.logger.error(`Unkown layout algotirhm type: ${layoutType}`);
+      this.logger.error(`Unkown layout algorithm type: ${layoutType}`);
     }
   }
+
+  public = {
+    autoLayout: this.autoLayout
+  };
 
   /** ########################################
    * jsPlumb version
