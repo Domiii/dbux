@@ -8,11 +8,11 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNode from '@dbux/common/src/types/DataNode';
+import isThenable from '@dbux/common/src/util/isThenable';
 import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
 import getDbuxInstance from '../getDbuxInstance';
-import isThenable from '@dbux/common/src/util/isThenable';
 import { doApply } from '../builtIns/originals';
 
 

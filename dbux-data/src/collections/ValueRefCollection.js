@@ -48,13 +48,13 @@ export default class ValueRefCollection extends Collection {
           //        (e.g. `a` in JSON.parse('{ "a": { "b": 3 } }'))
           if (Array.isArray(serialized)) {
             // array
-            valueRef.childSnapshotsByKey = serialized.map(([childRefId, childValue]) =>
+            valueRef.children = serialized.map(([childRefId, childValue]) =>
               new RefSnapshot(nodeId, childRefId, childValue)
             );
           }
           else {
             // plain object
-            valueRef.childSnapshotsByKey = Object.fromEntries(
+            valueRef.children = Object.fromEntries(
               Object.entries(serialized)
                 .map(([key, [childRefId, childValue]]) =>
                   [key, new RefSnapshot(nodeId, childRefId, childValue)]

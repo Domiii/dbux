@@ -29,7 +29,7 @@ import { renderPath } from '@dbux/common-node/src/util/pathUtil';
 import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
-import { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/common/src/types/RefSnapshot';
+import RefSnapshot, { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/common/src/types/RefSnapshot';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
@@ -765,8 +765,8 @@ export default {
   constructValueSnapshotAtTime(dp, refId, terminateNodeId = Infinity) {
     const valueRef = dp.collections.values.getById(refId);
 
-    const { /* category, */ nodeId, childSnapshotsByKey, value } = valueRef;
-    if (!childSnapshotsByKey) {
+    const { /* category, */ nodeId, children, value } = valueRef;
+    if (!children) {
       // already deserialized, or something went wrong
       // TODO: find out all possible circumstances of this and deal with it properly
       const snapshotNode = new VersionedRefSnapshot(nodeId, 0, value);
@@ -777,7 +777,7 @@ export default {
     // create new snapshot
     const snapshotNode = new VersionedRefSnapshot(nodeId, refId, null);
     snapshotNode.terminateNodeId = terminateNodeId;
-    snapshotNode.children = clone(childSnapshotsByKey);
+    snapshotNode.children = clone(children);
 
     // apply all writes before `terminateNodeId`
     dp.util.applyDataSnapshotWritesShallow(dp, snapshotNode, terminateNodeId);
@@ -853,8 +853,9 @@ export default {
   /** 
    * internal helper
    * @param {DataProvider} dp
+   * @param {RefSnapshot} snapshot
    */
-  _simplifyValue(dp, [nodeId, refId, value]) {
+  _simplifyValue(dp, { refId, value }) {
     if (refId) {
       const valueRef = dp.collections.values.getById(refId);
       const { category } = valueRef;
@@ -972,11 +973,11 @@ export default {
     else {
       const { category, pruneState } = valueRef;
       if (!isPruneStateOk(pruneState)) {
-        valueString = valueRef.value?.toString?.() || String(valueRef.value) || ValuePruneState.fromValue(pruneState);
+        valueString = valueRef.value?.toString?.() || String(valueRef.value) || ValuePruneState.nameFrom(pruneState);
       }
 
       if (ValueTypeCategory.is.Array(category)) {
-        let content = `${snapshot.children.map(x => dp.util._simplifyValue(x))}`;
+        let content = `${snapshot.children.map(childSnapshot => dp.util._simplifyValue(childSnapshot))}`;
         shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
         valueString = `[${content}]`;
       }
@@ -986,7 +987,7 @@ export default {
         valueString = `{${content}}`;
       }
       else if (ValueTypeCategory.is.Function(category)) {
-        let name = snapshot.value?.name?.[2] || '(anonymous)';
+        let name = snapshot.getChildValue('name') || '(anonymous)';
         shorten && (name = truncateStringDefault(name, ShortenNestedCfg));
         valueString = `ƒ ${name}`;
       }
