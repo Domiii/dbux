@@ -112,19 +112,30 @@ export default class DDGWatchSet {
       return true;
     }
 
-    // TODO: watched ref
+    // TODO: watched refs
 
     return false;
   }
 
+  buildSnapshot(traceId) {
+    const { dp } = this;
+
+    const dataNodeId = dp.util.getLastDataNodeOfTrace(traceId);
+    const initialState = dp.util.constructValueFull(dataNodeId);
+
+    TODO
+
+    return new DDGSnapshotNode(dataNodeId);
+  }
+
   /**
-   * @param {number} dataNodeId
+   * @param {number} traceId
    */
-  getOrCreateWatchedSnapshotNode(dataNodeId) {
+  getOrCreateWatchedSnapshotNode(traceId) {
     // const dataNode = this.dp.util.getDataNode(dataNodeId);
-    let snapshot = this.snapshotsByDataNodeId.get(dataNodeId);
+    let snapshot = this.snapshotsByDataNodeId.get(traceId);
     if (!snapshot) {
-      this.snapshotsByDataNodeId.set(dataNodeId, snapshot = new DDGSnapshotNode(dataNodeId));
+      this.snapshotsByDataNodeId.set(traceId, snapshot = this.buildSnapshot(traceId));
     }
     return snapshot;
   }
@@ -160,7 +171,7 @@ export default class DDGWatchSet {
   //   let children;
   //   const { refId } = node;
   //   if (refId) {
-  //     children = this.dp.util.constructValueObjectShallow(refId, nodeId);
+  //     children = this.dp.util.constructValueSnapshotAtTime(refId, nodeId);
   //   }
   //   else {
   //     children = [node];
@@ -195,52 +206,3 @@ export default class DDGWatchSet {
   // }
 }
 
-
-
-
-
-
-// // ########################################################################
-// // old idea
-// // ########################################################################
-// watchSetRoots;   // NOTE: input set is actually a set of trees of DataNodes
-// watchSet;        // array of individual DataNodes representing all nodes in all watchSetRoot trees
-
-// constructor(watchSetRoots):
-//   this.watchSetRoots = makeUnique(watchSetRoots);
-//   this.watchSet = new Map();
-//   visited = ...
-
-//   // TODO: `watchSetRoots` might contain nodes that are in subtree of other roots.
-//   //  → make sure to select top-most roots
-//   this.watchSetRoots.forEach(n => {
-//     const treeRoot = constructValueFull(n);
-//     addWatchSet(null, treeRoot, visited);
-//   });
-//   // TODO: `watchSetRoots` might contain nodes that are in subtree of other roots.
-//   //  → eliminate those
-//   this.watchSetRoots = /* ignore roots that are in subtree of other roots */...;
-
-
-// addWatchSet(parent, n, visited):
-//   handleVisited
-
-//   // TODO: keep track of path-to-root in `watchSet`
-//   this.watchSet.add({ parent, to: n.nodeId });
-
-//   // make sure to add all children recursively (e.g. in case of array or object)
-//   for all nodes and child nodes child in constructValueFull(watchSet):
-//     addWatchSet(n, child, visited);
-
-
-// /**
-//  * If given `dataNode` refers to a memory location that is in `watchSet`:
-//  * find its root and produce a unique id combining root id + the id of the path from that root to itself.
-//  */
-// getWatchSetGroupId(dataNode):
-//   root = getDataNodePathToRoot(dataNode)
-//   if !root:
-//     return null;
-//   path = getDataNodePathToRoot(dataNode)
-
-//   return `${getOwnStaticTraceId(root)}#${path})`;

@@ -80,13 +80,21 @@ export default ValueTypeCategory;
 // eslint-disable-next-line import/no-mutable-exports
 let ValuePruneState = {
   Normal: 0,
-  Omitted: 1,
+  Omitted: 1,     // TODO: fix ordering → Omitted should be after Shortened
   Shortened: 2,
   ValueDisabled: 3,
   ReadError: 4
 };
 
 ValuePruneState = new Enum(ValuePruneState);
+
+const okPruneStates = new Array(ValuePruneState.getValueMaxIndex()).map(() => false);
+okPruneStates[ValuePruneState.Normal] = true;
+okPruneStates[ValuePruneState.Shortened] = true;
+
+export function isPruneStateOk(pruneState) {
+  return okPruneStates[pruneState] || false;
+}
 
 export {
   ValuePruneState

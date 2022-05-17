@@ -208,19 +208,10 @@ export class DebugTDNode extends TraceDetailNode {
 
     let valueDetails;
     if (refId) {
-      const entries = dp.util.constructValueObjectShallow(refId, traceNodeId);
+      const snapshot = dp.util.constructValueSnapshotAtTime(refId, traceNodeId);
       valueDetails = makeTreeItem(
-        'valueRef rendered:',
-        Object.entries(entries).map(([prop, valueArr]) => {
-          const [modifyNodeId, valueRefId, value] = valueArr;
-          return makeTreeItem(
-            prop,
-            { modifyNodeId, valueRefId, value },
-            {
-              description: JSON.stringify(valueArr)
-            }
-          );
-        }),
+        'valueRef (raw snapshot data):',
+        snapshot
       );
     }
     else {

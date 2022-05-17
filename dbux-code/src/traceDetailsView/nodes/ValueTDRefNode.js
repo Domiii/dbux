@@ -71,30 +71,30 @@ export default class ValueTDRefNode extends ValueNode {
 
   buildChildren() {
     const { rootDataNode, dp, refId, valueRef } = this;
-    const objectValue = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
+    const snapshot = dp.util.constructValueSnapshotAtTime(refId, rootDataNode.nodeId);
 
     if (valueRef.pruneState === ValuePruneState.Omitted) {
       return EmptyArray;
     }
 
-    const entries = objectValue && Object.entries(objectValue);
-    if (entries?.length) {
-      return entries.map(([key, [childNodeId, childRefId, childValue]]) => {
-        const childDataNode = dp.collections.dataNodes.getById(childNodeId);
-        if (childRefId) {
-          return this.treeNodeProvider.buildNode(
-            ValueTDRefNode, childDataNode, this, { key, refId: childRefId, rootDataNode }
-          );
-        }
-        else {
-          return this.treeNodeProvider.buildNode(
-            ValueTDSimpleNode, childDataNode, this, { key, value: childValue, rootDataNode }
-          );
-        }
-      });
+    if (snapshot?.childrenByKey) {
+      return Object.entries(snapshot.childrenByKey)
+        .map(([key, { nodeId: childNodeId, refId: childRefId, value: childValue }]) => {
+          const childDataNode = dp.collections.dataNodes.getById(childNodeId);
+          if (childRefId) {
+            return this.treeNodeProvider.buildNode(
+              ValueTDRefNode, childDataNode, this, { key, refId: childRefId, rootDataNode }
+            );
+          }
+          else {
+            return this.treeNodeProvider.buildNode(
+              ValueTDSimpleNode, childDataNode, this, { key, value: childValue, rootDataNode }
+            );
+          }
+        });
     }
     else {
-      // node was omitted, or in trouble for other reasons
+      // no children on ref node → maybe omitted etc.?
       const simpleValue = dp.collections.values.getById(refId)?.value;
       if (simpleValue !== undefined) {
         return [];
