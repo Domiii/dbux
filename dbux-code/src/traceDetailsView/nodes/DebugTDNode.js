@@ -206,34 +206,27 @@ export class DebugTDNode extends TraceDetailNode {
     }
 
 
-    let valueDetails;
-    if (refId) {
-      const snapshot = dp.util.constructValueSnapshotAtTime(refId, traceNodeId);
-      valueDetails = makeTreeItem(
-        'valueRef (raw snapshot data):',
-        snapshot
-      );
-    }
-    else {
-      valueDetails = makeTreeItemNoChildren(
-        '(DataNode has no ref)'
-      );
-    }
-
-    const valueRefChildren = valueRefNodeId && dp.indexes.values.byNodeId.get(valueRefNodeId)?.map(ref => {
+    const valueRawRefNode = dp.indexes.values.byNodeId.get(valueRefNodeId)?.map(ref => {
       return makeTreeItem(
-        `${ref.refId}`,
+        valueRefNodeId ? 'valueRef (raw)' : '(DataNode has no ref)',
         ref,
         {}
       );
     });
-    const valuesOfDataNode = makeTreeItem(
-      valueRefChildren ? 'Child Refs' : '(DataNode has no ref)',
-      valueRefChildren,
-      {
-        description: `nodeId=${valueRefNodeId}`
-      }
-    );
+
+    let valueRawSnapshotNode;
+    if (refId) {
+      const snapshot = dp.util.constructValueSnapshotAtTime(refId, traceNodeId);
+      valueRawSnapshotNode = makeTreeItem(
+        'valueRef Snapshot (raw):',
+        snapshot
+      );
+    }
+    else {
+      valueRawSnapshotNode = makeTreeItemNoChildren(
+        '(DataNode has no ref)'
+      );
+    }
 
 
     // ###########################################################################
@@ -310,8 +303,8 @@ export class DebugTDNode extends TraceDetailNode {
           {
             valueNode,
             dataNodes: makeTreeItems(...allDataNodes),
-            valueDetails,
-            valuesOfDataNode,
+            valueRawRefNode,
+            valueRawSnapshotNode,
           },
           {
             description: `refId=${refId}, ${allDataNodes.length} DataNodes`

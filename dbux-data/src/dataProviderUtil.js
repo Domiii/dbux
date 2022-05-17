@@ -780,7 +780,7 @@ export default {
     snapshotNode.children = clone(children);
 
     // apply all writes before `terminateNodeId`
-    dp.util.applyDataSnapshotWritesShallow(dp, snapshotNode, terminateNodeId);
+    dp.util.applyDataSnapshotWritesShallow(snapshotNode, terminateNodeId);
     return snapshotNode;
   },
 

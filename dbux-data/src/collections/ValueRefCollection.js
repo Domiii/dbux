@@ -31,7 +31,7 @@ export default class ValueRefCollection extends Collection {
         this.logger.warn(`invalid ValueCollection: contains empty values`);
         continue;
       }
-      if (!('value' in valueRef)) {
+      if ('serialized' in valueRef) {
         const {
           nodeId,
           category,
