@@ -7,8 +7,6 @@ import isNumber from 'lodash/isNumber';
 import truncate from 'lodash/truncate';
 import last from 'lodash/last';
 import sum from 'lodash/sum';
-import isArray from 'lodash/isArray';
-import isPlainObject from 'lodash/isPlainObject';
 import clone from 'lodash/clone';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
@@ -23,7 +21,7 @@ import StaticContextType, { isRealStaticContext, isVirtualStaticContextType } fr
 import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, getSimpleTypeString, ValuePruneState, isPruneStateOk } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
@@ -697,6 +695,8 @@ export default {
   },
 
   /** 
+   * Best-effort deep re-creation of a reference type object (object, array, set, map etc.)
+   * 
    * @param {DataProvider} dp
    */
   constructValueFull(dp, nodeId, _refId, _value, _key = null, _visited = null, _rootNodeId = null) {
@@ -726,19 +726,25 @@ export default {
     }
     else {
       const snapshot = dp.util.constructValueSnapshotAtTime(_refId, _rootNodeId, _key);
-      const entries = Object.entries(shallow); // NOTE: Object.entries works for both, array and object
-      const constructedEntries = entries.map(([key, [childNodeId, childRefId, childValue]]) => {
-        return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, key, _visited, _rootNodeId)];
-      });
-
-      if (ValueTypeCategory.is.Array(valueRef.category)) {
-        // array
-        finalValue = [];
-        constructedEntries.forEach(([key, value]) => finalValue[key] = value);
+      if (!snapshot.children) {
+        finalValue = _value;
       }
       else {
-        // object
-        finalValue = Object.fromEntries(constructedEntries);
+        const entries = Object.entries(snapshot.children); // NOTE: Object.entries works for both, array and object
+        const constructedEntries = entries.
+          map(([key, { nodeId: childNodeId, refId: childRefId, value: childValue }]) => {
+            return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, key, _visited, _rootNodeId)];
+          });
+
+        if (ValueTypeCategory.is.Array(valueRef.category)) {
+          // array
+          finalValue = [];
+          constructedEntries.forEach(([key, value]) => finalValue[key] = value);
+        }
+        else {
+          // object
+          finalValue = Object.fromEntries(constructedEntries);
+        }
       }
     }
 
@@ -762,7 +768,7 @@ export default {
     const { /* category, */ nodeId, childSnapshotsByKey, value } = valueRef;
     if (!childSnapshotsByKey) {
       // already deserialized, or something went wrong
-      // TODO: find out why this happens and deal with it properly?
+      // TODO: find out all possible circumstances of this and deal with it properly
       const snapshotNode = new VersionedRefSnapshot(nodeId, 0, value);
       snapshotNode.terminateNodeId = terminateNodeId;
       return snapshotNode;
@@ -771,7 +777,7 @@ export default {
     // create new snapshot
     const snapshotNode = new VersionedRefSnapshot(nodeId, refId, null);
     snapshotNode.terminateNodeId = terminateNodeId;
-    snapshotNode.childrenByKey = clone(childSnapshotsByKey);
+    snapshotNode.children = clone(childSnapshotsByKey);
 
     // apply all writes before `terminateNodeId`
     dp.util.applyDataSnapshotWritesShallow(dp, snapshotNode, terminateNodeId);
@@ -783,7 +789,7 @@ export default {
    * @param {RefSnapshotTreeNode} snapshotNode
    */
   applyDataSnapshotWritesShallow(dp, snapshotNode, terminateNodeId) {
-    const { childRefId: refId, childrenByKey } = snapshotNode;
+    const { refId, children } = snapshotNode;
 
     // + writes - delete
     const modifyDataNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.
@@ -801,19 +807,19 @@ export default {
         const { prop } = modifyNode.varAccess;
         if (modifyNode.refId) {
           // ref
-          childrenByKey[prop] = new RefSnapshotTreeNode(modifyNode.nodeId, modifyNode.refId, null);
+          children[prop] = new RefSnapshotTreeNode(modifyNode.nodeId, modifyNode.refId, null);
         }
         else {
           // primitive
           const inputNodeId = modifyNode.inputs[0];
           const inputNode = dp.collections.dataNodes.getById(inputNodeId);
-          childrenByKey[prop] = new RefSnapshotTreeNode(modifyNode.nodeId, null, inputNode.value);
+          children[prop] = new RefSnapshotTreeNode(modifyNode.nodeId, null, inputNode.value);
         }
       }
       else if (modifyNode.type === DataNodeType.Delete) {
         // apply delete
         const { prop } = modifyNode.varAccess;
-        delete childrenByKey[prop];
+        delete children[prop];
       }
     }
   },
@@ -958,31 +964,31 @@ export default {
     const valueRef = dp.collections.values.getById(refId);
 
     let valueString;
-    if (!snapshot?.childrenByKey) {
+    if (!snapshot?.children) {
       // node was omitted or did not have children for other reasons
       // default
       valueString = valueRef.value?.toString?.() || String(valueRef.value);
     }
     else {
       const { category, pruneState } = valueRef;
-      // TODO: handle pruneState
+      if (!isPruneStateOk(pruneState)) {
+        valueString = valueRef.value?.toString?.() || String(valueRef.value) || ValuePruneState.fromValue(pruneState);
+      }
+
       if (ValueTypeCategory.is.Array(category)) {
-        TODO
-        let content = `${snapshot.map(x => dp.util._simplifyValue(x))}`;
+        let content = `${snapshot.children.map(x => dp.util._simplifyValue(x))}`;
         shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
         valueString = `[${content}]`;
       }
       else if (ValueTypeCategory.is.Object(category)) {
-        TODO
-        let content = `${Object.keys(snapshot)}`;
+        let content = `${Object.keys(snapshot.children)}`;
         shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
         valueString = `{${content}}`;
       }
       else if (ValueTypeCategory.is.Function(category)) {
-        TODO
-        let content = snapshot.name?.[2] || '(anonymous)';
-        shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
-        valueString = `ƒ ${content}`;
+        let name = snapshot.value?.name?.[2] || '(anonymous)';
+        shorten && (name = truncateStringDefault(name, ShortenNestedCfg));
+        valueString = `ƒ ${name}`;
       }
       else {
         // default
@@ -1270,12 +1276,13 @@ export default {
       return EmptyArray;
     }
     const snapshot = dp.util.constructValueSnapshotAtTime(dataNode.refId, dataNode.nodeId);
-    TODO
-    if (!Array.isArray(children)) {
+    if (!Array.isArray(snapshot.children)) {
       return EmptyArray;
     }
 
-    return children.map(([childNodeId/* , childRefId, childValue */]) => dp.util.getDataNode(childNodeId));
+    return snapshot.children.map(({ nodeId: childNodeId/* , refId: childRefId, value: childValue */ }) =>
+      dp.util.getDataNode(childNodeId)
+    );
   },
 
   /**

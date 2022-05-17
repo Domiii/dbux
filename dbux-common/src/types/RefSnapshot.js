@@ -5,20 +5,20 @@ export default class RefSnapshot {
   /**
    * 
    */
-  childNodeId;
+  nodeId;
   /**
    * Only set if {@link #value} is not set.
    */
-  childRefId;
+  refId;
   /**
    * Only set if {@link #refId} is not set.
    */
-  childValue;
+  value;
 
   constructor(nodeId, refId, value) {
-    this.childNodeId = nodeId;
-    this.childRefId = refId;
-    this.childValue = value;
+    this.nodeId = nodeId;
+    this.refId = refId;
+    this.value = value;
   }
 }
 
@@ -32,9 +32,9 @@ export class RefSnapshotTreeNode extends RefSnapshot {
   key;
 
   /**
-   * @type {Object<string, RefSnapshotTreeNode>?}
+   * @type {Object<string, RefSnapshotTreeNode>? | Array<RefSnapshotTreeNode>?}
    */
-  childrenByKey;
+  children;
 }
 
 export class VersionedRefSnapshot extends RefSnapshotTreeNode {

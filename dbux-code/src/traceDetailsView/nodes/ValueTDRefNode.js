@@ -1,4 +1,4 @@
-import { ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import { isPruneStateOk, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { emitValueRenderAction } from '../../userEvents';
@@ -73,12 +73,12 @@ export default class ValueTDRefNode extends ValueNode {
     const { rootDataNode, dp, refId, valueRef } = this;
     const snapshot = dp.util.constructValueSnapshotAtTime(refId, rootDataNode.nodeId);
 
-    if (valueRef.pruneState === ValuePruneState.Omitted) {
+    if (!isPruneStateOk(valueRef.pruneState)) {
       return EmptyArray;
     }
 
-    if (snapshot?.childrenByKey) {
-      return Object.entries(snapshot.childrenByKey)
+    if (snapshot?.children) {
+      return Object.entries(snapshot.children)
         .map(([key, { nodeId: childNodeId, refId: childRefId, value: childValue }]) => {
           const childDataNode = dp.collections.dataNodes.getById(childNodeId);
           if (childRefId) {
