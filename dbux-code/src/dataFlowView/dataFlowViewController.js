@@ -17,6 +17,11 @@ export class DataFlowViewController {
     this.treeDataProvider = new DataFlowNodeProvider(this);
     this.setSearchMode(DataFlowSearchModeType.ByValueId, false);
     this.setFilterMode(DataFlowFilterModeType.None, false);
+    this.treeView.onDidChangeVisibility(async e => {
+      if (e.visible) {
+        await this.refresh();
+      }
+    });
   }
 
   get treeView() {
@@ -46,12 +51,22 @@ export class DataFlowViewController {
     }
   }
 
-  refresh = () => {
-    return this.treeDataProvider.refresh();
+  refresh = async () => {
+    if (!this.treeDataProvider.treeView.visible) {
+      return;
+    }
+    // TODO: add a load indicator
+    // NOTE: this can get very slow with 1k+ nodes (probably because of the way we compute labels?)
+    await this.treeDataProvider.refresh();
   }
 
-  refreshOnData = () => {
-    this.treeDataProvider.refreshOnData();
+  refreshOnData = async () => {
+    if (!this.treeDataProvider.treeView.visible) {
+      return;
+    }
+    // TODO: add a load indicator
+    // NOTE: this can get very slow with 1k+ nodes (probably because of the way we compute labels?)
+    await this.treeDataProvider.refreshOnData();
   }
 
   initOnActivate(context) {
