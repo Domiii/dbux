@@ -791,12 +791,15 @@ export default {
   applyDataSnapshotWritesShallow(dp, snapshotNode, terminateNodeId) {
     const { refId, children } = snapshotNode;
 
+    // TODO: if snapshotNode.terminateNodeId: start at snapshotNode.terminateNodeId
+
     // + writes - delete
     const modifyDataNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.
       filter(node => isDataNodeModifyType(node.type))
       || EmptyArray;
     const terminateNode = terminateNodeId && dp.util.getDataNode(terminateNodeId);
     const terminateTraceId = terminateNode?.traceId;
+    
     for (const modifyNode of modifyDataNodes) {
       if (modifyNode.nodeId > terminateNodeId && modifyNode.traceId > terminateTraceId) {
         // only apply write operations `before` the terminateTraceId
