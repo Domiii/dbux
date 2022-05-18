@@ -11,6 +11,9 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
+            Rebuild 🔁
+          </button>
           <button title="Layout (ForceLayout)" data-el="layoutForceBtn" class="toolbar-btn btn btn-info" href="#">
             ForceLayout
           </button>
@@ -65,6 +68,15 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
+    rebuildBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        this.doc.timeline.rebuildGraph();
+      },
+
+      focus(evt) { evt.target.blur(); }
+    },
+
     layoutForceBtn: {
       async click(evt) {
         evt.preventDefault();

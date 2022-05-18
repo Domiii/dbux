@@ -76,6 +76,46 @@ export default class DataDependencyGraph {
    * Node + Edge getters
    * ##########################################################################*/
 
+  /** ###########################################################################
+   * labels
+   * ##########################################################################*/
+
+  _makeDataNodeLabel(dataNode) {
+    const { dp } = this;
+    const { nodeId: dataNodeId } = dataNode;
+
+    // variable name
+    const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
+    let label = '';
+    if (varName) {
+      label = varName;
+    }
+    else if (dataNode.traceId) {
+      const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
+      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
+      label = staticTrace.dataNode?.label;
+      if (!label) {
+        if (isTraceReturn(staticTrace.type)) {
+          // return label
+          label = 'ret';
+        }
+        else if (dp.util.isTraceOwnDataNode(dataNodeId)) {
+          // default trace label
+          const trace = dp.util.getTrace(dataNode.traceId);
+          label = makeTraceLabel(trace);
+        }
+        else {
+          // TODO: ME
+        }
+      }
+    }
+    // else {
+    // }
+
+    // TODO: nested DataNodes don't have a traceId (or they don't own it)
+    return label;
+  }
+
 
   /** ###########################################################################
    * {@link #build}
@@ -122,7 +162,7 @@ export default class DataDependencyGraph {
   _addNode(dataNode) {
     const dataNodeId = dataNode.nodeId;
     const dataNodeType = dataNode.type; // TODO!
-    const label = this._getDataNodeLabel(dataNode);
+    const label = this._makeDataNodeLabel(dataNode);
 
     const ddgNode = new DDGNode(dataNodeType, dataNodeId, label);
     ddgNode.watched = this.watchSet.isWatchedDataNode(dataNodeId);
@@ -155,42 +195,6 @@ export default class DataDependencyGraph {
 
     this._addEdgeToMap(this.inEdgesByDDGNodeId, toNode.ddgNodeId, newEdge);
     this._addEdgeToMap(this.outEdgesByDDGNodeId, fromDdgNode.ddgNodeId, newEdge);
-  }
-
-  _getDataNodeLabel(dataNode) {
-    const { dp } = this;
-    const { nodeId: dataNodeId } = dataNode;
-
-    // variable name
-    const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
-    let label = '';
-    if (varName) {
-      label = varName;
-    }
-    else if (dataNode.traceId) {
-      const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
-      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
-      label = staticTrace.dataNode?.label;
-      if (!label) {
-        if (isTraceReturn(staticTrace.type)) {
-          // return label
-          label = 'ret';
-        }
-        else if (dp.util.isTraceOwnDataNode(dataNodeId)) {
-          // default trace label
-          const trace = dp.util.getTrace(dataNode.traceId);
-          label = makeTraceLabel(trace);
-        }
-        else {
-          // TODO: ME
-        }
-      }
-    }
-    // else {
-    // }
-
-    // TODO: nested DataNodes don't have a traceId (or they don't own it)
-    return label;
   }
 
   /**
@@ -226,7 +230,8 @@ export default class DataDependencyGraph {
               throw new Error('TODO: fix `valueFromId` for reference types');
             }
 
-            while (this._shouldSkipDataNode(fromDataNodeId)) {
+            // merge computations
+            while (this._shouldSkipDataNode(fromDataNode.nodeId)) {
               const valueFromNode = dp.util.getDataNode(fromDataNode.valueFromId);
               if (!valueFromNode) {
                 break;

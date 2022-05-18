@@ -23,7 +23,7 @@ const renderSettings = {
   labelColor: { color: '#fff' },
   labelSize,
   edgeLabelSize: labelSize,
-  labelRenderedSizeThreshold: 1 // default = 6
+  labelRenderedSizeThreshold: 0.1 // default = 6
 };
 
 const topNodeKey = 'top';
@@ -82,7 +82,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.clearGraph();
     this.buildGraph();
 
-    this.autoLayout();
+    // this.autoLayout();
   }
 
   buildGraph() {
@@ -193,7 +193,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   getNodeYTop() {
-    return this.state.nodes.length;
+    return this.state.nodes.length + 1;
   }
 
   getNodeYBottom() {
@@ -206,7 +206,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
      * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
      * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
      */
-    const x = node.ddgNodeId / this.state.nodes.length * 0.1;
+    // const x = node.ddgNodeId / this.state.nodes.length;
+    const x = Math.random() * this.state.nodes.length;
 
     /**
      * WARNING: if you change this, also change getNodeY{Top,Bottom}

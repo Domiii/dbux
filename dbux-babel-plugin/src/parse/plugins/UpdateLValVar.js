@@ -13,7 +13,7 @@ import { buildUpdateExpressionVar } from '../../instrumentation/builders/updateE
  * `twME(a = (_tmp = te(a, ...readTid)) + 1, _tmp, readTid, writeTid, declarationTid)`
  * 
  */
-export default class UpdateLValME extends BasePlugin {
+export default class UpdateLValVar extends BasePlugin {
   /**
    * @type {LValHolderNode}
    */

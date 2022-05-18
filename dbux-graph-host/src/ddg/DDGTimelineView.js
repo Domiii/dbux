@@ -28,7 +28,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       else {
         const ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
         const { nodes, edges } = ddg;
-        this.setState({ nodes, edges });
+        this.setGraph(nodes, edges);
       }
     }
     else {
@@ -37,7 +37,14 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     }
   }
 
+  setGraph(nodes, edges) {
+    // reset status message
+    const failureReason = null;
+    this.setState({ failureReason, nodes, edges });
+  }
+
   setFailure(failureReason) {
+    // reset graph
     this.setState({ failureReason, nodes: EmptyArray, edges: EmptyArray });
   }
 

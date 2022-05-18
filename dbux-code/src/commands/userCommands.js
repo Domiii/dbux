@@ -27,7 +27,7 @@ import { getProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 // import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectViews/projectViewsController';
-import { chooseFile, confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
+import { chooseFile, confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -143,7 +143,7 @@ export function initUserCommands(extensionContext) {
       // default: get first active application
       const firstApplication = allApplications.getAllActive()[0];
       if (!firstApplication) {
-        this.setFailure('No applications running');
+        await showWarningMessage('Could not run DDG test: No applications running');
         return;
       }
 
@@ -153,7 +153,7 @@ export function initUserCommands(extensionContext) {
       const firstFunctionContext = dp.collections.executionContexts.getAllActual().
         find(context => dp.util.isContextFunctionContext(context.contextId));
       if (!firstFunctionContext) {
-        this.setFailure('Could not find a function context in application');
+        await showWarningMessage('Could not run DDG test: Could not find a function context in application');
         return;
       }
       trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
