@@ -85,6 +85,9 @@ export default class Traces extends BasePlugin {
   // trace inputs
   // ###########################################################################
 
+  /**
+   * @return {TraceCfg}
+   */
   addDefaultTrace = (path) => {
     const node = this.node.getNodeOfPath(path);
     if (!node) {

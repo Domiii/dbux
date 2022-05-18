@@ -1,6 +1,7 @@
 
 /** @typedef { import("@babel/types").Node } AstNode */
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
+/** @typedef { import("@dbux/common/src/types/StaticTrace").default } StaticTrace */
 /** @typedef { import("../parse/BaseNode").default } BaseNode */
 
 export class TraceCfgMeta {
@@ -69,6 +70,9 @@ export default class TraceCfg {
    */
   tidIdentifier;
 
+  /**
+   * @type {StaticTrace}
+   */
   staticTraceData;
 
   /**
