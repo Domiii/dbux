@@ -68,8 +68,9 @@ export default class DataDependencyGraph {
    * 
    * @param {RuntimeDataProvider} dp 
    */
-  constructor(dp) {
+  constructor(dp, graphId) {
     this.dp = dp;
+    this.graphId = graphId;
   }
 
   /** ###########################################################################

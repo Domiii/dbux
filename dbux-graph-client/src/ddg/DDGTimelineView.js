@@ -387,6 +387,16 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
           curviness: 20
         }
       },
+      overlays: [
+        {
+          type: 'PlainArrow',
+          options: {
+            location: 1,
+            width: 8,
+            length: 8,
+          }
+        },
+      ],
       anchor: AnchorLocations.AutoDefault
     });
   }
