@@ -1,5 +1,4 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import sleep from '@dbux/common/src/util/sleep';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';

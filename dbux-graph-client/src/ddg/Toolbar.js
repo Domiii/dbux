@@ -14,10 +14,10 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
             Rebuild 🔁
           </button>
-          <button title="Layout (ForceLayout)" data-el="layoutForceBtn" class="toolbar-btn btn btn-info" href="#">
+          <button title="Layout (ForceLayout)" data-el="layoutForceBtn" class="hidden toolbar-btn btn btn-info" href="#">
             ForceLayout
           </button>
-          <button title="Layout (ForceAtlas2)" data-el="layoutAtlas2Btn" class="toolbar-btn btn btn-info" href="#">
+          <button title="Layout (ForceAtlas2)" data-el="layoutAtlas2Btn" class="hidden toolbar-btn btn btn-info" href="#">
             ForceAtlas2
           </button>
         </div>
