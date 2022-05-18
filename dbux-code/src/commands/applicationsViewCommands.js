@@ -3,7 +3,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { confirm } from '../codeUtil/codeModals';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { initRuntimeServer, stopRuntimeServer } from '../net/SocketServer';
-import { emitShowApplicationEntryFileAction } from '../userEvents';
+import { emitShowApplicationEntryFileAction } from '../userActions';
 import { getProjectManager } from '../projectViews/projectControl';
 import { registerCommand } from './commandUtil';
 
@@ -35,9 +35,10 @@ export function initApplicationsViewCommands(context) {
   registerCommand(context,
     'dbuxApplicationsView.showEntryPoint',
     async (node) => {
-      const filePath = node.application.entryPointPath;
-      await showTextDocument(filePath);
-      emitShowApplicationEntryFileAction(filePath);
+      const { application } = node;
+      const { entryPointPath } = application;
+      await showTextDocument(entryPointPath);
+      emitShowApplicationEntryFileAction(application, entryPointPath);
     }
   );
 }

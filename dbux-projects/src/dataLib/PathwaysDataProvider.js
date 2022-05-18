@@ -5,14 +5,13 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 import { pathJoin, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepType';
 import { extractApplicationData, importApplication } from '../dbux-analysis-tools/importExport';
-import { emitNewTestRun, emitNewApplicationsAction } from '../userEvents';
+import { emitNewTestRun, emitNewApplicationsAction } from '../userActions';
 import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByExerciseIdIndex from './indexes/TestRunsByExerciseIdIndex';
@@ -160,7 +159,7 @@ class UserActionCollection extends PathwaysCollection {
   resolveVisitedStaticTracesIndex(userActions) {
     const warnedApplications = new Set();
     for (const action of userActions) {
-      const { trace } = action;
+      const trace = this.dp.util.getActionTrace(action);
       if (!trace) {
         continue;
       }
@@ -188,14 +187,14 @@ class UserActionCollection extends PathwaysCollection {
 
   serialize(action) {
     action = { ...action };
-    if (isCodeActionTypes(action.type)) {
+    if (action.file) {
       action.file = pathRelative(allApplications.appRoot, action.file);
     }
     return action;
   }
 
   deserialize(action) {
-    if (isCodeActionTypes(action.type)) {
+    if (action.file) {
       action.file = pathJoin(allApplications.appRoot, action.file);
     }
     return action;
@@ -310,10 +309,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // ###########################################################################
 
   addNewStep(firstAction, writeToLog = true) {
-    const {
-      applicationId = 0,
-      staticContextId = 0
-    } = this.util.getActionStaticContextId(firstAction) || EmptyObject;
+    const { applicationId = 0 } = firstAction;
+    const { staticContextId = 0 } = this.util.getActionStaticContext(firstAction) || EmptyObject;
 
     const {
       sessionId,
@@ -395,10 +392,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   shouldAddNewStep(action) {
     // NOTE: action._id is not set yet (will be set during `addData`)
-    const {
-      applicationId,
-      staticContextId,
-    } = this.util.getActionStaticContextId(action) || EmptyObject;
+    const { applicationId } = action;
+    const { staticContextId } = this.util.getActionStaticContext(action) || EmptyObject;
     const lastStep = this.collections.steps.getLast();
     const lastStepType = lastStep?.type || StepType.None;
     const lastStaticContextId = lastStep?.staticContextId || 0;

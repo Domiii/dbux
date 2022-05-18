@@ -1,7 +1,7 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { emitSelectTraceAction } from '../../userEvents';
+import { emitTraceUserAction } from '../../userActions';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
 
 export default class ObjectNode extends TraceNode {
@@ -18,6 +18,6 @@ export default class ObjectNode extends TraceNode {
 
   handleClick() {
     super.handleClick();
-    emitSelectTraceAction(this.trace, UserActionType.TDTrackObjectTraceUse);
+    emitTraceUserAction(UserActionType.TDTrackObjectTraceUse, this.trace);
   }
 }

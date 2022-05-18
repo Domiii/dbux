@@ -1,4 +1,4 @@
-import { workspace, commands } from 'vscode';
+import { workspace, commands, window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
@@ -9,6 +9,7 @@ import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
 import initLang from './lang';
 import { getCurrentResearch } from './research/Research';
+import { initWorkshopSessionController } from './workshop/WorkshopSessionController';
 
 /** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
 
@@ -58,6 +59,7 @@ export default async function preActivate(context) {
 
     await maybeSelectLanguage();
     await initLang(mementoGet('dbux.language'));
+    const workshopSessionController = initWorkshopSessionController();
 
     // [debugging]
     // await dialogController.getDialog('survey1').clear();
@@ -70,12 +72,13 @@ export default async function preActivate(context) {
     // the following should ensures `doActivate` will be called at least once
     autoStart = (process.env.NODE_ENV === 'development') ||
       workspace.getConfiguration('dbux').get('autoStart');
+    // autoStart = workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {
       await ensureActivate(context);
     }
     else {
       initPreActivateView();
-      initPreActivateCommand(context);
+      initPreActivateCommand(context, workshopSessionController);
     }
   }
   catch (err) {
@@ -105,8 +108,15 @@ async function ensureActivate(context) {
 /**
  * @param {import('vscode').ExtensionContext} context
  */
-function initPreActivateCommand(context) {
+function initPreActivateCommand(context, workshopSessionController) {
   registerCommand(context, 'dbux.doActivate', async () => ensureActivate(context));
+
+  registerCommand(context, 'dbux.doWorkshopActivate', async () => {
+    const result = await workshopSessionController.askForEnable();
+    if (result) {
+      await ensureActivate(context);
+    }
+  });
 }
 
 function registerErrorHandler() {

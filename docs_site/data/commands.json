@@ -10,7 +10,7 @@
     "description": "Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand."
   },
   {
-    "command": "dbux.deleteUserEvents",
+    "command": "dbux.deleteUserActions",
     "title": "Dbux Dev: Delete all user events",
     "description": "(Feature still in development. Won't work.)"
   },

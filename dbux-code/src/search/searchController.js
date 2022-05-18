@@ -3,7 +3,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import NanoEvents from 'nanoevents';
-import { emitUserAction } from '../userEvents';
+import { emitBasicUserAction } from '../userActions';
 import SearchTools from './SearchTools';
 
 const SearchUserActionTypeByMode = {
@@ -34,7 +34,7 @@ class SearchController {
     if (this.mode !== mode) {
       this.mode = mode;
       this._notifySearchModeChanged();
-      emitUserAction(UserActionType.SearchModeChanged, mode);
+      emitBasicUserAction(UserActionType.SearchModeChanged, mode);
     }
   }
 
@@ -45,7 +45,7 @@ class SearchController {
       this.contexts = EmptyArray;
     }
     else {
-      emitUserAction(SearchUserActionTypeByMode[this.mode], { searchTerm });
+      emitBasicUserAction(SearchUserActionTypeByMode[this.mode], { searchTerm });
       this.matches = SearchTools[this.mode].search(searchTerm);
       this.contexts = SearchTools[this.mode].getContexts(this.matches);
     }

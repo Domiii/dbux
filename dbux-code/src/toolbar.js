@@ -1,5 +1,5 @@
 import { commands } from 'vscode';
-import { emitShowHideNavBarButtonsAction } from './userEvents';
+import { emitShowHideNavBarButtonsAction } from './userActions';
 
 let showAllNavButton;
 

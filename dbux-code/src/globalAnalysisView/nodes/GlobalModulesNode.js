@@ -6,7 +6,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
-import { emitGlobalPackageSortModeChangedAction } from '../../userEvents';
+import { emitGlobalPackageSortModeChangedAction } from '../../userActions';
 import PackageNodeSortMode from './PackageNodeSortMode';
 
 

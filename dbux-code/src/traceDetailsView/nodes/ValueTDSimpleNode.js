@@ -2,7 +2,7 @@ import isString from 'lodash/isString';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { emitValueRenderAction } from '../../userEvents';
+import { emitValueRenderAction } from '../../userActions';
 import { valueRender } from '../valueRender';
 import ValueNode, { ValueLabel } from './ValueNode';
 

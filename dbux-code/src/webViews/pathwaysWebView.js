@@ -1,11 +1,12 @@
 import {
   ViewColumn
 } from 'vscode';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import PathwaysHost from '@dbux/graph-host/src/PathwaysHost';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { goToTrace, goToCodeLoc } from '../codeUtil/codeNav';
 import { getProjectManager } from '../projectViews/projectControl';
-import { emitPathwaysAction } from '../userEvents';
+import { emitPathwaysAction } from '../userActions';
 import RichWebView from './RichWebView';
 import { decorateVisitedTraces, stopDecorating } from './pathwaysDecorations';
 

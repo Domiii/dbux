@@ -30,7 +30,7 @@ import { translate } from '../lang';
 import { getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import searchController from '../search/searchController';
-import { emitSelectTraceAction, emitShowOutputChannelAction } from '../userEvents';
+import { emitTraceUserAction, emitShowOutputChannelAction } from '../userActions';
 import { runFile } from './runCommands';
 
 // eslint-disable-next-line no-unused-vars
@@ -218,7 +218,7 @@ export function initUserCommands(extensionContext) {
     }
     else {
       traceSelection.selectTrace(trace);
-      emitSelectTraceAction(trace, UserActionType.SelectTraceById, { userInput });
+      emitTraceUserAction(UserActionType.SelectTraceById, trace, { userInput });
     }
   }
 
@@ -249,11 +249,11 @@ export function initUserCommands(extensionContext) {
     return backend.containers.survey1.storeSurveyResult(data);
   });
 
-  registerCommand(extensionContext, 'dbux.deleteUserEvents', async () => {
+  registerCommand(extensionContext, 'dbux.deleteUserActions', async () => {
     if (process.env.NODE_ENV === 'production') {
       throw new Error('This command is currently disabled in Production mode.');
     }
-    await getProjectManager().deleteUserEvents();
+    await getProjectManager().deleteUserActions();
   });
 
   // ###########################################################################

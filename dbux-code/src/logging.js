@@ -4,7 +4,7 @@ import { showOutputChannel } from './projectViews/projectViewsController';
 import { showInformationMessage, showErrorMessage } from './codeUtil/codeModals';
 import { showHelp } from './help';
 import { translate } from './lang';
-import { emitShowHideErrorLogNotificationAction } from './userEvents';
+import { emitShowHideErrorLogNotificationAction } from './userActions';
 
 let isShowingAllError = true;
 

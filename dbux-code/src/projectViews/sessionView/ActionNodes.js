@@ -2,7 +2,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import PracticeSessionState from '@dbux/projects/src/practiceSession/PracticeSessionState';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
-import { emitTagTraceAction } from '../../userEvents';
+import { emitTagTraceAction } from '../../userActions';
 import { getCursorLocation } from '../../codeUtil/codeNav';
 import { codeLineToBabelLine } from '../../helpers/codeLocHelpers';
 import { isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';

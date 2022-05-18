@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import { onUserEvent } from '../../userEvents';
+import { onUserAction } from '../../userActions';
 import BufferedFirestoreContainer from '../BufferedFirestoreContainer';
 
 /** @typedef {import('../db').Db} Db */
@@ -15,13 +15,13 @@ export default class UserEventContainer extends BufferedFirestoreContainer {
    * @param {Db} db 
    */
   constructor(db) {
-    super(db, 'userEvents');
+    super(db, 'userActions');
   }
 
   async init() {
     super.init();
 
-    onUserEvent(this.addEvent);
+    onUserAction(this.addEvent);
 
     await this.flush();
   }

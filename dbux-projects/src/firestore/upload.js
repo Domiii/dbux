@@ -4,14 +4,34 @@ import NestedError from '@dbux/common/src/NestedError';
 
 const API_KEY = 'AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc';
 
-function getUrl(collectionId) {
-  return `https://firestore.googleapis.com/v1/projects/learn-learn-b8e5a/databases/(default)/documents/${collectionId}?key=${API_KEY}`;
+function makeUrl(collectionId, documentId = null) {
+  const url = new URL(`https://firestore.googleapis.com`);
+  url.pathname = `/v1/projects/learn-learn-b8e5a/databases/(default)/documents/${collectionId}`;
+  url.searchParams.set('key', API_KEY);
+  if (documentId) {
+    url.searchParams.set('documentId', documentId);
+  }
+  return url.toString();
 }
 
-export async function upload(collectionId, data) {
-  const url = getUrl(collectionId);
-  const serializedData = serialize(data);
-  const dataString = JSON.stringify({ fields: serializedData });
+export async function uploadSurvey(data) {
+  return await upload(makeUrl('survey1'), data);
+}
+
+export async function uploadPathways(sessionId, collectionName, entries) {
+  const collectionId = `sessions/${sessionId}/${collectionName}`;
+  const documentId = null;
+  const url = makeUrl(collectionId, documentId);
+  return await upload(url, entries);
+}
+
+export async function upload(url, data) {
+  // `firestore-rest-serdes` produce redundant structure when serialize
+  // const serializedData = serialize(data);
+  // const dataString = JSON.stringify({ fields: serializedData });
+
+  const serializedData = JSON.stringify(data);
+  const dataString = JSON.stringify({ fields: { serializedData: { stringValue: serializedData } } });
 
   const options = {
     method: 'POST',
@@ -31,7 +51,7 @@ export async function upload(collectionId, data) {
         const resString = Buffer.concat(body).toString();
         if (res.statusCode < 200 || res.statusCode > 299) {
           const err = JSON.parse(resString)?.error;
-          reject(new Error(`HTTP status code ${res.statusCode}\n ${JSON.stringify(err, null, 2)}`));
+          reject(new Error(`HTTP status code ${res.statusCode}\n ${err}`));
         }
         else {
           resolve(resString);

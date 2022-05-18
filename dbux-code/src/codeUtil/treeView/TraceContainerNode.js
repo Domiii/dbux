@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { emitTDExecutionGroupModeChangedAction } from '../../userEvents';
+import { emitTDExecutionGroupModeChangedAction } from '../../userActions';
 import BaseTreeViewNode from './BaseTreeViewNode';
 import TraceNode from './TraceNode';
 
@@ -12,7 +12,6 @@ import TraceNode from './TraceNode';
 
 export class GroupNode extends BaseTreeViewNode {
   static labelSuffix = '';
-  static TraceNodeClass = TraceNode;
 
   /**
    * @abstract
@@ -104,7 +103,7 @@ export class GroupNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const { TraceNodeClass } = this.constructor;
+    const { TraceNodeClass } = this.parent.constructor;
     return this.childTraces.map(trace => {
       return this.treeNodeProvider.buildNode(TraceNodeClass, trace, this);
     });
@@ -121,7 +120,8 @@ export class UngroupedNode extends GroupNode {
   }
 
   static build(rootNode, trace) {
-    return rootNode.treeNodeProvider.buildNode(this.TraceNodeClass, trace, rootNode);
+    const { TraceNodeClass } = rootNode.constructor;
+    return rootNode.treeNodeProvider.buildNode(TraceNodeClass, trace, rootNode);
   }
 }
 

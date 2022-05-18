@@ -1,7 +1,7 @@
 import { ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { emitValueRenderAction } from '../../userEvents';
+import { emitValueRenderAction } from '../../userActions';
 // import { makeTreeItemNoChildren } from '../../helpers/makeTreeItem';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
 import { valueRender } from '../valueRender';

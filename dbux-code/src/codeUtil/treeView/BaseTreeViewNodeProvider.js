@@ -6,7 +6,7 @@ import NestedError from '@dbux/common/src/NestedError';
 import { throttle } from '@dbux/common/src/util/scheduling';
 import { getThemeResourcePath } from '../codePath';
 import { registerCommand } from '../../commands/commandUtil';
-import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../../userEvents';
+import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../../userActions';
 import BaseTreeViewNode from './BaseTreeViewNode';
 
 /** @typedef { import("./BaseTreeViewNode").default } BaseTreeViewNode */
@@ -184,7 +184,6 @@ export default class BaseTreeViewNodeProvider {
 
     // record user action
     const { treeViewName } = this;
-    const action = ''; // not a button click
     const nodeId = node.id;
     const args = {
       description: node.description,
@@ -195,7 +194,7 @@ export default class BaseTreeViewNodeProvider {
     // trigger event handlers
     evtHandler.call(this, node);
     this.handleNodeCollapsibleStateChanged(node);
-    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
+    emitTreeViewCollapseChangeAction(treeViewName, nodeId, node.label, node.collapseChangeUserActionType, args);
   }
 
   handleExpanded(node) {
@@ -225,7 +224,6 @@ export default class BaseTreeViewNodeProvider {
    */
   handleClick = async (node) => {
     const { treeViewName } = this;
-    const action = ''; // not a button click
     const nodeId = node.id;
     const args = {
       description: node.description,
@@ -237,7 +235,7 @@ export default class BaseTreeViewNodeProvider {
       await node.handleClick?.();
       const { clickUserActionType } = node;
       if (clickUserActionType !== false) {
-        emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
+        emitTreeViewAction(treeViewName, nodeId, node.label, clickUserActionType, args);
       }
     }
     catch (err) {

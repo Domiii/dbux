@@ -1,9 +1,9 @@
 
 import { commands, SymbolKind, window } from 'vscode';
-import allApplications from '@dbux/data/src/applications/allApplications';
+// import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { emitEditorAction } from '../userEvents';
+import { emitEditorAction } from '../userActions';
 import { getOrCreateTracesAtCursor } from '../codeUtil/TracesAtCursor';
 import { codeRangeToBabelLoc } from '../helpers/codeLocHelpers';
 
@@ -21,8 +21,8 @@ const defaultNewEventLineThreshold = 8;
  * @param {ProjectsManager} manager 
  */
 export function initCodeEvents(manager, context) {
-  const traceAtCursor = getOrCreateTracesAtCursor(context);
   let _previousSelectionData, _previousVisibleRangeData;
+  const traceAtCursor = getOrCreateTracesAtCursor(context);
 
   window.onDidChangeTextEditorSelection(async (e) => {
     if (!manager.practiceSession) {
@@ -37,7 +37,6 @@ export function initCodeEvents(manager, context) {
       return;
     }
 
-    // TODO?: take only first selection only. Do we need all selections? Can there be no selections?
     const firstSelection = e.selections[0];
     let data = {
       file: e.textEditor.document.uri.fsPath,
@@ -48,8 +47,9 @@ export function initCodeEvents(manager, context) {
     if (isNewData(_previousSelectionData, data)) {
       Verbose && debug('is new');
       _previousSelectionData = data;
-      data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
-      emitEditorAction(UserActionType.EditorSelectionChanged, data);
+      const trace = traceAtCursor.getMostInner();
+      const symbol = await getCurrentSymbol(e.textEditor);
+      emitEditorAction(UserActionType.EditorSelectionChanged, { ...data, trace }, { symbol });
     }
   });
 
@@ -64,7 +64,7 @@ export function initCodeEvents(manager, context) {
 
     // TODO?: take only first range only. Do we need all range? Can there be no range?
     const firstRange = e.visibleRanges[0];
-    let data = {
+    const data = {
       file: e.textEditor.document.uri.fsPath,
       range: firstRange ? codeRangeToBabelLoc(firstRange) : null
     };
@@ -73,43 +73,21 @@ export function initCodeEvents(manager, context) {
     if (isNewData(_previousVisibleRangeData, data)) {
       Verbose && debug('is new');
       _previousVisibleRangeData = data;
-      data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
-      emitEditorAction(UserActionType.EditorVisibleRangeChanged, data);
+      const trace = traceAtCursor.getMostInner();
+      const symbol = await getCurrentSymbol(e.textEditor);
+      emitEditorAction(UserActionType.EditorVisibleRangeChanged, { ...data, trace }, { symbol });
     }
   });
-
-  // ###########################################################################
-  // extra data for code events
-  // ###########################################################################
-
-  async function getExtraEditorEventInfo(editor) {
-    const trace = traceAtCursor.getMostInner();
-    let staticTrace = null;
-    let staticContext = null;
-    let applicationId = null;
-    if (trace) {
-      const { staticTraceId } = trace;
-      ({ applicationId } = trace);
-      const dp = allApplications.getById(applicationId).dataProvider;
-      staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-      staticContext = dp.collections.staticContexts.getById(staticTrace.staticContextId);
-    }
-    const symbol = await getSymbolAt(editor.document.uri, editor.selections[0]?.start);
-    const { sessionId } = manager.practiceSession;
-
-    return {
-      applicationId,
-      staticContext,
-      staticTrace,
-      symbol: convertVSCodeSymbol(symbol),
-      sessionId
-    };
-  }
 }
 
 // ###########################################################################
 // utils
 // ###########################################################################
+
+async function getCurrentSymbol(editor) {
+  const symbol = await getSymbolAt(editor.document.uri, editor.selections[0]?.start);
+  return convertVSCodeSymbol(symbol);
+}
 
 function convertVSCodeSymbol(symbol) {
   if (symbol) {

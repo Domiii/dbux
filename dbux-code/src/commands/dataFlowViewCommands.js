@@ -1,4 +1,4 @@
-import { emitDataFlowViewFilterModeChangedAction, emitDataFlowViewSearchModeChangedAction } from '../userEvents';
+import { emitDataFlowViewFilterModeChangedAction, emitDataFlowViewSearchModeChangedAction } from '../userActions';
 import DataFlowFilterModeType from '../dataFlowView/DataFlowFilterModeType';
 import DataFlowSearchModeType from '../dataFlowView/DataFlowSearchModeType';
 import { registerCommand } from './commandUtil';
@@ -10,18 +10,18 @@ import { registerCommand } from './commandUtil';
  */
 export function initDataFlowViewCommands(context, dataFlowViewController) {
   registerCommand(context,
-    'dbuxDataFlowView.setSearchMode.ByAccessId',
+    'dbuxDataFlowView.nextSearchMode.ByAccessId',
     (/* node */) => {
       dataFlowViewController.setSearchMode(DataFlowSearchModeType.nextValue(DataFlowSearchModeType.ByAccessId));
-      emitDataFlowViewSearchModeChangedAction(DataFlowSearchModeType.ByAccessId);
+      emitDataFlowViewSearchModeChangedAction(dataFlowViewController.searchMode);
     }
   );
 
   registerCommand(context,
-    'dbuxDataFlowView.setSearchMode.ByValueId',
+    'dbuxDataFlowView.nextSearchMode.ByValueId',
     (/* node */) => {
       dataFlowViewController.setSearchMode(DataFlowSearchModeType.nextValue(DataFlowSearchModeType.ByValueId));
-      emitDataFlowViewSearchModeChangedAction(DataFlowSearchModeType.ByValueId);
+      emitDataFlowViewSearchModeChangedAction(dataFlowViewController.searchMode);
     }
   );
 

@@ -13,7 +13,7 @@ import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
-import { initUserEvent } from '../userEvents';
+import { initUserAction } from '../userActions';
 import { showHelp } from '../help';
 import { initRuntimeServer } from '../net/SocketServer';
 import { getCurrentResearch } from '../research/Research';
@@ -155,7 +155,7 @@ export function createProjectManager(extensionContext) {
   projectManager = initDbuxProjects(cfg, externals);
   initDbuxManager(projectManager);
 
-  initUserEvent(projectManager);
+  initUserAction(projectManager);
 
   return projectManager;
 }

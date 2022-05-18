@@ -87,7 +87,11 @@
     "commands": [
       {
         "command": "dbux.doActivate",
-        "title": "Dbux: Start Dbux"
+        "title": "Dbux: Start Dbux (no workshop)"
+      },
+      {
+        "command": "dbux.doWorkshopActivate",
+        "title": "Dbux: Start Workshop Session"
       },
       {
         "command": "dbux.diagnostics",
@@ -478,7 +482,7 @@
         }
       },
       {
-        "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
+        "command": "dbuxDataFlowView.nextSearchMode.ByAccessId",
         "title": "Search by: accessId",
         "icon": {
           "light": "resources/light/variable.svg",
@@ -486,7 +490,7 @@
         }
       },
       {
-        "command": "dbuxDataFlowView.setSearchMode.ByValueId",
+        "command": "dbuxDataFlowView.nextSearchMode.ByValueId",
         "title": "Search by: valueId",
         "icon": {
           "light": "resources/light/brackets.svg",
@@ -646,7 +650,7 @@
         }
       },
       {
-        "command": "dbux.deleteUserEvents",
+        "command": "dbux.deleteUserActions",
         "title": "Dbux Dev: Delete all user events"
       },
       {
@@ -976,12 +980,12 @@
           "group": "navigation@20"
         },
         {
-          "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
+          "command": "dbuxDataFlowView.nextSearchMode.ByAccessId",
           "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.searchModeName == ByAccessId",
           "group": "navigation@1"
         },
         {
-          "command": "dbuxDataFlowView.setSearchMode.ByValueId",
+          "command": "dbuxDataFlowView.nextSearchMode.ByValueId",
           "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.searchModeName == ByValueId",
           "group": "navigation@1"
         },
@@ -1074,6 +1078,10 @@
       "commandPalette": [
         {
           "command": "dbux.doActivate",
+          "when": "!dbux.context.activated"
+        },
+        {
+          "command": "dbux.doWorkshopActivate",
           "when": "!dbux.context.activated"
         },
         {
@@ -1253,7 +1261,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.deleteUserEvents",
+          "command": "dbux.deleteUserActions",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
@@ -1333,11 +1341,11 @@
           "when": "false"
         },
         {
-          "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
+          "command": "dbuxDataFlowView.nextSearchMode.ByAccessId",
           "when": "false"
         },
         {
-          "command": "dbuxDataFlowView.setSearchMode.ByValueId",
+          "command": "dbuxDataFlowView.nextSearchMode.ByValueId",
           "when": "false"
         },
         {

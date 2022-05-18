@@ -1,7 +1,7 @@
 import { nextMode } from '../globalAnalysisView/nodes/GlobalModulesNode';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import searchController from '../search/searchController';
-import { emitShowErrorAction } from '../userEvents';
+import { emitTraceUserAction } from '../userActions';
 import { registerCommand } from './commandUtil';
 
 /** @typedef {import('../globalAnalysisView/GlobalAnalysisViewController').default} GlobalAnalysisViewController */
@@ -15,7 +15,7 @@ export function initGlobalAnalysisViewCommands(context, globalAnalysisViewContro
     async () => {
       const selectedNode = await globalAnalysisViewController.showError();
       if (selectedNode) {
-        emitShowErrorAction(selectedNode.trace);
+        emitTraceUserAction(selectedNode.trace);
       }
     }
   );

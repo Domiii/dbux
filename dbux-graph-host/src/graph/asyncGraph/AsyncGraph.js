@@ -454,7 +454,7 @@ class AsyncGraph extends GraphBase {
       if (trace) {
         const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
         traceSelection.selectTrace(trace);
-        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphTrace, { asyncNode });
+        this.componentManager.externals.emitCallGraphTraceAction(UserActionType.AsyncCallGraphTrace, trace, { asyncNode });
       }
     },
     selectSchedulerTrace(applicationId, asyncNodeId, schedulerTraceId) {
@@ -463,7 +463,7 @@ class AsyncGraph extends GraphBase {
       if (trace) {
         const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
         traceSelection.selectTrace(trace);
-        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphSchedulerTrace, { asyncNode });
+        this.componentManager.externals.emitCallGraphTraceAction(UserActionType.AsyncCallGraphSchedulerTrace, trace, { asyncNode });
       }
     },
     gotoValueTrace(applicationId, asyncNodeId, valueTraceId) {
@@ -472,7 +472,7 @@ class AsyncGraph extends GraphBase {
       if (trace) {
         const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
         traceSelection.selectTrace(trace);
-        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphValueTrace, { asyncNode });
+        this.componentManager.externals.emitCallGraphTraceAction(UserActionType.AsyncCallGraphValueTrace, trace, { asyncNode });
       }
     },
     selectSyncInThreads(applicationId, asyncNodeId) {
@@ -506,7 +506,7 @@ class AsyncGraph extends GraphBase {
         const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
         traceSelection.selectTrace(firstError);
         await this.componentManager.externals.globalAnalysisViewController.revealSelectedError();
-        this.componentManager.externals.emitCallGraphTraceAction(firstError, UserActionType.AsyncCallGraphError, { asyncNode });
+        this.componentManager.externals.emitCallGraphTraceAction(UserActionType.AsyncCallGraphError, firstError, { asyncNode });
       }
       else {
         this.componentManager.externals.alert('No error in this async node.', false);

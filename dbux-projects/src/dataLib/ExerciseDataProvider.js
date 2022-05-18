@@ -5,7 +5,7 @@ import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import ExerciseProgressByExerciseIdIndex from './indexes/ExerciseProgressByExerciseIdIndex';
 import ExerciseProgress from './ExerciseProgress';
-import { emitExerciseProgressChanged, emitNewExerciseProgress } from '../userEvents';
+import { emitExerciseProgressChanged, emitNewExerciseProgress } from '../userActions';
 
 
 // eslint-disable-next-line no-unused-vars
