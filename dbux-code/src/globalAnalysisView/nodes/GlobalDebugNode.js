@@ -160,9 +160,71 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
     };
   }.bind(this);
 
+  /** ###########################################################################
+   * {@link DDG}
+   *  #########################################################################*/
+  DDG = function DDG() {
+    const allDDGs = allApplications.selection.data.collectGlobalStats((dp) => {
+      return dp.ddgs.getAll();
+    });
+
+    if (allDDGs.length) {
+      return {
+        children: allDDGs.map((ddg) => {
+          const { graphId, nodes, edges } = ddg;
+          return makeTreeItem(graphId, [
+            function Nodes() {
+              return {
+                children: nodes.map((node) => {
+                  const { label, ddgNodeId, ...otherProps } = node;
+                  return makeTreeItem(label, otherProps, {
+                    description: `${ddgNodeId}`,
+                    handleClick() {
+                      const { dp } = ddg;
+                      const nodeId = node.dataNodeId;
+                      const { traceId } = dp.collections.dataNodes.getById(nodeId);
+                      const trace = dp.collections.traces.getById(traceId);
+                      traceSelection.selectTrace(trace, null, nodeId);
+                    }
+                  });
+                }),
+              };
+            },
+            function Edges() {
+              return {
+                children: edges.map((edge) => {
+                  const { from, to, ...otherProps } = edge;
+                  const label = `${from} -> ${to}`;
+                  return makeTreeItem(label, otherProps, {
+                    handleClick() {
+                      // select `from` node
+                      const { dp } = ddg;
+                      const nodeId = nodes[edge.from].dataNodeId;
+                      const { traceId } = dp.collections.dataNodes.getById(nodeId);
+                      const trace = dp.collections.traces.getById(traceId);
+                      traceSelection.selectTrace(trace, null, nodeId);
+                    }
+                  });
+                }),
+              };
+            }
+          ]);
+        }),
+      };
+    }
+    else {
+      return {
+        children: [
+          makeTreeItem('No DDG created.')
+        ]
+      };
+    }
+  };
+
   nodes() {
     return [
-      this.Async
+      this.Async,
+      this.DDG
     ];
   }
 

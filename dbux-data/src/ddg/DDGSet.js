@@ -34,6 +34,10 @@ export default class DDGSet {
     return null;
   }
 
+  getAll() {
+    return this.graphs;
+  }
+
   /**
    * @returns {DataDependencyGraph}
    */
