@@ -42,6 +42,53 @@ export default class DataNodeCollection extends Collection {
   }
 
   /**
+   * @param {DataNode} dataNode 
+   */
+  getAccessId(dataNode) {
+    if (dataNode.accessId > 0) {
+      return dataNode.accessId;
+    }
+
+    const { varAccess } = dataNode;
+    if (!varAccess) {
+      return null;
+    }
+    else {
+      let key;
+      const { declarationTid, objectNodeId, prop } = varAccess;
+      if (declarationTid) {
+        key = declarationTid;
+      }
+      else if (objectNodeId) {
+        const objectDataNode = this.dp.collections.dataNodes.getById(objectNodeId);
+        const objectValueId = objectDataNode.valueId;
+        if (!objectValueId) {
+          // sanity check
+          const { traceId } = dataNode;
+          const traceInfo = this.dp.util.makeTraceInfo(traceId);
+          this.logger.warn(`[getAccessId] Cannot find objectValueId of DataNode for trace: ${traceInfo}`);
+          return null;
+        }
+        else {
+          key = `${objectValueId}#${prop}`;
+        }
+      }
+      else {
+        // sanity check
+        const { traceId } = dataNode;
+        const traceInfo = this.dp.util.makeTraceInfo(traceId);
+        this.logger.warn(`[getAccessId] DataNode has varAccess but neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
+        return null;
+      }
+
+      if (!this.accessUIdMap.get(key)) {
+        this.accessUIdMap.set(key, this.accessUIdMap.size + 1);
+      }
+      return this.accessUIdMap.get(key);
+    }
+  }
+
+  /**
    * @param {DataNode} dataNode
    */
   lookupValueId(dataNode) {
@@ -107,53 +154,6 @@ export default class DataNodeCollection extends Collection {
       // this.logger.warn(`[lookupValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
 
       return nodeId;
-    }
-  }
-
-  /**
-   * @param {DataNode} dataNode 
-   */
-  getAccessId(dataNode) {
-    if (dataNode.accessId > 0) {
-      return dataNode.accessId;
-    }
-
-    const { varAccess } = dataNode;
-    if (!varAccess) {
-      return null;
-    }
-    else {
-      let key;
-      const { declarationTid, objectNodeId, prop } = varAccess;
-      if (declarationTid) {
-        key = declarationTid;
-      }
-      else if (objectNodeId) {
-        const objectDataNode = this.dp.collections.dataNodes.getById(objectNodeId);
-        const objectValueId = objectDataNode.valueId;
-        if (!objectValueId) {
-          // sanity check
-          const { traceId } = dataNode;
-          const traceInfo = this.dp.util.makeTraceInfo(traceId);
-          this.logger.warn(`[getAccessId] Cannot find objectValueId of DataNode for trace: ${traceInfo}`);
-          return null;
-        }
-        else {
-          key = `${objectValueId}#${prop}`;
-        }
-      }
-      else {
-        // sanity check
-        const { traceId } = dataNode;
-        const traceInfo = this.dp.util.makeTraceInfo(traceId);
-        this.logger.warn(`[getAccessId] DataNode has varAccess but neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
-        return null;
-      }
-
-      if (!this.accessUIdMap.get(key)) {
-        this.accessUIdMap.set(key, this.accessUIdMap.size + 1);
-      }
-      return this.accessUIdMap.get(key);
     }
   }
 
