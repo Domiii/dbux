@@ -85,8 +85,8 @@ export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObj
  */
 export async function confirm(msg, modal = true, throwOnCancel = false) {
   // TOTRANSLATE
-  const confirmText = 'Yes';
-  const refuseText = 'No';
+  const confirmText = 'Ok';
+  const refuseText = 'Cancel';
 
   const btnConfig = Object.fromEntries([confirmText, refuseText].map(t => [t, () => t]));
   const result = await showInformationMessage(msg, btnConfig, { modal });
