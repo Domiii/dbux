@@ -18,22 +18,23 @@ svg.jtk-connector path {
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;    
+  user-select: none;
 }
 
 /** ###########################################################################
  * components
  * ############################################################################*/
 
-.timeline-sigma-container {
-  height: calc(100vh - 30px);
+.timeline-jsplumb-container {
+  position: relative;
 }
 
 .timeline-view {
-  position: relative;
+  height: calc(100vh - 30px);
 }
 
 .timeline-node {
   position: absolute;
   border: 1px solid white;
+  padding: 2px;
 }

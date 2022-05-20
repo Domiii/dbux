@@ -1,11 +1,13 @@
 /* eslint-disable camelcase */
-import { Uri, window } from 'vscode';
+import { window } from 'vscode';
 import path from 'path';
 
 import open from 'open';
 import { existsSync } from 'fs';
 import isNaN from 'lodash/isNaN';
+import NestedError from '@dbux/common/src/NestedError';
 import sleep from '@dbux/common/src/util/sleep';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { stringify as jsonStringify } from 'comment-json';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
@@ -14,7 +16,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { importApplicationFromFile, exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
-import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+// import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
@@ -34,9 +36,12 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import searchController from '../search/searchController';
 import { emitSelectTraceAction, emitShowOutputChannelAction } from '../userEvents';
 import { runFile } from './runCommands';
+import { get as mementoGet, set as mementoSet } from '../memento';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
+
+const TestDDGKeyName = 'dbux.command.testDDG.params';
 
 async function doImportApplication(filePath) {
   allApplications.selection.clear();
@@ -131,11 +136,23 @@ export function initUserCommands(extensionContext) {
    * NOTE: this is code for testing → move to test file
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
+    let { testFilePath, contextId } = mementoGet(TestDDGKeyName, EmptyObject);
+
     if (!allApplications.getAllActiveCount()) {
       // default: load an application, if none active
-      const defaultImportDir = getDefaultExportDirectory();
-      const testFile = 'data-multi1';
-      await doImportApplication(pathResolve(defaultImportDir, testFile + '_data.json.zip'));
+      if (!testFilePath) {
+        const fileDialogOptions = {
+          title: 'Select a test file to read',
+          folder: getDefaultExportDirectory(),
+          filters: {
+            'Dbux Exported Application Data': ['json.zip']
+          },
+        };
+        testFilePath = await chooseFile(fileDialogOptions);
+        await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+      }
+
+      await doImportApplication(testFilePath);
     }
 
     let trace = traceSelection.selected;
@@ -149,14 +166,28 @@ export function initUserCommands(extensionContext) {
 
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
-      const dp = firstApplication.dataProvider;
-      const firstFunctionContext = dp.collections.executionContexts.getAllActual().
-        find(context => dp.util.isContextFunctionContext(context.contextId));
-      if (!firstFunctionContext) {
-        await showWarningMessage('Could not run DDG test: Could not find a function context in application');
-        return;
+      if (!contextId) {
+        const userInput = await window.showInputBox({
+          placeHolder: 'contextId',
+          prompt: 'Enter the contextId to test DDG'
+        });
+        try {
+          contextId = parseInt(userInput, 10);
+        }
+        catch (err) {
+          throw new NestedError('Invalid input of contextId', err);
+        }
+        await mementoSet(TestDDGKeyName, { testFilePath, contextId });
       }
-      trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
+      const dp = firstApplication.dataProvider;
+      trace = dp.util.getFirstTraceOfContext(contextId);
+      // const firstFunctionContext = dp.collections.executionContexts.getAllActual().
+      //   find(context => dp.util.isContextFunctionContext(context.contextId));
+      // if (!firstFunctionContext) {
+      //   await showWarningMessage('Could not run DDG test: Could not find a function context in application');
+      //   return;
+      // }
+      // trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
       traceSelection.selectTrace(trace);
       await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
       // }
