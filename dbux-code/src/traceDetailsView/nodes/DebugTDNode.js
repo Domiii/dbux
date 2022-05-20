@@ -302,12 +302,16 @@ export class DebugTDNode extends TraceDetailNode {
         makeTreeItem('value',
           {
             valueNode,
-            dataNodes: makeTreeItems(...allDataNodes),
+            dataNodes: makeTreeItem(
+              'dataNodes',
+              makeTreeItems(...allDataNodes),
+              { description: allDataNodes.length + '' }
+            ),
             valueRawRefNode,
             valueRawSnapshotNode,
           },
           {
-            description: `refId=${refId}, ${allDataNodes.length} DataNodes`
+            description: `refId=${refId} (${allDataNodes.length} nodes)`
           }
         ),
         asyncTreeNode,

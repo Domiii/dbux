@@ -16,6 +16,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { importApplicationFromFile, exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 // import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
@@ -37,7 +38,7 @@ import searchController from '../search/searchController';
 import { emitSelectTraceAction, emitShowOutputChannelAction } from '../userEvents';
 import { runFile } from './runCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
-import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
+import { getOrOpenTraceEditor } from '../codeUtil/codeNav';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -206,8 +207,10 @@ export function initUserCommands(extensionContext) {
 
       // trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
       traceSelection.selectTrace(trace);
-      await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
+      // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
     }
+    // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
+    await getOrOpenTraceEditor(trace);
     await showDDGView();
   });
 
