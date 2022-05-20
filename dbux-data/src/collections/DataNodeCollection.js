@@ -1,4 +1,5 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import DataNode from '@dbux/common/src/types/DataNode';
@@ -13,6 +14,114 @@ export default class DataNodeCollection extends Collection {
     super('dataNodes', dp);
     this.accessUIdMap = new Map();
   }
+
+  /** ###########################################################################
+   * collection stuff
+   * ##########################################################################*/
+
+  addEntry(dataNode) {
+    super.addEntry(dataNode);
+    if (dataNode) {
+      // set applicationId
+      dataNode.applicationId = this.dp.application.applicationId;
+    }
+  }
+
+  /** ###########################################################################
+   * resolve DataNode data
+   * ##########################################################################*/
+
+  postIndexProcessed(dataNodes) {
+    this.errorWrapMethod('resolveDataNodeType', dataNodes);
+    this.errorWrapMethod('resolveDataIds', dataNodes);
+    // this.errorWrapMethod('resolveDataNodeSyntax', dataNodes);
+  }
+
+  /**
+   * For simplicity's sake, the run-time assigns `Read` to all expression result nodes.
+   * Here, we set the `Compute` type instead.
+   * 
+   * @param {DataNode[]} dataNodes 
+   */
+  resolveDataNodeType(dataNodes) {
+    const { dp } = this;
+    for (const dataNode of dataNodes) {
+      const { nodeId, traceId } = dataNode;
+      if (dataNode.type === DataNodeType.Read) {            // is Read
+        const trace = dp.util.getTrace(traceId);
+        if (trace.nodeId === nodeId) {                      // is owned by its `trace`
+          const traceType = dp.util.getTraceType(traceId);
+          if (traceType === TraceType.ExpressionResult) {   // is `ExpressionResult`
+            dataNode.type = DataNodeType.Compute;
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Resolves `accessId` and `valueId` simultaneously.
+   * Manually add the index entries (because this is run `postIndex`).
+   * @param {DataNode[]} dataNodes 
+   */
+  resolveDataIds(dataNodes) {
+    for (const dataNode of dataNodes) {
+      dataNode.accessId = this.getAccessId(dataNode);
+      dataNode.valueId = this.lookupValueId(dataNode);
+      this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
+      this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
+
+      // NOTE: we need syntax look-up to be in order with accessId (due to the "last of accessId" lookup)
+      this.resolveDataNodeSyntax(dataNode);
+    }
+  }
+
+  resolveDataNodeSyntax(dataNode) {
+    const ownStaticTrace = this.dp.util.getOwnStaticTraceOfDataNode(dataNode.nodeId);
+    if (ownStaticTrace?.syntax) {
+      this.SyntaxHandlers[ownStaticTrace.syntax]?.(dataNode, ownStaticTrace);
+    }
+  }
+
+  /** ###########################################################################
+   * syntax interpreter
+   * ##########################################################################*/
+
+  syntaxUtil = {
+    /**
+     * NOTE: we do this currently only for assignment, and not for `UpdateExpression`, because
+     * `UpdateExpression` has a legacy solution (using a more convoluted runtime scheme).
+     * 
+     * @param {DataNode} dataNode 
+     * @param {StaticTrace} staticTrace 
+     */
+    addReadSelfNodeIdToInput: (dataNode, staticTrace) => {
+      if (staticTrace.dataNode.isNew && dataNode.accessId) {
+        // → this is re-assignment (rather than assignment)
+
+        // get the last dataNode of same accessId (before this one)
+        const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
+        if (readSelfNode) {
+          dataNode.inputs.unshift(readSelfNode.nodeId);
+        }
+      }
+    }
+  }
+
+  SyntaxHandlers = {
+    [SyntaxType.AssignmentLValVar]: this.syntaxUtil.addReadSelfNodeIdToInput,
+    [SyntaxType.AssignmentLValME]: this.syntaxUtil.addReadSelfNodeIdToInput
+  };
+
+
+  /** ###########################################################################
+   * accessId + valueId
+   * ##########################################################################*/
+
+
+  /** ################################
+   * {@link #SpecialObjectTypeHandlers}
+   * #################################*/
 
   SpecialObjectTypeHandlers = {
     /**
@@ -32,14 +141,6 @@ export default class DataNodeCollection extends Collection {
       return null;
     }
   };
-
-  addEntry(dataNode) {
-    super.addEntry(dataNode);
-    if (dataNode) {
-      // set applicationId
-      dataNode.applicationId = this.dp.application.applicationId;
-    }
-  }
 
   /**
    * @param {DataNode} dataNode 
@@ -111,42 +212,45 @@ export default class DataNodeCollection extends Collection {
       const isTraceOwnDataNode = traceNodeId === nodeId;
       const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
 
-      // 1. check for "pass-along"
-      if (
-        dataNode.inputs?.length === 1 &&
-        (!ownStaticTrace || (ownStaticTrace?.dataNode && !ownStaticTrace.dataNode.isNew))
-      ) {
-        // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
-        const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
-        if (!inputDataNode) {
-          // sanity check
-          const traceInfo = this.dp.util.makeTraceInfo(traceId);
-          this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
-          return nodeId;
+      const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
+
+      if (!isNewValue) {
+        // 1. check for "pass-along"
+        if (
+          dataNode.inputs?.length === 1
+        ) {
+          // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
+          const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+          if (!inputDataNode) {
+            // sanity check
+            const traceInfo = this.dp.util.makeTraceInfo(traceId);
+            this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
+            return nodeId;
+          }
+
+          dataNode.valueFromId = inputDataNode.nodeId;
+          return inputDataNode.valueId;
         }
 
-        dataNode.valueFromId = inputDataNode.nodeId;
-        return inputDataNode.valueId;
-      }
+        // 2. if it is not a pass-along, look up accessId.
+        //    It is important we do this after (1), since 
+        //        looking up by `accessId` won't work on a new Write node.
+        if (accessId) {
+          const lastNode = this.getLastDataNodeByAccessId(accessId);
+          if (lastNode) {
+            dataNode.valueFromId = lastNode.nodeId;
+            return lastNode.valueId;
+          }
+        }
 
-      // 2. if it is not a pass-along, look up accessId.
-      //    It is important we do after (1), 
-      //      since looking up by `accessId` won't work on a new Write node.
-      const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
-      if (accessId && lastNode) {
-        // NOTE: currently, last in `byAccessId` index is actually "the last before this one"
-        //      since we are still resolving the index.
-        dataNode.valueFromId = lastNode.nodeId;
-        return lastNode.valueId;
-      }
-
-      // 3. special value passing semantics (currently non-existing?)
-      const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
-      if (specialObjectType) {
-        const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
-        if (valueId) {
-          // NOTE: this will currently never happen
-          return valueId;
+        // 3. special value passing semantics (currently non-existing?)
+        const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
+        if (specialObjectType) {
+          const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
+          if (valueId) {
+            // NOTE: this will currently never happen
+            return valueId;
+          }
         }
       }
 
@@ -157,52 +261,9 @@ export default class DataNodeCollection extends Collection {
     }
   }
 
-  postIndexProcessed(dataNodes) {
-    this.errorWrapMethod('resolveDataNodeType', dataNodes);
-    this.errorWrapMethod('resolveDataIds', dataNodes);
-  }
-
-  /**
-   * For simplicity's sake, the run-time assigns `Read` to all expression result nodes.
-   * Here, we set the `Compute` type instead.
-   * 
-   * @param {DataNode[]} dataNodes 
-   */
-  resolveDataNodeType(dataNodes) {
-    const { dp } = this;
-    for (const dataNode of dataNodes) {
-      const { nodeId, traceId } = dataNode;
-      if (dataNode.type === DataNodeType.Read) {            // is Read
-        const trace = dp.util.getTrace(traceId);
-        if (trace.nodeId === nodeId) {                      // is owned by its `trace`
-          const traceType = dp.util.getTraceType(traceId);
-          if (traceType === TraceType.ExpressionResult) {   // is `ExpressionResult`
-            dataNode.type = DataNodeType.Compute;
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Resolves `accessId` and `valueId` simultaneously.
-   * Manually add the index entries (because this is run `postIndex`).
-   * @param {DataNode[]} dataNodes 
-   */
-  resolveDataIds(dataNodes) {
-    for (const dataNode of dataNodes) {
-      dataNode.accessId = this.getAccessId(dataNode);
-      dataNode.valueId = this.lookupValueId(dataNode);
-      this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
-      this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
-    }
-  }
-
-  _reportInvalidId(idx, faultyEntry, recoverable) {
-    const { traceId } = faultyEntry || EmptyObject;
-    const traceInfo = traceId && this.dp.util.makeTraceInfo(traceId) || '(no trace)';
-    this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${traceInfo} ${JSON.stringify(faultyEntry)}`);
-  }
+  /** ###########################################################################
+   * serialize + utils
+   * ##########################################################################*/
 
   serialize(dataNode) {
     const dataNodeObj = { ...dataNode };
@@ -210,5 +271,25 @@ export default class DataNodeCollection extends Collection {
     delete dataNodeObj._valueString;
     delete dataNodeObj._valueStringShort;
     return dataNodeObj;
+  }
+
+  /**
+   * NOTE: When we run this in the `postIndex` phase, 
+   *      last in `byAccessId` index is actually "the last before the currently processed node"
+   *      since we are resolving the index during this phase.
+   * @return {DataNode}
+   */
+  getLastDataNodeByAccessId(accessId) {
+    return this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
+  }
+
+  getSecondButLastDataNodeByAccessId(accessId) {
+    return this.dp.indexes.dataNodes.byAccessId.getSecondButLast(accessId);
+  }
+
+  _reportInvalidId(idx, faultyEntry, recoverable) {
+    const { traceId } = faultyEntry || EmptyObject;
+    const traceInfo = traceId && this.dp.util.makeTraceInfo(traceId) || '(no trace)';
+    this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${traceInfo} ${JSON.stringify(faultyEntry)}`);
   }
 }

@@ -19,6 +19,17 @@ export default class AssignmentExpression extends BaseNode {
     }
   ];
 
+  isNewValue() {
+    return this.path.node.operator !== '=';
+  }
+
+  // /**
+  //  * @return {true} if operator is += -= ||= etc.
+  //  */
+  // isItsOwnInput() {
+  //   return this.path.node.operator !== '=';
+  // }
+
   /**
    * @returns {BaseNode}
    */

@@ -5,6 +5,7 @@
 function main(a, b) {
   var c = a + b;
   c += 2;
+  // c++;
   return a + c;
 }
 

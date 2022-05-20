@@ -126,6 +126,11 @@ class ContainerMethods {
   }
 
   // eslint-disable-next-line no-unused-vars
+  getSecondButLastInContainer(container) {
+    throw new Error('abstract method not implemented');
+  }
+
+  // eslint-disable-next-line no-unused-vars
   getUniqueInContainer(container) {
     throw new Error('abstract method not implemented');
   }
@@ -154,6 +159,10 @@ class ArrayContainerMethods extends ContainerMethods {
     return container?.[container.length - 1];
   }
 
+  getSecondButLastInContainer(container) {
+    return container?.[container.length - 2];
+  }
+
   getUniqueInContainer(container) {
     if (this.getSize(container) === 1) {
       return container[0];
@@ -178,13 +187,17 @@ class SetContainerMethods extends ContainerMethods {
   }
 
   getFirstInContainer(container) {
-    this.index.logger.warn(`Trying to get first item in a set container`);
-    return container.values().next().value;
+    throw new Error(`set-based indexes have no implied order`);
   }
 
   getLastInContainer(container) {
-    this.index.logger.warn(`Trying to get last item in a set container`);
-    return container.values().next().value;
+    throw new Error(`set-based indexes have no implied order`);
+    // this.index.logger.warn(`Trying to get last item in a set container`);
+    // return container.values().next().value;
+  }
+
+  getSecondButLastInContainer(container) {
+    throw new Error(`set-based indexes have no implied order`);
   }
 
   getUniqueInContainer(container) {
@@ -343,6 +356,11 @@ export default class CollectionIndex {
   getLast(key) {
     const container = this.get(key);
     return this._containerMethods.getLastInContainer(container) || null;
+  }
+
+  getSecondButLast(key) {
+    const container = this.get(key);
+    return this._containerMethods.getSecondButLastInContainer(container) || null;
   }
 
   getUnique(key) {

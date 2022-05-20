@@ -4,6 +4,7 @@ import { LValHolderNode } from '../_types';
 import { buildTraceWriteME } from '../../instrumentation/builders/me';
 import { ZeroNode } from '../../instrumentation/builders/buildUtil';
 import MemberExpression from '../MemberExpression';
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 
 /**
  * @example
@@ -66,7 +67,11 @@ export default class AssignmentLValME extends BasePlugin {
     // add actual WriteME trace
     const traceData = {
       staticTraceData: {
-        type: TraceType.WriteME
+        type: TraceType.WriteME,
+        syntax: SyntaxType.AssignmentLValME,
+        dataNode: {
+          isNew: node.isNewValue?.() || false
+        }
       },
       data,
       meta: {
@@ -75,7 +80,7 @@ export default class AssignmentLValME extends BasePlugin {
       }
     };
 
-    this.node.decorateWriteTraceData(traceData);
+    node.decorateWriteTraceData(traceData);
 
     Traces.addTraceWithInputs(traceData, [valuePath]);
   }

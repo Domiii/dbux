@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import { LValHolderNode } from '../_types'; 
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
@@ -28,9 +29,15 @@ export default class AssignmentLValVar extends BasePlugin {
       return;
     }
 
+    // console.error('assignment', !!node.isNewValue, node.isNewValue?.(), node.debugTag);
+
     const traceData = {
       staticTraceData: {
-        type: TraceType.WriteVar
+        type: TraceType.WriteVar,
+        syntax: SyntaxType.AssignmentLValVar,
+        dataNode: {
+          isNew: node.isNewValue?.() || false
+        }
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite
@@ -38,7 +45,7 @@ export default class AssignmentLValVar extends BasePlugin {
       }
     };
 
-    this.node.decorateWriteTraceData(traceData);
+    node.decorateWriteTraceData(traceData);
     
     // NOTE: `declarationTid` comes from `node.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [valuePath]);

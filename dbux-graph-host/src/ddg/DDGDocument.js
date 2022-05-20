@@ -1,8 +1,11 @@
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import NanoEvents from 'nanoevents';
-// import traceSelection from '@dbux/data/src/traceSelection/index';
+import traceSelection from '@dbux/data/src/traceSelection/index';
 import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+// import allApplications from '@dbux/data/src/applications/allApplications';
+
+const lastTraceInfo = {};
 
 export default class DDGDocument extends HostComponentEndpoint {
   // ###########################################################################
@@ -15,7 +18,16 @@ export default class DDGDocument extends HostComponentEndpoint {
 
     this.createOwnComponents();
 
-    // this.addDisposable(traceSelection.onTraceSelectionChanged(() => {
+    this.addDisposable(traceSelection.onTraceSelectionChanged(() => {
+      const trace = traceSelection.selected;
+      if (trace && trace.applicationId !== lastTraceInfo.applicationId /* && trace.contextId !== lastTraceInfo.contextId */) {
+        // don't refresh when selecting different traces
+        lastTraceInfo.applicationId = trace.applicationId;
+        lastTraceInfo.contextId = trace.contextId;
+        this.timelineView.refresh();
+      }
+    }));
+    // this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
     //   this.timelineView.refresh();
     // }));
     this.timelineView.refresh();

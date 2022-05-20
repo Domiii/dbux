@@ -83,31 +83,40 @@ export default class DataDependencyGraph {
 
   _makeDataNodeLabel(dataNode) {
     const { dp } = this;
-    const { nodeId: dataNodeId } = dataNode;
+    const { nodeId: dataNodeId, traceId } = dataNode;
+
+    // get trace data
+    const { staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
+    const isTraceOwnDataNode = traceNodeId === dataNodeId;
+    const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
+    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
 
     // variable name
-    const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
     let label = '';
-    if (varName) {
-      label = varName;
-    }
-    else if (dataNode.traceId) {
-      const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
+    if (dataNode.traceId) {
       // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
-      label = staticTrace.dataNode?.label;
-      if (!label) {
-        if (isTraceReturn(staticTrace.type)) {
-          // return label
-          label = 'ret';
-        }
-        else if (dp.util.isTraceOwnDataNode(dataNodeId)) {
-          // default trace label
-          const trace = dp.util.getTrace(dataNode.traceId);
-          label = makeTraceLabel(trace);
-        }
-        else {
-          // TODO: ME
-        }
+      label = ownStaticTrace.dataNode?.label;
+    }
+    
+    if (!label) {
+      const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
+      if (!isNewValue && varName) {
+        label = varName;
+      }
+      else if (isTraceReturn(ownStaticTrace.type)) {
+        // return label
+        label = 'ret';
+      }
+    }
+
+    if (!label) {
+      if (dp.util.isTraceOwnDataNode(dataNodeId)) {
+        // default trace label
+        const trace = dp.util.getTrace(dataNode.traceId);
+        label = makeTraceLabel(trace);
+      }
+      else {
+        // TODO: ME
       }
     }
     // else {

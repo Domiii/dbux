@@ -536,6 +536,21 @@ export default {
 
   /**
    * @param {DataProvider} dp
+   * @return {StaticTrace} 
+   */
+  getOwnStaticTraceOfDataNode(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (!dataNode) {
+      return null;
+    }
+    const { traceId } = dataNode;
+    const { staticTraceId, nodeId: traceNodeId } = dp.collections.traces.getById(traceId);
+    const isTraceOwnDataNode = traceNodeId === nodeId;
+    return isTraceOwnDataNode && dp.collections.staticTraces.getById(staticTraceId) || null;
+  },
+
+  /**
+   * @param {DataProvider} dp
    * @return {DataNode} DataNode of value trace
    */
   getTraceOfDataNode(dp, nodeId) {

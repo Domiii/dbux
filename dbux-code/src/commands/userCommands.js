@@ -162,6 +162,10 @@ export function initUserCommands(extensionContext) {
           throw new Error(`DDG Test Cancelled - No test file selected`);
         }
         testFilePath = pathNormalizedForce(testFilePath);
+
+        // unset contextId
+        contextId = 0;
+
         await mementoSet(TestDDGKeyName, { testFilePath, contextId });
       }
 
@@ -179,31 +183,35 @@ export function initUserCommands(extensionContext) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
       const dp = firstApplication.dataProvider;
-      if (!contextId) {
+      const needsNewContextId = !contextId;
+      if (needsNewContextId) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().
           find(context => dp.util.isContextFunctionContext(context.contextId));
         if (!firstFunctionContext) {
           throw new Error('Could not run DDG test: Could not find a function context in application');
         }
         contextId = firstFunctionContext.contextId;
+        const userInput = await window.showInputBox({
+          placeHolder: 'contextId',
+          value: contextId,
+          prompt: 'Enter the contextId to test DDG'
+        });
+        contextId = parseInt(userInput, 10);
+        if (!contextId) {
+          throw new Error(`Invalid contextId (expected but is not positive integer): ${userInput}`);
+        }
       }
-      const userInput = await window.showInputBox({
-        placeHolder: 'contextId',
-        value: contextId,
-        prompt: 'Enter the contextId to test DDG'
-      });
 
-      contextId = parseInt(userInput, 10);
-      if (!contextId) {
-        throw new Error(`Invalid contextId (expected but is not positive integer): ${userInput}`);
-      }
+      // select trace by contextId
       trace = dp.util.getFirstTraceOfContext(contextId);
       if (!trace) {
         throw new Error(`Invalid contextId - context not found: ${contextId}`);
       }
-      
-      // update memento
-      await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+
+      if (needsNewContextId) {
+        // update memento
+        await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+      }
 
       // trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
       traceSelection.selectTrace(trace);

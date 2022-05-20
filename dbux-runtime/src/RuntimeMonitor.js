@@ -1006,21 +1006,20 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
-    const trace = traceCollection.getById(tid);
+    // const trace = traceCollection.getById(tid);
 
     // add write node
     const inputs = [traceCollection.getOwnDataNodeIdByTraceId(readTid)];
-    const writeNode = dataNodeCollection.createDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
+    const writeNode = dataNodeCollection.createOwnDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
 
     if (updateValue !== returnValue) {
       // add separate expression value node
-      // future work consideration: input to UE is the `Read` node → somehow missing the missing `1`.
       const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, inputs);
-      trace.nodeId = updateNode.nodeId;
+      // trace.nodeId = updateNode.nodeId;
     }
-    else {
-      trace.nodeId = writeNode.nodeId;
-    }
+    // else {
+    //   trace.nodeId = writeNode.nodeId;
+    // }
     return returnValue;
   }
 

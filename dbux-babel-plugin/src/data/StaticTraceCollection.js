@@ -147,11 +147,11 @@ export default class StaticTraceCollection extends StaticCollection {
     const _traceId = this._getNextId();
     let trace;
 
-    const { type, dataNode, data } = staticData;
+    const { type, dataNode, data, syntax } = staticData;
 
     if (process.env.NODE_ENV === 'development') {
       // add some sanity checks for the contents of staticTraceData
-      if (difference(Object.keys(staticData), ['type', 'dataNode', 'data']).length) {
+      if (difference(Object.keys(staticData), ['type', 'syntax', 'dataNode', 'data']).length) {
         throw new Error(`Unknown key(s) in staticTraceData: ${JSON.stringify(staticData)}`);
       }
     }
@@ -170,6 +170,7 @@ export default class StaticTraceCollection extends StaticCollection {
     trace._traceId = _traceId;
     trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
     trace.type = type;
+    trace.syntax = syntax;
     trace.data = data;
     trace.dataNode = dataNode;
 
