@@ -17,6 +17,12 @@ const traceTypeObj = {
   ExpressionResult: 7,
   ExpressionValue: 8,
 
+  /**
+   * A branch statement
+   */
+  BranchStatement: 11,
+  BranchExpression: 12,
+
   Statement: 13,
   BlockStart: 14,
   BlockEnd: 15,
@@ -145,6 +151,7 @@ export function hasDynamicTypes(traceType) {
 const expressionTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 expressionTypes[TraceType.BeforeCallExpression] = true;
 expressionTypes[TraceType.ExpressionResult] = true;
+expressionTypes[TraceType.BranchExpression] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
 expressionTypes[TraceType.UpdateExpression] = true;
@@ -158,15 +165,6 @@ export function isTraceExpression(traceType) {
   return expressionTypes[traceType];
 }
 
-const callbackTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
-callbackTypes[TraceType.CallbackArgument] = true;
-callbackTypes[TraceType.PushCallback] = true;
-callbackTypes[TraceType.PopCallback] = true;
-
-export function isCallbackRelatedTrace(traceType) {
-  return callbackTypes[traceType];
-}
-
 
 const dataOnlyTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 dataOnlyTypes[TraceType.ExpressionValue] = true;
@@ -174,7 +172,8 @@ dataOnlyTypes[TraceType.Identifier] = true;
 dataOnlyTypes[TraceType.Literal] = true;
 
 /**
- * Traces that are important for data flow analysis, but not important for control flow analysis
+ * Expression types that were... to be skipped when navigating "over" traces(?)
+ * NOTE: not very important
  */
 export function isDataOnlyTrace(traceType) {
   return dataOnlyTypes[traceType];

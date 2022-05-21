@@ -121,18 +121,21 @@ export default class BaseNode extends ParseNode {
 
   addDefaultTrace() {
     try {
-      if (!this.traceCfg) {
+      if (!this._traceCfg) {
         const traceData = this.buildDefaultTrace();
         if (!traceData) {
           return null;
         }
         this.Traces.addTrace(traceData);
       }
+      else {
+        this.logger.warn(`Tried to addDefaultTrace even though, Node already has one.`);
+      }
     }
     catch (err) {
       throw new NestedError(`addDefaultTrace failed for Node ${this}`, err);
     }
-    return this.traceCfg;
+    return this._traceCfg;
   }
 
   // ###########################################################################

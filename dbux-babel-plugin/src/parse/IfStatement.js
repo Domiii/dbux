@@ -1,6 +1,8 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BaseNode from './BaseNode';
 
+/** @typedef { import("./plugins/BranchStatement").default } BranchStatement */
+
 export default class IfStatement extends BaseNode {
   static children = ['test', 'consequent', 'alternate'];
   static plugins = ['BranchStatement'];
@@ -12,15 +14,41 @@ export default class IfStatement extends BaseNode {
     return this.getPlugin('BranchStatement');
   }
 
+  isControlGroupMergedWithParent() {
+    const parent = this.getParent();
+    if (parent instanceof IfStatement) {
+      const [/* testNode */, /* consequentNode */, elseNode] = parent.getChildNodes();
+      if (elseNode === this || (elseNode?.path.isBlockStatement() && elseNode.body?.length === 1 && elseNode.body[0] === this)) {
+        // this is an "else if" → merge with parent
+        return true;
+      }
+    }
+    return false;
+  }
+
   exit() {
     // const { path } = this;
     const { BranchStatement } = this;
     const [test] = this.getChildPaths();
 
-    const testTrace = this.Traces.addDefaultTrace(test);
+    const testTrace = test.Traces.addDefaultTrace(test);
 
-    BranchStatement.setDecisionTrace(testTrace);
-    BranchStatement.setPushTrace(testTrace);
-    BranchStatement.addNewPopTrace();
+    if (!this.isControlGroupMergedWithParent()) {
+      // new if statement
+      BranchStatement.createBranchStaticTrace();
+      BranchStatement.setDecisionAndPushTrace(testTrace);
+      BranchStatement.createPopStatementTrace();
+    }
+  }
+
+  instrument1() {
+    if (this.isControlGroupMergedWithParent()) {
+      // merge multiple if/else statements into one
+      const { BranchStatement } = this;
+      const [test] = this.getChildPaths();
+
+      // decision trace will automatically be added to ancestor control group 
+      BranchStatement.setDecisionTrace(test.traceCfg);
+    }
   }
 }

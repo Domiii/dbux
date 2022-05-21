@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';

@@ -15,8 +15,7 @@ export default class ConditionalExpression extends BaseNode {
       path,
       node: this,
       staticTraceData: {
-        // TODO: control/decision/condition information
-        type: TraceType.ExpressionResult,
+        type: TraceType.BranchExpression,
         dataNode: {
           isNew: false,
           label: '?:'

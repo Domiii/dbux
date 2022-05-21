@@ -3,7 +3,8 @@ import Enum from '../../util/Enum';
 const controlTraceRoleObj = {
   Push: 1,
   Decision: 2,
-  Pop: 3,
+  PushAndDecision: 3,
+  Pop: 4,
 };
 /**
  * @type {(Enum|typeof controlTraceRoleObj)}
