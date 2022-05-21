@@ -3,12 +3,12 @@
 /** @typedef { import('@dbux/common/src/types/constants/DataNodeType').DataNodeTypeValue } DataNodeTypeValue */
 
 
-import DDGWatchSet from './DDGWatchSet';
 // import DDGTimeline from './DDGTimeline';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
+import last from 'lodash/last';
+import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
-import DDGNode from './DDGNode';
 import DDGEdge from './DDGEdge';
 import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
@@ -226,15 +226,6 @@ export default class DataDependencyGraph {
 
     const nodesByDataNodeId = [];
     const edgesByFromDataNodeId = [];
-    const timelineParentsByDataNodeId = [];
-
-    const rootTimelineNode = new DDGTimelineNode(DDGTimelineNodeType.Root);
-    rootTimelineNode.timelineId = 1;
-
-    /**
-     * @type {DDGTimelineNode[]}
-     */
-    const timelineNodeStack = [];
 
     /** ########################################
      * phase 1: gather potential nodes and edges
@@ -244,15 +235,6 @@ export default class DataDependencyGraph {
      * #######################################*/
 
     for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
-      const trace = dp.util.getTrace(traceId);
-      const staticTrace = dp.util.getStaticTrace(traceId);
-      if (TraceType.is.PushImmediate(staticTrace.type)) {
-        timelineNodeStack.push(new ContextTimelineNode(trace.contextId));
-      }
-      else if (dp.util.isTraceControlGroupPop(traceId)) {
-        timelineNodeStack.pop();
-      }
-
       for (const dataNode of dp.util.getDataNodesOfTrace(traceId)) {
         // const dataNodeId = dataNode.nodeId;
         if (dataNode.inputs) { // only add nodes with connectivity
@@ -293,6 +275,7 @@ export default class DataDependencyGraph {
               else {
                 // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
                 // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
+                // TODO: add summarization logic
               }
             }
           }
@@ -301,29 +284,61 @@ export default class DataDependencyGraph {
     }
 
     /** ########################################
-     * phase 2: add nodes + edges
+     * phase 2: create nodes
      * #######################################*/
 
     this.nodes = [];
     this.edges = [];
+
+    const rootTimelineNode = new DDGTimelineNode(DDGTimelineNodeType.Root);
+    rootTimelineNode.timelineId = 1;
+
+    /**
+     * @type {DDGTimelineNode[]}
+     */
+    const timelineNodeStack = [rootTimelineNode];
+
+    for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
+      const trace = dp.util.getTrace(traceId);
+      const staticTrace = dp.util.getStaticTrace(traceId);
+      if (TraceType.is.PushImmediate(staticTrace.type)) {
+        // TODO: add timelineId
+        timelineNodeStack.push(new ContextTimelineNode(trace.contextId));
+      }
+      else if (dp.util.isTraceControlGroupPop(traceId)) {
+        timelineNodeStack.pop();
+      }
+
+      const timelineParent = last(timelineNodeStack);
+      for (const dataNode of dp.util.getDataNodesOfTrace(traceId)) {
+        const dataNodeId = dataNode.nodeId;
+        if (nodesByDataNodeId[dataNodeId]) {
+          const newNode = addDataNode(dataNodeId);
+          timelineParent.children.push(node);
+        }
+      }
+    }
+
+    /** ########################################
+     * phase 3: create edges
+     * #######################################*/
 
     for (const fromDataNodeId of nodesByDataNodeId) {
       if (!fromDataNodeId) {
         continue;
       }
 
+      const fromDdgNode = getDDGNode(TODO);
       const toNodeIds = edgesByFromDataNodeId[fromDataNodeId];
       for (const toNodeId of toNodeIds) {
         // get or create DDGNodes
-        const fromDdgNode = this._getOrCreateDDGNode(TODO);
-        const newNode = this._getOrCreateDDGNode(TODO);
+        const newNode = getDDGNode(TODO);
         this._addEdge(fromDdgNode, newNode);
       }
     }
 
-
     /** ########################################
-     * phase 3: gather connectivity data for nodes
+     * phase 4: use edges to gather connectivity data for nodes
      *  ######################################*/
     for (const node of this.nodes) {
       const nIncomingEdges = this.inEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;

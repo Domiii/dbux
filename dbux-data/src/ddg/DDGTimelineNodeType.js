@@ -6,10 +6,10 @@ const DDGTimelineNodeTypeObj = {
   // simple data
   Data: 2,
 
-  // decision
+  // decision (Data node for control decisions)
   Decision: 3,
 
-  // snapshot (special type of Data node)
+  // snapshot root (Data node for reference/complex types)
   Snapshot: 4,
 
   // context
@@ -48,6 +48,10 @@ controlGroupTypes[DDGTimelineNodeType.While] = true;
 controlGroupTypes[DDGTimelineNodeType.DoWhile] = true;
 export function isControlGroupTimelineNode(timelineNodeType) {
   return controlGroupTypes[timelineNodeType];
+}
+
+export function isDataTimelineNode(timelineNodeType) {
+  return !isControlGroupTimelineNode(timelineNodeType);
 }
 
 

@@ -28,11 +28,40 @@ export class DDGTimelineNode {
   }
 }
 
+export class BaseDataTimeLineNode extends DDGTimelineNode {
+  dataNode;
+  label;
+
+  /**
+   * Whether node is watched.
+   */
+  watched;
+  nInputs;
+  nOutputs;
+}
+
+export class DataTimelineNode extends BaseDataTimeLineNode {
+}
+
+export class DecisionTimelineNode extends BaseDataTimeLineNode {
+  // TODO
+}
+
+export class SnapshotRootTimelineNode extends BaseDataTimeLineNode {
+  // TODO: contains more SnapshotRef and/or SnapshotPrimitive nodes
+}
+
+
 export class ContextTimelineNode extends DDGTimelineNode {
   contextId;
 
   constructor(contextId) {
     super(DDGTimelineNodeType.Context);
     this.contextId = contextId;
+    this.children = [];
   }
+}
+
+export class BranchTimelineNode extends DDGTimelineNode {
+  
 }
