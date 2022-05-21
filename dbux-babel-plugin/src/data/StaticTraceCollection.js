@@ -19,9 +19,9 @@ const traceCustomizationsByType = {
   [TraceType.PushImmediate]: tracePathStartContext,
   [TraceType.PopImmediate]: tracePathEndContext,
 
-  // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `CallbackArgument` which pegs on `CallArgument` (so they won't pass through here)
-  // [TraceType.PushCallback]: tracePathStart,
-  // [TraceType.PopCallback]: tracePathEnd,
+  [TraceType.PushBranch]: tracePathStartContext,
+  [TraceType.PopBranch]: tracePathEndContext,
+
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
@@ -147,11 +147,19 @@ export default class StaticTraceCollection extends StaticCollection {
     const _traceId = this._getNextId();
     let trace;
 
-    const { type, dataNode, data, syntax } = staticData;
+    const { type, syntax, dataNode, data, controlRole, controlId } = staticData;
 
     if (process.env.NODE_ENV === 'development') {
       // add some sanity checks for the contents of staticTraceData
-      if (difference(Object.keys(staticData), ['type', 'syntax', 'dataNode', 'data']).length) {
+      const allowedProps = [
+        'type',
+        'syntax',
+        'dataNode',
+        'data',
+        'controlRole',
+        'controlId'
+      ];
+      if (difference(Object.keys(staticData), allowedProps).length) {
         throw new Error(`Unknown key(s) in staticTraceData: ${JSON.stringify(staticData)}`);
       }
     }
@@ -169,10 +177,13 @@ export default class StaticTraceCollection extends StaticCollection {
     // misc data
     trace._traceId = _traceId;
     trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
+
     trace.type = type;
     trace.syntax = syntax;
     trace.data = data;
     trace.dataNode = dataNode;
+    trace.controlRole = controlRole;
+    trace.controlId = controlId;
 
     // push
     this._push(trace);

@@ -38,23 +38,6 @@ const StylingsByDecoName = {
     }
   },
 
-  PushCallback: {
-    styling: {
-      after: {
-        contentText: '↴',
-        color: 'red',
-      }
-    }
-  },
-  PopCallback: {
-    styling: {
-      after: {
-        contentText: '↱',
-        color: 'red',
-      }
-    }
-  },
-
   Await: {
     styling: {
       after: {

@@ -492,6 +492,20 @@ export default {
     return dp.util.getTracesOfContextAndType(realContextId, TraceType.ReturnArgument)?.[0] || null;
   },
 
+  /** ###########################################################################
+   * Trace + Control
+   * ##########################################################################*/
+
+  /** @param {DataProvider} dp */
+  getStaticTraceControlId(dp, staticTraceId) {
+    TODO
+  },
+
+  // /** @param {DataProvider} dp */
+  // getStaticTraceControlId(dp, staticTraceId) {
+  //   TODO
+  // },
+
   // ###########################################################################
   // Trace → DataNodes
   // ###########################################################################

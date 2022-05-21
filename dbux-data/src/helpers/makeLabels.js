@@ -80,19 +80,6 @@ const byType = {
   [TraceType.CallbackArgument](trace, application) {
     return `ƒ ${makeDefaultTraceLabel(trace, application)}`;
   },
-  [TraceType.PushCallback](trace, application) {
-    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    // NOTE: nextTrace is inside callee
-    // const nextTrace = application.dataProvider.collections.traces.getById(trace.traceId + 1);
-    // return `↴ (callback) ${makeTraceContextLabel(nextTrace, application)}`;
-    return `↴ƒ ${makeDefaultTraceLabel(trace, application)}`;
-  },
-  [TraceType.PopCallback](trace, application) {
-    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    // NOTE: previousTrace is inside callee
-    // const previousTrace = application.dataProvider.collections.traces.getById(trace.traceId - 1);
-    return `↱ƒ ${makeDefaultTraceLabel(trace, application)}`;
-  },
   [TraceType.BlockStart](/* trace, application */) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `↳`;

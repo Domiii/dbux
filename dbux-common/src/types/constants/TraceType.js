@@ -17,9 +17,6 @@ const traceTypeObj = {
   ExpressionResult: 7,
   ExpressionValue: 8,
 
-  PushCallback: 11,
-  PopCallback: 12,
-
   Statement: 13,
   BlockStart: 14,
   BlockEnd: 15,

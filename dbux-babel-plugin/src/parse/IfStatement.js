@@ -3,14 +3,24 @@ import BaseNode from './BaseNode';
 
 export default class IfStatement extends BaseNode {
   static children = ['test', 'consequent', 'alternate'];
-  static plugins = ['ControlBlock'];
+  static plugins = ['BranchStatement'];
+
+  /**
+   * @type {BranchStatement}
+   */
+  get BranchStatement() {
+    return this.getPlugin('BranchStatement');
+  }
 
   exit() {
     // const { path } = this;
+    const { BranchStatement } = this;
     const [test] = this.getChildPaths();
 
     const testTrace = this.Traces.addDefaultTrace(test);
-    testTrace.staticTraceData.controlId = testTrace.inProgramStaticTraceId;
-    // testTrace.staticTraceData.controlGroupId = TODO;
+
+    BranchStatement.setDecisionTrace(testTrace);
+    BranchStatement.setPushTrace(testTrace);
+    BranchStatement.addNewPopTrace();
   }
 }

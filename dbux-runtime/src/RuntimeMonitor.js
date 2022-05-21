@@ -154,7 +154,7 @@ export default class RuntimeMonitor {
   _rootDisableCount = 0;
 
   /**
-   * Very similar to `pushCallback`
+   * Start of function or file
    */
   pushImmediate(programId, inProgramStaticContextId, inProgramStaticTraceId, definitionTid, isInterruptable, tracesDisabled) {
     this._runtime.beforePush(null);
@@ -346,95 +346,6 @@ export default class RuntimeMonitor {
     // executionContextCollection.setContextPopped(contextId);
     this._runtime.pop(contextId);
   }
-
-
-  // ###########################################################################
-  // Callbacks
-  // ###########################################################################
-
-  // makeCallbackWrapper(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
-  //   // return WrappedClazz;
-  //   const _this = this;
-  //   const wrappedCb = function wrappedCb(...args) {
-  //     /**
-  //      * We need this so we can always make sure we can link things back to the scheduler,
-  //      * even if the callback declaration is not inline.
-  //      */
-  //     // const tracesDisabled = ???;
-  //     // const callbackContextId = _this.pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
-
-  //     // let resultValue;
-  //     // try {
-  //     //   resultValue = cb.apply(this, args);
-  //     //   if (this && resultValue === undefined) {
-  //     //     return this;
-  //     //   }
-  //     //   return resultValue;
-  //     // }
-  //     // finally {
-  //     //   _this.popCallback(programId, callbackContextId, inProgramStaticTraceId, resultValue);
-  //     // }
-  //   };
-
-  //   // override name
-  //   Object.defineProperty(wrappedCb, 'name', { value: cb.name });
-
-  //   // basic inheritance es5 chain
-  //   // TODO: support es6 classes as well
-  //   _inheritsLoose(wrappedCb, cb);
-
-  //   // copy all non-native properties of the function
-  //   const props = Object.keys(cb);
-  //   for (const prop of props) {
-  //     wrappedCb[prop] = cb[prop];
-  //   }
-
-  //   return wrappedCb;
-  // }
-
-  // /**
-  //  * Very similar to `pushImmediate`.
-  //  * We need it to establish the link with it's scheduling context.
-  //  */
-  // pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, tracesDisabled) {
-  //   this._runtime.beforePush(null);
-
-  //   const stackDepth = this._runtime.getStackDepth();
-  //   const runId = this._runtime.getCurrentRunId();
-  //   const parentTraceId = this._runtime.getParentTraceId();
-
-  //   // register context
-  //   // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
-  //   const context = executionContextCollection.executeCallback(
-  //     stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled
-  //   );
-  //   const { contextId } = context;
-  //   this._runtime.push(contextId);
-
-  //   // trace
-  //   this._trace(programId, contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
-
-  //   return contextId;
-  // }
-
-  // popCallback(programId, callbackContextId, inProgramTraceId, resultValue) {
-  //   // sanity checks
-  //   const context = executionContextCollection.getById(callbackContextId);
-  //   if (!context) {
-  //     logTrace('Tried to popCallback, but context was not registered:',
-  //       callbackContextId);
-  //     return;
-  //   }
-
-  //   const runId = this._runtime.getCurrentRunId(); // get runId before pop
-
-  //   // pop from stack
-  //   this._pop(callbackContextId);
-
-  //   // trace
-  //   const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue, this.valuesDisabled);
-  //   this._onTrace(callbackContextId, trace, true);
-  // }
 
 
   // ###########################################################################
