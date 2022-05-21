@@ -4,14 +4,10 @@ import last from 'lodash/last';
 import TraceType, { isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { DDGTimelineNode, ContextTimelineNode } from './DDGTimelineNodes';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode } from './DDGTimelineNodes';
 import DDGTimelineNodeType from './DDGTimelineNodeType';
 import { makeTraceLabel } from '../helpers/makeLabels';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-
-
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError, trace: logTrace } = newLogger('DDGTimelineControlStack');
 
 const Verbose = 1;
 // const Verbose = 0;
@@ -29,11 +25,14 @@ export default class DDGTimelineBuilder {
    */
   timelineNodes = [];
 
+  logger;
+
   /**
    * @param {import('./DataDependencyGraph').default} ddg
    */
   constructor(ddg) {
     this.ddg = ddg;
+    this.logger = newLogger('DDGTimelineControlStack');
 
     const rootTimelineNode = new DDGTimelineNode(DDGTimelineNodeType.Root);
     this.#addNode(rootTimelineNode);
@@ -57,32 +56,55 @@ export default class DDGTimelineBuilder {
   }
 
   /**
-   * NOTE: a single DataNode might induce multiple TimelineNodes in case of a Decision node that is also a Write Node
+   * NOTE: a trace might induce multiple {@link DDGTimelineNode} in these circumstances:
+   *   1. if a DataNode reads or writes an object prop, we add the complete snapshot with all its children
+   *   2. a Decision node that is also a Write Node (e.g. `if (x = f())`)
    */
-  addDataNodes(dataNodeId) {
+  addDataNodes(traceId) {
     const { dp } = this;
-    const dataNode = dp.util.getDataNode(dataNodeId);
-    const { traceId } = dataNode;
+    const trace = dp.util.getTrace(traceId);
+    const dataNodes = dp.util.getDataNodesOfTrace(traceId);
+    const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
+
+    if (!ownDataNode) {
+      this.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
+      return;
+    }
     // const trace = dp.util.getTraceOfDataNode(dataNodeId);
 
     // const dataNodeType = dataNode.type; // TODO!
-    const label = this.#makeDataNodeLabel(dataNode);
+    const label = this.#makeDataNodeLabel(ownDataNode);
 
-    // TODO: figure out the DDGTimelineNodeType
-    // TODO: add separate dataNodes and dataNodeId (since those are the only ones that can have edges)
-    if (DataNodeType.is.Write(dataNode.type) && dp.util.isTraceControlDecision(traceId)) {
+    if (DataNodeType.is.Write(ownDataNode.type) && dp.util.isTraceControlDecision(traceId)) {
       // TODO: add two nodes in this case
     }
 
-    const newNode = new DDGNode(DDGTimelineNodeType.Primitive, dataNode, label);
-    newNode.watched = this.watchSet.isWatchedDataNode(dataNodeId);
+    // create node based on DDGTimelineNodeType
+    let newNode;
+    if (ownDataNode.varAccess?.objectNodeId) {
+      const refNodeId = ownDataNode.varAccess.objectNodeId;
+      // ref type access → add Snapshot
+      if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {
+        // sanity checks
+        this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(traceId)}"`);
+      }
+      // TODO: add Snapshot
+    }
+    else {
+      // primitive value or ref assignment
+      // ownDataNode.varAccess.declarationTid;
+      if (dataNodes.length > 1) {
+        this.logTrace(`NYI: trace has multiple dataNodes but no ref type "${dp.util.makeTraceInfo(traceId)}"`);
+      }
+      newNode = new PrimitiveTimelineNode(dataNode, label);
+    }
+    newNode.watched = this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId);
 
     this.#addNode(newNode);
 
     // add to parent
     const parent = this.peek();
     parent.children.push(newNode);
-    return newNode;
   }
 
   /**
@@ -93,7 +115,7 @@ export default class DDGTimelineBuilder {
     this.timelineNodes.push(node);
   }
 
-  #push(node) {
+  #pushGroup(node) {
     this.#addNode(node);
     this.stack.push(node);
   }
@@ -112,11 +134,11 @@ export default class DDGTimelineBuilder {
     const staticTrace = dp.util.getStaticTrace(traceId);
     if (TraceType.is.PushImmediate(staticTrace.type)) {
       // push context
-      this.#push(new ContextTimelineNode(trace.contextId));
+      this.#pushGroup(new ContextTimelineNode(trace.contextId));
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
-      TODO
+      // TODO
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
       // sanity checks
@@ -124,13 +146,13 @@ export default class DDGTimelineBuilder {
         // pop context
         const top = this.peek();
         if (trace.contextId !== top.contextId) {
-          logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${top.toString()}`);
+          this.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${top.toString()}`);
           return;
         }
       }
       else {
         // pop branch statement
-        TODO
+        // TODO
       }
       this.#pop();
     }

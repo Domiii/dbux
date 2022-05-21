@@ -218,7 +218,9 @@ export default class DataDependencyGraph {
       for (const dataNode of dp.util.getDataNodesOfTrace(traceId)) {
         const dataNodeId = dataNode.nodeId;
         if (nodesByDataNodeId[dataNodeId]) {
-          timelineBuilder.addDataNodes(dataNodeId);
+          // timelineBuilder.addDataNodes(dataNodeId);
+          timelineBuilder.addDataNodes(traceId);
+          break;
         }
       }
     }

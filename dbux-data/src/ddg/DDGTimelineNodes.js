@@ -34,7 +34,7 @@ export class DDGTimelineNode {
   }
 }
 
-export class BaseDataTimeLineNode extends DDGTimelineNode {
+export class BaseDataTimelineNode extends DDGTimelineNode {
   dataNode;
   label;
 
@@ -46,15 +46,33 @@ export class BaseDataTimeLineNode extends DDGTimelineNode {
   nOutputs;
 }
 
-export class DataTimelineNode extends BaseDataTimeLineNode {
+export class PrimitiveTimelineNode extends BaseDataTimelineNode {
+  constructor() {
+    super(DDGTimelineNodeType.Primitive);
+  }
 }
 
-export class DecisionTimelineNode extends BaseDataTimeLineNode {
+export class DecisionTimelineNode extends BaseDataTimelineNode {
   // TODO
 }
 
-export class SnapshotRootTimelineNode extends BaseDataTimeLineNode {
-  // TODO: contains more SnapshotRef and/or SnapshotPrimitive nodes
+// TODO: contains more SnapshotRef and/or SnapshotPrimitive nodes?
+export class SnapshotRootTimelineNode extends BaseDataTimelineNode {
+  dataNode;
+
+  /**
+   * @type {DDGSnapshotNode | DDGNode}
+   */
+  children = []; // TODO!?
+
+  /**
+   * @param {DataNode} dataNode 
+   */
+  constructor(dataNode) {
+    super(DDGTimelineNodeType.Snapshot);
+
+    this.dataNode = dataNode;
+  }
 }
 
 

@@ -551,7 +551,10 @@ export default {
     return valueTrace ? dp.collections.dataNodes.getById(valueTrace.nodeId) : null;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * @param {DataProvider} dp
+   * @return {DataNode[]?}
+   */
   getDataNodesOfTrace(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
