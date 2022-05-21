@@ -2,11 +2,12 @@
 
 import last from 'lodash/last';
 import TraceType, { isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
-import { isTraceRoleControlPush } from '@dbux/common/src/types/constants/ControlTraceRole';
+import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { DDGTimelineNode, ContextTimelineNode } from './DDGTimelineNodes';
 import DDGTimelineNodeType from './DDGTimelineNodeType';
 import { makeTraceLabel } from '../helpers/makeLabels';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -55,19 +56,27 @@ export default class DDGTimelineBuilder {
     return last(this.stack);
   }
 
-  addDataNode(dataNodeId) {
+  /**
+   * NOTE: a single DataNode might induce multiple TimelineNodes in case of a Decision node that is also a Write Node
+   */
+  addDataNodes(dataNodeId) {
     const { dp } = this;
     const dataNode = dp.util.getDataNode(dataNodeId);
+    const { traceId } = dataNode;
+    // const trace = dp.util.getTraceOfDataNode(dataNodeId);
 
     // const dataNodeType = dataNode.type; // TODO!
     const label = this.#makeDataNodeLabel(dataNode);
 
     // TODO: figure out the DDGTimelineNodeType
     // TODO: add separate dataNodes and dataNodeId (since those are the only ones that can have edges)
+    if (DataNodeType.is.Write(dataNode.type) && dp.util.isTraceControlDecision(traceId)) {
+      // TODO: add two nodes in this case
+    }
 
-    const newNode = new DDGNode(DDGTimelineNodeType.Data, dataNode, label);
+    const newNode = new DDGNode(DDGTimelineNodeType.Primitive, dataNode, label);
     newNode.watched = this.watchSet.isWatchedDataNode(dataNodeId);
-    
+
     this.#addNode(newNode);
 
     // add to parent
@@ -105,7 +114,7 @@ export default class DDGTimelineBuilder {
       // push context
       this.#push(new ContextTimelineNode(trace.contextId));
     }
-    else if (isTraceRoleControlPush(staticTrace.controlRole)) {
+    else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
       TODO
     }

@@ -29,7 +29,7 @@ import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
-import ControlTraceRole, { isTraceRoleControlPop } from '@dbux/common/src/types/constants/ControlTraceRole';
+import { isTraceControlRolePop, isTraceControlRoleDecision } from '@dbux/common/src/types/constants/TraceControlRole';
 import RefSnapshot, { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/common/src/types/RefSnapshot';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
@@ -494,7 +494,7 @@ export default {
   },
 
   /** ###########################################################################
-   * Trace + Control
+   * Control traces and staticTraces
    * ##########################################################################*/
 
   /** @param {DataProvider} dp */
@@ -503,17 +503,34 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  isTraceControlGroupPop(dp, traceId) {
-    // const trace = dp.util.getTrace(traceId);
+  getStaticTraceControlRole(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.controlRole;
+  },
+
+  /** @param {DataProvider} dp */
+  isStaticTraceControlDecision(dp, staticTraceId) {
+    const controlRole = dp.util.getStaticTraceControlRole(staticTraceId);
+    return isTraceControlRoleDecision(controlRole);
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceControlDecision(dp, traceId) {
     const staticTraceId = dp.util.getStaticTraceId(traceId);
-    return dp.util.isStaticTraceControlGroupPop(staticTraceId);
+    return dp.util.isStaticTraceControlDecision(staticTraceId);
   },
 
   /** @param {DataProvider} dp */
   isStaticTraceControlGroupPop(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     return TraceType.is.PopImmediate(staticTrace.type) ||  // pop context
-      isTraceRoleControlPop(staticTrace.controlRole); // pop branch statement
+      isTraceControlRolePop(staticTrace.controlRole); // pop branch statement
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceControlGroupPop(dp, traceId) {
+    const staticTraceId = dp.util.getStaticTraceId(traceId);
+    return dp.util.isStaticTraceControlGroupPop(staticTraceId);
   },
 
   // /** @param {DataProvider} dp */

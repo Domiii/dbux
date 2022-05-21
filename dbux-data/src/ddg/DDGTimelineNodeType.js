@@ -3,14 +3,14 @@ import Enum from '@dbux/common/src/util/Enum';
 const DDGTimelineNodeTypeObj = {
   Root: 1,
 
-  // simple data
-  Data: 2,
-
-  // decision (Data node for control decisions)
-  Decision: 3,
+  // primitive data
+  Primitive: 2,
 
   // snapshot root (Data node for reference/complex types)
-  Snapshot: 4,
+  Snapshot: 3,
+
+  // decision (Data node for control decisions)
+  Decision: 4,
 
   // context
   Context: 5,

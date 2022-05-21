@@ -1,4 +1,4 @@
-import ControlTraceRole from '@dbux/common/src/types/constants/ControlTraceRole';
+import TraceControlRole from '@dbux/common/src/types/constants/TraceControlRole';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import BasePlugin from './BasePlugin';
@@ -43,7 +43,7 @@ export default class BranchStatement extends BasePlugin {
    * @param {TraceCfg} trace 
    */
   setDecisionTrace(trace) {
-    trace.staticTraceData.controlRole = ControlTraceRole.Decision;
+    trace.staticTraceData.controlRole = TraceControlRole.Decision;
   }
 
   /**
@@ -51,7 +51,7 @@ export default class BranchStatement extends BasePlugin {
    * @param {TraceCfg} trace 
    */
   setPushTrace(trace) {
-    trace.staticTraceData.controlRole = ControlTraceRole.Push;
+    trace.staticTraceData.controlRole = TraceControlRole.Push;
 
     const branchTrace = this.createBranchStaticTrace();
     trace.staticTraceData.controlId = branchTrace._traceId;
@@ -61,7 +61,7 @@ export default class BranchStatement extends BasePlugin {
    * @param {TraceCfg} trace 
    */
   setDecisionAndPushTrace(trace) {
-    trace.staticTraceData.controlRole = ControlTraceRole.PushAndDecision;
+    trace.staticTraceData.controlRole = TraceControlRole.PushAndDecision;
 
     const branchTrace = this.createBranchStaticTrace();
     trace.staticTraceData.controlId = branchTrace._traceId;
@@ -89,7 +89,7 @@ export default class BranchStatement extends BasePlugin {
    * @param {TraceCfg} trace 
    */
   setPopStatementTrace(trace) {
-    trace.staticTraceData.controlRole = ControlTraceRole.Pop;
+    trace.staticTraceData.controlRole = TraceControlRole.Pop;
     trace.staticTraceData.controlId = this.controlStatementId;
   }
 }
