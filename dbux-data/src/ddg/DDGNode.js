@@ -1,7 +1,11 @@
-import DDGEntity from './DDGEntity';
+import DDGTimelineNode from './DDGTimelineNodes';
+// import DDGTimelineNodeType from './DDGTimelineNodeType';
 
-export default class DDGNode extends DDGEntity {
+export default class DDGNode extends DDGTimelineNode {
   ddgNodeId;
+
+  dataNode;
+  label;
   
   /**
    * Whether node is watched.
@@ -16,10 +20,10 @@ export default class DDGNode extends DDGEntity {
    * @param {number} dataNodeId
    * @param {string} label
    */
-  constructor(ddgNodeType, dataNodeId, label) {
-    super();
-    this.type = ddgNodeType;
-    this.dataNodeId = dataNodeId;
+  constructor(ddgTimelineNodeType, dataNode, label) {
+    super(ddgTimelineNodeType);
+    
+    this.dataNode = dataNode;
     this.label = label;
   }
 }

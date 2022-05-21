@@ -105,7 +105,6 @@ const pushTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 pushTypes[TraceType.PushImmediate] = true;
 pushTypes[TraceType.PushCallback] = true;
 pushTypes[TraceType.Resume] = true;
-
 export function isTracePush(traceType) {
   return pushTypes[traceType];
 }

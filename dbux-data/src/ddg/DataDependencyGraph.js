@@ -6,13 +6,15 @@
 import DDGWatchSet from './DDGWatchSet';
 // import DDGTimeline from './DDGTimeline';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
+import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import DDGBounds from './DDGBounds';
 import DDGNode from './DDGNode';
 import DDGEdge from './DDGEdge';
 import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
 import { makeTraceLabel } from '../helpers/makeLabels';
+import DDGTimelineNodeType from './DDGTimelineNodeType';
+import { ContextTimelineNode, DDGTimelineNode } from './DDGTimelineNodes';
 
 export default class DataDependencyGraph {
   /**
@@ -97,7 +99,7 @@ export default class DataDependencyGraph {
       // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
       label = ownStaticTrace.dataNode?.label;
     }
-    
+
     if (!label) {
       const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
       if (!isNewValue && varName) {
@@ -164,17 +166,17 @@ export default class DataDependencyGraph {
     const dataNodeId = dataNode.nodeId;
     let ddgNode = this.nodesByDataNodeId.get(dataNodeId);
     if (!ddgNode) {
-      ddgNode = this._addNode(dataNode);
+      ddgNode = this._addDDGNode(dataNode);
     }
     return ddgNode;
   }
 
-  _addNode(dataNode) {
+  _addDDGNode(dataNode) {
     const dataNodeId = dataNode.nodeId;
-    const dataNodeType = dataNode.type; // TODO!
+    // const dataNodeType = dataNode.type; // TODO!
     const label = this._makeDataNodeLabel(dataNode);
 
-    const ddgNode = new DDGNode(dataNodeType, dataNodeId, label);
+    const ddgNode = new DDGNode(DDGTimelineNodeType.Data, dataNode, label);
     ddgNode.watched = this.watchSet.isWatchedDataNode(dataNodeId);
     ddgNode.ddgNodeId = this.nodes.length;
 
@@ -217,53 +219,81 @@ export default class DataDependencyGraph {
     const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
 
     this.entitiesById = [];
-    this.nodes = [];
-    this.edges = [];
 
     this.nodesByDataNodeId = new Map();
     this.inEdgesByDDGNodeId = new Map();
     this.outEdgesByDDGNodeId = new Map();
 
-    for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
-      const dataNode = dp.collections.dataNodes.getById(dataNodeId);
+    const nodesByDataNodeId = [];
+    const edgesByFromDataNodeId = [];
+    const timelineParentsByDataNodeId = [];
 
-      if (dataNode.inputs) {
-        // don't add duplicate edges
-        const fromDataNodeIdsSet = new Set();
-        for (const fromDataNodeId of dataNode.inputs) {
-          if (!bounds.containsNode(fromDataNodeId)) {
-            // TODO: handle external nodes
-          }
-          else {
-            let fromDataNode = dp.util.getDataNode(fromDataNodeId);
-            if (fromDataNode.refId) {
-              throw new Error('TODO: fix `valueFromId` for reference types');
-            }
+    const rootTimelineNode = new DDGTimelineNode(DDGTimelineNodeType.Root);
+    rootTimelineNode.timelineId = 1;
 
-            // merge computations
-            while (this._shouldSkipDataNode(fromDataNode.nodeId)) {
-              const valueFromNode = dp.util.getDataNode(fromDataNode.valueFromId);
-              if (!valueFromNode) {
-                break;
-              }
-              if (!bounds.containsNode(valueFromNode.nodeId)) {
-                // TODO: handle external nodes
-                break;
-              }
-              fromDataNode = valueFromNode;
-            }
+    /**
+     * @type {DDGTimelineNode[]}
+     */
+    const timelineNodeStack = [];
 
-            if (!fromDataNodeIdsSet.has(fromDataNode.nodeId)) {
-              // add DDGEdge
-              fromDataNodeIdsSet.add(fromDataNode.nodeId);
-              // get or create DDGNode
-              const fromDdgNode = this._getOrCreateDDGNode(fromDataNode);
-              const newNode = this._getOrCreateDDGNode(dataNode);
-              this._addEdge(fromDdgNode, newNode);
+    /** ########################################
+     * phase 1: gather potential nodes and edges
+     * NOTE: we take this extra step to assure properties of a sparse timeline:
+     *   a) don't allocate unwanted nodes
+     *   b) keep timeline ordering (order by `dataNodeId`)
+     * #######################################*/
+
+    for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
+      const trace = dp.util.getTrace(traceId);
+      const staticTrace = dp.util.getStaticTrace(traceId);
+      if (TraceType.is.PushImmediate(staticTrace.type)) {
+        timelineNodeStack.push(new ContextTimelineNode(trace.contextId));
+      }
+      else if (dp.util.isTraceControlGroupPop(traceId)) {
+        timelineNodeStack.pop();
+      }
+
+      for (const dataNode of dp.util.getDataNodesOfTrace(traceId)) {
+        // const dataNodeId = dataNode.nodeId;
+        if (dataNode.inputs) { // only add nodes with connectivity
+          const fromDataNodeIdsSet = new Set();  // don't add duplicate edges
+          for (const fromDataNodeId of dataNode.inputs) {
+            if (!bounds.containsNode(fromDataNodeId)) {
+              // TODO: handle external nodes
             }
             else {
-              // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
-              // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
+              let fromDataNode = dp.util.getDataNode(fromDataNodeId);
+              if (fromDataNode.refId) {
+                throw new Error('TODO: fix `valueFromId` for reference types');
+              }
+
+              // merge computations
+              while (this._shouldSkipDataNode(fromDataNode.nodeId)) {
+                const valueFromNode = dp.util.getDataNode(fromDataNode.valueFromId);
+                if (!valueFromNode) {
+                  // end of the line
+                  break;
+                }
+                if (!bounds.containsNode(valueFromNode.nodeId)) {
+                  // TODO: handle external nodes
+                  break;
+                }
+                fromDataNode = valueFromNode;
+              }
+
+              if (!fromDataNodeIdsSet.has(fromDataNode.nodeId)) {
+                fromDataNodeIdsSet.add(fromDataNode.nodeId);
+
+                nodesByDataNodeId[dataNode.nodeId] = true;
+                nodesByDataNodeId[fromDataNode.nodeId] = true;
+
+                edgesByFromDataNodeId[fromDataNode.nodeId] = edgesByFromDataNodeId[fromDataNode.nodeId] || [];
+                edgesByFromDataNodeId[fromDataNode.nodeId].push(dataNode.nodeId);
+              }
+              else {
+                // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
+                // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
+              }
             }
           }
         }
@@ -271,7 +301,29 @@ export default class DataDependencyGraph {
     }
 
     /** ########################################
-     * phase 2
+     * phase 2: add nodes + edges
+     * #######################################*/
+
+    this.nodes = [];
+    this.edges = [];
+
+    for (const fromDataNodeId of nodesByDataNodeId) {
+      if (!fromDataNodeId) {
+        continue;
+      }
+
+      const toNodeIds = edgesByFromDataNodeId[fromDataNodeId];
+      for (const toNodeId of toNodeIds) {
+        // get or create DDGNodes
+        const fromDdgNode = this._getOrCreateDDGNode(TODO);
+        const newNode = this._getOrCreateDDGNode(TODO);
+        this._addEdge(fromDdgNode, newNode);
+      }
+    }
+
+
+    /** ########################################
+     * phase 3: gather connectivity data for nodes
      *  ######################################*/
     for (const node of this.nodes) {
       const nIncomingEdges = this.inEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;

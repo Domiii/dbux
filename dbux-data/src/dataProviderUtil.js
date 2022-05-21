@@ -15,9 +15,11 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
+import { renderPath } from '@dbux/common-node/src/util/pathUtil';
+import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
-import StaticContextType, { isRealStaticContext, isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import StaticContextType, { isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
@@ -25,10 +27,9 @@ import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFu
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import { renderPath } from '@dbux/common-node/src/util/pathUtil';
-import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
+import ControlTraceRole, { isTraceControlPop } from '@dbux/common/src/types/constants/ControlTraceRole';
 import RefSnapshot, { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/common/src/types/RefSnapshot';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
@@ -499,6 +500,20 @@ export default {
   /** @param {DataProvider} dp */
   getStaticTraceControlId(dp, staticTraceId) {
     TODO
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceControlGroupPop(dp, traceId) {
+    // const trace = dp.util.getTrace(traceId);
+    const staticTraceId = dp.util.getStaticTraceId(traceId);
+    return dp.util.isStaticTraceControlGroupPop(staticTraceId);
+  },
+
+  /** @param {DataProvider} dp */
+  isStaticTraceControlGroupPop(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return TraceType.is.PopImmediate(staticTrace.type) ||  // pop context
+      isTraceControlPop(staticTrace.controlRole); // pop branch statement
   },
 
   // /** @param {DataProvider} dp */
