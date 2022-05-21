@@ -14,10 +14,16 @@ const ControlTraceRole = new Enum(controlTraceRoleObj);
 
 
 
+const pushRoles = new Array(ControlTraceRole.getValueMaxIndex()).map(() => false);
+pushRoles[ControlTraceRole.Push] = true;
+pushRoles[ControlTraceRole.PushAndDecision] = true;
+export function isTraceRoleControlPush(role) {
+  return pushRoles[role] || false;
+}
+
 const popRoles = new Array(ControlTraceRole.getValueMaxIndex()).map(() => false);
-popRoles[ControlTraceRole.Push] = true;
-popRoles[ControlTraceRole.PushAndDecision] = true;
-export function isTraceControlPop(role) {
+popRoles[ControlTraceRole.Pop] = true;
+export function isTraceRoleControlPop(role) {
   return popRoles[role] || false;
 }
 

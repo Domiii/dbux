@@ -5,16 +5,13 @@
 
 // import DDGTimeline from './DDGTimeline';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
-import last from 'lodash/last';
+import TraceType, { isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge from './DDGEdge';
 import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
-import { makeTraceLabel } from '../helpers/makeLabels';
-import DDGTimelineNodeType from './DDGTimelineNodeType';
-import { ContextTimelineNode, DDGTimelineNode } from './DDGTimelineNodes';
+import DDGTimelineBuilder from './DDGTimelineBuilder';
 
 export default class DataDependencyGraph {
   /**
@@ -79,55 +76,6 @@ export default class DataDependencyGraph {
    * Node + Edge getters
    * ##########################################################################*/
 
-  /** ###########################################################################
-   * labels
-   * ##########################################################################*/
-
-  _makeDataNodeLabel(dataNode) {
-    const { dp } = this;
-    const { nodeId: dataNodeId, traceId } = dataNode;
-
-    // get trace data
-    const { staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
-    const isTraceOwnDataNode = traceNodeId === dataNodeId;
-    const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
-    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
-
-    // variable name
-    let label = '';
-    if (dataNode.traceId) {
-      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
-      label = ownStaticTrace.dataNode?.label;
-    }
-
-    if (!label) {
-      const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
-      if (!isNewValue && varName) {
-        label = varName;
-      }
-      else if (isTraceReturn(ownStaticTrace.type)) {
-        // return label
-        label = 'ret';
-      }
-    }
-
-    if (!label) {
-      if (dp.util.isTraceOwnDataNode(dataNodeId)) {
-        // default trace label
-        const trace = dp.util.getTrace(dataNode.traceId);
-        label = makeTraceLabel(trace);
-      }
-      else {
-        // TODO: ME
-      }
-    }
-    // else {
-    // }
-
-    // TODO: nested DataNodes don't have a traceId (or they don't own it)
-    return label;
-  }
-
 
   /** ###########################################################################
    * {@link #build}
@@ -156,35 +104,6 @@ export default class DataDependencyGraph {
       }
     }
     return false;
-  }
-
-  /**
-   * @param {DataNode} dataNode 
-   * @return {DDGNode}
-   */
-  _getOrCreateDDGNode(dataNode) {
-    const dataNodeId = dataNode.nodeId;
-    let ddgNode = this.nodesByDataNodeId.get(dataNodeId);
-    if (!ddgNode) {
-      ddgNode = this._addDDGNode(dataNode);
-    }
-    return ddgNode;
-  }
-
-  _addDDGNode(dataNode) {
-    const dataNodeId = dataNode.nodeId;
-    // const dataNodeType = dataNode.type; // TODO!
-    const label = this._makeDataNodeLabel(dataNode);
-
-    const ddgNode = new DDGNode(DDGTimelineNodeType.Data, dataNode, label);
-    ddgNode.watched = this.watchSet.isWatchedDataNode(dataNodeId);
-    ddgNode.ddgNodeId = this.nodes.length;
-
-    this._addEntity(ddgNode);
-    this.nodes.push(ddgNode);
-
-    this.nodesByDataNodeId.set(dataNodeId, ddgNode);
-    return ddgNode;
   }
 
   _addEdgeToMap(map, id, edge) {
@@ -283,41 +202,27 @@ export default class DataDependencyGraph {
       }
     }
 
+
     /** ########################################
-     * phase 2: create nodes
+     * phase 2: build timelines (create nodes)
      * #######################################*/
 
     this.nodes = [];
     this.edges = [];
 
-    const rootTimelineNode = new DDGTimelineNode(DDGTimelineNodeType.Root);
-    rootTimelineNode.timelineId = 1;
-
-    /**
-     * @type {DDGTimelineNode[]}
-     */
-    const timelineNodeStack = [rootTimelineNode];
+    const timelineBuilder = new DDGTimelineBuilder();
 
     for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
-      const trace = dp.util.getTrace(traceId);
-      const staticTrace = dp.util.getStaticTrace(traceId);
-      if (TraceType.is.PushImmediate(staticTrace.type)) {
-        // TODO: add timelineId
-        timelineNodeStack.push(new ContextTimelineNode(trace.contextId));
-      }
-      else if (dp.util.isTraceControlGroupPop(traceId)) {
-        timelineNodeStack.pop();
-      }
+      timelineBuilder.visitTrace(traceId);
 
-      const timelineParent = last(timelineNodeStack);
       for (const dataNode of dp.util.getDataNodesOfTrace(traceId)) {
         const dataNodeId = dataNode.nodeId;
         if (nodesByDataNodeId[dataNodeId]) {
-          const newNode = addDataNode(dataNodeId);
-          timelineParent.children.push(node);
+          timelineBuilder.addDataNode(dataNodeId);
         }
       }
     }
+
 
     /** ########################################
      * phase 3: create edges
@@ -337,10 +242,11 @@ export default class DataDependencyGraph {
       }
     }
 
+
     /** ########################################
      * phase 4: use edges to gather connectivity data for nodes
      *  ######################################*/
-    for (const node of this.nodes) {
+    for (const node of TODO) {
       const nIncomingEdges = this.inEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;
       const nOutgoingEdges = this.outEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;
 

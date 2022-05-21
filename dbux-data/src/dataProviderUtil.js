@@ -29,7 +29,7 @@ import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
-import ControlTraceRole, { isTraceControlPop } from '@dbux/common/src/types/constants/ControlTraceRole';
+import ControlTraceRole, { isTraceRoleControlPop } from '@dbux/common/src/types/constants/ControlTraceRole';
 import RefSnapshot, { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/common/src/types/RefSnapshot';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
@@ -513,7 +513,7 @@ export default {
   isStaticTraceControlGroupPop(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     return TraceType.is.PopImmediate(staticTrace.type) ||  // pop context
-      isTraceControlPop(staticTrace.controlRole); // pop branch statement
+      isTraceRoleControlPop(staticTrace.controlRole); // pop branch statement
   },
 
   // /** @param {DataProvider} dp */

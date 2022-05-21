@@ -26,6 +26,12 @@ export class DDGTimelineNode {
   constructor(type) {
     this.type = type;
   }
+
+  toString() {
+    const props = { ...this };
+    delete props.children;
+    return `[${DDGTimelineNodeType.nameFrom(this.type)}] ${JSON.stringify(props, null, 2)}`;
+  }
 }
 
 export class BaseDataTimeLineNode extends DDGTimelineNode {
@@ -63,5 +69,5 @@ export class ContextTimelineNode extends DDGTimelineNode {
 }
 
 export class BranchTimelineNode extends DDGTimelineNode {
-  
+
 }
