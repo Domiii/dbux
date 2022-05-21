@@ -1,36 +1,39 @@
 import Enum from '@dbux/common/src/util/Enum';
 
-const DDGTimelineNodeTypeObj = {
+const ddgTimelineNodeTypeObj = {
   Root: 1,
 
   // primitive data
   Primitive: 2,
 
   // snapshot root (Data node for reference/complex types)
-  Snapshot: 3,
+  SnapshotRoot: 3,
+
+  SnapshotRef: 4,
+  SnapshotPrimitive: 5,
 
   // decision (Data node for control decisions)
-  Decision: 4,
+  Decision: 8,
 
   // context
-  Context: 5,
+  Context: 9,
 
   // conditionals
-  If: 6,
-  Ternary: 7,
-  SwitchCase: 8,
+  If: 10,
+  Ternary: 11,
+  SwitchCase: 12,
 
-  For: 9,
-  ForIn: 10,
-  ForOf: 11,
-  While: 12,
-  DoWhile: 13
+  For: 13,
+  ForIn: 14,
+  ForOf: 15,
+  While: 16,
+  DoWhile: 17
 };
 
 /**
- * @type {(Enum|typeof DDGTimelineNodeTypeObj)}
+ * @type {(Enum|typeof ddgTimelineNodeTypeObj)}
  */
-const DDGTimelineNodeType = new Enum(DDGTimelineNodeTypeObj);
+const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 
 /** @typedef { DDGTimelineNodeTypeObj[keyof DDGTimelineNodeTypeObj] } DDGTimelineNodeTypeValues */
 
@@ -47,11 +50,27 @@ controlGroupTypes[DDGTimelineNodeType.ForOf] = true;
 controlGroupTypes[DDGTimelineNodeType.While] = true;
 controlGroupTypes[DDGTimelineNodeType.DoWhile] = true;
 export function isControlGroupTimelineNode(timelineNodeType) {
-  return controlGroupTypes[timelineNodeType];
+  return controlGroupTypes[timelineNodeType] || false;
 }
 
-export function isDataTimelineNode(timelineNodeType) {
-  return !isControlGroupTimelineNode(timelineNodeType);
+const containerNodeTypes = [...controlGroupTypes];
+containerNodeTypes[DDGTimelineNodeType.SnapshotRoot] = true;
+export function isContainerNodeType(timelineNodeType) {
+  return containerNodeTypes[timelineNodeType] || false;
+}
+
+
+const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+dataTimelineNodeTypes[DDGTimelineNodeType.Primitive] = true;
+dataTimelineNodeTypes[DDGTimelineNodeType.SnapshotPrimitive] = true;
+dataTimelineNodeTypes[DDGTimelineNodeType.SnapshotRef] = true;
+dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
+
+/**
+ * These are the nodes that are actually linked.
+ */
+export function isBasicDataTimelineNode(timelineNodeType) {
+  return dataTimelineNodeTypes[timelineNodeType] || false;
 }
 
 

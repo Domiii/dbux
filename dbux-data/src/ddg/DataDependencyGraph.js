@@ -9,9 +9,9 @@ import TraceType, { isBeforeCallExpression } from '@dbux/common/src/types/consta
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge from './DDGEdge';
-import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
+import { DataTimelineNode } from './DDGTimelineNodes';
 
 export default class DataDependencyGraph {
   /**
@@ -35,32 +35,19 @@ export default class DataDependencyGraph {
   bounds;
 
   /**
-   * @type {DDGEntity[]}
-   */
-  entitiesById;
-  /**
-   * @type {DDGNode[]}
-   */
-  nodes;
-  /**
    * @type {DDGEdge[]}
    */
   edges;
 
   /**
-   * @type {Map.<number, DDGNode>}
+   * @type {Map.<number, DDGEdge[]>}
    */
-  nodesByDataNodeId;
+  outEdgesByDataTimelineId;
 
   /**
    * @type {Map.<number, DDGEdge[]>}
    */
-  outEdgesByDDGNodeId;
-
-  /**
-   * @type {Map.<number, DDGEdge[]>}
-   */
-  inEdgesByDDGNodeId;
+  inEdgesByDataTimelineId;
 
 
   /**
@@ -80,15 +67,6 @@ export default class DataDependencyGraph {
   /** ###########################################################################
    * {@link #build}
    * ##########################################################################*/
-
-  /**
-   * @param {DDGEntity} entity
-   */
-  _addEntity(entity) {
-    const entityId = this.entitiesById.length + 1;
-    entity.entityId = entityId;
-    this.entitiesById[entityId] = entity;
-  }
 
   _shouldSkipDataNode(dataNodeId) {
     if (this.dp.util.isDataNodePassAlong(dataNodeId)) {
@@ -115,17 +93,15 @@ export default class DataDependencyGraph {
   }
 
   /**
-   * @param {DDGNode} fromDdgNode 
-   * @param {DDGNode} toNode 
+   * @param {DataTimelineNode} fromNode 
+   * @param {DataTimelineNode} toNode 
    */
-  _addEdge(fromDdgNode, toNode) {
-    const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.ddgNodeId, toNode.ddgNodeId);
-
-    this._addEntity(newEdge);
+  _addEdge(fromNode, toNode) {
+    const newEdge = new DDGEdge(DDGEdgeType.Write, this.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId);
     this.edges.push(newEdge);
 
-    this._addEdgeToMap(this.inEdgesByDDGNodeId, toNode.ddgNodeId, newEdge);
-    this._addEdgeToMap(this.outEdgesByDDGNodeId, fromDdgNode.ddgNodeId, newEdge);
+    this._addEdgeToMap(this.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
+    this._addEdgeToMap(this.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
   }
 
   /**
@@ -137,11 +113,8 @@ export default class DataDependencyGraph {
     const { dp } = this;
     const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
 
-    this.entitiesById = [];
-
-    this.nodesByDataNodeId = new Map();
-    this.inEdgesByDDGNodeId = new Map();
-    this.outEdgesByDDGNodeId = new Map();
+    this.inEdgesByDataTimelineId = new Map();
+    this.outEdgesByDataTimelineId = new Map();
 
     const nodesByDataNodeId = [];
     const edgesByFromDataNodeId = [];
@@ -192,7 +165,7 @@ export default class DataDependencyGraph {
                 edgesByFromDataNodeId[fromDataNode.nodeId].push(dataNode.nodeId);
               }
               else {
-                // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
+                // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
                 // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
                 // TODO: add summarization logic
               }
@@ -207,8 +180,7 @@ export default class DataDependencyGraph {
      * phase 2: build timelines (create nodes)
      * #######################################*/
 
-    this.nodes = [];
-    this.edges = [];
+    this.edges = [null];
 
     const timelineBuilder = new DDGTimelineBuilder();
 
@@ -219,7 +191,7 @@ export default class DataDependencyGraph {
         const dataNodeId = dataNode.nodeId;
         if (nodesByDataNodeId[dataNodeId]) {
           // timelineBuilder.addDataNodes(dataNodeId);
-          timelineBuilder.addDataNodes(traceId);
+          timelineBuilder.addTimelineDataNodes(traceId);
           break;
         }
       }
@@ -235,23 +207,24 @@ export default class DataDependencyGraph {
         continue;
       }
 
-      const fromDdgNode = getDDGNode(TODO);
+      const fromNode = timelineBuilder.getDataTimelineNodeByDataNodeId(fromDataNodeId);
       const toNodeIds = edgesByFromDataNodeId[fromDataNodeId];
-      for (const toNodeId of toNodeIds) {
-        // get or create DDGNodes
-        const newNode = getDDGNode(TODO);
-        this._addEdge(fromDdgNode, newNode);
+      for (const toDataNodeId of toNodeIds) {
+        const toNode = timelineBuilder.getDataTimelineNodeByDataNodeId(toDataNodeId);
+        this._addEdge(fromNode, toNode);
       }
     }
 
 
     /** ########################################
-     * phase 4: use edges to gather connectivity data for nodes
+     * phase 4: use edges to gather connectivity data for nodes and general post-processing
      *  ######################################*/
-    for (const node of TODO) {
-      const nIncomingEdges = this.inEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;
-      const nOutgoingEdges = this.outEdgesByDDGNodeId.get(node.ddgNodeId)?.length || 0;
 
+    for (const node of timelineBuilder.timelineDataNodes) {
+      const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+      const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+
+      node.watched = this.ddg.watchSet.isWatchedDataNode(node.dataNode.nodeId);
       node.nInputs = nIncomingEdges;
       node.nOutputs = nOutgoingEdges;
     }

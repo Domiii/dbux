@@ -1,14 +1,12 @@
-import DDGEntity from './DDGEntity';
-
-export default class DDGEdge extends DDGEntity {
+export default class DDGEdge {
   /**
    * @param {DDGEdgeTypeValue} type 
    * @param {number} from 
    * @param {number} to 
    */
-  constructor(type, from, to) {
-    super();
+  constructor(type, edgeId, from, to) {
     this.type = type;
+    this.edgeId = edgeId;
     this.from = from;
     this.to = to;
   }

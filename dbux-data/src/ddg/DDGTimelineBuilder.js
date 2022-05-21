@@ -5,7 +5,7 @@ import TraceType, { isTraceReturn } from '@dbux/common/src/types/constants/Trace
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, RootTimelineNode } from './DDGTimelineNodes';
 import DDGTimelineNodeType from './DDGTimelineNodeType';
 import { makeTraceLabel } from '../helpers/makeLabels';
 
@@ -20,10 +20,26 @@ export default class DDGTimelineBuilder {
   stack;
 
   /**
+   * @type {DDGTimelineNode}
+   */
+  timelineRoot;
+
+  /**
    * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
    * @type {DDGTimelineNode[]}
    */
-  timelineNodes = [];
+  timelineNodes = [null];
+
+  /**
+   * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
+   * @type {DataTimelineNode[]}
+   */
+  timelineDataNodes = [null];
+
+  /**
+   * @type {DataTimelineNode[]}
+   */
+  timelineDataNodesByDataNodeId = [];
 
   logger;
 
@@ -34,13 +50,13 @@ export default class DDGTimelineBuilder {
     this.ddg = ddg;
     this.logger = newLogger('DDGTimelineControlStack');
 
-    const rootTimelineNode = new DDGTimelineNode(DDGTimelineNodeType.Root);
-    this.#addNode(rootTimelineNode);
+    const timelineRoot = this.timelineRoot = new RootTimelineNode();
+    this.#addNode(timelineRoot);
 
     /**
      * @type {DDGTimelineNode[]}
      */
-    this.stack = [rootTimelineNode];
+    this.stack = [timelineRoot];
   }
 
   get dp() {
@@ -55,12 +71,20 @@ export default class DDGTimelineBuilder {
     return last(this.stack);
   }
 
+  getDataTimelineNodeByDataNodeId(dataNodeId) {
+    return this.timelineDataNodesByDataNodeId[dataNodeId];
+  }
+
+  /** ###########################################################################
+   * create and/or add nodes
+   * ##########################################################################*/
+
   /**
    * NOTE: a trace might induce multiple {@link DDGTimelineNode} in these circumstances:
    *   1. if a DataNode reads or writes an object prop, we add the complete snapshot with all its children
    *   2. a Decision node that is also a Write Node (e.g. `if (x = f())`)
    */
-  addDataNodes(traceId) {
+  addTimelineDataNodes(traceId) {
     const { dp } = this;
     const trace = dp.util.getTrace(traceId);
     const dataNodes = dp.util.getDataNodesOfTrace(traceId);
@@ -88,23 +112,40 @@ export default class DDGTimelineBuilder {
         // sanity checks
         this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(traceId)}"`);
       }
-      // TODO: add Snapshot
+      /**
+       * TODO: check {@link DDGWatchSet#buildSnapshot} first!
+       * TODO: add SnapshotRootTimelineNode
+       */
     }
+    // else if() {
+    //   TODO: add DecisionTimelineNode
+    // }
     else {
       // primitive value or ref assignment
       // ownDataNode.varAccess.declarationTid;
       if (dataNodes.length > 1) {
         this.logTrace(`NYI: trace has multiple dataNodes but no ref type "${dp.util.makeTraceInfo(traceId)}"`);
       }
-      newNode = new PrimitiveTimelineNode(dataNode, label);
+      newNode = new PrimitiveTimelineNode(ownDataNode, label);
     }
-    newNode.watched = this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId);
 
-    this.#addNode(newNode);
+    // add node
+    this.#addDataNode(newNode);
 
     // add to parent
     const parent = this.peek();
     parent.children.push(newNode);
+  }
+
+  /**
+   * @param {DataTimelineNode} node 
+   */
+  #addDataNode(node) {
+    node.dataTimelineId = this.timelineDataNodes.length;
+    this.timelineDataNodes.push(node);
+    this.timelineDataNodesByDataNodeId[node.dataNode.nodeId] = node;
+
+    this.#addNode(node);
   }
 
   /**
@@ -115,12 +156,16 @@ export default class DDGTimelineBuilder {
     this.timelineNodes.push(node);
   }
 
+  /** ###########################################################################
+   * stack util
+   * ##########################################################################*/
+
   #pushGroup(node) {
     this.#addNode(node);
     this.stack.push(node);
   }
 
-  #pop() {
+  #popGroup() {
     return this.stack.pop();
   }
 
@@ -154,7 +199,7 @@ export default class DDGTimelineBuilder {
         // pop branch statement
         // TODO
       }
-      this.#pop();
+      this.#popGroup();
     }
   }
 
