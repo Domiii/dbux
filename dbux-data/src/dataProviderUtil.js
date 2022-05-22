@@ -893,17 +893,24 @@ export default {
   },
 
   /**
-   * Creates a new snapshot graph from an existing {@link snapshot}, at a later point in time.
+   * Creates a new snapshot graph from an existing {@link RefSnapshot}, at a later point in time.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   * @param {RefSnapshot} snapshot 
+   * @param {number} toTraceId 
+   */
+  constructValueSnapshotGraph(dp, snapshot, toTraceId) {
+
+  },
+
+  /**
+   * Creates a new snapshot graph from an existing {@link VersionedRefSnapshot}, at a later point in time.
    * 
    * @param {RuntimeDataProvider} dp 
    * @param {VersionedRefSnapshot} snapshot 
    * @param {number} toTraceId 
    */
-  constructValueSnapshotGraph(dp, snapshot, toTraceId) {
-    
-  },
-
-  constructNewValueSnapshotGraph() {
+  constructNewValueSnapshotGraph(dp, snapshot, toTraceId) {
 
   },
 
@@ -926,7 +933,7 @@ export default {
           // `terminateNodeId` constraints
           // future-work: use binary search etc. to get the relevant segment
           (
-            node.nodeId > fromTraceId &&
+            (!fromTraceId || node.nodeId > fromTraceId) &&
             node.nodeId <= toTraceId
           ) &&
 
