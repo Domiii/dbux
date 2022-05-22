@@ -6,8 +6,7 @@ const ddgTimelineNodeTypeObj = {
   // primitive data
   Primitive: 2,
 
-  SnapshotRef: 4,
-  SnapshotPrimitive: 5,
+  RefSnapshot: 3,
 
   // decision (Data node for control decisions)
   Decision: 8,
@@ -50,17 +49,15 @@ export function isControlGroupTimelineNode(timelineNodeType) {
   return controlGroupTypes[timelineNodeType] || false;
 }
 
-const containerNodeTypes = [...controlGroupTypes];
-containerNodeTypes[DDGTimelineNodeType.SnapshotRef] = true;
-export function isContainerNodeType(timelineNodeType) {
-  return containerNodeTypes[timelineNodeType] || false;
-}
+// const containerNodeTypes = [...controlGroupTypes];
+// export function isContainerNodeType(timelineNodeType) {
+//   return containerNodeTypes[timelineNodeType] || false;
+// }
 
 
 const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 dataTimelineNodeTypes[DDGTimelineNodeType.Primitive] = true;
 dataTimelineNodeTypes[DDGTimelineNodeType.SnapshotPrimitive] = true;
-dataTimelineNodeTypes[DDGTimelineNodeType.SnapshotRef] = true;
 dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
 
 /**

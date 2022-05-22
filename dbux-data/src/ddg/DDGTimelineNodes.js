@@ -81,17 +81,20 @@ export class PrimitiveTimelineNode extends DataTimelineNode {
 
 
 /**
- * Snapshot of a ref value at time t = {@link SnapshotRefTimelineNode#dataNodeId.nodeId}.
- * NOTE: This is NOT a DataTimelineNode!
+ * Snapshot of a ref value at time t = {@link RefSnapshotTimelineNode#dataNodeId.nodeId}.
+ * NOTE: This is NEITHER DataTimelineNode NOR GroupTimelineNode!
  */
-export class SnapshotRefTimelineNode extends DDGTimelineNode {
+export class RefSnapshotTimelineNode extends DDGTimelineNode {
   dataNodeId;
 
   /**
-   * 
+   * @type {number}
    */
   refId;
   
+  /**
+   * @type {string}
+   */
   label;
   
   // TODO: also represent the refNode itself (→ it needs to be addressable iff it has `declarationTid`)
@@ -107,7 +110,7 @@ export class SnapshotRefTimelineNode extends DDGTimelineNode {
    * @param {DataNode} dataNodeId 
    */
   constructor(dataNodeId, refId) {
-    super(DDGTimelineNodeType.SnapshotRef);
+    super(DDGTimelineNodeType.RefSnapshot);
 
     this.dataNodeId = dataNodeId;
     this.refId = refId;

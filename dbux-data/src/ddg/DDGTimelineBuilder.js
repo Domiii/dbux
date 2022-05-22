@@ -2,13 +2,14 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 
 import last from 'lodash/last';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
+import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, SnapshotRefTimelineNode, GroupTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode } from './DDGTimelineNodes';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdge from './DDGEdge';
 import DDGEdgeType from './DDGEdgeType';
@@ -23,32 +24,6 @@ const Verbose = 1;
  *  #########################################################################*/
 
 export default class DDGTimelineBuilder {
-  /** ########################################
-   * final outputs
-   *  ######################################*/
-
-  /**
-   * @type {DDGTimelineNode}
-   */
-  timelineRoot;
-
-  /**
-   * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
-   * @type {DDGTimelineNode[]}
-   */
-  timelineNodes = [null];
-
-  /**
-   * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
-   * @type {DataTimelineNode[]}
-   */
-  timelineDataNodes = [null];
-
-  /**
-   * @type {DDGEdge[]}
-   */
-  edges;
-
 
   /** ########################################
    * build-time datastructures
@@ -63,7 +38,7 @@ export default class DDGTimelineBuilder {
    * The last snapshot of given `refId`.
    * NOTE: The last snapshot by `refId`. The snapshot tree generally contains both reads, writes and also untouched nodes.
    * 
-   * @type {Object.<number, SnapshotRefTimelineNode>}
+   * @type {Object.<number, RefSnapshotTimelineNode>}
    */
   lastTimelineRefSnapshotNodeByRefId = {};
 
@@ -107,7 +82,7 @@ export default class DDGTimelineBuilder {
     this.ddg = ddg;
     this.logger = newLogger('DDGTimelineControlStack');
 
-    const timelineRoot = this.timelineRoot = new TimelineRoot();
+    const timelineRoot = this.ddg.timelineRoot = new TimelineRoot();
     this.#addNode(timelineRoot);
 
     this.stack = [timelineRoot];
@@ -187,7 +162,7 @@ export default class DDGTimelineBuilder {
    * snapshots
    *  #########################################################################*/
 
-  isSnapshotRef(dataNode) {
+  canBeRefSnapshot(dataNode) {
     let refId;
     return (
       (refId = dataNode.varAccess?.objectNodeId) &&
@@ -197,64 +172,33 @@ export default class DDGTimelineBuilder {
     );
   }
 
-  /**
-   * @param {DataNode} ownDataNode 
-   * @param {DataNode[]?} dataNodes
-   * 
-   * @return {SnapshotRefTimelineNode}
-   */
-  addRefSnapshot(ownDataNode, dataNodes) {
-    const { dp } = this;
-    // const { nodeId: dataNodeId } = ownDataNode;
-    const { refId } = ownDataNode;
-    if (!refId) {
-      throw new Error(`missing refId`);
-    }
-
+  #addSnapshotChildren(snapshot, originalChildren, modificationDataNodes, isOriginalValueRef) {
     /**
-     * Create Snapshot node
-     */
-    const snapshot = new SnapshotRefTimelineNode(ownDataNode.nodeId, refId);
-    snapshot.label = this.#makeDataNodeLabel(ownDataNode);
-    this.#addNode(snapshot);
-
-    const previousSnapshot = this.getLastRefSnapshotNode(refId);
-    if (!previousSnapshot) {
-      /**
-       * → build new snapshot.
-       * NOTE: this is (very) loosely based on {@link dp.util.constructVersionedValueSnapshot}.
-       */
-      const valueRef = this.dp.collections.values.getById(refId);
-
-      // get last modifications by prop
-      const fromTraceId = 0;
-      const toTraceId = ownDataNode.traceId;
-      const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
-      /**
        * @type {Object.<string, DataNode>}
        */
-      const lastModsByProp = {};
+    const lastModsByProp = {};
 
-      for (const dataNode of modificationDataNodes) {
-        lastModsByProp[dataNode.varAccess.prop] = dataNode;
-      }
+    for (const dataNode of modificationDataNodes) {
+      lastModsByProp[dataNode.varAccess.prop] = dataNode;
+    }
 
-      const allProps = {
-        ...Object.keys(lastModsByProp),
-        ...Object.keys(valueRef.children)
-      };
+    const allProps = {
+      ...Object.keys(lastModsByProp),
+      ...Object.keys(originalChildren)
+    };
 
-      // create children
-      /**
-       * @type {Array | Object}
-       */
-      snapshot.children = new valueRef.children.constructor();
-      for (const prop of allProps) {
-        const lastModDataNode = lastModsByProp[prop];
-        let newChildSnapshot;
-        if (!lastModDataNode) {
-          // initial value
-          const original = valueRef.children[prop];
+    // create children
+    snapshot.children = new originalChildren.constructor();
+    for (const prop of allProps) {
+      const lastModDataNode = lastModsByProp[prop];
+      let newChild;
+      if (!lastModDataNode) {
+        // initial value
+        /**
+         * @type {RefSnapshot | number | any}
+         */
+        const original = originalChildren[prop];
+        if (isOriginalValueRef) {
           if (original.refId) {
             // nested ref
             // PROBLEM: the children of nested initial reference values are not addressable
@@ -270,30 +214,74 @@ export default class DDGTimelineBuilder {
           }
         }
         else {
-          // apply lastMod
-          if (this.isSnapshotRef(lastModDataNode)) {
-            // nested ref
-            newChildSnapshot = this.addRefSnapshot(lastModDataNode, null);
+          // original is timelineId
+          const originalNode = this.timelineNodes[original];
+          newChild = typedShallowClone(originalNode);
+          if (newChild instanceof DataTimelineNode) {
+            this.#doAddDataNode(newChild);
           }
           else {
-            // primitive
-            newChildSnapshot = this.addPrimitiveDataNode(lastModDataNode);
+            this.#addNode(newChild);
           }
         }
-        snapshot.children[prop] = newChildSnapshot.timelineId;
       }
+      else {
+        // apply lastMod
+        if (this.canBeRefSnapshot(lastModDataNode)) {
+          // nested ref
+          newChild = this.addRefSnapshot(lastModDataNode, null);
+        }
+        else {
+          // primitive
+          newChild = this.addPrimitiveDataNode(lastModDataNode);
+        }
+      }
+      snapshot.children[prop] = newChild.timelineId;
+    }
+  }
+
+  /**
+   * @param {DataNode} ownDataNode 
+   * @param {DataNode[]?} dataNodes
+   * 
+   * @return {RefSnapshotTimelineNode}
+   */
+  addRefSnapshot(ownDataNode, dataNodes) {
+    const { dp } = this;
+    // const { nodeId: dataNodeId } = ownDataNode;
+    const { refId } = ownDataNode;
+    if (!refId) {
+      throw new Error(`missing refId`);
+    }
+
+    /**
+     * Create Snapshot node
+     */
+    const snapshot = new RefSnapshotTimelineNode(ownDataNode.nodeId, refId);
+    snapshot.label = this.#makeDataNodeLabel(ownDataNode);
+    this.#addNode(snapshot);
+
+    const previousSnapshot = this.getLastRefSnapshotNode(refId);
+    if (!previousSnapshot) {
+      /**
+       * → build new snapshot.
+       * NOTE: this is (very) loosely based on {@link dp.util.constructVersionedValueSnapshot}.
+       */
+
+      const valueRef = this.dp.collections.values.getById(refId);
+
+      // get last modifications by prop
+      const fromTraceId = 0;
+      const toTraceId = ownDataNode.traceId;
+      const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
+      
+      this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true);
     }
     else {
       /**
-       * → deep clone original snapshot, but create new ids for all children.
+       * → deep clone original snapshot.
        */
-
-      // TODO
-
-      if (dataNodes) {
-        // apply `dataNodes` here
-        dataNodes && dp.util.applyDataSnapshotModificationsDataNodes(snapshot, dataNodes, this.SnapshotMods);
-      }
+      this.#addSnapshotChildren(snapshot, previousSnapshot.children, dataNodes, false);
     }
   }
 
@@ -305,7 +293,7 @@ export default class DDGTimelineBuilder {
     const label = this.#makeDataNodeLabel(dataNode);
     const newNode = new PrimitiveTimelineNode(dataNode.nodeId, label);
 
-    this.#handleAddDataNode(newNode);
+    this.#doAddDataNode(newNode);
 
     return newNode;
   }
@@ -313,7 +301,7 @@ export default class DDGTimelineBuilder {
   /**
    * @param {DataTimelineNode} newNode 
    */
-  #handleAddDataNode(newNode) {
+  #doAddDataNode(newNode) {
     newNode.dataTimelineId = this.timelineDataNodes.length;
     this.timelineDataNodes.push(newNode);
     this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
@@ -384,8 +372,8 @@ export default class DDGTimelineBuilder {
     //   TODO: add DecisionTimelineNode
     // }
     // else 
-    if (this.isSnapshotRef(ownDataNode)) {
-      // TODO: handle assignment patterns (can have multiple write targets)
+    if (this.canBeRefSnapshot(ownDataNode)) {
+      // TODO: handle assignment patterns (→ can have multiple write targets)
       const refNodeId = ownDataNode.varAccess.objectNodeId;
       // ref type access → add Snapshot
       if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {

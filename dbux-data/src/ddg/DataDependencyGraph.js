@@ -71,9 +71,8 @@ export default class DataDependencyGraph {
     const timelineBuilder = new DDGTimelineBuilder();
 
     for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
+      // update control group stack
       timelineBuilder.updateStack(traceId);
-
-      // timelineBuilder.addDataNodes(dataNodeId);
 
       // add nodes and edges of trace
       timelineBuilder.addTraceToTimeline(traceId);
@@ -87,10 +86,10 @@ export default class DataDependencyGraph {
      *  ######################################*/
 
     for (const node of timelineBuilder.timelineDataNodes) {
-      const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
-      const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+      const nIncomingEdges = timelineBuilder.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+      const nOutgoingEdges = timelineBuilder.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
 
-      node.watched = this.ddg.watchSet.isWatchedDataNode(node.dataNodeId);
+      node.watched = this.watchSet.isWatchedDataNode(node.dataNodeId);
       node.nInputs = nIncomingEdges;
       node.nOutputs = nOutgoingEdges;
     }

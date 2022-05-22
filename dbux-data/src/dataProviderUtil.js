@@ -13,6 +13,7 @@ import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdent
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import { renderPath } from '@dbux/common-node/src/util/pathUtil';
@@ -917,8 +918,7 @@ export default {
    */
   constructNewValueSnapshot(dp, snapshot, fromTraceId, toTraceId) {
     // clone original snapshot
-    const newSnapshot = new snapshot.constructor();
-    Object.assign(newSnapshot, snapshot);
+    const newSnapshot = typedShallowClone(snapshot);
 
     // apply modifications
     dp.util.applyDataSnapshotModifications(newSnapshot, fromTraceId, toTraceId);
