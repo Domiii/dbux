@@ -31,7 +31,9 @@ export class DDGTimelineNode {
 
 export class GroupTimelineNode extends DDGTimelineNode {
   /**
-   * @type {Array.<DDGTimelineNode>}
+   * `timelineId` of children in order.
+   * 
+   * @type {Array.<number>}
    */
   children = [];
 }
@@ -53,7 +55,7 @@ export class TimelineRoot extends GroupTimelineNode {
 
 export class DataTimelineNode extends DDGTimelineNode {
   dataTimelineId;
-  dataNode;
+  dataNodeId;
   label;
 
   /** ########################################
@@ -69,36 +71,45 @@ export class DataTimelineNode extends DDGTimelineNode {
 }
 
 export class PrimitiveTimelineNode extends DataTimelineNode {
-  constructor(dataNode, label) {
+  constructor(dataNodeId, label) {
     super(DDGTimelineNodeType.Primitive);
 
-    this.dataNode = dataNode;
+    this.dataNodeId = dataNodeId;
     this.label = label;
   }
 }
 
 
 /**
- * Snapshot of a ref value at a certain point 
- * at time t = {@link SnapshotRefTimelineNode#dataNode.nodeId}.
+ * Snapshot of a ref value at time t = {@link SnapshotRefTimelineNode#dataNodeId.nodeId}.
+ * NOTE: This is NOT a DataTimelineNode!
  */
-export class SnapshotRefTimelineNode extends DataTimelineNode {
+export class SnapshotRefTimelineNode extends DDGTimelineNode {
+  dataNodeId;
+
+  /**
+   * 
+   */
   refId;
+  
+  label;
   
   // TODO: also represent the refNode itself (→ it needs to be addressable iff it has `declarationTid`)
 
   /**
-   * @type {DataTimelineNode[]}
+   * Array or object of children ids ({@link DDGTimelineNode#timelineId}).
+   * 
+   * @type {Array.<number> | Object.<string, number>}
    */
   children;
 
   /**
-   * @param {DataNode} dataNode 
+   * @param {DataNode} dataNodeId 
    */
-  constructor(dataNode, refId) {
+  constructor(dataNodeId, refId) {
     super(DDGTimelineNodeType.SnapshotRef);
 
-    this.dataNode = dataNode;
+    this.dataNodeId = dataNodeId;
     this.refId = refId;
   }
 }
