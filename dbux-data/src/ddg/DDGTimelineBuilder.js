@@ -216,18 +216,20 @@ export default class DDGTimelineBuilder {
         let newChildSnapshot;
         if (!lastModDataNode) {
           // initial value
-          // TODO: the main problem with nested initial value snapshots is that they cannot have a unique `accessId`.
-          //      → Their root ValueRef's dataNode is accessed in their stead.
-          throw new Error('NYI: nested initial values are currently not supported');
-          // const original = valueRef.children[prop];
-          // if (original.refId) {
-          //   // nested ref
-          //   throw new Error('NYI: nested initial ref value');
-          // }
-          // else {
-          //   // primitive
-          //   throw new Error('NYI: nested initial primitive value');
-          // }
+          const original = valueRef.children[prop];
+          if (original.refId) {
+            // nested ref
+            // PROBLEM: the children of nested initial reference values are not addressable
+            //      → because they cannot have a unique `accessId`!!
+            //      → meaning that their root ValueRef's dataNode is accessed instead of `original`.
+            throw new Error('NYI: nested initial reference types are currently not supported');
+          }
+          else {
+            // primitive
+            // PROBLEM: this node does not have a unique `dataNode` (but is addressable)
+            // → should not be a problem
+            throw new Error('NYI: nested initial primitive value');
+          }
         }
         else {
           // apply lastMod

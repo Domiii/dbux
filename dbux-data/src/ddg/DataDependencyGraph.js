@@ -202,6 +202,10 @@ export default class DataDependencyGraph {
      * phase 3: create edges
      * #######################################*/
 
+
+    TODO
+    // TODO: `dataNodeId` does not uniquely identify a timeline node!!!
+
     for (const fromDataNodeId of nodesByDataNodeId) {
       if (!fromDataNodeId) {
         continue;
