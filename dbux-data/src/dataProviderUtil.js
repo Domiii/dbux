@@ -859,7 +859,7 @@ export default {
     snapshot.children = clone(children);  // shallow clone → creates Array or Object
 
     // apply all writes before `terminateNodeId`
-    dp.util.applyDataSnapshotWrites(snapshot, 0, toTraceId);
+    dp.util.applyDataSnapshotModifications(snapshot, 0, toTraceId);
     return snapshot;
   },
 
@@ -875,7 +875,7 @@ export default {
     Object.assign(newSnapshot, snapshot);
 
     // apply modifications
-    dp.util.applyDataSnapshotWrites(newSnapshot, fromTraceId, toTraceId);
+    dp.util.applyDataSnapshotModifications(newSnapshot, fromTraceId, toTraceId);
     return newSnapshot;
   },
 
@@ -892,27 +892,27 @@ export default {
     return newSnapshot;
   },
 
-  /**
-   * Creates a new snapshot graph from an existing {@link RefSnapshot}, at a later point in time.
-   * 
-   * @param {RuntimeDataProvider} dp 
-   * @param {RefSnapshot} snapshot 
-   * @param {number} toTraceId 
-   */
-  constructValueSnapshotGraph(dp, snapshot, toTraceId) {
+  // /**
+  //  * Creates a new snapshot graph from an existing {@link RefSnapshot}, at a later point in time.
+  //  * 
+  //  * @param {RuntimeDataProvider} dp 
+  //  * @param {RefSnapshot} snapshot 
+  //  * @param {number} toTraceId 
+  //  */
+  // constructValueSnapshotGraph(dp, snapshot, toTraceId) {
 
-  },
+  // },
 
-  /**
-   * Creates a new snapshot graph from an existing {@link VersionedRefSnapshot}, at a later point in time.
-   * 
-   * @param {RuntimeDataProvider} dp 
-   * @param {VersionedRefSnapshot} snapshot 
-   * @param {number} toTraceId 
-   */
-  constructNewValueSnapshotGraph(dp, snapshot, toTraceId) {
+  // /**
+  //  * Creates a new snapshot graph from an existing {@link VersionedRefSnapshot}, at a later point in time.
+  //  * 
+  //  * @param {RuntimeDataProvider} dp 
+  //  * @param {VersionedRefSnapshot} snapshot 
+  //  * @param {number} toTraceId 
+  //  */
+  // constructNewValueSnapshotGraph(dp, snapshot, toTraceId) {
 
-  },
+  // },
 
   /**
    * Applies all modifications between `fromTraceId` and `toTraceId` to given `snapshot`.
@@ -920,7 +920,7 @@ export default {
    * @param {RuntimeDataProvider} dp 
    * @param {{ refId, children }} snapshot
    */
-  applyDataSnapshotWrites(dp, snapshot, fromTraceId, toTraceId) {
+  applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId) {
     if (!toTraceId) {
       throw new Error(`applyDataSnapshotWritesShallow expects "toTraceId" but was ${toTraceId}`);
     }

@@ -6,7 +6,6 @@ import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceCo
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, RootTimelineNode } from './DDGTimelineNodes';
-import DDGTimelineNodeType from './DDGTimelineNodeType';
 import { makeTraceLabel } from '../helpers/makeLabels';
 
 const Verbose = 1;
@@ -113,8 +112,17 @@ export default class DDGTimelineBuilder {
         this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(traceId)}"`);
       }
       /**
-       * TODO: check {@link DDGWatchSet#buildSnapshot} first!
-       * TODO: add SnapshotRootTimelineNode
+       * 1. implement `construct*ValueSnapshotGraph` + call from here (different from original)
+       *    → `getDataTimelineNode(dataNodeId)` // looks up nodes from timeline instead of `DataNodeCollection`
+       *    → `getLastTimelineRefSnapshotNode(refId)` // looks up the last snapshot of given ref
+       * 2. handle `BCEs`
+       * 3. probably get rid of {@link DDGWatchSet#buildSnapshot}
+       * 
+       * → test w/ `var c = [...a, ...b]` // new graph
+       * → test w/ `var c = []; c.push(...a, ...b);`  // clone c's graph (in `push` trace)
+       * → test w/ `var c = { x:1, y:2 }; Object.assign(c, a, b);`
+       * → test w/ `var c = { x:1, y:2 }; Object.assign(c, {...a, ...b});`
+       * → (later) add CircularReferenceNode
        */
     }
     // else if() {

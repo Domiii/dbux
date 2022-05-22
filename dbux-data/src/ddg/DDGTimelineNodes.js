@@ -60,7 +60,17 @@ export class DecisionTimelineNode extends DataTimelineNode {
 }
 
 
-// TODO: add SnapshotRef and SnapshotPrimitive nodes
+/**
+ * Can represent primitive or ref.
+ */
+export class SnapshotTimelineNode extends DataTimelineNode {
+  refId;
+
+  /**
+   * @type {SnapshotTimelineNode[]?}
+   */
+  children;
+}
 
 
 /** ###########################################################################
