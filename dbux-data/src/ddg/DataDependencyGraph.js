@@ -5,11 +5,9 @@
 
 // import DDGTimeline from './DDGTimeline';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import TraceType, { isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge from './DDGEdge';
-import DDGEdgeType from './DDGEdgeType';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
 import { DataTimelineNode } from './DDGTimelineNodes';
 
@@ -33,6 +31,54 @@ export default class DataDependencyGraph {
    * @type {DDGBounds}
    */
   bounds;
+
+  /** ########################################
+   * render data
+   *  ######################################*/
+
+  /**
+   * @type {DDGTimelineNode}
+   */
+  timelineRoot;
+
+  /**
+   * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
+   * @type {DDGTimelineNode[]}
+   */
+  timelineNodes = [null];
+
+  /**
+   * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
+   * @type {DataTimelineNode[]}
+   */
+  timelineDataNodes = [null];
+
+  /**
+   * NOTE: 
+   * @type {DDGEdge[]}
+   */
+  edges = [null];
+
+
+  getRenderData() {
+    const {
+      timelineRoot,
+      timelineNodes,
+      timelineDataNodes,
+      edges
+    } = this;
+    return {
+      timelineRoot,
+      timelineNodes,
+      timelineDataNodes,
+      edges
+    };
+  }
+
+
+  /** ###########################################################################
+   * ctor
+   * ##########################################################################*/
 
 
   /**
@@ -68,7 +114,7 @@ export default class DataDependencyGraph {
 
     this.edges = [null];
 
-    const timelineBuilder = new DDGTimelineBuilder();
+    const timelineBuilder = new DDGTimelineBuilder(this);
 
     for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
       // update control group stack
@@ -85,7 +131,10 @@ export default class DataDependencyGraph {
      *  2. general post-processing
      *  ######################################*/
 
-    for (const node of timelineBuilder.timelineDataNodes) {
+    for (const node of this.timelineDataNodes) {
+      if (!node) {
+        continue;
+      }
       const nIncomingEdges = timelineBuilder.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
       const nOutgoingEdges = timelineBuilder.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
 

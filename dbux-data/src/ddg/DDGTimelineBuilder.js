@@ -24,7 +24,6 @@ const Verbose = 1;
  *  #########################################################################*/
 
 export default class DDGTimelineBuilder {
-
   /** ########################################
    * build-time datastructures
    *  ######################################*/
@@ -119,50 +118,11 @@ export default class DDGTimelineBuilder {
     return this.lastTimelineVarSnapshotNodeByDeclarationTid[declarationTid];
   }
 
-
-  /** ###########################################################################
-   * Snapshot mods
-   *  #########################################################################*/
-
-  SnapshotMods = {
-    /**
-     * @param {RuntimeDataProvider} dp
-     * @param {IDataSnapshot} snapshot
-     * @param {DataNode} modifyNode
-     * @param {string} prop
-     */
-    writeRef(dp, snapshot, modifyNode, prop) {
-      snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, modifyNode.refId, null);
-    },
-
-    /**
-     * @param {RuntimeDataProvider} dp
-     * @param {IDataSnapshot} snapshot
-     * @param {DataNode} modifyNode
-     * @param {string} prop
-     */
-    writePrimitive(dp, snapshot, modifyNode, prop) {
-      const inputNodeId = modifyNode.inputs[0];
-      const inputDataNode = dp.collections.dataNodes.getById(inputNodeId);
-      snapshot.children[prop] = this.constructPrimitiveNode(inputDataNode);
-    },
-
-    /**
-     * @param {RuntimeDataProvider} dp
-     * @param {IDataSnapshot} snapshot
-     * @param {DataNode} modifyNode
-     * @param {string} prop
-     */
-    deleteProp(dp, snapshot, modifyNode, prop) {
-      delete snapshot.children[prop];
-    }
-  };
-
   /** ###########################################################################
    * snapshots
    *  #########################################################################*/
 
-  canBeRefSnapshot(dataNode) {
+  #canBeRefSnapshot(dataNode) {
     let refId;
     return (
       (refId = dataNode.varAccess?.objectNodeId) &&
@@ -215,7 +175,7 @@ export default class DDGTimelineBuilder {
         }
         else {
           // original is timelineId
-          const originalNode = this.timelineNodes[original];
+          const originalNode = this.ddg.timelineNodes[original];
           newChild = typedShallowClone(originalNode);
           if (newChild instanceof DataTimelineNode) {
             this.#doAddDataNode(newChild);
@@ -227,13 +187,13 @@ export default class DDGTimelineBuilder {
       }
       else {
         // apply lastMod
-        if (this.canBeRefSnapshot(lastModDataNode)) {
+        if (this.#canBeRefSnapshot(lastModDataNode)) {
           // nested ref
-          newChild = this.addRefSnapshot(lastModDataNode, null);
+          newChild = this.#addRefSnapshot(lastModDataNode, null);
         }
         else {
           // primitive
-          newChild = this.addPrimitiveDataNode(lastModDataNode);
+          newChild = this.#addPrimitiveDataNode(lastModDataNode);
         }
       }
       snapshot.children[prop] = newChild.timelineId;
@@ -246,7 +206,7 @@ export default class DDGTimelineBuilder {
    * 
    * @return {RefSnapshotTimelineNode}
    */
-  addRefSnapshot(ownDataNode, dataNodes) {
+  #addRefSnapshot(ownDataNode, dataNodes) {
     const { dp } = this;
     // const { nodeId: dataNodeId } = ownDataNode;
     const { refId } = ownDataNode;
@@ -289,7 +249,7 @@ export default class DDGTimelineBuilder {
    * @param {DataNode} dataNode 
    * @return {PrimitiveTimelineNode}
    */
-  addPrimitiveDataNode(dataNode) {
+  #addPrimitiveDataNode(dataNode) {
     const label = this.#makeDataNodeLabel(dataNode);
     const newNode = new PrimitiveTimelineNode(dataNode.nodeId, label);
 
@@ -302,8 +262,8 @@ export default class DDGTimelineBuilder {
    * @param {DataTimelineNode} newNode 
    */
   #doAddDataNode(newNode) {
-    newNode.dataTimelineId = this.timelineDataNodes.length;
-    this.timelineDataNodes.push(newNode);
+    newNode.dataTimelineId = this.ddg.timelineDataNodes.length;
+    this.ddg.timelineDataNodes.push(newNode);
     this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
     this.#addNode(newNode);
   }
@@ -372,7 +332,7 @@ export default class DDGTimelineBuilder {
     //   TODO: add DecisionTimelineNode
     // }
     // else 
-    if (this.canBeRefSnapshot(ownDataNode)) {
+    if (this.#canBeRefSnapshot(ownDataNode)) {
       // TODO: handle assignment patterns (→ can have multiple write targets)
       const refNodeId = ownDataNode.varAccess.objectNodeId;
       // ref type access → add Snapshot
@@ -380,14 +340,14 @@ export default class DDGTimelineBuilder {
         // sanity checks
         this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
-      newNode = this.addRefSnapshot(ownDataNode, dataNodes);
+      newNode = this.#addRefSnapshot(ownDataNode, dataNodes);
     }
     else {
       // primitive value or ref assignment
       if (dataNodes.length > 1) {
         this.logTrace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
-      newNode = this.addPrimitiveDataNode(ownDataNode);
+      newNode = this.#addPrimitiveDataNode(ownDataNode);
     }
 
     if (ownDataNode.varAccess?.declarationTid && (
@@ -409,122 +369,10 @@ export default class DDGTimelineBuilder {
    * @param {DDGTimelineNode} node 
    */
   #addNode(node) {
-    node.timelineId = this.timelineNodes.length;
-    this.timelineNodes.push(node);
+    node.timelineId = this.ddg.timelineNodes.length;
+    this.ddg.timelineNodes.push(node);
   }
 
-  /** ###########################################################################
-   * {@link DDGTimelineBuilder#addTraceToTimeline}
-   * ##########################################################################*/
-
-  /**
-   * NOTE: a trace might induce multiple {@link DDGTimelineNode} in these circumstances:
-   *   1. if a DataNode reads or writes an object prop, we add the complete snapshot with all its children
-   *   2. a Decision node that is also a Write Node (e.g. `if (x = f())`)
-   */
-  addTraceToTimeline(traceId) {
-    const { dp, ddg: { bounds } } = this;
-    const trace = dp.util.getTrace(traceId);
-    const dataNodes = dp.util.getDataNodesOfTrace(traceId);
-    const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
-
-    if (!ownDataNode) {
-      this.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
-      return;
-    }
-
-    if (DataNodeType.is.Write(ownDataNode.type) && dp.util.isTraceControlDecision(traceId)) {
-      // TODO: add two nodes in this case
-    }
-
-    /**
-     * This is to avoid duplicate edges.
-     * NOTE also that in JS, Sets retain order.
-     * @type {Set.<DataTimelineNode>}
-     */
-    const targetNodesSet = new Set();
-
-    if (ownDataNode.inputs) { // only add nodes with connectivity
-      for (const inputDataNodeId of ownDataNode.inputs) {
-        let inputDataNode = dp.util.getDataNode(inputDataNodeId);
-        let targetInputNode;
-
-        // skip
-        while (this.#shouldSkipDataNode(inputDataNode.nodeId)) {
-          const targetNodeCandidate = this.#followInputDataNode(ownDataNode, inputDataNode);
-          if (!targetNodeCandidate) {
-            // end of the line
-            break;
-          }
-          targetInputNode = targetNodeCandidate;
-        }
-
-        if (!targetInputNode) {
-          targetInputNode = this.getFirstDataTimelineNodeByDataNodeId(inputDataNodeId);
-        }
-
-        if (targetInputNode && !targetNodesSet.has(targetInputNode)) {
-          targetNodesSet.add(targetInputNode);
-        }
-        else {
-          // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
-          // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
-          // TODO: add summarization logic
-        }
-      }
-    }
-
-    /**
-     * Add new node.
-     * NOTE: Don't add while still resolving connections above.
-     * NOTE2: For now, don't skip adding since that causes issues with final node ordering.
-     * @type {DataTimelineNode}
-     */
-    const newNode = this.#addDataNode(ownDataNode, dataNodes);
-
-    // add edges
-    for (const targetNode of targetNodesSet) {
-      this.#addEdge(newNode, targetNode);
-    }
-  }
-
-  /** ###########################################################################
-   * edges
-   * ##########################################################################*/
-
-
-  #addEdgeToMap(map, id, edge) {
-    let edges = map.get(id);
-    if (!edges) {
-      map.set(id, edges = []);
-    }
-    edges.push(edge);
-  }
-
-  /**
-   * @param {DataTimelineNode} fromNode 
-   * @param {DataTimelineNode} toNode 
-   */
-  #addEdge(fromNode, toNode) {
-    const newEdge = new DDGEdge(DDGEdgeType.Write, this.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId);
-    this.edges.push(newEdge);
-
-    this.#addEdgeToMap(this.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
-    this.#addEdgeToMap(this.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
-  }
-
-  /** ###########################################################################
-   * stack util
-   * ##########################################################################*/
-
-  #pushGroup(node) {
-    this.#addNode(node);
-    this.stack.push(node);
-  }
-
-  #popGroup() {
-    return this.stack.pop();
-  }
 
   /** ###########################################################################
    * {@link DDGTimelineBuilder#updateStack}
@@ -561,6 +409,126 @@ export default class DDGTimelineBuilder {
       }
       this.#popGroup();
     }
+  }
+
+  /** ###########################################################################
+   * {@link DDGTimelineBuilder#addTraceToTimeline}
+   * ##########################################################################*/
+
+  /**
+   * NOTE: a trace might induce multiple {@link DDGTimelineNode} in these circumstances:
+   *   1. if a DataNode reads or writes an object prop, we add the complete snapshot with all its children
+   *   2. a Decision node that is also a Write Node (e.g. `if (x = f())`)
+   */
+  addTraceToTimeline(traceId) {
+    const { dp, ddg: { bounds } } = this;
+    const trace = dp.util.getTrace(traceId);
+    const dataNodes = dp.util.getDataNodesOfTrace(traceId);
+    const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
+
+    if (!ownDataNode) {
+      this.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
+      return;
+    }
+
+    if (DataNodeType.is.Write(ownDataNode.type) && dp.util.isTraceControlDecision(traceId)) {
+      // TODO: add two nodes in this case
+    }
+
+    /**
+     * This is to avoid duplicate edges.
+     * NOTE also that in JS, Sets retain order.
+     * @type {Set.<DataTimelineNode>}
+     */
+    const targetNodesSet = new Set();
+
+    if (ownDataNode.inputs) { // only add nodes with connectivity
+      for (const inputDataNodeId of ownDataNode.inputs) {
+        let inputDataNode = dp.util.getDataNode(inputDataNodeId);
+        /**
+         * @type {DataTimelineNode}
+         */
+        let targetInputNode;
+        let targetDataNodeId = inputDataNodeId;
+
+        // skip pass along nodes
+        while (this.#shouldSkipDataNode(targetDataNodeId)) {
+          // connect to last registered node of DataNode (if existing)
+          const targetNodeCandidate = this.#followInputDataNode(ownDataNode, inputDataNode);
+
+          if (!targetNodeCandidate) {
+            // end of the line
+            break;
+          }
+          targetInputNode = targetNodeCandidate;
+          targetDataNodeId = targetInputNode.dataNodeId;
+        }
+
+        if (!targetInputNode) {
+          targetInputNode = this.getFirstDataTimelineNodeByDataNodeId(inputDataNodeId);
+        }
+
+        if (targetInputNode && !targetNodesSet.has(targetInputNode)) {
+          targetNodesSet.add(targetInputNode);
+        }
+        else {
+          // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
+          // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
+          // TODO: add summarization logic
+        }
+      }
+    }
+
+    /**
+     * Add new node.
+     * NOTE: Don't add while still resolving connections above.
+     * NOTE2: For now, don't skip adding since that causes issues with final node ordering.
+     * @type {DataTimelineNode}
+     */
+    const newNode = this.#addDataNode(ownDataNode, dataNodes);
+
+    // add edges
+    for (const targetNode of targetNodesSet) {
+      this.#addEdge(targetNode, newNode);
+    }
+  }
+
+  /** ###########################################################################
+   * edges
+   * ##########################################################################*/
+
+
+  #addEdgeToMap(map, id, edge) {
+    let edges = map.get(id);
+    if (!edges) {
+      map.set(id, edges = []);
+    }
+    edges.push(edge);
+  }
+
+  /**
+   * @param {DataTimelineNode} fromNode 
+   * @param {DataTimelineNode} toNode 
+   */
+  #addEdge(fromNode, toNode) {
+    const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId);
+    this.ddg.edges.push(newEdge);
+
+    this.#addEdgeToMap(this.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
+    this.#addEdgeToMap(this.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
+  }
+
+  /** ###########################################################################
+   * stack util
+   * ##########################################################################*/
+
+  #pushGroup(node) {
+    this.#addNode(node);
+    this.stack.push(node);
+  }
+
+  #popGroup() {
+    return this.stack.pop();
   }
 
   /** ###########################################################################

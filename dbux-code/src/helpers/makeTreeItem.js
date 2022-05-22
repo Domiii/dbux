@@ -57,12 +57,6 @@ function makeChildNode(key, value) {
     return value;
     // return makeTreeItem(value);
   }
-  // if (value instanceof TreeChildNode) {
-
-  // }
-  // if (isFunction(value)) {
-  //   return makeTreeItem(value(key));
-  // }
   // if (Array.isArray(value)) {
   //   return makeTreeItem(key, value);
   // }
@@ -70,7 +64,9 @@ function makeChildNode(key, value) {
     return makeTreeItem(value);
   }
   if (isObject(value)) { // implies isPlainObject, isArray, isFunction
-    return makeTreeItem(key, value);
+    const newItem = makeTreeItem(key, value);
+    newItem.description = value.constructor?.name || '';
+    return newItem;
   }
 
   return makeTreeItem(keyValueLabel(key, value));

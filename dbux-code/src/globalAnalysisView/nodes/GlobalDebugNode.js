@@ -6,8 +6,9 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
+import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
+import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -164,6 +165,9 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
    * {@link DDG}
    *  #########################################################################*/
   DDG = function DDG() {
+    /**
+     * @type {DataDependencyGraph[]}
+     */
     const allDDGs = allApplications.selection.data.collectGlobalStats((dp) => {
       return dp.ddgs.getAll();
     });
@@ -171,20 +175,30 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
     if (allDDGs.length) {
       return {
         children: allDDGs.map((ddg) => {
-          const { graphId, nodes, edges } = ddg;
+          const { graphId } = ddg;
+          const { 
+            timelineRoot,
+            // timelineNodes,
+            timelineDataNodes,
+            edges
+          } = ddg.getRenderData();
           return makeTreeItem(graphId, [
-            function Nodes() {
+            function Timeline_Tree() {
               return {
-                children: nodes.map((node) => {
-                  const { label, ddgNodeId, ...otherProps } = node;
+                children: makeTreeChildren(timelineRoot)
+              };
+            },
+            function Timeline_Data_Nodes() {
+              return {
+                children: timelineDataNodes.filter(Boolean).map((node) => {
+                  const { label, dataTimelineId, timelineId, dataNodeId, ...otherProps } = node;
                   return makeTreeItem(label, otherProps, {
-                    description: `${ddgNodeId}`,
+                    description: `${dataTimelineId} (${timelineId})`,
                     handleClick() {
                       const { dp } = ddg;
-                      const nodeId = node.dataNodeId;
-                      const { traceId } = dp.collections.dataNodes.getById(nodeId);
+                      const { traceId } = dp.collections.dataNodes.getById(dataNodeId);
                       const trace = dp.collections.traces.getById(traceId);
-                      traceSelection.selectTrace(trace, null, nodeId);
+                      traceSelection.selectTrace(trace, null, dataNodeId);
                     }
                   });
                 }),
@@ -192,17 +206,19 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             },
             function Edges() {
               return {
-                children: edges.map((edge) => {
-                  const { from, to, ...otherProps } = edge;
-                  const label = `${from} -> ${to}`;
+                children: edges.filter(Boolean).map((edge) => {
+                  const { ...otherProps } = edge;
+                  const fromNode = timelineDataNodes[edge.from];
+                  const toNode = timelineDataNodes[edge.to];
+                  const label = `${fromNode.label} -> ${toNode.label}`;
                   return makeTreeItem(label, otherProps, {
                     handleClick() {
                       // select `from` node
                       const { dp } = ddg;
-                      const nodeId = nodes[edge.from].dataNodeId;
-                      const { traceId } = dp.collections.dataNodes.getById(nodeId);
+                      const fromDataNodeId = fromNode.dataNodeId;
+                      const { traceId } = dp.collections.dataNodes.getById(fromDataNodeId);
                       const trace = dp.collections.traces.getById(traceId);
-                      traceSelection.selectTrace(trace, null, nodeId);
+                      traceSelection.selectTrace(trace, null, fromDataNodeId);
                     }
                   });
                 }),
