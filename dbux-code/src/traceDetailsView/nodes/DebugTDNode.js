@@ -216,7 +216,7 @@ export class DebugTDNode extends TraceDetailNode {
 
     let valueRawSnapshotNode;
     if (refId) {
-      const snapshot = dp.util.constructValueSnapshotAtTime(refId, traceNodeId);
+      const snapshot = dp.util.constructValueSnapshot(refId, traceNodeId);
       valueRawSnapshotNode = makeTreeItem(
         'valueRef Snapshot (raw):',
         snapshot

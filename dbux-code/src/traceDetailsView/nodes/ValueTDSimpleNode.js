@@ -35,7 +35,7 @@ export default class ValueTDSimpleNode extends ValueNode {
    */
   static makeProperties(dataNode, parent, props) {
     if (parent) {
-      // NOTE: `value` is already in `props`, and has been computed by a call to `constructValueSnapshotAtTime`
+      // NOTE: `value` is already in `props`, and has been computed by a call to `constructValueSnapshot`
       // const { value, hasValue } = dataNode;
       return {
         // value: hasValue ? value : undefined,

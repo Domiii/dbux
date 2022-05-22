@@ -71,7 +71,7 @@ export default class ValueTDRefNode extends ValueNode {
 
   buildChildren() {
     const { rootDataNode, dp, refId, valueRef } = this;
-    const snapshot = dp.util.constructValueSnapshotAtTime(refId, rootDataNode.nodeId);
+    const snapshot = dp.util.constructValueSnapshot(refId, rootDataNode.nodeId);
 
     if (!isPruneStateOk(valueRef.pruneState)) {
       return EmptyArray;

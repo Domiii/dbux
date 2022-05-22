@@ -21,7 +21,7 @@ export default class RefSnapshot {
   value;
 
   /**
-   * @type {Object<string, RefSnapshotTreeNode>? | Array<RefSnapshotTreeNode>?}
+   * @type {Object<string, RefSnapshot>? | Array<RefSnapshot>?}
    */
   children;
 
@@ -38,20 +38,11 @@ export default class RefSnapshot {
 
 
 
-export class RefSnapshotTreeNode extends RefSnapshot {
+export class VersionedRefSnapshot extends RefSnapshot {
   /**
-   * The key prop or index of parent object or array.
-   * Or null if it was not constructed as part of a complete tree
-   * 
-   * @type {string | number | null}
+   * The traceId of when this snapshot was taken.
    */
-  key;
-}
-
-
-
-export class VersionedRefSnapshot extends RefSnapshotTreeNode {
-  terminateNodeId;
+  toTraceId;
 }
 
 

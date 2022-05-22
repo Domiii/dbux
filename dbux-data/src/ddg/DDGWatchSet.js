@@ -168,7 +168,7 @@ export default class DDGWatchSet {
   //   let children;
   //   const { refId } = node;
   //   if (refId) {
-  //     children = this.dp.util.constructValueSnapshotAtTime(refId, nodeId);
+  //     children = this.dp.util.constructValueSnapshot(refId, nodeId);
   //   }
   //   else {
   //     children = [node];
