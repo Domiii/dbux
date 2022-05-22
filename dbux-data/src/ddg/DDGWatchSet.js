@@ -114,29 +114,6 @@ export default class DDGWatchSet {
     return false;
   }
 
-  buildSnapshot(traceId) {
-    const { dp } = this;
-
-    const dataNodeId = dp.util.getLastDataNodeOfTrace(traceId);
-    const initialState = dp.util.constructValueFull(dataNodeId);
-
-    TODO
-
-    return new DDGSnapshotNode(dataNodeId);
-  }
-
-  /**
-   * @param {number} traceId
-   */
-  getOrCreateWatchedSnapshotNode(traceId) {
-    // const dataNode = this.dp.util.getDataNode(dataNodeId);
-    let snapshot = this.snapshotsByDataNodeId.get(traceId);
-    if (!snapshot) {
-      this.snapshotsByDataNodeId.set(traceId, snapshot = this.buildSnapshot(traceId));
-    }
-    return snapshot;
-  }
-
   // /**
   //  * 
   //  * @param {DataNode} parent 

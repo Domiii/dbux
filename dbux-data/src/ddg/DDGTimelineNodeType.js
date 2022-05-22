@@ -6,9 +6,6 @@ const ddgTimelineNodeTypeObj = {
   // primitive data
   Primitive: 2,
 
-  // snapshot root (Data node for reference/complex types)
-  SnapshotRoot: 3,
-
   SnapshotRef: 4,
   SnapshotPrimitive: 5,
 
@@ -54,7 +51,7 @@ export function isControlGroupTimelineNode(timelineNodeType) {
 }
 
 const containerNodeTypes = [...controlGroupTypes];
-containerNodeTypes[DDGTimelineNodeType.SnapshotRoot] = true;
+containerNodeTypes[DDGTimelineNodeType.SnapshotRef] = true;
 export function isContainerNodeType(timelineNodeType) {
   return containerNodeTypes[timelineNodeType] || false;
 }

@@ -63,6 +63,44 @@ export class PostUpdateData {
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
 /** ###########################################################################
+ * snapshot utils
+ *  #########################################################################*/
+
+const DefaultDataSnapshotMods = {
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode} modifyNode
+   * @param {string} prop
+   */
+  writeRef(dp, snapshot, modifyNode, prop) {
+    snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, modifyNode.refId, null);
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode} modifyNode
+   * @param {string} prop
+   */
+  writePrimitive(dp, snapshot, modifyNode, prop) {
+    const inputNodeId = modifyNode.inputs[0];
+    const inputNode = dp.collections.dataNodes.getById(inputNodeId);
+    snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, null, inputNode.value);
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode} modifyNode
+   * @param {string} prop
+   */
+  deleteProp(dp, snapshot, modifyNode, prop) {
+    delete snapshot.children[prop];
+  }
+};
+
+/** ###########################################################################
  * util used for rendering strings
  * ##########################################################################*/
 
@@ -919,10 +957,11 @@ export default {
    * 
    * @param {RuntimeDataProvider} dp 
    * @param {{ refId, children }} snapshot
+   * @param {typeof DefaultDataSnapshotMods} snapshotMods
    */
-  applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId) {
+  applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId, snapshotMods = DefaultDataSnapshotMods) {
     if (!toTraceId) {
-      throw new Error(`applyDataSnapshotWritesShallow expects "toTraceId" but was ${toTraceId}`);
+      throw new Error(`expected "toTraceId" to be number but was "${toTraceId}"`);
     }
     const { refId, children } = snapshot;
 
@@ -942,25 +981,35 @@ export default {
         );
       }) || EmptyArray;
 
+    dp.util.applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods);
+  },
+
+  /**
+   * Applies all modifications in `modifyDataNodes` to `snapshot`.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode[]} modifyDataNodes
+   * @param {typeof DefaultDataSnapshotMods} snapshotMods
+   */
+  applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods) {
     for (const modifyNode of modifyDataNodes) {
       if (modifyNode.type === DataNodeType.Write) {
         // apply write
         const { prop } = modifyNode.varAccess;
         if (modifyNode.refId) {
           // ref
-          children[prop] = new RefSnapshot(modifyNode.nodeId, modifyNode.refId, null);
+          snapshotMods.writeRef(dp, snapshot, modifyNode, prop);
         }
         else {
           // primitive
-          const inputNodeId = modifyNode.inputs[0];
-          const inputNode = dp.collections.dataNodes.getById(inputNodeId);
-          children[prop] = new RefSnapshot(modifyNode.nodeId, null, inputNode.value);
+          snapshotMods.writePrimitive(dp, snapshot, modifyNode, prop);
         }
       }
       else if (modifyNode.type === DataNodeType.Delete) {
         // apply delete
         const { prop } = modifyNode.varAccess;
-        delete children[prop];
+        snapshotMods.deleteProp(dp, snapshot, modifyNode, prop);
       }
       else {
         throw new Error(`unknown modifying DataNodeType type: ${modifyNode.type}`);

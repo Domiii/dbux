@@ -5,19 +5,60 @@ import TraceType, { isTraceReturn } from '@dbux/common/src/types/constants/Trace
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, RootTimelineNode } from './DDGTimelineNodes';
+// eslint-disable-next-line max-len
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, RootTimeline, SnapshotRefTimelineNode, SnapshotTimelineNode } from './DDGTimelineNodes';
 import { makeTraceLabel } from '../helpers/makeLabels';
 
 const Verbose = 1;
 // const Verbose = 0;
 
 
-export default class DDGTimelineBuilder {
-  /**
-   * @type {DDGTimelineNode[]}
-   */
-  stack;
+/** ###########################################################################
+ * Snapshot mods
+ *  #########################################################################*/
 
+const DataSnapshotMods = {
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode} modifyNode
+   * @param {string} prop
+   */
+  writeRef(dp, snapshot, modifyNode, prop) {
+    snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, modifyNode.refId, null);
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode} modifyNode
+   * @param {string} prop
+   */
+  writePrimitive(dp, snapshot, modifyNode, prop) {
+    const inputNodeId = modifyNode.inputs[0];
+    const inputNode = dp.collections.dataNodes.getById(inputNodeId);
+    snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, null, inputNode.value);
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @param {{ refId, children }} snapshot
+   * @param {DataNode} modifyNode
+   * @param {string} prop
+   */
+  deleteProp(dp, snapshot, modifyNode, prop) {
+    delete snapshot.children[prop];
+  }
+};
+
+/** ###########################################################################
+ * {@link DDGTimelineBuilder}
+ *  #########################################################################*/
+
+export default class DDGTimelineBuilder {
+  /** ########################################
+   * final outputs
+   *  ######################################*/
   /**
    * @type {DDGTimelineNode}
    */
@@ -40,7 +81,30 @@ export default class DDGTimelineBuilder {
    */
   timelineDataNodesByDataNodeId = [];
 
+  /**
+   * @type {SnapshotRefTimelineNode[]}
+   */
+  timelineSnapshotRefNodesByRefId = [];
+
+
+  /** ########################################
+   * build-time datastructures
+   *  ######################################*/
+
+  /**
+   * @type {DDGTimelineNode[]}
+   */
+  stack;
+
+  /** ########################################
+   * other fields
+   *  ######################################*/
+
   logger;
+
+  /** ########################################
+   * ctor
+   *  ######################################*/
 
   /**
    * @param {import('./DataDependencyGraph').default} ddg
@@ -49,7 +113,7 @@ export default class DDGTimelineBuilder {
     this.ddg = ddg;
     this.logger = newLogger('DDGTimelineControlStack');
 
-    const timelineRoot = this.timelineRoot = new RootTimelineNode();
+    const timelineRoot = this.timelineRoot = new RootTimeline();
     this.#addNode(timelineRoot);
 
     /**
@@ -57,6 +121,10 @@ export default class DDGTimelineBuilder {
      */
     this.stack = [timelineRoot];
   }
+
+  /** ###########################################################################
+   * getters
+   *  #########################################################################*/
 
   get dp() {
     return this.ddg.dp;
@@ -72,6 +140,39 @@ export default class DDGTimelineBuilder {
 
   getDataTimelineNodeByDataNodeId(dataNodeId) {
     return this.timelineDataNodesByDataNodeId[dataNodeId];
+  }
+
+  getLastTimelineRefSnapshotNode(refId) {
+    return this.timelineSnapshotRefNodesByRefId[refId];
+  }
+
+  /** ###########################################################################
+   * snapshots
+   *  #########################################################################*/
+
+  /**
+   * @param {Trace} trace 
+   * @param {DataNode} ownDataNode 
+   * @param {DataNode[]} dataNodes
+   * 
+   * @return {SnapshotRootTimelineNode}
+   */
+  constructRefSnapshotRoot(trace, ownDataNode, dataNodes) {
+    const { refId } = ownDataNode;
+    if (!refId) {
+      throw new Error(`missing refId`);
+    }
+
+    const previousSnapshot = this.getLastTimelineRefSnapshotNode(refId);
+    if (!previousSnapshot) {
+      // build new snapshot
+    }
+    else {
+      // deep clone original snapshot, but create new ids for all children
+      
+      // apply `dataNodes` here
+      applyDataSnapshotModificationsDataNodes();
+    }
   }
 
   /** ###########################################################################
@@ -111,19 +212,7 @@ export default class DDGTimelineBuilder {
         // sanity checks
         this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(traceId)}"`);
       }
-      /**
-       * 1. implement `construct*ValueSnapshotGraph` + call from here (different from original)
-       *    → `getDataTimelineNode(dataNodeId)` // looks up nodes from timeline instead of `DataNodeCollection`
-       *    → `getLastTimelineRefSnapshotNode(refId)` // looks up the last snapshot of given ref
-       * 2. handle `BCEs`
-       * 3. probably get rid of {@link DDGWatchSet#buildSnapshot}
-       * 
-       * → test w/ `var c = [...a, ...b]` // new graph
-       * → test w/ `var c = []; c.push(...a, ...b);`  // clone c's graph (in `push` trace)
-       * → test w/ `var c = { x:1, y:2 }; Object.assign(c, a, b);`
-       * → test w/ `var c = { x:1, y:2 }; Object.assign(c, {...a, ...b});`
-       * → (later) add CircularReferenceNode
-       */
+      newNode = this.constructRefSnapshotRoot(trace, ownDataNode, dataNodes);
     }
     // else if() {
     //   TODO: add DecisionTimelineNode
@@ -132,7 +221,7 @@ export default class DDGTimelineBuilder {
       // primitive value or ref assignment
       // ownDataNode.varAccess.declarationTid;
       if (dataNodes.length > 1) {
-        this.logTrace(`NYI: trace has multiple dataNodes but no ref type "${dp.util.makeTraceInfo(traceId)}"`);
+        this.logTrace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(traceId)}"`);
       }
       newNode = new PrimitiveTimelineNode(ownDataNode, label);
     }

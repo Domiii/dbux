@@ -29,6 +29,24 @@ export class DDGTimelineNode {
   }
 }
 
+export class GroupTimelineNode extends DDGTimelineNode {
+  /**
+   * @type {Array.<DDGTimelineNode>}
+   */
+  children = [];
+}
+
+/**
+ * Unique outer-most group node.
+ * The root holds the entire DDG.
+ */
+export class TimelineRoot extends GroupTimelineNode {
+  constructor() {
+    super(DDGTimelineNodeType.Root);
+  }
+}
+
+
 /** ###########################################################################
  * {@link DataTimelineNode}
  * ##########################################################################*/
@@ -55,59 +73,56 @@ export class PrimitiveTimelineNode extends DataTimelineNode {
   }
 }
 
-export class DecisionTimelineNode extends DataTimelineNode {
-  // TODO
+export class SnapshotTimelineNode extends DataTimelineNode {
 }
 
 
 /**
  * Can represent primitive or ref.
  */
-export class SnapshotTimelineNode extends DataTimelineNode {
+export class SnapshotRefTimelineNode extends SnapshotTimelineNode {
   refId;
+  
+  // TODO: also represent the refNode itself
 
   /**
-   * @type {SnapshotTimelineNode[]?}
+   * @type {SnapshotTimelineNode[]}
    */
   children;
-}
-
-
-/** ###########################################################################
- * Group nodes
- * ##########################################################################*/
-
-export class GroupTimelineNode extends DDGTimelineNode {
-  /**
-   * @type {Array.<DDGTimelineNode>}
-   */
-  children = [];
-}
-
-export class RootTimelineNode extends GroupTimelineNode {
-  constructor() {
-    super(DDGTimelineNodeType.Root);
-  }
-}
-
-export class SnapshotRootTimelineNode extends GroupTimelineNode {
-  dataNode;
-
-  /**
-   * @type {DDGSnapshotPrimitiveNode | DDGSnapshotRefNode}
-   */
-  children = []; // TODO!?
 
   /**
    * @param {DataNode} dataNode 
    */
   constructor(dataNode) {
-    super(DDGTimelineNodeType.SnapshotRoot);
+    super(DDGTimelineNodeType.SnapshotRef);
 
     this.dataNode = dataNode;
   }
 }
 
+
+/**
+ * Can represent primitive or ref.
+ */
+export class SnapshotPrimitiveTimelineNode extends SnapshotTimelineNode {
+  /**
+   * @param {DataNode} dataNode 
+   */
+  constructor(dataNode) {
+    super(DDGTimelineNodeType.SnapshotPrimitive);
+
+    this.dataNode = dataNode;
+  }
+}
+
+
+export class DecisionTimelineNode extends DataTimelineNode {
+  // TODO
+}
+
+/** ###########################################################################
+ * Control group nodes
+ * ##########################################################################*/
 
 export class ContextTimelineNode extends GroupTimelineNode {
   contextId;
