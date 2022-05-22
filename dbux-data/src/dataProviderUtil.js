@@ -66,10 +66,14 @@ const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
  * snapshot utils
  *  #########################################################################*/
 
+/**
+ * @typedef {{ refId: number, children: IDataSnapshot[] }} IDataSnapshot
+ */
+
 const DefaultDataSnapshotMods = {
   /**
    * @param {RuntimeDataProvider} dp
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode} modifyNode
    * @param {string} prop
    */
@@ -79,7 +83,7 @@ const DefaultDataSnapshotMods = {
 
   /**
    * @param {RuntimeDataProvider} dp
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode} modifyNode
    * @param {string} prop
    */
@@ -91,7 +95,7 @@ const DefaultDataSnapshotMods = {
 
   /**
    * @param {RuntimeDataProvider} dp
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode} modifyNode
    * @param {string} prop
    */
@@ -99,6 +103,10 @@ const DefaultDataSnapshotMods = {
     delete snapshot.children[prop];
   }
 };
+
+/**
+ * @typedef {typeof DefaultDataSnapshotMods} IDataSnapshotMods
+ */
 
 /** ###########################################################################
  * util used for rendering strings
@@ -956,14 +964,14 @@ export default {
    * Applies all modifications between `fromTraceId` and `toTraceId` to given `snapshot`.
    * 
    * @param {RuntimeDataProvider} dp 
-   * @param {{ refId, children }} snapshot
-   * @param {typeof DefaultDataSnapshotMods} snapshotMods
+   * @param {IDataSnapshot} snapshot
+   * @param {IDataSnapshotMods} snapshotMods
    */
   applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId, snapshotMods = DefaultDataSnapshotMods) {
     if (!toTraceId) {
       throw new Error(`expected "toTraceId" to be number but was "${toTraceId}"`);
     }
-    const { refId, children } = snapshot;
+    const { refId } = snapshot;
 
     // + writes - delete
     const modifyDataNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.
@@ -988,9 +996,9 @@ export default {
    * Applies all modifications in `modifyDataNodes` to `snapshot`.
    * 
    * @param {RuntimeDataProvider} dp 
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode[]} modifyDataNodes
-   * @param {typeof DefaultDataSnapshotMods} snapshotMods
+   * @param {IDataSnapshotMods} snapshotMods
    */
   applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods) {
     for (const modifyNode of modifyDataNodes) {

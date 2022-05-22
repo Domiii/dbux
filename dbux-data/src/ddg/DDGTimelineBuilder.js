@@ -6,7 +6,7 @@ import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceCo
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, RootTimeline, SnapshotRefTimelineNode, SnapshotTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, SnapshotRefTimelineNode, SnapshotTimelineNode } from './DDGTimelineNodes';
 import { makeTraceLabel } from '../helpers/makeLabels';
 
 const Verbose = 1;
@@ -17,10 +17,10 @@ const Verbose = 1;
  * Snapshot mods
  *  #########################################################################*/
 
-const DataSnapshotMods = {
+const SnapshotMods = {
   /**
    * @param {RuntimeDataProvider} dp
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode} modifyNode
    * @param {string} prop
    */
@@ -30,7 +30,7 @@ const DataSnapshotMods = {
 
   /**
    * @param {RuntimeDataProvider} dp
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode} modifyNode
    * @param {string} prop
    */
@@ -42,7 +42,7 @@ const DataSnapshotMods = {
 
   /**
    * @param {RuntimeDataProvider} dp
-   * @param {{ refId, children }} snapshot
+   * @param {IDataSnapshot} snapshot
    * @param {DataNode} modifyNode
    * @param {string} prop
    */
@@ -113,7 +113,7 @@ export default class DDGTimelineBuilder {
     this.ddg = ddg;
     this.logger = newLogger('DDGTimelineControlStack');
 
-    const timelineRoot = this.timelineRoot = new RootTimeline();
+    const timelineRoot = this.timelineRoot = new TimelineRoot();
     this.#addNode(timelineRoot);
 
     /**
@@ -155,9 +155,12 @@ export default class DDGTimelineBuilder {
    * @param {DataNode} ownDataNode 
    * @param {DataNode[]} dataNodes
    * 
-   * @return {SnapshotRootTimelineNode}
+   * @return {SnapshotRefTimelineNode}
    */
-  constructRefSnapshotRoot(trace, ownDataNode, dataNodes) {
+  constructRefSnapshotRoot(trace, ownDataNode, valueRef, dataNodes) {
+    const { dp } = this;
+    const { traceId: toTraceId } = trace;
+    const { nodeId: dataNodeId } = ownDataNode;
     const { refId } = ownDataNode;
     if (!refId) {
       throw new Error(`missing refId`);
@@ -165,13 +168,26 @@ export default class DDGTimelineBuilder {
 
     const previousSnapshot = this.getLastTimelineRefSnapshotNode(refId);
     if (!previousSnapshot) {
-      // build new snapshot
+      /**
+       * → build new snapshot.
+       * NOTE: this is based on {@link dp.util.constructVersionedValueSnapshot}
+       */
+      const snapshot = new SnapshotRefTimelineNode(dataNodeId, refId, null);
+      
+      // TODO
+      snapshot.children = clone(children);  // shallow clone → creates Array or Object
+
+      // apply all writes before `terminateNodeId`
+      dp.util.applyDataSnapshotModifications(snapshot, 0, toTraceId, SnapshotMods);
     }
     else {
-      // deep clone original snapshot, but create new ids for all children
-      
+      /**
+       * → deep clone original snapshot, but create new ids for all children.
+       */
+      // TODO
+
       // apply `dataNodes` here
-      applyDataSnapshotModificationsDataNodes();
+      dp.util.applyDataSnapshotModificationsDataNodes();
     }
   }
 
@@ -205,18 +221,25 @@ export default class DDGTimelineBuilder {
 
     // create node based on DDGTimelineNodeType
     let newNode;
-    if (ownDataNode.varAccess?.objectNodeId) {
+    let refId;
+    let valueRef;
+
+    // if() {
+    //   TODO: add DecisionTimelineNode
+    // }
+    // else 
+    if (
+      (refId = ownDataNode.varAccess?.objectNodeId) &&
+      (valueRef = dp.collections.values.getById(refId))?.children // render as Primitive if ValueRef does not have children
+    ) {
       const refNodeId = ownDataNode.varAccess.objectNodeId;
       // ref type access → add Snapshot
       if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {
         // sanity checks
         this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(traceId)}"`);
       }
-      newNode = this.constructRefSnapshotRoot(trace, ownDataNode, dataNodes);
+      newNode = this.constructRefSnapshotRoot(trace, ownDataNode, valueRef, dataNodes);
     }
-    // else if() {
-    //   TODO: add DecisionTimelineNode
-    // }
     else {
       // primitive value or ref assignment
       // ownDataNode.varAccess.declarationTid;

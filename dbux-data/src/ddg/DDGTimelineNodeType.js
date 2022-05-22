@@ -66,7 +66,7 @@ dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
 /**
  * These are the nodes that are actually linked.
  */
-export function isBasicDataTimelineNode(timelineNodeType) {
+export function isDataTimelineNode(timelineNodeType) {
   return dataTimelineNodeTypes[timelineNodeType] || false;
 }
 
