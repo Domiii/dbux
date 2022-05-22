@@ -227,7 +227,7 @@ export default class DDGTimelineBuilder {
           else {
             // primitive
             // PROBLEM: this node does not have a unique `dataNode` (but is addressable)
-            // → should not be a problem
+            //    TODO: → might need to address through its parent (just like `varAccess`)
             throw new Error('NYI: nested initial primitive value');
           }
         }

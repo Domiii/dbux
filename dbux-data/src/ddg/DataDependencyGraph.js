@@ -158,8 +158,8 @@ export default class DataDependencyGraph {
               if (!fromDataNodeIdsSet.has(fromDataNode.nodeId)) {
                 fromDataNodeIdsSet.add(fromDataNode.nodeId);
 
-                nodesByDataNodeId[dataNode.nodeId] = true;
                 nodesByDataNodeId[fromDataNode.nodeId] = true;
+                nodesByDataNodeId[dataNode.nodeId] = true;
 
                 edgesByFromDataNodeId[fromDataNode.nodeId] = edgesByFromDataNodeId[fromDataNode.nodeId] || [];
                 edgesByFromDataNodeId[fromDataNode.nodeId].push(dataNode.nodeId);
@@ -203,8 +203,12 @@ export default class DataDependencyGraph {
      * #######################################*/
 
 
-    TODO
-    // TODO: `dataNodeId` does not uniquely identify a timeline node!!!
+    // TODO: `dataNodeId` does not uniquely identify a timeline node in case of nested snapshot nodes.
+    //    → allow edges from initial input nested snapshot nodes
+    //    (→ other than those, we should have unique `DataNode`s, since we only register dependencies from Write nodes)
+    //    (→ nested initial value refs are a separate problem)
+
+    // TODO: (later) make it visually clear how different visualizations of the same ref are connected?
 
     for (const fromDataNodeId of nodesByDataNodeId) {
       if (!fromDataNodeId) {
