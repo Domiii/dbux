@@ -904,7 +904,7 @@ export default {
     snapshot.toTraceId = toTraceId;
     snapshot.children = clone(children);  // shallow clone → creates Array or Object
 
-    // apply all writes before `terminateNodeId`
+    // apply all writes before `toTraceId`
     dp.util.applyDataSnapshotModifications(snapshot, 0, toTraceId);
     return snapshot;
   },
@@ -965,19 +965,18 @@ export default {
    * 
    * @param {RuntimeDataProvider} dp 
    * @param {IDataSnapshot} snapshot
-   * @param {IDataSnapshotMods} snapshotMods
+   * 
+   * @return {DataNode[]} modifyDataNodes
    */
-  applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId, snapshotMods = DefaultDataSnapshotMods) {
+  collectDataSnapshotModificationNodes(dp, snapshot, fromTraceId, toTraceId) {
     if (!toTraceId) {
       throw new Error(`expected "toTraceId" to be number but was "${toTraceId}"`);
     }
     const { refId } = snapshot;
-
-    // + writes - delete
-    const modifyDataNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.
+    return dp.indexes.dataNodes.byObjectRefId.get(refId)?.
       filter(node => {
         return (
-          // `terminateNodeId` constraints
+          // time constraints
           // future-work: use binary search etc. to get the relevant segment
           (
             (!fromTraceId || node.nodeId > fromTraceId) &&
@@ -988,6 +987,17 @@ export default {
           isDataNodeModifyType(node.type)
         );
       }) || EmptyArray;
+  },
+
+  /**
+   * Applies all modifications between `fromTraceId` and `toTraceId` to given `snapshot`.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   * @param {IDataSnapshot} snapshot
+   * @param {IDataSnapshotMods} snapshotMods
+   */
+  applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId, snapshotMods = DefaultDataSnapshotMods) {
+    const modifyDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
 
     dp.util.applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods);
   },
@@ -1078,10 +1088,10 @@ export default {
   /** 
    * @param {RuntimeDataProvider} dp
    */
-  _getDataNodeValueString(dp, nodeId, terminateNodeId = null, shorten = false) {
+  _getDataNodeValueString(dp, nodeId, toNodeId = null, shorten = false) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (!terminateNodeId) {
-      terminateNodeId = nodeId;
+    if (!toNodeId) {
+      toNodeId = nodeId;
     }
 
     // NOTE: cache is currently disabled since we need the value in different timepoints, which cannot be handled with single cache
@@ -1106,7 +1116,7 @@ export default {
     const { refId, value, hasValue } = dataNode;
 
     if (refId) {
-      valueString = dp.util.getValueRefValueStringShort(refId, terminateNodeId, shorten);
+      valueString = dp.util.getValueRefValueStringShort(refId, toNodeId, shorten);
     }
     else {
       if (hasValue) {
@@ -1130,13 +1140,13 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueString(dp, nodeId, terminateNodeId = nodeId) {
-    return dp.util._getDataNodeValueString(nodeId, terminateNodeId, false);
+  getDataNodeValueString(dp, nodeId, toNodeId = nodeId) {
+    return dp.util._getDataNodeValueString(nodeId, toNodeId, false);
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueStringShort(dp, nodeId, terminateNodeId = nodeId) {
-    return dp.util._getDataNodeValueString(nodeId, terminateNodeId, true);
+  getDataNodeValueStringShort(dp, nodeId, toNodeId = nodeId) {
+    return dp.util._getDataNodeValueString(nodeId, toNodeId, true);
   },
 
   /** @param {RuntimeDataProvider} dp */
@@ -1161,8 +1171,8 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getValueRefValueStringShort(dp, refId, terminateNodeId, shorten) {
-    const snapshot = dp.util.constructVersionedValueSnapshot(refId, terminateNodeId);
+  getValueRefValueStringShort(dp, refId, toNodeId, shorten) {
+    const snapshot = dp.util.constructVersionedValueSnapshot(refId, toNodeId);
     const valueRef = dp.collections.values.getById(refId);
 
     let valueString;

@@ -56,6 +56,10 @@ export class DataTimelineNode extends DDGTimelineNode {
   dataNode;
   label;
 
+  /** ########################################
+   * These fields are assigned in phase 4.
+   * #######################################*/
+
   /**
    * Whether node is watched.
    */
@@ -73,48 +77,36 @@ export class PrimitiveTimelineNode extends DataTimelineNode {
   }
 }
 
-export class SnapshotTimelineNode extends DataTimelineNode {
-}
-
 
 /**
- * Can represent primitive or ref.
+ * Snapshot of a ref value at a certain point 
+ * at time t = {@link SnapshotRefTimelineNode#dataNode.nodeId}.
  */
-export class SnapshotRefTimelineNode extends SnapshotTimelineNode {
+export class SnapshotRefTimelineNode extends DataTimelineNode {
   refId;
   
-  // TODO: also represent the refNode itself
+  // TODO: also represent the refNode itself (→ it needs to be addressable iff it has `declarationTid`)
 
   /**
-   * @type {SnapshotTimelineNode[]}
+   * @type {DataTimelineNode[]}
    */
   children;
 
   /**
    * @param {DataNode} dataNode 
    */
-  constructor(dataNode) {
+  constructor(dataNode, refId) {
     super(DDGTimelineNodeType.SnapshotRef);
 
     this.dataNode = dataNode;
+    this.refId = refId;
   }
 }
 
 
-/**
- * Can represent primitive or ref.
- */
-export class SnapshotPrimitiveTimelineNode extends SnapshotTimelineNode {
-  /**
-   * @param {DataNode} dataNode 
-   */
-  constructor(dataNode) {
-    super(DDGTimelineNodeType.SnapshotPrimitive);
-
-    this.dataNode = dataNode;
-  }
-}
-
+/** ###########################################################################
+ * Decisions
+ * ##########################################################################*/
 
 export class DecisionTimelineNode extends DataTimelineNode {
   // TODO
