@@ -2,6 +2,7 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 
 import last from 'lodash/last';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -105,13 +106,23 @@ export default class DDGTimelineBuilder {
    * snapshots
    *  #########################################################################*/
 
+  /**
+   * @param {DataNode} dataNode 
+   */
   #canBeRefSnapshot(dataNode) {
     let refId;
+    const dataNodeId = dataNode.nodeId;
     return (
-      (refId = dataNode.varAccess?.objectNodeId) &&
+      (
+        dataNode.refId &&
+        this.ddg.watchSet.isWatchedDataNode(dataNodeId)
+      ) ||
+      (
+        (refId = dataNode.varAccess?.objectNodeId) &&
 
-      // render as Primitive if ValueRef does not have children
-      (this.dp.collections.values.getById(refId))?.children
+        // render as Primitive if ValueRef does not have children
+        (this.dp.collections.values.getById(refId))?.children
+      )
     );
   }
 
@@ -125,15 +136,18 @@ export default class DDGTimelineBuilder {
       lastModsByProp[dataNode.varAccess.prop] = dataNode;
     }
 
-    const allProps = {
+    const allProps = [
       ...Object.keys(lastModsByProp),
       ...Object.keys(originalChildren)
-    };
+    ];
 
     // create children
     snapshot.children = new originalChildren.constructor();
     for (const prop of allProps) {
       const lastModDataNode = lastModsByProp[prop];
+      /**
+       * @type {DDGTimelineNode}
+       */
       let newChild;
       if (!lastModDataNode) {
         // initial value
@@ -142,6 +156,7 @@ export default class DDGTimelineBuilder {
          */
         const original = originalChildren[prop];
         if (isOriginalValueRef) {
+          // original is valueRef
           if (original.refId) {
             // nested ref
             // PROBLEM: the children of nested initial reference values are not addressable
@@ -151,20 +166,27 @@ export default class DDGTimelineBuilder {
           }
           else {
             // primitive
-            // PROBLEM: this node does not have a unique `dataNode` (but is addressable)
-            //    TODO: → might need to address through its parent (just like `varAccess`)
+            // PROBLEM: this value does not have a unique `dataNode` (but is addressable)
+            // TODO: might need some addressing method using its parent (just like `varAccess`)
             throw new Error('NYI: nested initial primitive value');
           }
         }
         else {
           // original is timelineId
-          const originalNode = this.ddg.timelineNodes[original];
-          newChild = typedShallowClone(originalNode);
+          const originalChildNode = this.ddg.timelineNodes[original];
+          newChild = typedShallowClone(originalChildNode);
           if (newChild instanceof DataTimelineNode) {
+            // original was data node (probably primitive)
             this.#doAddDataNode(newChild);
           }
           else {
+            // original was nested snapshot
             this.#addNode(newChild);
+
+            if (originalChildNode.children?.length) {
+              // → keep cloning
+              this.#addSnapshotChildren(newChild, originalChildNode.children, EmptyArray, false);
+            }
           }
         }
       }
@@ -217,7 +239,7 @@ export default class DDGTimelineBuilder {
       const fromTraceId = 0;
       const toTraceId = ownDataNode.traceId;
       const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
-      
+
       this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true);
     }
     else {
@@ -226,6 +248,8 @@ export default class DDGTimelineBuilder {
        */
       this.#addSnapshotChildren(snapshot, previousSnapshot.children, dataNodes, false);
     }
+
+    return snapshot;
   }
 
   /**
@@ -317,7 +341,7 @@ export default class DDGTimelineBuilder {
     // else 
     if (this.#canBeRefSnapshot(ownDataNode)) {
       // TODO: handle assignment patterns (→ can have multiple write targets)
-      const refNodeId = ownDataNode.varAccess.objectNodeId;
+      const refNodeId = ownDataNode.varAccess?.objectNodeId;
       // ref type access → add Snapshot
       if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {
         // sanity checks
@@ -356,6 +380,9 @@ export default class DDGTimelineBuilder {
     this.ddg.timelineNodes.push(newNode);
   }
 
+  /**
+   * @param {DDGTimelineNode} newNode 
+   */
   #addNodeToGroup(newNode) {
     const parent = this.peekStack();
     parent.children.push(newNode.timelineId);

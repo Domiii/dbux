@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+
+import { TreeItem } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -6,11 +8,10 @@ import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/dat
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
-import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/makeTreeItem';
-import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { TreeItem } from 'vscode';
+import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/makeTreeItem';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -208,7 +209,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             const { timelineId, dataTimelineId, label: nodeLabel } = node;
             const label = nodeLabel || `${node.constructor.name}`;
             return makeTreeItem(label, children, {
-              description: `${dataTimelineId && `${dataTimelineId} ` || ''}(${timelineId})`,
+              description: `${dataTimelineId && `${dataTimelineId}, ` || ''}${timelineId} ${node.constructor.name}`,
               handleClick() {
                 const { dp } = ddg;
                 let { dataNodeId = null, traceId } = node;
