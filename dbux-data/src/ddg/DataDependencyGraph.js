@@ -59,6 +59,16 @@ export default class DataDependencyGraph {
    */
   edges = [null];
 
+  /**
+   * @type {Map.<number, DDGEdge[]>}
+   */
+  outEdgesByDataTimelineId;
+
+  /**
+   * @type {Map.<number, DDGEdge[]>}
+   */
+  inEdgesByDataTimelineId;
+
 
   getRenderData() {
     const {
@@ -106,13 +116,15 @@ export default class DataDependencyGraph {
     // this.selectedSet = inputNodes;
     this.watchSet = new DDGWatchSet(this, watchTraceIds);
     const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
-
+    
+    this.edges = [null];
+    this.inEdgesByDataTimelineId = new Map();
+    this.outEdgesByDataTimelineId = new Map();
 
     /** ########################################
      * phase 1: build timeline nodes and edges
      * #######################################*/
 
-    this.edges = [null];
 
     const timelineBuilder = new DDGTimelineBuilder(this);
 
@@ -135,8 +147,8 @@ export default class DataDependencyGraph {
       if (!node) {
         continue;
       }
-      const nIncomingEdges = timelineBuilder.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
-      const nOutgoingEdges = timelineBuilder.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+      const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+      const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
 
       node.watched = this.watchSet.isWatchedDataNode(node.dataNodeId);
       node.nInputs = nIncomingEdges;

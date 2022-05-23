@@ -54,16 +54,6 @@ export default class DDGTimelineBuilder {
    */
   firstTimelineDataNodeByDataNodeId = [];
 
-  /**
-   * @type {Map.<number, DDGEdge[]>}
-   */
-  outEdgesByDataTimelineId;
-
-  /**
-   * @type {Map.<number, DDGEdge[]>}
-   */
-  inEdgesByDataTimelineId;
-
   /** ########################################
    * other fields
    *  ######################################*/
@@ -85,9 +75,6 @@ export default class DDGTimelineBuilder {
     this.#addNode(timelineRoot);
 
     this.stack = [timelineRoot];
-
-    this.inEdgesByDataTimelineId = new Map();
-    this.outEdgesByDataTimelineId = new Map();
   }
 
   /** ###########################################################################
@@ -517,8 +504,8 @@ export default class DDGTimelineBuilder {
     const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId);
     this.ddg.edges.push(newEdge);
 
-    this.#addEdgeToMap(this.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
-    this.#addEdgeToMap(this.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
+    this.#addEdgeToMap(this.ddg.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
+    this.#addEdgeToMap(this.ddg.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
   }
 
   /** ###########################################################################
