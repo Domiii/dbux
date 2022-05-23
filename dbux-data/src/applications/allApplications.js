@@ -39,6 +39,9 @@ export class AllApplications {
    * @type {Application[]}
    */
   _all = [null];
+  /**
+   * @type {Map.<string, Application>}
+   */
   _activeApplicationsByPath = new Map();
 
   _emitter = new NanoEvents();

@@ -22,6 +22,10 @@ export default class ApplicationSet {
     return this.applicationSetData;
   }
 
+  get count() {
+    return this._applicationIds.size;
+  }
+
   // ###########################################################################
   // Bookkeeping
   // ###########################################################################
@@ -31,6 +35,10 @@ export default class ApplicationSet {
    */
   getAll() {
     return this._applications;
+  }
+
+  getFirst() {
+    return this._applications[0];
   }
 
   getById(applicationId) {

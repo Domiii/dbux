@@ -72,9 +72,8 @@ export default class DDGTimelineBuilder {
     this.ddg = ddg;
     this.logger = newLogger(DDGTimelineBuilder.name);
 
-    const timelineRoot = this.ddg.timelineRoot = new TimelineRoot();
+    const timelineRoot = new TimelineRoot();
     this.#addNode(timelineRoot);
-
     this.stack = [timelineRoot];
   }
 
@@ -270,9 +269,9 @@ export default class DDGTimelineBuilder {
    */
   #doAddDataNode(newNode) {
     newNode.dataTimelineId = this.ddg.timelineDataNodes.length;
-    this.ddg.timelineDataNodes.push(newNode);
-    this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
     this.#addNode(newNode);
+    this.ddg.timelineDataNodes.push(newNode.timelineId);
+    this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
   }
 
   /** ###########################################################################

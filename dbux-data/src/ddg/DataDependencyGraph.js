@@ -38,19 +38,15 @@ export default class DataDependencyGraph {
    *  ######################################*/
 
   /**
-   * @type {DDGTimelineNode}
-   */
-  timelineRoot;
-
-  /**
    * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
    * @type {DDGTimelineNode[]}
    */
   timelineNodes = [null];
 
   /**
+   * This is an array of `timelineId`.
    * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
-   * @type {DataTimelineNode[]}
+   * @type {number[]}
    */
   timelineDataNodes = [null];
 
@@ -73,13 +69,11 @@ export default class DataDependencyGraph {
 
   getRenderData() {
     const {
-      timelineRoot,
       timelineNodes,
       timelineDataNodes,
       edges
     } = this;
     return {
-      timelineRoot,
       timelineNodes,
       timelineDataNodes,
       edges
@@ -104,6 +98,11 @@ export default class DataDependencyGraph {
   /** ###########################################################################
    * Node + Edge getters
    * ##########################################################################*/
+
+  getDataNodeByDataTimelineId(dataTimelineId) {
+    const timelineId = this.timelineDataNodes[dataTimelineId];
+    return this.timelineNodes[timelineId];
+  }
 
 
   /** ###########################################################################
@@ -144,10 +143,11 @@ export default class DataDependencyGraph {
      *  2. general post-processing
      *  ######################################*/
 
-    for (const node of this.timelineDataNodes) {
-      if (!node) {
+    for (const timelineId of this.timelineDataNodes) {
+      if (!timelineId) {
         continue;
       }
+      const node = this.timelineNodes[timelineId];
       const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
       const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
 
@@ -161,8 +161,12 @@ export default class DataDependencyGraph {
      *  1. find connected nodes
      *  ######################################*/
 
-    for (const node of this.timelineDataNodes) {
-      if (node?.watched) {
+    for (const timelineId of this.timelineDataNodes) {
+      if (!timelineId) {
+        continue;
+      }
+      const node = this.timelineNodes[timelineId];
+      if (node.watched) {
         this.findConnectedNodes(node);
       }
     }
@@ -181,7 +185,7 @@ export default class DataDependencyGraph {
     node.connected = true;
     const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
     for (const { from } of fromEdges) {
-      const fromNode = this.timelineDataNodes[from];
+      const fromNode = this.getDataNodeByDataTimelineId(from);
       this.findConnectedNodes(fromNode);
     }
   }

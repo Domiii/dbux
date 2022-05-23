@@ -184,7 +184,6 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
         children: allDDGs.map((ddg) => {
           const { graphId } = ddg;
           const {
-            timelineRoot,
             timelineNodes,
             timelineDataNodes,
             edges
@@ -228,7 +227,8 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
 
           return makeTreeItem(graphId, [
             function Timeline_Tree() {
-              return buildTreeNode(timelineRoot);
+              const root = timelineNodes[1];
+              return buildTreeNode(root);
             },
             function All_Timeline_Nodes() {
               return {
@@ -240,8 +240,9 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             },
             function Timeline_Data_Nodes() {
               return {
-                children: timelineDataNodes.filter(Boolean).map((node) => {
-                  const { label, dataTimelineId, timelineId, dataNodeId, ...otherProps } = node;
+                children: timelineDataNodes.filter(Boolean).map((timelineId) => {
+                  const node = timelineNodes[timelineId];
+                  const { label, dataTimelineId, timelineId: _, dataNodeId, ...otherProps } = node;
                   return makeTreeItem(label, otherProps, {
                     description: `${dataTimelineId} (${timelineId})`,
                     handleClick() {
@@ -258,8 +259,8 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
               return {
                 children: edges.filter(Boolean).map((edge) => {
                   const { ...otherProps } = edge;
-                  const fromNode = timelineDataNodes[edge.from];
-                  const toNode = timelineDataNodes[edge.to];
+                  const fromNode = timelineNodes[timelineDataNodes[edge.from]];
+                  const toNode = timelineNodes[timelineDataNodes[edge.to]];
                   const label = `${fromNode.label} -> ${toNode.label}`;
                   return makeTreeItem(label, otherProps, {
                     handleClick() {

@@ -84,7 +84,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   buildGraph() {
-    const { timelineRoot: root, timelineNodes: nodes, edges } = this.state;
+    const { timelineNodes: nodes, edges } = this.state;
+
+    const root = nodes?.[1];
 
     if (!root || !nodes?.length) {
       return;
@@ -160,19 +162,19 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     return { x, y };
   }
 
-  addTreeNodes(root, nodes, depth = 1, top = YPadding) {
-    const { type, children } = root;
+  addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
+    const { type, children } = parent;
     const isGroupNode = isControlGroupTimelineNode(type);
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
     let right;
 
-    const el = this.makeNodeEl(root, depth);
+    const el = this.makeNodeEl(parent, depth);
     this.el.appendChild(el);
 
     if (isGroupNode) {
       if (children?.length) {
-        for (const childId of root.children) {
+        for (const childId of children) {
           const childNode = nodes[childId];
           if (!isControlGroupTimelineNode(childNode.type) && !childNode.connected && this.context.doc.state.connectedOnlyMode) {
             continue;
@@ -189,7 +191,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       bottom = top + el.offsetHeight;
     }
 
-    root.displayData = {
+    parent.displayData = {
       top,
       bottom,
       left,
@@ -197,12 +199,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       isGroupNode,
     };
 
-    this.logger.log(`[addNode]`, root, root.displayData);
-    const key = root.dataTimelineId || `timelineId#${root.timelineId}`;
+    // this.logger.log(`[addNode]`, parent, parent.displayData);
+    const key = parent.dataTimelineId || `timelineId#${parent.timelineId}`; // TODO: use timelineId
+    this.addNode(key, el, parent);
 
-    this.addNode(key, el, root);
-
-    return root;
+    return parent;
   }
 
   // Tree version
@@ -459,7 +460,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   // }
 
   makeNodeEl(node) {
-    const { type, timelineId, label = `NodeId#${timelineId}` } = node;
+    const { type, timelineId, label = '' } = node;
     if (isControlGroupTimelineNode(type)) {
       const el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
       return el;

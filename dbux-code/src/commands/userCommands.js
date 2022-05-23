@@ -140,7 +140,7 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
     let { testFilePath, contextId } = mementoGet(TestDDGKeyName, EmptyObject);
 
-    if (!allApplications.getAllActiveCount()) {
+    if (!allApplications.selection.count) {
       const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
       // const testFileName = 'data-multi1';
       // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
@@ -175,7 +175,7 @@ export function initUserCommands(extensionContext) {
     let trace = traceSelection.selected;
     if (!trace) {
       // default: get first active application
-      const firstApplication = allApplications.getAllActive()[0];
+      const firstApplication = allApplications.selection.getFirst();
       if (!firstApplication) {
         throw new Error('Could not run DDG test: No applications running');
       }
