@@ -238,7 +238,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                 }),
               };
             },
-            function Timeline_Data_Nodes() {
+            function Data_Timeline_Nodes() {
               return {
                 children: timelineDataNodes.filter(Boolean).map((timelineId) => {
                   const node = timelineNodes[timelineId];

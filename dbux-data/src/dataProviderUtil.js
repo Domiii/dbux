@@ -948,7 +948,7 @@ export default {
   //  * @param {RefSnapshot} snapshot 
   //  * @param {number} toTraceId 
   //  */
-  // constructValueSnapshotGraph(dp, snapshot, toTraceId) {
+  // constructVersionedValueSnapshotGraph(dp, snapshot, toTraceId) {
 
   // },
 
@@ -982,8 +982,8 @@ export default {
           // time constraints
           // future-work: use binary search etc. to get the relevant segment
           (
-            (!fromTraceId || node.nodeId > fromTraceId) &&
-            node.nodeId <= toTraceId
+            (!fromTraceId || node.traceId > fromTraceId) &&
+            node.traceId <= toTraceId
           ) &&
 
           // writes only!
@@ -1002,7 +1002,7 @@ export default {
   applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId, snapshotMods = DefaultDataSnapshotMods) {
     const modifyDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
 
-    dp.util.applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods);
+    dp.util.applyDataSnapshotModificationsDataNodes(snapshot, modifyDataNodes, snapshotMods);
   },
 
   /**
@@ -1091,10 +1091,11 @@ export default {
   /** 
    * @param {RuntimeDataProvider} dp
    */
-  _getDataNodeValueString(dp, nodeId, toNodeId = null, shorten = false) {
+  _getDataNodeValueString(dp, nodeId, traceId = null, shorten = false) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (!toNodeId) {
-      toNodeId = nodeId;
+    if (!traceId) {
+      // traceId = nodeId;
+      traceId = dataNode.traceId;
     }
 
     // NOTE: cache is currently disabled since we need the value in different timepoints, which cannot be handled with single cache
@@ -1119,7 +1120,7 @@ export default {
     const { refId, value, hasValue } = dataNode;
 
     if (refId) {
-      valueString = dp.util.getValueRefValueStringShort(refId, toNodeId, shorten);
+      valueString = dp.util.getValueRefValueStringShort(refId, traceId, shorten);
     }
     else {
       if (hasValue) {
@@ -1137,26 +1138,26 @@ export default {
   getRefFirstDataNodeValueStringShort(dp, refId) {
     const dataNode = dp.util.getFirstDataNodeByRefId(refId);
     if (dataNode) {
-      return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
+      return dp.util.getDataNodeValueStringShort(dataNode.nodeId, dataNode.traceId);
     }
     return undefined;
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueString(dp, nodeId, toNodeId = nodeId) {
-    return dp.util._getDataNodeValueString(nodeId, toNodeId, false);
+  getDataNodeValueString(dp, nodeId, toTraceId) {
+    return dp.util._getDataNodeValueString(nodeId, toTraceId, false);
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueStringShort(dp, nodeId, toNodeId = nodeId) {
-    return dp.util._getDataNodeValueString(nodeId, toNodeId, true);
+  getDataNodeValueStringShort(dp, nodeId, toTraceId) {
+    return dp.util._getDataNodeValueString(nodeId, toTraceId, true);
   },
 
   /** @param {RuntimeDataProvider} dp */
   getTraceValueString(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
     if (dataNode) {
-      return dp.util.getDataNodeValueString(dataNode.nodeId);
+      return dp.util.getDataNodeValueString(dataNode.nodeId, dataNode.traceId);
     }
     return '(no value or undefined)';
   },
@@ -1165,7 +1166,7 @@ export default {
   getTraceValueStringShort(dp, traceId, ignoreUndefined = false) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
     if (dp.util.hasAnyValue(dataNode?.nodeId)) {
-      return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
+      return dp.util.getDataNodeValueStringShort(dataNode.nodeId, traceId);
     }
     if (ignoreUndefined) {
       return undefined;
@@ -1575,7 +1576,7 @@ export default {
    */
   getCallArgValueStrings(dp, callId) {
     const dataNodes = dp.util.getCallArgDataNodes(callId);
-    return dataNodes?.map(node => dp.util.getDataNodeValueString(node.nodeId));
+    return dataNodes?.map(node => dp.util.getDataNodeValueString(node.nodeId, node.traceId));
   },
 
   /**

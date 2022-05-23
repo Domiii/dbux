@@ -66,12 +66,12 @@ export default class ValueTDRefNode extends ValueNode {
     const { rootDataNode } = this;
     const { typeName } = this.valueRef;
     const typeLabel = typeName ? ` (${typeName})` : '';
-    this.description = `${this.dp.util.getValueRefValueStringShort(this.refId, rootDataNode.nodeId)}${typeLabel}`;
+    this.description = `${this.dp.util.getValueRefValueStringShort(this.refId, rootDataNode.traceId)}${typeLabel}`;
   }
 
   buildChildren() {
     const { rootDataNode, dp, refId, valueRef } = this;
-    const snapshot = dp.util.constructValueSnapshot(refId, rootDataNode.nodeId);
+    const snapshot = dp.util.constructVersionedValueSnapshot(refId, rootDataNode.traceId);
 
     if (!isPruneStateOk(valueRef.pruneState)) {
       return EmptyArray;
