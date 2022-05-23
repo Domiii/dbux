@@ -14,8 +14,8 @@ export default class DDGBounds {
   minTraceId;
   maxTraceId;
 
-  minContextId;
-  maxContextId;
+  // minContextId;
+  // maxContextId;
 
   /**
    * @param {DataDependencyGraph} ddg
@@ -27,16 +27,32 @@ export default class DDGBounds {
 
     const { dp } = this;
 
-    this.minTraceId = first(watchTraceIds);
-    this.maxTraceId = last(watchTraceIds);
+    const firstTrace = dp.util.getTrace(watchTraceIds[0]);
+    const contextId = this.rootContextId = firstTrace.contextId;
+    const contextTraces = dp.util.getTracesOfContext(contextId);
 
-    const firstDataTraceId = find(watchTraceIds, traceId => dp.util.getDataNodesOfTrace(traceId)?.length);
-    const lastDataTraceId = findLast(watchTraceIds, traceId => dp.util.getDataNodesOfTrace(traceId)?.length);
+    // this.minContextId = dp.util.getTraceContext(this.minTraceId).contextId;
+    // this.maxContextId = dp.util.getTraceContext(this.maxTraceId).contextId; // TODO: this is wrong
+
+    // NOTE: we do it this way to avoid omitting in-context traces (e.g. initial values of parameters)
+    const firstDataTraceId = find(
+      contextTraces,
+      ({ traceId }) => dp.util.getDataNodesOfTrace(traceId)?.length
+    ).traceId;
+    const lastDataTraceId = findLast(
+      contextTraces,
+      ({ traceId }) => dp.util.getDataNodesOfTrace(traceId)?.length
+    ).traceId;
+    this.minTraceId = firstDataTraceId;
+    this.maxTraceId = lastDataTraceId;
+
+    if (this.maxTraceId < last(this.watchedTraceIds)) {
+      // future-work: allow different trace selection methods, not limited to a single context
+      throw new Error(`DDG currently does not support cross-context watching. All watched traces must have a single ancestor context.`);
+    }
+
     this.minNodeId = first(dp.util.getDataNodesOfTrace(firstDataTraceId))?.nodeId;
     this.maxNodeId = last(dp.util.getDataNodesOfTrace(lastDataTraceId))?.nodeId;
-
-    this.minContextId = dp.util.getTraceContext(this.minTraceId).contextId;
-    this.maxContextId = dp.util.getTraceContext(this.maxTraceId).contextId;
   }
 
   get valid() {
@@ -55,7 +71,7 @@ export default class DDGBounds {
     return traceId >= this.minTraceId && traceId <= this.maxTraceId;
   }
 
-  containsContext(contextId) {
-    return contextId >= this.minContextId && contextId <= this.maxContextId;
-  }
+  // containsContext(contextId) {
+  //   return contextId >= this.minContextId && contextId <= this.maxContextId;
+  // }
 }

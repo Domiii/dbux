@@ -18,7 +18,7 @@ export function locToString(loc) {
 /**
  * NOTE: This is a slightly more adavanced version of `truncate(..., {length: MaxLen})`
  */
-export function pathToString(path, addLoc = false, MaxLen = 100) {
+export function pathToString(path, addLoc = false, MaxLen = 80) {
   let s = astNodeToString(path.node, MaxLen);
   if (addLoc) {
     if (path.node.loc) {

@@ -10,6 +10,7 @@ import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/mak
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { TreeItem } from 'vscode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -173,8 +174,12 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
       return dp.ddgs.getAll();
     });
 
+    /**
+     * @type {TreeItem}
+     */
+    let ddgNode;
     if (allDDGs.length) {
-      return {
+      ddgNode = {
         children: allDDGs.map((ddg) => {
           const { graphId } = ddg;
           const {
@@ -273,16 +278,21 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
       };
     }
     else {
-      return {
+      ddgNode = {
         children: [
           makeTreeItem('No DDG created.')
-        ],
-        handleClick() {
-          this.refresh();
-        }
+        ]
       };
     }
-  };
+
+    ddgNode.props = {
+      description: `${allDDGs.length}`,
+      handleClick: () => {
+        this.treeNodeProvider.refresh();
+      }
+    };
+    return ddgNode;
+  }.bind(this);
 
   nodes() {
     return [

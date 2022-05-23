@@ -604,7 +604,7 @@ export default {
    */
   getDataNodesOfTrace(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
-    return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
+    return valueTrace ? dp.indexes.dataNodes.byTrace.get(valueTrace.traceId) : null;
   },
 
   /** @param {RuntimeDataProvider} dp */
@@ -2555,6 +2555,11 @@ export default {
       last = staticTraces[staticTraces.length - 2] || null;
     }
     return last;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getTracesOfContext(dp, contextId) {
+    return dp.indexes.traces.byContext.get(contextId);
   },
 
   /** @param {RuntimeDataProvider} dp */

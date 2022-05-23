@@ -1,6 +1,12 @@
+import serializeObj from 'serialize-javascript';
 import NestedError from '@dbux/common/src/NestedError';
 import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
+import TraceCfg from '../definitions/TraceCfg';
+import { pathToStringAnnotated } from '../helpers/pathHelpers';
+
+
+const Verbose = 2;
 
 
 function concatArrays(a, b) {
@@ -18,6 +24,7 @@ export default class BaseNode extends ParseNode {
 
   /**
    * NOTE: Managed by `plugins/Traces`
+   * @type {TraceCfg}
    */
   _traceCfg;
 
@@ -109,6 +116,7 @@ export default class BaseNode extends ParseNode {
    */
   _setTraceCfg(traceData) {
     this._traceCfg = traceData;
+    // Verbose > 1 && this.logger.trace(`[${pathToStringAnnotated(this.path, true, 50)}] _setTraceCfg`);
   }
 
   /**
@@ -119,6 +127,9 @@ export default class BaseNode extends ParseNode {
     return null;
   }
 
+  /**
+   * NOTE: Should be called `addDefaultTraceIfHasNone`.
+   */
   addDefaultTrace() {
     try {
       if (!this._traceCfg) {
@@ -129,7 +140,13 @@ export default class BaseNode extends ParseNode {
         this.Traces.addTrace(traceData);
       }
       else {
-        this.logger.warn(`Tried to addDefaultTrace even though, Node already has one.`);
+        // NOTE: This is a common ocurrence. Only add default trace if noy already added.
+        // const originalDT = this._traceCfg;
+        // const newDT = this.buildDefaultTrace();
+        // const verboseData = `original=${originalDT},\n new=${newDT}`;
+        // Verbose > 1 && this.logger.trace(`##### [${pathToStringAnnotated(this.path, true, 50)}] Tried to addDefaultTrace even though Node already has one.`
+        /* '\n########', '\n original=', originalDT, '\n\n new=', newDT, '\n#######\n\n' */
+        // );
       }
     }
     catch (err) {
