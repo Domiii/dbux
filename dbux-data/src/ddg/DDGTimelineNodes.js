@@ -15,6 +15,8 @@ export class DDGTimelineNode {
    */
   timelineId;
 
+  label;
+
   /**
    * @param {DDGTimelineNodeTypeValues} type
    */
@@ -56,7 +58,6 @@ export class TimelineRoot extends GroupTimelineNode {
 export class DataTimelineNode extends DDGTimelineNode {
   dataTimelineId;
   dataNodeId;
-  label;
 
   /** ########################################
    * These fields are assigned in phase 4.
@@ -133,9 +134,10 @@ export class DecisionTimelineNode extends DataTimelineNode {
 export class ContextTimelineNode extends GroupTimelineNode {
   contextId;
 
-  constructor(contextId) {
+  constructor(contextId, label) {
     super(DDGTimelineNodeType.Context);
     this.contextId = contextId;
+    this.label = label;
     this.children = [];
   }
 }

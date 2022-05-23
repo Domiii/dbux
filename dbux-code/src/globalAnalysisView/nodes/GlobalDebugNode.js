@@ -1,14 +1,15 @@
 /* eslint-disable camelcase */
-import isString from 'lodash/isString';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
+import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
-import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -176,16 +177,59 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
       return {
         children: allDDGs.map((ddg) => {
           const { graphId } = ddg;
-          const { 
+          const {
             timelineRoot,
-            // timelineNodes,
+            timelineNodes,
             timelineDataNodes,
             edges
           } = ddg.getRenderData();
+
+          /**
+           * @param {DDGTimelineNode} node 
+           */
+          function buildTreeNode(node) {
+            const { children: childrenIds = EmptyArray } = node;
+            const children = childrenIds.map(childId => {
+              const childNode = timelineNodes[childId];
+              return buildTreeNode(childNode);
+            });
+            return makeTimelineNodeEntry(node, children);
+          }
+
+          /**
+           * @param {DDGTimelineNode} node 
+           */
+          function makeTimelineNodeEntry(node, children, moreProps = EmptyObject) {
+            const { timelineId, dataTimelineId, label: nodeLabel } = node;
+            const label = nodeLabel || `${node.constructor.name}`;
+            return makeTreeItem(label, children, {
+              description: `${dataTimelineId && `${dataTimelineId} ` || ''}(${timelineId})`,
+              handleClick() {
+                const { dp } = ddg;
+                let { dataNodeId = null, traceId } = node;
+
+                if (!traceId && dataNodeId) {
+                  ({ traceId } = dp.collections.dataNodes.getById(dataNodeId));
+                }
+                if (traceId) {
+                  const trace = dp.collections.traces.getById(traceId);
+                  traceSelection.selectTrace(trace, null, dataNodeId);
+                }
+              },
+              ...moreProps
+            });
+          }
+
           return makeTreeItem(graphId, [
             function Timeline_Tree() {
+              return buildTreeNode(timelineRoot);
+            },
+            function All_Timeline_Nodes() {
               return {
-                children: makeTreeChildren(timelineRoot)
+                children: timelineNodes.filter(Boolean).map((node) => {
+                  const { timelineId, dataTimelineId, label: nodeLabel, ...nodeProps } = node;
+                  return makeTimelineNodeEntry(node, nodeProps);
+                }),
               };
             },
             function Timeline_Data_Nodes() {
@@ -232,7 +276,10 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
       return {
         children: [
           makeTreeItem('No DDG created.')
-        ]
+        ],
+        handleClick() {
+          this.refresh();
+        }
       };
     }
   };
@@ -245,6 +292,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
+    // TODO: don't build individual node children unless expanded
     return makeTreeItems(...this.nodes());
   }
 }

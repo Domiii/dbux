@@ -10,7 +10,7 @@ import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
 import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode } from './DDGTimelineNodes';
-import { makeTraceLabel } from '../helpers/makeLabels';
+import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdge from './DDGEdge';
 import DDGEdgeType from './DDGEdgeType';
 
@@ -79,7 +79,7 @@ export default class DDGTimelineBuilder {
    */
   constructor(ddg) {
     this.ddg = ddg;
-    this.logger = newLogger('DDGTimelineControlStack');
+    this.logger = newLogger(DDGTimelineBuilder.name);
 
     const timelineRoot = this.ddg.timelineRoot = new TimelineRoot();
     this.#addNode(timelineRoot);
@@ -98,11 +98,7 @@ export default class DDGTimelineBuilder {
     return this.ddg.dp;
   }
 
-  get root() {
-    return this.stack[0];
-  }
-
-  peek() {
+  peekStack() {
     return last(this.stack);
   }
 
@@ -338,14 +334,15 @@ export default class DDGTimelineBuilder {
       // ref type access → add Snapshot
       if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {
         // sanity checks
-        this.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
+        this.logger.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
       newNode = this.#addRefSnapshot(ownDataNode, dataNodes);
     }
     else {
       // primitive value or ref assignment
       if (dataNodes.length > 1) {
-        this.logTrace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
+        // eslint-disable-next-line max-len
+        this.logger.logTrace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
       newNode = this.#addPrimitiveDataNode(ownDataNode);
     }
@@ -359,18 +356,22 @@ export default class DDGTimelineBuilder {
     }
 
     // add to parent
-    const parent = this.peek();
-    parent.children.push(newNode.timelineId);
+    this.#addNodeToGroup(newNode);
 
     return newNode;
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {DDGTimelineNode} newNode 
    */
-  #addNode(node) {
-    node.timelineId = this.ddg.timelineNodes.length;
-    this.ddg.timelineNodes.push(node);
+  #addNode(newNode) {
+    newNode.timelineId = this.ddg.timelineNodes.length;
+    this.ddg.timelineNodes.push(newNode);
+  }
+
+  #addNodeToGroup(newNode) {
+    const parent = this.peekStack();
+    parent.children.push(newNode.timelineId);
   }
 
 
@@ -387,7 +388,9 @@ export default class DDGTimelineBuilder {
     const staticTrace = dp.util.getStaticTrace(traceId);
     if (TraceType.is.PushImmediate(staticTrace.type)) {
       // push context
-      this.#pushGroup(new ContextTimelineNode(trace.contextId));
+      const context = dp.collections.executionContexts.getById(trace.contextId);
+      const contextLabel = makeContextLabel(context, dp.application);
+      this.#pushGroup(new ContextTimelineNode(trace.contextId, contextLabel));
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
@@ -397,9 +400,9 @@ export default class DDGTimelineBuilder {
       // sanity checks
       if (TraceType.is.PopImmediate(staticTrace.type)) {
         // pop context
-        const top = this.peek();
+        const top = this.peekStack();
         if (trace.contextId !== top.contextId) {
-          this.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${top.toString()}`);
+          this.logger.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${top.toString()}`);
           return;
         }
       }
@@ -427,7 +430,7 @@ export default class DDGTimelineBuilder {
     const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
 
     if (!ownDataNode) {
-      this.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
+      // this.logger.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
       return;
     }
 
@@ -522,9 +525,13 @@ export default class DDGTimelineBuilder {
    * stack util
    * ##########################################################################*/
 
-  #pushGroup(node) {
-    this.#addNode(node);
-    this.stack.push(node);
+  /**
+   * @param {GroupTimelineNode} newGroupNode 
+   */
+  #pushGroup(newGroupNode) {
+    this.#addNode(newGroupNode);
+    this.#addNodeToGroup(newGroupNode);
+    this.stack.push(newGroupNode);
   }
 
   #popGroup() {
