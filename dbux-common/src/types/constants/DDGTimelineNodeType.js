@@ -1,4 +1,4 @@
-import Enum from '@dbux/common/src/util/Enum';
+import Enum from '../../util/Enum';
 
 const ddgTimelineNodeTypeObj = {
   Root: 1,
