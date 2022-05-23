@@ -242,14 +242,14 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
               return {
                 children: timelineDataNodes.filter(Boolean).map((timelineId) => {
                   const node = timelineNodes[timelineId];
-                  const { label, dataTimelineId, timelineId: _, dataNodeId, ...otherProps } = node;
+                  const { label, dataTimelineId, timelineId: _, ...otherProps } = node;
                   return makeTreeItem(label, otherProps, {
                     description: `${dataTimelineId} (${timelineId})`,
                     handleClick() {
                       const { dp } = ddg;
-                      const { traceId } = dp.collections.dataNodes.getById(dataNodeId);
+                      const { traceId } = dp.collections.dataNodes.getById(node.dataNodeId);
                       const trace = dp.collections.traces.getById(traceId);
-                      traceSelection.selectTrace(trace, null, dataNodeId);
+                      traceSelection.selectTrace(trace, null, node.dataNodeId);
                     }
                   });
                 }),

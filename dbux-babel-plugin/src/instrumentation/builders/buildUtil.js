@@ -26,13 +26,16 @@ export function makeInputs(traceCfg) {
     NullNode;
 }
 
+/**
+ * @return {t.Identifier} 
+ */
 export function getTraceCall(state, traceCfg, defaultCall = 'traceExpression') {
   const { ids: { aliases } } = state;
-  const trace = aliases[traceCfg?.meta?.traceCall || defaultCall];
-  if (!trace) {
+  const traceCall = aliases[traceCfg?.meta?.traceCall || defaultCall];
+  if (!traceCall) {
     throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
   }
-  return trace;
+  return traceCall;
 }
 
 export function addMoreTraceCallArgs(args, traceCfg) {

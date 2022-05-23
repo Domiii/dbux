@@ -152,8 +152,6 @@ export default class Params extends BasePlugin {
     }
 
     const declarationOnlyTrace = idNode.addOwnDeclarationTrace(value, paramTraceData);
-
-
     return declarationOnlyTrace;
   }
 }

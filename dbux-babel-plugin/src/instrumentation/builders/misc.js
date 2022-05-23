@@ -143,16 +143,27 @@ export function buildTraceDeclarationVar(state, traceCfg) {
     targetNode = targetNode(state, traceCfg);
   }
   targetNode && args.push(targetNode);
-  addMoreTraceCallArgs(args, traceCfg);
+
+  const inputs = makeInputs(traceCfg);
+  if (args.moreTraceCallArgs) {
+    if (inputs) {
+      throw new Error(`Invalid var declaration: has "moreTraceCallArgs" and "inputs", but should only have either/or.`);
+    }
+    addMoreTraceCallArgs(args, traceCfg);
+  }
+  else if (inputs) {
+    // add inputs
+    args.push(inputs);
+  }
 
   // call
-  const callAstNode = applyPreconditionToExpression(traceCfg, t.callExpression(trace, args));
+  const tdCall = applyPreconditionToExpression(traceCfg, t.callExpression(trace, args));
 
   // NOTE: we cannot group them into a single `variableDeclaration` because of order
   return t.variableDeclaration('var', [
     t.variableDeclarator(
       declarationTid,
-      callAstNode
+      tdCall
     )
   ]);
 }
