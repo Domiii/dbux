@@ -33,8 +33,14 @@ svg.jtk-connector path {
   height: calc(100vh - 30px);
 }
 
+.timeline-group {
+  position: absolute;
+  border: 1px solid white;
+}
+
 .timeline-node {
   position: absolute;
   border: 1px solid white;
   padding: 2px;
+  white-space: nowrap;
 }

@@ -10,14 +10,21 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 // import { Sigma } from 'sigma';
 // import { animateNodes } from 'sigma/utils/animate';
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
+
 const GraphScale = 50;
 const XPadding = 30;
 const YPadding = 30;
+// const XGap = 8;
+// const YGap = 15;
+const YGroupPadding = 4;
+// const NodeHeight = 20;
+// const NodeWidth = 40;
 
 /**
  * Default render settings for Sigma.js
@@ -77,42 +84,48 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   buildGraph() {
-    const { nodes, edges } = this.state;
+    const { timelineRoot: root, timelineNodes: nodes, edges } = this.state;
 
-    if (!nodes?.length) {
+    if (!root || !nodes?.length) {
       return;
     }
 
-    this.addSpecialNodes();
+    this.addTreeNodes(root, nodes);
 
-    // add nodes
-    for (const node of nodes) {
-      this.addNodeDefault(node);
-    }
+    // this.addSpecialNodes();
+
+    // // add nodes
+    // for (const node of nodes) {
+    //   this.addNodeDefault(node);
+    // }
+
+    // this.addTreeNodes(root, nodes);
 
     if (edges) {
-      // add special edges
-      const watchedNodes = this.state.nodes.filter(n => n.watched);
-      for (const n of watchedNodes) {
-        if (!n.nInputs) {
-          // add to top
-          this.addEdge({
-            from: topNodeKey,
-            to: n.ddgNodeId
-          });
-        }
-        if (!n.nOutputs) {
-          // add to bottom
-          this.addEdge({
-            from: n.ddgNodeId,
-            to: bottomNodeKey
-          });
-        }
-      }
+      // // add special edges
+      // const watchedNodes = this.state.nodes.filter(n => n.watched);
+      // for (const n of watchedNodes) {
+      //   if (!n.nInputs) {
+      //     // add to top
+      //     this.addEdge({
+      //       from: topNodeKey,
+      //       to: n.ddgNodeId
+      //     });
+      //   }
+      //   if (!n.nOutputs) {
+      //     // add to bottom
+      //     this.addEdge({
+      //       from: n.ddgNodeId,
+      //       to: bottomNodeKey
+      //     });
+      //   }
+      // }
 
       // add default edges
       for (const edge of edges) {
-        this.addEdge(edge);
+        if (edge) {
+          this.addEdge(edge);
+        }
       }
     }
   }
@@ -146,6 +159,94 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const y = YPadding + (node.ddgNodeId + 1 || 0) * GraphScale;
     return { x, y };
   }
+
+  addTreeNodes(root, nodes, depth = 1, top = YPadding) {
+    const { type, children } = root;
+    const isGroupNode = isControlGroupTimelineNode(type);
+    let bottom = top + YGroupPadding;
+    let left = XPadding + Math.floor(Math.random() * 400);
+    let right;
+
+    const el = this.makeNodeEl(root, depth);
+    this.el.appendChild(el);
+
+    if (isGroupNode) {
+      if (children?.length) {
+        for (const childId of root.children) {
+          const childNode = nodes[childId];
+          if (!isControlGroupTimelineNode(childNode.type) && !childNode.connected && this.context.doc.state.connectedOnlyMode) {
+            continue;
+          }
+          const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, depth + 1, bottom);
+          bottom = childDisplayData.bottom + YGroupPadding;
+        }
+      }
+      bottom += YGroupPadding;
+      left = depth * 3;
+      right = depth * 3;
+    }
+    else {
+      bottom = top + el.offsetHeight;
+    }
+
+    root.displayData = {
+      top,
+      bottom,
+      left,
+      right,
+      isGroupNode,
+    };
+
+    this.logger.log(`[addNode]`, root, root.displayData);
+    const key = root.dataTimelineId || `timelineId#${root.timelineId}`;
+
+    this.addNode(key, el, root);
+
+    return root;
+  }
+
+  // Tree version
+  // addTreeNodes(root, nodes, leftBound = XPadding, topBound = YPadding) {
+  //   const subtreeLeft = leftBound;
+  //   const top = topBound;
+  //   let subtreeRight, subtreeBottom = top;
+
+  //   const el = this.makeNodeEl(root);
+  //   this.el.appendChild(el);
+  //   const width = el.offsetWidth;
+  //   const height = el.offsetHeight;
+
+  //   if (root.children?.length) {
+  //     let childLeft = leftBound;
+  //     const childTop = top + height + YGap;
+  //     // debugger;
+  //     for (const childId of root.children) {
+  //       const childNode = nodes[childId];
+  //       const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, childLeft, childTop);
+  //       childLeft = childDisplayData.subtreeRight + XGap;
+  //       subtreeBottom = Math.max(subtreeBottom, childDisplayData.subtreeBottom);
+  //     }
+  //     subtreeRight = childLeft - XGap;
+  //   }
+  //   else {
+  //     subtreeRight = subtreeLeft + width;
+  //     subtreeBottom = top + height;
+  //   }
+
+  //   const left = (subtreeLeft + subtreeRight - width) / 2;
+
+  //   root.displayData = {
+  //     left,
+  //     top,
+  //     subtreeLeft,
+  //     subtreeRight,
+  //     subtreeBottom,
+  //   };
+
+  //   this.addNode(root.timelineId, el, root.displayData);
+
+  //   return root;
+  // }
 
   /** ###########################################################################
    * Sigma.js implementation
@@ -319,41 +420,76 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     });
   }
 
-  addSpecialNodes() {
-    this.addNodeLayout(topNodeKey, {
-      label: 'top',
-      x: XPadding,
-      y: this.getNodeYTop(),
-    });
+  // addSpecialNodes() {
+  //   this.addNodeLayout(topNodeKey, {
+  //     label: 'top',
+  //     x: XPadding,
+  //     y: this.getNodeYTop(),
+  //   });
 
-    this.addNodeLayout(bottomNodeKey, {
-      label: 'buttom',
-      x: XPadding,
-      y: this.getNodeYBottom(),
-    });
+  //   this.addNodeLayout(bottomNodeKey, {
+  //     label: 'buttom',
+  //     x: XPadding,
+  //     y: this.getNodeYBottom(),
+  //   });
+  // }
+
+  // addNodeDefault(node) {
+  //   const {
+  //     ddgNodeId,
+  //     label = `Node#${ddgNodeId}`,
+  //   } = node;
+
+  //   const { x, y } = this.getNodeInitialPosition(node);
+
+  //   this.addNodeLayout(ddgNodeId, { label, x, y });
+  // }
+
+  // makeNodeEl(node) {
+  //   const { timelineId, label = `NodeId#${timelineId}` } = node;
+  //   const el = compileHtmlElement(/*html*/`<div class="timeline-node">
+  //       ${label}
+  //     </div>`);
+  //   return el;
+  // }
+
+  // addNodeLayout(key, displayData) {
+  //   const el = this.makeNodeEl(displayData);
+  //   this.addNode(key, el, displayData);
+  // }
+
+  makeNodeEl(node) {
+    const { type, timelineId, label = `NodeId#${timelineId}` } = node;
+    if (isControlGroupTimelineNode(type)) {
+      const el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
+      return el;
+    }
+    else {
+      const el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
+      return el;
+    }
   }
 
-  addNodeDefault(node) {
-    const {
-      ddgNodeId,
-      label = `Node#${ddgNodeId}`,
-    } = node;
+  addNode(key, el, node) {
+    const { displayData, connected } = node;
+    const { isGroupNode, left, right, top, bottom } = displayData;
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+    if (isGroupNode) {
+      el.style.height = `${bottom - top}px`;
+      el.style.right = `${right}px`;
+    }
+    else {
+      if (!connected && this.context.doc.state.connectedOnlyMode) {
+        el.classList.add('hidden');
+      }
+    }
 
-    const { x, y } = this.getNodeInitialPosition(node);
-
-    this.addNodeLayout(ddgNodeId, { label, x, y });
-  }
-
-  addNodeLayout(key, nodeDisplayData) {
-    const { x, y, label } = nodeDisplayData;
-    const el = compileHtmlElement(/*html*/`<div class="timeline-node">
-        ${label}
-      </div>`);
-    el.style.left = `${x}px`;
-    el.style.top = `${y}px`;
     this.nodeElMap.set(key, el);
-    this.el.appendChild(el);
-    this.jsPlumb.manage(el);
+    // this.el.appendChild(el);
+    if (key) {
+      this.jsPlumb.manage(el);
+    }
   }
 
   addEdge(edge) {
@@ -392,8 +528,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
           type: 'PlainArrow',
           options: {
             location: 1,
-            width: 8,
-            length: 8,
+            width: 4,
+            length: 4,
           }
         },
       ],

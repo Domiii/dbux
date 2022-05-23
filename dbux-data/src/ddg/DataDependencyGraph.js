@@ -4,6 +4,7 @@
 
 
 // import DDGTimeline from './DDGTimeline';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
@@ -116,7 +117,7 @@ export default class DataDependencyGraph {
     // this.selectedSet = inputNodes;
     this.watchSet = new DDGWatchSet(this, watchTraceIds);
     const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
-    
+
     this.edges = [null];
     this.inEdgesByDataTimelineId = new Map();
     this.outEdgesByDataTimelineId = new Map();
@@ -153,6 +154,35 @@ export default class DataDependencyGraph {
       node.watched = this.watchSet.isWatchedDataNode(node.dataNodeId);
       node.nInputs = nIncomingEdges;
       node.nOutputs = nOutgoingEdges;
+    }
+
+    /** ########################################
+     * phase 3: 
+     *  1. find connected nodes
+     *  ######################################*/
+
+    for (const node of this.timelineDataNodes) {
+      if (node?.watched) {
+        this.findConnectedNodes(node);
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param {DataTimelineNode} node 
+   */
+  findConnectedNodes(node) {
+    if (node.connected) {
+      // node already found, stop propagation
+      return;
+    }
+
+    node.connected = true;
+    const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
+    for (const { from } of fromEdges) {
+      const fromNode = this.timelineDataNodes[from];
+      this.findConnectedNodes(fromNode);
     }
   }
 }

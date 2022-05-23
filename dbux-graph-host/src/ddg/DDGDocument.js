@@ -15,6 +15,7 @@ export default class DDGDocument extends HostComponentEndpoint {
   init() {
     this._emitter = new NanoEvents();
     this.state.layoutType = LayoutAlgorithmType.ForceLayout;
+    this.state.connectedOnlyMode = false;
 
     this.createOwnComponents();
 

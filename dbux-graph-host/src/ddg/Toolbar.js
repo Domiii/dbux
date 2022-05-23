@@ -18,6 +18,10 @@ class Toolbar extends HostComponentEndpoint {
       const result = this.doc.setDocumentMode({ layoutType });
       return result;
     },
+    
+    setGraphDocumentMode(update) {
+      this.doc.setDocumentMode(update);
+    },
   }
 }
 
