@@ -279,6 +279,9 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   #shouldSkipDataNode(dataNodeId) {
+    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+      return false;
+    }
     if (this.dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
       return true;
@@ -298,31 +301,59 @@ export default class DDGTimelineBuilder {
   /**
    * Find the last timeline node of same `inputDataNode`'s `accessId`.
    * 
-   * @param {DataNode} dataNode
+   * @param {DataNode} startDataNode
    * @param {DataNode} inputDataNode
-   * @return {DataTimelineNode}
+   * @return {DDGTimelineNode}
    */
-  #followInputDataNode(dataNode, inputDataNode) {
+  #skipInputDataNode(startDataNode, inputDataNode) {
     // const { dp, ddg: { bounds } } = this;
-    if (inputDataNode.refId) {
-      const prev = this.getLastRefSnapshotNode(inputDataNode.refId);
-      if (prev) {
-        return prev;
-      }
+
+    // TODO: a previous TimelineNode exists, but only if not skipped
+    //    → look up previous TimelineNode → if found: return it!
+    //    → else take a step on the underlying DFG instead, then lookup TimelineNode of that → if found: return it!
+    //    → then repeat
+
+    /**
+     * @type {DataNode}
+     */
+    let prev = null;
+    if (inputDataNode.varAccess?.declarationTid) {
+      prev = this.getLastVarSnapshotNode(inputDataNode.varAccess.declarationTid);
     }
-    else if (inputDataNode.varAccess?.declarationTid) {
-      const prev = this.getLastVarSnapshotNode(inputDataNode.varAccess.declarationTid);
-      if (prev) {
-        return prev;
-      }
+    else if (inputDataNode.refId) {
+      const prevSnapshotNode = this.getLastRefSnapshotNode(inputDataNode.refId);
+
+      // TODO: need to look up ref node, not ref snapshot ("group") node.
+      TODO;
+      prev = prevSnapshotNode.refNode;
     }
     else {
       // there is no previous guy for this guy
-      return null;
+      // return null;
     }
 
-    // TODO: handle external nodes
-    return null;
+
+    if (!prev) {
+      // TODO: handle external nodes
+    }
+    else {
+      if (prev?.dataNodeId === inputDataNode.nodeId) { // TODO: we are comparing it against the wrong thing
+        // → need to look-up input
+        if (inputDataNode.valueFromId) {
+          // TODO: we currently don't have valueFromId for refs
+          //      → keep track of all ref occurrences, instead of only the last?
+          prev = this.getFirstDataTimelineNodeByDataNodeId(inputDataNode.valueFromId);
+        }
+        else {
+          prev = null;
+        }
+
+        if (!prev || prev.dataNodeId === inputDataNode.nodeId) {
+          this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(inputDataNode.nodeId)}"`);
+        }
+      }
+    }
+    return prev;
   }
 
   /**
@@ -458,7 +489,15 @@ export default class DDGTimelineBuilder {
      */
     const targetNodesSet = new Set();
 
-    if (ownDataNode.inputs) { // only add nodes with connectivity
+    if (this.#shouldSkipDataNode(ownDataNode.nodeId) &&
+      !!this.#skipInputDataNode(ownDataNode, ownDataNode)) {
+      // this node SHOULD be skipped and CAN be skipped
+      return;
+    }
+
+    if (!ownDataNode.inputs) {
+    }
+    else {
       for (const inputDataNodeId of ownDataNode.inputs) {
         let inputDataNode = dp.util.getDataNode(inputDataNodeId);
         /**
@@ -469,12 +508,18 @@ export default class DDGTimelineBuilder {
 
         // skip pass along nodes
         while (this.#shouldSkipDataNode(targetDataNodeId)) {
+          // TODO: fix this algorithm:
+          //    → input to skip should not be constant
+          //    → look for DataNodes, not TimelineNodes (since TimelineNode creation would also have been skipped)
           // connect to last registered node of DataNode (if existing)
-          const targetNodeCandidate = this.#followInputDataNode(ownDataNode, inputDataNode);
+          const targetNodeCandidate = this.#skipInputDataNode(ownDataNode, inputDataNode);
 
           if (!targetNodeCandidate) {
             // end of the line
             break;
+          }
+          if (targetInputNode === targetNodeCandidate) {
+            throw new Error(`Infinite loop in DDG construction for targetNodeCandidate=${targetNodeCandidate.dataNodeId}, trace="${dp.util.makeTraceInfo(traceId)}"`);
           }
           targetInputNode = targetNodeCandidate;
           targetDataNodeId = targetInputNode.dataNodeId;

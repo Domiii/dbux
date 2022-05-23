@@ -1,7 +1,7 @@
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import NanoEvents from 'nanoevents';
 import traceSelection from '@dbux/data/src/traceSelection/index';
-import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+// import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // import allApplications from '@dbux/data/src/applications/allApplications';
 
@@ -14,8 +14,8 @@ export default class DDGDocument extends HostComponentEndpoint {
 
   init() {
     this._emitter = new NanoEvents();
-    this.state.layoutType = LayoutAlgorithmType.ForceLayout;
-    this.state.connectedOnlyMode = false;
+    // this.state.layoutType = LayoutAlgorithmType.ForceLayout;
+    this.state.connectedOnlyMode = true;
 
     this.createOwnComponents();
 

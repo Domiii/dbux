@@ -1,6 +1,8 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
 
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+
 /**
  * 
  */
@@ -32,11 +34,6 @@ export default class DDGWatchSet {
    */
   declarationTids;
   refIds;
-
-  /**
-   * @type {Map.<number, DDGSnapshotNode>}
-   */
-  snapshotsByDataNodeId = new Map();
 
   /**
    * 
@@ -96,7 +93,33 @@ export default class DDGWatchSet {
     return this.ddg.bounds;
   }
 
+  isWatchedSetDataNode(dataNodeId) {
+    const dataNode = this.dp.util.getDataNode(dataNodeId);
+    return this.watchTraceIdSet.has(dataNode.traceId);
+  }
+
+  /**
+   * Whether given dataNode is:
+   *   (i) a read of watched set 
+   *   (ii) or write to a watched variable or reference.
+   * 
+   * @return {boolean}
+   */
   isWatchedDataNode(dataNodeId) {
+    const dataNode = this.dp.util.getDataNode(dataNodeId);
+    return this.isWatchedSetDataNode(dataNodeId) ||
+      (
+        DataNodeType.is.Write(dataNode.type) &&
+        this.isWatchedAccessDataNode(dataNodeId)
+      );
+  }
+
+  /**
+   * Whether given dataNode is a read or write on a watched variable or reference.
+   * 
+   * @return {boolean}
+   */
+  isWatchedAccessDataNode(dataNodeId) {
     // const dataNode = this.dp.util.getDataNode(dataNodeId);
     const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
     const { staticTraceId } = trace;
