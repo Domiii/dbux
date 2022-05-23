@@ -58,6 +58,7 @@ export class TimelineRoot extends GroupTimelineNode {
 export class DataTimelineNode extends DDGTimelineNode {
   dataTimelineId;
   dataNodeId;
+  connected = false;
 
   /** ########################################
    * These fields are assigned in phase 4.

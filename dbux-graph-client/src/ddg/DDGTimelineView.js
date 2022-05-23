@@ -174,6 +174,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       if (children?.length) {
         for (const childId of root.children) {
           const childNode = nodes[childId];
+          if (!isControlGroupTimelineNode(childNode.type) && !childNode.connected && this.context.doc.state.connectedOnlyMode) {
+            continue;
+          }
           const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, depth + 1, bottom);
           bottom = childDisplayData.bottom + YGroupPadding;
         }
@@ -195,8 +198,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     };
 
     this.logger.log(`[addNode]`, root, root.displayData);
+    const key = root.dataTimelineId || `timelineId#${root.timelineId}`;
 
-    this.addNode(root.dataTimelineId, el, root);
+    this.addNode(key, el, root);
 
     return root;
   }
@@ -467,7 +471,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   addNode(key, el, node) {
-    const { displayData } = node;
+    const { displayData, connected } = node;
     const { isGroupNode, left, right, top, bottom } = displayData;
     el.style.left = `${left}px`;
     el.style.top = `${top}px`;
@@ -475,6 +479,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       el.style.height = `${bottom - top}px`;
       el.style.right = `${right}px`;
     }
+    else {
+      if (!connected && this.context.doc.state.connectedOnlyMode) {
+        el.classList.add('hidden');
+      }
+    }
+
     this.nodeElMap.set(key, el);
     // this.el.appendChild(el);
     if (key) {
