@@ -1,8 +1,8 @@
 // import DDGTimelineNodeType from './DDGTimelineNodeType';
 
-import DDGTimelineNodeType from './DDGTimelineNodeType';
+import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 
-/** @typedef { import("./DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
+/** @typedef { import("@dbux/common/src/types/constants/DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
 
 export class DDGTimelineNode {
   /**
@@ -58,6 +58,7 @@ export class TimelineRoot extends GroupTimelineNode {
 export class DataTimelineNode extends DDGTimelineNode {
   dataTimelineId;
   dataNodeId;
+  connected = false;
 
   /** ########################################
    * These fields are assigned in phase 4.
