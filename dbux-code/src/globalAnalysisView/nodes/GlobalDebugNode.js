@@ -261,7 +261,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                   const { ...otherProps } = edge;
                   const fromNode = timelineNodes[timelineDataNodes[edge.from]];
                   const toNode = timelineNodes[timelineDataNodes[edge.to]];
-                  const label = `${fromNode.label} -> ${toNode.label}`;
+                  const label = `${fromNode?.label} -> ${toNode?.label}`;
                   return makeTreeItem(label, otherProps, {
                     handleClick() {
                       // select `from` node

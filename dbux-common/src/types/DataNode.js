@@ -77,7 +77,7 @@ export default class DataNode {
   valueId;
 
   /**
-   * `nodeId` of the `DataNode` that this node carried it over from.
+   * `nodeId` of the `DataNode` that this DataNode carried its value over from.
    * 
    * @type {number}
    */

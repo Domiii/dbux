@@ -70,10 +70,10 @@ export default class BaseNode extends ParseNode {
     // NOTE: Babel's bindings can be recursive if a symbol name is defined multiple times inside the same scope.
     while ((next = declarationNode.getOwnDeclarationNode()) && next !== declarationNode) {
       declarationNode = next;
-      this.logger.debug(`  ([getDeclarationNode] "${this.debugTag}" → "${declarationNode.debugTag}")`);
+      // this.logger.debug(`  ([getDeclarationNode] "${this.debugTag}" → "${declarationNode.debugTag}")`);
     }
 
-    this.logger.debug(`[getDeclarationNode] "${this.debugTag}" → "${declarationNode.debugTag}"`);
+    // this.logger.debug(`[getDeclarationNode] "${this.debugTag}" → "${declarationNode.debugTag}"`);
     return declarationNode;
   }
 

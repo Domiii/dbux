@@ -7,9 +7,10 @@ function mul(a, b) {
 }
 
 function main(a = 1, b = 2) {
-  var c = add(a, b);
+  var c = add(a, 10);
+  var d = mul(b, 20);
 
-  return add(c, mul(a, b));
+  return add(b, mul(c, d));
 }
 
 main();

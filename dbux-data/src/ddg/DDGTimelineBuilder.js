@@ -35,6 +35,11 @@ export default class DDGTimelineBuilder {
   stack;
 
   /**
+   * @type {DataTimelineNode[]}
+   */
+  skippedNodesByDataNodeId = [];
+
+  /**
    * The last snapshot of given `refId`.
    * NOTE: The last snapshot by `refId`. The snapshot tree generally contains both reads, writes and also untouched nodes.
    * 
@@ -278,35 +283,45 @@ export default class DDGTimelineBuilder {
    * create and/or add nodes (basics)
    * ##########################################################################*/
 
-  #shouldSkipDataNode(dataNodeId) {
-    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
-      return false;
-    }
-    if (this.dp.util.isDataNodePassAlong(dataNodeId)) {
-      // skip all "pass along" nodes
-      return true;
-    }
-
+  #shouldIgnoreDataNode(dataNodeId) {
     const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
     if (trace) {
-      if (isBeforeCallExpression(trace.type)) {
+      const { traceId } = trace;
+      const dataNode = this.dp.util.getDataNode(dataNodeId);
+      const traceType = this.dp.util.getTraceType(traceId);
+      if (isBeforeCallExpression(traceType)) {
+        // ignore BCEs for now
         // TODO: some built-in BCEs carry DataNodes
-        // skip BCE
+        return true;
+      }
+      if (TraceType.is.Declaration(traceType) && !dataNode.inputs) {
+        // ignore declaration-only nodes
+        // → connect to first write instead
         return true;
       }
     }
     return false;
   }
 
+  #shouldSkipDataNode(dataNodeId) {
+    if (this.dp.util.isDataNodePassAlong(dataNodeId)) {
+      // skip all "pass along" nodes
+      return true;
+    }
+    return false;
+  }
+
   /**
-   * Find the last timeline node of same `inputDataNode`'s `accessId`.
+   * Check if given `dataNode` should be skipped.
+   * If so, find and return the last {@link DDGTimelineNode} of same `inputDataNode`'s `accessId`.
    * 
-   * @param {DataNode} startDataNode
-   * @param {DataNode} inputDataNode
+   * @param {DataNode} dataNode
    * @return {DDGTimelineNode}
    */
-  #skipInputDataNode(startDataNode, inputDataNode) {
-    // const { dp, ddg: { bounds } } = this;
+  #skipDataNode(dataNode) {
+    if (!this.#shouldSkipDataNode(dataNode.nodeId)) {
+      return null;
+    }
 
     // TODO: a previous TimelineNode exists, but only if not skipped
     //    → look up previous TimelineNode → if found: return it!
@@ -317,42 +332,42 @@ export default class DDGTimelineBuilder {
      * @type {DataNode}
      */
     let prev = null;
-    if (inputDataNode.varAccess?.declarationTid) {
-      prev = this.getLastVarSnapshotNode(inputDataNode.varAccess.declarationTid);
+    if (dataNode.varAccess?.declarationTid) {
+      prev = this.getLastVarSnapshotNode(dataNode.varAccess.declarationTid);
+      // if (!prev && dataNode is not declarationTid) {
+      //   TODO: handle external nodes
+      // }
     }
-    else if (inputDataNode.refId) {
-      const prevSnapshotNode = this.getLastRefSnapshotNode(inputDataNode.refId);
+    else if (dataNode.refId) {
+      const prevSnapshotNode = this.getLastRefSnapshotNode(dataNode.refId);
 
-      // TODO: need to look up ref node, not ref snapshot ("group") node.
-      TODO;
-      prev = prevSnapshotNode.refNode;
+      // TODO: look up by varAccess, not by refId!
+      // TODO;
+      prev = prevSnapshotNode?.refNode;
     }
     else {
       // there is no previous guy for this guy
       // return null;
     }
 
-
     if (!prev) {
-      // TODO: handle external nodes
-    }
-    else {
-      if (prev?.dataNodeId === inputDataNode.nodeId) { // TODO: we are comparing it against the wrong thing
-        // → need to look-up input
-        if (inputDataNode.valueFromId) {
-          // TODO: we currently don't have valueFromId for refs
-          //      → keep track of all ref occurrences, instead of only the last?
-          prev = this.getFirstDataTimelineNodeByDataNodeId(inputDataNode.valueFromId);
-        }
-        else {
-          prev = null;
-        }
+      // → look-up input
+      if (dataNode.valueFromId) {
+        // TODO: we currently don't have valueFromId for refs
+        //      → keep track of all ref occurrences, instead of only the last?
 
-        if (!prev || prev.dataNodeId === inputDataNode.nodeId) {
-          this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(inputDataNode.nodeId)}"`);
-        }
+        prev =
+          this.skippedNodesByDataNodeId[dataNode.valueFromId] ||
+          this.getFirstDataTimelineNodeByDataNodeId(dataNode.valueFromId);
+
+        // if (!prev) {
+        //   // TODO: handle external nodes
+        // }
       }
     }
+    // if (!prev) {
+    //   this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(dataNode.nodeId)}"`);
+    // }
     return prev;
   }
 
@@ -487,55 +502,45 @@ export default class DDGTimelineBuilder {
      * NOTE also that in JS, Sets retain order.
      * @type {Set.<DataTimelineNode>}
      */
-    const targetNodesSet = new Set();
+    const inputNodes = new Set();
 
-    if (this.#shouldSkipDataNode(ownDataNode.nodeId) &&
-      !!this.#skipInputDataNode(ownDataNode, ownDataNode)) {
-      // this node SHOULD be skipped and CAN be skipped
-      return;
+    // ignore + skip logic
+    if (!this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
+      if (this.#shouldIgnoreDataNode(ownDataNode.nodeId)) {
+        // ignore entirely
+        return;
+      }
+      const skippedBy = this.#skipDataNode(ownDataNode);
+      if (skippedBy) {
+        // → This node SHOULD be skipped and CAN be skipped.
+        // → register skip node
+        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
+        this.skippedNodesByDataNodeId[ownDataNode.nodeId] = skippedBy;
+        return;
+      }
     }
 
-    if (!ownDataNode.inputs) {
-    }
-    else {
+    if (ownDataNode.inputs) {
       for (const inputDataNodeId of ownDataNode.inputs) {
-        let inputDataNode = dp.util.getDataNode(inputDataNodeId);
-        /**
-         * @type {DataTimelineNode}
-         */
-        let targetInputNode;
-        let targetDataNodeId = inputDataNodeId;
-
-        // skip pass along nodes
-        while (this.#shouldSkipDataNode(targetDataNodeId)) {
-          // TODO: fix this algorithm:
-          //    → input to skip should not be constant
-          //    → look for DataNodes, not TimelineNodes (since TimelineNode creation would also have been skipped)
-          // connect to last registered node of DataNode (if existing)
-          const targetNodeCandidate = this.#skipInputDataNode(ownDataNode, inputDataNode);
-
-          if (!targetNodeCandidate) {
-            // end of the line
-            break;
-          }
-          if (targetInputNode === targetNodeCandidate) {
-            throw new Error(`Infinite loop in DDG construction for targetNodeCandidate=${targetNodeCandidate.dataNodeId}, trace="${dp.util.makeTraceInfo(traceId)}"`);
-          }
-          targetInputNode = targetNodeCandidate;
-          targetDataNodeId = targetInputNode.dataNodeId;
+        // look for skips
+        let inputNode = this.skippedNodesByDataNodeId[inputDataNodeId];
+        if (!inputNode) {
+          inputNode = this.getFirstDataTimelineNodeByDataNodeId(inputDataNodeId);
         }
 
-        if (!targetInputNode) {
-          targetInputNode = this.getFirstDataTimelineNodeByDataNodeId(inputDataNodeId);
-        }
-
-        if (targetInputNode && !targetNodesSet.has(targetInputNode)) {
-          targetNodesSet.add(targetInputNode);
+        if (inputNode) {
+          if (!inputNodes.has(inputNode)) {
+            inputNodes.add(inputNode);
+          }
+          else {
+            // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
+            // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
+            // TODO: add summarization logic
+          }
         }
         else {
-          // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
-          // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
-          // TODO: add summarization logic
+          // inputDataNodeId is ignored or external (are there other reasons?)
+          // this.#shouldIgnoreDataNode(ownDataNode.nodeId)
         }
       }
     }
@@ -549,8 +554,8 @@ export default class DDGTimelineBuilder {
     const newNode = this.#addDataNode(ownDataNode, dataNodes);
 
     // add edges
-    for (const targetNode of targetNodesSet) {
-      this.#addEdge(targetNode, newNode);
+    for (const inputNode of inputNodes) {
+      this.#addEdge(inputNode, newNode);
     }
   }
 
