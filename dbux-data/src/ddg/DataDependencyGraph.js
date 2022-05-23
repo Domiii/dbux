@@ -71,12 +71,16 @@ export default class DataDependencyGraph {
     const {
       timelineNodes,
       timelineDataNodes,
-      edges
+      edges,
+      outEdgesByDataTimelineId,
+      inEdgesByDataTimelineId
     } = this;
     return {
       timelineNodes,
       timelineDataNodes,
-      edges
+      edges,
+      outEdgesByDataTimelineId,
+      inEdgesByDataTimelineId
     };
   }
 
