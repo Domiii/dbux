@@ -51,8 +51,9 @@ export default class BaseId extends BaseNode {
     if (!path) {
       return null;
     }
+
+    // hackfix: check for actual declaration node
     if (path.node.id) {
-      // hackfix: check for declaration
       // future-work: this is a declaration -> override `getDeclarationNode` in AST node class instead
       path = path.get('id');
     }
@@ -67,6 +68,10 @@ export default class BaseId extends BaseNode {
     else if (path.node.param) {
       // hackfix for `CatchClause`
       path = path.get('param');
+    }
+    else if (path.node.left) {
+      // hackfix for `AssignmentPattern`
+      path = path.get('left');
     }
 
     // NOTE: `binding.path` (if it is `Declaration`) refers to the Declaration, not the `id` node.
