@@ -163,13 +163,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
-    const { type, children } = parent;
+    const { type, children, label = '' } = parent;
     const isGroupNode = isControlGroupTimelineNode(type);
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
     let right;
 
-    const el = this.makeNodeEl(parent, depth);
+    const el = this.makeNodeEl(parent, label);
     this.el.appendChild(el);
 
     if (isGroupNode) {
@@ -188,11 +188,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       right = depth * 3;
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
-      debugger;
       if (children?.length) {
-        for (const childId of children) {
+        for (const propName of Object.keys(children)) {
+          const childId = children[propName];
           const childNode = nodes[childId];
-          const childEl = this.makeNodeEl(childNode);
+          const childEl = this.makeNodeEl(childNode, propName);
           el.appendChild(childEl);
         }
       }
@@ -470,8 +470,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   //   this.addNode(key, el, displayData);
   // }
 
-  makeNodeEl(node) {
-    const { type, label = '' } = node;
+  makeNodeEl(node, label) {
+    const { type } = node;
     if (isControlGroupTimelineNode(type)) {
       const el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
       return el;
