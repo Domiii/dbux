@@ -172,9 +172,11 @@ export class IfTimelineNode extends BranchTimelineNode {
   constructor(controlStatementId) {
     super(DDGTimelineNodeType.If, controlStatementId);
   }
+}
 
-  addDecision(decisionTimelineId) {
-    this.decisions.push(decisionTimelineId);
+export class TernaryTimelineNode extends BranchTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.Ternary, controlStatementId);
   }
 }
 

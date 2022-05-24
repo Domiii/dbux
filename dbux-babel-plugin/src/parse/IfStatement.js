@@ -33,9 +33,10 @@ export default class IfStatement extends BaseNode {
   exit() {
     // const { path } = this;
     const { BranchStatement } = this;
-    const [test] = this.getChildPaths();
+    const [testNode] = this.getChildNodes();
+    const [testPath] = this.getChildPaths();
 
-    const testTrace = test.Traces.addDefaultTrace(test);
+    const testTrace = testNode.Traces.addDefaultTrace(testPath);
 
     if (!this.isControlGroupMergedWithParent()) {
       // new if statement
@@ -48,14 +49,14 @@ export default class IfStatement extends BaseNode {
     }
   }
 
-  instrument1() {
-    if (this.isControlGroupMergedWithParent()) {
-      // merge multiple if/else statements into one
-      const { BranchStatement } = this;
-      const [test] = this.getChildPaths();
+  // instrument1() {
+  //   if (this.isControlGroupMergedWithParent()) {
+  //     // merge multiple if/else statements into one
+  //     const { BranchStatement } = this;
+  //     const [test] = this.getChildPaths();
 
-      // decision trace will automatically be added to ancestor control group 
-      BranchStatement.setDecisionTrace(test.traceCfg);
-    }
-  }
+  //     // decision trace will automatically be added to ancestor control group 
+  //     BranchStatement.setDecisionTrace(test.traceCfg);
+  //   }
+  // }
 }

@@ -19,9 +19,6 @@ const traceCustomizationsByType = {
   [TraceType.PushImmediate]: tracePathStartContext,
   [TraceType.PopImmediate]: tracePathEndContext,
 
-  [TraceType.PushBranch]: tracePathStartContext,
-  [TraceType.PopBranch]: tracePathEndContext,
-
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
