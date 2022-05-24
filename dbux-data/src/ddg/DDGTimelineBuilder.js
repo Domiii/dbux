@@ -167,13 +167,16 @@ export default class DDGTimelineBuilder {
             // PROBLEM: the children of nested initial reference values are not addressable
             //      → because they cannot have a unique `accessId`!!
             //      → meaning that their root ValueRef's dataNode is accessed instead of `original`.
-            throw new Error('NYI: nested initial reference types are currently not supported');
+            // throw new Error('NYI: nested initial reference types are currently not supported');
+            return;
           }
           else {
+            // NOTE: this happens with commonly used globals (such as console.log)
             // primitive
             // PROBLEM: this value does not have a unique `dataNode` (but is addressable)
             // TODO: might need some addressing method using its parent (just like `varAccess`)
-            throw new Error('NYI: nested initial primitive value');
+            // throw new Error('NYI: nested initial primitive value');
+            return;
           }
         }
         else {
@@ -278,13 +281,8 @@ export default class DDGTimelineBuilder {
   #addDecisionNode(dataNode, trace) {
     const { dp } = this;
     const currentGroup = this.peekStack();
-    const staticTrace = dp.util.getStaticTrace(trace.staticTraceId);
-    if (currentGroup.controlStatementId !== staticTrace.controlId) {
-      // sanity check
-      this.logger.trace(`Invalid Decision node.\n` +
-        // eslint-disable-next-line max-len
-        `  Expected control statement: "${dp.util.makeStaticTraceInfo(staticTrace.controlId)}",\n  Actual: "${dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}"\n  at trace=${dp.util.makeTraceInfo(trace)}\n\n`
-      );
+    const staticTrace = dp.collections.staticTraces.getById(trace.staticTraceId);
+    if (!this.#checkCurrentGroupBranch(currentGroup, staticTrace, trace)) {
       return null;
     }
 
@@ -548,6 +546,27 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   /**
+   * 
+   * @param {GroupTimelineNode} currentGroup 
+   * @param {*} staticTrace 
+   */
+  #checkCurrentGroupBranch(currentGroup, staticTrace, trace) {
+    const { dp } = this;
+    if (currentGroup.controlStatementId !== staticTrace.controlId) {
+      // sanity check
+      const traceInfo = trace && `  at trace=${dp.util.makeTraceInfo(trace)}\n` || '';
+      this.logger.trace(`Invalid Decision node.\n  ` +
+        // eslint-disable-next-line max-len
+        `Expected control group for: "${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)}",\n  ` +
+        `Actual: "${currentGroup.controlStatementId && dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}"\n` +
+        `${traceInfo}\n`
+      );
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * Keep track of the stack.
    */
   updateStack(traceId) {
@@ -564,7 +583,13 @@ export default class DDGTimelineBuilder {
       // push branch statement
       const controlStatementId = staticTrace.controlId;
       const { syntax } = dp.collections.staticTraces.getById(controlStatementId);
-      this.#pushGroup(new branchSyntaxNodeCreators[syntax](controlStatementId));
+      const NodeCtor = branchSyntaxNodeCreators[syntax];
+      if (!NodeCtor) {
+        this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace)}"`);
+      }
+      else {
+        this.#pushGroup(new NodeCtor(controlStatementId));
+      }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
       const currentGroup = this.peekStack();
@@ -578,9 +603,11 @@ export default class DDGTimelineBuilder {
         }
       }
       else {
-        // TODO: sanity checks for popping branch statement
-        const label = branchLabelMaker[currentGroup.type](ddg, currentGroup);
-        currentGroup.label = label;
+        if (!this.#checkCurrentGroupBranch(currentGroup, staticTrace, trace)) {
+          return;
+        }
+        const label = branchLabelMaker[currentGroup.type]?.(ddg, currentGroup);
+        currentGroup.label = label || '';
       }
       this.#popGroup();
     }
@@ -619,7 +646,8 @@ export default class DDGTimelineBuilder {
     const inputNodes = new Map();
 
     // ignore + skip logic
-    if (!this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
+    // TODO: allow for decision skips as well
+    if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
       if (this.#shouldIgnoreDataNode(ownDataNode.nodeId)) {
         // ignore entirely
         return;

@@ -58,9 +58,10 @@ export default class TryStatement extends BaseNode {
         type: traceType
       },
       meta: {
+        // we don't want the variable
         noTidIdentifier: true,
         instrument: insertAfterBody,
-        // build: buildTraceId // we don't want the variable
+        // build: buildTraceId
         build: buildTraceStatic,
         traceCall
       }

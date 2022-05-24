@@ -194,9 +194,10 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
            */
           function buildTreeNode(node) {
             const { children: childrenIds = EmptyArray } = node;
-            const children = childrenIds.map(childId => {
+            const children = new childrenIds.constructor();
+            Object.entries(childrenIds).forEach(([key, childId]) => {
               const childNode = timelineNodes[childId];
-              return buildTreeNode(childNode);
+              children[key] = buildTreeNode(childNode);
             });
             return makeTimelineNodeEntry(node, children);
           }
@@ -208,7 +209,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             const { timelineId, dataTimelineId, label: nodeLabel } = node;
             const label = nodeLabel || `${node.constructor.name}`;
             return makeTreeItem(label, children, {
-              description: `${dataTimelineId && `${dataTimelineId}, ` || ''}${timelineId} ${node.constructor.name}`,
+              description: `${timelineId}${dataTimelineId && ` (${dataTimelineId})` || ''} [${node.constructor.name}]`,
               handleClick() {
                 const { dp } = ddg;
                 let { dataNodeId = null, traceId } = node;

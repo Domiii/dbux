@@ -20,14 +20,14 @@ export const syntaxToNodeType = {
 };
 
 export const branchSyntaxNodeCreators = {
-  [SyntaxType.If](...args) { return new IfTimelineNode(...args); },
-  [SyntaxType.Switch](...args) { return new SwitchTimelineNode(...args); },
-  [SyntaxType.Ternary](...args) { return new TernaryTimelineNode(...args); },
-  [SyntaxType.For](...args) { return new ForTimelineNode(...args); },
-  [SyntaxType.ForIn](...args) { return new ForInTimelineNode(...args); },
-  [SyntaxType.ForOf](...args) { return new ForOfTimelineNode(...args); },
-  [SyntaxType.While](...args) { return new WhileTimelineNode(...args); },
-  [SyntaxType.DoWhile](...args) { return new DoWhileTimelineNode(...args); }
+  [SyntaxType.If]: IfTimelineNode,
+  // [SyntaxType.Switch]: SwitchTimelineNode,
+  // [SyntaxType.Ternary]: TernaryTimelineNode,
+  // [SyntaxType.For]: ForTimelineNode,
+  // [SyntaxType.ForIn]: ForInTimelineNode,
+  // [SyntaxType.ForOf]: ForOfTimelineNode,
+  // [SyntaxType.While]: WhileTimelineNode,
+  // [SyntaxType.DoWhile]: DoWhileTimelineNode,
 };
 
 /** ###########################################################################

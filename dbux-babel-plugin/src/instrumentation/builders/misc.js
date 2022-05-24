@@ -77,7 +77,7 @@ export const buildTraceExpressionNoInput = buildTraceCall(
  * @return {t.Statement}
  */
 export function buildTraceStatic(state, traceCfg) {
-  const traceCallId = getTraceCall(state, traceCfg);
+  const traceCall = getTraceCall(state, traceCfg);
   // const tid = buildTraceId(state, traceCfg);
 
   // const args = [tid];
@@ -86,7 +86,7 @@ export function buildTraceStatic(state, traceCfg) {
   addMoreTraceCallArgs(args, traceCfg);
 
   return t.expressionStatement(
-    t.callExpression(traceCallId, args)
+    t.callExpression(traceCall, args)
   );
 }
 

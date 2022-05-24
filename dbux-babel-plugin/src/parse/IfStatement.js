@@ -8,44 +8,77 @@ export default class IfStatement extends BaseNode {
   static children = ['test', 'consequent', 'alternate'];
   static plugins = ['BranchStatement'];
 
+  _isControlGroupMergedWithParent = undefined;
+
+  isControlGroupRoot() {
+    const parent = this.getParent();
+    return !(parent instanceof IfStatement);
+  }
+
+  isControlGroupMergedWithParent() {
+    if (this._isControlGroupMergedWithParent === undefined) {
+      const parent = this.getParent();
+      if (parent instanceof IfStatement) {
+        const [/* testNode */, /* consequentNode */, elsePath] = parent.getChildPaths();
+        if (
+          elsePath === this.path ||
+          (elsePath.isBlockStatement() && elsePath.body?.length === 1 && elsePath.body[0] === this)
+        ) {
+          // this is an "else if" → merge with parent
+          this._isControlGroupMergedWithParent = true;
+        }
+      }
+      this._isControlGroupMergedWithParent ||= false;
+    }
+    return this._isControlGroupMergedWithParent;
+  }
+
   /**
    * @type {BranchStatement}
    */
   get BranchStatement() {
+    if (this.isControlGroupMergedWithParent()) {
+      return this.getParent().BranchStatement;
+    }
     return this.getPlugin('BranchStatement');
   }
 
-  isControlGroupMergedWithParent() {
-    const parent = this.getParent();
-    if (parent instanceof IfStatement) {
-      const [/* testNode */, /* consequentNode */, elseNode] = parent.getChildNodes();
-      if (
-        elseNode === this ||
-        (elseNode?.path.isBlockStatement() && elseNode.body?.length === 1 && elseNode.body[0] === this)
-      ) {
-        // this is an "else if" → merge with parent
-        return true;
-      }
+  /**
+   * First handle branch root.
+   */
+  exit1() {
+    // this.logger.debug(`[exit1] ${this.debugTag} ${!!testTrace} ${this.isControlGroupRoot()}`);
+    if (!this.isControlGroupMergedWithParent()) {
+      // new if statement
+      const { BranchStatement } = this;
+      BranchStatement.createBranchStaticTrace(SyntaxType.If);
     }
-    return false;
   }
 
+  /**
+   * Handle merges after root is already taken care of.
+   */
   exit() {
-    // const { path } = this;
-    const { BranchStatement } = this;
     const [testNode] = this.getChildNodes();
     const [testPath] = this.getChildPaths();
 
-    const testTrace = testNode.Traces.addDefaultTrace(testPath);
+    testNode.Traces.addDefaultTrace(testPath);
+    const testTrace = testNode.traceCfg;
 
-    if (!this.isControlGroupMergedWithParent()) {
-      // new if statement
-      BranchStatement.createBranchStaticTrace(SyntaxType.If);
-      BranchStatement.setDecisionAndPushTrace(testTrace);
-      BranchStatement.createPopStatementTrace();
-    }
-    else {
-      BranchStatement.setDecisionTrace(testTrace);
+    this.logger.debug(`[exit] ${this.debugTag}, ${!!testTrace}, ${this.isControlGroupMergedWithParent()}`);
+
+    // const { path } = this;
+    if (testTrace) {
+      const { BranchStatement } = this;
+      if (this.isControlGroupMergedWithParent()) {
+        // merged if statement
+        BranchStatement.setDecisionTrace(testTrace);
+      }
+      else {
+        // root if statement
+        BranchStatement.setDecisionAndPushTrace(testTrace);
+        BranchStatement.createPopStatementTrace();
+      }
     }
   }
 

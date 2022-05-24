@@ -19,6 +19,9 @@ const traceCustomizationsByType = {
   [TraceType.PushImmediate]: tracePathStartContext,
   [TraceType.PopImmediate]: tracePathEndContext,
 
+  [TraceType.PushBranch]: tracePathStartContext,
+  [TraceType.PopBranch]: tracePathEndContext,
+
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
@@ -142,7 +145,10 @@ export default class StaticTraceCollection extends StaticCollection {
     // console.log('TRACE', '@', `${state.filename}:${line}`);
     // get `displayName`, `loc`
     const _traceId = this._getNextId();
-    let trace;
+    /**
+     * @type {StaticTrace}
+     */
+    let staticTrace;
 
     const { type, syntax, dataNode, data, controlRole, controlId } = staticData;
 
@@ -165,29 +171,34 @@ export default class StaticTraceCollection extends StaticCollection {
       throw new Error(`invalid call to "addTrace" - missing "staticTraceData.type", in path: ${pathToString(path)}`);
     }
     if (traceCustomizationsByType[type]) {
-      trace = traceCustomizationsByType[type](path, state);
+      staticTrace = traceCustomizationsByType[type](path, state);
     }
     else {
-      trace = traceDefault(path, state);
+      staticTrace = traceDefault(path, state);
     }
 
     // misc data
-    trace._traceId = _traceId;
-    trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
+    staticTrace._traceId = _traceId;
+    staticTrace._staticContextId = state.contexts.getCurrentStaticContextId(path);
 
-    trace.type = type;
-    trace.syntax = syntax;
-    trace.data = data;
-    trace.dataNode = dataNode;
-    trace.controlRole = controlRole;
-    trace.controlId = controlId;
+    staticTrace.type = type;
+    staticTrace.syntax = syntax;
+    staticTrace.data = data;
+    staticTrace.dataNode = dataNode;
+    staticTrace.controlRole = controlRole;
+    staticTrace.controlId = controlId;
 
     // push
-    this._push(trace);
+    this._push(staticTrace);
 
     // path.setData('_traceId', _traceId);
 
     return _traceId;
+  }
+
+  updateStaticTrace(inProgramStaticTraceId, upd) {
+    const staticTrace = this.getById(inProgramStaticTraceId);
+    Object.assign(staticTrace, upd);
   }
 }
 
