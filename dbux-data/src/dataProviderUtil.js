@@ -593,9 +593,18 @@ export default {
    * @param {RuntimeDataProvider} dp
    * @return {DataNode} DataNode of value trace
    */
-  getDataNodeOfTrace(dp, traceId) {
+  getDataNodeIdOfTrace(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
-    return valueTrace ? dp.collections.dataNodes.getById(valueTrace.nodeId) : null;
+    return valueTrace ? valueTrace.nodeId : 0;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @return {DataNode} DataNode of value trace
+   */
+  getDataNodeOfTrace(dp, traceId) {
+    const dataNodeId = dp.util.getDataNodeIdOfTrace(traceId);
+    return dataNodeId ? dp.collections.dataNodes.getById(dataNodeId) : null;
   },
 
   /** 
@@ -1064,6 +1073,30 @@ export default {
       return !!(dataNode.hasValue || dataNode.refId);
     }
     return false;
+  },
+
+  /**
+   * NOTE: this can return incorrect values if DataNode was omitted etc.
+   * @param {RuntimeDataProvider} dp
+   */
+  isDataNodeValueTruthy(dp, nodeId) {
+    const dataNode = dp.util.getDataNode(nodeId);
+    if (dataNode.refId) {
+      return true;
+    }
+    return !!dataNode.value;
+  },
+
+  /**
+   * NOTE: this can return incorrect values if DataNode was omitted etc.
+   * @param {RuntimeDataProvider} dp
+   */
+  isTraceValueTruthy(dp, traceId) {
+    const dataNodeId = dp.util.getDataNodeIdOfTrace(traceId);
+    if (!dataNodeId) {
+      return false;
+    }
+    return dp.util.isDataNodeValueTruthy(dataNodeId);
   },
 
   /** 

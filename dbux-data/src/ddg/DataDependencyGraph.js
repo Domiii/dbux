@@ -103,7 +103,10 @@ export default class DataDependencyGraph {
    * Node + Edge getters
    * ##########################################################################*/
 
-  getDataNodeByDataTimelineId(dataTimelineId) {
+  /**
+   * @return {DataTimelineNode}
+   */
+  getDataTimelineNode(dataTimelineId) {
     const timelineId = this.timelineDataNodes[dataTimelineId];
     return this.timelineNodes[timelineId];
   }
@@ -189,7 +192,7 @@ export default class DataDependencyGraph {
     node.connected = true;
     const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
     for (const { from } of fromEdges) {
-      const fromNode = this.getDataNodeByDataTimelineId(from);
+      const fromNode = this.getDataTimelineNode(from);
       this.findConnectedNodes(fromNode);
     }
   }

@@ -1,6 +1,8 @@
 // import DDGTimelineNodeType from './DDGTimelineNodeType';
 
+import last from 'lodash/last';
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 
 /** @typedef { import("@dbux/common/src/types/constants/DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
 
@@ -93,12 +95,12 @@ export class RefSnapshotTimelineNode extends DDGTimelineNode {
    * @type {number}
    */
   refId;
-  
+
   /**
    * @type {string}
    */
   label;
-  
+
   // TODO: also represent the refNode itself (→ it needs to be addressable iff it has `declarationTid`)
 
   /**
@@ -143,8 +145,35 @@ export class ContextTimelineNode extends GroupTimelineNode {
   }
 }
 
+
 export class BranchTimelineNode extends GroupTimelineNode {
-  // TODO
+  controlStatementId;
+
+  /**
+   * DataTimelineId of `decision` nodes.
+   * @type {number[]}
+   */
+  decisions;
+
+  constructor(type, controlStatementId) {
+    super(type);
+    this.controlStatementId = controlStatementId;
+    this.children = [];
+    this.decisions = [];
+  }
+}
+
+export class IfTimelineNode extends BranchTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.If, controlStatementId);
+  }
+
+  addDecision(decisionTimelineId) {
+    this.decisions.push(decisionTimelineId);
+  }
+
+  beforePop() {
+  }
 }
 
 // TODO: loops, decisions etc.

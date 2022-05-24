@@ -10,10 +10,11 @@ import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/const
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdge from './DDGEdge';
 import DDGEdgeType from './DDGEdgeType';
+import { branchLabelMaker, branchSyntaxNodeCreators } from './branchUtil';
 
 const Verbose = 1;
 // const Verbose = 0;
@@ -435,6 +436,88 @@ export default class DDGTimelineBuilder {
 
 
   /** ###########################################################################
+   * edges
+   * ##########################################################################*/
+
+
+  #addEdgeToMap(map, id, edge) {
+    let edges = map.get(id);
+    if (!edges) {
+      map.set(id, edges = []);
+    }
+    edges.push(edge);
+  }
+
+  /**
+   * @param {DataTimelineNode} fromNode 
+   * @param {DataTimelineNode} toNode 
+   */
+  #addEdge(fromNode, toNode, edgeProps) {
+    const { n } = edgeProps;
+    const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId, n);
+    this.ddg.edges.push(newEdge);
+
+    this.#addEdgeToMap(this.ddg.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
+    this.#addEdgeToMap(this.ddg.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
+  }
+
+  /** ###########################################################################
+   * labels
+   * {@link DDGTimelineBuilder##makeDataNodeLabel}
+   * ##########################################################################*/
+
+  #makeDataNodeLabel(dataNode) {
+    const { dp } = this;
+    const { nodeId: dataNodeId, traceId } = dataNode;
+
+    // get trace data
+    const { staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
+    const isTraceOwnDataNode = traceNodeId === dataNodeId;
+    const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
+    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
+
+    // variable name
+    let label = '';
+    if (dataNode.traceId) {
+      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
+      label = ownStaticTrace.dataNode?.label;
+    }
+
+    if (!label) {
+      const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
+      if (!isNewValue && varName) {
+        label = varName;
+      }
+      else if (isTraceReturn(ownStaticTrace.type)) {
+        // return label
+        label = 'ret';
+      }
+    }
+
+    if (!label) {
+      if (dp.util.isTraceOwnDataNode(dataNodeId)) {
+        // default trace label
+        const trace = dp.util.getTrace(dataNode.traceId);
+        label = makeTraceLabel(trace);
+      }
+      else {
+        // TODO: ME
+      }
+    }
+    // else {
+    // }
+
+    // TODO: nested DataNodes don't have a traceId (or they don't own it)
+    return label;
+  }
+
+  /** ###########################################################################
+   * branch logic
+   * ##########################################################################*/
+
+
+
+  /** ###########################################################################
    * {@link DDGTimelineBuilder#updateStack}
    * ##########################################################################*/
 
@@ -442,7 +525,7 @@ export default class DDGTimelineBuilder {
    * Keep track of the stack.
    */
   updateStack(traceId) {
-    const { dp } = this;
+    const { ddg, dp } = this;
     const trace = dp.util.getTrace(traceId);
     const staticTrace = dp.util.getStaticTrace(traceId);
     if (TraceType.is.PushImmediate(staticTrace.type)) {
@@ -453,21 +536,25 @@ export default class DDGTimelineBuilder {
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
-      // TODO
+      const controlStatementId = staticTrace.controlId;
+      const { syntax } = dp.collections.staticTraces.getById(controlStatementId);
+      this.#pushGroup(new branchSyntaxNodeCreators[syntax](controlStatementId));
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
+      const currentGroup = this.peekStack();
+
       // sanity checks
       if (TraceType.is.PopImmediate(staticTrace.type)) {
         // pop context
-        const top = this.peekStack();
-        if (trace.contextId !== top.contextId) {
-          this.logger.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${top.toString()}`);
+        if (trace.contextId !== currentGroup.contextId) {
+          this.logger.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${currentGroup.toString()}`);
           return;
         }
       }
       else {
-        // pop branch statement
-        // TODO
+        // TODO: sanity checks for popping branch statement
+        const label = branchLabelMaker[currentGroup.type](ddg, currentGroup);
+        currentGroup.label = label;
       }
       this.#popGroup();
     }
@@ -493,7 +580,8 @@ export default class DDGTimelineBuilder {
       return;
     }
 
-    if (DataNodeType.is.Write(ownDataNode.type) && dp.util.isTraceControlDecision(traceId)) {
+    const isDecision = dp.util.isTraceControlDecision(traceId);
+    if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
       // TODO: add two nodes in this case
     }
 
@@ -545,44 +633,24 @@ export default class DDGTimelineBuilder {
       }
     }
 
-    /**
-     * Add new node.
-     * NOTE: Don't add while still resolving connections above.
-     * NOTE2: For now, don't skip adding since that causes issues with final node ordering.
-     * @type {DataTimelineNode}
-     */
-    const newNode = this.#addDataNode(ownDataNode, dataNodes);
+    let newNode;
+    if (isDecision) {
+      // TODO: add decision nodes
+    }
+    else {
+      /**
+       * Add new node.
+       * NOTE: Don't add while still resolving connections above.
+       * NOTE2: For now, don't skip adding since that causes issues with final node ordering.
+       * @type {DataTimelineNode}
+       */
+      newNode = this.#addDataNode(ownDataNode, dataNodes);
+    }
 
     // add edges
     for (const [inputNode, edgeProps] of inputNodes) {
       this.#addEdge(inputNode, newNode, edgeProps);
     }
-  }
-
-  /** ###########################################################################
-   * edges
-   * ##########################################################################*/
-
-
-  #addEdgeToMap(map, id, edge) {
-    let edges = map.get(id);
-    if (!edges) {
-      map.set(id, edges = []);
-    }
-    edges.push(edge);
-  }
-
-  /**
-   * @param {DataTimelineNode} fromNode 
-   * @param {DataTimelineNode} toNode 
-   */
-  #addEdge(fromNode, toNode, edgeProps) {
-    const { n } = edgeProps;
-    const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId, n);
-    this.ddg.edges.push(newEdge);
-
-    this.#addEdgeToMap(this.ddg.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
-    this.#addEdgeToMap(this.ddg.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
   }
 
   /** ###########################################################################
@@ -600,55 +668,5 @@ export default class DDGTimelineBuilder {
 
   #popGroup() {
     return this.stack.pop();
-  }
-
-  /** ###########################################################################
-   * labels
-   * {@link DDGTimelineBuilder##makeDataNodeLabel}
-   * ##########################################################################*/
-
-  #makeDataNodeLabel(dataNode) {
-    const { dp } = this;
-    const { nodeId: dataNodeId, traceId } = dataNode;
-
-    // get trace data
-    const { staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
-    const isTraceOwnDataNode = traceNodeId === dataNodeId;
-    const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
-    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
-
-    // variable name
-    let label = '';
-    if (dataNode.traceId) {
-      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
-      label = ownStaticTrace.dataNode?.label;
-    }
-
-    if (!label) {
-      const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
-      if (!isNewValue && varName) {
-        label = varName;
-      }
-      else if (isTraceReturn(ownStaticTrace.type)) {
-        // return label
-        label = 'ret';
-      }
-    }
-
-    if (!label) {
-      if (dp.util.isTraceOwnDataNode(dataNodeId)) {
-        // default trace label
-        const trace = dp.util.getTrace(dataNode.traceId);
-        label = makeTraceLabel(trace);
-      }
-      else {
-        // TODO: ME
-      }
-    }
-    // else {
-    // }
-
-    // TODO: nested DataNodes don't have a traceId (or they don't own it)
-    return label;
   }
 }

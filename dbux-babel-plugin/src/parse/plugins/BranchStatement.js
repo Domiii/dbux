@@ -20,7 +20,7 @@ export default class BranchStatement extends BasePlugin {
    * Create and insert {@link StaticTrace} representing this branch.
    * It might not have its own `trace`, but might instead get referenced by the multi-purpose push trace.
    */
-  createBranchStaticTrace() {
+  createBranchStaticTrace(syntaxType) {
     const {
       node: {
         path,
@@ -33,7 +33,7 @@ export default class BranchStatement extends BasePlugin {
 
     const staticTraceData = {
       type: TraceType.BranchStatement,
-      // syntax: syntaxType
+      syntax: syntaxType
     };
     this.controlStatementId = state.traces.addTrace(path, staticTraceData);
   }

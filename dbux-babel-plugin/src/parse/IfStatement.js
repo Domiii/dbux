@@ -1,4 +1,5 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import BaseNode from './BaseNode';
 
 /** @typedef { import("./plugins/BranchStatement").default } BranchStatement */
@@ -38,7 +39,7 @@ export default class IfStatement extends BaseNode {
 
     if (!this.isControlGroupMergedWithParent()) {
       // new if statement
-      BranchStatement.createBranchStaticTrace();
+      BranchStatement.createBranchStaticTrace(SyntaxType.If);
       BranchStatement.setDecisionAndPushTrace(testTrace);
       BranchStatement.createPopStatementTrace();
     }
