@@ -245,7 +245,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                   const node = timelineNodes[timelineId];
                   const { label, dataTimelineId, timelineId: _, ...otherProps } = node;
                   return makeTreeItem(label, otherProps, {
-                    description: `${dataTimelineId} (${timelineId})`,
+                    description: `${dataTimelineId} (${timelineId}) [${node.constructor.name}]`,
                     handleClick() {
                       const { dp } = ddg;
                       const { traceId } = dp.collections.dataNodes.getById(node.dataNodeId);
