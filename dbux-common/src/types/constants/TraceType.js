@@ -20,7 +20,8 @@ const traceTypeObj = {
   /**
    * A branch statement
    */
-  BranchStatement: 11,
+  PushBranch: 10,
+  PopBranch: 11,
   BranchExpression: 12,
 
   Statement: 13,

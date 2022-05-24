@@ -3,7 +3,7 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { ZeroNode } from '../helpers/traceUtil';
 import { buildTraceStatic } from '../instrumentation/builders/misc';
 import { buildTraceId } from '../instrumentation/builders/traceId';
-import { instrumentBehind } from '../instrumentation/instrumentMisc';
+import { insertAfterBody } from '../instrumentation/instrumentMisc';
 import BaseNode from './BaseNode';
 import StaticContext from './plugins/StaticContext';
 
@@ -59,7 +59,7 @@ export default class TryStatement extends BaseNode {
       },
       meta: {
         noTidIdentifier: true,
-        instrument: instrumentBehind,
+        instrument: insertAfterBody,
         // build: buildTraceId // we don't want the variable
         build: buildTraceStatic,
         traceCall
@@ -85,7 +85,7 @@ export default class TryStatement extends BaseNode {
       },
       meta: {
         noTidIdentifier: true,
-        instrument: instrumentBehind,
+        instrument: insertAfterBody,
         // build: buildTraceId // we don't want the variable
         build: buildTraceStatic,
         traceCall: 'newTraceId'

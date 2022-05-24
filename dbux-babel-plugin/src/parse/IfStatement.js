@@ -18,7 +18,10 @@ export default class IfStatement extends BaseNode {
     const parent = this.getParent();
     if (parent instanceof IfStatement) {
       const [/* testNode */, /* consequentNode */, elseNode] = parent.getChildNodes();
-      if (elseNode === this || (elseNode?.path.isBlockStatement() && elseNode.body?.length === 1 && elseNode.body[0] === this)) {
+      if (
+        elseNode === this ||
+        (elseNode?.path.isBlockStatement() && elseNode.body?.length === 1 && elseNode.body[0] === this)
+      ) {
         // this is an "else if" → merge with parent
         return true;
       }
@@ -38,6 +41,9 @@ export default class IfStatement extends BaseNode {
       BranchStatement.createBranchStaticTrace();
       BranchStatement.setDecisionAndPushTrace(testTrace);
       BranchStatement.createPopStatementTrace();
+    }
+    else {
+      BranchStatement.setDecisionTrace(testTrace);
     }
   }
 

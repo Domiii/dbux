@@ -11,8 +11,8 @@ import NestedError from '@dbux/common/src/NestedError';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
 import { findPathInObject } from '@dbux/common/src/util/objectUtil';
 // import universalLibs from '@dbux/common/src/util/universalLib';
-import SendQueue from './SendQueue';
 import { startPrettyTimer } from '@dbux/common/src/util/timeUtil';
+import SendQueue from './SendQueue';
 
 const Verbose = 1;
 // const Verbose = 2;

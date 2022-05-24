@@ -18,31 +18,7 @@ export function instrumentExpression(state, traceCfg) {
 }
 
 /**
- * Insert trace call behind `targetPath`.
- */
-export function instrumentBehind(state, traceCfg) {
-  let path = getInstrumentPath(traceCfg);
-
-  // const s = pathToString(path);
-  // const { type } = path.node;
-
-  const resultNode = doBuild(state, traceCfg);
-
-  // hackfix: babel seems to force us to handle array and non-array separately
-  const bodyPath = path.get('body');
-  if (bodyPath.node) {
-    bodyPath.insertAfter(resultNode);
-  }
-  else {
-    path.pushContainer('body', resultNode);
-  }
-  // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
-
-  postInstrument(traceCfg, resultNode);
-}
-
-/**
- * Insert trace call at beginning of `targetPath`.
+ * Insert trace call at beginning of `targetPath`'s body.
  */
 export function instrumentUnshiftBody(state, traceCfg) {
   // const path = getInstrumentPath(traceCfg);
@@ -54,6 +30,48 @@ export function instrumentUnshiftBody(state, traceCfg) {
 
   // console.debug(`instrumentUnshitBody`, pathToStringAnnotated(path));
   path.unshiftContainer('body', resultNode);
+
+  postInstrument(traceCfg, resultNode);
+}
+
+/**
+ * Insert trace call behind `targetPath`.
+ */
+export function insertAfterBody(state, traceCfg) {
+  let path = getInstrumentPath(traceCfg);
+
+  // const s = pathToString(path);
+  // const { type } = path.node;
+
+  const resultNode = doBuild(state, traceCfg);
+
+  // hackfix: babel seems to force us to handle array and non-array separately
+  const bodyPath = path.get('body');
+  if (bodyPath.node) {
+    // array?
+    bodyPath.insertAfter(resultNode);
+  }
+  else {
+    // non-array?
+    path.pushContainer('body', resultNode);
+  }
+  // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
+
+  postInstrument(traceCfg, resultNode);
+}
+
+/**
+ * Insert trace call behind `targetPath`.
+ */
+export function insertAfterNode(state, traceCfg) {
+  let path = getInstrumentPath(traceCfg);
+
+  // const s = pathToString(path);
+  // const { type } = path.node;
+
+  const resultNode = doBuild(state, traceCfg);
+
+  path.insertAfter(resultNode);
 
   postInstrument(traceCfg, resultNode);
 }

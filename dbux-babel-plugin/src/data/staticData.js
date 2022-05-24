@@ -7,6 +7,7 @@ const Verbose = false;
 
 export function buildDbuxInit(state) {
   const {
+    // version, // TODO: add version
     ids,
     fileName,
     filePath,

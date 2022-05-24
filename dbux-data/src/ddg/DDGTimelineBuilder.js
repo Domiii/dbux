@@ -500,9 +500,9 @@ export default class DDGTimelineBuilder {
     /**
      * This is to avoid duplicate edges.
      * NOTE also that in JS, Sets retain order.
-     * @type {Set.<DataTimelineNode>}
+     * @type {Map.<DataTimelineNode, { n: number }>}
      */
-    const inputNodes = new Set();
+    const inputNodes = new Map();
 
     // ignore + skip logic
     if (!this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
@@ -529,13 +529,13 @@ export default class DDGTimelineBuilder {
         }
 
         if (inputNode) {
-          if (!inputNodes.has(inputNode)) {
-            inputNodes.add(inputNode);
+          const edgeProps = inputNodes.get(inputNode);
+          if (!edgeProps) {
+            inputNodes.set(inputNode, { n: 1 });
           }
           else {
             // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
-            // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
-            // TODO: add summarization logic
+            ++edgeProps.n;
           }
         }
         else {
@@ -554,8 +554,8 @@ export default class DDGTimelineBuilder {
     const newNode = this.#addDataNode(ownDataNode, dataNodes);
 
     // add edges
-    for (const inputNode of inputNodes) {
-      this.#addEdge(inputNode, newNode);
+    for (const [inputNode, edgeProps] of inputNodes) {
+      this.#addEdge(inputNode, newNode, edgeProps);
     }
   }
 
@@ -576,8 +576,9 @@ export default class DDGTimelineBuilder {
    * @param {DataTimelineNode} fromNode 
    * @param {DataTimelineNode} toNode 
    */
-  #addEdge(fromNode, toNode) {
-    const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId);
+  #addEdge(fromNode, toNode, edgeProps) {
+    const { n } = edgeProps;
+    const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId, n);
     this.ddg.edges.push(newEdge);
 
     this.#addEdgeToMap(this.ddg.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);

@@ -1,3 +1,4 @@
+import { NodePath } from '@babel/traverse';
 import { runSnapshotTests, runAllSnapshotTests } from '../../testing/test-util';
 import { buildSource } from '../../instrumentation/builders/common';
 
@@ -24,6 +25,9 @@ const plugin = function ({ types: t }) {
   const customCode = buildSource(`someFancyCodeHere();`);
 
   let imported = false;
+  /**
+   * @type {NodePath}
+   */
   let root;
   return {
     visitor: {
@@ -35,7 +39,8 @@ const plugin = function ({ types: t }) {
           // add import if it's not there
           imported = true;
           root.unshiftContainer('body', customCode);
-          root.resync();
+          // NOTE: resync fixes up all properties of the node in relation to its parent.
+          // root.resync();
         }
       }
     }

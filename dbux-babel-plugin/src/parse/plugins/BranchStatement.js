@@ -1,6 +1,7 @@
 import TraceControlRole from '@dbux/common/src/types/constants/TraceControlRole';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import { insertAfterNode } from '../../instrumentation/instrumentMisc';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../../definitions/TraceCfg").default } TraceCfg */
@@ -9,10 +10,15 @@ import BasePlugin from './BasePlugin';
  * 
  */
 export default class BranchStatement extends BasePlugin {
+  /**
+   * The `inProgramStaticTraceId` of the control statement StaticTrace.
+   * @type {number}
+   */
   controlStatementId;
 
   /**
-   * 
+   * Create and insert {@link StaticTrace} representing this branch.
+   * It might not have its own `trace`, but might instead get referenced by the multi-purpose push trace.
    */
   createBranchStaticTrace() {
     const {
@@ -53,6 +59,7 @@ export default class BranchStatement extends BasePlugin {
   setPushTrace(trace) {
     trace.staticTraceData.controlRole = TraceControlRole.Push;
 
+    // add branch trace to push trace
     const branchTrace = this.createBranchStaticTrace();
     trace.staticTraceData.controlId = branchTrace._traceId;
   }
@@ -63,22 +70,30 @@ export default class BranchStatement extends BasePlugin {
   setDecisionAndPushTrace(trace) {
     trace.staticTraceData.controlRole = TraceControlRole.PushAndDecision;
 
+    // add branch trace to push trace
     const branchTrace = this.createBranchStaticTrace();
     trace.staticTraceData.controlId = branchTrace._traceId;
   }
 
   /**
-   * Inserts a new pop trace behind this.node.
+   * Inserts a new pop trace behind the branch node.
    * @param {TraceCfg} trace 
    */
   createPopStatementTrace() {
+    const {
+      node: {
+        path
+      }
+    } = this;
+
     const trace = this.addTrace(path, {
       staticTraceData: {
+        type: TraceType.PopBranch
       },
-      TODO
+      meta: {
+        instrument: insertAfterNode
+      }
     });
-
-    TODO;
 
     this.setPopStatementTrace(trace);
 
@@ -90,6 +105,6 @@ export default class BranchStatement extends BasePlugin {
    */
   setPopStatementTrace(trace) {
     trace.staticTraceData.controlRole = TraceControlRole.Pop;
-    trace.staticTraceData.controlId = this.controlStatementId;
+    // trace.staticTraceData.controlId = this.controlStatementId;
   }
 }

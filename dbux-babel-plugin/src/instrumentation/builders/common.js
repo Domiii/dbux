@@ -4,12 +4,13 @@
 
 import { parse } from '@babel/parser';
 import { codeFrameColumns } from "@babel/code-frame";
-import traverse from "@babel/traverse";
+import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import isFunction from 'lodash/isFunction';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { UndefinedNode } from './buildUtil';
 import { astNodeToString } from '../../helpers/pathHelpers';
+import TraceCfg from '../../definitions/TraceCfg';
 // import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
@@ -110,6 +111,9 @@ export function buildSource(source) {
 // utilities
 // ###########################################################################
 
+/**
+ * @param {TraceCfg} traceCfg 
+ */
 export function getBuildTargetPath(traceCfg) {
   const {
     meta: {
@@ -119,7 +123,10 @@ export function getBuildTargetPath(traceCfg) {
   return targetPath;
 }
 
-
+/**
+ * @param {TraceCfg} traceCfg 
+ * @return {NodePath}
+ */
 export function getInstrumentPath(traceCfg) {
   return getBuildTargetPath(traceCfg) || traceCfg.path;
 }
