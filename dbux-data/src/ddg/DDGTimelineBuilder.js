@@ -10,7 +10,7 @@ import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/const
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdge from './DDGEdge';
 import DDGEdgeType from './DDGEdgeType';
@@ -266,6 +266,32 @@ export default class DDGTimelineBuilder {
     const newNode = new PrimitiveTimelineNode(dataNode.nodeId, label);
 
     this.#doAddDataNode(newNode);
+
+    return newNode;
+  }
+
+  /**
+   * @param {DataNode} dataNode 
+   * @param {Trace} trace
+   * @return {PrimitiveTimelineNode}
+   */
+  #addDecisionNode(dataNode, trace) {
+    const { dp } = this;
+    const currentGroup = this.peekStack();
+    const staticTrace = dp.util.getStaticTrace(trace.staticTraceId);
+    if (currentGroup.controlStatementId !== staticTrace.controlId) {
+      // sanity check
+      this.logger.trace(`Invalid Decision node.\n` +
+        // eslint-disable-next-line max-len
+        `  Expected control statement: "${dp.util.makeStaticTraceInfo(staticTrace.controlId)}",\n  Actual: "${dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}"\n  at trace=${dp.util.makeTraceInfo(trace)}\n\n`
+      );
+      return null;
+    }
+
+    const label = this.#makeDataNodeLabel(dataNode);
+    const newNode = new DecisionTimelineNode(dataNode.nodeId, label);
+    this.#doAddDataNode(newNode);
+    currentGroup.decisions.push(newNode.dataTimelineId);
 
     return newNode;
   }
@@ -635,7 +661,10 @@ export default class DDGTimelineBuilder {
 
     let newNode;
     if (isDecision) {
-      // TODO: add decision nodes
+      newNode = this.#addDecisionNode(ownDataNode, trace);
+      if (!newNode) {
+        return;
+      }
     }
     else {
       /**

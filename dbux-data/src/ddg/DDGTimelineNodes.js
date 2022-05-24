@@ -127,7 +127,12 @@ export class RefSnapshotTimelineNode extends DDGTimelineNode {
  * ##########################################################################*/
 
 export class DecisionTimelineNode extends DataTimelineNode {
-  // TODO
+  constructor(dataNodeId, label) {
+    super(DDGTimelineNodeType.Decision);
+
+    this.dataNodeId = dataNodeId;
+    this.label = label;
+  }
 }
 
 /** ###########################################################################
@@ -171,9 +176,6 @@ export class IfTimelineNode extends BranchTimelineNode {
   addDecision(decisionTimelineId) {
     this.decisions.push(decisionTimelineId);
   }
-
-  beforePop() {
-  }
 }
 
-// TODO: loops, decisions etc.
+// TODO: loops and more
