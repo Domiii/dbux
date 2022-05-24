@@ -10,7 +10,7 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 // import { Sigma } from 'sigma';
 // import { animateNodes } from 'sigma/utils/animate';
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
-import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -37,8 +37,8 @@ const YGroupPadding = 4;
 //   labelRenderedSizeThreshold: 0.1 // default = 6
 // };
 
-const topNodeKey = 'top';
-const bottomNodeKey = 'bottom';
+// const topNodeKey = 'top';
+// const bottomNodeKey = 'bottom';
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   // /**
@@ -163,13 +163,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
-    const { type, children } = parent;
+    const { type, children, label = '' } = parent;
     const isGroupNode = isControlGroupTimelineNode(type);
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
     let right;
 
-    const el = this.makeNodeEl(parent, depth);
+    const el = this.makeNodeEl(parent, label);
     this.el.appendChild(el);
 
     if (isGroupNode) {
@@ -187,6 +187,17 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       left = depth * 3;
       right = depth * 3;
     }
+    else if (type === DDGTimelineNodeType.RefSnapshot) {
+      if (children?.length) {
+        for (const propName of Object.keys(children)) {
+          const childId = children[propName];
+          const childNode = nodes[childId];
+          const childEl = this.makeNodeEl(childNode, propName);
+          el.appendChild(childEl);
+        }
+      }
+      bottom = top + el.offsetHeight;
+    }
     else {
       bottom = top + el.offsetHeight;
     }
@@ -200,7 +211,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     };
 
     // this.logger.log(`[addNode]`, parent, parent.displayData);
-    const key = parent.dataTimelineId || `timelineId#${parent.timelineId}`; // TODO: use timelineId
+    const key = parent.timelineId;
     this.addNode(key, el, parent);
 
     return parent;
@@ -459,10 +470,14 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   //   this.addNode(key, el, displayData);
   // }
 
-  makeNodeEl(node) {
-    const { type, timelineId, label = '' } = node;
+  makeNodeEl(node, label) {
+    const { type } = node;
     if (isControlGroupTimelineNode(type)) {
       const el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
+      return el;
+    }
+    else if (type === DDGTimelineNodeType.RefSnapshot) {
+      const el = compileHtmlElement(/*html*/`<div class="timeline-ref-node"><div class="timeline-node">${label}</div></div>`);
       return el;
     }
     else {
@@ -472,7 +487,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   addNode(key, el, node) {
-    const { displayData, connected } = node;
+    const { displayData } = node;
     const { isGroupNode, left, right, top, bottom } = displayData;
     el.style.left = `${left}px`;
     el.style.top = `${top}px`;
@@ -480,22 +495,24 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       el.style.height = `${bottom - top}px`;
       el.style.right = `${right}px`;
     }
-    else {
-      if (!connected && this.context.doc.state.connectedOnlyMode) {
-        el.classList.add('hidden');
-      }
-    }
+    // else {
+    //   if (!connected && this.context.doc.state.connectedOnlyMode) {
+    //     el.classList.add('hidden');
+    //   }
+    // }
 
     this.nodeElMap.set(key, el);
     // this.el.appendChild(el);
-    if (key) {
+    if (!isGroupNode) {
       this.jsPlumb.manage(el);
     }
   }
 
   addEdge(edge) {
-    const source = this.nodeElMap.get(edge.from);
-    const target = this.nodeElMap.get(edge.to);
+    const fromTimelineId = this.state.timelineDataNodes[edge.from];
+    const toTimelineId = this.state.timelineDataNodes[edge.to];
+    const source = this.nodeElMap.get(fromTimelineId);
+    const target = this.nodeElMap.get(toTimelineId);
     this.jsPlumb.connect({
       source,
       target,

@@ -44,3 +44,14 @@ svg.jtk-connector path {
   padding: 2px;
   white-space: nowrap;
 }
+
+.timeline-ref-node {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.timeline-ref-node > .timeline-node {
+  position: unset;
+}
