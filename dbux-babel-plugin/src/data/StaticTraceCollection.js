@@ -19,8 +19,8 @@ const traceCustomizationsByType = {
   [TraceType.PushImmediate]: tracePathStartContext,
   [TraceType.PopImmediate]: tracePathEndContext,
 
-  [TraceType.PushBranch]: tracePathStartContext,
-  [TraceType.PopBranch]: tracePathEndContext,
+  [TraceType.BranchPush]: tracePathStartBranch,
+  [TraceType.BranchPop]: tracePathEndBranch,
 
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
@@ -81,6 +81,14 @@ function tracePathStartContext(path, state) {
 function tracePathEndContext(path, state) {
   const thin = path.isProgram();
   return tracePathEnd(path, state, thin);
+}
+
+function tracePathStartBranch(path, state) {
+  return tracePathStart(path, state, true);
+}
+
+function tracePathEndBranch(path, state) {
+  return tracePathEnd(path, state, true);
 }
 
 function tracePathEndThin(path, state) {
@@ -150,7 +158,10 @@ export default class StaticTraceCollection extends StaticCollection {
      */
     let staticTrace;
 
-    const { type, syntax, dataNode, data, controlRole, controlId } = staticData;
+    const { 
+      type, syntax, dataNode, data, 
+      controlRole, controlId
+    } = staticData;
 
     if (process.env.NODE_ENV === 'development') {
       // add some sanity checks for the contents of staticTraceData

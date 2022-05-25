@@ -1,3 +1,4 @@
+import Trace from '@dbux/common/src/types/Trace';
 import NanoEvents from 'nanoevents';
 import TraceSelectionHistory from './TraceSelectionHistory';
 
@@ -10,6 +11,9 @@ let _allApplications;
 
 export class TraceSelection {
   _emitter = new NanoEvents();
+  /**
+   * @type {Trace}
+   */
   selected = null;
   history = new TraceSelectionHistory();
 

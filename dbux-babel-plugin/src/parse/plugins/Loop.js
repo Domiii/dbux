@@ -12,6 +12,6 @@ export default class Loop extends BasePlugin {
    * @type {BranchStatement}
    */
   get BranchStatement() {
-    return this.getPlugin('BranchStatement');
+    return this.node.getPlugin('BranchStatement');
   }
 }

@@ -10,8 +10,7 @@ export default class DDGSet {
 
   constructor(dp) {
     this.dp = dp;
-    this.graphs = [];
-    this.graphsById = new Map();
+    this.clear();
   }
 
   makeGraphId(...inputs) {
@@ -80,5 +79,10 @@ export default class DDGSet {
     graph.id = graphId;
     this.graphsById.set(graphId, graph);
     this.graphs.push(graph);
+  }
+
+  clear() {
+    this.graphs = [];
+    this.graphsById = new Map();
   }
 }

@@ -193,6 +193,9 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
            * @param {DDGTimelineNode} node 
            */
           function buildTreeNode(node) {
+            if (!node) {
+              return makeTreeItem('(null)'); // DDG build has a bug
+            }
             const { children: childrenIds = EmptyArray } = node;
             const children = new childrenIds.constructor();
             Object.entries(childrenIds).forEach(([key, childId]) => {

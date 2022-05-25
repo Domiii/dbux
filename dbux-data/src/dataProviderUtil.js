@@ -2251,6 +2251,12 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
+  getStaticTraceProgramPath(dp, staticTraceId) {
+    const programId = dp.util.getStaticTraceProgramId(staticTraceId);
+    return dp.util.getFilePathFromProgramId(programId);
+  },
+
+  /** @param {RuntimeDataProvider} dp */
   getStaticTraceDisplayName(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     return staticTrace.displayName;
@@ -2261,6 +2267,7 @@ export default {
     return dp.indexes.traces.byStaticTrace.get(staticTraceId);
   },
 
+  /** @param {RuntimeDataProvider} dp */
   getTraceProgramPath(dp, traceId) {
     const programId = dp.util.getTraceProgramId(traceId);
     return dp.util.getFilePathFromProgramId(programId);
@@ -2489,23 +2496,23 @@ export default {
   /**
    * @param {RuntimeDataProvider} dp
    */
-  makeStaticTraceInfo(dp, traceId) {
-    const fpath = dp.util.getTraceProgramPath(traceId);
-    const st = dp.util.getStaticTrace(traceId);
+  makeStaticTraceInfo(dp, staticTraceId) {
+    const fpath = dp.util.getStaticTraceProgramPath(staticTraceId);
+    const st = dp.collections.staticTraces.getById(staticTraceId);
     const loc = locToString(st.loc);
     const where = `${fpath}:${loc}`;
     let displayName = st?.displayName;
     if (!displayName) {
-      if (TraceType.is.Await(st.type)) {
-        const previousTrace = dp.callGraph.getPreviousInContext(traceId);
-        const previousSt = previousTrace && dp.util.getStaticTrace(previousTrace.traceId);
-        displayName = previousSt?.displayName && `(awaiting) ${previousSt.displayName}`;
-      }
+      // if (TraceType.is.Await(st.type)) {
+      //   const previousTrace = dp.callGraph.getPreviousInContext(traceId);
+      //   const previousSt = previousTrace && dp.util.getStaticTrace(previousTrace.traceId);
+      //   displayName = previousSt?.displayName && `(awaiting) ${previousSt.displayName}`;
+      // }
     }
     if (!displayName) {
-      displayName = `(${TraceType.nameFrom(st.type)})`;
+      displayName = `[${TraceType.nameFrom(st.type)}]`;
     }
-    return `${st?.displayName} at ${where} (stid=${st?.staticTraceId})`;
+    return `"${st?.displayName}" at ${where} (stid=${st?.staticTraceId})`;
   },
 
   /**
@@ -2524,10 +2531,10 @@ export default {
     if (!trace) {
       return `#${traceOrTraceOrTraceId} (null)`;
     }
-    const { traceId } = trace;
+    const { traceId, staticTraceId } = trace;
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
-    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
+    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(staticTraceId)}`;
   },
 
   // ###########################################################################

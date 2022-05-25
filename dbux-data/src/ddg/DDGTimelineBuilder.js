@@ -10,7 +10,7 @@ import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/const
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import { isLoopIterationTimelineNode, isLoopTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isLoopIterationTimelineNode, isLoopTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 // eslint-disable-next-line max-len
 import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
@@ -294,7 +294,8 @@ export default class DDGTimelineBuilder {
 
     if (isLoopTimelineNode(currentGroup.type)) {
       // push first iteration of loop
-      currentGroup.iterations.push(new IterationNode(newNode.dataTimelineId));
+      const iterationNode = new IterationNode(newNode.dataTimelineId);
+      this.#pushGroup(iterationNode);
     }
     else if (isLoopIterationTimelineNode(currentGroup.type)) {
       // continued iteration of loop
@@ -302,7 +303,8 @@ export default class DDGTimelineBuilder {
       this.#popGroup(); // pop previous iteration
       
       // push next iteration
-      currentGroup.iterations.push(new IterationNode(newNode.dataTimelineId));
+      const iterationNode = new IterationNode(newNode.dataTimelineId);
+      this.#pushGroup(iterationNode);
     }
     else {
       // non-loop branch
@@ -575,12 +577,13 @@ export default class DDGTimelineBuilder {
     const { dp } = this;
     if (currentGroup.controlStatementId !== staticTrace.controlId) {
       // sanity check
-      const traceInfo = trace && `  at trace=${dp.util.makeTraceInfo(trace)}\n` || '';
+      const groupTag = `[${DDGTimelineNodeType.nameFrom(currentGroup.type)}]`;
+      const groupControlInfo = `${currentGroup.controlStatementId && dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}`;
       this.logger.trace(`Invalid Decision node.\n  ` +
+        `${trace && `At trace: ${dp.util.makeTraceInfo(trace)}` || ''}\n  ` +
         // eslint-disable-next-line max-len
-        `Expected control group for: "${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)}",\n  ` +
-        `Actual: "${currentGroup.controlStatementId && dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}"\n` +
-        `${traceInfo}\n`
+        `Expected control group for: ${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)},\n  ` +
+        `Actual group: ${groupTag} ${groupControlInfo} (${JSON.stringify(currentGroup)})\n\n`
       );
       return false;
     }
@@ -604,12 +607,12 @@ export default class DDGTimelineBuilder {
       // push branch statement
       const controlStatementId = staticTrace.controlId;
       const { syntax } = dp.collections.staticTraces.getById(controlStatementId);
-      const NodeCtor = branchSyntaxNodeCreators[syntax];
-      if (!NodeCtor) {
-        this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace)}"`);
+      const ControlGroupCtor = branchSyntaxNodeCreators[syntax];
+      if (!ControlGroupCtor) {
+        this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace.staticTraceId)}"`);
       }
       else {
-        this.#pushGroup(new NodeCtor(controlStatementId));
+        this.#pushGroup(new ControlGroupCtor(controlStatementId));
       }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {

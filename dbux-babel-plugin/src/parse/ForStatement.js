@@ -32,17 +32,17 @@ export default class ForStatement extends BaseNode {
       testNode.Traces.addDefaultTrace(testNode.path);
     }
     if (updateNode.path.node) {
-      updateNode.traces.addDefaultTrace(updateNode.path);
+      updateNode.Traces.addDefaultTrace(updateNode.path);
     }
 
     // set up branch data
-    this.BranchStatement.createBranchStaticTrace(SyntaxType.For);
+    BranchStatement.createBranchStaticTrace(SyntaxType.For);
 
     const testTrace = testNode.traceCfg;
     if (testTrace) {
-      BranchStatement.addPopStatementTrace();
+      BranchStatement.insertPushTrace();
       BranchStatement.setDecisionTrace(testTrace);
-      BranchStatement.addPopStatementTrace();
+      BranchStatement.insertPopTrace();
     }
   }
 }

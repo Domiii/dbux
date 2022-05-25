@@ -217,9 +217,16 @@ export function initUserCommands(extensionContext) {
       traceSelection.selectTrace(trace);
       // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
     }
-    // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
-    await getOrOpenTraceEditor(trace);
-    await showDDGView();
+
+    if (trace) {
+      // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
+      await getOrOpenTraceEditor(trace);
+
+      const dp = allApplications.getById(trace.applicationId).dataProvider;
+      dp.ddgs.clear();
+      
+      await showDDGView();
+    }
   });
 
   // ###########################################################################
@@ -282,7 +289,7 @@ export function initUserCommands(extensionContext) {
 
     let traceId;
     if (userInput.startsWith('c')) {
-      // get context
+      // by contextId
       const contextId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getFirstTraceOfContext(contextId)?.traceId;
       if (!traceId) {
@@ -290,22 +297,33 @@ export function initUserCommands(extensionContext) {
         return;
       }
     }
+    else if (userInput.startsWith('s')) {
+      // by staticTraceId
+      const staticTraceId = parseInt(userInput.substring(1), 10);
+      const traces = dp.util.getTracesOfStaticTrace(staticTraceId);
+      if (!traces?.length) {
+        await showErrorMessage(`Invalid staticTraceId: "${userInput.substring(1)}" (${staticTraceId})`);
+        return;
+      }
+      traceId = traces[0].traceId;
+    }
     else if (userInput.startsWith('r')) {
-      // get run
+      // by runId
       const runId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getFirstTraceOfRun(runId);
     }
     else if (userInput.startsWith('n')) {
-      // get node
+      // by DataNode.nodeId
       const nodeId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getDataNode(nodeId)?.traceId;
     }
     else if (userInput.startsWith('v')) {
-      // get valueRef
+      // by valueRef.refId
       const refId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getFirstTraceByRefId(refId)?.traceId;
     }
     else {
+      // by trace
       if (userInput.startsWith('t')) {
         userInput = userInput.substring(1);
       }
