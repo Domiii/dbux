@@ -90,7 +90,7 @@ export default class BindingIdentifier extends BaseId {
 
   /**
    * Add declaration trace to scope.
-   * Hoisted by default (unless `hoisted` set to false).
+   * Hoisted by default if node is Declaration (unless `moreTraceData.meta.hoisted` set to false).
    * 
    * Will unshift all `hoisted` declarations as:
    *   `var {declarations.map(traceDeclaration(stid, value))}`

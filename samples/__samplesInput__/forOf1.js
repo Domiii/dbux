@@ -1,3 +1,4 @@
-const arr = [[1, 2], [1, 5]];
-for (const [min, max] of arr) {
+const arr = [1, 2, 5];
+for (const x of arr) {
+  console.log(x);
 }

@@ -239,6 +239,8 @@ export default class Traces extends BasePlugin {
   // ###########################################################################
 
   /**
+   * Adds a hoisted trace (unless `moreTraceData.meta.hoisted` is set to false).
+   * 
    * @param {BindingIdentifier} id
    */
   addDefaultDeclarationTrace(id, valuePathOrNode, moreTraceData = null) {
@@ -260,6 +262,11 @@ export default class Traces extends BasePlugin {
     return this.addDeclarationTrace(traceData, valuePathOrNode);
   }
 
+  /**
+   * Adds a hoisted trace (unless `traceData.meta.hoisted` is set to false).
+   * 
+   * @return {TraceCfg}
+   */
   addDeclarationTrace(traceData, valuePathOrNode) {
     traceData.meta = traceData.meta || {};
 

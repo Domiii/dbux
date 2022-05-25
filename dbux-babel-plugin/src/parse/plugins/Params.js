@@ -22,6 +22,9 @@ function isSupported(paramPath) {
     (paramPath.isAssignmentPattern() && paramPath.get('left').isIdentifier());
 }
 
+/**
+ * Used to trace function parameters or similarly difficult-to-reach variable declarations.
+ */
 export default class Params extends BasePlugin {
   get paramsPath() {
     return this.node.path.get('params');

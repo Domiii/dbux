@@ -24,8 +24,6 @@ export default class ForStatement extends BaseNode {
     const [initNode, testNode, updateNode] = this.getChildNodes();
 
     if (initNode.path.node) {
-      // TODO: all tid variable declarationTids from `init` need to be inlined
-      // TODO: merge decl + write, of `init` variables, if they are not `var`
       initNode.Traces.addDefaultTrace(initNode.path);
     }
     if (testNode.path.node) {

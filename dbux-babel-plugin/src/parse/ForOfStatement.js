@@ -1,15 +1,33 @@
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BaseNode from './BaseNode';
+import Params from './plugins/Params';
 
 export default class ForOfStatement extends BaseNode {
   static children = ['left', 'right', 'body'];
 
   static plugins = [
+    'Params',
     'Loop'
   ];
 
+  /**
+   * @type {Params}
+   */
+  get Params() {
+    return this.getPlugin('Params');
+  }
+
   exit() {
-    // TODO: insert trace in `body` to track write to `left` variable(s); similar to `Params`
-    const [, rightNode] = this.getChildNodes();
+    const [leftNode, rightNode] = this.getChildNodes();
+
+    // insert trace in `body` to track write to `left` variable(s)
+    const moreTraceData = {
+      meta: {
+        hoisted: false
+      }
+    };
+    this.Params.addParamTrace(leftNode.path, TraceType.DeclareAndWriteVar, moreTraceData);
+
     rightNode.addDefaultTrace();
   }
 }
