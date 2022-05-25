@@ -43,6 +43,8 @@ svg.jtk-connector path {
   border: 1px solid white;
   padding: 2px;
   white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
 }
 
 .timeline-ref-node {

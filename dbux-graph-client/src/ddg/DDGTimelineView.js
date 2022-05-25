@@ -11,7 +11,7 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 // import { animateNodes } from 'sigma/utils/animate';
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { compileHtmlElement } from '../util/domUtil';
+import { compileHtmlElement, delegate } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 // const AutoLayoutAnimationDuration = 300;
@@ -61,6 +61,16 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   setupEl() {
     this.initGraphImplementation();
+
+    delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
+      const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
+      if (timelineId) {
+        const node = this.state.timelineNodes[timelineId];
+        if (node.dataNodeId) {
+          await this.remote.selectNode(timelineId);
+        }
+      }
+    });
   }
 
   update() {
@@ -210,9 +220,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       isGroupNode,
     };
 
-    // this.logger.log(`[addNode]`, parent, parent.displayData);
-    const key = parent.timelineId;
-    this.addNode(key, el, parent);
+    this.repositionNodeEl(el, parent.displayData);
 
     return parent;
   }
@@ -471,30 +479,28 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   // }
 
   makeNodeEl(node, label) {
-    const { type } = node;
+    const { type, timelineId } = node;
+    let el;
     if (isControlGroupTimelineNode(type)) {
-      const el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
-      return el;
+      el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
-      const el = compileHtmlElement(/*html*/`<div class="timeline-ref-node"><div class="timeline-node">${label}</div></div>`);
-      return el;
+      el = compileHtmlElement(/*html*/`<div class="timeline-ref-node"><div class="timeline-node">${label}</div></div>`);
     }
     else {
-      const el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
-      return el;
+      el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
     }
+
+    el.dataset.timelineId = timelineId;
+    this.addNode(timelineId, el, node);
+    // this.logger.log(`[addNode]`, parent, parent.displayData);
+    return el;
   }
 
   addNode(key, el, node) {
-    const { displayData } = node;
-    const { isGroupNode, left, right, top, bottom } = displayData;
-    el.style.left = `${left}px`;
-    el.style.top = `${top}px`;
-    if (isGroupNode) {
-      el.style.height = `${bottom - top}px`;
-      el.style.right = `${right}px`;
-    }
+    const { type } = node;
+    const isGroupNode = isControlGroupTimelineNode(type);
+
     // else {
     //   if (!connected && this.context.doc.state.connectedOnlyMode) {
     //     el.classList.add('hidden');
@@ -505,6 +511,16 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // this.el.appendChild(el);
     if (!isGroupNode) {
       this.jsPlumb.manage(el);
+    }
+  }
+
+  repositionNodeEl(el, displayData) {
+    const { left, right, top, bottom, isGroupNode } = displayData;
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+    if (isGroupNode) {
+      el.style.height = `${bottom - top}px`;
+      el.style.right = `${right}px`;
     }
   }
 
@@ -557,9 +573,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   clearGraph() {
     this.jsPlumb.deleteEveryConnection();
-    for (const el of this.nodeElMap.values()) {
-      this.el.removeChild(el);
-    }
+    this.el.querySelectorAll('div.timeline-node').forEach(el => el.remove());
+    this.el.querySelectorAll('div.timeline-group').forEach(el => el.remove());
+    // for (const el of this.nodeElMap.values()) {
+    //   this.el.removeChild(el);
+    // }
     this.nodeElMap = new Map();
   }
 
