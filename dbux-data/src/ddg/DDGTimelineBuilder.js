@@ -10,11 +10,13 @@ import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/const
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode } from './DDGTimelineNodes';
+import { isLoopIterationTimelineNode, isLoopTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+// eslint-disable-next-line max-len
+import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdge from './DDGEdge';
 import DDGEdgeType from './DDGEdgeType';
-import { branchLabelMaker, branchSyntaxNodeCreators } from './branchUtil';
+import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
 
 const Verbose = 1;
 // const Verbose = 0;
@@ -282,14 +284,30 @@ export default class DDGTimelineBuilder {
     const { dp } = this;
     const currentGroup = this.peekStack();
     const staticTrace = dp.collections.staticTraces.getById(trace.staticTraceId);
-    if (!this.#checkCurrentGroupBranch(currentGroup, staticTrace, trace)) {
+    if (!this.#checkCurrentControlGroup(currentGroup, staticTrace, trace)) {
       return null;
     }
 
     const label = this.#makeDataNodeLabel(dataNode);
     const newNode = new DecisionTimelineNode(dataNode.nodeId, label);
     this.#doAddDataNode(newNode);
-    currentGroup.decisions.push(newNode.dataTimelineId);
+
+    if (isLoopTimelineNode(currentGroup.type)) {
+      // push first iteration of loop
+      currentGroup.iterations.push(new IterationNode(newNode.dataTimelineId));
+    }
+    else if (isLoopIterationTimelineNode(currentGroup.type)) {
+      // continued iteration of loop
+      // TODO: some sanity checks before popping
+      this.#popGroup(); // pop previous iteration
+      
+      // push next iteration
+      currentGroup.iterations.push(new IterationNode(newNode.dataTimelineId));
+    }
+    else {
+      // non-loop branch
+      currentGroup.decisions.push(newNode.dataTimelineId);
+    }
 
     return newNode;
   }
@@ -546,11 +564,14 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   /**
+   * Check whether given group (supposedly the one on the top of the stack)
+   * is controlled by given staticTrace.
    * 
    * @param {GroupTimelineNode} currentGroup 
    * @param {*} staticTrace 
+   * @param {Trace} trace The trace of given staticTrace.
    */
-  #checkCurrentGroupBranch(currentGroup, staticTrace, trace) {
+  #checkCurrentControlGroup(currentGroup, staticTrace, trace) {
     const { dp } = this;
     if (currentGroup.controlStatementId !== staticTrace.controlId) {
       // sanity check
@@ -596,17 +617,20 @@ export default class DDGTimelineBuilder {
 
       // sanity checks
       if (TraceType.is.PopImmediate(staticTrace.type)) {
-        // pop context
+        // context
         if (trace.contextId !== currentGroup.contextId) {
           this.logger.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${currentGroup.toString()}`);
           return;
         }
       }
       else {
-        if (!this.#checkCurrentGroupBranch(currentGroup, staticTrace, trace)) {
+        if (isLoopIterationTimelineNode(currentGroup.type)) {
+          this.#popGroup(); // when control group pops, current iteration also pops
+        }
+        if (!this.#checkCurrentControlGroup(currentGroup, staticTrace, trace)) {
           return;
         }
-        const label = branchLabelMaker[currentGroup.type]?.(ddg, currentGroup);
+        const label = controlGroupLabelMaker[currentGroup.type]?.(ddg, currentGroup);
         currentGroup.label = label || '';
       }
       this.#popGroup();

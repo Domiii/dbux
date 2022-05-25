@@ -41,6 +41,13 @@ export class TraceCfgMeta {
    * @type {boolean}
    */
   hoisted;
+
+  /**
+   * If set to `true`, no `tid` variable will be allocated or available.
+   * NOTE: By default, a new `tid` variable is allocated in order to allow using the trace at a later point in time.
+   * 
+   */
+  noTidIdentifier;
 }
 
 export class TraceCfgData {
@@ -65,7 +72,11 @@ export default class TraceCfg {
    * @type {number}
    */
   inProgramStaticTraceId;
+
   /**
+   * The identifier that carries this trace's `tid`.
+   * Not available if {@link TraceCfg#meta#noTidIdentifier} is set to true.
+   * 
    * @type {number}
    */
   tidIdentifier;

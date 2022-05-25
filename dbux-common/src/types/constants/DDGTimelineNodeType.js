@@ -23,7 +23,9 @@ const ddgTimelineNodeTypeObj = {
   ForIn: 14,
   ForOf: 15,
   While: 16,
-  DoWhile: 17
+  DoWhile: 17,
+
+  Iteration: 20
 };
 
 /**
@@ -45,6 +47,7 @@ controlGroupTypes[DDGTimelineNodeType.ForIn] = true;
 controlGroupTypes[DDGTimelineNodeType.ForOf] = true;
 controlGroupTypes[DDGTimelineNodeType.While] = true;
 controlGroupTypes[DDGTimelineNodeType.DoWhile] = true;
+controlGroupTypes[DDGTimelineNodeType.Iteration] = true;
 export function isControlGroupTimelineNode(timelineNodeType) {
   return controlGroupTypes[timelineNodeType] || false;
 }
@@ -57,7 +60,6 @@ export function isControlGroupTimelineNode(timelineNodeType) {
 
 const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 dataTimelineNodeTypes[DDGTimelineNodeType.Primitive] = true;
-dataTimelineNodeTypes[DDGTimelineNodeType.SnapshotPrimitive] = true;
 dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
 
 /**
@@ -78,20 +80,29 @@ export function isLoopTimelineNode(groupType) {
   return loopTypes[groupType];
 }
 
+
+export function isLoopIterationTimelineNode(groupType) {
+  return DDGTimelineNodeType.is.Iteration(groupType);
+}
+
 const firstIterationUnconditionalTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 firstIterationUnconditionalTypes[DDGTimelineNodeType.DoWhile] = true;
 
 /**
  * NOTE: control flow of DoWhile is rather different from all other loops
  */
-export function isFirstIterationUnconditionalTimelineNode(groupType) {
+export function isFirstIterationUnconditional(groupType) {
   return firstIterationUnconditionalTypes[groupType];
 }
 
 const unconditionalTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 unconditionalTypes[DDGTimelineNodeType.Context] = true;
 unconditionalTypes[DDGTimelineNodeType.Root] = true;
-export function isUnconditionalTimelineNode(groupType) {
+
+/**
+ * These control groups don't have decisions attached to them.
+ */
+export function isUnconditionalGroup(groupType) {
   return unconditionalTypes[groupType];
 }
 

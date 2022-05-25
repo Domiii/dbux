@@ -58,7 +58,13 @@ export class TimelineRoot extends GroupTimelineNode {
  * ##########################################################################*/
 
 export class DataTimelineNode extends DDGTimelineNode {
+  /**
+   * @type {number}
+   */
   dataTimelineId;
+  /**
+   * @type {number}
+   */
   dataNodeId;
   connected = false;
 
@@ -155,7 +161,7 @@ export class BranchTimelineNode extends GroupTimelineNode {
   controlStatementId;
 
   /**
-   * DataTimelineId of `decision` nodes.
+   * {@link DecisionTimelineNode#dataTimelineId} of this branch's decision nodes.
    * @type {number[]}
    */
   decisions;
@@ -180,4 +186,63 @@ export class TernaryTimelineNode extends BranchTimelineNode {
   }
 }
 
-// TODO: loops and more
+export class SwitchTimelineNode extends BranchTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.Switch, controlStatementId);
+  }
+}
+
+/** ###########################################################################
+ * loops
+ * ##########################################################################*/
+
+export class IterationNode extends GroupTimelineNode {
+  /**
+   * {@link DecisionTimelineNode#dataTimelineId} of this iteration's decision node.
+   */
+  decision;
+
+  constructor(decisionDataTimelineId) {
+    super(DDGTimelineNodeType.Iteration);
+    this.decision = decisionDataTimelineId;
+  }
+}
+
+/**
+ * NOTE: `children` of loops are iterations
+ */
+export class LoopTimelineNode extends GroupTimelineNode {
+  controlStatementId;
+
+  constructor(type, controlStatementId) {
+    super(type);
+    this.controlStatementId = controlStatementId;
+  }
+}
+
+
+export class ForTimelineNode extends LoopTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.For, controlStatementId);
+  }
+}
+export class ForInTimelineNode extends LoopTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.ForIn, controlStatementId);
+  }
+}
+export class ForOfTimelineNode extends LoopTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.ForOf, controlStatementId);
+  }
+}
+export class WhileTimelineNode extends LoopTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.While, controlStatementId);
+  }
+}
+export class DoWhileTimelineNode extends LoopTimelineNode {
+  constructor(controlStatementId) {
+    super(DDGTimelineNodeType.DoWhile, controlStatementId);
+  }
+}

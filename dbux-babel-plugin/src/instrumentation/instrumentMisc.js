@@ -61,13 +61,23 @@ export function insertAfterBody(state, traceCfg) {
 }
 
 /**
- * Insert trace call behind `targetPath`.
+ * Insert trace call before instrument path.
+ */
+export function insertBeforeNode(state, traceCfg) {
+  let path = getInstrumentPath(traceCfg);
+
+  const resultNode = doBuild(state, traceCfg);
+
+  path.insertBefore(resultNode);
+
+  postInstrument(traceCfg, resultNode);
+}
+
+/**
+ * Insert trace call behind instrument path.
  */
 export function insertAfterNode(state, traceCfg) {
   let path = getInstrumentPath(traceCfg);
-
-  // const s = pathToString(path);
-  // const { type } = path.node;
 
   const resultNode = doBuild(state, traceCfg);
 

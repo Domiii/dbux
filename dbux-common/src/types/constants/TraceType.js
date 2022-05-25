@@ -23,11 +23,13 @@ const traceTypeObj = {
   BranchStatement: 9,
   BranchExpression: 10,
   /**
-   * Dedicated branch push (not all branches have one)
+   * Dedicated branch push.
+   * NOTE: Not all branches have one. Use `controlRole` instead.
    */
   BranchPush: 11,
   /**
-   * Dedicated branch pop (not all branches have one)
+   * Dedicated branch pop.
+   * NOTE: Not all branches have one. Use `controlRole` instead.
    */
   BranchPop: 12,
 

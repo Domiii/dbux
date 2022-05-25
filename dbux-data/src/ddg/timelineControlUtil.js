@@ -1,8 +1,18 @@
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import last from 'lodash/last';
-import DataDependencyGraph from './DataDependencyGraph';
-import { IfTimelineNode } from './DDGTimelineNodes';
+import { 
+  IfTimelineNode, 
+  TernaryTimelineNode,
+  SwitchTimelineNode,
+  ForTimelineNode,
+  ForInTimelineNode,
+  ForOfTimelineNode,
+  WhileTimelineNode,
+  DoWhileTimelineNode
+} from './DDGTimelineNodes';
+
+/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
 /** ###########################################################################
  * 
@@ -12,6 +22,7 @@ export const syntaxToNodeType = {
   [SyntaxType.If]: DDGTimelineNodeType.If,
   [SyntaxType.Switch]: DDGTimelineNodeType.Switch,
   [SyntaxType.Ternary]: DDGTimelineNodeType.Ternary,
+
   [SyntaxType.For]: DDGTimelineNodeType.For,
   [SyntaxType.ForIn]: DDGTimelineNodeType.ForIn,
   [SyntaxType.ForOf]: DDGTimelineNodeType.ForOf,
@@ -21,20 +32,20 @@ export const syntaxToNodeType = {
 
 export const branchSyntaxNodeCreators = {
   [SyntaxType.If]: IfTimelineNode,
-  // [SyntaxType.Switch]: SwitchTimelineNode,
-  // [SyntaxType.Ternary]: TernaryTimelineNode,
-  // [SyntaxType.For]: ForTimelineNode,
-  // [SyntaxType.ForIn]: ForInTimelineNode,
-  // [SyntaxType.ForOf]: ForOfTimelineNode,
-  // [SyntaxType.While]: WhileTimelineNode,
-  // [SyntaxType.DoWhile]: DoWhileTimelineNode,
+  [SyntaxType.Switch]: SwitchTimelineNode,
+  [SyntaxType.Ternary]: TernaryTimelineNode,
+  [SyntaxType.For]: ForTimelineNode,
+  [SyntaxType.ForIn]: ForInTimelineNode,
+  [SyntaxType.ForOf]: ForOfTimelineNode,
+  [SyntaxType.While]: WhileTimelineNode,
+  [SyntaxType.DoWhile]: DoWhileTimelineNode,
 };
 
 /** ###########################################################################
- * {@link branchLabelMaker}
+ * {@link controlGroupLabelMaker}
  * ##########################################################################*/
 
-export const branchLabelMaker = {
+export const controlGroupLabelMaker = {
   /**
    * @param {DataDependencyGraph} ddg
    * @param {IfTimelineNode} ifNode 
@@ -67,5 +78,15 @@ export const branchLabelMaker = {
       }
     }
     return label;
+  },
+
+  /**
+   * @param {DataDependencyGraph} ddg
+   * @param {ForTimelineNode} forNode
+   */
+  [DDGTimelineNodeType.For](ddg, branchNode) {
+    // const { dp } = ddg;
+
+    return `for`;
   }
 };

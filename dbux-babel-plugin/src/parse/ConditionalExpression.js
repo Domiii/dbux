@@ -66,7 +66,7 @@ export default class ConditionalExpression extends BaseNode {
       // new if statement
       BranchStatement.createBranchStaticTrace(SyntaxType.Ternary);
       BranchStatement.setDecisionAndPushTrace(testTrace);
-      BranchStatement.setPopStatementTrace(ownTrace);
+      BranchStatement.setPopTrace(ownTrace);
     }
     else {
       BranchStatement.setDecisionTrace(testTrace);

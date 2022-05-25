@@ -1,6 +1,17 @@
 import BasePlugin from './BasePlugin';
 
+/** @typedef { import("./BranchStatement").default } BranchStatement */
+
 
 export default class Loop extends BasePlugin {
-  // TODO
+  static plugins = [
+    'BranchStatement'
+  ];
+
+  /**
+   * @type {BranchStatement}
+   */
+  get BranchStatement() {
+    return this.getPlugin('BranchStatement');
+  }
 }

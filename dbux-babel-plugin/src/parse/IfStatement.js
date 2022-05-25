@@ -10,11 +10,6 @@ export default class IfStatement extends BaseNode {
 
   _isControlGroupMergedWithParent = undefined;
 
-  isControlGroupRoot() {
-    const parent = this.getParent();
-    return !(parent instanceof IfStatement);
-  }
-
   isControlGroupMergedWithParent() {
     if (this._isControlGroupMergedWithParent === undefined) {
       const parent = this.getParent();
@@ -60,12 +55,11 @@ export default class IfStatement extends BaseNode {
    */
   exit() {
     const [testNode] = this.getChildNodes();
-    const [testPath] = this.getChildPaths();
 
-    testNode.Traces.addDefaultTrace(testPath);
+    testNode.Traces.addDefaultTrace(testNode.path);
     const testTrace = testNode.traceCfg;
 
-    this.logger.debug(`[exit] ${this.debugTag}, ${!!testTrace}, ${this.isControlGroupMergedWithParent()}`);
+    // this.logger.debug(`[exit] ${this.debugTag}, ${!!testTrace}, ${this.isControlGroupMergedWithParent()}`);
 
     // const { path } = this;
     if (testTrace) {
@@ -77,7 +71,7 @@ export default class IfStatement extends BaseNode {
       else {
         // root if statement
         BranchStatement.setDecisionAndPushTrace(testTrace);
-        BranchStatement.createPopStatementTrace();
+        BranchStatement.addPopStatementTrace();
       }
     }
   }
