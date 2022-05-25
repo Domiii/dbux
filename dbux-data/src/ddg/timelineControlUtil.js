@@ -14,6 +14,8 @@ import {
 
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
+/** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
+
 /** ###########################################################################
  * 
  * ##########################################################################*/

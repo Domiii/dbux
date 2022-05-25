@@ -211,3 +211,22 @@ export function getMatchParent(pattern, from, root = document) {
     return null;
   }
 }
+
+/** ###########################################################################
+ * Event
+ *  #########################################################################*/
+
+/**
+ * @param {HTMLElement} root 
+ * @param {string} selector 
+ * @param {string} eventType 
+ * @param {function} handler 
+ */
+export function delegate(root, selector, eventType, handler) {
+  root.addEventListener(eventType, async (evt) => {
+    const matchedEl = getMatchParent(selector, evt.target, root);
+    if (matchedEl) {
+      await handler(matchedEl, evt);
+    }
+  });
+}
