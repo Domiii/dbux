@@ -10,6 +10,7 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 // import { Sigma } from 'sigma';
 // import { animateNodes } from 'sigma/utils/animate';
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement, delegate } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -26,10 +27,10 @@ const YGroupPadding = 4;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
-/**
- * Default render settings for Sigma.js
- * @see https://github.com/jacomyal/sigma.js/blob/main/src/settings.ts#L84
- */
+// /**
+//  * Default render settings for Sigma.js
+//  * @see https://github.com/jacomyal/sigma.js/blob/main/src/settings.ts#L84
+//  */
 // const renderSettings = {
 //   labelColor: { color: '#fff' },
 //   labelSize,
@@ -39,6 +40,72 @@ const YGroupPadding = 4;
 
 // const topNodeKey = 'top';
 // const bottomNodeKey = 'bottom';
+
+class Graph {
+  constructor(data) {
+    const {
+      timelineNodes,
+      timelineDataNodes,
+      edges,
+    } = data;
+
+    this.nodes = timelineNodes;
+    this.edges = edges;
+    this.nodesFrom = new Map();
+    this.nodesTo = new Map();
+    this.lastNodeFrom = new Map();
+    this.dataNodeTimelineIds = timelineDataNodes;
+
+    for (const edge of edges) {
+      if (!edge) {
+        continue;
+      }
+
+      // update `this.nodesFrom`
+      const { from, to } = edge;
+      if (!this.nodesFrom.get(from)) {
+        this.nodesFrom.set(from, []);
+      }
+      this.nodesFrom.get(from).push(to);
+
+      // update `this.nodesTo`
+      if (!this.nodesTo.get(to)) {
+        this.nodesTo.set(to, []);
+      }
+      this.nodesTo.get(to).push(from);
+
+      // update `this.lastNodeFrom`
+      if ((this.lastNodeFrom.get(from) || 0) < to) {
+        this.lastNodeFrom.set(from, to);
+      }
+    }
+  }
+
+  getNodeByDataNodeId(dataNodeId) {
+    const timelineId = this.dataNodeTimelineIds[dataNodeId];
+    return this.nodes[timelineId];
+  }
+
+  /**
+   * @param {number} dataNodeId dataNodeId
+   * @returns {number[]} dataNodeId
+   */
+  getNodesFrom(dataNodeId) {
+    return this.nodesFrom.get(dataNodeId);
+  }
+
+  /**
+   * @param {number} dataNodeId dataNodeId
+   * @returns {number[]} dataNodeId
+   */
+  getNodesTo(dataNodeId) {
+    return this.nodesTo.get(dataNodeId);
+  }
+
+  getLastNodeFrom(dataNodeId) {
+    return this.lastNodeFrom.get(dataNodeId);
+  }
+}
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   // /**
@@ -52,8 +119,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   // renderer;
 
   createEl() {
-    return compileHtmlElement(/*html*/`<div class="timeline-view timeline-jsplumb-container">
+    return compileHtmlElement(/*html*/`<div class="timeline-view">
       <div data-el="status"></div>
+      <div data-el="main" class="grid grid-center timeline-grid timeline-jsplumb-container"></div>
       <!-- <div data-el="view" class="timeline-view timeline-sigma-container"></div> -->
       <!-- <div data-el="view" class="timeline-view timeline-jsplumb-container"></div> -->
     </div>`);
@@ -62,7 +130,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   setupEl() {
     this.initGraphImplementation();
 
-    delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
+    delegate(this.els.main, 'div.timeline-node', 'click', async (nodeEl) => {
       const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
       if (timelineId) {
         const node = this.state.timelineNodes[timelineId];
@@ -102,7 +170,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return;
     }
 
-    this.addTreeNodes(root, nodes);
+    this.graph = new Graph(this.state);
+    this._columnStatus = [];
+
+    this.addTreeNode(root);
 
     // this.addSpecialNodes();
 
@@ -146,84 +217,190 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * layout computation
    * ##########################################################################*/
 
-  getNodeYTop() {
-    // return YPadding + (this.state.nodes.length + 1) * GraphScale;
-    return YPadding + 0;
+  // getNodeYTop() {
+  //   // return YPadding + (this.state.nodes.length + 1) * GraphScale;
+  //   return YPadding + 0;
+  // }
+
+  // getNodeYBottom() {
+  //   // return YPadding - this.state.nodes.length * GraphScale;
+  //   return YPadding + (this.state.nodes.length + 1) * GraphScale;
+  // }
+
+  // getNodeInitialPosition(node) {
+  //   /**
+  //    * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
+  //    * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
+  //    */
+  //   // const x = node.ddgNodeId / this.state.nodes.length;
+  //   const x = XPadding + Math.random() * this.state.nodes.length * GraphScale;
+
+  //   /**
+  //    * WARNING: if you change this, also change getNodeY{Top,Bottom}
+  //    */
+  //   // const y = YPadding + ((-1 * node.ddgNodeId + this.state.nodes.length) || 0) * GraphScale;
+  //   const y = YPadding + (node.ddgNodeId + 1 || 0) * GraphScale;
+  //   return { x, y };
+  // }
+
+  shouldInclude(node) {
+    if (this.context.doc.state.connectedOnlyMode) {
+      return true;
+    }
+
+    if (isControlGroupTimelineNode(node.type)) {
+      return true;
+    }
+
+    if (node.connected) {
+      return true;
+    }
+
+    return false;
   }
 
-  getNodeYBottom() {
-    // return YPadding - this.state.nodes.length * GraphScale;
-    return YPadding + (this.state.nodes.length + 1) * GraphScale;
+  getFirstFreeColumn(timelineId) {
+    let i = 1;
+    while (this._columnStatus[i] && this._columnStatus[i] >= timelineId) {
+      i++;
+    }
+    this.logger.log(`return free column ${i}`, this._columnStatus);
+    return i;
   }
 
-  getNodeInitialPosition(node) {
-    /**
-     * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
-     * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
-     */
-    // const x = node.ddgNodeId / this.state.nodes.length;
-    const x = XPadding + Math.random() * this.state.nodes.length * GraphScale;
-
-    /**
-     * WARNING: if you change this, also change getNodeY{Top,Bottom}
-     */
-    // const y = YPadding + ((-1 * node.ddgNodeId + this.state.nodes.length) || 0) * GraphScale;
-    const y = YPadding + (node.ddgNodeId + 1 || 0) * GraphScale;
-    return { x, y };
+  lockColumn(col, lastTimelineId) {
+    this._columnStatus[col] = lastTimelineId;
   }
 
-  addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
-    const { type, children, label = '' } = parent;
+  // maybeFreeColumns(nodeId, currentRow) {
+  //   this.logger.log(`[col] try free cols for currentRow ${currentRow}`);
+  //   const node = this.state.timelineNodes[nodeId];
+  //   if (node.dataNodeId) {
+  //     for (const from of this.graph.getNodesTo(node.dataNodeId) || EmptyArray) {
+  //       const fromNode = this.graph.getNodeByDataNodeId(from);
+  //       const { col } = fromNode.displayData;
+  //       if (this._columnStatus[col] === currentRow) {
+  //         delete this._columnStatus[col];
+  //         this.logger.log(`[col] free col ${col}`);
+  //       }
+  //     }
+  //   }
+  // }
+
+  addTreeNode(node, row = 1) {
+    const { type, dataTimelineId, timelineId, children = EmptyArray, label = '' } = node;
     const isGroupNode = isControlGroupTimelineNode(type);
-    let bottom = top + YGroupPadding;
-    let left = XPadding + Math.floor(Math.random() * 400);
-    let right;
+    let col, rowEnd = row, colEnd;
+    // let col = this.getFirstFreeColumn(row), rowEnd = row, colEnd = 2;
+    // const lockRow = this.graph.getLastNodeFrom(dataNodeId) || row;
+    // this.lockColumn(col, lockRow);
 
-    const el = this.makeNodeEl(parent, label);
-    this.el.appendChild(el);
+    const el = this.makeNodeEl(node, label);
+    this.els.main.appendChild(el);
 
     if (isGroupNode) {
-      if (children?.length) {
-        for (const childId of children) {
-          const childNode = nodes[childId];
-          if (!isControlGroupTimelineNode(childNode.type) && !childNode.connected && this.context.doc.state.connectedOnlyMode) {
-            continue;
-          }
-          const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, depth + 1, bottom);
-          bottom = childDisplayData.bottom + YGroupPadding;
+      col = 1;
+      colEnd = 2;
+      for (const childId of children) {
+        const childNode = this.state.timelineNodes[childId];
+        if (this.shouldInclude(childNode)) {
+          const { displayData: childDisplayData } = this.addTreeNode(childNode, rowEnd);
+          rowEnd = childDisplayData.rowEnd;
+          colEnd = Math.max(colEnd, childDisplayData.colEnd);
         }
+        // this.maybeFreeColumns(childId, rowEnd);
       }
-      bottom += YGroupPadding;
-      left = depth * 3;
-      right = depth * 3;
-    }
-    else if (type === DDGTimelineNodeType.RefSnapshot) {
-      if (children?.length) {
-        for (const propName of Object.keys(children)) {
-          const childId = children[propName];
-          const childNode = nodes[childId];
-          const childEl = this.makeNodeEl(childNode, propName);
-          el.appendChild(childEl);
-        }
-      }
-      bottom = top + el.offsetHeight;
     }
     else {
-      bottom = top + el.offsetHeight;
+      rowEnd = row + 1;
+      col = this.getFirstFreeColumn(timelineId);
+      colEnd = col + 1;
+      let lastTimelineId = this.state.timelineDataNodes[this.graph.getLastNodeFrom(dataTimelineId)] || timelineId;
+
+      if (type === DDGTimelineNodeType.RefSnapshot) {
+        for (const propName of Object.keys(children)) {
+          const childId = children[propName];
+          const childNode = this.state.timelineNodes[childId];
+          const childEl = this.makeNodeEl(childNode, propName);
+          el.appendChild(childEl);
+
+          if (childNode.dataTimelineId) {
+            const lastTimelineIdFromChild = this.state.timelineDataNodes[this.graph.getLastNodeFrom(childNode.dataTimelineId)];
+            if (lastTimelineIdFromChild) {
+              lastTimelineId = Math.max(lastTimelineId, lastTimelineIdFromChild);
+            }
+          }
+        }
+      }
+
+      this.logger.log(`[col] node ${timelineId} lock col ${col} until ${lastTimelineId}`);
+      this.lockColumn(col, lastTimelineId);
     }
 
-    parent.displayData = {
-      top,
-      bottom,
-      left,
-      right,
-      isGroupNode,
+    node.displayData = {
+      row,
+      col,
+      rowEnd,
+      colEnd,
     };
 
-    this.repositionNodeEl(el, parent.displayData);
+    this.repositionNodeEl(el, node.displayData);
 
-    return parent;
+    return node;
   }
+
+  // addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
+  //   const { type, children, label = '' } = parent;
+  //   const isGroupNode = isControlGroupTimelineNode(type);
+  //   let bottom = top + YGroupPadding;
+  //   let left = XPadding + Math.floor(Math.random() * 400);
+  //   let right;
+
+  //   const el = this.makeNodeEl(parent, label);
+  //   this.els.main.appendChild(el);
+
+  //   if (isGroupNode) {
+  //     if (children?.length) {
+  //       for (const childId of children) {
+  //         const childNode = nodes[childId];
+  //         if (!isControlGroupTimelineNode(childNode.type) && !childNode.connected && this.context.doc.state.connectedOnlyMode) {
+  //           continue;
+  //         }
+  //         const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, depth + 1, bottom);
+  //         bottom = childDisplayData.bottom + YGroupPadding;
+  //       }
+  //     }
+  //     bottom += YGroupPadding;
+  //     left = depth * 3;
+  //     right = depth * 3;
+  //   }
+  //   else if (type === DDGTimelineNodeType.RefSnapshot) {
+  //     if (children?.length) {
+  //       for (const propName of Object.keys(children)) {
+  //         const childId = children[propName];
+  //         const childNode = nodes[childId];
+  //         const childEl = this.makeNodeEl(childNode, propName);
+  //         el.appendChild(childEl);
+  //       }
+  //     }
+  //     bottom = top + el.offsetHeight;
+  //   }
+  //   else {
+  //     bottom = top + el.offsetHeight;
+  //   }
+
+  //   parent.displayData = {
+  //     top,
+  //     bottom,
+  //     left,
+  //     right,
+  //     isGroupNode,
+  //   };
+
+  //   this.repositionNodeEl(el, parent.displayData);
+
+  //   return parent;
+  // }
 
   // Tree version
   // addTreeNodes(root, nodes, leftBound = XPadding, topBound = YPadding) {
@@ -427,9 +604,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    *  #########################################################################*/
 
   initGraphImplementation() {
-    this.nodeElMap = new Map();
+    // this.nodeElMap = new Map();
     this.jsPlumb = jsPlumbBrowserUI.newInstance({
-      container: this.el
+      container: this.els.main
     });
   }
 
@@ -487,13 +664,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const { type, timelineId } = node;
     let el;
     if (isControlGroupTimelineNode(type)) {
-      el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
+      el = compileHtmlElement(/*html*/`<div class="timeline-grid-cell timeline-group">${label}</div>`);
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
-      el = compileHtmlElement(/*html*/`<div class="timeline-ref-node"><div class="timeline-node">${label}</div></div>`);
+      el = compileHtmlElement(/*html*/`<div class="timeline-grid-cell timeline-ref-node"><div class="timeline-node">${label}</div></div>`);
     }
     else {
-      el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
+      el = compileHtmlElement(/*html*/`<div class="timeline-grid-cell timeline-node">${label}</div>`);
     }
 
     el.dataset.timelineId = timelineId;
@@ -513,7 +690,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     //   }
     // }
 
-    this.nodeElMap.set(key, el);
+    // this.nodeElMap.set(key, el);
     // this.el.appendChild(el);
     if (!isGroupNode) {
       this.jsPlumb.manage(el);
@@ -521,20 +698,31 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   repositionNodeEl(el, displayData) {
-    const { left, right, top, bottom, isGroupNode } = displayData;
-    el.style.left = `${left}px`;
-    el.style.top = `${top}px`;
-    if (isGroupNode) {
-      el.style.height = `${bottom - top}px`;
-      el.style.right = `${right}px`;
-    }
+    const { row, col, rowEnd, colEnd } = displayData;
+
+    el.style.gridRow = `${row} / ${rowEnd}`;
+    el.style.gridColumn = `${col} / ${colEnd}`;
+
+    // const { left, right, top, bottom, isGroupNode } = displayData;
+    // el.style.left = `${left}px`;
+    // el.style.top = `${top}px`;
+    // if (isGroupNode) {
+    //   el.style.height = `${bottom - top}px`;
+    //   el.style.right = `${right}px`;
+    // }
+  }
+
+  getNodeElByTimelineId(timelineId) {
+    return this.els.main.querySelector(`[data-timeline-id="${timelineId}"]`);
   }
 
   addEdge(edge) {
     const fromTimelineId = this.state.timelineDataNodes[edge.from];
     const toTimelineId = this.state.timelineDataNodes[edge.to];
-    const source = this.nodeElMap.get(fromTimelineId);
-    const target = this.nodeElMap.get(toTimelineId);
+    const source = this.getNodeElByTimelineId(fromTimelineId);
+    const target = this.getNodeElByTimelineId(toTimelineId);
+    // const source = this.nodeElMap.get(fromTimelineId);
+    // const target = this.nodeElMap.get(toTimelineId);
     this.jsPlumb.connect({
       source,
       target,
@@ -579,8 +767,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   clearGraph() {
     this.jsPlumb.deleteEveryConnection();
-    this.el.querySelectorAll('div.timeline-node').forEach(el => el.remove());
-    this.el.querySelectorAll('div.timeline-group').forEach(el => el.remove());
+    this.els.main.innerHTML = '';
+    // this.els.main.querySelectorAll('div.timeline-node').forEach(el => el.remove());
+    // this.els.main.querySelectorAll('div.timeline-group').forEach(el => el.remove());
     // for (const el of this.nodeElMap.values()) {
     //   this.el.removeChild(el);
     // }
