@@ -284,34 +284,42 @@ export default class DDGTimelineBuilder {
     const { dp } = this;
     const currentGroup = this.peekStack();
     const staticTrace = dp.collections.staticTraces.getById(trace.staticTraceId);
-    if (!this.#checkCurrentControlGroup(currentGroup, staticTrace, trace)) {
-      return null;
-    }
 
     const label = this.#makeDataNodeLabel(dataNode);
-    const newNode = new DecisionTimelineNode(dataNode.nodeId, label);
-    this.#doAddDataNode(newNode);
+    const decisionNode = new DecisionTimelineNode(dataNode.nodeId, label);
+    this.#doAddDataNode(decisionNode);
 
-    if (isLoopTimelineNode(currentGroup.type)) {
-      // push first iteration of loop
-      const iterationNode = new IterationNode(newNode.dataTimelineId);
-      this.#pushGroup(iterationNode);
-    }
-    else if (isLoopIterationTimelineNode(currentGroup.type)) {
+    if (isLoopIterationTimelineNode(currentGroup.type)) {
       // continued iteration of loop
-      // TODO: some sanity checks before popping
       this.#popGroup(); // pop previous iteration
-      
-      // push next iteration
-      const iterationNode = new IterationNode(newNode.dataTimelineId);
-      this.#pushGroup(iterationNode);
+
+      if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
+        // make sure, we are in the correct loop
+        return null;
+      }
+
+      if (dp.util.isDataNodeValueTruthy(dataNode.nodeId)) {
+        // push next iteration
+        const iterationNode = new IterationNode(decisionNode.dataTimelineId);
+        this.#pushGroup(iterationNode);
+      }
     }
     else {
-      // non-loop branch
-      currentGroup.decisions.push(newNode.dataTimelineId);
+      if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
+        return null;
+      }
+      if (isLoopTimelineNode(currentGroup.type)) {
+        // push first iteration of loop
+        const iterationNode = new IterationNode(decisionNode.dataTimelineId);
+        this.#pushGroup(iterationNode);
+      }
+      else {
+        // non-loop branch
+        currentGroup.decisions.push(decisionNode.dataTimelineId);
+      }
     }
 
-    return newNode;
+    return decisionNode;
   }
 
   /**
@@ -573,8 +581,9 @@ export default class DDGTimelineBuilder {
    * @param {*} staticTrace 
    * @param {Trace} trace The trace of given staticTrace.
    */
-  #checkCurrentControlGroup(currentGroup, staticTrace, trace) {
+  #checkCurrentControlGroup(staticTrace, trace) {
     const { dp } = this;
+    const currentGroup = this.peekStack();
     if (currentGroup.controlStatementId !== staticTrace.controlId) {
       // sanity check
       const groupTag = `[${DDGTimelineNodeType.nameFrom(currentGroup.type)}]`;
@@ -630,7 +639,7 @@ export default class DDGTimelineBuilder {
         if (isLoopIterationTimelineNode(currentGroup.type)) {
           this.#popGroup(); // when control group pops, current iteration also pops
         }
-        if (!this.#checkCurrentControlGroup(currentGroup, staticTrace, trace)) {
+        if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
           return;
         }
         const label = controlGroupLabelMaker[currentGroup.type]?.(ddg, currentGroup);

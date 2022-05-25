@@ -14,4 +14,4 @@ function main(n, a) {
   return c;
 }
 
-main(1, 10);
+main(5, 10);

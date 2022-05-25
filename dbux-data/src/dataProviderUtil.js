@@ -114,13 +114,20 @@ const DefaultDataSnapshotMods = {
  * ##########################################################################*/
 
 const ShortenMaxLength = 20;
-const ShortenCfg = { length: ShortenMaxLength - 2 };
-const ShortenNestedCfg = { length: ShortenMaxLength - 2 };
+const ShortStringCfg = { length: ShortenMaxLength - 2 };
+
+const TruncateDefaultCfg = { length: 60 - 2 };
 
 /**
  * @param {string} s 
  */
-function truncateStringDefault(s, cfg = null) {
+function truncateStringShort(s, cfg = ShortStringCfg) {
+  return truncate(s.replace(/\s+/g, ' '), cfg);
+}
+/**
+ * @param {string} s 
+ */
+function truncateStringDefault(s, cfg = TruncateDefaultCfg) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }
 
@@ -1228,17 +1235,17 @@ export default {
 
       if (ValueTypeCategory.is.Array(category)) {
         let content = `${snapshot.children.map(childSnapshot => dp.util._simplifyValue(childSnapshot))}`;
-        shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
+        shorten && (content = truncateStringShort(content));
         valueString = `[${content}]`;
       }
       else if (ValueTypeCategory.is.Object(category)) {
         let content = `${Object.keys(snapshot.children)}`;
-        shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
+        shorten && (content = truncateStringShort(content));
         valueString = `{${content}}`;
       }
       else if (ValueTypeCategory.is.Function(category)) {
         let name = snapshot.getChildValue('name') || '(anonymous)';
-        shorten && (name = truncateStringDefault(name, ShortenNestedCfg));
+        shorten && (name = truncateStringShort(name));
         valueString = `ƒ ${name}`;
       }
       else {
@@ -2512,7 +2519,8 @@ export default {
     if (!displayName) {
       displayName = `[${TraceType.nameFrom(st.type)}]`;
     }
-    return `"${st?.displayName}" at ${where} (stid=${st?.staticTraceId})`;
+    displayName = truncateStringDefault(displayName || '');
+    return `"${displayName}" at ${where} (stid=${st?.staticTraceId})`;
   },
 
   /**
