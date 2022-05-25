@@ -43,6 +43,24 @@ svg.jtk-connector path {
   border: 1px solid white;
   padding: 2px;
   white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+}
+
+.timeline-node:hover .timeline-description {
+  display: initial;
+}
+
+.timeline-description {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  max-width: 35vw;
+  padding: 4px;
+  margin: 1px;
+  display: none;
+  border: 1px solid white;
+  background-color: black;
 }
 
 .timeline-ref-node {
@@ -52,6 +70,6 @@ svg.jtk-connector path {
   justify-content: center;
 }
 
-.timeline-ref-node > .timeline-node {
+.timeline-ref-node>.timeline-node {
   position: unset;
 }

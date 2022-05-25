@@ -5,8 +5,8 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 export default class DDGTimelineView extends HostComponentEndpoint {
   init() {
-    this.state.nodes = EmptyArray;
-    this.state.edges = EmptyArray;
+    // this.state.nodes = EmptyArray;
+    // this.state.edges = EmptyArray;
   }
 
   update() {
@@ -38,7 +38,8 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   setGraph(ddg) {
     // reset status message
     const failureReason = null;
-    this.setState({ failureReason, ...ddg.getRenderData() });
+    const { applicationId } = ddg.dp.application;
+    this.setState({ failureReason, applicationId, ...ddg.getRenderData() });
   }
 
   setFailure(failureReason) {
@@ -52,5 +53,20 @@ export default class DDGTimelineView extends HostComponentEndpoint {
         view: this
       }
     };
+  }
+
+  public = {
+    selectNode(timelineId) {
+      const node = this.state.timelineNodes[timelineId];
+      if (node.dataNodeId) {
+        const { applicationId } = this.state;
+        const dp = allApplications.getById(applicationId).dataProvider;
+        const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
+        const trace = dp.collections.traces.getById(dataNode.traceId);
+        if (trace) {
+          traceSelection.selectTrace(trace, null, node.dataNodeId);
+        }
+      }
+    }
   }
 }

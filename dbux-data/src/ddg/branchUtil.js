@@ -1,8 +1,9 @@
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import last from 'lodash/last';
-import DataDependencyGraph from './DataDependencyGraph';
 import { IfTimelineNode } from './DDGTimelineNodes';
+
+/** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
 
 /** ###########################################################################
  * 

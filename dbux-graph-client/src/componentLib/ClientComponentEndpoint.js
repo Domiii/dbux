@@ -11,6 +11,7 @@ const Verbose = 0;
  */
 class ClientComponentEndpoint extends ComponentEndpoint {
   /**
+   * @type {HTMLElement}
    * The DOM element visually representing this component instance.
    */
   el;
