@@ -478,6 +478,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   //   this.addNode(key, el, displayData);
   // }
 
+  makeNodeDescriptionEl(node) {
+    const content = `Node = ${JSON.stringify(node, null, 2)}`;
+    return compileHtmlElement(/*html*/`<pre class="timeline-description">${content}</pre>`);
+  }
+
   makeNodeEl(node, label) {
     const { type, timelineId } = node;
     let el;
@@ -492,6 +497,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
 
     el.dataset.timelineId = timelineId;
+    el.appendChild(this.makeNodeDescriptionEl(node));
     this.addNode(timelineId, el, node);
     // this.logger.log(`[addNode]`, parent, parent.displayData);
     return el;
