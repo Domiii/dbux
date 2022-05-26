@@ -186,7 +186,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       if (children?.length) {
         for (const childId of children) {
           const childNode = nodes[childId];
-          if (!isControlGroupTimelineNode(childNode.type) && !childNode.connected && this.context.doc.state.connectedOnlyMode) {
+          if (this.context.doc.state.connectedOnlyMode &&
+            !isControlGroupTimelineNode(childNode.type) &&
+            !childNode.connected
+          ) {
             continue;
           }
           const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, depth + 1, bottom);

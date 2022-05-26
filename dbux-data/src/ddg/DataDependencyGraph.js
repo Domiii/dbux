@@ -147,14 +147,13 @@ export default class DataDependencyGraph {
     /** ########################################
      * phase 2: 
      *  1. use edges to gather connectivity data for nodes
-     *  2. general post-processing
+     *  2. (and some general post-processing)
      *  ######################################*/
 
-    for (const timelineId of this.timelineDataNodes) {
-      if (!timelineId) {
+    for (const node of this.timelineNodes) {
+      if (!node?.dataNodeId) {
         continue;
       }
-      const node = this.timelineNodes[timelineId];
       const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
       const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
 
@@ -164,15 +163,13 @@ export default class DataDependencyGraph {
     }
 
     /** ########################################
-     * phase 3: 
-     *  1. find connected nodes
+     * phase 3: identify connected nodes
      *  ######################################*/
 
-    for (const timelineId of this.timelineDataNodes) {
-      if (!timelineId) {
+    for (const node of this.timelineNodes) {
+      if (!node?.dataNodeId) {
         continue;
       }
-      const node = this.timelineNodes[timelineId];
       if (node.watched) {
         this.findConnectedNodes(node);
       }
@@ -190,10 +187,20 @@ export default class DataDependencyGraph {
     }
 
     node.connected = true;
-    const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
-    for (const { from } of fromEdges) {
-      const fromNode = this.getDataTimelineNode(from);
-      this.findConnectedNodes(fromNode);
+
+    if (node.dataTimelineId) {
+      const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
+      for (const { from } of fromEdges) {
+        const fromNode = this.getDataTimelineNode(from);
+        this.findConnectedNodes(fromNode);
+      }
+    }
+    else if (node.children) {
+      // TODO: other types of children (decisions, ref etc.)
+      for (const child of Object.values(node.children)) {
+        const childNode = this.timelineNodes[child];
+        this.findConnectedNodes(childNode);
+      }
     }
   }
 }
