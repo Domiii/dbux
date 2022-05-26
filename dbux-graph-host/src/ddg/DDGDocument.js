@@ -31,6 +31,10 @@ export default class DDGDocument extends HostComponentEndpoint {
     // this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
     //   this.timelineView.refresh();
     // }));
+    const trace = traceSelection.selected;
+    // don't refresh when selecting different traces
+    lastTraceInfo.applicationId = trace?.applicationId;
+    lastTraceInfo.contextId = trace?.contextId;
     this.timelineView.refresh();
   }
 

@@ -2,6 +2,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems, makeTreeChildren } from '../../helpers/makeTreeItem';
@@ -158,8 +159,11 @@ export class DebugTDNode extends TraceDetailNode {
       { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
     ]);
     valueTraceDataNodeCount > 1 && allDataNodes.push(makeTreeItem(
-      `all dataNodes (${valueTraceDataNodeCount})`,
-      valueTraceDataNodes
+      `all dataNodes`,
+      valueTraceDataNodes.map((n) => {
+        const nodeLabel = `${n.nodeId} [${DataNodeType.nameFrom(n.type)}]`;
+        return makeTreeItem(nodeLabel, n);
+      })
     ));
     ownDataNodes && ownDataNodes !== valueTraceDataNodes && allDataNodes.push(makeTreeItem(
       `ownDataNodes (${ownDataNodes.length})`,
@@ -305,7 +309,7 @@ export class DebugTDNode extends TraceDetailNode {
             dataNodes: makeTreeItem(
               'dataNodes',
               makeTreeItems(...allDataNodes),
-              { description: allDataNodes.length + '' }
+              { description: allDataNodes.length + ` (${allDataNodes.map(n => n?.nodeId).join(', ')})` }
             ),
             valueRawRefNode,
             valueRawSnapshotNode,

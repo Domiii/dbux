@@ -108,6 +108,6 @@ if (Verbose) {
   onUserEvent((evt) => {
     const { type, createdAt, ...evtData } = evt;
     const typeName = UserActionType.nameFromForce(type);
-    log(`Emit user event "${typeName}", additional data=${JSON.stringify(evtData)}`);
+    // log(`Emit user event "${typeName}", additional data=${JSON.stringify(evtData)}`);
   });
 }

@@ -97,6 +97,16 @@ export default class DDGTimelineBuilder {
     return last(this.stack);
   }
 
+  #getDataTimelineInputNode(dataNodeId) {
+    // 1. look for skips
+    let inputNode = this.skippedNodesByDataNodeId[dataNodeId];
+    if (!inputNode) {
+      // 2. DataNode was not skipped → get its DataTimelineNode
+      inputNode = this.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
+    }
+    return inputNode;
+  }
+
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
     return this.firstTimelineDataNodeByDataNodeId[dataNodeId];
   }
@@ -121,16 +131,15 @@ export default class DDGTimelineBuilder {
     const dataNodeId = dataNode.nodeId;
     return (
       (
-        dataNode.refId &&
+        (refId = dataNode.refId) &&
         this.ddg.watchSet.isWatchedDataNode(dataNodeId)
       ) ||
       (
-        (refId = dataNode.varAccess?.objectNodeId) &&
-
-        // render as Primitive if ValueRef does not have children
-        (this.dp.collections.values.getById(refId))?.children
+        (refId = dataNode.varAccess?.objectNodeId)
       )
-    );
+    ) &&
+      // NOTE: render as "Primitive" instead if ValueRef does not have children
+      (this.dp.collections.values.getById(dataNode.refId))?.children;
   }
 
   #addSnapshotChildren(snapshot, originalChildren, modificationDataNodes, isOriginalValueRef) {
@@ -202,13 +211,19 @@ export default class DDGTimelineBuilder {
       }
       else {
         // apply lastMod
-        if (this.#canBeRefSnapshot(lastModDataNode)) {
+        // if (this.#canBeRefSnapshot(lastModDataNode)) {
+        if (lastModDataNode.refId) {
           // nested ref
           newChild = this.#addRefSnapshot(lastModDataNode, null);
         }
         else {
           // primitive
+          const fromNode = this.#getDataTimelineInputNode(lastModDataNode.nodeId);
           newChild = this.#addPrimitiveDataNode(lastModDataNode);
+          if (fromNode) {
+            // TODO: compute correct `n`
+            this.#addEdge(fromNode, newChild, { n: 1 });
+          }
         }
       }
       snapshot.children[prop] = newChild.timelineId;
@@ -226,7 +241,7 @@ export default class DDGTimelineBuilder {
     // const { nodeId: dataNodeId } = ownDataNode;
     const { refId } = ownDataNode;
     if (!refId) {
-      throw new Error(`missing refId`);
+      throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
     }
 
     /**
@@ -686,6 +701,7 @@ export default class DDGTimelineBuilder {
     if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
       if (this.#shouldIgnoreDataNode(ownDataNode.nodeId)) {
         // ignore entirely
+        this.logger.debug(`IGNORE`, this.#makeDataNodeLabel(ownDataNode));
         return;
       }
       const skippedBy = this.#skipDataNode(ownDataNode);
@@ -700,11 +716,7 @@ export default class DDGTimelineBuilder {
 
     if (ownDataNode.inputs) {
       for (const inputDataNodeId of ownDataNode.inputs) {
-        // look for skips
-        let inputNode = this.skippedNodesByDataNodeId[inputDataNodeId];
-        if (!inputNode) {
-          inputNode = this.getFirstDataTimelineNodeByDataNodeId(inputDataNodeId);
-        }
+        const inputNode = this.#getDataTimelineInputNode(inputDataNodeId);
 
         if (inputNode) {
           const edgeProps = inputNodes.get(inputNode);
