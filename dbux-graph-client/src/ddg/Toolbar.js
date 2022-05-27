@@ -12,7 +12,7 @@ const toolbarIconSize = '12px';
 
 class Toolbar extends ClientComponentEndpoint {
   createEl() {
-    const { summaryIconUris } = this.context.graphDocument.state;
+    const { summaryIconUris } = this.context.doc.state;
 
     const summaryModeButtons = RootSummaryModes.map(mode => {
       const label = summaryIconUris[mode] ?
@@ -32,10 +32,17 @@ class Toolbar extends ClientComponentEndpoint {
         <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
           Rebuild 🔁
         </button>
+        
+        &nbsp;
+
         <button title="Hide subgraphs that are not affected any watched node" data-el="connectModeBtn" class="toolbar-btn btn btn-info" href="#">
           con
         </button>
-        |
+        <button title="Merge computation subgraphs" data-el="mergeComputationsBtn" class="toolbar-btn btn btn-info" href="#">
+          ⚙
+        </button>
+        
+        &nbsp;
 
         ${summaryModeButtons}
         
@@ -74,11 +81,12 @@ class Toolbar extends ClientComponentEndpoint {
       active: connectedOnlyMode
     });
 
+    // TODO: update SummaryMode buttons
+
     // this.els.layoutButton.innerHTML = LayoutAlgorithmType.nameFromForce(layoutType);
   }
 
   renderModes() {
-
   }
 
   /**
@@ -118,6 +126,17 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         await this.remote.setGraphDocumentMode({
           connectedOnlyMode: !this.doc.state.connectedOnlyMode,
+        });
+      },
+
+      focus(evt) { evt.target.blur(); }
+    },
+
+    mergeComputationsBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setGraphDocumentMode({
+          mergeComputesMode: !this.doc.state.mergeComputesMode
         });
       },
 

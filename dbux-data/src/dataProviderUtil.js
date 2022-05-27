@@ -813,13 +813,15 @@ export default {
   },
 
   /** 
-   * A "pass-along" node is
+   * A "pass-along" node is the Read of a variable or
+   * a node that otherwise was only inserted to refer to a singular input read.
+   * 
    * @param {RuntimeDataProvider} dp
    */
   isDataNodePassAlong(dp, nodeId) {
     const dataNode = dp.util.getDataNode(nodeId);
     return (
-      // (DataNodeType.is.Read(dataNode.type)) &&
+      (DataNodeType.is.Read(dataNode.type)) &&
       !!dataNode.valueFromId
     );
   },

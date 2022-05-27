@@ -11,6 +11,7 @@ import DDGBounds from './DDGBounds';
 import DDGEdge from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
 import { DataTimelineNode } from './DDGTimelineNodes';
+import DDGSummarizer from './DDGSummarizer';
 
 export default class DataDependencyGraph {
   /**
@@ -97,6 +98,9 @@ export default class DataDependencyGraph {
   constructor(dp, graphId) {
     this.dp = dp;
     this.graphId = graphId;
+
+
+    this.summarizer = new DDGSummarizer(this);
   }
 
   /** ###########################################################################
@@ -209,7 +213,11 @@ export default class DataDependencyGraph {
    * public controls
    *  #########################################################################*/
 
-  setSummaryMode(timelineId, mode) {
+  setMergeComputes(on) {
     // TODO
+  }
+
+  setSummaryMode(timelineId, mode) {
+    this.summarizer.setSummaryMode(timelineId, mode);
   }
 }

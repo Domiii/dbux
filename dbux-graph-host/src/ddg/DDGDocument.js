@@ -2,6 +2,7 @@
 import NanoEvents from 'nanoevents';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // import allApplications from '@dbux/data/src/applications/allApplications';
 
@@ -16,6 +17,7 @@ export default class DDGDocument extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
     // this.state.layoutType = LayoutAlgorithmType.ForceLayout;
     this.state.connectedOnlyMode = true;
+    this.state.mergeComputesMode = true;
 
     this.createOwnComponents();
 
@@ -47,6 +49,13 @@ export default class DDGDocument extends HostComponentEndpoint {
     this.toolbar = this.children.createComponent('Toolbar');
   }
 
+  /** ###########################################################################
+   * DocumentMode
+   * ##########################################################################*/
+
+  /**
+   * future-work: move this code to a shared location
+   */
   setDocumentMode(update) {
     const actualUpdate = {};
     for (const [key, val] of Object.entries(update)) {
@@ -69,20 +78,27 @@ export default class DDGDocument extends HostComponentEndpoint {
     this._emitter.emit(`${modeName}Changed`, value);
   }
 
-  // /** ###########################################################################
-  //  * util
-  //  *  #########################################################################*/
+  onMergeComputesModeChanged(cb) {
+    return this._emitter.on('mergeComputesModeChanged', cb);
+  }
 
-  // getIconUri(fileName, modeName = null) {
-  //   if (!fileName) {
-  //     return null;
-  //   }
-  //   if (!modeName) {
-  //     const themeMode = this.componentManager.externals.getThemeMode();
-  //     modeName = ThemeMode.getName(themeMode).toLowerCase();
-  //   }
-  //   return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
-  // }
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  /**
+   * future-work: move this to a shared location
+   */
+  getIconUri(fileName, modeName = null) {
+    if (!fileName) {
+      return null;
+    }
+    if (!modeName) {
+      const themeMode = this.componentManager.externals.getThemeMode();
+      modeName = ThemeMode.getName(themeMode).toLowerCase();
+    }
+    return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
+  }
 
   // ###########################################################################
   // state + context

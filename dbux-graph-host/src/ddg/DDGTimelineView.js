@@ -3,10 +3,26 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
+/** @typedef { import("./DDGDocument").default } DDGDocument */
+
 export default class DDGTimelineView extends HostComponentEndpoint {
+  ddg;
+
+  /**
+   * @type {DDGDocument}
+   */
+  get doc() {
+    return this.context.doc;
+  }
+
+  get mergeComputesMode() {
+    return this.doc.state.mergeComputesMode;
+  }
+
   init() {
-    // this.state.nodes = EmptyArray;
-    // this.state.edges = EmptyArray;
+    this.addDisposable(
+      this.doc.onMergeComputesModeChanged(this.handleMergeComputesModeChanged)
+    );
   }
 
   update() {
@@ -36,16 +52,23 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   }
 
   setGraph(ddg) {
+    this.ddg = ddg;
+
     // reset status message
     const failureReason = null;
     const { applicationId } = ddg.dp.application;
+
     this.setState({ failureReason, applicationId, ...ddg.getRenderData() });
   }
 
   setFailure(failureReason) {
     // reset graph
-    this.setState({ failureReason, root: null, nodes: EmptyArray, edges: EmptyArray });
+    this.setState({ failureReason, timelineNodes: EmptyArray, edges: EmptyArray });
   }
+
+  handleMergeComputesModeChanged = () => {
+    this.ddg?.setMergeComputes(this.mergeComputesMode);
+  };
 
   shared() {
     return {
@@ -70,7 +93,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     },
 
     setSummaryMode(timelineId, mode) {
-      this.ddg.setSummaryMode(timelineId, mode);
+      this.ddg?.setSummaryMode(timelineId, mode);
     }
   }
 }
