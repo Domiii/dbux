@@ -69,6 +69,19 @@ export function isDataTimelineNode(timelineNodeType) {
   return dataTimelineNodeTypes[timelineNodeType] || false;
 }
 
+const hasDataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+hasDataTimelineNodeTypes[DDGTimelineNodeType.Primitive] = true;
+hasDataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
+hasDataTimelineNodeTypes[DDGTimelineNodeType.RefSnapshot] = true;
+
+/**
+ * Applies to `DataTimelineNode`s and snapshot nodes (which contain data).
+ * NOTE: Both have `dataNodeId`.
+ */
+export function doesTimelineNodeHaveData(timelineNodeType) {
+  return hasDataTimelineNodeTypes[timelineNodeType] || false;
+}
+
 
 const loopTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 loopTypes[DDGTimelineNodeType.For] = true;
