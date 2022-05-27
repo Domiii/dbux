@@ -10,6 +10,8 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 // import { Sigma } from 'sigma';
 // import { animateNodes } from 'sigma/utils/animate';
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
+import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement, delegate } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -96,7 +98,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   buildGraph() {
     const { timelineNodes: nodes, edges } = this.state;
 
-    const root = nodes?.[1];
+    const root = nodes?.[RootTimelineId];
 
     if (!root || !nodes?.length) {
       return;
@@ -588,6 +590,14 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     //   this.el.removeChild(el);
     // }
     this.nodeElMap = new Map();
+  }
+
+  /** ###########################################################################
+   * timeline controls
+   *  #########################################################################*/
+
+  async setSummaryMode(timelineId, mode) {
+    await this.remote.setSummaryMode(timelineId, mode);
   }
 
   /** ###########################################################################

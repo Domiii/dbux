@@ -67,6 +67,10 @@ export default class DDGTimelineView extends HostComponentEndpoint {
           traceSelection.selectTrace(trace, null, node.dataNodeId);
         }
       }
+    },
+
+    setSummaryMode(timelineId, mode) {
+      this.ddg.setSummaryMode(timelineId, mode);
     }
   }
 }

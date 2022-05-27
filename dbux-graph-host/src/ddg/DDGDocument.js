@@ -1,7 +1,7 @@
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import NanoEvents from 'nanoevents';
 import traceSelection from '@dbux/data/src/traceSelection/index';
-// import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // import allApplications from '@dbux/data/src/applications/allApplications';
 
@@ -89,8 +89,16 @@ export default class DDGDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   makeInitialState() {
+    const summaryIconUris = {
+      // [DDGSummaryMode.Hide]: this.getIconUri('hide.svg'),
+      [DDGSummaryMode.Collapse]: this.getIconUri('minus.svg'),
+      [DDGSummaryMode.ExpandSelf]: this.getIconUri('stack.svg'),
+      [DDGSummaryMode.ExpandSubgraph]: this.getIconUri('listItem.svg'),
+      // [DDGSummaryMode.HideChildren]: this.getIconUri('hide-children.svg'),
+    };
     return {
-      themeMode: this.componentManager.externals.getThemeMode()
+      themeMode: this.componentManager.externals.getThemeMode(),
+      summaryIconUris
     };
   }
 

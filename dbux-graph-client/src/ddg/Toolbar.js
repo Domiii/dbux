@@ -1,4 +1,6 @@
-import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+// import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
+import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -6,23 +8,37 @@ let documentClickHandler;
 
 /** @typedef { import("./DDGDocument").default } DDGDocument */
 
+const toolbarIconSize = '12px';
+
 class Toolbar extends ClientComponentEndpoint {
   createEl() {
+    const { summaryIconUris } = this.context.graphDocument.state;
+
+    const summaryModeButtons = RootSummaryModes.map(mode => {
+      const label = summaryIconUris[mode] ?
+        /*html*/`<img width="${toolbarIconSize}" src="${summaryIconUris[mode]}" />` :
+        '👁';
+      const modeName = DDGSummaryMode.nameFrom(mode);
+      const elName = `summary${modeName}`;
+      this.#addRootModeListener(elName, mode);
+      return `<button title="${modeName}" data-el="${elName}" class="toolbar-btn btn btn-info" href="#">
+          ${label}
+       </button>`;
+    });
+
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
           Rebuild 🔁
         </button>
-        <button title="Connected Only" data-el="connectModeBtn" class="toolbar-btn btn btn-info" href="#">
+        <button title="Hide subgraphs that are not affected any watched node" data-el="connectModeBtn" class="toolbar-btn btn btn-info" href="#">
           con
         </button>
-          <button title="Layout (ForceLayout)" data-el="layoutForceBtn" class="hidden toolbar-btn btn btn-info" href="#">
-            ForceLayout
-          </button>
-          <button title="Layout (ForceAtlas2)" data-el="layoutAtlas2Btn" class="hidden toolbar-btn btn btn-info" href="#">
-            ForceAtlas2
-          </button>
+        |
+
+        ${summaryModeButtons}
+        
         </div>
       </nav>
     `);
@@ -53,7 +69,7 @@ class Toolbar extends ClientComponentEndpoint {
       connectedOnlyMode
     } = this.parent.state;
 
-    
+
     decorateClasses(this.els.connectModeBtn, {
       active: connectedOnlyMode
     });
@@ -76,6 +92,17 @@ class Toolbar extends ClientComponentEndpoint {
   // event listeners
   // ###########################################################################
 
+  #addRootModeListener(elName, mode) {
+    this.on[elName] = {
+      async click(evt) {
+        evt.preventDefault();
+        this.doc.timeline.setSummaryMode(RootTimelineId, mode);
+      },
+
+      focus(evt) { evt.target.blur(); }
+    };
+  }
+
   on = {
     rebuildBtn: {
       async click(evt) {
@@ -97,29 +124,29 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
-    layoutForceBtn: {
-      async click(evt) {
-        evt.preventDefault();
-        if (!await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.ForceLayout)) {
-          this.doc.timeline.autoLayout();
-        }
-      },
+    // layoutForceBtn: {
+    //   async click(evt) {
+    //     evt.preventDefault();
+    //     if (!await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.ForceLayout)) {
+    //       this.doc.timeline.autoLayout();
+    //     }
+    //   },
 
-      focus(evt) { evt.target.blur(); }
-    },
+    //   focus(evt) { evt.target.blur(); }
+    // },
 
-    layoutAtlas2Btn: {
-      async click(evt) {
-        evt.preventDefault();
-        if (!await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.ForceAtlas2)) {
-          this.doc.timeline.autoLayout();
-        }
-        // const { layoutType } = this.parent.state;
-        // await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.nextValue(layoutType));
-      },
+    // layoutAtlas2Btn: {
+    //   async click(evt) {
+    //     evt.preventDefault();
+    //     if (!await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.ForceAtlas2)) {
+    //       this.doc.timeline.autoLayout();
+    //     }
+    //     // const { layoutType } = this.parent.state;
+    //     // await this.remote.setLayoutAlgorithm(LayoutAlgorithmType.nextValue(layoutType));
+    //   },
 
-      focus(evt) { evt.target.blur(); }
-    }
+    //   focus(evt) { evt.target.blur(); }
+    // }
   }
 }
 

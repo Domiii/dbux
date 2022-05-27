@@ -171,7 +171,7 @@ export default class DataDependencyGraph {
         continue;
       }
       if (node.watched) {
-        this.findConnectedNodes(node);
+        this.#setConnectedDFS(node);
       }
     }
   }
@@ -180,7 +180,7 @@ export default class DataDependencyGraph {
    * 
    * @param {DataTimelineNode} node 
    */
-  findConnectedNodes(node) {
+  #setConnectedDFS(node) {
     if (node.connected) {
       // node already found, stop propagation
       return;
@@ -192,15 +192,24 @@ export default class DataDependencyGraph {
       const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
       for (const { from } of fromEdges) {
         const fromNode = this.getDataTimelineNode(from);
-        this.findConnectedNodes(fromNode);
+        this.#setConnectedDFS(fromNode);
       }
     }
     else if (node.children) {
       // TODO: other types of children (decisions, ref etc.)
       for (const child of Object.values(node.children)) {
         const childNode = this.timelineNodes[child];
-        this.findConnectedNodes(childNode);
+        this.#setConnectedDFS(childNode);
       }
     }
+  }
+
+
+  /** ###########################################################################
+   * public controls
+   *  #########################################################################*/
+
+  setSummaryMode(timelineId, mode) {
+    // TODO
   }
 }
