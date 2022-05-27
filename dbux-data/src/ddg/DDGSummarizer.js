@@ -133,20 +133,27 @@ export default class DDGSummarizer {
   }
 
   updateEdges() {
-    // TODO: batch-updating of all affected edges
-
-    // Collapse: (1) update set of all edges going to/from group; (2) remove entirely internal edges
-    // Collapse → ExpandSelf: (1) update set of all edges going to/from group; (2) add entirely internal edges
-    // Collapse → ExpandSubgraph: (1) do [Collapse → ExpandSelf] recursively (DFS)
-    // ExpandSubgraph → ExpandSelf: make sure, all nodes are updated first, then apply all [Collapse] edge updates
-    
-    // ExpandSelf → ExpandSubgraph: TODO
-    // Hide: TODO (similar to Collapse)
-    // HideChildren: TODO
+    // TODO
   }
 
   applyMode(timelineId, mode) {
     if (this.canApplyMode[mode](timelineId)) {
+      // TODO:
+      // 0. add `edgeId` to edges; fix corresponding edge containers; remove `timelineDataNodes` container etc.
+      // 1. determine: Add or Cull
+      // 2. [nodeSet, edgeSet] = gatherNodesAndEdges (to be added or culled)
+      //    * if cull:
+      //      * also track replaceByNodes
+      //    * if add:
+      //      * get nodes and edges back from `this.hiddenNodes`, `this.hiddenEdges`
+      // 3. updateNodes:
+      //    * update ddg.timelineNodes (etc.): cull (remove or merge (update)) or bring back nodes
+      //    * update `this.hiddenNodes` set
+      // 4. updateEdges: 
+      //    * if cull:
+      //      * if from + to both in `nodeSet`: move to `this.hiddenEdges`
+      //      * else if from or to in `nodeSet`: update edge
+      //    * TODO: handle duplicate edges (e.g. store some `this.duplicateEdgesById` which tells us where they are)
       this.applyModeHandlers[mode](timelineId);
     }
   }
