@@ -26,20 +26,20 @@ const ddgQueries = {
   _canApplyMode: {
     [DDGSummaryMode.Show]: (node) => {
       return (
-        !!node.dataNodeId && // ← this implies that root is excluded
+        !!node.dataNodeId && // ← implies that root is excluded
         !node.watched // cannot change state of watched nodes
       );
     },
     [DDGSummaryMode.Hide]: (node) => {
       return (
-        !!node.dataNodeId && // ← this implies that root is excluded
+        !isRoot(node.timelineId) && // cannot hide the root
         !node.watched // cannot change state of watched nodes
       );
-      /* timelineId !== RootTimelineId && // NOTE: we cannot hide the root */
     },
     [DDGSummaryMode.Collapse]: (node) => {
       // return Array.isArray(node.children);
-      return !isRoot(node.timelineId) && isControlGroupTimelineNode(node.type);
+      return !isRoot(node.timelineId) && 
+        isControlGroupTimelineNode(node.type);
     },
     [DDGSummaryMode.ExpandSelf]: (node) => {
       // return Array.isArray(node.children);

@@ -1,3 +1,4 @@
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
@@ -5,7 +6,6 @@ import DDGSummaryMode, { isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import ddgQueries from './ddgQueries';
 import DDGEdgeType from './DDGEdgeType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** ###########################################################################
  * default config
@@ -14,6 +14,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // const RootDefaultSummaryMode = {
 // };
 const RootDefaultSummaryMode = DDGSummaryMode.ExpandSelf;
+// const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
 
 /** ###########################################################################
  * utilities
@@ -134,10 +135,29 @@ export default class DataDependencyGraph extends BaseDDG {
 
   applyModeHandlers = {
     [DDGSummaryMode.Show]: (timelineId) => {
-      // nothing to do
+      // Nothing to do.
+      // NOTE: Show is only used on leaf nodes (others are collapsed, expanded etc.)
+
+      // const { og } = this;
+      // const node = og.timelineNodes[timelineId];
+
+      // // hide all children
+      // for (const childId of node.children) {
+      //   // const childNode = og.timelineNodes[childId];
+      //   this.#applyMode(childId, DDGSummaryMode.Show);
+      // }
     },
     [DDGSummaryMode.Hide]: (timelineId) => {
-      // nothing to do
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      if (node.children) {
+        // hide all children
+        for (const childId of node.children) {
+          // const childNode = og.timelineNodes[childId];
+          this.#applyMode(childId, DDGSummaryMode.Hide);
+        }
+      }
     },
     [DDGSummaryMode.Collapse]: (timelineId) => {
       const { og } = this;
@@ -156,7 +176,9 @@ export default class DataDependencyGraph extends BaseDDG {
       // collapse all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplyMode(childNode, DDGSummaryMode.Collapse) ? DDGSummaryMode.Collapse : DDGSummaryMode.Show;
+        const targetMode = ddgQueries.canApplyMode(childNode, DDGSummaryMode.Collapse) ?
+          DDGSummaryMode.Collapse :
+          DDGSummaryMode.Show;
         this.#applyMode(childId, targetMode);
       }
     },
