@@ -696,7 +696,7 @@ export default class DDGTimelineBuilder {
         const inputNode = this.#getDataTimelineInputNode(inputDataNodeId);
 
         if (inputNode) {
-          const edgeProps = inputNodes.get(inputNode);
+          let edgeProps = inputNodes.get(inputNode);
           if (!edgeProps) {
             inputNodes.set(inputNode, edgeProps = { nByType: {} });
           }
@@ -736,7 +736,7 @@ export default class DDGTimelineBuilder {
 
     // add edges
     for (const [inputNode, edgeProps] of inputNodes) {
-      this.ddg.addEdge(DDGEdgeType.Data, inputNode, newNode, edgeProps);
+      this.ddg.addEdge(DDGEdgeType.Data, inputNode.dataTimelineId, newNode.dataTimelineId, edgeProps);
     }
   }
 

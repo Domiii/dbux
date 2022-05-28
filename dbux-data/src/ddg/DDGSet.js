@@ -1,6 +1,4 @@
-/** @typedef {import('./BaseDDG').default} DataDependencyGraph */
-
-import DataDependencyGraph from './BaseDDG';
+import DataDependencyGraph from './DataDependencyGraph';
 
 export default class DDGSet {
   /**
@@ -14,7 +12,7 @@ export default class DDGSet {
   }
 
   makeGraphId(...inputs) {
-    return `DDG #by#${inputs.join(',')}`;
+    return `DDG (${inputs.join(',')})`;
   }
 
   getCreateDDGFailureReason({ applicationId, contextId }) {

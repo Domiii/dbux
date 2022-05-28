@@ -45,14 +45,14 @@ export default class BaseDDG {
    * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
    * @type {DDGTimelineNode[]}
    */
-  timelineNodes = [null];
+  timelineNodes;
 
   /**
    * This is an array of `timelineId`.
    * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
    * @type {number[]}
    */
-  timelineDataNodes = [null];
+  timelineDataNodes;
 
   /**
    * NOTE: 
@@ -61,12 +61,12 @@ export default class BaseDDG {
   edges = [null];
 
   /**
-   * @type {Map.<number, DDGEdge[]>}
+   * @type {Object.<number, DDGEdge[]>}
    */
   outEdgesByDataTimelineId;
 
   /**
-   * @type {Map.<number, DDGEdge[]>}
+   * @type {Object.<number, DDGEdge[]>}
    */
   inEdgesByDataTimelineId;
 
@@ -126,8 +126,8 @@ export default class BaseDDG {
 
   _initBuild() {
     this.edges = [null];
-    this.inEdgesByDataTimelineId = new Map();
-    this.outEdgesByDataTimelineId = new Map();
+    this.inEdgesByDataTimelineId = {};
+    this.outEdgesByDataTimelineId = {};
   }
 
   /**
@@ -137,6 +137,8 @@ export default class BaseDDG {
     // this.selectedSet = inputNodes;
     this.watchSet = new DDGWatchSet(this, watchTraceIds);
     this.bounds = new DDGBounds(this, watchTraceIds);
+    this.timelineNodes = [null];
+    this.timelineDataNodes = [null];
 
     this._initBuild();
 
@@ -166,10 +168,12 @@ export default class BaseDDG {
       if (!node?.dataNodeId) {
         continue;
       }
-      const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
-      const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
+      const nIncomingEdges = this.inEdgesByDataTimelineId[node.dataTimelineId]?.length || 0;
+      const nOutgoingEdges = this.outEdgesByDataTimelineId[node.dataTimelineId]?.length || 0;
 
-      node.watched = this.watchSet.isWatchedDataNode(node.dataNodeId);
+      if (this.watchSet.isWatchedDataNode(node.dataNodeId)) {
+        this.#setWatchedDFS(node);
+      }
       node.nInputs = nIncomingEdges;
       node.nOutputs = nOutgoingEdges;
     }
@@ -192,6 +196,22 @@ export default class BaseDDG {
    * 
    * @param {DataTimelineNode} node 
    */
+  #setWatchedDFS(node) {
+    node.watched = true;
+
+    // hackfix: set children of watched snapshots to watched
+    if (node.children) {
+      for (const childId of node.children) {
+        const childNode = this.timelineNodes[childId];
+        this.#setWatchedDFS(childNode);
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param {DataTimelineNode} node 
+   */
   #setConnectedDFS(node) {
     if (node.connected) {
       // node already found, stop propagation
@@ -201,7 +221,7 @@ export default class BaseDDG {
     node.connected = true;
 
     if (node.dataTimelineId) {
-      const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
+      const fromEdges = this.inEdgesByDataTimelineId[node.dataTimelineId] || EmptyArray;
       for (const { from } of fromEdges) {
         const fromNode = this.getDataTimelineNode(from);
         this.#setConnectedDFS(fromNode);
@@ -220,25 +240,32 @@ export default class BaseDDG {
    * edges
    * ##########################################################################*/
 
-
-  #addEdgeToMap(map, id, edge) {
-    let edges = map.get(id);
+  // #addEdgeToMap(map, id, edge) {
+  //   let edges = map.get(id);
+  //   if (!edges) {
+  //     map.set(id, edges = []);
+  //   }
+  //   edges.push(edge);
+  // }
+  #addEdgeToDict(obj, id, edge) {
+    let edges = obj[id];
     if (!edges) {
-      map.set(id, edges = []);
+      obj[id] = edges = [];
     }
     edges.push(edge);
   }
+
 
   /**
    * @param {DataTimelineNode} fromNode 
    * @param {DataTimelineNode} toNode 
    * @param {EdgeState} edgeState
    */
-  addEdge(type, fromNode, toNode, edgeState) {
-    const newEdge = new DDGEdge(type, this.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId, edgeState);
+  addEdge(type, fromNodeDataTimelineId, toDataTimelineId, edgeState) {
+    const newEdge = new DDGEdge(type, this.edges.length, fromNodeDataTimelineId, toDataTimelineId, edgeState);
     this.edges.push(newEdge);
 
-    this.#addEdgeToMap(this.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
-    this.#addEdgeToMap(this.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
+    this.#addEdgeToDict(this.outEdgesByDataTimelineId, fromNodeDataTimelineId, newEdge);
+    this.#addEdgeToDict(this.inEdgesByDataTimelineId, toDataTimelineId, newEdge);
   }
 }

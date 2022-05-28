@@ -18,8 +18,8 @@ const ddgQueries = {
   /**
    * @param {BaseDDG} ddg 
    */
-  canApplyMode(ddg, timelineId, mode) {
-    const node = ddg.timelineNodes[timelineId];
+  canApplyMode(node, mode) {
+    // const node = ddg.timelineNodes[timelineId];
     return this._canApplyMode[mode](node);
   },
 
@@ -27,13 +27,13 @@ const ddgQueries = {
     [DDGSummaryMode.Show]: (node) => {
       return (
         !!node.dataNodeId && // ← this implies that root is excluded
-        !node.watched
+        !node.watched // cannot change state of watched nodes
       );
     },
     [DDGSummaryMode.Hide]: (node) => {
       return (
         !!node.dataNodeId && // ← this implies that root is excluded
-        !node.watched
+        !node.watched // cannot change state of watched nodes
       );
       /* timelineId !== RootTimelineId && // NOTE: we cannot hide the root */
     },
