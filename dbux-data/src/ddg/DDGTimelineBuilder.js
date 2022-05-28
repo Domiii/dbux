@@ -10,7 +10,7 @@ import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/const
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isLoopIterationTimelineNode, isLoopTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 // eslint-disable-next-line max-len
 import { DDGTimelineNode, ContextTimelineNode, PrimitiveTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
@@ -224,7 +224,7 @@ export default class DDGTimelineBuilder {
             // TODO: determine correct DDGEdgeType
             const edgeType = DDGEdgeType.Data;
             const edgeState = { nByType: { [edgeType]: 1 } };
-            this.ddg.addEdge(edgeType, fromNode.dataTimelineId, newChild.dataTimelineId, edgeState);
+            this.ddg.addEdge(edgeType, fromNode.timelineId, newChild.timelineId, edgeState);
           }
         }
       }
@@ -319,7 +319,7 @@ export default class DDGTimelineBuilder {
       }
       if (dp.util.isDataNodeValueTruthy(dataNode.nodeId)) {
         // push next iteration
-        const iterationNode = new IterationNode(decisionNode.dataTimelineId);
+        const iterationNode = new IterationNode(decisionNode.timelineId);
         this.#pushGroup(iterationNode);
       }
     }
@@ -329,12 +329,12 @@ export default class DDGTimelineBuilder {
       }
       if (isLoopTimelineNode(currentGroup.type)) {
         // push first iteration of loop
-        const iterationNode = new IterationNode(decisionNode.dataTimelineId);
+        const iterationNode = new IterationNode(decisionNode.timelineId);
         this.#pushGroup(iterationNode);
       }
       else {
         // non-loop branch
-        currentGroup.decisions.push(decisionNode.dataTimelineId);
+        currentGroup.decisions.push(decisionNode.timelineId);
       }
     }
 
@@ -345,9 +345,7 @@ export default class DDGTimelineBuilder {
    * @param {DataTimelineNode} newNode 
    */
   #doAddDataNode(newNode) {
-    newNode.dataTimelineId = this.ddg.timelineDataNodes.length;
     this.#addNode(newNode);
-    this.ddg.timelineDataNodes.push(newNode.timelineId);
     this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
   }
 
@@ -736,9 +734,9 @@ export default class DDGTimelineBuilder {
 
 
     // add edges
-    if (newNode.dataTimelineId) { // TODO: this will not happen once we fix `refNode`s
+    if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
       for (const [inputNode, edgeProps] of inputNodes) {
-        this.ddg.addEdge(DDGEdgeType.Data, inputNode.dataTimelineId, newNode.dataTimelineId, edgeProps);
+        this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, newNode.timelineId, edgeProps);
       }
     }
   }

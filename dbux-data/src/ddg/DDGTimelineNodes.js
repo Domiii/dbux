@@ -62,10 +62,6 @@ export class DataTimelineNode extends DDGTimelineNode {
   /**
    * @type {number}
    */
-  dataTimelineId;
-  /**
-   * @type {number}
-   */
   dataNodeId;
   connected = false;
 
@@ -162,7 +158,7 @@ export class BranchTimelineNode extends GroupTimelineNode {
   controlStatementId;
 
   /**
-   * {@link DecisionTimelineNode#dataTimelineId} of this branch's decision nodes.
+   * {@link DecisionTimelineNode#TimelineId} of this branch's decision nodes.
    * @type {number[]}
    */
   decisions;
@@ -199,13 +195,13 @@ export class SwitchTimelineNode extends BranchTimelineNode {
 
 export class IterationNode extends GroupTimelineNode {
   /**
-   * {@link DecisionTimelineNode#dataTimelineId} of this iteration's decision node.
+   * {@link DecisionTimelineNode#timelineId} of this iteration's decision node.
    */
   decision;
 
-  constructor(decisionDataTimelineId) {
+  constructor(decisionTimelineId) {
     super(DDGTimelineNodeType.Iteration);
-    this.decision = decisionDataTimelineId;
+    this.decision = decisionTimelineId;
   }
 }
 

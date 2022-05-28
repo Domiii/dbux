@@ -17,8 +17,8 @@ export default class DDGEdge {
 
   /**
    * @param {DDGEdgeTypeValue} type 
-   * @param {number} from → `dataTimelineId`
-   * @param {number} to → `dataTimelineId`
+   * @param {number} from → `timelineId`
+   * @param {number} to → `timelineId`
    */
   constructor(type, edgeId, from, to, { nByType }) {
     this.type = type;

@@ -536,8 +536,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   addEdge(edge) {
-    const fromTimelineId = this.state.timelineDataNodes[edge.from];
-    const toTimelineId = this.state.timelineDataNodes[edge.to];
+    const fromTimelineId = this.state.timelineNodes[edge.from];
+    const toTimelineId = this.state.timelineNodes[edge.to];
     const source = this.nodeElMap.get(fromTimelineId);
     const target = this.nodeElMap.get(toTimelineId);
     this.jsPlumb.connect({

@@ -62,7 +62,7 @@ export const controlGroupLabelMaker = {
       label = '(ERR: no decision)';
     }
     else {
-      const decisionNode = ddg.getDataTimelineNode(lastDecisionId);
+      const decisionNode = ddg.timelineNodes[lastDecisionId];
       const isLastDecisionTruthy = dp.util.isDataNodeValueTruthy(decisionNode.dataNodeId);
       if (isLastDecisionTruthy) {
         if (ifNode.decisions.length === 1) {

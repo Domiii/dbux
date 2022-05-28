@@ -12,6 +12,7 @@ import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
 import { DataTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
+import { doesTimelineNodeHaveData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
@@ -48,43 +49,34 @@ export default class BaseDDG {
   timelineNodes;
 
   /**
-   * This is an array of `timelineId`.
-   * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
-   * @type {number[]}
-   */
-  timelineDataNodes;
-
-  /**
    * NOTE: 
    * @type {DDGEdge[]}
    */
-  edges = [null];
+  edges;
 
   /**
    * @type {Object.<number, DDGEdge[]>}
    */
-  outEdgesByDataTimelineId;
+  outEdgesByTimelineId;
 
   /**
    * @type {Object.<number, DDGEdge[]>}
    */
-  inEdgesByDataTimelineId;
+  inEdgesByTimelineId;
 
 
   getRenderData() {
     const {
       timelineNodes,
-      timelineDataNodes,
       edges,
-      outEdgesByDataTimelineId,
-      inEdgesByDataTimelineId
+      outEdgesByTimelineId,
+      inEdgesByTimelineId
     } = this;
     return {
       timelineNodes,
-      timelineDataNodes,
       edges,
-      outEdgesByDataTimelineId,
-      inEdgesByDataTimelineId
+      outEdgesByTimelineId,
+      inEdgesByTimelineId
     };
   }
 
@@ -111,14 +103,6 @@ export default class BaseDDG {
     return this.timelineNodes[RootTimelineId];
   }
 
-  /**
-   * @return {DataTimelineNode}
-   */
-  getDataTimelineNode(dataTimelineId) {
-    const timelineId = this.timelineDataNodes[dataTimelineId];
-    return this.timelineNodes[timelineId];
-  }
-
 
   /** ###########################################################################
    * {@link DataDependencyGraph#build}
@@ -126,8 +110,8 @@ export default class BaseDDG {
 
   _initBuild() {
     this.edges = [null];
-    this.inEdgesByDataTimelineId = {};
-    this.outEdgesByDataTimelineId = {};
+    this.inEdgesByTimelineId = {};
+    this.outEdgesByTimelineId = {};
   }
 
   /**
@@ -138,7 +122,6 @@ export default class BaseDDG {
     this.watchSet = new DDGWatchSet(this, watchTraceIds);
     this.bounds = new DDGBounds(this, watchTraceIds);
     this.timelineNodes = [null];
-    this.timelineDataNodes = [null];
 
     this._initBuild();
 
@@ -168,8 +151,8 @@ export default class BaseDDG {
       if (!node?.dataNodeId) {
         continue;
       }
-      const nIncomingEdges = this.inEdgesByDataTimelineId[node.dataTimelineId]?.length || 0;
-      const nOutgoingEdges = this.outEdgesByDataTimelineId[node.dataTimelineId]?.length || 0;
+      const nIncomingEdges = this.inEdgesByTimelineId[node.timelineId]?.length || 0;
+      const nOutgoingEdges = this.outEdgesByTimelineId[node.timelineId]?.length || 0;
 
       if (this.watchSet.isWatchedDataNode(node.dataNodeId)) {
         this.#setWatchedDFS(node);
@@ -220,10 +203,12 @@ export default class BaseDDG {
 
     node.connected = true;
 
-    if (node.dataTimelineId) {
-      const fromEdges = this.inEdgesByDataTimelineId[node.dataTimelineId] || EmptyArray;
-      for (const { from } of fromEdges) {
-        const fromNode = this.getDataTimelineNode(from);
+    if (doesTimelineNodeHaveData(node.type)) {
+      const fromEdges = this.inEdgesByTimelineId[node.timelineId] || EmptyArray;
+      for (const edgeId of fromEdges) {
+        const edge = this.edges[edgeId];
+        const { from } = edge;
+        const fromNode = this.timelineNodes[from];
         this.#setConnectedDFS(fromNode);
       }
     }
@@ -247,12 +232,16 @@ export default class BaseDDG {
   //   }
   //   edges.push(edge);
   // }
+
+  /**
+   * @param {DDGEdge} edge 
+   */
   #addEdgeToDict(obj, id, edge) {
     let edges = obj[id];
     if (!edges) {
       obj[id] = edges = [];
     }
-    edges.push(edge);
+    edges.push(edge.edgeId);
   }
 
 
@@ -261,11 +250,11 @@ export default class BaseDDG {
    * @param {DataTimelineNode} toNode 
    * @param {EdgeState} edgeState
    */
-  addEdge(type, fromNodeDataTimelineId, toDataTimelineId, edgeState) {
-    const newEdge = new DDGEdge(type, this.edges.length, fromNodeDataTimelineId, toDataTimelineId, edgeState);
+  addEdge(type, fromTimelineId, toTimelineId, edgeState) {
+    const newEdge = new DDGEdge(type, this.edges.length, fromTimelineId, toTimelineId, edgeState);
     this.edges.push(newEdge);
 
-    this.#addEdgeToDict(this.outEdgesByDataTimelineId, fromNodeDataTimelineId, newEdge);
-    this.#addEdgeToDict(this.inEdgesByDataTimelineId, toDataTimelineId, newEdge);
+    this.#addEdgeToDict(this.outEdgesByTimelineId, fromTimelineId, newEdge);
+    this.#addEdgeToDict(this.inEdgesByTimelineId, toTimelineId, newEdge);
   }
 }
