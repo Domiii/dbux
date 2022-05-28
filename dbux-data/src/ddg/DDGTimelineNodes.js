@@ -1,9 +1,8 @@
 // import DDGTimelineNodeType from './DDGTimelineNodeType';
 
-import last from 'lodash/last';
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { RootTimelineId } from './constants';
-import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
+// import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 
 /** @typedef { import("@dbux/common/src/types/constants/DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
 

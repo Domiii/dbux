@@ -11,8 +11,11 @@ import DDGBounds from './DDGBounds';
 import DDGEdge from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
 import { DataTimelineNode } from './DDGTimelineNodes';
-import DDGSummarizer from './DDGSummarizer';
+import { RootTimelineId } from './constants';
 
+/**
+ * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
+ */
 export default class DataDependencyGraph {
   /**
    * @type {string}
@@ -68,6 +71,28 @@ export default class DataDependencyGraph {
   inEdgesByDataTimelineId;
 
 
+  /** ###########################################################################
+   * ctor
+   * ##########################################################################*/
+
+
+  /**
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  constructor(dp, graphId) {
+    this.dp = dp;
+    this.graphId = graphId;
+  }
+
+  /** ###########################################################################
+   * basic getters
+   * ##########################################################################*/
+
+  get root() {
+    return this.timelineNodes[RootTimelineId];
+  }
+
   getRenderData() {
     const {
       timelineNodes,
@@ -85,24 +110,6 @@ export default class DataDependencyGraph {
     };
   }
 
-
-  /** ###########################################################################
-   * ctor
-   * ##########################################################################*/
-
-
-  /**
-   * 
-   * @param {RuntimeDataProvider} dp 
-   */
-  constructor(dp, graphId) {
-    this.dp = dp;
-    this.graphId = graphId;
-
-
-    this.summarizer = new DDGSummarizer(this);
-  }
-
   /** ###########################################################################
    * Node + Edge getters
    * ##########################################################################*/
@@ -117,8 +124,14 @@ export default class DataDependencyGraph {
 
 
   /** ###########################################################################
-   * {@link #build}
+   * {@link DataDependencyGraph#build}
    * ##########################################################################*/
+
+  _initBuild() {
+    this.edges = [null];
+    this.inEdgesByDataTimelineId = new Map();
+    this.outEdgesByDataTimelineId = new Map();
+  }
 
   /**
    * @param {number[]} watchTraceIds 
@@ -126,17 +139,15 @@ export default class DataDependencyGraph {
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
     this.watchSet = new DDGWatchSet(this, watchTraceIds);
-    const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
+    this.bounds = new DDGBounds(this, watchTraceIds);
 
-    this.edges = [null];
-    this.inEdgesByDataTimelineId = new Map();
-    this.outEdgesByDataTimelineId = new Map();
+    this._initBuild();
 
     /** ########################################
      * phase 1: build timeline nodes and edges
      * #######################################*/
 
-
+    const { bounds } = this;
     const timelineBuilder = new DDGTimelineBuilder(this);
 
     for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
@@ -206,18 +217,5 @@ export default class DataDependencyGraph {
         this.#setConnectedDFS(childNode);
       }
     }
-  }
-
-
-  /** ###########################################################################
-   * public controls
-   *  #########################################################################*/
-
-  setMergeComputes(on) {
-    // TODO
-  }
-
-  setSummaryMode(timelineId, mode) {
-    this.summarizer.setSummaryMode(timelineId, mode);
   }
 }

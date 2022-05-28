@@ -3,29 +3,34 @@ import Enum from '@dbux/common/src/util/Enum';
 // eslint-disable-next-line import/no-mutable-exports
 let DDGSummaryModeConfig = {
   /**
+   * Non-group (plain) nodes only.
+   * Show this node.
+   */
+  Show: 1,
+  /**
    * Don't show this node.
    */
-  Hide: 1,
+  Hide: 2,
   /**
    * Group nodes only.
    * Collapse node and its subgraph to a single node.
    */
-  Collapse: 2,
+  Collapse: 3,
   /**
    * Group nodes only.
    * Expand the node, but only one level deep. Collapse all children.
    */
-  ExpandSelf: 3,
+  ExpandSelf: 4,
   /**
    * Group nodes only.
    * Expand the node and all its descendants.
    */
-  ExpandSubgraph: 4,
+  ExpandSubgraph: 5,
 
   /**
    * Root node only.
    */
-  HideChildren: 5
+  HideChildren: 6
 };
 
 /**

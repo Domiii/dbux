@@ -291,6 +291,9 @@ export default class DDGTimelineBuilder {
   }
 
   /**
+   * Decision nodes are control nodes.
+   * Inside of loops, they also serve as starting point for iterations.
+   * 
    * @param {DataNode} dataNode 
    * @param {Trace} trace
    * @return {PrimitiveTimelineNode}
@@ -306,13 +309,12 @@ export default class DDGTimelineBuilder {
 
     if (isLoopIterationTimelineNode(currentGroup.type)) {
       // continued iteration of loop
-      this.#popGroup(); // pop previous iteration
 
+      this.#popGroup(); // pop previous iteration
       if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
         // make sure, we are in the correct loop
         return null;
       }
-
       if (dp.util.isDataNodeValueTruthy(dataNode.nodeId)) {
         // push next iteration
         const iterationNode = new IterationNode(decisionNode.dataTimelineId);
@@ -751,6 +753,9 @@ export default class DDGTimelineBuilder {
        */
       newNode = this.#addDataNode(ownDataNode, dataNodes);
     }
+
+    // add trace
+    
 
     // add edges
     for (const [inputNode, edgeProps] of inputNodes) {

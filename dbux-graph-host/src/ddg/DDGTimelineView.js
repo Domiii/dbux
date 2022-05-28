@@ -3,9 +3,13 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
+/** @typedef { import("@dbux/data/src/ddg/SummarizedDDG").default } SummarizedDDG */
 /** @typedef { import("./DDGDocument").default } DDGDocument */
 
 export default class DDGTimelineView extends HostComponentEndpoint {
+  /**
+   * @type {SummarizedDDG}
+   */
   ddg;
 
   /**
