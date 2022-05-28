@@ -223,7 +223,8 @@ export default class DDGTimelineBuilder {
           if (fromNode) {
             // TODO: determine correct DDGEdgeType
             const edgeType = DDGEdgeType.Data;
-            this.ddg.addEdge(edgeType, fromNode, newChild, { nByType: { [edgeType]: 1 } });
+            const edgeState = { nByType: { [edgeType]: 1 } };
+            this.ddg.addEdge(edgeType, fromNode.dataTimelineId, newChild.dataTimelineId, edgeState);
           }
         }
       }
@@ -413,7 +414,7 @@ export default class DDGTimelineBuilder {
       const prevSnapshotNode = this.getLastRefSnapshotNode(dataNode.refId);
 
       // TODO: look up by varAccess, not by refId!
-      // TODO;
+      // TODO: add refNode edge!
       prev = prevSnapshotNode?.refNode;
     }
     else {
@@ -735,8 +736,10 @@ export default class DDGTimelineBuilder {
 
 
     // add edges
-    for (const [inputNode, edgeProps] of inputNodes) {
-      this.ddg.addEdge(DDGEdgeType.Data, inputNode.dataTimelineId, newNode.dataTimelineId, edgeProps);
+    if (newNode.dataTimelineId) { // TODO: this will not happen once we fix `refNode`s
+      for (const [inputNode, edgeProps] of inputNodes) {
+        this.ddg.addEdge(DDGEdgeType.Data, inputNode.dataTimelineId, newNode.dataTimelineId, edgeProps);
+      }
     }
   }
 

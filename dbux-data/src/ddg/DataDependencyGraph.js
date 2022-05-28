@@ -5,6 +5,7 @@ import DDGSummaryMode, { isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import ddgQueries from './ddgQueries';
 import DDGEdgeType from './DDGEdgeType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** ###########################################################################
  * default config
@@ -299,11 +300,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
     if (node.dataTimelineId) {
       // node has edges
-      const incomingEdges = this.og.inEdgesByDataTimelineId[node.dataTimelineId];
-
-      if (!incomingEdges) {
-        return;
-      }
+      const incomingEdges = this.og.inEdgesByDataTimelineId[node.dataTimelineId] || EmptyArray;
 
       if (isShown) {
         // node is shown
