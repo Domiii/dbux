@@ -1,220 +1,338 @@
-/** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
-/** @typedef { import('@dbux/common/src/types/constants/DataNodeType').default } DataNodeType */
-/** @typedef { import('@dbux/common/src/types/constants/DataNodeType').DataNodeTypeValue } DataNodeTypeValue */
-
-
-// import DDGTimeline from './DDGTimeline';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import DDGWatchSet from './DDGWatchSet';
-import DDGBounds from './DDGBounds';
-import DDGEdge from './DDGEdge';
-import DDGTimelineBuilder from './DDGTimelineBuilder';
-import { DataTimelineNode } from './DDGTimelineNodes';
+import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { RootTimelineId } from './constants';
+import BaseDDG from './BaseDDG';
+import { EdgeState } from './DDGEdge';
+import DDGSummaryMode from './DDGSummaryMode';
+import { DDGTimelineNode } from './DDGTimelineNodes';
+import ddgQueries from './ddgQueries';
+import DDGEdgeType from './DDGEdgeType';
+
+/** ###########################################################################
+ * default config
+ * ##########################################################################*/
+
+// const RootDefaultSummaryMode = {
+// };
+const RootDefaultSummaryMode = DDGSummaryMode.ExpandSelf;
+
+/** ###########################################################################
+ * utilities
+ *  #########################################################################*/
+
+class SummaryState {
+  /**
+   * All visible nodes.
+   * @type {DDGTimelineNode}
+   */
+  visibleNodes = [];
+
+  /**
+   * From → To → summary state.
+   * Index all in dataTimelineIds.
+   * 
+   * @type {Map.<number, Map.<number, EdgeState>>}
+   */
+  visibleEdges = new Map();
+
+  /**
+   * This maps all nodes to the visible node that summarizes them.
+   * Visible nodes are mapped to themselves.
+   * @type {Map.<DDGTimelineNode, Array.<DDGTimelineNode>}
+   */
+  nodeRouteMap = new Map();
+
+  /**
+   * Represents the currently collapsed ancestor.
+   * All nested edges will be re-routed to it.
+   */
+  currentCollapsedAncestor = null;
+
+  addEdge(from, to, type) {
+    const { visibleEdges } = this;
+    let edgeTargets = visibleEdges.get(from.dataTimelineId);
+    if (!edgeTargets) {
+      visibleEdges.set(from.dataTimelineId, edgeTargets = new Map());
+    }
+    let edgeState = edgeTargets.get(to.dataTimelineId);
+    if (!edgeState) {
+      edgeTargets.set(to.dataTimelineId, edgeState = new EdgeState());
+    }
+    edgeState.nByType[type] = (edgeState.nByType[type] || 0) + 1;
+  }
+}
+
+
+/** ###########################################################################
+ * {@link DataDependencyGraph}
+ *  #########################################################################*/
 
 /**
- * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
+ * 
  */
-export default class DataDependencyGraph {
+export default class DataDependencyGraph extends BaseDDG {
   /**
-   * @type {string}
+   * The complete base graph
+   * @type {DataDependencyGraph}
    */
-  id;
+  og;
 
-  /**
-   * @type {RuntimeDataProvider}
-   */
-  dp;
+  summaryModes = {};
 
-  /**
-   * @type {DDGWatchSet}
-   */
-  watchSet;
-
-  /**
-   * @type {DDGBounds}
-   */
-  bounds;
-
-  /** ########################################
-   * render data
-   *  ######################################*/
-
-  /**
-   * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
-   * @type {DDGTimelineNode[]}
-   */
-  timelineNodes = [null];
-
-  /**
-   * This is an array of `timelineId`.
-   * NOTE: {@link BaseDataTimelineNode#dataTimelineId} indexes this array.
-   * @type {number[]}
-   */
-  timelineDataNodes = [null];
-
-  /**
-   * NOTE: 
-   * @type {DDGEdge[]}
-   */
-  edges = [null];
-
-  /**
-   * @type {Map.<number, DDGEdge[]>}
-   */
-  outEdgesByDataTimelineId;
-
-  /**
-   * @type {Map.<number, DDGEdge[]>}
-   */
-  inEdgesByDataTimelineId;
-
-
-  /** ###########################################################################
-   * ctor
-   * ##########################################################################*/
-
-
-  /**
-   * 
-   * @param {RuntimeDataProvider} dp 
-   */
   constructor(dp, graphId) {
-    this.dp = dp;
-    this.graphId = graphId;
-  }
-
-  /** ###########################################################################
-   * basic getters
-   * ##########################################################################*/
-
-  get root() {
-    return this.timelineNodes[RootTimelineId];
+    super(dp, graphId);
   }
 
   getRenderData() {
     const {
-      timelineNodes,
-      timelineDataNodes,
+      // original node data
+      og: {
+        timelineNodes,
+        timelineDataNodes,
+      },
+      
+      // summarized edge data
       edges,
       outEdgesByDataTimelineId,
-      inEdgesByDataTimelineId
+      inEdgesByDataTimelineId,
+
+      // and more
+      summaryModes
     } = this;
+    
     return {
       timelineNodes,
       timelineDataNodes,
       edges,
       outEdgesByDataTimelineId,
-      inEdgesByDataTimelineId
+      inEdgesByDataTimelineId,
+      summaryModes
     };
   }
 
   /** ###########################################################################
-   * Node + Edge getters
+   * getters
    * ##########################################################################*/
 
-  /**
-   * @return {DataTimelineNode}
-   */
-  getDataTimelineNode(dataTimelineId) {
-    const timelineId = this.timelineDataNodes[dataTimelineId];
-    return this.timelineNodes[timelineId];
+  get watchSet() {
+    return this.og.watchSet;
   }
 
+  get bounds() {
+    return this.og.bounds;
+  }
+
+  applyModeHandlers = {
+    [DDGSummaryMode.Hide]: (timelineId) => {
+      // const { og } = this;
+      // const node = og.timelineNodes[timelineId];
+      // // hide all children
+      // for (const childId of node.children) {
+      //   // const childNode = og.timelineNodes[childId];
+      //   this.applyMode(childId, DDGSummaryMode.Hide);
+      // }
+    },
+    [DDGSummaryMode.Collapse]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // hide all children
+      for (const childId of node.children) {
+        // const childNode = og.timelineNodes[childId];
+        this.applyMode(childId, DDGSummaryMode.Hide);
+      }
+    },
+    [DDGSummaryMode.ExpandSelf]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // collapse all children
+      for (const childId of node.children) {
+        // const childNode = og.timelineNodes[childId];
+        this.applyMode(childId, DDGSummaryMode.Collapse);
+      }
+    },
+    [DDGSummaryMode.ExpandSubgraph]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // expand all children and their children
+      for (const childId of node.children) {
+        // const childNode = og.timelineNodes[childId];
+        this.applyMode(childId, DDGSummaryMode.ExpandSubgraph);
+      }
+    },
+    [DDGSummaryMode.HideChildren]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // hide all children
+      for (const childId of node.children) {
+        this.applyMode(childId, DDGSummaryMode.Hide);
+      }
+    }
+  };
+
+  updateNodeState(timelineId, nodeState) {
+    // TODO: change node repsentation to (1) hidden, (2) collapsed or (3) expanded node
+    // TODO: in order to apply incremental changes, keep track of `Hidden` (i.e. removed) nodes
+  }
+
+  updateEdges() {
+    // TODO
+  }
+
+  applyMode(timelineId, mode) {
+    const { og } = this;
+    if (ddgQueries.canApplyMode(og, timelineId, mode)) {
+      this.applyModeHandlers[mode](timelineId);
+      this.setSummaryMode(timelineId, mode);
+    }
+  }
 
   /** ###########################################################################
-   * {@link DataDependencyGraph#build}
-   * ##########################################################################*/
+   * public controls
+   *  #########################################################################*/
 
-  _initBuild() {
-    this.edges = [null];
-    this.inEdgesByDataTimelineId = new Map();
-    this.outEdgesByDataTimelineId = new Map();
+  setMergeComputes(on) {
+    // TODO
   }
+
+  setSummaryMode(timelineId, mode) {
+    this.summaryModes[timelineId] = mode;
+
+    // update node modes
+    this.applyMode(timelineId, mode);
+
+    // refresh the summarized graph
+    this.#applySummarization();
+  }
+
+  /** ###########################################################################
+   * build
+   * ##########################################################################*/
 
   /**
    * @param {number[]} watchTraceIds 
    */
   build(watchTraceIds) {
-    // this.selectedSet = inputNodes;
-    this.watchSet = new DDGWatchSet(this, watchTraceIds);
-    this.bounds = new DDGBounds(this, watchTraceIds);
+    if (!this.og) {
+      this.og = new DataDependencyGraph(this.dp, this.graphId);
+    }
+    this.og.build(watchTraceIds);
 
     this._initBuild();
+    this.#initSummaryConfig();
+    this.#applySummarization();
+  }
 
-    /** ########################################
-     * phase 1: build timeline nodes and edges
-     * #######################################*/
+  /** ###########################################################################
+   * summarize utilities
+   * ##########################################################################*/
 
-    const { bounds } = this;
-    const timelineBuilder = new DDGTimelineBuilder(this);
+  #initSummaryConfig() {
+    this.summaryModes = {
+      [RootTimelineId]: RootDefaultSummaryMode
+    };
+  }
 
-    for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
-      // update control group stack
-      timelineBuilder.updateStack(traceId);
+  /** ###########################################################################
+   *  summarize algo
+   * ##########################################################################*/
 
-      // add nodes and edges of trace
-      timelineBuilder.addTraceToTimeline(traceId);
-    }
+  #applySummarization() {
+    const { og: { root } } = this;
 
+    const summaryState = new SummaryState();
+    this.#summarizeDFS(root, summaryState);
 
-    /** ########################################
-     * phase 2: 
-     *  1. use edges to gather connectivity data for nodes
-     *  2. (and some general post-processing)
-     *  ######################################*/
-
-    for (const node of this.timelineNodes) {
-      if (!node?.dataNodeId) {
-        continue;
-      }
-      const nIncomingEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
-      const nOutgoingEdges = this.outEdgesByDataTimelineId.get(node.dataTimelineId)?.length || 0;
-
-      node.watched = this.watchSet.isWatchedDataNode(node.dataNodeId);
-      node.nInputs = nIncomingEdges;
-      node.nOutputs = nOutgoingEdges;
-    }
-
-    /** ########################################
-     * phase 3: identify connected nodes
-     *  ######################################*/
-
-    for (const node of this.timelineNodes) {
-      if (!node?.dataNodeId) {
-        continue;
-      }
-      if (node.watched) {
-        this.#setConnectedDFS(node);
+    // add all edges
+    for (const [from, toMap] of summaryState.visibleEdges) {
+      for (const [to, edgeState] of toMap) {
+        // TODO: edgeType
+        const edgeType = DDGEdgeType.Data;
+        this.addEdge(edgeType, from, to, edgeState);
       }
     }
+
+    // TODO: we don't need to change the nodes.
+    //    → Keep og nodes on client, and only send updated `summaryState` and edges instead!
   }
 
   /**
    * 
-   * @param {DataTimelineNode} node 
+   * @param {DDGTimelineNode} node 
+   * @param {SummaryState} summaryState 
    */
-  #setConnectedDFS(node) {
-    if (node.connected) {
-      // node already found, stop propagation
-      return;
+  #summarizeDFS(node, summaryState) {
+    const { summaryModes } = this;
+    let {
+      visibleNodes,
+      nodeRouteMap,
+      currentCollapsedAncestor
+    } = summaryState;
+
+    if (show) {
+      visibleNodes.push(node);
     }
 
-    node.connected = true;
-
-    if (node.dataTimelineId) {
-      const fromEdges = this.inEdgesByDataTimelineId.get(node.dataTimelineId) || EmptyArray;
-      for (const { from } of fromEdges) {
-        const fromNode = this.getDataTimelineNode(from);
-        this.#setConnectedDFS(fromNode);
+    if (node.children) {
+      // node has children
+      if (!currentCollapsedAncestor && collapse) {
+        summaryState.currentCollapsedAncestor = currentCollapsedAncestor = node;
+      }
+      for (const childId of node.children) {
+        const childNode = this.og.timelineNodes[childId];
+        this.#summarizeDFS(childNode, nodeRouteMap, currentCollapsedAncestor);
       }
     }
-    else if (node.children) {
-      // TODO: other types of children (decisions, ref etc.)
-      for (const child of Object.values(node.children)) {
-        const childNode = this.timelineNodes[child];
-        this.#setConnectedDFS(childNode);
+
+    if (node.dataTimelineId) {
+      // node has edges
+      const incomingEdges = this.og.inEdgesByDataTimelineId[node.dataTimelineId];
+
+      if (show) {
+        // node is shown
+        nodeRouteMap.set(node.timelineId, [node]);
+
+        for (const { from: fromOg, type } of incomingEdges) {
+          const allFrom = nodeRouteMap[fromOg];
+          if (allFrom) {
+            for (const from of allFrom) {
+              summaryState.addEdge(from, node, type);
+            }
+          }
+        }
+      }
+      else if (currentCollapsedAncestor) {
+        // node is replaced with given ancestor
+        nodeRouteMap.set(node.timelineId, [currentCollapsedAncestor]);
+
+        for (const { from: fromOg, type } of incomingEdges) {
+          const allFrom = nodeRouteMap[fromOg];
+          if (allFrom) {
+            for (const from of allFrom) {
+              if (from !== currentCollapsedAncestor) {
+                summaryState.addEdge(from, currentCollapsedAncestor, type);
+              }
+            }
+          }
+        }
+      }
+      else {
+        // node is completely gone
+        // → multicast all incoming to all outgoing edges
+        let reroutes = [];
+        nodeRouteMap.set(node.timelineId, reroutes);
+
+        for (const { from: fromOg, type } of incomingEdges) {
+          // TODO: integrate edge type correctly
+          const allFrom = nodeRouteMap[fromOg];
+          if (allFrom) {
+            for (const from of allFrom) {
+              reroutes.push(from);
+            }
+          }
+        }
       }
     }
   }

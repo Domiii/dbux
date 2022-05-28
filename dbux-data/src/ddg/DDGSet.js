@@ -1,6 +1,6 @@
-/** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
+/** @typedef {import('./BaseDDG').default} DataDependencyGraph */
 
-import DataDependencyGraph from './DataDependencyGraph';
+import DataDependencyGraph from './BaseDDG';
 
 export default class DDGSet {
   /**

@@ -1,5 +1,5 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
-/** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
+/** @typedef {import('./BaseDDG').default} DataDependencyGraph */
 
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 

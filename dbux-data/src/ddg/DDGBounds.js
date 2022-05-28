@@ -5,7 +5,7 @@ import last from 'lodash/last';
 import find from 'lodash/find';
 import findLast from 'lodash/findLast';
 
-/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
+/** @typedef { import("./BaseDDG").default } BaseDDG */
 
 export default class DDGBounds {
   minNodeId;
@@ -18,7 +18,7 @@ export default class DDGBounds {
   // maxContextId;
 
   /**
-   * @param {DataDependencyGraph} ddg
+   * @param {BaseDDG} ddg
    * @param {number[]} watchTraceIds
    */
   constructor(ddg, watchTraceIds) {

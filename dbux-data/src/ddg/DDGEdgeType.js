@@ -1,7 +1,13 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 const edgeTypeObj = {
-  Write: 1,
+  /**
+   * Data movement edge
+   */
+  Data: 1,
+  /**
+   * Control edge
+   */
   Control: 2,
   Mixed: 3
 };

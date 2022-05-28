@@ -74,7 +74,7 @@ export default class DDGTimelineBuilder {
    *  ######################################*/
 
   /**
-   * @param {import('./DataDependencyGraph').default} ddg
+   * @param {import('./BaseDDG').default} ddg
    */
   constructor(ddg) {
     this.ddg = ddg;
@@ -221,8 +221,9 @@ export default class DDGTimelineBuilder {
           const fromNode = this.#getDataTimelineInputNode(lastModDataNode.nodeId);
           newChild = this.#addPrimitiveDataNode(lastModDataNode);
           if (fromNode) {
-            // TODO: compute correct `n`
-            this.#addEdge(fromNode, newChild, { n: 1 });
+            // TODO: determine correct DDGEdgeType
+            const edgeType = DDGEdgeType.Data;
+            this.ddg.addEdge(edgeType, fromNode, newChild, { nByType: { [edgeType]: 1 } });
           }
         }
       }
@@ -505,32 +506,6 @@ export default class DDGTimelineBuilder {
 
 
   /** ###########################################################################
-   * edges
-   * ##########################################################################*/
-
-
-  #addEdgeToMap(map, id, edge) {
-    let edges = map.get(id);
-    if (!edges) {
-      map.set(id, edges = []);
-    }
-    edges.push(edge);
-  }
-
-  /**
-   * @param {DataTimelineNode} fromNode 
-   * @param {DataTimelineNode} toNode 
-   */
-  #addEdge(fromNode, toNode, edgeProps) {
-    const { n } = edgeProps;
-    const newEdge = new DDGEdge(DDGEdgeType.Write, this.ddg.edges.length, fromNode.dataTimelineId, toNode.dataTimelineId, n);
-    this.ddg.edges.push(newEdge);
-
-    this.#addEdgeToMap(this.ddg.inEdgesByDataTimelineId, toNode.dataTimelineId, newEdge);
-    this.#addEdgeToMap(this.ddg.outEdgesByDataTimelineId, fromNode.dataTimelineId, newEdge);
-  }
-
-  /** ###########################################################################
    * labels
    * {@link DDGTimelineBuilder##makeDataNodeLabel}
    * ##########################################################################*/
@@ -723,12 +698,14 @@ export default class DDGTimelineBuilder {
         if (inputNode) {
           const edgeProps = inputNodes.get(inputNode);
           if (!edgeProps) {
-            inputNodes.set(inputNode, { n: 1 });
+            inputNodes.set(inputNode, edgeProps = { nByType: {} });
           }
           else {
             // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
-            ++edgeProps.n;
           }
+          // TODO: geet correct edgeType
+          const edgeType = DDGEdgeType.Data;
+          edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
         }
         else {
           // inputDataNodeId is ignored or external (are there other reasons?)
@@ -755,11 +732,11 @@ export default class DDGTimelineBuilder {
     }
 
     // add trace
-    
+
 
     // add edges
     for (const [inputNode, edgeProps] of inputNodes) {
-      this.#addEdge(inputNode, newNode, edgeProps);
+      this.ddg.addEdge(DDGEdgeType.Data, inputNode, newNode, edgeProps);
     }
   }
 
