@@ -137,6 +137,7 @@ export default class Ipc {
   _decodeValue(value) {
     const componentId = value?.[this._componentIdentifier];
     if (componentId) {
+      // → `value` refers to a component!
       return this.componentManager.getComponent(componentId);
     }
     return value;
@@ -220,7 +221,7 @@ export default class Ipc {
   _postMessageTimer = null;
 
   _postMessageBatched = (msg) => {
-    Verbose >= 2 && debug('_postMessageBatched', JSON.stringify(msg));
+    Verbose >= 2 && debug('_postMessageBatched', msg);
     if (!this._msgBatch) {
       this._msgBatch = [];
 

@@ -3,6 +3,7 @@ import { AnchorLocations } from '@jsplumb/common';
 import { BezierConnector } from '@jsplumb/connector-bezier';
 
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
+import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement, delegate } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -44,6 +45,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.refreshGraph();
   }
 
+  update() {
+    this.refreshGraph();
+  }
+
   refreshGraph() {
     const { failureReason } = this.renderState;
     // update status message
@@ -75,17 +80,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   buildGraph() {
     const { root } = this;
-    const { 
+    const {
       timelineNodes: nodes,
 
-      summaryModes,
+      // summaryModes,
       edges
       // outEdgesByTimelineId,
       // inEdgesByTimelineId,
       // visibleNodes
     } = this.renderState;
-
-    console.log('buildgraph', this.renderState);
 
     if (!root) {
       return;
@@ -103,28 +106,42 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
   }
 
-  addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
-    const { type, children, label = '' } = parent;
+  /**
+   * @param {DDGTimelineNode} node 
+   * @param {DDGTimelineNode[]} allNodes 
+   * @param {*} depth 
+   * @param {*} top 
+   */
+  addTreeNodes(node, allNodes, depth = 0, top = YPadding) {
+    const { type, children, label = '' } = node;
     const isGroupNode = isControlGroupTimelineNode(type); // TODO: add collapsed clause
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
     let right;
 
-    const el = this.makeNodeEl(parent, label);
+    if (!ddgQueries.isVisible(this.renderState, node)) {
+      return false;
+    }
+
+    const el = this.makeNodeEl(node, label);
     this.el.appendChild(el);
 
     if (isGroupNode) {
       if (children?.length) {
         for (const childId of children) {
-          const childNode = nodes[childId];
+          const childNode = allNodes[childId];
+
+          // TODO: move this logic to applySummarization
           if (this.context.doc.state.connectedOnlyMode &&
             !isControlGroupTimelineNode(childNode.type) &&
             !childNode.connected
           ) {
             continue;
           }
-          const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, depth + 1, bottom);
-          bottom = childDisplayData.bottom + YGroupPadding;
+          if (this.addTreeNodes(childNode, allNodes, depth + 1, bottom)) {
+            const { displayData: childDisplayData } = childNode;
+            bottom = childDisplayData.bottom + YGroupPadding;
+          }
         }
       }
       bottom += YGroupPadding;
@@ -135,7 +152,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       if (children?.length) {
         for (const propName of Object.keys(children)) {
           const childId = children[propName];
-          const childNode = nodes[childId];
+          const childNode = allNodes[childId];
           const childEl = this.makeNodeEl(childNode, propName);
           el.appendChild(childEl);
         }
@@ -146,7 +163,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       bottom = top + el.offsetHeight;
     }
 
-    parent.displayData = {
+    node.displayData = {
       top,
       bottom,
       left,
@@ -154,9 +171,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       isGroupNode,
     };
 
-    this.repositionNodeEl(el, parent.displayData);
+    this.repositionNodeEl(el, node.displayData);
 
-    return parent;
+    return true;
   }
 
   /** ###########################################################################

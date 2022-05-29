@@ -75,10 +75,14 @@ export default class DataDependencyGraph extends BaseDDG {
 
   /**
    * Set of all currently visible nodes' `timelineId`.
+   * @deprecated Sets do not get properly serialized when sending to render client.
    * @type {Set.<number>}
    */
   visibleNodes;
 
+  /**
+   * @type {Object.<number, SummaryModeValue>}
+   */
   summaryModes = {};
 
   constructor(dp, graphId) {
@@ -103,6 +107,27 @@ export default class DataDependencyGraph extends BaseDDG {
     return {
       timelineNodes,
       
+      summaryModes,
+      edges,
+      outEdgesByTimelineId,
+      inEdgesByTimelineId,
+      visibleNodes
+    };
+  }
+
+  /**
+   * The data that changes over time.
+   */
+  getChangingData() {
+    const {
+      summaryModes,
+      edges,
+      outEdgesByTimelineId,
+      inEdgesByTimelineId,
+      visibleNodes
+    } = this;
+
+    return {
       summaryModes,
       edges,
       outEdgesByTimelineId,
@@ -235,7 +260,7 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     this.og.build(watchTraceIds);
 
-    this._initBuild();
+    this.resetBuild();
     this.#initSummaryConfig();
     this.#applySummarization();
   }
@@ -244,8 +269,8 @@ export default class DataDependencyGraph extends BaseDDG {
    * init stuff
    * ##########################################################################*/
 
-  _initBuild() {
-    super._initBuild();
+  resetBuild() {
+    super.resetBuild();
     this.visibleNodes = new Set();
   }
 
@@ -265,6 +290,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const summaryState = new SummaryState();
     this.#summarizeDFS(root, summaryState);
+    
+    this.resetBuild();
 
     // add all edges
     for (const [from, toMap] of summaryState.visibleEdges) {
@@ -292,10 +319,10 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const { summaryModes } = this;
     const summaryMode = summaryModes[node.timelineId];
-    const isShown = !currentCollapsedAncestor && (node.watched || isShownMode(summaryMode));
+    const isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && isCollapsedMode(summaryMode);
 
-    if (isShown) {
+    if (isVisible) {
       this.visibleNodes.add(node.timelineId);
     }
 
@@ -318,7 +345,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // node has edges
       const incomingEdges = this.og.inEdgesByTimelineId[node.timelineId] || EmptyArray;
 
-      if (isShown) {
+      if (isVisible) {
         // node is shown
         nodeRouteMap.set(node.timelineId, [node]);
 

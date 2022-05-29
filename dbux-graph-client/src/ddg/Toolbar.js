@@ -4,13 +4,15 @@ import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryM
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { makeSummaryButtons } from './ddgDomUtil';
+import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
 
 let documentClickHandler;
 
 /** @typedef { import("./DDGDocument").default } DDGDocument */
 
 class Toolbar extends ClientComponentEndpoint {
+  summaryRootButtons;
+
   createEl() {
     const el = compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
@@ -35,8 +37,13 @@ class Toolbar extends ClientComponentEndpoint {
     // add root control buttons
     const btns = el.querySelector('.btn-group');
     const btnClass = 'toolbar-btn btn btn-info';
-    const summaryModeButtons = makeSummaryButtons(this, RootTimelineId, btnClass, RootSummaryModes);
-    btns.appendChild(summaryModeButtons);
+    const {
+      el: summaryRootButtonDom,
+      els: summaryRootButtons
+    } = makeSummaryButtons(this.doc, RootTimelineId, btnClass, RootSummaryModes, true);
+    btns.appendChild(summaryRootButtonDom);
+
+    this.summaryRootButtons = summaryRootButtons;
 
     return el;
   }
@@ -70,10 +77,8 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.connectModeBtn, {
       active: connectedOnlyMode
     });
-
-    // TODO: update SummaryMode buttons
-
-    // this.els.layoutButton.innerHTML = LayoutAlgorithmType.nameFromForce(layoutType);
+    
+    decorateSummaryModeButtons(this.summaryRootButtons);
   }
 
   renderModes() {

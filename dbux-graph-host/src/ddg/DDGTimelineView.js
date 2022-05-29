@@ -1,4 +1,3 @@
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -21,8 +20,12 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     return this.context.doc.ddg;
   }
 
+  get renderState() {
+    return this.context.doc.state;
+  }
+
   get mergeComputesMode() {
-    return this.doc.state.mergeComputesMode;
+    return this.renderState.mergeComputesMode;
   }
 
   init() {
@@ -85,10 +88,17 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   }
 
   public = {
+    /**
+     * HACKFIX: we do this, so we can resolve `ddg` in here.
+     *    → That is necessary b/c VSCode won't resolve the nesting class's prop.
+     * @type {DataDependencyGraph}
+     */
+    get ddg() { return null; },
+
     selectNode(timelineId) {
-      const node = this.state.timelineNodes[timelineId];
+      const { timelineNodes, applicationId } = this.renderState;
+      const node = timelineNodes[timelineId];
       if (node.dataNodeId) {
-        const { applicationId } = this.state;
         const dp = allApplications.getById(applicationId).dataProvider;
         const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
         const trace = dp.collections.traces.getById(dataNode.traceId);
@@ -99,10 +109,13 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     },
 
     setSummaryMode(timelineId, mode) {
-      this.ddg?.setSummaryMode(timelineId, mode);
+      const { ddg } = this;
 
-      // TODO: call setState
-      this.doc.setState();
+      // update graph
+      ddg.setSummaryMode(timelineId, mode);
+
+      // call setState
+      this.doc.setState(ddg.getChangingData());
     }
   }
 }

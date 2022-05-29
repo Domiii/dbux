@@ -108,7 +108,7 @@ export default class BaseDDG {
    * {@link DataDependencyGraph#build}
    * ##########################################################################*/
 
-  _initBuild() {
+  resetBuild() {
     this.edges = [null];
     this.inEdgesByTimelineId = {};
     this.outEdgesByTimelineId = {};
@@ -123,7 +123,7 @@ export default class BaseDDG {
     this.bounds = new DDGBounds(this, watchTraceIds);
     this.timelineNodes = [null];
 
-    this._initBuild();
+    this.resetBuild();
 
     /** ########################################
      * phase 1: build timeline nodes and edges

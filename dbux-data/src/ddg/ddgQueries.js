@@ -1,15 +1,34 @@
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { isRoot } from './constants';
-import DDGSummaryMode from './DDGSummaryMode';
+import DDGSummaryMode, { isShownMode } from './DDGSummaryMode';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
+
+class RenderState {
+  timelineNodes;
+
+  edges;
+
+  /**
+   * @type {Object.<number, SummaryModeValue>}
+   */
+  summaryModes;
+}
 
 /**
  * Queries shared to be used before and after serialization.
  * (Similar to what `dataProviderUtil` is to `RuntimeDataProvider`.)
  */
 const ddgQueries = {
+
+  /**
+   * @param {RenderState} ddg 
+   */
+  isVisible(ddg, node) {
+    const summaryMode = ddg.summaryModes[node.timelineId];
+    return node.watched || isShownMode(summaryMode);
+  },
 
   /** ###########################################################################
    * Handle summary modes
