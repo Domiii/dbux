@@ -19,8 +19,14 @@ const YGroupPadding = 4;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
+let documentMouseMoveHandler;
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
+  /**
+   * @type {Element}
+   */
+  currentHoverEl;
+
   createEl() {
     return compileHtmlElement(/*html*/`<div class="timeline-view timeline-jsplumb-container">
       <div data-el="status"></div>
@@ -67,6 +73,63 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   /** ###########################################################################
+   * popups
+   * ##########################################################################*/
+
+  _removeNodePopup() {
+    this.currentHoverEl?.remove();
+    this.currentHoverEl = null;
+
+    if (documentMouseMoveHandler) {
+      document.removeEventListener('mousemove', documentMouseMoveHandler);
+    }
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   * @param {Element} nodeEl 
+   */
+  maybeShowNodePopupEl(node, nodeEl) {
+    if (!node.displayData) {
+      // hackfix: not sure what's happening here
+      return;
+    }
+
+    this._removeNodePopup();
+
+    const rect = nodeEl.getBoundingClientRect();
+    const x = rect.left;
+    // const y = rect.top - rect.height; // this is just wrong for some reason
+    // const y = nodeEl.style.top;
+    const y = node.displayData.top;
+    const w = rect.width;
+    const h = rect.height;
+    const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
+      <div class="node-overlay" style="left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;">
+      ${y}
+      </div>
+    `);
+    // NOTE: mouseover + mouseout are not very reliable events for this
+    // this.currentHoverEl.addEventListener('mouseout', () => {
+    //   this._removeNodePopup();
+    // });
+    document.addEventListener('mousemove', documentMouseMoveHandler = (e) => {
+      // add a minimal buffer delay
+      setTimeout(() => {
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (el !== this.currentHoverEl && el !== nodeEl) {
+          if (this.currentHoverEl === hoverEl) { // race condition check
+            console.log('mouse out', el);
+            this._removeNodePopup();
+          }
+        }
+      }, 80);
+    });
+
+    this.el.appendChild(this.currentHoverEl);
+  }
+
+  /** ###########################################################################
    * buildGraph
    * ##########################################################################*/
 
@@ -76,6 +139,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   get root() {
     return this.renderState.timelineNodes?.[RootTimelineId];
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   */
+  isGroupNode(node) {
+    return isControlGroupTimelineNode(node.type) && !ddgQueries.isCollapsed(this.renderState, node);
   }
 
   buildGraph() {
@@ -121,7 +191,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return false;
     }
 
-    const isGroupNode = isControlGroupTimelineNode(type) && !ddgQueries.isCollapsed(this.renderState, node);
+    const isGroupNode = this.isGroupNode(node);
     const el = this.makeNodeEl(node, label);
     this.el.appendChild(el);
 
@@ -194,15 +264,16 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     });
   }
 
-  makeNodeDescriptionEl(node) {
+  makeNodeDebugOverlay(node) {
     const content = `Node = ${JSON.stringify(node, null, 2)}`;
-    return compileHtmlElement(/*html*/`<pre class="timeline-description">${content}</pre>`);
+    return compileHtmlElement(/*html*/`<pre class="node-debug-overlay">${content}</pre>`);
   }
 
   makeNodeEl(node, label) {
     const { type, timelineId } = node;
     let el;
-    if (isControlGroupTimelineNode(type)) {
+    const isGroup = this.isGroupNode(node);
+    if (isGroup) {
       el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
@@ -212,16 +283,27 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
     }
 
+    if (!isGroup) {
+      // add overlays
+      let debugOverlay;
+      el.addEventListener('mouseover', () => {
+        if (!debugOverlay) {
+          // create overlay lazily
+          el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+        }
+        this.maybeShowNodePopupEl(node, el);
+      });
+    }
+
+    // addNode
     el.dataset.timelineId = timelineId;
-    el.appendChild(this.makeNodeDescriptionEl(node));
     this.addNode(timelineId, el, node);
     // this.logger.log(`[addNode]`, parent, parent.displayData);
     return el;
   }
 
   addNode(key, el, node) {
-    const { type } = node;
-    const isGroupNode = isControlGroupTimelineNode(type);
+    const isGroupNode = this.isGroupNode(node);
 
     // else {
     //   if (!connected && this.context.doc.state.connectedOnlyMode) {

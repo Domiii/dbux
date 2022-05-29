@@ -34,8 +34,18 @@ svg.jtk-connector path {
 }
 
 .timeline-group {
+  pointer-events: none;
   position: absolute;
   border: 1px solid white;
+  z-index: 1;
+}
+
+.timeline-ref-node {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  z-index: 10;
 }
 
 .timeline-node {
@@ -45,13 +55,14 @@ svg.jtk-connector path {
   white-space: nowrap;
   user-select: none;
   cursor: pointer;
+  z-index: 20;
 }
 
-.timeline-node:hover .timeline-description {
+.timeline-node:hover .node-debug-overlay {
   display: initial;
 }
 
-.timeline-description {
+.node-debug-overlay {
   position: fixed;
   right: 0;
   bottom: 0;
@@ -63,13 +74,13 @@ svg.jtk-connector path {
   background-color: black;
 }
 
-.timeline-ref-node {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
 .timeline-ref-node>.timeline-node {
   position: unset;
+}
+
+
+.node-overlay {
+  position: absolute;
+  background-color: red;
+  z-index: 1000;
 }

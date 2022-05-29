@@ -42,9 +42,9 @@ const DDGSummaryMode = new Enum(DDGSummaryModeConfig);
  * SummaryModes that are available to root.
  */
 export const RootSummaryModes = [
+  DDGSummaryMode.HideChildren,
   DDGSummaryMode.ExpandSelf,
-  DDGSummaryMode.ExpandSubgraph,
-  DDGSummaryMode.HideChildren
+  DDGSummaryMode.ExpandSubgraph
 ];
 
 
