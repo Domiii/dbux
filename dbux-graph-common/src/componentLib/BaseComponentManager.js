@@ -48,13 +48,13 @@ class BaseComponentManager {
    * @param {typeof<C>} ComponentEndpointClass
    * @return {C}
    */
-  _registerComponent(componentId, parent, ComponentEndpointClass, initialState = {}, specificState = null) {
+  _registerComponent(componentId, parent, ComponentEndpointClass, initialState = {}, hostOnlyState = null) {
     /**
      * @type {C}
      */
     const component = new ComponentEndpointClass(this);
     this._componentsById.set(componentId, component);
-    component._build(this, parent, componentId, initialState, specificState);
+    component._build(this, parent, componentId, initialState, hostOnlyState);
     return component;
   }
 

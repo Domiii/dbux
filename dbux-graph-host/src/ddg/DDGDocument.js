@@ -9,6 +9,10 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 const lastTraceInfo = {};
 
 export default class DDGDocument extends HostComponentEndpoint {
+  get ddg() {
+    return this.hostOnlyState.ddg;
+  }
+  
   // ###########################################################################
   // init
   // ###########################################################################
@@ -21,23 +25,23 @@ export default class DDGDocument extends HostComponentEndpoint {
 
     this.createOwnComponents();
 
-    this.addDisposable(traceSelection.onTraceSelectionChanged(() => {
-      const trace = traceSelection.selected;
-      if (trace && trace.applicationId !== lastTraceInfo.applicationId /* && trace.contextId !== lastTraceInfo.contextId */) {
-        // don't refresh when selecting different traces
-        lastTraceInfo.applicationId = trace.applicationId;
-        lastTraceInfo.contextId = trace.contextId;
-        this.timelineView.refresh();
-      }
-    }));
-    // this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
-    //   this.timelineView.refresh();
+    // this.addDisposable(traceSelection.onTraceSelectionChanged(() => {
+    //   const trace = traceSelection.selected;
+    //   if (trace && trace.applicationId !== lastTraceInfo.applicationId /* && trace.contextId !== lastTraceInfo.contextId */) {
+    //     // don't refresh when selecting different traces
+    //     lastTraceInfo.applicationId = trace.applicationId;
+    //     lastTraceInfo.contextId = trace.contextId;
+    //     this.timelineView.refresh();
+    //   }
     // }));
-    const trace = traceSelection.selected;
-    // don't refresh when selecting different traces
-    lastTraceInfo.applicationId = trace?.applicationId;
-    lastTraceInfo.contextId = trace?.contextId;
-    this.timelineView.refresh();
+    // // this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
+    // //   this.timelineView.refresh();
+    // // }));
+    // const trace = traceSelection.selected;
+    // // don't refresh when selecting different traces
+    // lastTraceInfo.applicationId = trace?.applicationId;
+    // lastTraceInfo.contextId = trace?.contextId;
+    // this.timelineView.refresh();
   }
 
   update() {
@@ -104,7 +108,7 @@ export default class DDGDocument extends HostComponentEndpoint {
   // state + context
   // ###########################################################################
 
-  makeInitialState() {
+  makeInitialState(state) {
     const summaryIconUris = {
       // [DDGSummaryMode.Hide]: this.getIconUri('hide.svg'),
       [DDGSummaryMode.Collapse]: this.getIconUri('minus.svg'),
@@ -114,7 +118,9 @@ export default class DDGDocument extends HostComponentEndpoint {
     };
     return {
       themeMode: this.componentManager.externals.getThemeMode(),
-      summaryIconUris
+      summaryIconUris,
+
+      ...state
     };
   }
 

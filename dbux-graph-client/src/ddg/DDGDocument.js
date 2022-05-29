@@ -12,6 +12,9 @@ export default class DDGDocument extends ClientComponentEndpoint {
 
   get timeline() {
     return this.children.getComponent('DDGTimelineView');
-    // return this.els.timeline;
+  }
+
+  get toolbar() {
+    return this.children.getComponent('Toolbar');
   }
 }

@@ -93,21 +93,20 @@ export default class DataDependencyGraph extends BaseDDG {
       },
 
       // summarized edge data
+      summaryModes,
       edges,
       outEdgesByTimelineId,
       inEdgesByTimelineId,
-
-      // and more
-      summaryModes,
       visibleNodes
     } = this;
 
     return {
       timelineNodes,
+      
+      summaryModes,
       edges,
       outEdgesByTimelineId,
       inEdgesByTimelineId,
-      summaryModes,
       visibleNodes
     };
   }

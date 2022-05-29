@@ -5,7 +5,6 @@ import path from 'path';
 import open from 'open';
 import { existsSync } from 'fs';
 import isNaN from 'lodash/isNaN';
-import NestedError from '@dbux/common/src/NestedError';
 import sleep from '@dbux/common/src/util/sleep';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { stringify as jsonStringify } from 'comment-json';
@@ -22,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { showDDGView } from '../webViews/ddgWebView';
+import { showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -225,7 +224,7 @@ export function initUserCommands(extensionContext) {
       const dp = allApplications.getById(trace.applicationId).dataProvider;
       dp.ddgs.clear();
       
-      await showDDGView();
+      await showDDGViewForContextOfSelectedTrace();
     }
   });
 
@@ -430,7 +429,7 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.showDDGOfContext', async () => {
     const trace = traceSelection.selected;
     if (trace) {
-      await showDDGView();
+      await showDDGViewForContextOfSelectedTrace();
     }
     else {
       await showInformationMessage('No trace selected');

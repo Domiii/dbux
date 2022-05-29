@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import isFunction from 'lodash/isFunction';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-common/domUtil');
@@ -230,3 +231,23 @@ export function delegate(root, selector, eventType, handler) {
     }
   });
 }
+
+/** ###########################################################################
+ * {@link addElementEventListeners}
+ * ##########################################################################*/
+
+export function addElementEventListeners(el, cfg, thisArg = null, elName = null) {
+  for (const eventName in cfg) {
+    const cb = cfg[eventName];
+    if (!isFunction(cb)) {
+      this.logger.error(`Invalid event handler (on) - is not a function: "${elName || el.innerHTML}.${eventName}"`);
+      continue;
+    }
+    el.addEventListener(eventName, thisArg ? cb.bind(thisArg) : cb);
+  }
+}
+
+/**
+ * @see https://stackoverflow.com/a/66065413
+ */
+export const BootstrapBtnGroupSeparatorHtml = `<button type="button" class="btn btn-secondary mr-0 ml-0 pr-0 pl-0" disabled></button>`;

@@ -34,20 +34,23 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
       const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
       if (timelineId) {
-        const node = this.state.timelineNodes[timelineId];
+        const node = this.renderState.timelineNodes[timelineId];
         if (node.dataNodeId) {
           await this.remote.selectNode(timelineId);
         }
       }
     });
+
+    this.refreshGraph();
   }
 
-  update() {
+  refreshGraph() {
+    const { failureReason } = this.renderState;
     // update status message
-    if (this.state.failureReason) {
+    if (failureReason) {
       this.els.status.classList.add('alert', 'alert-danger');
       // this.els.status.className = 'alert alert-danger';
-      this.els.status.textContent = 'Cannot build DataDependencyGraph: ' + this.state.failureReason;
+      this.els.status.textContent = 'Cannot build DataDependencyGraph: ' + failureReason;
     }
     else {
       this.els.status.classList.remove('alert', 'alert-danger');
@@ -62,12 +65,29 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * buildGraph
    * ##########################################################################*/
 
+  get renderState() {
+    return this.context.doc.state;
+  }
+
+  get root() {
+    return this.renderState.timelineNodes?.[RootTimelineId];
+  }
+
   buildGraph() {
-    const { timelineNodes: nodes, edges } = this.state;
+    const { root } = this;
+    const { 
+      timelineNodes: nodes,
 
-    const root = nodes?.[RootTimelineId];
+      summaryModes,
+      edges
+      // outEdgesByTimelineId,
+      // inEdgesByTimelineId,
+      // visibleNodes
+    } = this.renderState;
 
-    if (!root || !nodes?.length) {
+    console.log('buildgraph', this.renderState);
+
+    if (!root) {
       return;
     }
 
@@ -85,7 +105,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   addTreeNodes(parent, nodes, depth = 0, top = YPadding) {
     const { type, children, label = '' } = parent;
-    const isGroupNode = isControlGroupTimelineNode(type);
+    const isGroupNode = isControlGroupTimelineNode(type); // TODO: add collapsed clause
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
     let right;
@@ -210,8 +230,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   addEdge(edge) {
-    // const fromTimelineId = this.state.timelineNodes[edge.from];
-    // const toTimelineId = this.state.timelineNodes[edge.to];
+    // const fromTimelineId = this.renderState.timelineNodes[edge.from];
+    // const toTimelineId = this.renderState.timelineNodes[edge.to];
     const fromTimelineId = edge.from;
     const toTimelineId = edge.to;
     const source = this.nodeElMap.get(fromTimelineId);
@@ -281,7 +301,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   public = {
-    // autoLayout: this.autoLayout
+    async updateAfterSummary(data) {
+    }
   };
 }
 
@@ -538,13 +559,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
  * ##########################################################################*/
 
 // getNodeYTop() {
-//   // return YPadding + (this.state.timelineNodes.length + 1) * GraphScale;
+//   // return YPadding + (this.renderState.timelineNodes.length + 1) * GraphScale;
 //   return YPadding + 0;
 // }
 
 // getNodeYBottom() {
-//   // return YPadding - this.state.timelineNodes.length * GraphScale;
-//   return YPadding + (this.state.timelineNodes.length + 1) * GraphScale;
+//   // return YPadding - this.renderState.timelineNodes.length * GraphScale;
+//   return YPadding + (this.renderState.timelineNodes.length + 1) * GraphScale;
 // }
 
 // getNodeInitialPosition(node) {
@@ -552,13 +573,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 //    * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
 //    * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
 //    */
-//   // const x = node.ddgNodeId / this.state.timelineNodes.length;
-//   const x = XPadding + Math.random() * this.state.timelineNodes.length * GraphScale;
+//   // const x = node.ddgNodeId / this.renderState.timelineNodes.length;
+//   const x = XPadding + Math.random() * this.renderState.timelineNodes.length * GraphScale;
 
 //   /**
 //    * WARNING: if you change this, also change getNodeY{Top,Bottom}
 //    */
-//   // const y = YPadding + ((-1 * node.ddgNodeId + this.state.timelineNodes.length) || 0) * GraphScale;
+//   // const y = YPadding + ((-1 * node.ddgNodeId + this.renderState.timelineNodes.length) || 0) * GraphScale;
 //   const y = YPadding + (node.ddgNodeId + 1 || 0) * GraphScale;
 //   return { x, y };
 // }

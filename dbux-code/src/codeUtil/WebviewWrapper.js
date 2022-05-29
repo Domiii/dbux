@@ -40,7 +40,7 @@ export default class WebviewWrapper {
    * Usually called upon start-up.
    */
   async init() {
-    return this.restorePreviousState();
+    return this.restorePreviousStateAndShow();
   }
 
   // ###########################################################################
@@ -72,7 +72,7 @@ export default class WebviewWrapper {
     }
   }
 
-  async restorePreviousState() {
+  async restorePreviousStateAndShow() {
     let state = this._getPreviousState();
     if (state) {
       await this.show();

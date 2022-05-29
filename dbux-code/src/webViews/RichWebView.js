@@ -9,20 +9,27 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 import { getResourcePath } from '../codeUtil/codePath';
 import { buildWebviewClientHtml } from './clientSource';
 
-/** @typedef {import('@dbux/graph-host/src/WebHost').HostWrapper} HostWrapper */
+/** @typedef {import('@dbux/graph-host/src/HostWrapper').default} HostWrapper */
+/** @typedef { import("@dbux/graph-host/src/componentLib/HostComponentManager").default } HostComponentManager */
 
 export default class RichWebView extends WebviewWrapper {
   /**
    * @type {HostWrapper}
    */
   hostWrapper;
+  /**
+   * @type {HostComponentManager}
+   */
   hostComponentManager;
   logger;
 
-  constructor(HostWrapperClazz, id, col) {
+  constructor(HostWrapperClazz, id, col, mainComponentInitialState, mainComponentHostOnlyState) {
     const hostWrapper = new HostWrapperClazz();
     const { name } = hostWrapper;
     super(id, name, col);
+
+    this._mainComponentInitialState = mainComponentInitialState;
+    this._mainComponentHostOnlyState = mainComponentHostOnlyState;
 
     this.hostWrapper = hostWrapper;
     this.logger = newLogger(name);
@@ -38,6 +45,7 @@ export default class RichWebView extends WebviewWrapper {
   handleGraphHostStarted = (manager) => {
     // (re-)started!
     this.hostComponentManager = manager;
+    this.hostWrapper.onStart?.();
   }
 
   async buildClientHtml() {
@@ -52,15 +60,37 @@ export default class RichWebView extends WebviewWrapper {
   }
 
   async startHost(ipcAdapter) {
-    this.hostWrapper.startGraphHost(this.handleGraphHostStarted, this.restart, ipcAdapter, this.getExternals());
+    const makeInitialState = this.makeInitialState.bind(this);
+    const makeHostOnlyState = this.makeHostOnlyState.bind(this);
+    this.hostWrapper.startGraphHost(
+      makeInitialState,
+      makeHostOnlyState,
+
+      this.handleGraphHostStarted, this.restart, ipcAdapter, this.getExternals()
+    );
   }
 
   shutdownHost() {
     this.hostWrapper.shutdownGraphHost();
   }
 
+  /** ###########################################################################
+   * life-time events
+   *  #########################################################################*/
+
+  /**
+   * Creates initial state that will be provided to `MainComponent`.
+   */
+  makeInitialState() {
+    return this._mainComponentInitialState;
+  }
+
+  makeHostOnlyState() {
+    return this._mainComponentHostOnlyState;
+  }
+
   // ###########################################################################
-  // provide externals to HostComponentManager
+  // externals
   // ###########################################################################
 
   getExternals() {

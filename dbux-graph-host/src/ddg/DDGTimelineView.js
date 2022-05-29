@@ -3,20 +3,22 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
-/** @typedef { import("@dbux/data/src/ddg/SummarizedDDG").default } SummarizedDDG */
+/** @typedef { import("@dbux/data/src/ddg/DataDependencyGraph").default } DataDependencyGraph */
 /** @typedef { import("./DDGDocument").default } DDGDocument */
 
 export default class DDGTimelineView extends HostComponentEndpoint {
-  /**
-   * @type {SummarizedDDG}
-   */
-  ddg;
-
   /**
    * @type {DDGDocument}
    */
   get doc() {
     return this.context.doc;
+  }
+
+  /**
+   * @type {DataDependencyGraph}
+   */
+  get ddg() {
+    return this.context.doc.ddg;
   }
 
   get mergeComputesMode() {
@@ -33,42 +35,42 @@ export default class DDGTimelineView extends HostComponentEndpoint {
 
   }
 
-  async handleRefresh() {
-    let trace = traceSelection.selected;
-    if (trace) {
-      const { applicationId, contextId } = trace;
-      const dp = allApplications.getById(applicationId).dataProvider;
-      // const context = dp.collections.executionContexts.getById(contextId);
-      const ddgArgs = { applicationId, contextId };
-      const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
-      if (failureReason) {
-        this.setFailure(failureReason);
-      }
-      else {
-        const ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
-        this.setGraph(ddg);
-      }
-    }
-    else {
-      const failureReason = 'DDG is empty';
-      this.setFailure(failureReason);
-    }
-  }
+  // async handleRefresh() {
+  //   let trace = traceSelection.selected;
+  //   if (trace) {
+  //     const { applicationId, contextId } = trace;
+  //     const dp = allApplications.getById(applicationId).dataProvider;
+  //     // const context = dp.collections.executionContexts.getById(contextId);
+  //     const ddgArgs = { applicationId, contextId };
+  //     const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
+  //     if (failureReason) {
+  //       this.setFailure(failureReason);
+  //     }
+  //     else {
+  //       const ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
+  //       this.setGraph(ddg);
+  //     }
+  //   }
+  //   else {
+  //     const failureReason = 'DDG is empty';
+  //     this.setFailure(failureReason);
+  //   }
+  // }
 
-  setGraph(ddg) {
-    this.ddg = ddg;
+  // setGraph(ddg) {
+  //   this.ddg = ddg;
 
-    // reset status message
-    const failureReason = null;
-    const { applicationId } = ddg.dp.application;
+  //   // reset status message
+  //   const failureReason = null;
+  //   const { applicationId } = ddg.dp.application;
 
-    this.setState({ failureReason, applicationId, ...ddg.getRenderData() });
-  }
+  //   this.setState({ failureReason, applicationId, ...ddg.getRenderData() });
+  // }
 
-  setFailure(failureReason) {
-    // reset graph
-    this.setState({ failureReason, timelineNodes: EmptyArray, edges: EmptyArray });
-  }
+  // setFailure(failureReason) {
+  //   // reset graph
+  //   this.setState({ failureReason, timelineNodes: EmptyArray, edges: EmptyArray });
+  // }
 
   handleMergeComputesModeChanged = () => {
     this.ddg?.setMergeComputes(this.mergeComputesMode);

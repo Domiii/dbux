@@ -1,5 +1,4 @@
-import isFunction from 'lodash/isFunction';
-import { collectElementsByDataAttrMulti, repaintEl } from '../util/domUtil';
+import { collectElementsByDataAttrMulti, repaintEl, addElementEventListeners } from '../util/domUtil';
 
 /**
  * Helps DOM elements "components" more easily manage it's DOM.
@@ -41,8 +40,8 @@ export default class DOMWrapper {
     }
   }
 
-  addEventListeners(_this = this.owner, ignoreMissingElements = false) {
-    const { on } = _this;
+  addEventListeners(thisArg = this.owner, ignoreMissingElements = false) {
+    const { on } = thisArg;
 
     for (const elName in on) {
       const cfg = on[elName];
@@ -54,18 +53,7 @@ export default class DOMWrapper {
         continue;
       }
 
-      this.addElementEventListeners(_this, child, cfg, elName);
-    }
-  }
-
-  addElementEventListeners(_this, el, cfg, elName = null) {
-    for (const eventName in cfg) {
-      const cb = cfg[eventName];
-      if (!isFunction(cb)) {
-        this.logger.error(`Invalid event handler (on) - is not a function: "${elName || el.innerHTML}.${eventName}"`);
-        continue;
-      }
-      el.addEventListener(eventName, cb.bind(_this));
+      addElementEventListeners(child, cfg, thisArg, elName);
     }
   }
 
