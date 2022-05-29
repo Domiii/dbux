@@ -101,10 +101,8 @@ export default class WebviewWrapper {
     }
   }
 
-  hide() {
-    if (this.panel) {
-      this.panel.dispose();
-    }
+  dispose() {
+    this.panel?.dispose();
   }
 
   // ###########################################################################

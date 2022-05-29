@@ -67,7 +67,7 @@ export function decorateSummaryModeButtons(btns) {
 function addSummaryModeListener(btnEl, doc, timelineId, mode) {
   const eventCfg = {
     async click(evt) {
-      evt.preventDefault();
+      evt.stopPropagation();
 
       /**
        * @type {DDGTimelineView}

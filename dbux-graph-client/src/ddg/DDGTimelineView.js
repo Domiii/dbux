@@ -4,8 +4,9 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
-import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement, delegate } from '../util/domUtil';
+import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 // const AutoLayoutAnimationDuration = 300;
@@ -16,16 +17,38 @@ const YPadding = 30;
 // const XGap = 8;
 // const YGap = 15;
 const YGroupPadding = 4;
+
+const NodeMenuXOffset = -12;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
 let documentMouseMoveHandler;
+
+function getElTopOffset(el) {
+  const s = getComputedStyle(el, null);
+  const b = parseFloat(s.getPropertyValue('border-top-width')) || 0;
+  const m = parseFloat(s.getPropertyValue('margin-top-width')) || 0;
+  return b + m;
+}
+
+function getElLeftOffset(el) {
+  const s = getComputedStyle(el, null);
+  const b = parseFloat(s.getPropertyValue('border-left-width')) || 0;
+  const m = parseFloat(s.getPropertyValue('margin-left-width')) || 0;
+  return b + m;
+}
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   /**
    * @type {Element}
    */
   currentHoverEl;
+
+  currentHoverNode;
+  
+  get doc() {
+    return this.context.doc;
+  }
 
   createEl() {
     return compileHtmlElement(/*html*/`<div class="timeline-view timeline-jsplumb-container">
@@ -76,9 +99,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * popups
    * ##########################################################################*/
 
-  _removeNodePopup() {
+  _removeNodePopup(hoverEl) {
+    if (this.currentHoverEl !== hoverEl) { // race condition check
+      return;
+    }
     this.currentHoverEl?.remove();
     this.currentHoverEl = null;
+    this.currentHoverNode = null;
 
     if (documentMouseMoveHandler) {
       document.removeEventListener('mousemove', documentMouseMoveHandler);
@@ -89,44 +116,72 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * @param {DDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
+  makeNodeButtons(node) {
+    // TODO: generate correct `modesForThisNode` (maybe simply use ddgQueries.canApplyMode)
+    // TODO: make sure, the buttons work correctly
+    const modesForThisNode = [1, 4];
+    const el = compileHtmlElement(/*html*/`
+      <div style="display: flex; flex: 1; flex-direction: column; flex-shrink: 1; justify-content: flex-start; align-items: flex-start;">
+      </div>
+    `);
+
+    const { el: btns } = makeSummaryButtons(this.doc, node.timelineId, 'btn btn-primary no-padding', modesForThisNode);
+    el.appendChild(btns);
+
+    return el;
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   * @param {Element} nodeEl 
+   */
   maybeShowNodePopupEl(node, nodeEl) {
-    if (!node.displayData) {
-      // hackfix: not sure what's happening here
+    if (node === this.currentHoverNode) {
       return;
     }
 
-    this._removeNodePopup();
+    this._removeNodePopup(this.currentHoverEl);
 
     const rect = nodeEl.getBoundingClientRect();
-    const x = rect.left;
-    // const y = rect.top - rect.height; // this is just wrong for some reason
+    /**
+     * NOTE: `y` is more annoying to get right.
+     * @see https://stackoverflow.com/questions/28966678/getboundingclientrect-returning-wrong-results
+     */
+    // const y = rect.top - rect.height;
     // const y = nodeEl.style.top;
-    const y = node.displayData.top;
-    const w = rect.width;
+    const x = 0 - getElLeftOffset(nodeEl) + NodeMenuXOffset;
+    const y = 0 - getElTopOffset(nodeEl);
+    const w = rect.width - NodeMenuXOffset;
     const h = rect.height;
+    // <div class="node-overlay">
+    const nodeBtns = this.makeNodeButtons(node);
     const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
-      <div class="node-overlay" style="left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;">
-      ${y}
-      </div>
+      <div class="node-overlay" style="left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;"></div>
     `);
+    hoverEl.appendChild(nodeBtns);
     // NOTE: mouseover + mouseout are not very reliable events for this
     // this.currentHoverEl.addEventListener('mouseout', () => {
     //   this._removeNodePopup();
     // });
+    let moveTimer;
     document.addEventListener('mousemove', documentMouseMoveHandler = (e) => {
-      // add a minimal buffer delay
-      setTimeout(() => {
-        const el = document.elementFromPoint(e.clientX, e.clientY);
-        if (el !== this.currentHoverEl && el !== nodeEl) {
-          if (this.currentHoverEl === hoverEl) { // race condition check
-            console.log('mouse out', el);
-            this._removeNodePopup();
-          }
+      // debounce
+      if (moveTimer) { return; }
+      moveTimer = setTimeout(() => {
+        // const el = document.elementFromPoint(e.clientX, e.clientY); // NOTE: this does NOT return the top element
+        moveTimer = null;
+        /**
+         * @see https://stackoverflow.com/a/15263171
+         */
+        const hoverStack = Array.from(document.querySelectorAll(":hover"));
+        if (!hoverStack.includes(nodeEl) && !hoverStack.includes(hoverEl)) {
+          this._removeNodePopup(hoverEl);
         }
       }, 80);
     });
 
-    this.el.appendChild(this.currentHoverEl);
+    // this.el.appendChild(this.currentHoverEl);
+    nodeEl.appendChild(hoverEl);
   }
 
   /** ###########################################################################
@@ -283,7 +338,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
     }
 
-    if (!isGroup) {
+    if (isDataTimelineNode(type)) {
       // add overlays
       let debugOverlay;
       el.addEventListener('mouseover', () => {

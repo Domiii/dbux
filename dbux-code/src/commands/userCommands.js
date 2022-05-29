@@ -21,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
+import { disposeDDGWebviews, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -223,6 +223,7 @@ export function initUserCommands(extensionContext) {
 
       const dp = allApplications.getById(trace.applicationId).dataProvider;
       dp.ddgs.clear();
+      disposeDDGWebviews();
       
       await showDDGViewForContextOfSelectedTrace();
     }

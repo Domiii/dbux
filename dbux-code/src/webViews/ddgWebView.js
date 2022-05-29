@@ -45,6 +45,13 @@ export default class DataDependencyGraphWebView extends RichWebView {
   }
 }
 
+let activeWebviews = [];
+
+export function disposeDDGWebviews() {
+  activeWebviews.forEach(w => w.dispose());
+  activeWebviews = [];
+}
+
 export async function showDDGViewForContextOfSelectedTrace() {
   let initialState;
   let hostOnlyState;
@@ -93,10 +100,12 @@ async function showDDGView(ddgDocumentInitialState, hostOnlyState) {
   await dDGWebView.show();
   // TODO: add new action type
   // emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
+  return dDGWebView;
 }
 
 async function initDDGView(ddgDocumentInitialState, hostOnlyState) {
   const dDGWebView = new DataDependencyGraphWebView(ddgDocumentInitialState, hostOnlyState);
   await dDGWebView.init();
+  activeWebviews.push(dDGWebView);
   return dDGWebView;
 }

@@ -81,6 +81,7 @@ svg.jtk-connector path {
 
 .node-overlay {
   position: absolute;
-  background-color: red;
+  /* background-color: rgba(0,0,0,0.2); */
+  background-color: transparent;
   z-index: 1000;
 }

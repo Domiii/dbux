@@ -64,7 +64,7 @@ export async function showGraphView() {
 }
 
 export function hideGraphView() {
-  graphWebView?.hide();
+  graphWebView?.dispose();
   emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: false });
 }
 

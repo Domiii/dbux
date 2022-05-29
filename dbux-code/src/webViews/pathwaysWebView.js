@@ -63,7 +63,7 @@ export async function showPathwaysView() {
 }
 
 export function hidePathwaysView() {
-  pathwaysWebView?.hide();
+  pathwaysWebView?.dispose();
   emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: false });
 }
 
