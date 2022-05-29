@@ -65,7 +65,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     return super.componentManager;
   }
 
-  setState(update) {
+  setState(stateDelta) {
     if (this._stateLockOwner) {
       // NOTE 0: `setState` is supposed to be used in event handlers.
       // NOTE 1: in `init`, you can directly manipulate `this.state`
@@ -77,7 +77,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
       throw new Error(this.debugTag + ` Tried to call setState after disposed`);
     }
 
-    Object.assign(this.state, update);
+    Object.assign(this.state, stateDelta);
+    this._stateDelta = stateDelta;
 
     this._startUpdate();
   }
@@ -275,7 +276,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
       return this._performUpdate();                                  // 1. host: update
     }).
       then(() => {
-        return this._remoteInternal.updateClient(this.state); // 2. client: update
+        // future-work: don't resend unchanged data
+        return this._remoteInternal.updateClient(this._stateDelta); // 2. client: update
       }).
       then(
         (resultFromClientInit) => {

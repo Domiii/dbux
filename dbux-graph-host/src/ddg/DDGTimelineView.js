@@ -100,6 +100,9 @@ export default class DDGTimelineView extends HostComponentEndpoint {
 
     setSummaryMode(timelineId, mode) {
       this.ddg?.setSummaryMode(timelineId, mode);
+
+      // TODO: call setState
+      this.doc.setState();
     }
   }
 }

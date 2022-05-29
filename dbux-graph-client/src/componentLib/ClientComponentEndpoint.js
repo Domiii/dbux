@@ -145,8 +145,8 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    * Functions that are called by Host internally.
    */
   _publicInternal = {
-    updateClient(state) {
-      this.state = state;
+    updateClient(stateDelta) {
+      Object.assign(this.state, stateDelta);
       this._performUpdate();
     },
     updateContext: this._updateContext,

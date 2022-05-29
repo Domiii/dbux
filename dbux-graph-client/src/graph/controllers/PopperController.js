@@ -1,4 +1,5 @@
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
+import { addElementEventListeners } from '../../util/domUtil';
 
 export default class PopperController extends ClientComponentEndpoint {
   get manager() {
@@ -12,7 +13,7 @@ export default class PopperController extends ClientComponentEndpoint {
   init() {
     const targets = this.owner.el.querySelectorAll('[data-tooltip]');
     targets.forEach(target => {
-      this.owner.dom.addElementEventListeners(this, target, this.targetEvents);
+      addElementEventListeners(target, this.targetEvents, this);
     });
   }
 
