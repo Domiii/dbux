@@ -31,12 +31,12 @@ export default class BaseDDG {
   /**
    * @type {DDGWatchSet}
    */
-  watchSet;
+  _watchSet;
 
   /**
    * @type {DDGBounds}
    */
-  bounds;
+  _bounds;
 
   /** ########################################
    * render data
@@ -46,7 +46,7 @@ export default class BaseDDG {
    * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
    * @type {DDGTimelineNode[]}
    */
-  timelineNodes;
+  _timelineNodes;
 
   /**
    * NOTE: 
@@ -63,6 +63,18 @@ export default class BaseDDG {
    * @type {Object.<number, DDGEdge[]>}
    */
   inEdgesByTimelineId;
+
+  get watchSet() {
+    return this._watchSet;
+  }
+
+  get bounds() {
+    return this._bounds;
+  }
+
+  get timelineNodes() {
+    return this._timelineNodes;
+  }
 
 
   getRenderData() {
@@ -119,9 +131,9 @@ export default class BaseDDG {
    */
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
-    this.watchSet = new DDGWatchSet(this, watchTraceIds);
-    this.bounds = new DDGBounds(this, watchTraceIds);
-    this.timelineNodes = [null];
+    this._watchSet = new DDGWatchSet(this, watchTraceIds);
+    this._bounds = new DDGBounds(this, watchTraceIds);
+    this._timelineNodes = [null];
 
     this.resetBuild();
 

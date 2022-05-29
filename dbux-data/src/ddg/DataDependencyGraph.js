@@ -74,13 +74,6 @@ export default class DataDependencyGraph extends BaseDDG {
   og;
 
   /**
-   * Set of all currently visible nodes' `timelineId`.
-   * @deprecated Sets do not get properly serialized when sending to render client.
-   * @type {Set.<number>}
-   */
-  visibleNodes;
-
-  /**
    * @type {Object.<number, SummaryModeValue>}
    */
   summaryModes = {};
@@ -100,18 +93,16 @@ export default class DataDependencyGraph extends BaseDDG {
       summaryModes,
       edges,
       outEdgesByTimelineId,
-      inEdgesByTimelineId,
-      visibleNodes
+      inEdgesByTimelineId
     } = this;
 
     return {
       timelineNodes,
-      
+
       summaryModes,
       edges,
       outEdgesByTimelineId,
-      inEdgesByTimelineId,
-      visibleNodes
+      inEdgesByTimelineId
     };
   }
 
@@ -123,16 +114,14 @@ export default class DataDependencyGraph extends BaseDDG {
       summaryModes,
       edges,
       outEdgesByTimelineId,
-      inEdgesByTimelineId,
-      visibleNodes
+      inEdgesByTimelineId
     } = this;
 
     return {
       summaryModes,
       edges,
       outEdgesByTimelineId,
-      inEdgesByTimelineId,
-      visibleNodes
+      inEdgesByTimelineId
     };
   }
 
@@ -207,8 +196,11 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // expand all children and their children
       for (const childId of node.children) {
-        // const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, DDGSummaryMode.ExpandSubgraph);
+        const childNode = og.timelineNodes[childId];
+        const targetMode = ddgQueries.canApplyMode(childNode, DDGSummaryMode.Collapse) ?
+          DDGSummaryMode.ExpandSubgraph :
+          DDGSummaryMode.Show;
+        this.#applyMode(childId, targetMode);
       }
     },
     [DDGSummaryMode.HideChildren]: (timelineId) => {
@@ -260,7 +252,6 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     this.og.build(watchTraceIds);
 
-    this.resetBuild();
     this.#initSummaryConfig();
     this.#applySummarization();
   }
@@ -271,7 +262,6 @@ export default class DataDependencyGraph extends BaseDDG {
 
   resetBuild() {
     super.resetBuild();
-    this.visibleNodes = new Set();
   }
 
   #initSummaryConfig() {
@@ -290,7 +280,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const summaryState = new SummaryState();
     this.#summarizeDFS(root, summaryState);
-    
+
     this.resetBuild();
 
     // add all edges
@@ -317,14 +307,8 @@ export default class DataDependencyGraph extends BaseDDG {
       currentCollapsedAncestor
     } = summaryState;
 
-    const { summaryModes } = this;
-    const summaryMode = summaryModes[node.timelineId];
     const isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
-
-    if (isVisible) {
-      this.visibleNodes.add(node.timelineId);
-    }
 
     if (node.children) {
       // node has children
@@ -341,57 +325,55 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
 
-    if (node.timelineId) {
-      // node has edges
-      const incomingEdges = this.og.inEdgesByTimelineId[node.timelineId] || EmptyArray;
+    // add/merge incoming edges
+    const incomingEdges = this.og.inEdgesByTimelineId[node.timelineId] || EmptyArray;
 
-      if (isVisible) {
-        // node is shown
-        nodeRouteMap.set(node.timelineId, [node]);
+    if (isVisible) {
+      // node is shown
+      nodeRouteMap.set(node.timelineId, [node]);
 
-        for (const edgeId of incomingEdges) {
-          const edge = this.og.edges[edgeId];
-          const { from: fromOg, type } = edge;
-          const allFrom = nodeRouteMap.get(fromOg);
-          if (allFrom) {
-            for (const from of allFrom) {
-              summaryState.addEdge(from, node, type);
+      for (const edgeId of incomingEdges) {
+        const edge = this.og.edges[edgeId];
+        const { from: fromOg, type } = edge;
+        const allFrom = nodeRouteMap.get(fromOg);
+        if (allFrom) {
+          for (const from of allFrom) {
+            summaryState.addEdge(from, node, type);
+          }
+        }
+      }
+    }
+    else if (currentCollapsedAncestor) {
+      // node is collapsed into given ancestor
+      nodeRouteMap.set(node.timelineId, [currentCollapsedAncestor]);
+
+      for (const edgeId of incomingEdges) {
+        const edge = this.og.edges[edgeId];
+        const { from: fromOg, type } = edge;
+        const allFrom = nodeRouteMap.get(fromOg);
+        if (allFrom) {
+          for (const from of allFrom) {
+            if (from !== currentCollapsedAncestor) {
+              summaryState.addEdge(from, currentCollapsedAncestor, type);
             }
           }
         }
       }
-      else if (currentCollapsedAncestor) {
-        // node is collapsed into given ancestor
-        nodeRouteMap.set(node.timelineId, [currentCollapsedAncestor]);
+    }
+    else {
+      // node is completely gone
+      // → multicast all incoming to all outgoing edges
+      let reroutes = [];
+      nodeRouteMap.set(node.timelineId, reroutes);
 
-        for (const edgeId of incomingEdges) {
-          const edge = this.og.edges[edgeId];
-          const { from: fromOg, type } = edge;
-          const allFrom = nodeRouteMap.get(fromOg);
-          if (allFrom) {
-            for (const from of allFrom) {
-              if (from !== currentCollapsedAncestor) {
-                summaryState.addEdge(from, currentCollapsedAncestor, type);
-              }
-            }
-          }
-        }
-      }
-      else {
-        // node is completely gone
-        // → multicast all incoming to all outgoing edges
-        let reroutes = [];
-        nodeRouteMap.set(node.timelineId, reroutes);
-
-        for (const edgeId of incomingEdges) {
-          const edge = this.og.edges[edgeId];
-          const { from: fromOg, type } = edge;
-          // TODO: integrate edge type correctly
-          const allFrom = nodeRouteMap.get(fromOg);
-          if (allFrom) {
-            for (const from of allFrom) {
-              reroutes.push(from);
-            }
+      for (const edgeId of incomingEdges) {
+        const edge = this.og.edges[edgeId];
+        const { from: fromOg, type } = edge;
+        // TODO: integrate edge type correctly
+        const allFrom = nodeRouteMap.get(fromOg);
+        if (allFrom) {
+          for (const from of allFrom) {
+            reroutes.push(from);
           }
         }
       }

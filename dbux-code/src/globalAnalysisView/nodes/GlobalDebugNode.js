@@ -13,6 +13,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
+import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -187,8 +188,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           const {
             timelineNodes,
             edges,
-            summaryModes,
-            visibleNodes
+            summaryModes
           } = ddg.getRenderData();
 
           /**
@@ -301,15 +301,15 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
 
 
             function Visible_Nodes() {
+              const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
               return {
-                children: Array.from(visibleNodes).map((timelineId) => {
-                  const node = timelineNodes[timelineId];
-                  const { label: nodeLabel, ...entry } = node;
-                  delete entry.timelineId;
+                children: visibleNodes.map((node) => {
+                  const { timelineId, label: nodeLabel, ...entry } = node;
+                  // delete entry.timelineId;
                   return makeTimelineNodeEntry(node, entry);
                 }),
                 props: {
-                  description: `(${visibleNodes.size})`
+                  description: `(${visibleNodes.length})`
                 }
               };
             },

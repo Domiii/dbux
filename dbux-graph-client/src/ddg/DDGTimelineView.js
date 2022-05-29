@@ -86,8 +86,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // summaryModes,
       edges
       // outEdgesByTimelineId,
-      // inEdgesByTimelineId,
-      // visibleNodes
+      // inEdgesByTimelineId
     } = this.renderState;
 
     if (!root) {

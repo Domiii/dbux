@@ -40,6 +40,13 @@ const ddgQueries = {
     return isCollapsedMode(summaryMode);
   },
 
+  /**
+   * @param {RenderState} ddg 
+   */
+  getAllVisibleNodes(ddg) {
+    return ddg.timelineNodes.filter(node => !!node && ddgQueries.isVisible(ddg, node));
+  },
+
   /** ###########################################################################
    * Handle summary modes
    * ##########################################################################*/
