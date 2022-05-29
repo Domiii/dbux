@@ -320,7 +320,7 @@ export default class DataDependencyGraph extends BaseDDG {
     const { summaryModes } = this;
     const summaryMode = summaryModes[node.timelineId];
     const isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
-    const isCollapsed = !currentCollapsedAncestor && isCollapsedMode(summaryMode);
+    const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
 
     if (isVisible) {
       this.visibleNodes.add(node.timelineId);

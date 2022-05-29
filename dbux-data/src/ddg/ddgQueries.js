@@ -1,6 +1,7 @@
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { isRoot } from './constants';
-import DDGSummaryMode, { isShownMode } from './DDGSummaryMode';
+import DDGSummaryMode, { isCollapsedMode, isShownMode } from './DDGSummaryMode';
+import { DDGTimelineNode } from './DDGTimelineNodes';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
@@ -21,13 +22,22 @@ class RenderState {
  * (Similar to what `dataProviderUtil` is to `RuntimeDataProvider`.)
  */
 const ddgQueries = {
-
   /**
    * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
    */
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
     return node.watched || isShownMode(summaryMode);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isCollapsed(ddg, node) {
+    const summaryMode = ddg.summaryModes[node.timelineId];
+    return isCollapsedMode(summaryMode);
   },
 
   /** ###########################################################################

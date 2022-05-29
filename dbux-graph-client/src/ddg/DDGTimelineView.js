@@ -114,7 +114,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    */
   addTreeNodes(node, allNodes, depth = 0, top = YPadding) {
     const { type, children, label = '' } = node;
-    const isGroupNode = isControlGroupTimelineNode(type); // TODO: add collapsed clause
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
     let right;
@@ -123,10 +122,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return false;
     }
 
+    const isGroupNode = isControlGroupTimelineNode(type) && !ddgQueries.isCollapsed(this.renderState, node);
     const el = this.makeNodeEl(node, label);
     this.el.appendChild(el);
 
     if (isGroupNode) {
+      // TODO: change to `dot` → `subgraph`
       if (children?.length) {
         for (const childId of children) {
           const childNode = allNodes[childId];
