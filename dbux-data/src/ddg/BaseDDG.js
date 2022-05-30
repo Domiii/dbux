@@ -6,13 +6,13 @@
 // import DDGTimeline from './DDGTimeline';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import { doesTimelineNodeHaveData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
-import { DataTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, DataTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
-import { doesTimelineNodeHaveData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
@@ -37,6 +37,11 @@ export default class BaseDDG {
    * @type {DDGBounds}
    */
   _bounds;
+
+  /**
+   * @type {Obejct.<number, DataTimelineNode>}
+   */
+  _refSnapshotsByDataNodeId = [];
 
   /** ########################################
    * render data
@@ -72,8 +77,15 @@ export default class BaseDDG {
     return this._bounds;
   }
 
+  /**
+   * 
+   */
   get timelineNodes() {
     return this._timelineNodes;
+  }
+
+  getTimelineNode(timelineId) {
+    return this._timelineNodes[timelineId];
   }
 
 

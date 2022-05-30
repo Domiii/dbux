@@ -33,7 +33,7 @@ const ddgTimelineNodeTypeObj = {
  */
 const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 
-/** @typedef { DDGTimelineNodeTypeObj[keyof DDGTimelineNodeTypeObj] } DDGTimelineNodeTypeValues */
+/** @typedef { ddgTimelineNodeTypeObj[keyof ddgTimelineNodeTypeObj] } DDGTimelineNodeTypeValues */
 
 
 const controlGroupTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);

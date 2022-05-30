@@ -17,7 +17,22 @@ export class DDGTimelineNode {
    */
   timelineId;
 
+  /**
+   * @type {string}
+   */
   label;
+
+  /**
+   * Whether there are any writes to a ref's props happening in this node.
+   */
+  hasRefWriteNodes = false;
+
+  /**
+   * Set of `timelineId`s of {@link RefSnapshotTimelineNode} in this node.
+   * Is built lazily in `buildNodeDetails`.
+   * @type {Array.<number>?}
+   */
+  refWriteNodes;
 
   /**
    * @param {DDGTimelineNodeTypeValues} type
@@ -88,7 +103,7 @@ export class PrimitiveTimelineNode extends DataTimelineNode {
 
 
 /**
- * Snapshot of a ref value at time t = {@link RefSnapshotTimelineNode#dataNodeId.nodeId}.
+ * Snapshot of a ref value at time t = {@link RefSnapshotTimelineNode#dataNodeId}.
  * NOTE: This is NEITHER DataTimelineNode NOR GroupTimelineNode!
  */
 export class RefSnapshotTimelineNode extends DDGTimelineNode {

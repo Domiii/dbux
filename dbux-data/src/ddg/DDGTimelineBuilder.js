@@ -144,8 +144,8 @@ export default class DDGTimelineBuilder {
 
   #addSnapshotChildren(snapshot, originalChildren, modificationDataNodes, isOriginalValueRef) {
     /**
-       * @type {Object.<string, DataNode>}
-       */
+     * @type {Object.<string, DataNode>}
+     */
     const lastModsByProp = {};
 
     for (const dataNode of modificationDataNodes) {
@@ -192,21 +192,7 @@ export default class DDGTimelineBuilder {
         }
         else {
           // original is timelineId
-          const originalChildNode = this.ddg.timelineNodes[original];
-          newChild = typedShallowClone(originalChildNode);
-          if (newChild instanceof DataTimelineNode) {
-            // original was data node (probably primitive)
-            this.#doAddDataNode(newChild);
-          }
-          else {
-            // original was nested snapshot
-            this.#addNode(newChild);
-
-            if (originalChildNode.children?.length) {
-              // → keep cloning
-              this.#addSnapshotChildren(newChild, originalChildNode.children, EmptyArray, false);
-            }
-          }
+          newChild = this.#cloneNodeWithData(original);
         }
       }
       else {
@@ -233,6 +219,28 @@ export default class DDGTimelineBuilder {
   }
 
   /**
+   * @param {*} snapshot 
+   */
+  #cloneNodeWithData(timelineId) {
+    const originalChildNode = this.ddg.timelineNodes[timelineId];
+    const cloned = typedShallowClone(originalChildNode);
+    if (cloned instanceof DataTimelineNode) {
+      // original was data node (probably primitive)
+      this.#doAddDataNode(cloned);
+    }
+    else {
+      // original was nested snapshot
+      this.#addNode(cloned);
+
+      if (originalChildNode.children?.length) {
+        // → keep cloning
+        this.#addSnapshotChildren(cloned, originalChildNode.children, EmptyArray, false);
+      }
+    }
+    return cloned;
+  }
+
+  /**
    * @param {DataNode} ownDataNode 
    * @param {DataNode[]?} dataNodes
    * 
@@ -246,8 +254,14 @@ export default class DDGTimelineBuilder {
       throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
     }
 
+    const existingSnapshot = this.ddg._refSnapshotsByDataNodeId[ownDataNode.nodeId];
+    if (existingSnapshot) {
+      // clone existing snapshot
+      return this.#cloneNodeWithData(existingSnapshot);
+    }
+
     /**
-     * Create Snapshot node
+     * Create new
      */
     const snapshot = new RefSnapshotTimelineNode(ownDataNode.nodeId, refId);
     snapshot.label = this.#makeDataNodeLabel(ownDataNode);
@@ -276,8 +290,65 @@ export default class DDGTimelineBuilder {
       this.#addSnapshotChildren(snapshot, previousSnapshot.children, dataNodes, false);
     }
 
+    // snapshot.hasRefWriteNodes = true;
+    this.ddg._refSnapshotsByDataNodeId[snapshot.dataNodeId] = snapshot;
+
     return snapshot;
   }
+
+  /**
+   * @param {number} timelineId
+   */
+  #buildNodeSnapshots(timelineId) {
+    const node = this.ddg._timelineNodes[timelineId];
+    if (!node.hasRefWriteNodes || node.refWriteNodes) {
+      // already built or nothing to build
+      return;
+    }
+
+    const dataNodeIds = [];
+    this.#collectNestedUniqueRefTrees(node, dataNodeIds);
+    if (!dataNodeIds.length) {
+      // should not happen since `hasRefWriteNodes` is true
+      // throw new Error(`collectNestedUniqueRefTrees did not return anything`);
+      return;
+    }
+
+    TODO
+
+    node.refWriteNodes = TODO;
+  }
+
+  /**
+   * Finds all nested `refId`s nested in the given node.
+   * 
+   * Makes sure that no ref is included twice.
+   * 
+   * @param {DDGTimelineNode} node
+   */
+  #collectNestedUniqueRefTrees(node, dataNodeIds) {
+    const { dp } = this;
+    if (node.dataNodeId) {
+      const refId = dp.util.getDataNodeModifiedRefId(node.dataNodeId);
+      if (refId) {
+        // TODO: get unique roots
+        // TODO: actually build all snapshots, but:
+        //   1. when adding child snapshot: look-up existing snapshot from set of already built snapshots here
+        //   2. if it exists, remove it, and add as child instead
+        dataNodeIds.push(node.dataNodeId);
+      }
+    }
+    if (node.children) {
+      for (const childId of node.children) {
+        const childNode = this.ddg.timelineNodes[childId];
+        this.#collectNestedUniqueRefTrees(childNode, dataNodeIds);
+      }
+    }
+  }
+
+  /** ###########################################################################
+   * other data nodes
+   *  #########################################################################*/
 
   /**
    * @param {DataNode} dataNode 
@@ -320,7 +391,7 @@ export default class DDGTimelineBuilder {
       if (dp.util.isDataNodeValueTruthy(dataNode.nodeId)) {
         // push next iteration
         const iterationNode = new IterationNode(decisionNode.timelineId);
-        this.#pushGroup(iterationNode);
+        this.#addAndPushGroup(iterationNode);
       }
     }
     else {
@@ -330,7 +401,7 @@ export default class DDGTimelineBuilder {
       if (isLoopTimelineNode(currentGroup.type)) {
         // push first iteration of loop
         const iterationNode = new IterationNode(decisionNode.timelineId);
-        this.#pushGroup(iterationNode);
+        this.#addAndPushGroup(iterationNode);
       }
       else {
         // non-loop branch
@@ -345,8 +416,11 @@ export default class DDGTimelineBuilder {
    * @param {DataTimelineNode} newNode 
    */
   #doAddDataNode(newNode) {
+    const { dp } = this;
     this.#addNode(newNode);
     this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
+
+    newNode.hasRefNodes = !!dp.util.getDataNodeModifiedRefId(newNode.dataNodeId);
   }
 
   /** ###########################################################################
@@ -601,7 +675,7 @@ export default class DDGTimelineBuilder {
       // push context
       const context = dp.collections.executionContexts.getById(trace.contextId);
       const contextLabel = makeContextLabel(context, dp.application);
-      this.#pushGroup(new ContextTimelineNode(trace.contextId, contextLabel));
+      this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel));
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
@@ -612,7 +686,7 @@ export default class DDGTimelineBuilder {
         this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace.staticTraceId)}"`);
       }
       else {
-        this.#pushGroup(new ControlGroupCtor(controlStatementId));
+        this.#addAndPushGroup(new ControlGroupCtor(controlStatementId));
       }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
@@ -730,8 +804,9 @@ export default class DDGTimelineBuilder {
       newNode = this.#addDataNode(ownDataNode, dataNodes);
     }
 
-    // add trace
-
+    // update group
+    const currentGroup = this.peekStack();
+    currentGroup.hasRefWriteNodes ||= newNode.hasRefWriteNodes;
 
     // add edges
     if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
@@ -741,6 +816,15 @@ export default class DDGTimelineBuilder {
     }
   }
 
+  /**
+   * During initial build, not all details of every node are prepared.
+   * When investigating a node's details, this function needs to run first.
+   */
+  buildNodeDetails(timelineId) {
+    this.#buildNodeSnapshots(timelineId);
+  }
+
+
   /** ###########################################################################
    * stack util
    * ##########################################################################*/
@@ -748,13 +832,16 @@ export default class DDGTimelineBuilder {
   /**
    * @param {GroupTimelineNode} newGroupNode 
    */
-  #pushGroup(newGroupNode) {
+  #addAndPushGroup(newGroupNode) {
     this.#addNode(newGroupNode);
     this.#addNodeToGroup(newGroupNode);
     this.stack.push(newGroupNode);
   }
 
   #popGroup() {
-    return this.stack.pop();
+    const nestedGroup = this.stack.pop();
+    const currentGroup = this.peekStack();
+    currentGroup.hasRefWriteNodes ||= nestedGroup.hasRefWriteNodes;
+    return nestedGroup;
   }
 }

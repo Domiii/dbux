@@ -833,6 +833,30 @@ export default {
     return value;
   },
 
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getDataNodeAccessedRefId(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    const objectNodeId = dataNode.varAccess?.objectNodeId;
+    if (objectNodeId) {
+      const objectDataNode = dp.collections.dataNodes.getById(objectNodeId);
+      return objectDataNode.refId;
+    }
+    return 0;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getDataNodeModifiedRefId(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (isDataNodeModifyType(dataNode.type)) {
+      return this.dp.util.getDataNodeAccessedRefId(nodeId) || 0;
+    }
+    return 0;
+  },
+
 
   /** ###########################################################################
    * {@link constructValueFull}
