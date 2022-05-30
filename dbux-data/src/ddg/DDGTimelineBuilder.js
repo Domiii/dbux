@@ -242,11 +242,11 @@ export default class DDGTimelineBuilder {
 
   /**
    * @param {DataNode} ownDataNode 
-   * @param {DataNode[]?} dataNodes
+   * @param {DataNode[]?} dataNodesOfTrace Only provided for a snapshot root.
    * 
    * @return {RefSnapshotTimelineNode}
    */
-  #addRefSnapshot(ownDataNode, dataNodes) {
+  #addRefSnapshot(ownDataNode, dataNodesOfTrace) {
     const { dp } = this;
     // const { nodeId: dataNodeId } = ownDataNode;
     const { refId } = ownDataNode;
@@ -287,7 +287,9 @@ export default class DDGTimelineBuilder {
       /**
        * → deep clone original snapshot.
        */
-      this.#addSnapshotChildren(snapshot, previousSnapshot.children, dataNodes, false);
+      // TODO: there is the implicit assumption that the previous snapshot captured all modifications except for `dataNodesOfTrace`
+      const modificationDataNodes = dataNodesOfTrace;
+      this.#addSnapshotChildren(snapshot, previousSnapshot.children, modificationDataNodes, false);
     }
 
     // snapshot.hasRefWriteNodes = true;
@@ -306,15 +308,21 @@ export default class DDGTimelineBuilder {
       return;
     }
 
-    const dataNodeIds = [];
-    this.#collectNestedUniqueRefTrees(node, dataNodeIds);
-    if (!dataNodeIds.length) {
+    const refIds = new Set();
+    const lastDataNodeId = this.#collectNestedUniqueRefTrees(node, refIds);
+    if (!lastDataNodeId) {
       // should not happen since `hasRefWriteNodes` is true
       // throw new Error(`collectNestedUniqueRefTrees did not return anything`);
       return;
     }
 
-    TODO
+    // TODO: build all snapshots here
+    for (const refId of refIds) {
+      // TODO: fix dataNodesOfTrace
+      // TODO: when adding child snapshot: look-up existing snapshot from set of already built snapshot "roots" here
+      //      → if it exists, remove it from set, and add as child over there instead
+      this.#addRefSnapshot();
+    }
 
     node.refWriteNodes = TODO;
   }
@@ -325,25 +333,24 @@ export default class DDGTimelineBuilder {
    * Makes sure that no ref is included twice.
    * 
    * @param {DDGTimelineNode} node
+   * @return {number} The last `DataNode.nodeId` inside `node`.
    */
-  #collectNestedUniqueRefTrees(node, dataNodeIds) {
+  #collectNestedUniqueRefTrees(node, refIds) {
     const { dp } = this;
+    let lastDataNodeId = node.dataNodeId;
     if (node.dataNodeId) {
       const refId = dp.util.getDataNodeModifiedRefId(node.dataNodeId);
       if (refId) {
-        // TODO: get unique roots
-        // TODO: actually build all snapshots, but:
-        //   1. when adding child snapshot: look-up existing snapshot from set of already built snapshots here
-        //   2. if it exists, remove it, and add as child instead
-        dataNodeIds.push(node.dataNodeId);
+        refIds.add(refIds);
       }
     }
     if (node.children) {
       for (const childId of node.children) {
         const childNode = this.ddg.timelineNodes[childId];
-        this.#collectNestedUniqueRefTrees(childNode, dataNodeIds);
+        lastDataNodeId ||= this.#collectNestedUniqueRefTrees(childNode, refIds);
       }
     }
+    return lastDataNodeId;
   }
 
   /** ###########################################################################
