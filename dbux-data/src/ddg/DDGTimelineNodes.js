@@ -107,6 +107,7 @@ export class PrimitiveTimelineNode extends DataTimelineNode {
  * NOTE: This is NEITHER DataTimelineNode NOR GroupTimelineNode!
  */
 export class RefSnapshotTimelineNode extends DDGTimelineNode {
+  traceId;
   dataNodeId;
 
   /**
@@ -131,9 +132,10 @@ export class RefSnapshotTimelineNode extends DDGTimelineNode {
   /**
    * @param {DataNode} dataNodeId 
    */
-  constructor(dataNodeId, refId) {
+  constructor(traceId, dataNodeId, refId) {
     super(DDGTimelineNodeType.RefSnapshot);
 
+    this.traceId = traceId;
     this.dataNodeId = dataNodeId;
     this.refId = refId;
   }

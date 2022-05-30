@@ -1015,11 +1015,11 @@ export default {
    * 
    * @return {DataNode[]} modifyDataNodes
    */
-  collectDataSnapshotModificationNodes(dp, snapshot, fromTraceId, toTraceId) {
+  collectDataSnapshotModificationNodes(dp, refId, fromTraceId, toTraceId) {
     if (!toTraceId) {
       throw new Error(`expected "toTraceId" to be number but was "${toTraceId}"`);
     }
-    const { refId } = snapshot;
+    // const { refId } = snapshot;
     return dp.indexes.dataNodes.byObjectRefId.get(refId)?.
       filter(node => {
         return (
@@ -1044,7 +1044,7 @@ export default {
    * @param {IDataSnapshotMods} snapshotMods
    */
   applyDataSnapshotModifications(dp, snapshot, fromTraceId, toTraceId, snapshotMods = DefaultDataSnapshotMods) {
-    const modifyDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
+    const modifyDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot.refId, fromTraceId, toTraceId);
 
     dp.util.applyDataSnapshotModificationsDataNodes(snapshot, modifyDataNodes, snapshotMods);
   },

@@ -22,6 +22,7 @@ const Verbose = 1;
 // const Verbose = 0;
 
 
+/** @typedef { Map.<number, RefSnapshotTimelineNode } SnapshotMap */
 
 /** ###########################################################################
  * {@link DDGTimelineBuilder}
@@ -200,7 +201,7 @@ export default class DDGTimelineBuilder {
         // if (this.#canBeRefSnapshot(lastModDataNode)) {
         if (lastModDataNode.refId) {
           // nested ref
-          newChild = this.#addRefSnapshot(lastModDataNode, null);
+          newChild = this.#addRefSnapshot(lastModDataNode);
         }
         else {
           // primitive
@@ -246,10 +247,13 @@ export default class DDGTimelineBuilder {
    * 
    * @return {RefSnapshotTimelineNode}
    */
-  #addRefSnapshot(ownDataNode, dataNodesOfTrace) {
+  #addRefSnapshot(ownDataNode) {
     const { dp } = this;
     // const { nodeId: dataNodeId } = ownDataNode;
     const { refId } = ownDataNode;
+
+    // TODO: fix this
+    
     if (!refId) {
       throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
     }
@@ -263,7 +267,7 @@ export default class DDGTimelineBuilder {
     /**
      * Create new
      */
-    const snapshot = new RefSnapshotTimelineNode(ownDataNode.nodeId, refId);
+    const snapshot = new RefSnapshotTimelineNode(ownDataNode.traceId, ownDataNode.traceId, ownDataNode.nodeId, refId);
     snapshot.label = this.#makeDataNodeLabel(ownDataNode);
     this.#addNode(snapshot);
 
@@ -277,9 +281,9 @@ export default class DDGTimelineBuilder {
       const valueRef = this.dp.collections.values.getById(refId);
 
       // get last modifications by prop
-      const fromTraceId = 0;
+      const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
       const toTraceId = ownDataNode.traceId;
-      const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(snapshot, fromTraceId, toTraceId);
+      const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
 
       this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true);
     }
@@ -287,8 +291,10 @@ export default class DDGTimelineBuilder {
       /**
        * → deep clone original snapshot.
        */
-      // TODO: there is the implicit assumption that the previous snapshot captured all modifications except for `dataNodesOfTrace`
-      const modificationDataNodes = dataNodesOfTrace;
+      const fromTraceId = previousSnapshot.traceId;
+      const toTraceId = ownDataNode.traceId;
+      const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
+      // const modificationDataNodes = dataNodesOfTrace;
       this.#addSnapshotChildren(snapshot, previousSnapshot.children, modificationDataNodes, false);
     }
 
@@ -311,20 +317,28 @@ export default class DDGTimelineBuilder {
     const refIds = new Set();
     const lastDataNodeId = this.#collectNestedUniqueRefTrees(node, refIds);
     if (!lastDataNodeId) {
-      // should not happen since `hasRefWriteNodes` is true
-      // throw new Error(`collectNestedUniqueRefTrees did not return anything`);
+      // throw new Error(`collectNestedUniqueRefTrees did not return anything but `hasRefWriteNodes` is true for node ${node}`);
       return;
     }
 
-    // TODO: build all snapshots here
-    for (const refId of refIds) {
+    // build all snapshots
+    node.refWriteNodes = [];
+    const refIdsCopy = Array.from(refIds); // keep a copy since the original will be modified
+    /**
+     * @type {SnapshotMap}
+     */
+    const builtSnapshotsByRefId = new Map();
+    for (const refId of refIdsCopy) {
       // TODO: fix dataNodesOfTrace
       // TODO: when adding child snapshot: look-up existing snapshot from set of already built snapshot "roots" here
-      //      → if it exists, remove it from set, and add as child over there instead
-      this.#addRefSnapshot();
+      //      → while adding, if a child exists, remove it from set, and add as child over there instead
+      //      → if a root was already added as a child, ignore it
+      // TODO: this.ddg._refSnapshotsByDataNodeId
+      this.#addRefSnapshot(dataNode, refIds, builtSnapshotsByRefId);
     }
-
-    node.refWriteNodes = TODO;
+    
+    // done!
+    node.refWriteNodes.push(...builtSnapshotsByRefId.values());
   }
 
   /**
@@ -543,7 +557,7 @@ export default class DDGTimelineBuilder {
         // sanity checks
         this.logger.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
-      newNode = this.#addRefSnapshot(ownDataNode, dataNodes);
+      newNode = this.#addRefSnapshot(ownDataNode);
     }
     else {
       // primitive value or ref assignment
