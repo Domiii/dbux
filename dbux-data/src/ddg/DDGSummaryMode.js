@@ -74,7 +74,7 @@ export function isCollapsedMode(mode) {
 
 const hasSummaryDataModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 hasSummaryDataModes[DDGSummaryMode.CollapseSummary] = true;
-export function doesModeNeedSummaryData(mode) {
+export function isSummaryMode(mode) {
   return hasSummaryDataModes[mode] || false;
 }
 

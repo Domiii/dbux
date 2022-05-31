@@ -2,10 +2,11 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
-import DDGSummaryMode, { doesModeNeedSummaryData, isCollapsedMode, isShownMode } from './DDGSummaryMode';
+import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import ddgQueries from './ddgQueries';
 import DDGEdgeType from './DDGEdgeType';
+import DDGNodeSummary from './DDGNodeSummary';
 
 /** ###########################################################################
  * default config
@@ -301,6 +302,8 @@ export default class DataDependencyGraph extends BaseDDG {
     }
   }
 
+  #get
+
   /**
    * 
    * @param {DDGTimelineNode} node 
@@ -315,7 +318,9 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
-    const needsSummaryData = !currentCollapsedAncestor && ddgQueries.doesNodeNeedSummaryData(this, node);
+    const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarized(this, node);
+    const summaryRepresentatingNode = currentCollapsedAncestor || node;
+    let isSummarized = ddgQueries.isNodeSummarized(this, summaryRepresentatingNode);
 
     if (needsSummaryData) {
       // build node summary (if not already built)
@@ -337,7 +342,23 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
 
-    // TODO: check if node has "details" (and refsnapshots open) and re-route to there
+    if (isSummarized) {
+      const nodeSummary = this.nodeSummaries[summaryRepresentatingNode.timelineId];
+      isSummarized = !!nodeSummary?.summaryNodes?.length;
+      if (isSummarized) {
+        // TODO: during buildNodeSummary:
+        /**
+         * 1. don't add edges or snapshotsByDataNode etc. data
+         * 2. determine set of all "output refs"
+         * 3. merge writes from other refs into "output refs"
+         */
+
+        // TODO: re-route to summaryNodes (via DataNode.varAccess) below
+        nodeSummary.summaryNodes;
+      }
+    }
+
+    // TODO: prevent duplicate edges
 
     // add/merge incoming edges
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
@@ -368,6 +389,7 @@ export default class DataDependencyGraph extends BaseDDG {
         if (allFrom) {
           for (const from of allFrom) {
             if (from !== currentCollapsedAncestor) {
+              // TODO: look up summary node by `dataNode.varAccess`
               summaryState.addEdge(from, currentCollapsedAncestor, type);
             }
           }
@@ -375,8 +397,9 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
     else {
-      // node is completely gone
-      // → multicast all incoming to all outgoing edges
+      // node is hidden
+      // → multicast all outgoing edges to all incoming edges
+      // → to that end, add all `from`s to this node's `reroutes`
       let reroutes = [];
       nodeRouteMap.set(timelineId, reroutes);
 
