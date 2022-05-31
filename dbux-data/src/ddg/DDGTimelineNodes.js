@@ -28,11 +28,17 @@ export class DDGTimelineNode {
   hasRefWriteNodes = false;
 
   /**
+   * `timelineId` of this node's parent node (or 0/undefined if its a root/it does not apply).
+   * @type {number}
+   */
+  parentNodeId;
+
+  /**
    * Set of `timelineId`s of {@link RefSnapshotTimelineNode} in this node.
-   * Is built lazily in `buildNodeDetails`.
+   * Is built lazily in `buildNodeSummary`.
    * @type {Array.<number>?}
    */
-  refWriteNodes;
+  summaryNodes;
 
   /**
    * @param {DDGTimelineNodeTypeValues} type
@@ -101,12 +107,11 @@ export class PrimitiveTimelineNode extends DataTimelineNode {
   }
 }
 
-
 /**
- * Snapshot of a ref value at time t = {@link RefSnapshotTimelineNode#dataNodeId}.
+ * This node represents a ref value at time t = {@link RefTimelineNode#dataNodeId}.
  * NOTE: This is NEITHER DataTimelineNode NOR GroupTimelineNode!
  */
-export class RefSnapshotTimelineNode extends DDGTimelineNode {
+export class RefTimelineNode extends DDGTimelineNode {
   traceId;
   dataNodeId;
 
@@ -115,6 +120,20 @@ export class RefSnapshotTimelineNode extends DDGTimelineNode {
    */
   refId;
 
+  /**
+   * @param {number} dataNodeId 
+   */
+  constructor(type, traceId, dataNodeId, refId/* , parentNodeId */) {
+    super(type);
+    this.traceId = traceId;
+    this.dataNodeId = dataNodeId;
+    this.refId = refId;
+    // this.parentNodeId = parentNodeId;
+  }
+}
+
+
+export class RefSnapshotTimelineNode extends RefTimelineNode {
   /**
    * @type {string}
    */
@@ -130,17 +149,35 @@ export class RefSnapshotTimelineNode extends DDGTimelineNode {
   children;
 
   /**
-   * @param {DataNode} dataNodeId 
+   * @param {number} dataNodeId 
    */
-  constructor(traceId, dataNodeId, refId) {
-    super(DDGTimelineNodeType.RefSnapshot);
-
-    this.traceId = traceId;
-    this.dataNodeId = dataNodeId;
-    this.refId = refId;
+  constructor(traceId, dataNodeId, refId, parentNodeId) {
+    super(DDGTimelineNodeType.RefSnapshot, traceId, dataNodeId, refId, parentNodeId);
   }
 }
 
+/**
+ * 
+ */
+export class RepeatedRefTimelineNode extends RefTimelineNode {
+  /**
+   * @type {string}
+   */
+  label = '🔃';
+
+  /**
+   * The `timelineId` of the {@link RefSnapshotTimelineNode} that this is a repition of.
+   */
+  snapshotTimelineId;
+
+  /**
+   * @param {number} dataNodeId 
+   */
+  constructor(traceId, dataNodeId, refId, parentNodeId, originalTimelineId) {
+    super(DDGTimelineNodeType.RepeatedRef, traceId, dataNodeId, refId/* , parentNodeId */);
+    this.snapshotTimelineId = originalTimelineId;
+  }
+}
 
 /** ###########################################################################
  * Decisions

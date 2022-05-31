@@ -1,3 +1,5 @@
+/** @typedef { Object<string, RefSnapshot>? | Array<RefSnapshot>? } ISnapshotChildren */
+
 /**
  * Represents a snapshot of a reference type object at a given point in time.
  */
@@ -21,7 +23,7 @@ export default class RefSnapshot {
   value;
 
   /**
-   * @type {Object<string, RefSnapshot>? | Array<RefSnapshot>?}
+   * @type {ISnapshotChildren}
    */
   children;
 

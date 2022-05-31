@@ -7,6 +7,7 @@ const ddgTimelineNodeTypeObj = {
   Primitive: 2,
 
   RefSnapshot: 3,
+  RepeatedRef: 4,
 
   // decision (Data node for control decisions)
   Decision: 8,
@@ -35,22 +36,6 @@ const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 
 /** @typedef { ddgTimelineNodeTypeObj[keyof ddgTimelineNodeTypeObj] } DDGTimelineNodeTypeValues */
 
-
-const controlGroupTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-controlGroupTypes[DDGTimelineNodeType.Root] = true;
-controlGroupTypes[DDGTimelineNodeType.Context] = true;
-controlGroupTypes[DDGTimelineNodeType.If] = true;
-controlGroupTypes[DDGTimelineNodeType.Ternary] = true;
-controlGroupTypes[DDGTimelineNodeType.SwitchCase] = true;
-controlGroupTypes[DDGTimelineNodeType.For] = true;
-controlGroupTypes[DDGTimelineNodeType.ForIn] = true;
-controlGroupTypes[DDGTimelineNodeType.ForOf] = true;
-controlGroupTypes[DDGTimelineNodeType.While] = true;
-controlGroupTypes[DDGTimelineNodeType.DoWhile] = true;
-controlGroupTypes[DDGTimelineNodeType.Iteration] = true;
-export function isControlGroupTimelineNode(timelineNodeType) {
-  return controlGroupTypes[timelineNodeType] || false;
-}
 
 // const containerNodeTypes = [...controlGroupTypes];
 // export function isContainerNodeType(timelineNodeType) {
@@ -82,6 +67,26 @@ export function doesTimelineNodeHaveData(timelineNodeType) {
   return hasDataTimelineNodeTypes[timelineNodeType] || false;
 }
 
+export function isSnapshotTimelineNode(timelineNodeType) {
+  return DDGTimelineNodeType.is.RefSnapshot(timelineNodeType);
+}
+
+const refTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+refTypes[DDGTimelineNodeType.RefSnapshot] = true;
+refTypes[DDGTimelineNodeType.RepeatedRef] = true;
+export function isRefTimelineNode(timelineNodeType) {
+  return refTypes[timelineNodeType] || false;
+}
+
+export function isRepeatedRefTimelineNode(timelineNodeType) {
+  return DDGTimelineNodeType.is.RepeatedRef(timelineNodeType);
+}
+
+
+/** ###########################################################################
+ * group + branch node utils
+ * ##########################################################################*/
+
 
 const loopTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 loopTypes[DDGTimelineNodeType.For] = true;
@@ -90,7 +95,20 @@ loopTypes[DDGTimelineNodeType.ForOf] = true;
 loopTypes[DDGTimelineNodeType.While] = true;
 loopTypes[DDGTimelineNodeType.DoWhile] = true;
 export function isLoopTimelineNode(groupType) {
-  return loopTypes[groupType];
+  return loopTypes[groupType] || false;
+}
+
+const controlGroupTypes = [...loopTypes];
+controlGroupTypes[DDGTimelineNodeType.Root] = true;
+controlGroupTypes[DDGTimelineNodeType.Context] = true;
+
+controlGroupTypes[DDGTimelineNodeType.If] = true;
+controlGroupTypes[DDGTimelineNodeType.Ternary] = true;
+controlGroupTypes[DDGTimelineNodeType.SwitchCase] = true;
+
+controlGroupTypes[DDGTimelineNodeType.Iteration] = true;
+export function isControlGroupTimelineNode(timelineNodeType) {
+  return controlGroupTypes[timelineNodeType] || false;
 }
 
 
@@ -117,6 +135,10 @@ unconditionalTypes[DDGTimelineNodeType.Root] = true;
  */
 export function isUnconditionalGroup(groupType) {
   return unconditionalTypes[groupType];
+}
+
+export function isDecisionNode(nodeType) {
+  return DDGTimelineNodeType.is.Decision(nodeType);
 }
 
 export default DDGTimelineNodeType;

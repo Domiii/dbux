@@ -852,7 +852,7 @@ export default {
   getDataNodeModifiedRefId(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isDataNodeModifyType(dataNode.type)) {
-      return this.dp.util.getDataNodeAccessedRefId(nodeId) || 0;
+      return dp.util.getDataNodeAccessedRefId(nodeId) || 0;
     }
     return 0;
   },

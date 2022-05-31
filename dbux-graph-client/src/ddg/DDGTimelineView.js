@@ -117,7 +117,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * @param {Element} nodeEl 
    */
   makeNodeButtons(node) {
-    // TODO: generate correct `modesForThisNode` (maybe simply use ddgQueries.canApplyMode)
+    // TODO: generate correct `modesForThisNode` (maybe simply use ddgQueries.canApplySummaryMode)
     // TODO: make sure, the buttons work correctly
     const modesForThisNode = [1, 4];
     const el = compileHtmlElement(/*html*/`

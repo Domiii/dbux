@@ -24,6 +24,15 @@ class RenderState {
 const ddgQueries = {
   /**
    * @param {RenderState} ddg 
+   * @param {RenderState} timelineId
+   * @return {DDGTimelineNode}
+   */
+  getTimelineNode(ddg, timelineId) {
+    return ddg.timelineNodes[timelineId];
+  },
+
+  /**
+   * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
   isVisible(ddg, node) {
@@ -47,6 +56,27 @@ const ddgQueries = {
     return ddg.timelineNodes.filter(node => !!node && ddgQueries.isVisible(ddg, node));
   },
 
+  /**
+   * Whether `inner` is descendant of `outer`
+   * 
+   * @param {RenderState} ddg
+   * @param {RefSnapshotTimelineNode} outer
+   * @param {RefSnapshotTimelineNode} inner
+   */
+  isSnapshotDescendant(ddg, outer, inner) {
+    const { parentNodeId } = inner;
+    if (!parentNodeId) {
+      return false;
+    }
+    const parentNode = this.ddg.timelineNodes[parentNodeId];
+    if (parentNode === outer) {
+      return true;
+    }
+
+    return ddgQueries.isSnapshotDescendant(ddg, outer, parentNode);
+  },
+
+
   /** ###########################################################################
    * Handle summary modes
    * ##########################################################################*/
@@ -54,12 +84,12 @@ const ddgQueries = {
   /**
    * @param {BaseDDG} ddg 
    */
-  canApplyMode(node, mode) {
+  canApplySummaryMode(node, mode) {
     // const node = ddg.timelineNodes[timelineId];
-    return this._canApplyMode[mode](node);
+    return this._canApplySummaryMode[mode](node);
   },
 
-  _canApplyMode: {
+  _canApplySummaryMode: {
     [DDGSummaryMode.Show]: (node) => {
       return (
         !!node.dataNodeId && // ← implies that root is excluded
