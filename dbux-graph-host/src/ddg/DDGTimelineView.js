@@ -113,20 +113,21 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       const { ddg } = this;
 
       const origTimelineNodesLength = ddg.timelineNodes.length;
-      const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
+      // const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
 
 
       // update graph
       ddg.setSummaryMode(timelineId, mode);
 
-      
+
       // state delta: new nodes
       const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
-      // state delta: added summaries
-      const newNodeSummaries = ddg.nodeSummaries;
-      const newSummaryKeys = Object.keys(newNodeSummaries);
-      const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
-      const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
+      // NOTE: client does not need summaries data
+      // // state delta: added summaries
+      // const newNodeSummaries = ddg.nodeSummaries;
+      // const newSummaryKeys = Object.keys(newNodeSummaries);
+      // const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
+      // const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
 
       // state delta: new nodes
 
@@ -135,9 +136,9 @@ export default class DDGTimelineView extends HostComponentEndpoint {
         arrayAdd: {
           timelineNodes: newNodes
         },
-        objectMerge: {
-          nodeSummaries: addedSummaries
-        }
+        // objectMerge: {
+        //   nodeSummaries: addedSummaries
+        // }
       });
     }
   }

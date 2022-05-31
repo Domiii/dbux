@@ -387,21 +387,21 @@ export default class DDGTimelineBuilder {
     /**
      * @type {SnapshotMap}
      */
-    const builtSnapshotsByRefId = new Map();
+    const snapshotsByRefId = new Map();
     for (const [refId, dataNodeId] of lastModifyNodesByRefId) {
-      if (builtSnapshotsByRefId.has(refId)) {
+      if (snapshotsByRefId.has(refId)) {
         // this ref was already added as a descendant of a previous ref → skip
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      this.#addNewRefSnapshot(dataNode, builtSnapshotsByRefId, null);
+      this.#addNewRefSnapshot(dataNode, snapshotsByRefId, null);
     }
 
-    const roots = Array.from(builtSnapshotsByRefId.values()).filter(snap => !snap.parentNodeId);
+    const roots = Array.from(snapshotsByRefId.values()).filter(snap => !snap.parentNodeId);
 
     // done → set `summaryNodes` to be only the roots of this set
     const summaryNodes = roots;
-    ddg.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, summaryNodes);
+    ddg.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, summaryNodes);
   }
 
   /**

@@ -346,11 +346,17 @@ export default class DataDependencyGraph extends BaseDDG {
       const nodeSummary = this.nodeSummaries[summaryRepresentatingNode.timelineId];
       isSummarized = !!nodeSummary?.summaryNodes?.length;
       if (isSummarized) {
-        // TODO: during buildNodeSummary:
+        // TODO: fix buildNodeSummary:
         /**
          * 1. don't add edges or snapshotsByDataNode etc. data
-         * 2. determine set of all "output refs"
-         * 3. merge writes from other refs into "output refs"
+         * 2. add new `refIdByLastAccessDataNodeId` map
+         * 3. use `refIdByLastAccessDataNodeId` to change `snapshotsByRefId` to only include "non-internal refs"
+         */
+        /**
+         * fix summarization here:
+         *    → look up `summaryNode` by varAccess (easy! → use `snapshotsByRefId`)
+         *    → link `to` `summaryNode` instead of `node`
+         *    → "hide" nodes that are not in `summaryNodes`
          */
 
         // TODO: re-route to summaryNodes (via DataNode.varAccess) below
