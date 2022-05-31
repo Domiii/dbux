@@ -277,6 +277,16 @@ export default class DataDependencyGraph extends BaseDDG {
         this.#applyMode(childId, DDGSummaryMode.Hide);
       }
     },
+    [DDGSummaryMode.CollapseSummary]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // hide all children
+      for (const childId of node.children) {
+        // const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, DDGSummaryMode.Hide);
+      }
+    },
     [DDGSummaryMode.ExpandSelf]: (timelineId) => {
       const { og } = this;
       const node = og.timelineNodes[timelineId];
@@ -285,7 +295,7 @@ export default class DataDependencyGraph extends BaseDDG {
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
         const targetMode = ddgQueries.canApplySummaryMode(childNode, DDGSummaryMode.Collapse) ?
-          DDGSummaryMode.Collapse :
+          DDGSummaryMode.CollapseSummary : // temporary hackfix
           DDGSummaryMode.Show;
         this.#applyMode(childId, targetMode);
       }

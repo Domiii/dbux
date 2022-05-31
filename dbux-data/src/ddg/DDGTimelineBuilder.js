@@ -45,14 +45,6 @@ export default class DDGTimelineBuilder {
   skippedNodesByDataNodeId = [];
 
   /**
-   * The last snapshot of given `refId`.
-   * NOTE: The last snapshot by `refId`. The snapshot tree generally contains both reads, writes and also untouched nodes.
-   * 
-   * @type {Object.<number, RefSnapshotTimelineNode>}
-   */
-  lastTimelineRefSnapshotNodeByRefId = {};
-
-  /**
    * The last write of given var (declarationTid)
    * or the first node that accessed the var (within bounds).
    * 
@@ -109,14 +101,6 @@ export default class DDGTimelineBuilder {
     return inputNode;
   }
 
-  getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
-    return this.firstTimelineDataNodeByDataNodeId[dataNodeId];
-  }
-
-  getLastRefSnapshotNode(refId) {
-    return this.lastTimelineRefSnapshotNodeByRefId[refId];
-  }
-
   getLastVarSnapshotNode(declarationTid) {
     return this.lastTimelineVarSnapshotNodeByDeclarationTid[declarationTid];
   }
@@ -125,28 +109,12 @@ export default class DDGTimelineBuilder {
    * snapshots
    *  #########################################################################*/
 
-  /**
-   * @param {DataNode} dataNode 
-   */
-  #getRefIdForSnapshot(dataNode) {
-    let refId;
-    const dataNodeId = dataNode.nodeId;
-    if (
-      (
-        (
-          (refId = dataNode.refId) &&
-          this.ddg.watchSet.isWatchedDataNode(dataNodeId)
-        ) /* ||
-        (
-          (refId = dataNode.varAccess?.objectNodeId)
-        ) */
-      ) /* &&
-      // NOTE: render as "Primitive" instead if ValueRef does not have children
-      (this.dp.collections.values.getById(refId))?.children */
-    ) {
-      return refId;
-    }
-    return 0;
+  /** ###########################################################################
+   * TODO: move all the below to `BaseDDG`
+   * ##########################################################################*/
+
+  getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
+    return this.firstTimelineDataNodeByDataNodeId[dataNodeId];
   }
 
   /**
@@ -341,9 +309,6 @@ export default class DDGTimelineBuilder {
     snapshot.label = this.#makeDataNodeLabel(ownDataNode);
     this.#addRefSnapshotNode(snapshot, snapshotsByRefId);
 
-    // // TODO: fix this
-    // const previousSnapshot = this.getLastRefSnapshotNode(refId);
-    // if (!previousSnapshot) {
     /**
      * → build new snapshot.
      * NOTE: this is loosely based on {@link dp.util.constructVersionedValueSnapshot}.
@@ -355,10 +320,13 @@ export default class DDGTimelineBuilder {
     const toTraceId = ownDataNode.traceId;
     const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
     this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true, snapshotsByRefId);
+
+    // TODO: add refNode edge!
+
     // }
     // else {
     //   /**
-    //    * → deep clone original snapshot.
+    //    * → deep clone previous snapshot.
     //    */
     //   const fromTraceId = previousSnapshot.traceId;
     //   const toTraceId = ownDataNode.traceId;
@@ -575,11 +543,10 @@ export default class DDGTimelineBuilder {
       // }
     }
     else if (dataNode.refId) {
-      const prevSnapshotNode = this.getLastRefSnapshotNode(dataNode.refId);
+      // TODO: look up by varAccess
 
-      // TODO: look up by varAccess, not by refId!
-      // TODO: add refNode edge!
-      prev = prevSnapshotNode?.refNode;
+      // const prevSnapshotNode = this.getLastRefSnapshotNode(dataNode.refId);
+      // prev = prevSnapshotNode?.refNode;
     }
     else {
       // there is no previous guy for this guy
@@ -610,7 +577,7 @@ export default class DDGTimelineBuilder {
   /**
    * 
    */
-  #addDataNode(ownDataNode, dataNodes) {
+  #addDataNodeToTimeline(ownDataNode, dataNodes) {
     let newNode;
 
     const { dp } = this;
@@ -669,6 +636,35 @@ export default class DDGTimelineBuilder {
   #addNodeToGroup(newNode) {
     const parent = this.peekStack();
     parent.children.push(newNode.timelineId);
+  }
+
+  /** ###########################################################################
+   * snapshots
+   * ##########################################################################*/
+
+  /**
+   * NOTE: we only create snapshots for watched or summarized entries.
+   * @param {DataNode} dataNode 
+   */
+  #getRefIdForSnapshot(dataNode) {
+    let refId;
+    const dataNodeId = dataNode.nodeId;
+    if (
+      (
+        (
+          (refId = dataNode.refId) &&
+          this.ddg.watchSet.isWatchedDataNode(dataNodeId)
+        ) /* ||
+        (
+          (refId = dataNode.varAccess?.objectNodeId)
+        ) */
+      ) /* &&
+      // NOTE: render as "Primitive" instead if ValueRef does not have children
+      (this.dp.collections.values.getById(refId))?.children */
+    ) {
+      return refId;
+    }
+    return 0;
   }
 
 
@@ -831,13 +827,13 @@ export default class DDGTimelineBuilder {
 
 
     // register DataNode by refId
-    const refId1 = dp.util.getDataNodeAccessedRefId(ownDataNode.nodeId);
-    const refId2 = ownDataNode.refId;
-    if (refId1) {
-      this.ddg._lastAccessDataNodeIdByRefId[refId1] = ownDataNode.nodeId;
+    const accessedRefId = dp.util.getDataNodeAccessedRefId(ownDataNode.nodeId);
+    const valueRefId = ownDataNode.refId;
+    if (accessedRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = ownDataNode.nodeId;
     }
-    if (refId2) {
-      this.ddg._lastAccessDataNodeIdByRefId[refId2] = ownDataNode.nodeId;
+    if (valueRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = ownDataNode.nodeId;
     }
 
 
@@ -909,8 +905,9 @@ export default class DDGTimelineBuilder {
        * NOTE2: For now, don't skip adding since that causes issues with final node ordering.
        * @type {DataTimelineNode}
        */
-      newNode = this.#addDataNode(ownDataNode, dataNodes);
+      newNode = this.#addDataNodeToTimeline(ownDataNode, dataNodes);
     }
+    newNode.hasRefWriteNodes = !!accessedRefId;
 
     // update group
     const currentGroup = this.peekStack();

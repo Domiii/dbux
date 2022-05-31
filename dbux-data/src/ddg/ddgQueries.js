@@ -112,16 +112,18 @@ const ddgQueries = {
       );
     },
     [DDGSummaryMode.Collapse]: (node) => {
-      // return Array.isArray(node.children);
-      return !isRoot(node.timelineId) && 
+      return !isRoot(node.timelineId) &&
+        isControlGroupTimelineNode(node.type);
+    },
+    [DDGSummaryMode.CollapseSummary]: (node) => {
+      // TODO: improve this
+      return !isRoot(node.timelineId) &&
         isControlGroupTimelineNode(node.type);
     },
     [DDGSummaryMode.ExpandSelf]: (node) => {
-      // return Array.isArray(node.children);
       return isControlGroupTimelineNode(node.type);
     },
     [DDGSummaryMode.ExpandSubgraph]: (node) => {
-      // return Array.isArray(node.children);
       return isControlGroupTimelineNode(node.type);
     },
     [DDGSummaryMode.HideChildren]: (node) => {
