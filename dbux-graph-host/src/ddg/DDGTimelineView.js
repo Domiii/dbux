@@ -123,6 +123,8 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       // state delta: new nodes
       const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
       // NOTE: client does not need summaries data
+      //    (also, nodeSummaries is not currently serializable!)
+
       // // state delta: added summaries
       // const newNodeSummaries = ddg.nodeSummaries;
       // const newSummaryKeys = Object.keys(newNodeSummaries);

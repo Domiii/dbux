@@ -4,7 +4,7 @@ import { RootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
-import { DDGTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, RefTimelineNode } from './DDGTimelineNodes';
 import ddgQueries from './ddgQueries';
 import DDGEdgeType from './DDGEdgeType';
 import DDGNodeSummary from './DDGNodeSummary';
@@ -352,29 +352,33 @@ export default class DataDependencyGraph extends BaseDDG {
    * @param {SummaryState} summaryState 
    */
   #summarizeDFS(node, summaryState) {
+    const { dp } = this;
     let {
       nodeRouteMap,
       currentCollapsedAncestor
     } = summaryState;
-    const { timelineId } = node;
+    const { timelineId, dataNodeId, children } = node;
 
-    const isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
+    let isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
     const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarized(this, node);
-    const summaryRepresentatingNode = currentCollapsedAncestor || node;
-    let isSummarized = ddgQueries.isNodeSummarized(this, summaryRepresentatingNode);
+    let targetNode = currentCollapsedAncestor || node;
+    let isSummarized = ddgQueries.isNodeSummarized(this, targetNode);
 
+    // prep
     if (needsSummaryData) {
       // build node summary (if not already built)
       this.og.timelineBuilder.buildNodeSummary(timelineId);
     }
 
-    if (node.children) {
+
+    // DFS recursion
+    if (children) {
       // node has children
       if (isCollapsed) {
         summaryState.currentCollapsedAncestor = node;
       }
-      for (const childId of node.children) {
+      for (const childId of children) {
         const childNode = this.og.timelineNodes[childId];
         this.#summarizeDFS(childNode, summaryState);
       }
@@ -384,30 +388,29 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
 
+    // prep summary
+    let nodeSummary;
     if (isSummarized) {
-      const nodeSummary = this.nodeSummaries[summaryRepresentatingNode.timelineId];
+      nodeSummary = this.nodeSummaries[targetNode.timelineId];
       isSummarized = !!nodeSummary?.summaryNodes?.length;
       if (isSummarized) {
-        /**
-         * fix summarization here:
-         *    → look up `summaryNode` by varAccess (easy! → use `snapshotsByRefId`)
-         *    → link `to` `summaryNode` instead of `node`
-         *    → "hide" nodes that are not in `summaryNodes`
-         */
-
-        // TODO: re-route to summaryNodes (via DataNode.varAccess) below
-        nodeSummary.summaryNodes;
+        const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
+        // link to summaryNode instead of `targetNode`
+        targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
+        if (!targetNode) {
+          // NOTE: we simply "hide" nodes that are not in `summaryNodes`
+          // → meaning, we "propagate" its edges
+          isVisible = false;
+        }
       }
     }
-
-    // TODO: prevent duplicate edges
 
     // add/merge incoming edges
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
-    if (isVisible) {
-      // node is shown
-      nodeRouteMap.set(timelineId, [node]);
+    if (isVisible || currentCollapsedAncestor) {
+      // node is (1) shown, (2) collapsed into `currentCollapsedAncestor` or (3) summarized
+      nodeRouteMap.set(timelineId, [targetNode]);
 
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
@@ -415,24 +418,9 @@ export default class DataDependencyGraph extends BaseDDG {
         const allFrom = nodeRouteMap.get(fromOg);
         if (allFrom) {
           for (const from of allFrom) {
-            summaryState.addEdge(from, node, type);
-          }
-        }
-      }
-    }
-    else if (currentCollapsedAncestor) {
-      // node is collapsed into given ancestor
-      nodeRouteMap.set(timelineId, [currentCollapsedAncestor]);
-
-      for (const edgeId of incomingEdges) {
-        const edge = this.og.edges[edgeId];
-        const { from: fromOg, type } = edge;
-        const allFrom = nodeRouteMap.get(fromOg);
-        if (allFrom) {
-          for (const from of allFrom) {
-            if (from !== currentCollapsedAncestor) {
-              // TODO: look up summary node by `dataNode.varAccess`
-              summaryState.addEdge(from, currentCollapsedAncestor, type);
+            if (from !== targetNode) {
+              // TODO: deal w/ duplicate edges
+              summaryState.addEdge(from, targetNode, type);
             }
           }
         }
@@ -448,7 +436,7 @@ export default class DataDependencyGraph extends BaseDDG {
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
         const { from: fromOg, type } = edge;
-        // TODO: integrate edge type correctly
+        // TODO: summarize edge type correctly
         const allFrom = nodeRouteMap.get(fromOg);
         if (allFrom) {
           for (const from of allFrom) {
@@ -457,5 +445,22 @@ export default class DataDependencyGraph extends BaseDDG {
         }
       }
     }
+  }
+
+  /**
+   * @param {DataNode} dataNode 
+   * @param {DDGNodeSummary} nodeSummary
+   * 
+   * @return {DDGTimelineNode}
+   */
+  #lookupSummaryNode(dataNode, nodeSummary) {
+    const refId = this.dp.util.getDataNodeAccessedRefId(dataNode);
+    if (refId) {
+      const { prop } = dataNode.varAccess;
+      const snapshot = nodeSummary.snapshotsByRefId[refId];
+      const childId = snapshot.children[prop];
+      return this.timelineNodes[childId];
+    }
+    return null;
   }
 }
