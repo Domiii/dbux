@@ -40,11 +40,11 @@ makeTreeItem('Debug', [
 // }
 
 function arrayToTreeItems(arr) {
-  return arr.map((value, i) => makeChildNode(i, value)); //makeTreeItem(child));
+  return arr.map((value, i) => makeNestedNode(i, value)); //makeTreeItem(child));
 }
 
-function objectToTreeItems(obj) {
-  return map(obj, (value, key) => makeChildNode(key, value)
+export function objectToTreeItems(obj) {
+  return map(obj, (value, key) => makeNestedNode(key, value)
   );
 }
 
@@ -52,7 +52,7 @@ function keyValueLabel(key, value) {
   return `${key}: ${JSON.stringify(value)}`;
 }
 
-function makeChildNode(key, value) {
+export function makeNestedNode(key, value) {
   if (value instanceof TreeItem) {
     return value;
     // return makeTreeItem(value);

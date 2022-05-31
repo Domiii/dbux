@@ -3,11 +3,10 @@ import {
 } from 'vscode';
 import DDGHost from '@dbux/graph-host/src/DDGHost';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
-import { getThemeResourcePathUri } from '../codeUtil/codePath';
-import RichWebView from './RichWebView';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getThemeResourcePathUri } from '../codeUtil/codePath';
+import RichWebView from './RichWebView';
 
 
 const defaultColumn = ViewColumn.Two;
@@ -91,7 +90,7 @@ function makeGraphState(ddg) {
 }
 
 function makeFailureState(failureReason) {
-  return { failureReason, timelineNodes: EmptyArray, edges: EmptyArray };
+  return { failureReason, timelineNodes: null, edges: null };
 }
 
 async function showDDGView(ddgDocumentInitialState, hostOnlyState) {

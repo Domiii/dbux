@@ -128,20 +128,25 @@ export default class DDGTimelineBuilder {
   /**
    * @param {DataNode} dataNode 
    */
-  #canBeRefSnapshot(dataNode) {
+  #getRefIdForSnapshot(dataNode) {
     let refId;
     const dataNodeId = dataNode.nodeId;
-    return (
+    if (
       (
-        (refId = dataNode.refId) &&
-        this.ddg.watchSet.isWatchedDataNode(dataNodeId)
-      ) ||
-      (
-        (refId = dataNode.varAccess?.objectNodeId)
-      )
-    ) &&
+        (
+          (refId = dataNode.refId) &&
+          this.ddg.watchSet.isWatchedDataNode(dataNodeId)
+        ) /* ||
+        (
+          (refId = dataNode.varAccess?.objectNodeId)
+        ) */
+      ) /* &&
       // NOTE: render as "Primitive" instead if ValueRef does not have children
-      (this.dp.collections.values.getById(dataNode.refId))?.children;
+      (this.dp.collections.values.getById(refId))?.children */
+    ) {
+      return refId;
+    }
+    return 0;
   }
 
   /**
@@ -209,7 +214,7 @@ export default class DDGTimelineBuilder {
         // if (this.#canBeRefSnapshot(lastModDataNode)) {
         if (lastModDataNode.refId) {
           // nested ref (→ the child's written value is a ref)
-          newChild = this.#addNewRefSnapshot(lastModDataNode, snapshotsByRefId, parentSnapshot);
+          newChild = this.#addNewRefSnapshot(lastModDataNode, lastModDataNode.refId, snapshotsByRefId, parentSnapshot);
         }
         else {
           // primitive
@@ -296,14 +301,14 @@ export default class DDGTimelineBuilder {
 
   /**
    * @param {DataNode} ownDataNode 
+   * @param {number} refId The refId of the snapshot. For roots, this is `getDataNodeAccessedRefId`, while for children and certain watched roots, it is {@link DataNode.refId}.
    * @param {SnapshotMap?} snapshotsByRefId If provided, it helps keep track of all snapshots of a set.
    * @param {RefSnapshotTimelineNode?} parentSnapshot
    * 
    * @return {RefSnapshotTimelineNode}
    */
-  #addNewRefSnapshot(ownDataNode, snapshotsByRefId, parentSnapshot) {
+  #addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, parentSnapshot) {
     const { dp } = this;
-    const refId = dp.util.getDataNodeModifyingRefId(ownDataNode.nodeId);
 
     if (!refId) {
       throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
@@ -381,7 +386,7 @@ export default class DDGTimelineBuilder {
 
     const lastModifyNodesByRefId = new Map();
     const lastNestedDataNodeId = this.#collectNestedUniqueRefTrees(node, lastModifyNodesByRefId);
-    
+
     /**
      * @type {SnapshotMap}
      */
@@ -396,7 +401,7 @@ export default class DDGTimelineBuilder {
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      this.#addNewRefSnapshot(dataNode, snapshotsByRefId, null);
+      this.#addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
     }
 
     const roots = Array.from(snapshotsByRefId.values()).filter(snap => !snap.parentNodeId);
@@ -423,7 +428,7 @@ export default class DDGTimelineBuilder {
       }
     }
     if (node.children) {
-      for (const childId of node.children) {
+      for (const childId of Object.values(node.children)) {
         const childNode = this.ddg.timelineNodes[childId];
         const lastChildDataNodeId = this.#collectNestedUniqueRefTrees(childNode, lastModifyNodesByRefId);
         if (lastChildDataNodeId) {
@@ -615,7 +620,8 @@ export default class DDGTimelineBuilder {
     //   TODO: add DecisionTimelineNode
     // }
     // else 
-    if (this.#canBeRefSnapshot(ownDataNode)) {
+    const refId = this.#getRefIdForSnapshot(ownDataNode);
+    if (refId) {
       // TODO: handle assignment patterns (→ can have multiple write targets)
       const refNodeId = ownDataNode.varAccess?.objectNodeId;
       // ref type access → add Snapshot
@@ -624,7 +630,7 @@ export default class DDGTimelineBuilder {
         this.logger.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
       const snapshotsByRefId = new Map();
-      newNode = this.#addNewRefSnapshot(ownDataNode, snapshotsByRefId, null);
+      newNode = this.#addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, null);
     }
     else {
       // primitive value or ref assignment

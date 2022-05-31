@@ -19,7 +19,7 @@ const YPadding = 30;
 // const YGap = 15;
 const YGroupPadding = 4;
 
-const NodeMenuXOffset = -12;
+const NodeMenuYOffset = 12;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
@@ -122,7 +122,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // TODO: make sure, the buttons work correctly
     const modesForThisNode = [DDGSummaryMode.ExpandSelf, DDGSummaryMode.CollapseSummary];
     const el = compileHtmlElement(/*html*/`
-      <div style="display: flex; flex: 1; flex-direction: column; flex-shrink: 1; justify-content: flex-start; align-items: flex-start;">
+      <div class="flex-row" style="flex-shrink: 1; justify-content: flex-start;">
       </div>
     `);
 
@@ -150,10 +150,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
      */
     // const y = rect.top - rect.height;
     // const y = nodeEl.style.top;
-    const x = 0 - getElLeftOffset(nodeEl) + NodeMenuXOffset;
-    const y = 0 - getElTopOffset(nodeEl);
-    const w = rect.width - NodeMenuXOffset;
-    const h = rect.height;
+    const x = 0 - getElLeftOffset(nodeEl);
+    const y = 0 - getElTopOffset(nodeEl) - NodeMenuYOffset;
+    const w = rect.width;
+    const h = rect.height + NodeMenuYOffset;
     // <div class="node-overlay">
     const nodeBtns = this.makeNodeButtons(node);
     const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
@@ -254,7 +254,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     if (isGroupNode) {
       // TODO: change to `dot` → `subgraph`
       if (children?.length) {
-        for (const childId of children) {
+        for (const childId of Object.values(children)) {
           const childNode = allNodes[childId];
 
           // TODO: move this logic to applySummarization

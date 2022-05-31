@@ -22,10 +22,10 @@ export default class DDGSet {
       const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
 
       if (!paramTraces.length) {
-        return 'Selected context did not have any (recorded) parameters.';
+        return `Selected context (#${contextId}) did not have any (recorded) parameters.`;
       }
       if (!returnArgumentTrace) {
-        return 'Selected context did not return anything.';
+        return `Selected context (#${contextId}) did not return anything.`;
       }
     }
     return null;

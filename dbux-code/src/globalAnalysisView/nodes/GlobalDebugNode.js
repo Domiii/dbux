@@ -10,10 +10,10 @@ import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import makeTreeItem, { makeTreeChildren, makeTreeItems } from '../../helpers/makeTreeItem';
-import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -268,11 +268,28 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           function renderEdges(actualEdges) {
             return {
               children: actualEdges.map((edge) => {
-                const { ...entry } = edge;
-                const fromNode = timelineNodes[edge.from];
-                const toNode = timelineNodes[edge.to];
+                let { from, to, ...entry } = edge;
+                const fromNode = timelineNodes[from];
+                const toNode = timelineNodes[to];
                 const label = `${fromNode?.label} -> ${toNode?.label}`;
-                return makeTreeItem(label, entry, {
+                const children = makeTreeItems(
+                  makeTreeItem(
+                    'from',
+                    fromNode,
+                    {
+                      description: `${from}`
+                    }
+                  ),
+                  makeTreeItem(
+                    'to',
+                    toNode,
+                    {
+                      description: `${to}`
+                    }
+                  ),
+                  ...objectToTreeItems(entry)
+                );
+                return makeTreeItem(label, children, {
                   handleClick() {
                     // select `from` node
                     const { dp } = ddg;

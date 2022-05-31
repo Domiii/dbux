@@ -244,17 +244,16 @@ export default class DataDependencyGraph extends BaseDDG {
 
   propagateSummaryMode = {
     [DDGSummaryMode.Show]: (timelineId) => {
-      // Nothing to do.
-      // NOTE: Show is only used on leaf nodes (others are collapsed, expanded etc.)
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
 
-      // const { og } = this;
-      // const node = og.timelineNodes[timelineId];
-
-      // // hide all children
-      // for (const childId of node.children) {
-      //   // const childNode = og.timelineNodes[childId];
-      //   this.#applyMode(childId, DDGSummaryMode.Show);
-      // }
+      if (node.children) {
+        // show all children
+        for (const childId of Object.values(node.children)) {
+          // const childNode = og.timelineNodes[childId];
+          this.#applyMode(childId, DDGSummaryMode.Show);
+        }
+      }
     },
     [DDGSummaryMode.Hide]: (timelineId) => {
       const { og } = this;
@@ -262,7 +261,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
       if (node.children) {
         // hide all children
-        for (const childId of node.children) {
+        for (const childId of Object.values(node.children)) {
           // const childNode = og.timelineNodes[childId];
           this.#applyMode(childId, DDGSummaryMode.Hide);
         }
@@ -371,14 +370,13 @@ export default class DataDependencyGraph extends BaseDDG {
       this.og.timelineBuilder.buildNodeSummary(timelineId);
     }
 
-
     // DFS recursion
     if (children) {
       // node has children
       if (isCollapsed) {
         summaryState.currentCollapsedAncestor = node;
       }
-      for (const childId of children) {
+      for (const childId of Object.values(children)) {
         const childNode = this.og.timelineNodes[childId];
         this.#summarizeDFS(childNode, summaryState);
       }

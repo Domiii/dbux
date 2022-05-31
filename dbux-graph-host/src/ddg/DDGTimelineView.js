@@ -1,4 +1,3 @@
-import difference from 'lodash/difference';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
