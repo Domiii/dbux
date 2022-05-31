@@ -65,7 +65,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     return super.componentManager;
   }
 
-  setState(stateDelta) {
+  setState(stateDelta, stateOps) {
     if (this._stateLockOwner) {
       // NOTE 0: `setState` is supposed to be used in event handlers.
       // NOTE 1: in `init`, you can directly manipulate `this.state`
@@ -77,7 +77,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
       throw new Error(this.debugTag + ` Tried to call setState after disposed`);
     }
 
-    Object.assign(this.state, stateDelta);
+    this._updateState(stateDelta, stateOps);
     this._stateDelta = stateDelta;
 
     this._startUpdate();

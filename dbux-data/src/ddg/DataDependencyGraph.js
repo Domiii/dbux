@@ -2,7 +2,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
-import DDGSummaryMode, { isCollapsedMode, isShownMode } from './DDGSummaryMode';
+import DDGSummaryMode, { doesModeNeedSummaryData, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import ddgQueries from './ddgQueries';
 import DDGEdgeType from './DDGEdgeType';
@@ -306,9 +306,16 @@ export default class DataDependencyGraph extends BaseDDG {
       nodeRouteMap,
       currentCollapsedAncestor
     } = summaryState;
+    const { timelineId } = node;
 
     const isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
+    const needsSummaryData = !currentCollapsedAncestor && ddgQueries.doesNodeNeedSummaryData(this, node);
+
+    if (needsSummaryData) {
+      // build node summary (if not already built)
+      this.og.timelineBuilder.buildNodeSummary(timelineId);
+    }
 
     if (node.children) {
       // node has children
@@ -328,11 +335,11 @@ export default class DataDependencyGraph extends BaseDDG {
     // TODO: check if node has "details" (and refsnapshots open) and re-route to there
 
     // add/merge incoming edges
-    const incomingEdges = this.og.inEdgesByTimelineId[node.timelineId] || EmptyArray;
+    const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
     if (isVisible) {
       // node is shown
-      nodeRouteMap.set(node.timelineId, [node]);
+      nodeRouteMap.set(timelineId, [node]);
 
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
@@ -347,7 +354,7 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     else if (currentCollapsedAncestor) {
       // node is collapsed into given ancestor
-      nodeRouteMap.set(node.timelineId, [currentCollapsedAncestor]);
+      nodeRouteMap.set(timelineId, [currentCollapsedAncestor]);
 
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
@@ -366,7 +373,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // node is completely gone
       // → multicast all incoming to all outgoing edges
       let reroutes = [];
-      nodeRouteMap.set(node.timelineId, reroutes);
+      nodeRouteMap.set(timelineId, reroutes);
 
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];

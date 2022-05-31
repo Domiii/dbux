@@ -23,15 +23,16 @@ export class DDGTimelineNode {
   label;
 
   /**
-   * Whether there are any writes to a ref's props happening in this node.
-   */
-  hasRefWriteNodes = false;
-
-  /**
    * `timelineId` of this node's parent node (or 0/undefined if its a root/it does not apply).
    * @type {number}
    */
   parentNodeId;
+
+  /**
+   * Whether there are any writes to a ref's props happening in this node.
+   * This is needed to build `summaryNodes`.
+   */
+  hasRefWriteNodes = false;
 
   /**
    * Set of `timelineId`s of {@link RefSnapshotTimelineNode} in this node.

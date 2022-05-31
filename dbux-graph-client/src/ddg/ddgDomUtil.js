@@ -7,6 +7,12 @@ import { addElementEventListeners, compileHtmlElement, decorateClasses } from '.
 
 const defaultIconSize = '12px';
 
+const summaryIconHtml = {
+  [DDGSummaryMode.Hide]: '⛒',
+  [DDGSummaryMode.HideChildren]: '⛒',
+  [DDGSummaryMode.CollapseSummary]: '💢'
+};
+
 /** ###########################################################################
  * Summary Mode
  * ##########################################################################*/
@@ -24,7 +30,7 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
   const els = modes.map(mode => {
     const label = summaryIconUris[mode] ?
       /*html*/`<img width="${defaultIconSize}" src="${summaryIconUris[mode]}" />` :
-      '⛒'; // hackfix
+      summaryIconHtml[mode]; // hackfix
     const modeName = DDGSummaryMode.nameFrom(mode);
     const btnEl = compileHtmlElement(
     /*html*/`<button title="${modeName}" class="${btnClass}">

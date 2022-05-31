@@ -71,4 +71,11 @@ export function isCollapsedMode(mode) {
   return collapsedModes[mode] || false;
 }
 
+
+const hasSummaryDataModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
+hasSummaryDataModes[DDGSummaryMode.CollapseSummary] = true;
+export function doesModeNeedSummaryData(mode) {
+  return hasSummaryDataModes[mode] || false;
+}
+
 export default DDGSummaryMode;

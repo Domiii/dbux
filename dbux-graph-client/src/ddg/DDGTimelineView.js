@@ -3,6 +3,7 @@ import { AnchorLocations } from '@jsplumb/common';
 import { BezierConnector } from '@jsplumb/connector-bezier';
 
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
+import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement, delegate } from '../util/domUtil';
@@ -119,7 +120,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   makeNodeButtons(node) {
     // TODO: generate correct `modesForThisNode` (maybe simply use ddgQueries.canApplySummaryMode)
     // TODO: make sure, the buttons work correctly
-    const modesForThisNode = [1, 4];
+    const modesForThisNode = [DDGSummaryMode.ExpandSelf, DDGSummaryMode.CollapseSummary];
     const el = compileHtmlElement(/*html*/`
       <div style="display: flex; flex: 1; flex-direction: column; flex-shrink: 1; justify-content: flex-start; align-items: flex-start;">
       </div>

@@ -100,7 +100,7 @@ class ComponentEndpoint {
     }
     catch (err) {
       throw new NestedError(`${this.debugTag} Failed to initialize shared context. ` +
-      `IMPORTANT: "shared" function is executed on host and client. Make sure to only reference symbols available on both.`, err);
+        `IMPORTANT: "shared" function is executed on host and client. Make sure to only reference symbols available on both.`, err);
     }
   }
 
@@ -194,6 +194,33 @@ class ComponentEndpoint {
   // ###########################################################################
   // internal stuff
   // ###########################################################################
+  StateUpdaters = {
+    arrayAdd: (state, delta) => {
+      for (const key in delta) {
+        const orig = state[key];
+        const upd = delta[key];
+        if (!Array.isArray(orig)) {
+          throw new Error(`Cannot apply state op "arrayAdd" for key "${key}" in comp "${this.debugTag}": orig is not array`);
+        }
+        state[key] = orig.concat(orig, upd);
+      }
+    }
+  };
+
+  _updateState(stateDelta, stateOps) {
+    if (stateDelta) {
+      Object.assign(this.state, stateDelta);
+    }
+    if (stateOps) {
+      for (const op in stateOps) {
+        const updater = this.StateUpdaters[op];
+        if (!updater) {
+          throw new Error(`State op does not exist in comp "${this.debugTag}": ${op}`);
+        }
+        updater(this.state, stateOps[op]);
+      }
+    }
+  }
 
   handlePing() {
     // console.warn(this.debugTag, 'was pinged by the remote.');

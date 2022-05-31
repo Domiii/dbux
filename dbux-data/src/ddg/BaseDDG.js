@@ -154,7 +154,7 @@ export default class BaseDDG {
      * #######################################*/
 
     const { bounds } = this;
-    const timelineBuilder = new DDGTimelineBuilder(this);
+    const timelineBuilder = this.timelineBuilder = new DDGTimelineBuilder(this);
 
     for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
       // update control group stack
