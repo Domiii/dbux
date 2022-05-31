@@ -78,6 +78,14 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   summaryModes = {};
 
+  /**
+   * Summary data by `timelineId`.
+   * NOTE: This is built lazily in `buildNodeSummary`.
+   * 
+   * @type {Object.<number, DDGNodeSummary>}
+   */
+  nodeSummaries = {};
+
   constructor(dp, graphId) {
     super(dp, graphId);
   }
@@ -291,9 +299,6 @@ export default class DataDependencyGraph extends BaseDDG {
         this.addEdge(edgeType, from, to, edgeState);
       }
     }
-
-    // TODO: we don't need to change the nodes.
-    //    → Keep og nodes on client, and only send updated `summaryState` and edges instead!
   }
 
   /**

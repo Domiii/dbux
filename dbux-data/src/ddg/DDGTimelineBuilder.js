@@ -15,6 +15,7 @@ import DDGEdge from './DDGEdge';
 import DDGEdgeType from './DDGEdgeType';
 import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
 import ddgQueries from './ddgQueries';
+import DDGNodeSummary from './DDGNodeSummary';
 
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
@@ -369,9 +370,9 @@ export default class DDGTimelineBuilder {
    * @param {number} timelineId
    */
   #buildNodeSummarySnapshots(timelineId) {
-    const { dp } = this;
+    const { dp, ddg } = this;
     const node = this.ddg._timelineNodes[timelineId];
-    if (!node.hasRefWriteNodes || node.summaryNodes) {
+    if (!node.hasRefWriteNodes || ddg.nodeSummaries[timelineId]) {
       // already built or nothing to build
       return;
     }
@@ -396,9 +397,11 @@ export default class DDGTimelineBuilder {
       this.#addNewRefSnapshot(dataNode, builtSnapshotsByRefId, null);
     }
 
-    // done → set `summaryNodes` to be only the roots of this set
     const roots = Array.from(builtSnapshotsByRefId.values()).filter(snap => !snap.parentNodeId);
-    node.summaryNodes = roots;
+
+    // done → set `summaryNodes` to be only the roots of this set
+    const summaryNodes = roots;
+    ddg.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, summaryNodes);
   }
 
   /**

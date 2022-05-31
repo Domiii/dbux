@@ -1,3 +1,4 @@
+import difference from 'lodash/difference';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -111,18 +112,28 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     setSummaryMode(timelineId, mode) {
       const { ddg } = this;
 
-      // NOTE: this call *might* add nodes
-      const nodeIndex = ddg.timelineNodes.length;
+      const origTimelineNodesLength = ddg.timelineNodes.length;
+      const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
 
       // update graph
       ddg.setSummaryMode(timelineId, mode);
 
-      const newNodes = ddg.timelineNodes.slice(nodeIndex);
+      // state delta: new nodes
+      const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
+      // state delta: added summaries
+      const newSummaryKeys = Object.keys(ddg.nodeSummaries);
+      const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
+      const addedSummaries = TODO;
+
+      // state delta: new nodes
 
       // call setState
       this.doc.setState(ddg.getChangingData(), {
         arrayAdd: {
           timelineNodes: newNodes
+        },
+        objectMerge: {
+
         }
       });
     }

@@ -35,13 +35,6 @@ export class DDGTimelineNode {
   hasRefWriteNodes = false;
 
   /**
-   * Set of `timelineId`s of {@link RefSnapshotTimelineNode} in this node.
-   * Is built lazily in `buildNodeSummary`.
-   * @type {Array.<number>?}
-   */
-  summaryNodes;
-
-  /**
    * @param {DDGTimelineNodeTypeValues} type
    */
   constructor(type) {

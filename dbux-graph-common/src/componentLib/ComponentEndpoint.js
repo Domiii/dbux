@@ -1,4 +1,5 @@
 import isPlainObject from 'lodash/isPlainObject';
+import merge from 'lodash/merge';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import NestedError from '@dbux/common/src/NestedError';
@@ -202,7 +203,16 @@ class ComponentEndpoint {
         if (!Array.isArray(orig)) {
           throw new Error(`Cannot apply state op "arrayAdd" for key "${key}" in comp "${this.debugTag}": orig is not array`);
         }
+        
         state[key] = orig.concat(orig, upd);
+      }
+    },
+    objectMerge: (state, delta) => {
+      for (const key in delta) {
+        const orig = state[key];
+        const upd = delta[key];
+
+        state[key] = merge(orig, upd);
       }
     }
   };
