@@ -11,7 +11,7 @@ import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
-import { DDGTimelineNode, DataTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, DataTimelineNode, RefSnapshotTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
 
 /**
@@ -39,9 +39,18 @@ export default class BaseDDG {
   _bounds;
 
   /**
-   * @type {Obejct.<number, DataTimelineNode>}
+   * Indexed by `dataNodeId`
+   * @type {Array.<RefSnapshotTimelineNode>}
    */
   _refSnapshotsByDataNodeId = [];
+
+  /**
+   * Determines when a given `refId` is accessed the last time.
+   * Helps us determine whether a `refId` is used after certain nodes (or whether changes to the ref are internal to a node).
+   * 
+   * @type {Array.<number>}
+   */
+  _lastAccessDataNodeIdByRefId = [];
 
   /** ########################################
    * render data
@@ -68,6 +77,23 @@ export default class BaseDDG {
    * @type {Object.<number, DDGEdge[]>}
    */
   inEdgesByTimelineId;
+
+  /** ###########################################################################
+   * ctor
+   * ##########################################################################*/
+
+  /**
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  constructor(dp, graphId) {
+    this.dp = dp;
+    this.graphId = graphId;
+  }
+
+  /** ###########################################################################
+   * getters
+   * ##########################################################################*/
 
   get watchSet() {
     return this._watchSet;
@@ -104,25 +130,6 @@ export default class BaseDDG {
     };
   }
 
-
-  /** ###########################################################################
-   * ctor
-   * ##########################################################################*/
-
-  /**
-   * 
-   * @param {RuntimeDataProvider} dp 
-   */
-  constructor(dp, graphId) {
-    this.dp = dp;
-    this.graphId = graphId;
-  }
-
-
-  /** ###########################################################################
-   * Node + Edge getters
-   * ##########################################################################*/
-
   get root() {
     return this.timelineNodes[RootTimelineId];
   }
@@ -133,6 +140,8 @@ export default class BaseDDG {
    * ##########################################################################*/
 
   resetBuild() {
+    this._refSnapshotsByDataNodeId = [];
+    this._lastAccessDataNodeIdByRefId = [];
     this.edges = [null];
     this.inEdgesByTimelineId = {};
     this.outEdgesByTimelineId = {};

@@ -215,7 +215,8 @@ export default class DDGTimelineBuilder {
           // primitive
           const fromNode = this.#getDataTimelineInputNode(lastModDataNode.nodeId);
           newChild = this.#addPrimitiveDataNode(lastModDataNode);
-          if (fromNode) {
+          if (fromNode && !this.ddg.isSummarizing) {
+            // add edges, but not during summarization
             // TODO: determine correct DDGEdgeType
             const edgeType = DDGEdgeType.Data;
             const edgeState = { nByType: { [edgeType]: 1 } };
@@ -302,13 +303,14 @@ export default class DDGTimelineBuilder {
    */
   #addNewRefSnapshot(ownDataNode, snapshotsByRefId, parentSnapshot) {
     const { dp } = this;
-    const refId = dp.util.getDataNodeModifiedRefId(ownDataNode.nodeId);
+    const refId = dp.util.getDataNodeModifyingRefId(ownDataNode.nodeId);
 
     if (!refId) {
       throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
     }
 
-    const snapshotOfRef = snapshotsByRefId?.get(refId);
+    // handle circular refs (or otherwise repeated refs in set)
+    const snapshotOfRef = snapshotsByRefId.get(refId);
     if (snapshotOfRef) {
       // this ref already has a snapshot in set
       if (snapshotsByRefId.size > 1 && this.#isSnapshotIndependentRoot(snapshotOfRef, parentSnapshot)) {
@@ -378,19 +380,19 @@ export default class DDGTimelineBuilder {
     }
 
     const lastModifyNodesByRefId = new Map();
-    const lastDataNodeId = this.#collectNestedUniqueRefTrees(node, lastModifyNodesByRefId);
-    if (!lastDataNodeId) {
-      // throw new Error(`collectNestedUniqueRefTrees did not return anything but `hasRefWriteNodes` is true for node ${node}`);
-      return;
-    }
+    const lastNestedDataNodeId = this.#collectNestedUniqueRefTrees(node, lastModifyNodesByRefId);
     
     /**
      * @type {SnapshotMap}
      */
     const snapshotsByRefId = new Map();
     for (const [refId, dataNodeId] of lastModifyNodesByRefId) {
+      if (this.ddg._lastAccessDataNodeIdByRefId[refId] <= lastNestedDataNodeId) {
+        // skip: this ref is only used internally (or before) this node. It is not accessed AFTER this node
+        continue;
+      }
       if (snapshotsByRefId.has(refId)) {
-        // this ref was already added as a descendant of a previous ref → skip
+        // skip: this ref was already added as a descendant of a previous ref
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
@@ -405,17 +407,17 @@ export default class DDGTimelineBuilder {
   }
 
   /**
-   * Finds all nested `refId`s nested in the given node.
-   * 
-   * Makes sure that no ref is included twice.
+   * Finds all nested modified `refId`s nested in the given node and its descendants.
    * 
    * @param {DDGTimelineNode} node
    * @param {Map.<number, number>} lastModifyNodesByRefId
+   * @return {number} The `lastDataNodeId` of the entire node.
    */
   #collectNestedUniqueRefTrees(node, lastModifyNodesByRefId) {
     const { dp } = this;
+    let lastDataNodeId = node.dataNodeId;
     if (node.dataNodeId) {
-      const refId = dp.util.getDataNodeModifiedRefId(node.dataNodeId);
+      const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
       if (refId) {
         lastModifyNodesByRefId.set(refId, node.dataNodeId);
       }
@@ -423,9 +425,13 @@ export default class DDGTimelineBuilder {
     if (node.children) {
       for (const childId of node.children) {
         const childNode = this.ddg.timelineNodes[childId];
-        this.#collectNestedUniqueRefTrees(childNode, lastModifyNodesByRefId);
+        const lastChildDataNodeId = this.#collectNestedUniqueRefTrees(childNode, lastModifyNodesByRefId);
+        if (lastChildDataNodeId) {
+          lastDataNodeId = lastChildDataNodeId;
+        }
       }
     }
+    return lastDataNodeId;
   }
 
   /** ###########################################################################
@@ -501,7 +507,7 @@ export default class DDGTimelineBuilder {
     const { dp } = this;
     this.#addNode(newNode);
     this.firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
-    newNode.hasRefNodes = !!dp.util.getDataNodeModifiedRefId(newNode.dataNodeId);
+    newNode.hasRefNodes = !!dp.util.getDataNodeModifyingRefId(newNode.dataNodeId);
   }
 
   /** ###########################################################################
@@ -809,17 +815,31 @@ export default class DDGTimelineBuilder {
     const { dp, ddg: { bounds } } = this;
     const trace = dp.util.getTrace(traceId);
     const dataNodes = dp.util.getDataNodesOfTrace(traceId);
-    const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
+    // const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
+    const ownDataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
 
     if (!ownDataNode) {
       // this.logger.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
       return;
     }
 
-    const isDecision = dp.util.isTraceControlDecision(traceId);
-    if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
-      // TODO: add two nodes in this case
+
+    // register DataNode by refId
+    const refId1 = dp.util.getDataNodeAccessedRefId(ownDataNode.nodeId);
+    const refId2 = ownDataNode.refId;
+    if (refId1) {
+      this.ddg._lastAccessDataNodeIdByRefId[refId1] = ownDataNode.nodeId;
     }
+    if (refId2) {
+      this.ddg._lastAccessDataNodeIdByRefId[refId2] = ownDataNode.nodeId;
+    }
+
+
+    const isDecision = dp.util.isTraceControlDecision(traceId);
+
+    // if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
+    //   // future-work: add two nodes in this case
+    // }
 
     /**
      * This is to avoid duplicate edges.

@@ -1,4 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import Enum from '@dbux/common/src/util/Enum';
 import { RootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
@@ -16,6 +17,23 @@ import DDGNodeSummary from './DDGNodeSummary';
 // };
 const RootDefaultSummaryMode = DDGSummaryMode.ExpandSelf;
 // const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
+
+/** ###########################################################################
+ * {@link BuildStage}
+ * ##########################################################################*/
+
+const buildStageObj = {
+  None: 0,
+  /**
+   * Building initial graph.
+   */
+  Building: 1,
+  /**
+   * Building a summarized graph from an already existing initial graph.
+   */
+  Summarizing: 2
+};
+const BuildStage = new Enum(buildStageObj);
 
 /** ###########################################################################
  * utilities
@@ -68,9 +86,11 @@ class SummaryState {
  * 
  */
 export default class DataDependencyGraph extends BaseDDG {
+  buildStage = BuildStage.None;
+
   /**
    * The complete base graph
-   * @type {DataDependencyGraph}
+   * @type {BaseDDG}
    */
   og;
 
@@ -150,7 +170,79 @@ export default class DataDependencyGraph extends BaseDDG {
     return this.og.timelineNodes;
   }
 
-  applyModeHandlers = {
+  get isBuilding() {
+    return BuildStage.is.Building(this.buildStage);
+  }
+
+  get isSummarizing() {
+    return BuildStage.is.Summarizing(this.buildStage);
+  }
+
+  /** ###########################################################################
+   * public control methods
+   *  #########################################################################*/
+
+  setMergeComputes(on) {
+    // TODO
+  }
+
+  setSummaryMode(timelineId, mode) {
+    // update node modes
+    this.#applyMode(timelineId, mode);
+
+    // refresh the summarized graph
+    this.#applySummarization();
+  }
+
+  /** ###########################################################################
+   * build
+   * ##########################################################################*/
+
+  /**
+   * @param {number[]} watchTraceIds 
+   */
+  build(watchTraceIds) {
+    if (!this.og) {
+      this.og = new BaseDDG(this.dp, this.graphId);
+    }
+    this.buildStage = BuildStage.Building;
+    try {
+      this.og.build(watchTraceIds);
+    }
+    finally {
+      this.buildStage = BuildStage.None;
+    }
+
+    this.buildStage = BuildStage.Summarizing;
+    try {
+      this.#initSummaryConfig();
+      this.#applySummarization();
+    }
+    finally {
+      this.buildStage = BuildStage.None;
+    }
+  }
+
+  /** ###########################################################################
+   * more reset + init stuff
+   * ##########################################################################*/
+
+  resetBuild() {
+    super.resetBuild();
+  }
+
+  #initSummaryConfig() {
+    this.summaryModes = {};
+
+    // update node modes
+    this.#applyMode(RootTimelineId, RootDefaultSummaryMode);
+  }
+
+  /** ###########################################################################
+   * summarization propagation
+   * ##########################################################################*/
+
+  propagateSummaryMode = {
     [DDGSummaryMode.Show]: (timelineId) => {
       // Nothing to do.
       // NOTE: Show is only used on leaf nodes (others are collapsed, expanded etc.)
@@ -228,56 +320,8 @@ export default class DataDependencyGraph extends BaseDDG {
     const node = og.timelineNodes[timelineId];
     if (ddgQueries.canApplySummaryMode(node, mode)) {
       this.summaryModes[timelineId] = mode;
-      this.applyModeHandlers[mode](timelineId);
+      this.propagateSummaryMode[mode](timelineId);
     }
-  }
-
-  /** ###########################################################################
-   * public controls
-   *  #########################################################################*/
-
-  setMergeComputes(on) {
-    // TODO
-  }
-
-  setSummaryMode(timelineId, mode) {
-    // update node modes
-    this.#applyMode(timelineId, mode);
-
-    // refresh the summarized graph
-    this.#applySummarization();
-  }
-
-  /** ###########################################################################
-   * build
-   * ##########################################################################*/
-
-  /**
-   * @param {number[]} watchTraceIds 
-   */
-  build(watchTraceIds) {
-    if (!this.og) {
-      this.og = new BaseDDG(this.dp, this.graphId);
-    }
-    this.og.build(watchTraceIds);
-
-    this.#initSummaryConfig();
-    this.#applySummarization();
-  }
-
-  /** ###########################################################################
-   * init stuff
-   * ##########################################################################*/
-
-  resetBuild() {
-    super.resetBuild();
-  }
-
-  #initSummaryConfig() {
-    this.summaryModes = {};
-
-    // update node modes
-    this.#applyMode(RootTimelineId, RootDefaultSummaryMode);
   }
 
   /** ###########################################################################
@@ -301,8 +345,6 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
   }
-
-  #get
 
   /**
    * 
@@ -346,12 +388,6 @@ export default class DataDependencyGraph extends BaseDDG {
       const nodeSummary = this.nodeSummaries[summaryRepresentatingNode.timelineId];
       isSummarized = !!nodeSummary?.summaryNodes?.length;
       if (isSummarized) {
-        // TODO: fix buildNodeSummary:
-        /**
-         * 1. don't add edges or snapshotsByDataNode etc. data
-         * 2. add new `refIdByLastAccessDataNodeId` map
-         * 3. use `refIdByLastAccessDataNodeId` to change `snapshotsByRefId` to only include "non-internal refs"
-         */
         /**
          * fix summarization here:
          *    → look up `summaryNode` by varAccess (easy! → use `snapshotsByRefId`)

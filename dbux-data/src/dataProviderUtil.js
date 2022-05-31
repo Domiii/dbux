@@ -848,8 +848,9 @@ export default {
 
   /**
    * @param {RuntimeDataProvider} dp
+   * @return {DataNode}
    */
-  getDataNodeModifiedRefId(dp, nodeId) {
+  getDataNodeModifyingRefId(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isDataNodeModifyType(dataNode.type)) {
       return dp.util.getDataNodeAccessedRefId(nodeId) || 0;
@@ -1329,6 +1330,8 @@ export default {
 
   /** 
    * Get first DataNode by refId, even if it does NOT OWN it.
+   * NOTE: ValueRef#nodeId is the first nodeId that the ref was seen/recorded.
+   * future-work: for consistency, consider using the same approach as `getLastNodeIdByRefId`
    * 
    * @param {RuntimeDataProvider} dp
    */
@@ -1338,6 +1341,15 @@ export default {
     // const { traceId } = dp.collections.dataNodes.getById(nodeId);
     // return traceId;
     return nodeId;
+  },
+
+  /**
+   * 
+   * @param {RuntimeDataProvider} dp
+   */
+  getLastNodeIdByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.getLast(refId);
+    return dataNode?.nodeId;
   },
 
   /** 
