@@ -20,6 +20,9 @@ import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 
+/** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
+/** @typedef { Map.<number, number> } SnapshotMap */
+
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
  */
@@ -495,7 +498,7 @@ export default class BaseDDG {
    */
   #addRefSnapshotNode(snapshot, snapshotsByRefId) {
     this.addNode(snapshot);
-    snapshotsByRefId?.set(snapshot.refId, snapshot);
+    snapshotsByRefId?.set(snapshot.refId, snapshot.timelineId);
   }
 
   /**
@@ -528,7 +531,8 @@ export default class BaseDDG {
     }
 
     // handle circular refs (or otherwise repeated refs in set)
-    const snapshotOfRef = snapshotsByRefId.get(refId);
+    const snapshotId = snapshotsByRefId.get(refId);
+    const snapshotOfRef = this.timelineNodes[snapshotId];
     if (snapshotOfRef) {
       // this ref already has a snapshot in set
       if (snapshotsByRefId.size > 1 && this.#isSnapshotIndependentRoot(snapshotOfRef, parentSnapshot)) {

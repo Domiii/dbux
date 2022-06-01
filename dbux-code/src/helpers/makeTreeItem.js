@@ -72,10 +72,10 @@ export function makeNestedNode(key, value) {
   return makeTreeItem(keyValueLabel(key, value));
 }
 
-export function makeTreeChildren(obj) {
-  return Array.isArray(obj) ?
-    arrayToTreeItems(obj) :    // array
-    objectToTreeItems(obj);    // object
+export function makeTreeChildren(children) {
+  return Array.isArray(children) ?
+    arrayToTreeItems(children) :    // array
+    objectToTreeItems(children);    // object
 }
 
 /** ###########################################################################
@@ -182,7 +182,7 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     }
     else {
       if (isFunction(childrenRaw)) {
-        childrenRaw = childrenRaw();
+        // childrenRaw = childrenRaw();
       }
       // if (childrenOrCfg?.children && !itemProps && size(childrenOrCfg) <= 2) {
       //   // hackfix: since we allow arbitrary objects to also represent `children`, 
@@ -198,10 +198,10 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     }
   }
 
-  const renderChildrenInline = !children || isEmpty(children);
+  const renderChildrenInline = !isFunction(children) && (!children || isEmpty(children));
   let collapsibleState;
   if (!renderChildrenInline) {
-    collapsibleState = TreeItemCollapsibleState.Expanded;
+    collapsibleState = TreeItemCollapsibleState.Collapsed;
   }
   else {
     collapsibleState = TreeItemCollapsibleState.None;
@@ -220,8 +220,20 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
   }
 
   if (!renderChildrenInline) {
-    item.children = makeTreeChildren(children);
+    if (isFunction(children)) {
+      /**
+       * NOTE: this is handled in {@link BaseTreeViewNodeProvider#buildChildren}
+       */
+      item.buildChildren = children;
+    }
+    else {
+      item.children = makeTreeChildren(children);
+    }
   }
+  else {
+    // Nothing to do: already taken care of
+  }
+
   if (itemProps) {
     Object.assign(item, itemProps);
   }

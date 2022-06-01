@@ -1,3 +1,4 @@
+import difference from 'lodash/difference';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -112,7 +113,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       const { ddg } = this;
 
       const origTimelineNodesLength = ddg.timelineNodes.length;
-      // const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
+      const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
 
 
       // update graph
@@ -121,14 +122,12 @@ export default class DDGTimelineView extends HostComponentEndpoint {
 
       // state delta: new nodes
       const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
-      // NOTE: client does not need summaries data
-      //    (also, nodeSummaries is not currently serializable!)
 
-      // // state delta: added summaries
-      // const newNodeSummaries = ddg.nodeSummaries;
-      // const newSummaryKeys = Object.keys(newNodeSummaries);
-      // const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
-      // const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
+      // state delta: added summaries
+      const newNodeSummaries = ddg.nodeSummaries;
+      const newSummaryKeys = Object.keys(newNodeSummaries);
+      const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
+      const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
 
       // state delta: new nodes
 
@@ -137,9 +136,9 @@ export default class DDGTimelineView extends HostComponentEndpoint {
         arrayAdd: {
           timelineNodes: newNodes
         },
-        // objectMerge: {
-        //   nodeSummaries: addedSummaries
-        // }
+        objectMerge: {
+          nodeSummaries: addedSummaries
+        }
       });
     }
   }

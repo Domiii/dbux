@@ -340,7 +340,7 @@ export default class BaseTreeViewNodeProvider {
     if ('collapsibleStateOverride' in node) {
       node.collapsibleState = node.collapsibleStateOverride;
     }
-    else if (node.children?.length || node.canHaveChildren?.()) {
+    else if (node.children?.length || this._canNodeProduceChildren(node)) {
       let collapsibleState = this.idsCollapsibleState.get(id);
       if (collapsibleState === undefined) {
         collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.Collapsed;
@@ -349,6 +349,7 @@ export default class BaseTreeViewNodeProvider {
       node.collapsibleState = collapsibleState;
     }
     else {
+      // future-work: DON'T OVERRIDE TreeItemCollapsibleState IF THE NODE ALREADY WAS DEFINED WITH THE STATE IT WANTS (*yargs*)
       node.collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.None;
     }
 
@@ -396,7 +397,11 @@ export default class BaseTreeViewNodeProvider {
     return node;
   }
 
+  /**
+   * @param {TreeItem} node 
+   */
   getChildren = async (node) => {
+    // this.logger.debug(`getChildren ${node?.label || node}`);
     const children = await this._getChildren(node);
     this.refreshPromise.resolve(children);
     return children;
@@ -409,7 +414,7 @@ export default class BaseTreeViewNodeProvider {
         if (node.children) {
           return node.children;
         }
-        if (node.canHaveChildren()) {
+        if (this._canNodeProduceChildren(node)) {
           return this.buildChildren(node);
         }
         return null;
@@ -423,6 +428,14 @@ export default class BaseTreeViewNodeProvider {
       debugger;
       throw err;
     }
+  }
+
+  _canNodeProduceChildren(node) {
+    if (node.canHaveChildren) {
+      // if it has `canHaveChildren`, then use it!
+      return node.canHaveChildren();
+    }
+    return !!node.buildChildren;
   }
 
   getParent = (node) => {

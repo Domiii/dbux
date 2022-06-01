@@ -98,13 +98,6 @@ export default class BaseTreeViewNode extends TreeItem {
     return this.treeNodeProvider.buildNodes(this.childClasses, this);
   }
 
-  getOrBuildChildren() {
-    if (this.chidlren === undefined) {
-      this.treeNodeProvider.buildChildren(this);
-    }
-    return this.children;
-  }
-
   // /**
   //  * @virtual
   //  */

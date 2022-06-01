@@ -188,7 +188,8 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           const {
             timelineNodes,
             edges,
-            summaryModes
+            summaryModes,
+            nodeSummaries
           } = ddg.getRenderData();
 
           /**
@@ -222,7 +223,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           /**
            * @param {DDGTimelineNode} node 
            */
-          function makeTimelineNodeEntry(node, children, moreProps = EmptyObject) {
+          function makeTimelineNodeEntry(node, children = node, moreProps = EmptyObject) {
             const { label: nodeLabel } = node;
             const label = nodeLabel || `${node.constructor.name}`;
             return makeTreeItem(label, children, {
@@ -306,6 +307,19 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             };
           }
 
+          function renderNodes(nodes) {
+            return {
+              children: nodes.map((node) => {
+                const { timelineId, label: nodeLabel, ...entry } = node;
+                // delete entry.timelineId;
+                return makeTimelineNodeEntry(node, entry);
+              }),
+              props: {
+                description: `(${nodes.length})`
+              }
+            };
+          }
+
           /** ###########################################################################
            * make DDG entries
            * ##########################################################################*/
@@ -319,16 +333,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
 
             function Visible_Nodes() {
               const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-              return {
-                children: visibleNodes.map((node) => {
-                  const { timelineId, label: nodeLabel, ...entry } = node;
-                  // delete entry.timelineId;
-                  return makeTimelineNodeEntry(node, entry);
-                }),
-                props: {
-                  description: `(${visibleNodes.length})`
-                }
-              };
+              return renderNodes(visibleNodes);
             },
             function Visible_Edges() {
               const actualEdges = edges.filter(Boolean);
@@ -337,31 +342,38 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
 
             function All_Nodes() {
               const nodes = timelineNodes.filter(Boolean);
-              return {
-                children: nodes.map((node) => {
-                  const { timelineId, label: nodeLabel, ...entry } = node;
-                  return makeTimelineNodeEntry(node, entry);
-                }),
-                props: {
-                  description: `(${nodes.length})`
-                }
-              };
+              return renderNodes(nodes);
             },
             function All_Edges() {
               const actualEdges = og.edges.filter(Boolean);
               return renderEdges(actualEdges);
+            },
+            function Node_Summaries() {
+              return {
+                children() {
+                  return Object.entries(nodeSummaries).map(([timelineId, summary]) => {
+                    const {
+                      summaryRoots,
+                      snapshotsByRefId
+                    } = summary;
+                    const node = timelineNodes[timelineId];
+                    return makeTreeItem(node.label,
+                      {
+                        node: makeTimelineNodeEntry(node),
+                        roots: summaryRoots.map(rootId => {
+                          const root = timelineNodes[rootId];
+                          return makeTreeNode(root);
+                        }),
+                        snapshotsByRefId
+                      },
+                      {
+                        // description: `${summaryModeLabel}`
+                      }
+                    );
+                  });
+                }
+              };
             }
-            // function Summary_Modes() {
-            //   return {
-            //     children: Object.entries(summaryModes).map(([timelineId, summaryMode]) => {
-            //       const node = timelineNodes[timelineId];
-            //       const summaryModeLabel = DDGSummaryMode.nameFrom(summaryMode);
-            //       return makeTreeItem(node?.label, null, {
-            //         description: `${summaryModeLabel}`
-            //       });
-            //     })
-            //   };
-            // }
           ]);
         }),
       };

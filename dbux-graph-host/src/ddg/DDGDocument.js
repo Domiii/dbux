@@ -69,7 +69,7 @@ export default class DDGDocument extends HostComponentEndpoint {
     }
     if (Object.keys(actualUpdate).length) {
       this.setState(actualUpdate);
-      for (const [key, val] of Object.entries(update)) {
+      for (const [key, val] of Object.entries(actualUpdate)) {
         this._notifyGraphDocumentModeChanged(key, val);
       }
       return true;

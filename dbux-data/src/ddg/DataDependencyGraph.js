@@ -9,6 +9,9 @@ import DDGEdgeType from './DDGEdgeType';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 
+/** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
+/** @typedef { Map.<number, number> } SnapshotMap */
+
 /** ###########################################################################
  * default config
  * ##########################################################################*/
@@ -118,8 +121,11 @@ export default class DataDependencyGraph extends BaseDDG {
         timelineNodes,
       },
 
-      // summarized edge data
+      // summary data
       summaryModes,
+      nodeSummaries,
+
+      // current edge data
       edges,
       outEdgesByTimelineId,
       inEdgesByTimelineId
@@ -129,6 +135,7 @@ export default class DataDependencyGraph extends BaseDDG {
       timelineNodes,
 
       summaryModes,
+      nodeSummaries,
       edges,
       outEdgesByTimelineId,
       inEdgesByTimelineId
@@ -279,11 +286,10 @@ export default class DataDependencyGraph extends BaseDDG {
       this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
     }
 
-    const roots = Array.from(snapshotsByRefId.values()).filter(snap => !snap.parentNodeId);
+    const summaryRoots = Array.from(snapshotsByRefId.values())
+      .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId);
 
-    // done → set `summaryNodes` to be only the roots of this set
-    const summaryNodes = roots;
-    this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, summaryNodes);
+    this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, summaryRoots);
   }
 
   /**
@@ -417,10 +423,10 @@ export default class DataDependencyGraph extends BaseDDG {
   #applySummarization() {
     const { og: { root } } = this;
 
+    this.resetBuild();
+
     const summaryState = new SummaryState();
     this.#summarizeDFS(root, summaryState);
-
-    this.resetBuild();
 
     // add all edges
     for (const [from, toMap] of summaryState.visibleEdges) {
@@ -477,7 +483,7 @@ export default class DataDependencyGraph extends BaseDDG {
     let nodeSummary;
     if (isSummarized) {
       nodeSummary = this.nodeSummaries[targetNode.timelineId];
-      isSummarized = !!nodeSummary?.summaryNodes?.length;
+      isSummarized = !!nodeSummary?.summaryRoots?.length;
       if (isSummarized) {
         if (!dataNodeId) {
           // summarized nodes without `dataNodeId` (such as groups) are simply hidden
@@ -549,7 +555,8 @@ export default class DataDependencyGraph extends BaseDDG {
     const refId = this.dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     if (refId) {
       const { prop } = dataNode.varAccess;
-      const snapshot = nodeSummary.snapshotsByRefId.get(refId);
+      const snapshotId = nodeSummary.snapshotsByRefId.get(refId);
+      const snapshot = this.timelineNodes[snapshotId];
       const childId = snapshot.children[prop];
       return this.timelineNodes[childId];
     }

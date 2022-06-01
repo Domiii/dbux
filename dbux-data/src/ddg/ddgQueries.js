@@ -2,11 +2,12 @@ import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDG
 import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
+import DDGNodeSummary from './DDGNodeSummary';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
-class RenderState {
+export class RenderState {
   timelineNodes;
 
   edges;
@@ -15,6 +16,14 @@ class RenderState {
    * @type {Object.<number, SummaryModeValue>}
    */
   summaryModes;
+
+  /**
+   * Summary data by `timelineId`.
+   * NOTE: This is built lazily in `buildNodeSummary`, and not available until a Node has been explicitly summarized.
+   * 
+   * @type {Object.<number, DDGNodeSummary>}
+   */
+  nodeSummaries;
 }
 
 /**

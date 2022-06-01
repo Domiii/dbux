@@ -14,7 +14,7 @@ import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineCont
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
-/** @typedef { Map.<number, RefSnapshotTimelineNode } SnapshotMap */
+/** @typedef { Map.<number, number> } SnapshotMap */
 
 const Verbose = 1;
 // const Verbose = 0;

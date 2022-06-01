@@ -4,7 +4,7 @@ import { BezierConnector } from '@jsplumb/connector-bezier';
 
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
-import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement, delegate } from '../util/domUtil';
 import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
@@ -19,7 +19,7 @@ const YPadding = 30;
 // const YGap = 15;
 const YGroupPadding = 4;
 
-const NodeMenuYOffset = 12;
+const NodeMenuHeight = 12;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
@@ -46,7 +46,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   currentHoverEl;
 
   currentHoverNode;
-  
+
   get doc() {
     return this.context.doc;
   }
@@ -151,9 +151,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // const y = rect.top - rect.height;
     // const y = nodeEl.style.top;
     const x = 0 - getElLeftOffset(nodeEl);
-    const y = 0 - getElTopOffset(nodeEl) - NodeMenuYOffset;
+    // const y = 0 - getElTopOffset(nodeEl) - NodeMenuYOffset;
+    const y = 0 - NodeMenuHeight;
     const w = rect.width;
-    const h = rect.height + NodeMenuYOffset;
+    const h = NodeMenuHeight;
     // <div class="node-overlay">
     const nodeBtns = this.makeNodeButtons(node);
     const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
@@ -189,6 +190,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * buildGraph
    * ##########################################################################*/
 
+  /**
+   * @type {RenderState}
+   */
   get renderState() {
     return this.context.doc.state;
   }
@@ -207,8 +211,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   buildGraph() {
     const { root } = this;
     const {
-      timelineNodes: nodes,
-
       // summaryModes,
       edges
       // outEdgesByTimelineId,
@@ -219,7 +221,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return;
     }
 
-    this.addTreeNodes(root, nodes);
+    this.addTreeNodes(root);
 
     if (edges) {
       // add default edges
@@ -233,11 +235,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   /**
    * @param {DDGTimelineNode} node 
-   * @param {DDGTimelineNode[]} allNodes 
    * @param {*} depth 
    * @param {*} top 
    */
-  addTreeNodes(node, allNodes, depth = 0, top = YPadding) {
+  addTreeNodes(node, depth = 0, top = YPadding) {
+    const allNodes = this.renderState.timelineNodes;
     const { type, children, label = '' } = node;
     let bottom = top + YGroupPadding;
     let left = XPadding + Math.floor(Math.random() * 400);
@@ -247,11 +249,29 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return false;
     }
 
+    const isSummarized = ddgQueries.isNodeSummarized(this.renderState, node);
     const isGroupNode = this.isGroupNode(node);
     const el = this.makeNodeEl(node, label);
     this.el.appendChild(el);
 
-    if (isGroupNode) {
+    if (isSummarized) {
+      // hackfix: summary (TODO: make sure, in the new version, we don't have repeating loops like this)
+      // → here, we treat the original node (`el`) as a group node
+      // → in the new version, we probably want to explicitly add a `subgraph` (and put this logic in a dedicated function)
+      const summary = this.renderState.nodeSummaries[node.timelineId];
+      if (summary) {
+        const { summaryRoots } = summary;
+        for (const summaryNodeId of summaryRoots) {
+          const summaryNode = allNodes[summaryNodeId];
+          this.addTreeNodes(summaryNode, depth + 1, bottom);
+        }
+      }
+      else {
+        this.el.style.backgroundColor = 'red';
+        this.el.textContent = `(missing summary)`;
+      }
+    }
+    else if (isGroupNode) {
       // TODO: change to `dot` → `subgraph`
       if (children?.length) {
         for (const childId of Object.values(children)) {
@@ -264,7 +284,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
           ) {
             continue;
           }
-          if (this.addTreeNodes(childNode, allNodes, depth + 1, bottom)) {
+          if (this.addTreeNodes(childNode, depth + 1, bottom)) {
             const { displayData: childDisplayData } = childNode;
             bottom = childDisplayData.bottom + YGroupPadding;
           }

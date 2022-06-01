@@ -208,11 +208,12 @@ class ComponentEndpoint {
       }
     },
     objectMerge: (state, delta) => {
+      console.log('objectMerge', delta);
       for (const key in delta) {
         const orig = state[key];
         const upd = delta[key];
 
-        state[key] = merge(orig, upd);
+        state[key] = merge(orig || {}, upd);
       }
     }
   };

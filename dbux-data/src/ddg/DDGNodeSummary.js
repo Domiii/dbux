@@ -1,5 +1,5 @@
 /** @typedef { import("./DDGTimelineNodes").RefSnapshotTimelineNode } RefSnapshotTimelineNode */
-/** @typedef { Map.<number, RefSnapshotTimelineNode } SnapshotMap */
+/** @typedef { Map.<number, number> } SnapshotMap */
 
 export default class DDGNodeSummary {
   timelineId;
@@ -13,11 +13,11 @@ export default class DDGNodeSummary {
    * Set of `timelineId`s of {@link RefSnapshotTimelineNode} 
    * @type {Array.<number>}
    */
-  summaryNodes;
+  summaryRoots;
 
-  constructor(timelineId, snapshotsByRefId, summaryNodes) {
+  constructor(timelineId, snapshotsByRefId, summaryRoots) {
     this.timelineId = timelineId;
     this.snapshotsByRefId = snapshotsByRefId;
-    this.summaryNodes = summaryNodes;
+    this.summaryRoots = summaryRoots;
   }
 }
