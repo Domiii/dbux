@@ -1,7 +1,10 @@
-import * as jsPlumbBrowserUI from '@jsplumb/browser-ui';
-import { AnchorLocations } from '@jsplumb/common';
-import { BezierConnector } from '@jsplumb/connector-bezier';
+// import * as jsPlumbBrowserUI from '@jsplumb/browser-ui';
+// import { AnchorLocations } from '@jsplumb/common';
+// import { BezierConnector } from '@jsplumb/connector-bezier';
 
+import * as d3 from 'd3-graphviz';
+
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
@@ -13,15 +16,16 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
 
-const XPadding = 30;
-const YPadding = 30;
+// const XPadding = 30;
+// const YPadding = 30;
 // const XGap = 8;
 // const YGap = 15;
-const YGroupPadding = 4;
+// const YGroupPadding = 4;
 
 const NodeMenuHeight = 12;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
+
 
 let documentMouseMoveHandler;
 
@@ -39,6 +43,10 @@ function getElLeftOffset(el) {
   return b + m;
 }
 
+const GraphVizCfg = {
+  useWorker: false
+};
+
 export default class DDGTimelineView extends ClientComponentEndpoint {
   /**
    * @type {Element}
@@ -52,7 +60,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   createEl() {
-    return compileHtmlElement(/*html*/`<div class="timeline-view timeline-jsplumb-container">
+    return compileHtmlElement(/*html*/`<div id="ddg-timeline" class="timeline-view">
       <div data-el="status"></div>
       <!-- <div data-el="view" class="timeline-view timeline-sigma-container"></div> -->
       <!-- <div data-el="view" class="timeline-view timeline-jsplumb-container"></div> -->
@@ -62,15 +70,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   setupEl() {
     this.initGraphImplementation();
 
-    delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
-      const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
-      if (timelineId) {
-        const node = this.renderState.timelineNodes[timelineId];
-        if (node.dataNodeId) {
-          await this.remote.selectNode(timelineId);
-        }
-      }
-    });
+    // delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
+    //   const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
+    //   if (timelineId) {
+    //     const node = this.renderState.timelineNodes[timelineId];
+    //     if (node.dataNodeId) {
+    //       await this.remote.selectNode(timelineId);
+    //     }
+    //   }
+    // });
 
     this.refreshGraph();
   }
@@ -208,259 +216,98 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     return isControlGroupTimelineNode(node.type) && !ddgQueries.isCollapsed(this.renderState, node);
   }
 
+  /**
+   * @param {DDGTimelineNode} node 
+   */
+  isRootNode(node) {
+    return this.root === node;
+  }
+
+  /** ###########################################################################
+   * d3-graphviz implementation
+   *  #########################################################################*/
+
+  rebuildGraph() {
+    this.initGraphImplementation();
+
+    this.buildGraph();
+  }
+
   buildGraph() {
     const { root } = this;
-    const {
-      // summaryModes,
-      edges
-      // outEdgesByTimelineId,
-      // inEdgesByTimelineId
-    } = this.renderState;
 
     if (!root) {
       return;
     }
 
-    this.addTreeNodes(root);
-
-    if (edges) {
-      // add default edges
-      for (const edge of edges) {
-        if (edge) {
-          this.addEdge(edge);
-        }
-      }
-    }
+    const graphString = this.buildDotGraph();
+    // TODO: fix graphString
+    this.graphviz.renderDot('digraph { a -> b }');
   }
-
-  /**
-   * @param {DDGTimelineNode} node 
-   * @param {*} depth 
-   * @param {*} top 
-   */
-  addTreeNodes(node, depth = 0, top = YPadding) {
-    const allNodes = this.renderState.timelineNodes;
-    const { type, children, label = '' } = node;
-    let bottom = top + YGroupPadding;
-    let left = XPadding + Math.floor(Math.random() * 400);
-    let right;
-
-    if (!ddgQueries.isVisible(this.renderState, node)) {
-      return false;
-    }
-
-    const isSummarized = ddgQueries.isNodeSummarized(this.renderState, node);
-    const isGroupNode = this.isGroupNode(node);
-    const el = this.makeNodeEl(node, label);
-    this.el.appendChild(el);
-
-    if (isSummarized) {
-      // hackfix: summary (TODO: make sure, in the new version, we don't have repeating loops like this)
-      // → here, we treat the original node (`el`) as a group node
-      // → in the new version, we probably want to explicitly add a `subgraph` (and put this logic in a dedicated function)
-      const summary = this.renderState.nodeSummaries[node.timelineId];
-      if (summary) {
-        const { summaryRoots } = summary;
-        for (const summaryNodeId of summaryRoots) {
-          const summaryNode = allNodes[summaryNodeId];
-          this.addTreeNodes(summaryNode, depth + 1, bottom);
-        }
-      }
-      else {
-        this.el.style.backgroundColor = 'red';
-        this.el.textContent = `(missing summary)`;
-      }
-    }
-    else if (isGroupNode) {
-      // TODO: change to `dot` → `subgraph`
-      if (children?.length) {
-        for (const childId of Object.values(children)) {
-          const childNode = allNodes[childId];
-
-          // TODO: move this logic to applySummarization
-          if (this.context.doc.state.connectedOnlyMode &&
-            !isControlGroupTimelineNode(childNode.type) &&
-            !childNode.connected
-          ) {
-            continue;
-          }
-          if (this.addTreeNodes(childNode, depth + 1, bottom)) {
-            const { displayData: childDisplayData } = childNode;
-            bottom = childDisplayData.bottom + YGroupPadding;
-          }
-        }
-      }
-      bottom += YGroupPadding;
-      left = depth * 3;
-      right = depth * 3;
-    }
-    else if (type === DDGTimelineNodeType.RefSnapshot) {
-      if (children?.length) {
-        for (const propName of Object.keys(children)) {
-          const childId = children[propName];
-          const childNode = allNodes[childId];
-          const childEl = this.makeNodeEl(childNode, propName);
-          el.appendChild(childEl);
-        }
-      }
-      bottom = top + el.offsetHeight;
-    }
-    else {
-      bottom = top + el.offsetHeight;
-    }
-
-    node.displayData = {
-      top,
-      bottom,
-      left,
-      right,
-      isGroupNode,
-    };
-
-    this.repositionNodeEl(el, node.displayData);
-
-    return true;
-  }
-
-  /** ###########################################################################
-   * jsPlumb implementation
-   *  #########################################################################*/
 
   initGraphImplementation() {
-    this.nodeElMap = new Map();
-    this.jsPlumb = jsPlumbBrowserUI.newInstance({
-      container: this.el
-    });
+    // NOTE: use `this.el`'s id
+    this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
   }
 
-  rebuildGraph() {
-    this.jsPlumb.batch(() => {
-      this.clearGraph();
-      this.buildGraph();
-    });
+  buildDotGraph() {
+    const { root } = this;
+    return this.buildNodeDotGraph(root);
   }
 
-  makeNodeDebugOverlay(node) {
-    const content = `Node = ${JSON.stringify(node, null, 2)}`;
-    return compileHtmlElement(/*html*/`<pre class="node-debug-overlay">${content}</pre>`);
-  }
-
-  makeNodeEl(node, label) {
-    const { type, timelineId } = node;
-    let el;
-    const isGroup = this.isGroupNode(node);
-    if (isGroup) {
-      el = compileHtmlElement(/*html*/`<div class="timeline-group">${label}</div>`);
+  buildNodeDotGraph(node) {
+    const { type } = node;
+    if (this.isGroupNode(node)) {
+      return this.buildGroupNodeDotGraph(node);
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
-      el = compileHtmlElement(/*html*/`<div class="timeline-ref-node"><div class="timeline-node">${label}</div></div>`);
+      return this.buildRefSnapshotNodeDotGraph(node);
     }
     else {
-      el = compileHtmlElement(/*html*/`<div class="timeline-node">${label}</div>`);
-    }
-
-    if (isDataTimelineNode(type)) {
-      // add overlays
-      let debugOverlay;
-      el.addEventListener('mouseover', () => {
-        if (!debugOverlay) {
-          // create overlay lazily
-          el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-        }
-        this.maybeShowNodePopupEl(node, el);
-      });
-    }
-
-    // addNode
-    el.dataset.timelineId = timelineId;
-    this.addNode(timelineId, el, node);
-    // this.logger.log(`[addNode]`, parent, parent.displayData);
-    return el;
-  }
-
-  addNode(key, el, node) {
-    const isGroupNode = this.isGroupNode(node);
-
-    // else {
-    //   if (!connected && this.context.doc.state.connectedOnlyMode) {
-    //     el.classList.add('hidden');
-    //   }
-    // }
-
-    this.nodeElMap.set(key, el);
-    // this.el.appendChild(el);
-    if (!isGroupNode) {
-      this.jsPlumb.manage(el);
+      return this.buildPrimitiveNodeDotGraph(node);
     }
   }
 
-  repositionNodeEl(el, displayData) {
-    const { left, right, top, bottom, isGroupNode } = displayData;
-    el.style.left = `${left}px`;
-    el.style.top = `${top}px`;
-    if (isGroupNode) {
-      el.style.height = `${bottom - top}px`;
-      el.style.right = `${right}px`;
-    }
+  buildGroupNodeDotGraph(node) {
+    const { outEdgesByTimelineId, timelineNodes } = this.renderState;
+    const { label, children } = node;
+    const graphLabel = this.isRootNode(node) ? 'diagraph' : `subgraph cluster_${label}`;
+
+    const childNodes = (children || EmptyArray).map(childId => timelineNodes[childId]);
+    const nodesGraphString = childNodes
+      .map(childNode => {
+        return this.buildNodeDotGraph(childNode);
+      })
+      .join('\n');
+
+    const edges = childNodes.flatMap(childNode => outEdgesByTimelineId[childNode.timelineId] || EmptyArray);
+    const edgesGraphString = edges
+      .map(edge => {
+        return this.buildEdgeDotGraph(edge);
+      })
+      .join('\n');
+
+    return `${graphLabel} {
+      ${nodesGraphString}
+      ${edgesGraphString}
+    }`;
   }
 
-  addEdge(edge) {
-    // const fromTimelineId = this.renderState.timelineNodes[edge.from];
-    // const toTimelineId = this.renderState.timelineNodes[edge.to];
-    const fromTimelineId = edge.from;
-    const toTimelineId = edge.to;
-    const source = this.nodeElMap.get(fromTimelineId);
-    const target = this.nodeElMap.get(toTimelineId);
-    this.jsPlumb.connect({
-      source,
-      target,
-      /**
-       * @see https://docs.jsplumbtoolkit.com/community/lib/connectivity#detaching-connections
-       */
-      detachable: false,
-      /**
-       * @see https://docs.jsplumbtoolkit.com/community/lib/endpoints#endpoint-types
-       */
-      endpoints: ['Blank', 'Blank'],
-      connector: {
-        /**
-         * @see https://docs.jsplumbtoolkit.com/community/lib/connectors#bezier-connector
-         * @see https://docs.jsplumbtoolkit.com/community/apidocs/connector-bezier
-         */
-        type: BezierConnector.type,
-        /**
-         * hackfix: always provide `options`, or it will bug out.
-         * @see https://github.com/jsplumb/jsplumb/issues/1129
-         */
-        options: {
-          /**
-           * default = 150
-           */
-          curviness: 20
-        }
-      },
-      overlays: [
-        {
-          type: 'PlainArrow',
-          options: {
-            location: 1,
-            width: 4,
-            length: 4,
-          }
-        },
-      ],
-      anchor: AnchorLocations.AutoDefault
-    });
+  buildRefSnapshotNodeDotGraph(node) {
+    // TODO
+    const { timelineId } = node;
+    return `${timelineId} [label="refNode${timelineId}"]`;
   }
 
-  clearGraph() {
-    this.jsPlumb.deleteEveryConnection();
-    this.el.querySelectorAll('div.timeline-node').forEach(el => el.remove());
-    this.el.querySelectorAll('div.timeline-group').forEach(el => el.remove());
-    // for (const el of this.nodeElMap.values()) {
-    //   this.el.removeChild(el);
-    // }
-    this.nodeElMap = new Map();
+  buildPrimitiveNodeDotGraph(node) {
+    // TODO
+    const { timelineId } = node;
+    return `${timelineId} [label="PrimitiveNode${timelineId}"] `;
+  }
+
+  buildEdgeDotGraph(edge) {
+    // TODO
+    return `${edge.from} -> ${edge.to}`;
   }
 
   /** ###########################################################################
@@ -552,6 +399,218 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 //   return root;
 // }
 
+// /** ###########################################################################
+//  * jsPlumb implementation
+//  *  #########################################################################*/
+
+// /**
+//  * @param {DDGTimelineNode} node
+//  * @param {DDGTimelineNode[]} allNodes
+//  * @param {*} depth
+//  * @param {*} top
+//  */
+//   addTreeNodes(node, allNodes, depth = 0, top = YPadding) {
+//   const { type, children, label = '' } = node;
+//   let bottom = top + YGroupPadding;
+//   let left = XPadding + Math.floor(Math.random() * 400);
+//   let right;
+
+//   if (!ddgQueries.isVisible(this.renderState, node)) {
+//     return false;
+//   }
+
+//   const isGroupNode = this.isGroupNode(node);
+//   const el = this.makeNodeEl(node, label);
+//   this.el.appendChild(el);
+
+//   if (isGroupNode) {
+//     // TODO: change to `dot` → `subgraph`
+//     if (children?.length) {
+//       for (const childId of Object.values(children)) {
+//         const childNode = allNodes[childId];
+
+//         // TODO: move this logic to applySummarization
+//         if (this.context.doc.state.connectedOnlyMode &&
+//           !isControlGroupTimelineNode(childNode.type) &&
+//           !childNode.connected
+//         ) {
+//           continue;
+//         }
+//         if (this.addTreeNodes(childNode, allNodes, depth + 1, bottom)) {
+//           const { displayData: childDisplayData } = childNode;
+//           bottom = childDisplayData.bottom + YGroupPadding;
+//         }
+//       }
+//     }
+//     bottom += YGroupPadding;
+//     left = depth * 3;
+//     right = depth * 3;
+//   }
+//   else if (type === DDGTimelineNodeType.RefSnapshot) {
+//     if (children?.length) {
+//       for (const propName of Object.keys(children)) {
+//         const childId = children[propName];
+//         const childNode = allNodes[childId];
+//         const childEl = this.makeNodeEl(childNode, propName);
+//         el.appendChild(childEl);
+//       }
+//     }
+//     bottom = top + el.offsetHeight;
+//   }
+//   else {
+//     bottom = top + el.offsetHeight;
+//   }
+
+//   node.displayData = {
+//     top,
+//     bottom,
+//     left,
+//     right,
+//     isGroupNode,
+//   };
+
+//   this.repositionNodeEl(el, node.displayData);
+
+//   return true;
+// }
+
+// initGraphImplementation() {
+//   this.nodeElMap = new Map();
+//   this.jsPlumb = jsPlumbBrowserUI.newInstance({
+//     container: this.el
+//   });
+// }
+
+// rebuildGraph() {
+//   this.jsPlumb.batch(() => {
+//     this.clearGraph();
+//     this.buildGraph();
+//   });
+// }
+
+// makeNodeDebugOverlay(node) {
+//   const content = `Node = ${ JSON.stringify(node, null, 2) } `;
+//   return compileHtmlElement(/*html*/`< pre class="node-debug-overlay" > ${ content }</pre > `);
+// }
+
+// makeNodeEl(node, label) {
+//   const { type, timelineId } = node;
+//   let el;
+//   const isGroup = this.isGroupNode(node);
+//   if (isGroup) {
+//     el = compileHtmlElement(/*html*/`< div class="timeline-group" > ${ label }</div > `);
+//   }
+//   else if (type === DDGTimelineNodeType.RefSnapshot) {
+//     el = compileHtmlElement(/*html*/`< div class="timeline-ref-node" > <div class="timeline-node">${label}</div></div > `);
+//   }
+//   else {
+//     el = compileHtmlElement(/*html*/`< div class="timeline-node" > ${ label }</div > `);
+//   }
+
+//   if (isDataTimelineNode(type)) {
+//     // add overlays
+//     let debugOverlay;
+//     el.addEventListener('mouseover', () => {
+//       if (!debugOverlay) {
+//         // create overlay lazily
+//         el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+//       }
+//       this.maybeShowNodePopupEl(node, el);
+//     });
+//   }
+
+//   // addNode
+//   el.dataset.timelineId = timelineId;
+//   this.addNode(timelineId, el, node);
+//   // this.logger.log(`[addNode]`, parent, parent.displayData);
+//   return el;
+// }
+
+// addNode(key, el, node) {
+//   const isGroupNode = this.isGroupNode(node);
+
+//   // else {
+//   //   if (!connected && this.context.doc.state.connectedOnlyMode) {
+//   //     el.classList.add('hidden');
+//   //   }
+//   // }
+
+//   this.nodeElMap.set(key, el);
+//   // this.el.appendChild(el);
+//   if (!isGroupNode) {
+//     this.jsPlumb.manage(el);
+//   }
+// }
+
+// repositionNodeEl(el, displayData) {
+//   const { left, right, top, bottom, isGroupNode } = displayData;
+//   el.style.left = `${ left } px`;
+//   el.style.top = `${ top } px`;
+//   if (isGroupNode) {
+//     el.style.height = `${ bottom - top } px`;
+//     el.style.right = `${ right } px`;
+//   }
+// }
+
+// addEdge(edge) {
+//   // const fromTimelineId = this.renderState.timelineNodes[edge.from];
+//   // const toTimelineId = this.renderState.timelineNodes[edge.to];
+//   const fromTimelineId = edge.from;
+//   const toTimelineId = edge.to;
+//   const source = this.nodeElMap.get(fromTimelineId);
+//   const target = this.nodeElMap.get(toTimelineId);
+//   this.jsPlumb.connect({
+//     source,
+//     target,
+//     /**
+//      * @see https://docs.jsplumbtoolkit.com/community/lib/connectivity#detaching-connections
+//      */
+//     detachable: false,
+//     /**
+//      * @see https://docs.jsplumbtoolkit.com/community/lib/endpoints#endpoint-types
+//      */
+//     endpoints: ['Blank', 'Blank'],
+//     connector: {
+//       /**
+//        * @see https://docs.jsplumbtoolkit.com/community/lib/connectors#bezier-connector
+//        * @see https://docs.jsplumbtoolkit.com/community/apidocs/connector-bezier
+//        */
+//       type: BezierConnector.type,
+//       /**
+//        * hackfix: always provide `options`, or it will bug out.
+//        * @see https://github.com/jsplumb/jsplumb/issues/1129
+//        */
+//       options: {
+//         /**
+//          * default = 150
+//          */
+//         curviness: 20
+//       }
+//     },
+//     overlays: [
+//       {
+//         type: 'PlainArrow',
+//         options: {
+//           location: 1,
+//           width: 4,
+//           length: 4,
+//         }
+//       },
+//     ],
+//     anchor: AnchorLocations.AutoDefault
+//   });
+// }
+
+// clearGraph() {
+//   this.jsPlumb.deleteEveryConnection();
+//   this.el.querySelectorAll('div.timeline-node').forEach(el => el.remove());
+//   this.el.querySelectorAll('div.timeline-group').forEach(el => el.remove());
+//   // for (const el of this.nodeElMap.values()) {
+//   //   this.el.removeChild(el);
+//   // }
+//   this.nodeElMap = new Map();
+// }
+
 /** ###########################################################################
  * Sigma.js implementation
  *  #########################################################################*/
@@ -596,7 +655,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 // }
 
 // addNode(node) {
-//   const label = node.label || `Node#${node.ddgNodeId}`;
+//   const label = node.label || `Node#${ node.ddgNodeId } `;
 //   const pos = this.getNodeInitialPosition(node);
 //   const { x, y } = pos;
 //   /**
@@ -639,7 +698,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
 // addEdge(edge) {
 //   /**
-//    * `code ./node_modules/graphology/dist/graphology.esm.js:3691`
+//    * `code./ node_modules / graphology / dist / graphology.esm.js: 3691`
 //    */
 //   this.graph.addEdge(edge.from, edge.to);
 // }
@@ -724,7 +783,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 //     this.applyFA2();
 //   }
 //   else {
-//     this.logger.error(`Unkown layout algorithm type: ${layoutType}`);
+//     this.logger.error(`Unkown layout algorithm type: ${ layoutType } `);
 //   }
 // }
 
@@ -745,7 +804,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
 // getNodeInitialPosition(node) {
 //   /**
-//    * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x=0 and y=0`
+//    * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x = 0 and y = 0`
 //    * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
 //    */
 //   // const x = node.ddgNodeId / this.renderState.timelineNodes.length;

@@ -1,9 +1,10 @@
+import html2canvas from 'html2canvas';
 import { startDbuxComponents } from './componentLib/ClientComponentManager';
 import _clientRegistry from './graph/_clientRegistry';
 
 import './graph/styles.css';
+import initHackfixes from './hackfixes';
 
-import html2canvas from 'html2canvas';
 
 /**
  * hackfix for `screens.js`.
@@ -12,6 +13,8 @@ import html2canvas from 'html2canvas';
  * However, due to CSP limitations, we cannot load it dynamically.
  */
 window.html2canvas = html2canvas;
-console.log('html2canvas', html2canvas);
+// console.log('html2canvas', html2canvas);
+
+initHackfixes();
 
 window.startDbuxComponents = startDbuxComponents.bind(null, _clientRegistry);

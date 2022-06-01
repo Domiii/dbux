@@ -465,7 +465,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   _publicInternal = {
     forceUpdate: this.forceUpdate,
-    setState: this.setState
+    setState: this.setState,
+    getClientResourceUri: (...args) => {
+      return this.componentManager.externals.getClientResourceUri(...args);
+    }
   }
 
   // ###########################################################################

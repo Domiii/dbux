@@ -42,12 +42,14 @@ module.exports = (env, argv) => {
       // RESEARCH_ENABLED: '1' // NOTE: all env vars are converted to strings
     }),
     new CopyPlugin({
+      // NOTE: there is more copying in dbux-graph-client/webpack.config.js
       patterns: [
         {
           force: true,
           from: path.join(MonoRoot, 'dbux-projects', 'assets'),
           to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
         },
+
         // TODO: bring firebase back in, if we decide to use it
         // {
         //   force: true,

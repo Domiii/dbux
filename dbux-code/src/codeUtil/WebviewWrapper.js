@@ -169,7 +169,8 @@ export default class WebviewWrapper {
     this._setCurrentState(viewColumn);
 
     const localResourceRoots = [
-      Uri.file(this.resourceRoot)
+      Uri.file(this.resourceRoot),
+      Uri.file(getResourcePath('dist/web'))
     ];
 
     commands.executeCommand('setContext', `dbuxWebView.context.${this.webviewId}.isActive`, true);

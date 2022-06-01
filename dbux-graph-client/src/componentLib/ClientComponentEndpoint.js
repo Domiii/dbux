@@ -69,6 +69,10 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     this._remoteInternal.setState(...args);
   }
 
+  async getClientResourceUri(...args) {
+    return this._remoteInternal.getClientResourceUri(...args);
+  }
+
   // ###########################################################################
   // private methods
   // ###########################################################################
