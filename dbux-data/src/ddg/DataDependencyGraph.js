@@ -237,7 +237,7 @@ export default class DataDependencyGraph extends BaseDDG {
    * ##########################################################################*/
 
   resetBuild() {
-    super.resetBuild();
+    this.resetEdges(); // only reset (set) edges
   }
 
   #initSummaryConfig() {
@@ -276,7 +276,7 @@ export default class DataDependencyGraph extends BaseDDG {
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      this.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
+      this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
     }
 
     const roots = Array.from(snapshotsByRefId.values()).filter(snap => !snap.parentNodeId);
@@ -479,13 +479,20 @@ export default class DataDependencyGraph extends BaseDDG {
       nodeSummary = this.nodeSummaries[targetNode.timelineId];
       isSummarized = !!nodeSummary?.summaryNodes?.length;
       if (isSummarized) {
-        const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
-        // link to summaryNode instead of `targetNode`
-        targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
-        if (!targetNode) {
-          // NOTE: we simply "hide" nodes that are not in `summaryNodes`
-          // → meaning, we "propagate" its edges
+        if (!dataNodeId) {
+          // summarized nodes without `dataNodeId` (such as groups) are simply hidden
+          targetNode = null;
           isVisible = false;
+        }
+        else {
+          const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
+          // link to summaryNode instead of `targetNode`
+          targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
+          if (!targetNode) {
+            // NOTE: we simply "hide" nodes that are not in `summaryNodes`
+            // → meaning, we "propagate" its edges
+            isVisible = false;
+          }
         }
       }
     }
@@ -539,10 +546,10 @@ export default class DataDependencyGraph extends BaseDDG {
    * @return {DDGTimelineNode}
    */
   #lookupSummaryNode(dataNode, nodeSummary) {
-    const refId = this.dp.util.getDataNodeAccessedRefId(dataNode);
+    const refId = this.dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     if (refId) {
       const { prop } = dataNode.varAccess;
-      const snapshot = nodeSummary.snapshotsByRefId[refId];
+      const snapshot = nodeSummary.snapshotsByRefId.get(refId);
       const childId = snapshot.children[prop];
       return this.timelineNodes[childId];
     }

@@ -154,6 +154,11 @@ export default class BaseDDG {
     this._refSnapshotsByDataNodeId = [];
     this._lastAccessDataNodeIdByRefId = [];
     this._firstTimelineDataNodeByDataNodeId = [];
+
+    this.resetEdges();
+  }
+
+  resetEdges() {
     this.edges = [null];
     this.inEdgesByTimelineId = {};
     this.outEdgesByTimelineId = {};
