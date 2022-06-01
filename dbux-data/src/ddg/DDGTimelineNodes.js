@@ -94,7 +94,7 @@ export class DataTimelineNode extends DDGTimelineNode {
 
 export class ValueTimelineNode extends DataTimelineNode {
   constructor(dataNodeId, label) {
-    super(DDGTimelineNodeType.Primitive);
+    super(DDGTimelineNodeType.Value);
 
     this.dataNodeId = dataNodeId;
     this.label = label;

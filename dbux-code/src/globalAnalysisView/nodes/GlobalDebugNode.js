@@ -371,7 +371,12 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                     async handleClick() {
                       let dot = await getDDGDot(ddg);
                       if (!dot) {
-                        this.treeNodeProvider.refresh();
+                        try {
+                          this.treeNodeProvider.refresh();
+                        }
+                        catch (err) {
+                          // ignore err
+                        }
                         dot = await getDDGDot();
                       }
                       if (dot) {

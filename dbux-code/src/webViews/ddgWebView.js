@@ -63,7 +63,7 @@ export function getDDGWebview(ddg) {
 
 export async function getDDGDot(ddg) {
   if (!ddg && activeWebviews.size === 1) {
-    ddg = activeWebviews.keys().next();
+    ddg = activeWebviews.keys().next().value;
   }
   const webview = getDDGWebview(ddg);
   if (webview) {

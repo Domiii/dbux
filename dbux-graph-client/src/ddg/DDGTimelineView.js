@@ -270,6 +270,19 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     return this.buildNodeDot(root);
   }
 
+  buildNodesDot(nodes) {
+    return nodes
+      .filter(node => !(
+        this.doc.state.connectedOnlyMode &&
+        !isControlGroupTimelineNode(node.type) &&
+        !node.connected
+      ))
+      .map(node => {
+        return this.buildNodeDot(node);
+      })
+      .join('\n');
+  }
+
   buildNodeDot(node) {
     const { type } = node;
 
@@ -283,7 +296,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // }
 
     if (this.isGroupNode(node)) {
-      return this.buildGroupNodeDot(node);
+      return this.buildSubGraphNodeDot(node);
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
       return this.buildRefSnapshotNodeDot(node);
@@ -294,50 +307,76 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   buildGroupDotAttrs(node) {
+    let attrs;
     if (this.isRootNode(node)) {
       // global settings
-      return [
+      attrs = [
         // `node [fontsize=9]`,
         'edge [arrowsize=0.5,arrowhead="open"]'
-      ].map(this.command);
+      ];
     }
-    return [];
+    else {
+      attrs = [
+        `label=${JSON.stringify(node.label)}`
+      ];
+    }
+    return attrs.map(this.command).join('\n');
   }
 
-  buildGroupNodeDot(node) {
-    const { outEdgesByTimelineId, timelineNodes, edges } = this.renderState;
-    const { label, children } = node;
-    
-    const ownIndent = this.indent;
-    this.indentLevel += 1;
+  buildSubGraphNodeDot(node) {
+    const { timelineId } = node;
 
-    const graphLabel = this.isRootNode(node) ? 'digraph' : `subgraph cluster_${label}`;
-    const groupAttrs = this.buildGroupDotAttrs(node).join('\n');
+    const ownIndent = this.indent;
+    const graphLabel = this.isRootNode(node) ? 'digraph' : `subgraph cluster_${timelineId}`;
+
+    const childrenString = this.buildSubGraphChildren(node);
+
+    return `${ownIndent}${graphLabel} {\n${childrenString}\n${ownIndent}}`;
+  }
+
+  buildSubGraphChildren(node) {
+    const { timelineNodes, edges } = this.renderState;
+    const { children } = node;
+
+    this.indentLevel += 1;
+    const groupAttrs = this.buildGroupDotAttrs(node);
 
     const childNodes = (children || EmptyArray).map(childId => timelineNodes[childId]);
-    const nodesGraphString = childNodes
-      .map(childNode => {
-        return this.buildNodeDot(childNode);
-      })
-      .join('\n');
+    const nodesGraphString = this.buildNodesDot(childNodes);
 
-    const edgeIds = childNodes.flatMap(childNode => outEdgesByTimelineId[childNode.timelineId] || EmptyArray);
-    const edgesGraphString = edgeIds
-      .map(edgeId => {
-        const edge = edges[edgeId];
-        return this.buildEdgeDot(edge);
-      })
-      .join('\n');
+
+    let edgesGraphString;
+    if (this.isRootNode(node)) {
+      // hackfix: edges should be placed after all nodes have been defined, else things will not get rendered in the right places/groups
+      // const edgeIds = childNodes.flatMap(childNode => outEdgesByTimelineId[childNode.timelineId] || EmptyArray);
+      // edgesGraphString = '\n' + edgeIds
+      //   .map(edgeId => {
+      //     const edge = edges[edgeId];
+      //     return this.buildEdgeDot(edge);
+      //   })
+      edgesGraphString = '\n' + edges
+        .filter(Boolean)
+        .map(edge => {
+          return this.buildEdgeDot(edge);
+        })
+        .join('\n');
+    }
+    else {
+      edgesGraphString = '';
+    }
 
     this.indentLevel -= 1;
 
-    return `${ownIndent}${graphLabel} {\n${groupAttrs}\n${nodesGraphString}\n${edgesGraphString}\n${ownIndent}}`;
+    return `${groupAttrs}\n${nodesGraphString}${edgesGraphString}`;
   }
 
   buildRefSnapshotNodeDot(node) {
-    const { timelineId, label } = node;
+    // const { timelineId, label } = node;
     // return `${timelineId} [label="refNode${timelineId}"]`;
-    return ''; // nothing yet
+
+    // TODO: add records
+    // TODO: nested snapshots
+    return this.buildSubGraphNodeDot(node);
   }
 
   buildValueNodeDot(node) {
