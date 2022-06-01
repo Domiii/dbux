@@ -26,6 +26,7 @@ const NodeMenuYOffset = 12;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
+
 let documentMouseMoveHandler;
 
 function getElTopOffset(el) {
@@ -41,6 +42,10 @@ function getElLeftOffset(el) {
   const m = parseFloat(s.getPropertyValue('margin-left-width')) || 0;
   return b + m;
 }
+
+const GraphVizCfg = {
+  useWorker: false
+};
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   /**
@@ -219,6 +224,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    *  #########################################################################*/
 
   rebuildGraph() {
+    this.initGraphImplementation();
+
     this.buildGraph();
   }
 
@@ -230,13 +237,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
 
     const graphString = this.buildDotGraph();
-
-    this.d3.renderDot(graphString);
+    // TODO: fix graphString
+    this.graphviz.renderDot('digraph { a -> b }');
   }
 
   initGraphImplementation() {
     // NOTE: use `this.el`'s id
-    this.d3 = d3.graphviz('#ddg-timeline');
+    this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
   }
 
   buildDotGraph() {

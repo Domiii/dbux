@@ -18,7 +18,7 @@ const projectRoot = path.resolve(__dirname);
 const MonoRoot = path.resolve(__dirname, '..');
 
 // TODO: Do not build to remote path. Copy on deploy instead.
-const outputFolder = path.join(MonoRoot, 'dbux-code/resources/dist/web');
+const webOutputFolder = path.join(MonoRoot, 'dbux-code/resources/dist/web');
 
 const dependencies = [
   "dbux-common",
@@ -44,15 +44,29 @@ module.exports = (env, argv) => {
     }),
     new CopyPlugin({
       patterns: [
+        /**
+         * Theme files etc.
+         */
         {
           force: true,
           from: path.join(projectRoot, 'assets'),
-          to: outputFolder
+          to: webOutputFolder
         },
+        /**
+         * Bootstrap stuff
+         */
         {
           force: true,
           from: path.join(MonoRoot, 'node_modules/bootstrap/dist/css/bootstrap.min.css'),
-          to: path.join(outputFolder, 'light/bootstrap.min.css')
+          to: path.join(webOutputFolder, 'light/bootstrap.min.css')
+        },
+        /**
+         * graphviz.wasm file needs to be loaded from the client
+         */
+        {
+          force: true,
+          from: path.join(MonoRoot, '/node_modules/@hpcc-js/wasm/dist/graphvizlib.wasm'),
+          to: path.join(webOutputFolder, 'graphvizlib.wasm')
         }
       ]
     })
@@ -176,7 +190,7 @@ module.exports = (env, argv) => {
       'ddg.client': path.join(src, 'ddg.client.js'),
     },
     output: {
-      path: outputFolder,
+      path: webOutputFolder,
       filename: '[name].js',
       publicPath: '/',
       // sourceMapFilename: outFile + ".map"
