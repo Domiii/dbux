@@ -92,7 +92,7 @@ export class DataTimelineNode extends DDGTimelineNode {
   nOutputs;
 }
 
-export class PrimitiveTimelineNode extends DataTimelineNode {
+export class ValueTimelineNode extends DataTimelineNode {
   constructor(dataNodeId, label) {
     super(DDGTimelineNodeType.Primitive);
 

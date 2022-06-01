@@ -3,8 +3,8 @@ import Enum from '../../util/Enum';
 const ddgTimelineNodeTypeObj = {
   Root: 1,
 
-  // primitive data
-  Primitive: 2,
+  // single value
+  Value: 2,
 
   RefSnapshot: 3,
   RepeatedRef: 4,
@@ -44,7 +44,7 @@ const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 
 
 const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-dataTimelineNodeTypes[DDGTimelineNodeType.Primitive] = true;
+dataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
 dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
 
 /**
@@ -55,7 +55,7 @@ export function isDataTimelineNode(timelineNodeType) {
 }
 
 const hasDataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-hasDataTimelineNodeTypes[DDGTimelineNodeType.Primitive] = true;
+hasDataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
 hasDataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
 hasDataTimelineNodeTypes[DDGTimelineNodeType.RefSnapshot] = true;
 
