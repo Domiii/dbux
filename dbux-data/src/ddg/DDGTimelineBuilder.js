@@ -4,7 +4,7 @@ import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceCo
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isControlGroupTimelineNode, isDataTimelineNode, isDecisionNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 // eslint-disable-next-line max-len
 import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode, RepeatedRefTimelineNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
@@ -46,11 +46,6 @@ export default class DDGTimelineBuilder {
    */
   lastTimelineVarSnapshotNodeByDeclarationTid = {};
 
-  /**
-   * @type {Obejct.<number, DataTimelineNode>}
-   */
-  firstTimelineDataNodeByDataNodeId = [];
-
   /** ########################################
    * other fields
    *  ######################################*/
@@ -89,6 +84,16 @@ export default class DDGTimelineBuilder {
     return this.lastTimelineVarSnapshotNodeByDeclarationTid[declarationTid];
   }
 
+
+  getDataTimelineInputNode(dataNodeId) {
+    // 1. look for skips
+    let inputNode = this.skippedNodesByDataNodeId[dataNodeId];
+    if (!inputNode) {
+      // 2. DataNode was not skipped → get its DataTimelineNode
+      inputNode = this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
+    }
+    return inputNode;
+  }
 
   /** ###########################################################################
    * create and/or add nodes (basics)
@@ -140,8 +145,21 @@ export default class DDGTimelineBuilder {
         currentGroup.decisions.push(decisionNode.timelineId);
       }
     }
-
     return decisionNode;
+  }
+  
+  /**
+   * @param {DataTimelineNode} newNode 
+   */
+  onNewDataTimelineNode(newNode) {
+    const fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
+    if (fromNode) {
+      // add edges, but not during summarization
+      // TODO: determine correct DDGEdgeType
+      const edgeType = DDGEdgeType.Data;
+      const edgeState = { nByType: { [edgeType]: 1 } };
+      this.ddg.addEdge(edgeType, fromNode.timelineId, newNode.timelineId, edgeState);
+    }
   }
 
   #shouldIgnoreDataNode(dataNodeId) {
@@ -277,14 +295,6 @@ export default class DDGTimelineBuilder {
     this.#addNodeToGroup(newNode);
 
     return newNode;
-  }
-
-  /**
-   * @param {DDGTimelineNode} newNode 
-   */
-  addNode(newNode) {
-    newNode.timelineId = this.timelineNodes.length;
-    this.timelineNodes.push(newNode);
   }
 
   /**
@@ -476,7 +486,7 @@ export default class DDGTimelineBuilder {
 
     if (ownDataNode.inputs) {
       for (const inputDataNodeId of ownDataNode.inputs) {
-        const inputNode = this.ddg.getDataTimelineInputNode(inputDataNodeId);
+        const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
 
         if (inputNode) {
           let edgeProps = inputNodes.get(inputNode);

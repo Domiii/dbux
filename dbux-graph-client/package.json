@@ -32,6 +32,7 @@
     "@jsplumb/util": "^5.6.2",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
+    "d3-graphviz": "^4.1.1",
     "graphology": "^0.24.1",
     "graphology-layout-force": "^0.2.4",
     "graphology-layout-forceatlas2": "^0.9.1",
