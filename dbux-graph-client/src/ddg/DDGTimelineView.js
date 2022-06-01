@@ -240,9 +240,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return;
     }
 
-    const graphString = this.buildDotGraph();
-    // TODO: fix graphString
-    this.graphviz.renderDot('digraph { a -> b }');
+    const graphString = this.buildDot();
+    // const graphString = 'digraph { a -> b }';
+    this.graphviz.renderDot(graphString);
   }
 
   initGraphImplementation() {
@@ -250,40 +250,54 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
   }
 
-  buildDotGraph() {
+  /**
+   * 
+   */
+  buildDot() {
     const { root } = this;
-    return this.buildNodeDotGraph(root);
+    return this.buildNodeDot(root);
   }
 
-  buildNodeDotGraph(node) {
+  buildNodeDot(node) {
     const { type } = node;
+
+
+    // const isSummarized = ddgQueries.isNodeSummarized(this.renderState, node);
+    // if (isSummarized) {
+    //   // hackfix: summary (TODO: make sure, in the new version, we don't have repeating loops like this)
+    //   // → here, we treat the original node (`el`) as a group node
+    //   // → in the new version, we probably want to explicitly add a `subgraph` (and put this logic in a dedicated function)
+    //   const summary = this.renderState.nodeSummaries[node.timelineId];
+    // }
+
     if (this.isGroupNode(node)) {
-      return this.buildGroupNodeDotGraph(node);
+      return this.buildGroupNodeDot(node);
     }
     else if (type === DDGTimelineNodeType.RefSnapshot) {
-      return this.buildRefSnapshotNodeDotGraph(node);
+      return this.buildRefSnapshotNodeDot(node);
     }
     else {
-      return this.buildPrimitiveNodeDotGraph(node);
+      return this.buildValueNodeDot(node);
     }
   }
 
-  buildGroupNodeDotGraph(node) {
-    const { outEdgesByTimelineId, timelineNodes } = this.renderState;
+  buildGroupNodeDot(node) {
+    const { outEdgesByTimelineId, timelineNodes, edges } = this.renderState;
     const { label, children } = node;
-    const graphLabel = this.isRootNode(node) ? 'diagraph' : `subgraph cluster_${label}`;
+    const graphLabel = this.isRootNode(node) ? 'digraph' : `subgraph cluster_${label}`;
 
     const childNodes = (children || EmptyArray).map(childId => timelineNodes[childId]);
     const nodesGraphString = childNodes
       .map(childNode => {
-        return this.buildNodeDotGraph(childNode);
+        return this.buildNodeDot(childNode);
       })
       .join('\n');
 
-    const edges = childNodes.flatMap(childNode => outEdgesByTimelineId[childNode.timelineId] || EmptyArray);
-    const edgesGraphString = edges
-      .map(edge => {
-        return this.buildEdgeDotGraph(edge);
+    const edgeIds = childNodes.flatMap(childNode => outEdgesByTimelineId[childNode.timelineId] || EmptyArray);
+    const edgesGraphString = edgeIds
+      .map(edgeId => {
+        const edge = edges[edgeId];
+        return this.buildEdgeDot(edge);
       })
       .join('\n');
 
@@ -293,19 +307,18 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }`;
   }
 
-  buildRefSnapshotNodeDotGraph(node) {
-    // TODO
-    const { timelineId } = node;
-    return `${timelineId} [label="refNode${timelineId}"]`;
+  buildRefSnapshotNodeDot(node) {
+    const { timelineId, label } = node;
+    // return `${timelineId} [label="refNode${timelineId}"]`;
+    return ''; // nothing yet
   }
 
-  buildPrimitiveNodeDotGraph(node) {
-    // TODO
-    const { timelineId } = node;
-    return `${timelineId} [label="PrimitiveNode${timelineId}"] `;
+  buildValueNodeDot(node) {
+    const { timelineId, label } = node;
+    return `${timelineId} [label="${label}"] `;
   }
 
-  buildEdgeDotGraph(edge) {
+  buildEdgeDot(edge) {
     // TODO
     return `${edge.from} -> ${edge.to}`;
   }
@@ -323,7 +336,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   public = {
-    async updateAfterSummary(data) {
+    buildDot() {
+      return this.buildDot();
     }
   };
 }

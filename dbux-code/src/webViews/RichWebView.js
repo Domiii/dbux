@@ -12,6 +12,9 @@ import { buildWebviewClientHtml } from './clientSource';
 /** @typedef {import('@dbux/graph-host/src/HostWrapper').default} HostWrapper */
 /** @typedef { import("@dbux/graph-host/src/componentLib/HostComponentManager").default } HostComponentManager */
 
+/**
+ * A webview that implements our component system.
+ */
 export default class RichWebView extends WebviewWrapper {
   /**
    * @type {HostWrapper}

@@ -411,11 +411,11 @@ export default class BaseTreeViewNodeProvider {
     try {
       if (node) {
         this.handleBeforeChildren(node);
+        if (this._canNodeProduceChildren(node)) {
+          return node.children = this.buildChildren(node);
+        }
         if (node.children) {
           return node.children;
-        }
-        if (this._canNodeProduceChildren(node)) {
-          return this.buildChildren(node);
         }
         return null;
       }

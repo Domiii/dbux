@@ -44,17 +44,41 @@ export default class DataDependencyGraphWebView extends RichWebView {
   }
 }
 
-let activeWebviews = [];
+/**
+ * @type {Map.<DataDependencyGraph, DataDependencyGraphWebView>}
+ */
+let activeWebviews = new Map();
 
 export function disposeDDGWebviews() {
-  activeWebviews.forEach(w => w.dispose());
-  activeWebviews = [];
+  Array.from(activeWebviews.values()).forEach(w => w.dispose());
+  activeWebviews = new Map();
+}
+
+/**
+ * @return {DataDependencyGraphWebView} ddg 
+ */
+export function getDDGWebview(ddg) {
+  return activeWebviews.get(ddg);
+}
+
+export async function getDDGDot(ddg) {
+  if (!ddg && activeWebviews.size === 1) {
+    ddg = activeWebviews.keys().next();
+  }
+  const webview = getDDGWebview(ddg);
+  if (webview) {
+    const doc = webview.hostWrapper.mainComponent;
+    const timelineView = doc.children.getComponent('DDGTimelineView');
+    return await timelineView.remote.buildDot();
+  }
+  return null;
 }
 
 export async function showDDGViewForContextOfSelectedTrace() {
   let initialState;
   let hostOnlyState;
   let trace = traceSelection.selected;
+  let ddg;
   if (trace) {
     const { applicationId, contextId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -65,7 +89,7 @@ export async function showDDGViewForContextOfSelectedTrace() {
       initialState = makeFailureState(failureReason);
     }
     else {
-      const ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
+      ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
       initialState = makeGraphState(ddg);
       hostOnlyState = { ddg };
     }
@@ -75,7 +99,7 @@ export async function showDDGViewForContextOfSelectedTrace() {
     initialState = makeFailureState(failureReason);
   }
 
-  return await showDDGView(initialState, hostOnlyState);
+  return await showDDGView(ddg, initialState, hostOnlyState);
 }
 
 /**
@@ -93,18 +117,18 @@ function makeFailureState(failureReason) {
   return { failureReason, timelineNodes: null, edges: null };
 }
 
-async function showDDGView(ddgDocumentInitialState, hostOnlyState) {
+async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
   // TODO: select correct window, based on initial state
-  const dDGWebView = await initDDGView(ddgDocumentInitialState, hostOnlyState);
+  const dDGWebView = await initDDGView(ddg, ddgDocumentInitialState, hostOnlyState);
   await dDGWebView.show();
   // TODO: add new action type
   // emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
   return dDGWebView;
 }
 
-async function initDDGView(ddgDocumentInitialState, hostOnlyState) {
+async function initDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
   const dDGWebView = new DataDependencyGraphWebView(ddgDocumentInitialState, hostOnlyState);
   await dDGWebView.init();
-  activeWebviews.push(dDGWebView);
+  activeWebviews.set(ddg, dDGWebView);
   return dDGWebView;
 }

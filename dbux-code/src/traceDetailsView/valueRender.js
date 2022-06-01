@@ -26,8 +26,12 @@ export async function renderValueAsJsonInEditor(value, comment = null) {
   comment = comment ? `// ${comment}\n` : '';
   content = comment + content;
 
-  const doc = await workspace.openTextDocument({ 
-    language: 'javascript',
+  await renderStringInNewEditor('javascript', content);
+}
+
+export async function renderStringInNewEditor(language, content) {
+  const doc = await workspace.openTextDocument({
+    language,
     content
   });
   await window.showTextDocument(doc.uri);

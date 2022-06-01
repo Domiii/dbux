@@ -14,6 +14,8 @@ import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
+import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
+import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -324,57 +326,79 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
            * make DDG entries
            * ##########################################################################*/
 
-          return makeTreeItem(graphId, [
-            function Complete_Tree() {
-              const root = timelineNodes[1];
-              return makeTreeNode(root);
-            },
+          return makeTreeItem(graphId,
+            [
+              function Complete_Tree() {
+                const root = timelineNodes[1];
+                return makeTreeNode(root);
+              },
 
 
-            function Visible_Nodes() {
-              const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-              return renderNodes(visibleNodes);
-            },
-            function Visible_Edges() {
-              const actualEdges = edges.filter(Boolean);
-              return renderEdges(actualEdges);
-            },
+              function Visible_Nodes() {
+                const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
+                return renderNodes(visibleNodes);
+              },
+              function Visible_Edges() {
+                const actualEdges = edges.filter(Boolean);
+                return renderEdges(actualEdges);
+              },
 
-            function All_Nodes() {
-              const nodes = timelineNodes.filter(Boolean);
-              return renderNodes(nodes);
-            },
-            function All_Edges() {
-              const actualEdges = og.edges.filter(Boolean);
-              return renderEdges(actualEdges);
-            },
-            function Node_Summaries() {
-              return {
-                children() {
-                  return Object.entries(nodeSummaries).map(([timelineId, summary]) => {
-                    const {
-                      summaryRoots,
-                      snapshotsByRefId
-                    } = summary;
-                    const node = timelineNodes[timelineId];
-                    return makeTreeItem(node.label,
-                      {
-                        node: makeTimelineNodeEntry(node),
-                        roots: summaryRoots.map(rootId => {
-                          const root = timelineNodes[rootId];
-                          return makeTreeNode(root);
-                        }),
+              function All_Nodes() {
+                const nodes = timelineNodes.filter(Boolean);
+                return renderNodes(nodes);
+              },
+              function All_Edges() {
+                const actualEdges = og.edges.filter(Boolean);
+                return renderEdges(actualEdges);
+              },
+              function Node_Summaries() {
+                return {
+                  children() {
+                    return Object.entries(nodeSummaries).map(([timelineId, summary]) => {
+                      const {
+                        summaryRoots,
                         snapshotsByRefId
-                      },
-                      {
-                        // description: `${summaryModeLabel}`
+                      } = summary;
+                      const node = timelineNodes[timelineId];
+                      return makeTreeItem(node.label,
+                        {
+                          node: makeTimelineNodeEntry(node),
+                          roots: summaryRoots.map(rootId => {
+                            const root = timelineNodes[rootId];
+                            return makeTreeNode(root);
+                          }),
+                          snapshotsByRefId
+                        },
+                        {
+                          // description: `${summaryModeLabel}`
+                        }
+                      );
+                    });
+                  }
+                };
+              },
+              function Dot() {
+                return {
+                  props: {
+                    async handleClick() {
+                      let dot = await getDDGDot(ddg);
+                      if (!dot) {
+                        this.treeNodeProvider.refresh();
+                        dot = await getDDGDot();
                       }
-                    );
-                  });
-                }
-              };
-            }
-          ]);
+                      if (dot) {
+                        await renderStringInNewEditor('dot', dot);
+                      }
+                    }
+                  }
+                  // children() {
+                  // }
+                };
+              }
+            ],
+            {
+              ddg
+            });
         }),
       };
     }
@@ -392,6 +416,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
         this.treeNodeProvider.refresh();
       }
     };
+
     return ddgNode;
   }.bind(this);
 

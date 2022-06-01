@@ -38,6 +38,7 @@ import { emitSelectTraceAction, emitShowOutputChannelAction } from '../userEvent
 import { runFile } from './runCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { getOrOpenTraceEditor } from '../codeUtil/codeNav';
+import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -221,11 +222,19 @@ export function initUserCommands(extensionContext) {
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
       await getOrOpenTraceEditor(trace);
 
+      // clear all previous DDGs
       const dp = allApplications.getById(trace.applicationId).dataProvider;
       dp.ddgs.clear();
       disposeDDGWebviews();
-      
+
+      // show webview
       await showDDGViewForContextOfSelectedTrace();
+
+      // select DDG Debug node
+      const ddg = dp.ddgs.graphs[0];
+      if (ddg) {
+        await getGlobalAnalysisViewController().revealDDG(ddg);
+      }
     }
   });
 

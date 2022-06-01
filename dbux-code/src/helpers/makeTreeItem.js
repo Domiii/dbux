@@ -214,7 +214,9 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     label = ('' + label); // coerce to string (else it won't show up)
 
     if (renderChildrenInline && !isString(labelOrArrOrItem)) {
-      label = keyValueLabel(label, children);
+      if (children !== undefined) {
+        label = keyValueLabel(label, children);
+      }
     }
     item = new TreeItem(label, collapsibleState);
   }

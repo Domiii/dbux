@@ -1,10 +1,12 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
+import sleep from '@dbux/common/src/util/sleep';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
+import GlobalDebugNode from './nodes/GlobalDebugNode';
 import GlobalErrorsNode from './nodes/GlobalErrorsNode';
 import GlobalSearchNode from './nodes/GlobalSearchNode';
 
@@ -109,6 +111,28 @@ export default class GlobalAnalysisViewController {
 
     searchController.onSearch(this.handleSearch);
     traceSelection.onTraceSelectionChanged(() => this.treeDataProvider.refreshIcon());
+  }
+
+  /** ###########################################################################
+   * reveal
+   * ##########################################################################*/
+
+  async revealDDG(ddg) {
+    const debugNode = this.treeDataProvider.getRootByClass(GlobalDebugNode);
+
+    await this.treeView.reveal(debugNode, { expand: true });
+    // await sleep(50);
+
+    const ddgsNode = debugNode.children.find(n => n.label === 'DDG');
+    if (ddgsNode) {
+      await this.treeView.reveal(ddgsNode, { expand: true });
+      // await sleep(50);
+
+      const ddgNode = ddgsNode.children.find(n => n.ddg === ddg);
+      if (ddgNode) {
+        await this.treeView.reveal(ddgNode, { expand: true, select: true });
+      }
+    }
   }
 }
 

@@ -17,10 +17,10 @@ export default class HostWrapper {
    */
   componentManager;
 
-  constructor(name, components, MainComponent) {
+  constructor(name, components, MainComponentClass) {
     this.name = name;
     this.logger = newLogger(`${name} HostWrapper`);
-    this.MainComponent = MainComponent;
+    this.MainComponentClass = MainComponentClass;
     this.components = components;
   }
 
@@ -51,7 +51,7 @@ export default class HostWrapper {
 
     // build component tree
     /* const doc = */
-    this.componentManager.app.children.createComponent(this.MainComponent, this._makeInitialState?.(), this._makeHostOnlyState?.());
+    this.mainComponent = this.componentManager.app.children.createComponent(this.MainComponentClass, this._makeInitialState?.(), this._makeHostOnlyState?.());
 
     // notify starter (e.g. code/GraphWebView)
     this._onStart(this.componentManager);
