@@ -100,7 +100,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.els.status.textContent = '';
     }
 
-    // TODO: don't rebuild entire graph on every update
     this.rebuildGraph();
   }
 
@@ -250,11 +249,24 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
   }
 
+  get indent() {
+    return '  '.repeat(this.indentLevel);
+  }
+
+  line = (s) => {
+    return this.indent + s;
+  }
+
+  command = (s) => {
+    return this.line(s) + ';';
+  }
+
   /**
    * 
    */
   buildDot() {
     const { root } = this;
+    this.indentLevel = 0;
     return this.buildNodeDot(root);
   }
 
@@ -281,10 +293,26 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
   }
 
+  buildGroupDotAttrs(node) {
+    if (this.isRootNode(node)) {
+      // global settings
+      return [
+        // `node [fontsize=9]`,
+        'edge [arrowsize=0.5,arrowhead="open"]'
+      ].map(this.command);
+    }
+    return [];
+  }
+
   buildGroupNodeDot(node) {
     const { outEdgesByTimelineId, timelineNodes, edges } = this.renderState;
     const { label, children } = node;
+    
+    const ownIndent = this.indent;
+    this.indentLevel += 1;
+
     const graphLabel = this.isRootNode(node) ? 'digraph' : `subgraph cluster_${label}`;
+    const groupAttrs = this.buildGroupDotAttrs(node).join('\n');
 
     const childNodes = (children || EmptyArray).map(childId => timelineNodes[childId]);
     const nodesGraphString = childNodes
@@ -301,10 +329,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       })
       .join('\n');
 
-    return `${graphLabel} {
-      ${nodesGraphString}
-      ${edgesGraphString}
-    }`;
+    this.indentLevel -= 1;
+
+    return `${ownIndent}${graphLabel} {\n${groupAttrs}\n${nodesGraphString}\n${edgesGraphString}\n${ownIndent}}`;
   }
 
   buildRefSnapshotNodeDot(node) {
@@ -315,12 +342,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   buildValueNodeDot(node) {
     const { timelineId, label } = node;
-    return `${timelineId} [label="${label}"] `;
+    return this.command(`${timelineId} [label="${label}"]`);
   }
 
   buildEdgeDot(edge) {
-    // TODO
-    return `${edge.from} -> ${edge.to}`;
+    return this.command(`${edge.from} -> ${edge.to}`);
   }
 
   /** ###########################################################################

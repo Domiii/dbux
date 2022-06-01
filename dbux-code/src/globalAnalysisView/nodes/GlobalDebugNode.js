@@ -225,10 +225,10 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           /**
            * @param {DDGTimelineNode} node 
            */
-          function makeTimelineNodeEntry(node, children = node, moreProps = EmptyObject) {
+          function makeTimelineNodeEntry(node, children = node, moreProps = EmptyObject, labelPrefix = '') {
             const { label: nodeLabel } = node;
             const label = nodeLabel || `${node.constructor.name}`;
-            return makeTreeItem(label, children, {
+            return makeTreeItem(labelPrefix + label, children, {
               description: makeNodeDescription(node),
               handleClick() {
                 const { dp } = ddg;
@@ -276,20 +276,8 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                 const toNode = timelineNodes[to];
                 const label = `${fromNode?.label} -> ${toNode?.label}`;
                 const children = makeTreeItems(
-                  makeTreeItem(
-                    'from',
-                    fromNode,
-                    {
-                      description: `${from}`
-                    }
-                  ),
-                  makeTreeItem(
-                    'to',
-                    toNode,
-                    {
-                      description: `${to}`
-                    }
-                  ),
+                  makeTimelineNodeEntry(fromNode, fromNode, {}, 'from: '),
+                  makeTimelineNodeEntry(toNode, toNode, {}, 'to: '),
                   ...objectToTreeItems(entry)
                 );
                 return makeTreeItem(label, children, {

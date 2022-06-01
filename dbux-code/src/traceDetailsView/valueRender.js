@@ -1,4 +1,4 @@
-import { window, workspace } from 'vscode';
+import { ViewColumn, window, workspace } from 'vscode';
 // import { isPlainObjectOrArrayCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
@@ -34,5 +34,5 @@ export async function renderStringInNewEditor(language, content) {
     language,
     content
   });
-  await window.showTextDocument(doc.uri);
+  await window.showTextDocument(doc.uri, { viewColumn: ViewColumn.One });
 }
