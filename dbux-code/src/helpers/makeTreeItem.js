@@ -158,6 +158,9 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
       children,
       props: itemProps
     } = labelOrArrOrItem);
+    if (labelOrArrOrItem.label) {
+      label = labelOrArrOrItem.label;
+    }
   }
   else {
     if (Array.isArray(labelOrArrOrItem)) {

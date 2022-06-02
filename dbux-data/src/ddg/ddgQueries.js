@@ -14,7 +14,22 @@ export class RenderState {
    */
   timelineNodes;
 
+  /**
+   * @type {DDGEdge[]}
+   */
   edges;
+
+  /**
+   * Maps `timelineId` to array of `edgeId`.
+   * @type {Object.<number, number[]>}
+   */
+  outEdgesByTimelineId;
+
+  /**
+   * Maps `timelineId` to array of `edgeId`.
+   * @type {Object.<number, number[]>}
+   */
+  inEdgesByTimelineId;
 
   /**
    * @type {Object.<number, SummaryModeValue>}
@@ -48,9 +63,20 @@ const ddgQueries = {
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
+  isNodeConnected(ddg, node) {
+    // NOTE: collapsed group nodes don't have `connected` set
+    return node.connected || (
+      isControlGroupTimelineNode(node.type) && ddg.outEdgesByTimelineId[node.timelineId]
+    );
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    return node.watched || (node.connected && isShownMode(summaryMode));
+    return node.watched || (isShownMode(summaryMode) && ddgQueries.isNodeConnected(ddg, node));
   },
 
   /**

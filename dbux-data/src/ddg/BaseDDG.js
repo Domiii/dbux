@@ -77,18 +77,19 @@ export default class BaseDDG {
   _timelineNodes;
 
   /**
-   * NOTE: 
    * @type {DDGEdge[]}
    */
   edges;
 
   /**
-   * @type {Object.<number, DDGEdge[]>}
+   * Maps `timelineId` to array of `edgeId`.
+   * @type {Object.<number, number[]>}
    */
   outEdgesByTimelineId;
 
   /**
-   * @type {Object.<number, DDGEdge[]>}
+   * Maps `timelineId` to array of `edgeId`.
+   * @type {Object.<number, number[]>}
    */
   inEdgesByTimelineId;
 

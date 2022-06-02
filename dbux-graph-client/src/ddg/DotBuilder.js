@@ -185,8 +185,12 @@ export default class DotBuilder {
 
     const summary = nodeSummaries[node.timelineId];
     const roots = ddgQueries.getSummaryRoots(renderState, summary);
-    if (roots) {
+    if (roots?.length) {
       this.refSnapshotNode(roots, node.label);
+    }
+    else {
+      // render node as-is
+      this.valueNode(node);
     }
   }
 
