@@ -22,6 +22,10 @@ export default class DotBuilder {
     return this.renderState.timelineNodes?.[RootTimelineId];
   }
 
+  getNode(timelineId) {
+    return this.renderState.timelineNodes[timelineId];
+  }
+
   /**
    * @param {DDGTimelineNode} node 
    */
@@ -63,7 +67,7 @@ export default class DotBuilder {
   }
 
   fragment = (s) => {
-    Verbose && debug(`fragment`, s);
+    // Verbose && debug(`fragment`, s);
     this.fragments.push(this.indent + s);
   }
 
@@ -89,7 +93,12 @@ export default class DotBuilder {
 
     // global settings
     // `node [fontsize=9]`,
-    this.command('edge [arrowsize=0.5,arrowhead="open"]');
+    // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
+    // see: https://stackoverflow.com/a/56759634
+    this.command(`bgcolor = "#000000"`);
+    this.command(`color = "white"`);
+    this.command(`node[color = "white", fontcolor = "white"]`);
+    this.command(`edge[arrowsize = 0.5, arrowhead = "open", color = "white", fontcolor = "white"]`);
     this.nodesByIds(root.children);
 
     // NOTE: edges should be placed after all nodes have been defined, else things will not get rendered in the right places/groups
@@ -125,6 +134,7 @@ export default class DotBuilder {
   }
 
   node(node) {
+    const ddg = this.renderState;
     // const isSummarized = ddgQueries.isNodeSummarized(this.renderState, node);
     // if (isSummarized) {
     //   // hackfix: summary (TODO: make sure, in the new version, we don't have repeating loops like this)
@@ -133,13 +143,13 @@ export default class DotBuilder {
     //   const summary = this.renderState.nodeSummaries[node.timelineId];
     // }
 
-    if (ddgQueries.isExpandedGroupNode(this.renderState, node)) {
+    if (ddgQueries.isExpandedGroupNode(ddg, node)) {
       return this.group(node);
     }
-    else if (ddgQueries.isExpandedSnapshot(this.renderState, node)) {
+    else if (ddgQueries.isExpandedSnapshot(ddg, node)) {
       return this.refSnapshotNode(node);
     }
-    else {
+    else if (ddgQueries.isVisible(ddg, node)) {
       return this.valueNode(node);
     }
   }
@@ -165,6 +175,7 @@ export default class DotBuilder {
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
     // this.label(node);
+    this.command(`node [shape=record]`);
     this.snapshotRecord(node);
     this.indentLevel -= 1;
     this.fragment(`}`);
@@ -191,6 +202,8 @@ export default class DotBuilder {
   }
 
   buildEdge(edge) {
-    this.command(`${edge.from} -> ${edge.to}`);
+    const from = this.makeNodeId(this.getNode(edge.from));
+    const to = this.makeNodeId(this.getNode(edge.to));
+    this.command(`${from} -> ${to}`);
   }
 }

@@ -85,3 +85,7 @@ svg.jtk-connector path {
   background-color: transparent;
   z-index: 1000;
 }
+
+g polygon {
+  fill: transparent;
+};
