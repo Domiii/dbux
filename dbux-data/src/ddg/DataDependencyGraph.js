@@ -464,7 +464,7 @@ export default class DataDependencyGraph extends BaseDDG {
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
 
-    let isVisible = !currentCollapsedAncestor && ddgQueries.isVisible(this, node);
+    let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
     const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarized(this, node);
     let targetNode = currentCollapsedAncestor || node;
@@ -519,7 +519,7 @@ export default class DataDependencyGraph extends BaseDDG {
     // add/merge incoming edges
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
-    if (isVisible || currentCollapsedAncestor) {
+    if (isVisible) {
       // node is (1) shown, (2) collapsed into `currentCollapsedAncestor` or (3) summarized
       nodeRouteMap.set(timelineId, [targetNode]);
 
@@ -531,6 +531,9 @@ export default class DataDependencyGraph extends BaseDDG {
           for (const from of allFrom) {
             if (from !== targetNode) {
               // TODO: deal w/ duplicate edges
+              if (!targetNode) {
+                throw new Error(`no targetNode`);
+              }
               summaryState.addEdge(from, targetNode, type);
             }
           }
@@ -542,8 +545,6 @@ export default class DataDependencyGraph extends BaseDDG {
       // → multicast all outgoing edges to all incoming edges
       // → to that end, add all `from`s to this node's `reroutes`
       let reroutes = [];
-      nodeRouteMap.set(timelineId, reroutes);
-
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
         const { from: fromOg, type } = edge;
@@ -554,6 +555,9 @@ export default class DataDependencyGraph extends BaseDDG {
             reroutes.push(from);
           }
         }
+      }
+      if (reroutes) {
+        nodeRouteMap.set(timelineId, reroutes);
       }
     }
   }

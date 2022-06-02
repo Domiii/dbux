@@ -147,10 +147,6 @@ export default class DotBuilder {
     }
   }
 
-  nodeLabel(node) {
-    this.label(node.label);
-  }
-
   node(node) {
     const ddg = this.renderState;
     if (ddgQueries.isNodeSummarized(ddg, node)) {
@@ -173,8 +169,10 @@ export default class DotBuilder {
     this.fragment(`subgraph cluster_group_${timelineId} {`);
     this.indentLevel += 1;
     this.subgraphAttrs();
-    this.nodeLabel(node);
+    this.label(node.label || '');
+
     this.nodesByIds(node.children);
+    
     this.indentLevel -= 1;
     this.fragment(`}`);
   }

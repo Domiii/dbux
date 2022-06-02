@@ -288,6 +288,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                     ...objectToTreeItems(entry)
                   );
                   return makeTreeItem(label, children, {
+                    description: `${edge.edgeId} (${edge.from} → ${edge.to})`,
                     handleClick() {
                       // select `from` node
                       const { dp } = ddg;
