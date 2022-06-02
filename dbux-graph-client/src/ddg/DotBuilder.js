@@ -143,14 +143,6 @@ export default class DotBuilder {
     const { timelineNodes } = this.renderState;
     for (const nodeId of nodeIds || EmptyArray) {
       const node = timelineNodes[nodeId];
-      if (
-        // TODO: move this check to DDG (on host)
-        this.doc.state.connectedOnlyMode &&
-        !isControlGroupTimelineNode(node.type) &&
-        !node.connected
-      ) {
-        continue;
-      }
       this.node(node);
     }
   }
@@ -199,16 +191,23 @@ export default class DotBuilder {
   }
 
   refSnapshotNode(nodesOrNode, label = null) {
-    const first = Array.isArray(nodesOrNode) ? nodesOrNode[0] : nodesOrNode;
+    const isGroupOfSnapshots = Array.isArray(nodesOrNode);
+    const first = isGroupOfSnapshots ? nodesOrNode[0] : nodesOrNode;
     const { timelineId } = first;
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    this.subgraphAttrs();
+    if (isGroupOfSnapshots) {
+      this.command(`color="${DotCfg.groupBorderColor}"`);
+    }
+    else {
+      this.command(`color="transparent"`);
+    }
+    this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
     label && this.label(label);
     this.command(`node [shape=record]`);
 
-    if (Array.isArray(nodesOrNode)) {
+    if (isGroupOfSnapshots) {
       for (const node of nodesOrNode) {
         this.snapshotRecord(node);
       }

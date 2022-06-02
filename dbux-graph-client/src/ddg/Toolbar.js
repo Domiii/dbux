@@ -14,18 +14,19 @@ class Toolbar extends ClientComponentEndpoint {
   summaryRootButtons;
 
   createEl() {
+    /**
+          <button title="Hide subgraphs that are not affected any watched node" data-el="connectedOnlyModeBtn" class="toolbar-btn btn btn-info" href="#">
+            con
+          </button>
+          <button title="Merge computation subgraphs" data-el="mergeComputationsBtn" class="toolbar-btn btn btn-info" href="#">
+            ⚙
+          </button>
+     */
     const el = compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
             Rebuild 🔁
-          </button>
-
-          <button title="Hide subgraphs that are not affected any watched node" data-el="connectModeBtn" class="toolbar-btn btn btn-info" href="#">
-            con
-          </button>
-          <button title="Merge computation subgraphs" data-el="mergeComputationsBtn" class="toolbar-btn btn btn-info" href="#">
-            ⚙
           </button>
           
           ${BootstrapBtnGroupSeparatorHtml}
@@ -68,15 +69,13 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   decorateButtons() {
-    const {
-      // layoutType,
-      connectedOnlyMode
-    } = this.parent.state;
-
-
-    decorateClasses(this.els.connectModeBtn, {
-      active: connectedOnlyMode
-    });
+    // const {
+    //   // layoutType,
+    //   connectedOnlyMode
+    // } = this.parent.state;
+    // decorateClasses(this.els.connectedOnlyModeBtn, {
+    //   active: connectedOnlyMode
+    // });
     
     decorateSummaryModeButtons(this.summaryRootButtons);
   }
@@ -102,27 +101,27 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
-    connectModeBtn: {
-      async click(evt) {
-        evt.preventDefault();
-        await this.remote.setGraphDocumentMode({
-          connectedOnlyMode: !this.doc.state.connectedOnlyMode,
-        });
-      },
+    // connectedOnlyModeBtn: {
+    //   async click(evt) {
+    //     evt.preventDefault();
+    //     await this.remote.setGraphDocumentMode({
+    //       connectedOnlyMode: !this.doc.state.connectedOnlyMode,
+    //     });
+    //   },
 
-      focus(evt) { evt.target.blur(); }
-    },
+    //   focus(evt) { evt.target.blur(); }
+    // },
 
-    mergeComputationsBtn: {
-      async click(evt) {
-        evt.preventDefault();
-        await this.remote.setGraphDocumentMode({
-          mergeComputesMode: !this.doc.state.mergeComputesMode
-        });
-      },
+    // mergeComputationsBtn: {
+    //   async click(evt) {
+    //     evt.preventDefault();
+    //     await this.remote.setGraphDocumentMode({
+    //       mergeComputesMode: !this.doc.state.mergeComputesMode
+    //     });
+    //   },
 
-      focus(evt) { evt.target.blur(); }
-    },
+    //   focus(evt) { evt.target.blur(); }
+    // },
 
     // layoutForceBtn: {
     //   async click(evt) {

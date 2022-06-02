@@ -2,6 +2,11 @@ import { ViewColumn, window, workspace } from 'vscode';
 // import { isPlainObjectOrArrayCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
+/**
+ * @type {import('vscode').TextEditor}
+ */
+let lastRenderEditor;
+
 export function valueRender(value) {
   let modalString = '';
 
@@ -30,9 +35,14 @@ export async function renderValueAsJsonInEditor(value, comment = null) {
 }
 
 export async function renderStringInNewEditor(language, content) {
+  if (lastRenderEditor) {
+    // TODO: the VSCode API has no way to close an editor
+    // lastRenderEditor.
+  }
+
   const doc = await workspace.openTextDocument({
     language,
     content
   });
-  await window.showTextDocument(doc.uri, { viewColumn: ViewColumn.One });
+  return lastRenderEditor = await window.showTextDocument(doc.uri, { viewColumn: ViewColumn.One });
 }
