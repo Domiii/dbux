@@ -312,7 +312,7 @@ export default class BaseDDG {
     const { dp } = this;
     this.addNode(newNode);
     this._firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
-    newNode.hasRefNodes = !!dp.util.getDataNodeModifyingRefId(newNode.dataNodeId);
+    // newNode.hasRefNodes = !!dp.util.getDataNodeModifyingRefId(newNode.dataNodeId);
   }
 
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {

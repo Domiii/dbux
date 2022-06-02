@@ -21,21 +21,30 @@ let DDGSummaryModeConfig = {
    * Collapse node and its subgraph to a summarizing subgraph.
    */
   CollapseSummary: 4,
+
+  /**
+   * Group nodes only.
+   * Like `ExpandSelf`.
+   * Group children: CollapseSummary
+   * Non-snapshot children: Hide
+   */
+  SummarizeChildren: 5,
+
   /**
    * Group nodes only.
    * Expand the node, but only one level deep. Collapse all children.
    */
-  ExpandSelf: 5,
+  ExpandSelf: 6,
   /**
    * Group nodes only.
    * Expand the node and all its descendants.
    */
-  ExpandSubgraph: 6,
+  ExpandSubgraph: 7,
   /**
    * Root node only.
    * This will hide everything, except for watched nodes.
    */
-  HideChildren: 7
+  HideChildren: 8
 };
 
 /**
@@ -48,7 +57,8 @@ const DDGSummaryMode = new Enum(DDGSummaryModeConfig);
  */
 export const RootSummaryModes = [
   DDGSummaryMode.HideChildren,
-  DDGSummaryMode.ExpandSelf,
+  // DDGSummaryMode.ExpandSelf,
+  DDGSummaryMode.SummarizeChildren,
   DDGSummaryMode.ExpandSubgraph
 ];
 
@@ -57,6 +67,7 @@ const shownModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false)
 shownModes[DDGSummaryMode.Show] = true;
 shownModes[DDGSummaryMode.Collapse] = true;
 shownModes[DDGSummaryMode.CollapseSummary] = true;
+shownModes[DDGSummaryMode.SummarizeChildren] = true;
 shownModes[DDGSummaryMode.ExpandSelf] = true;
 shownModes[DDGSummaryMode.ExpandSubgraph] = true;
 shownModes[DDGSummaryMode.HideChildren] = true;

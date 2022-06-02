@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 
 import { TreeItem } from 'vscode';
+import size from 'lodash/size';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -362,6 +363,9 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                         }
                       );
                     });
+                  },
+                  props: {
+                    description: `(${size(nodeSummaries)})`
                   }
                 };
               },

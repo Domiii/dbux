@@ -10,7 +10,7 @@ export default class DDGNodeSummary {
   snapshotsByRefId;
 
   /**
-   * Set of `timelineId`s of {@link RefSnapshotTimelineNode} 
+   * Set of {@link RefSnapshotTimelineNode#timelineId} 
    * @type {Array.<number>}
    */
   summaryRoots;

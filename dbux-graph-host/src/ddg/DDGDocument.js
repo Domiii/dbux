@@ -111,8 +111,8 @@ export default class DDGDocument extends HostComponentEndpoint {
   makeInitialState(state) {
     const summaryIconUris = {
       // [DDGSummaryMode.Hide]: this.getIconUri('hide.svg'),
-      [DDGSummaryMode.Collapse]: this.getIconUri('minus.svg'),
-      [DDGSummaryMode.ExpandSelf]: this.getIconUri('stack.svg'),
+      [DDGSummaryMode.CollapseSummary]: this.getIconUri('minus.svg'),
+      [DDGSummaryMode.SummarizeChildren]: this.getIconUri('stack.svg'),
       [DDGSummaryMode.ExpandSubgraph]: this.getIconUri('listItem.svg'),
       // [DDGSummaryMode.HideChildren]: this.getIconUri('hide-children.svg'),
     };

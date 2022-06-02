@@ -146,7 +146,7 @@ export default class RichWebView extends WebviewWrapper {
     getClientResourceUri: (...segments) => {
       const p = getResourcePath(...segments);
       const uri = this.panel.webview.asWebviewUri(Uri.file(p)).toString();
-      console.debug('getClientResourceUri', uri);
+      // console.debug('getClientResourceUri', p);
       return uri;
     }
   }

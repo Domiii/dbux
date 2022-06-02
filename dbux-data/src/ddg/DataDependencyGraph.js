@@ -18,7 +18,7 @@ import { DDGTimelineNode } from './DDGTimelineNodes';
 
 // const RootDefaultSummaryMode = {
 // };
-const RootDefaultSummaryMode = DDGSummaryMode.ExpandSelf;
+const RootDefaultSummaryMode = DDGSummaryMode.SummarizeChildren;
 // const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
 
 /** ###########################################################################
@@ -368,6 +368,19 @@ export default class DataDependencyGraph extends BaseDDG {
       for (const childId of node.children) {
         // const childNode = og.timelineNodes[childId];
         this.#applyMode(childId, DDGSummaryMode.Hide);
+      }
+    },
+    [DDGSummaryMode.SummarizeChildren]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // hide all children
+      for (const childId of node.children) {
+        const childNode = og.timelineNodes[childId];
+        const targetMode = ddgQueries.canApplySummaryMode(childNode, DDGSummaryMode.Collapse) ?
+          DDGSummaryMode.CollapseSummary :
+          DDGSummaryMode.Hide;
+        this.#applyMode(childId, targetMode);
       }
     },
     [DDGSummaryMode.ExpandSelf]: (timelineId) => {

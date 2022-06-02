@@ -9,6 +9,17 @@ const { log, debug, warn, error: logError } = newLogger('DotBuilder');
 
 const Verbose = 1;
 
+// future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
+//    → (see: https://stackoverflow.com/a/56759634)
+const DotCfg = {
+  textColor: 'white',
+  edgeTextColor: 'gray',
+  lineColor: 'white',
+  groupBorderColor: 'gray',
+  groupLabelColor: 'gray'
+};
+
+
 export default class DotBuilder {
   _indentLevel;
   fragments = [];
@@ -44,9 +55,9 @@ export default class DotBuilder {
     return node.timelineId;
   }
 
-  makeLabel(node) {
+  makeLabel(text) {
     // TODO: proper dot label encoding (it is probably not JSON)
-    return `label=${JSON.stringify(node.label)}`;
+    return `label=${JSON.stringify(text)}`;
   }
 
   /** ###########################################################################
@@ -75,6 +86,10 @@ export default class DotBuilder {
     this.fragment(s + ';');
   }
 
+  label = s => {
+    this.command(this.makeLabel(s));
+  }
+
   /** ###########################################################################
    * build
    * ##########################################################################*/
@@ -85,6 +100,14 @@ export default class DotBuilder {
     return this.compileFragments();
   }
 
+  /**
+   * attrs that apply to graph and all subgraphs.
+   */
+  subgraphAttrs() {
+    this.command(`color="${DotCfg.groupBorderColor}"`);
+    this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
+  }
+
   buildRoot() {
     const { root, renderState: { edges } } = this;
 
@@ -92,13 +115,12 @@ export default class DotBuilder {
     this.indentLevel += 1;
 
     // global settings
+    this.command(`node[color="${DotCfg.lineColor}", fontcolor="${DotCfg.textColor}"]`);
     // `node [fontsize=9]`,
-    // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
-    // see: https://stackoverflow.com/a/56759634
-    this.command(`bgcolor = "#000000"`);
-    this.command(`color = "white"`);
-    this.command(`node[color = "white", fontcolor = "white"]`);
-    this.command(`edge[arrowsize = 0.5, arrowhead = "open", color = "white", fontcolor = "white"]`);
+    this.command(`edge[arrowsize=0.5, arrowhead="open", color="${DotCfg.lineColor}", fontcolor="${DotCfg.edgeTextColor}"]`);
+    this.command(`labeljust=l`); // graph/cluster label left justified
+    this.subgraphAttrs();
+
     this.nodesByIds(root.children);
 
     // NOTE: edges should be placed after all nodes have been defined, else things will not get rendered in the right places/groups
@@ -133,50 +155,68 @@ export default class DotBuilder {
     }
   }
 
+  nodeLabel(node) {
+    this.label(node.label);
+  }
+
   node(node) {
     const ddg = this.renderState;
-    // const isSummarized = ddgQueries.isNodeSummarized(this.renderState, node);
-    // if (isSummarized) {
-    //   // hackfix: summary (TODO: make sure, in the new version, we don't have repeating loops like this)
-    //   // → here, we treat the original node (`el`) as a group node
-    //   // → in the new version, we probably want to explicitly add a `subgraph` (and put this logic in a dedicated function)
-    //   const summary = this.renderState.nodeSummaries[node.timelineId];
-    // }
-
-    if (ddgQueries.isExpandedGroupNode(ddg, node)) {
-      return this.group(node);
+    if (ddgQueries.isNodeSummarized(ddg, node)) {
+      this.nodeSummary(node);
     }
-    else if (ddgQueries.isExpandedSnapshot(ddg, node)) {
-      return this.refSnapshotNode(node);
+    else if (ddgQueries.isExpandedGroupNode(ddg, node)) {
+      this.controlGroup(node);
+    }
+    else if (ddgQueries.isSnapshot(ddg, node)) {
+      this.refSnapshotNode(node);
     }
     else if (ddgQueries.isVisible(ddg, node)) {
-      return this.valueNode(node);
+      this.valueNode(node);
     }
   }
 
-  label(node) {
-    this.command(this.makeLabel(node));
-  }
-
-  group(node) {
+  controlGroup(node) {
     const { timelineId } = node;
 
     this.fragment(`subgraph cluster_group_${timelineId} {`);
     this.indentLevel += 1;
-    this.label(node);
+    this.subgraphAttrs();
+    this.nodeLabel(node);
     this.nodesByIds(node.children);
     this.indentLevel -= 1;
     this.fragment(`}`);
   }
 
-  refSnapshotNode(node) {
-    const { timelineId } = node;
+  nodeSummary(node) {
+    const { renderState } = this;
+    const { nodeSummaries } = renderState;
+
+    const summary = nodeSummaries[node.timelineId];
+    const roots = ddgQueries.getSummaryRoots(renderState, summary);
+    if (roots) {
+      this.refSnapshotNode(roots, node.label);
+    }
+  }
+
+  refSnapshotNode(nodesOrNode, label = null) {
+    const first = Array.isArray(nodesOrNode) ? nodesOrNode[0] : nodesOrNode;
+    const { timelineId } = first;
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    // this.label(node);
+    this.subgraphAttrs();
+    label && this.label(label);
     this.command(`node [shape=record]`);
-    this.snapshotRecord(node);
+
+    if (Array.isArray(nodesOrNode)) {
+      for (const node of nodesOrNode) {
+        this.snapshotRecord(node);
+      }
+    }
+    else {
+      this.snapshotRecord(nodesOrNode);
+    }
+
     this.indentLevel -= 1;
     this.fragment(`}`);
   }
@@ -189,7 +229,7 @@ export default class DotBuilder {
   snapshotRecord(node) {
     let { timelineId, label, children } = node;
     // TODO: use table instead, so we can have key + val rows
-    
+
     // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
     label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
     const childrenItems = Object.entries(children)
@@ -198,12 +238,13 @@ export default class DotBuilder {
   }
 
   valueNode(node) {
-    this.command(`${this.makeNodeId(node)} [${this.makeLabel(node)}]`);
+    this.command(`${this.makeNodeId(node)} [${this.makeLabel(node.label)}]`);
   }
 
   buildEdge(edge) {
     const from = this.makeNodeId(this.getNode(edge.from));
     const to = this.makeNodeId(this.getNode(edge.to));
-    this.command(`${from} -> ${to}`);
+    const debugInfo = Verbose && ` [label=${edge.edgeId}]` || '';
+    this.command(`${from} -> ${to}${debugInfo}`);
   }
 }

@@ -3,11 +3,15 @@ import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
 export class RenderState {
+  /**
+   * @type {Array.<DDGTimelineNode>}
+   */
   timelineNodes;
 
   edges;
@@ -70,7 +74,7 @@ const ddgQueries = {
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
-  isExpandedSnapshot(ddg, node) {
+  isSnapshot(ddg, node) {
     return node.type === DDGTimelineNodeType.RefSnapshot;
   },
 
@@ -85,9 +89,55 @@ const ddgQueries = {
 
   /**
    * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getVisibleSummary(ddg, node) {
+    const isSummarized = ddgQueries.isNodeSummarized(ddg, node);
+    if (isSummarized) {
+      return ddg.nodeSummaries[node.timelineId];
+    }
+    return null;
+  },
+
+  /**
+   * Returns summary roots.
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGNodeSummary} summary
+   */
+  getSummaryRoots(ddg, summary) {
+    const rootIds = summary.summaryRoots;
+    return rootIds.map(id => ddg.timelineNodes[id]);
+  },
+
+  /**
+   * Returns *all* snapshots in summary.
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGNodeSummary} summary
+   */
+  getSummarySnapshots(ddg, summary) {
+    const summaryNodeIds = Array.from(summary.snapshotsByRefId.values());
+    return summaryNodeIds.map(id => ddg.timelineNodes[id]);
+  },
+
+  /**
+   * NOTE: this excludes ValueNodes nodes inside of summary snapshots.
+   * 
+   * @param {RenderState} ddg 
    */
   getAllVisibleNodes(ddg) {
-    return ddg.timelineNodes.filter(node => !!node && ddgQueries.isVisible(ddg, node));
+    return ddg.timelineNodes
+      // filter visible
+      .filter(node => !!node && ddgQueries.isVisible(ddg, node))
+      // add summary nodes
+      .flatMap(node => {
+        const summary = ddgQueries.getVisibleSummary(ddg, node);
+        if (summary) {
+          return [node, ...ddgQueries.getSummarySnapshots(ddg, summary)];
+        }
+        return node;
+      });
   },
 
   /**
@@ -102,7 +152,7 @@ const ddgQueries = {
     if (!parentNodeId) {
       return false;
     }
-    const parentNode = this.ddg.timelineNodes[parentNodeId];
+    const parentNode = ddg.timelineNodes[parentNodeId];
     if (parentNode === outer) {
       return true;
     }
@@ -144,6 +194,9 @@ const ddgQueries = {
       // TODO: improve this
       return !isRoot(node.timelineId) &&
         isControlGroupTimelineNode(node.type);
+    },
+    [DDGSummaryMode.SummarizeChildren]: (node) => {
+      return isControlGroupTimelineNode(node.type);
     },
     [DDGSummaryMode.ExpandSelf]: (node) => {
       return isControlGroupTimelineNode(node.type);

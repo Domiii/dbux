@@ -269,17 +269,18 @@ export default class DDGTimelineBuilder {
       // ref type access → add Snapshot
       if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {
         // sanity checks
-        this.logger.logTrace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
+        this.logger.trace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       }
       const snapshotsByRefId = new Map();
       newNode = this.ddg.addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, null);
     }
     else {
-      // single value, does not involve accessing an object's props
-      if (dataNodes.length > 1) {
-        // eslint-disable-next-line max-len
-        this.logger.logTrace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
-      }
+      // this is not a watched ref
+
+      // if (dataNodes.length > 1) {
+      //   // eslint-disable-next-line max-len
+      //   this.logger.trace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
+      // }
       newNode = this.ddg.addValueDataNode(ownDataNode);
     }
 

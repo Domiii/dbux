@@ -4,6 +4,7 @@
 
 import * as d3 from 'd3-graphviz';
 
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
@@ -28,6 +29,12 @@ const NodeMenuHeight = 12;
 
 
 let documentMouseMoveHandler;
+
+const GroupDefaultSummaryModes = [
+  DDGSummaryMode.CollapseSummary, 
+  DDGSummaryMode.SummarizeChildren, 
+  DDGSummaryMode.ExpandSubgraph
+];
 
 function getElTopOffset(el) {
   const s = getComputedStyle(el, null);
@@ -125,9 +132,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * @param {Element} nodeEl 
    */
   makeNodeButtons(node) {
-    // TODO: generate correct `modesForThisNode` (maybe simply use ddgQueries.canApplySummaryMode)
-    // TODO: make sure, the buttons work correctly
-    const modesForThisNode = [DDGSummaryMode.ExpandSelf, DDGSummaryMode.CollapseSummary];
+    let modesForThisNode = EmptyArray;
+    if (isControlGroupTimelineNode(node.type)) {
+      modesForThisNode = GroupDefaultSummaryModes;
+    }
     const el = compileHtmlElement(/*html*/`
       <div class="flex-row" style="flex-shrink: 1; justify-content: flex-start;">
       </div>
