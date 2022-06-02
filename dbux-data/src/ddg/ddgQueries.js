@@ -1,4 +1,4 @@
-import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
@@ -56,6 +56,22 @@ const ddgQueries = {
   isCollapsed(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
     return isCollapsedMode(summaryMode);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isExpandedGroupNode(ddg, node) {
+    return isControlGroupTimelineNode(node.type) && !ddgQueries.isCollapsed(ddg, node);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isExpandedSnapshot(ddg, node) {
+    return node.type === DDGTimelineNodeType.RefSnapshot;
   },
 
   /**

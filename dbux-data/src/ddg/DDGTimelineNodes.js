@@ -117,12 +117,11 @@ export class RefTimelineNode extends DDGTimelineNode {
   /**
    * @param {number} dataNodeId 
    */
-  constructor(type, traceId, dataNodeId, refId/* , parentNodeId */) {
+  constructor(type, traceId, dataNodeId, refId) {
     super(type);
     this.traceId = traceId;
     this.dataNodeId = dataNodeId;
     this.refId = refId;
-    // this.parentNodeId = parentNodeId;
   }
 }
 
@@ -145,8 +144,8 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
   /**
    * @param {number} dataNodeId 
    */
-  constructor(traceId, dataNodeId, refId, parentNodeId) {
-    super(DDGTimelineNodeType.RefSnapshot, traceId, dataNodeId, refId, parentNodeId);
+  constructor(traceId, dataNodeId, refId) {
+    super(DDGTimelineNodeType.RefSnapshot, traceId, dataNodeId, refId);
   }
 }
 
@@ -167,8 +166,8 @@ export class RepeatedRefTimelineNode extends RefTimelineNode {
   /**
    * @param {number} dataNodeId 
    */
-  constructor(traceId, dataNodeId, refId, parentNodeId, originalTimelineId) {
-    super(DDGTimelineNodeType.RepeatedRef, traceId, dataNodeId, refId/* , parentNodeId */);
+  constructor(traceId, dataNodeId, refId, originalTimelineId) {
+    super(DDGTimelineNodeType.RepeatedRef, traceId, dataNodeId, refId);
     this.snapshotTimelineId = originalTimelineId;
   }
 }
