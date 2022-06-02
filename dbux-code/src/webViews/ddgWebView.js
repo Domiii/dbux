@@ -78,27 +78,35 @@ export async function showDDGViewForContextOfSelectedTrace() {
   let initialState;
   let hostOnlyState;
   let trace = traceSelection.selected;
-  let ddg;
   if (trace) {
     const { applicationId, contextId } = trace;
-    const dp = allApplications.getById(applicationId).dataProvider;
     // const context = dp.collections.executionContexts.getById(contextId);
     const ddgArgs = { applicationId, contextId };
-    const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
-    if (failureReason) {
-      initialState = makeFailureState(failureReason);
-    }
-    else {
-      ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
-      initialState = makeGraphState(ddg);
-      hostOnlyState = { ddg };
-    }
+    return await showDDGViewForArgs(ddgArgs);
   }
   else {
     const failureReason = 'DDG is empty';
     initialState = makeFailureState(failureReason);
+    return await showDDGView(initialState, hostOnlyState);
   }
+}
 
+export async function showDDGViewForArgs(ddgArgs) {
+  const { applicationId } = ddgArgs;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
+
+  let initialState;
+  let hostOnlyState;
+  let ddg;
+  if (failureReason) {
+    initialState = makeFailureState(failureReason);
+  }
+  else {
+    ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
+    initialState = makeGraphState(ddg);
+    hostOnlyState = { ddg };
+  }
   return await showDDGView(ddg, initialState, hostOnlyState);
 }
 
