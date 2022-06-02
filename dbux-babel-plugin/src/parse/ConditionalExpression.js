@@ -37,7 +37,8 @@ export default class ConditionalExpression extends BaseNode {
     const testTrace = testNode.Traces.addDefaultTrace(testPath);
     const ownTrace = this.Traces.addTraceWithInputs(traceData, [result1, result2]);
 
-    this.addBranchLogic(testTrace, ownTrace);
+    // TODO: get correct branch logic from `IfStatement`
+    // this.addBranchLogic(testTrace, ownTrace);
   }
 
   isControlGroupMergedWithParent() {
