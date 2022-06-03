@@ -4,7 +4,6 @@
 
 function main(n, a) {
   var c = 1;
-
   let i = n;
   for (; ;) {
     // if (i % 2) {

@@ -2,6 +2,7 @@ import TraceControlRole from '@dbux/common/src/types/constants/TraceControlRole'
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import { TrueNode } from '../../helpers/traceUtil';
+import { replaceNodeTryFinallyPop } from '../../instrumentation/builders/common';
 import { buildTraceStatic } from '../../instrumentation/builders/misc';
 import { insertAfterBody, insertAfterNode, insertBeforeNode, instrumentUnshiftBody } from '../../instrumentation/instrumentMisc';
 import BasePlugin from './BasePlugin';
@@ -155,9 +156,13 @@ export default class BranchStatement extends BasePlugin {
       },
       meta: {
         noTidIdentifier: true,
-        build: buildTraceStatic,
-        instrument: insertAfterNode,
-        traceCall: 'newTraceId'
+        // build: buildTraceStatic,
+        traceCall: 'newTraceId',
+        instrument: (state, traceCfg) => {
+          // insertAfterNode()
+          const pops = [buildTraceStatic(state, traceCfg)];
+          replaceNodeTryFinallyPop(path, pops);
+        }
       }
     });
 
@@ -183,6 +188,7 @@ export default class BranchStatement extends BasePlugin {
       },
       meta: {
         noTidIdentifier: true,
+        isStatement: true, // make ExpressionStatement
         // build: buildTraceStatic, // NOTE: default = buildTraceExpression
         // traceCall: 'newTraceId',
 

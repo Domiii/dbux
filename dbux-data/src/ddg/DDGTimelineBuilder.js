@@ -130,7 +130,7 @@ export default class DDGTimelineBuilder {
         dp.util.isDataNodeValueTruthy(dataNode.nodeId)   // else, loop decisions are always controlled by true/false values
       ) {
         // push next iteration
-        const iterationNode = new IterationNode(decisionNode.timelineId);
+        const iterationNode = new IterationNode(decisionNode.timelineId, trace.traceId);
         this.#addAndPushGroup(iterationNode);
       }
     }
@@ -140,7 +140,7 @@ export default class DDGTimelineBuilder {
       }
       if (isLoopTimelineNode(currentGroup.type)) {
         // push first iteration of loop
-        const iterationNode = new IterationNode(decisionNode.timelineId);
+        const iterationNode = new IterationNode(decisionNode.timelineId, trace.traceId);
         this.#addAndPushGroup(iterationNode);
       }
       else {
@@ -393,7 +393,7 @@ export default class DDGTimelineBuilder {
       // push context
       const context = dp.collections.executionContexts.getById(trace.contextId);
       const contextLabel = makeContextLabel(context, dp.application);
-      this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel));
+      this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel), traceId);
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
@@ -404,7 +404,7 @@ export default class DDGTimelineBuilder {
         this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace.staticTraceId)}"`);
       }
       else {
-        this.#addAndPushGroup(new ControlGroupCtor(controlStatementId));
+        this.#addAndPushGroup(new ControlGroupCtor(controlStatementId), traceId);
       }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
@@ -556,17 +556,18 @@ export default class DDGTimelineBuilder {
   /**
    * @param {GroupTimelineNode} newGroup 
    */
-  #addAndPushGroup(newGroup) {
+  #addAndPushGroup(newGroup, pushTid) {
+    newGroup.pushTid = pushTid;
     this.ddg.addNode(newGroup);
     this.#addNodeToGroup(newGroup);
 
-    Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
+    // Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
     this.stack.push(newGroup);
   }
 
   #popGroup() {
     const nestedGroup = this.stack.pop();
-    Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
+    // Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
     const currentGroup = this.peekStack();
     currentGroup.hasRefWriteNodes ||= nestedGroup.hasRefWriteNodes;
     return nestedGroup;

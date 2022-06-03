@@ -50,6 +50,11 @@ export class DDGTimelineNode {
 
 export class GroupTimelineNode extends DDGTimelineNode {
   /**
+   * `traceId` that caused this group to be pushed.
+   */
+  pushTid;
+
+  /**
    * `timelineId` of children in order.
    * 
    * @type {Array.<number>}

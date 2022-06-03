@@ -44,6 +44,8 @@ export const buildTraceExpression = buildTraceCall(
     const expr = getInstrumentTargetAstNode(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
 
+    // console.debug(`traceExpression ${traceCfg.inProgramStaticTraceId} ${expr.type}`);
+
     return {
       trace,
       expr,
@@ -118,7 +120,7 @@ export const buildTraceNoValue_OLD = bindTemplate(
 
 const keepStatementCfg = {
   meta: {
-    keepStatement: true
+    isStatement: true
   }
 };
 

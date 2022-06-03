@@ -266,8 +266,10 @@ export default class DataDependencyGraph extends BaseDDG {
     }
 
     const lastModifyNodesByRefId = new Map();
-    const lastNestedDataNodeId = this.#collectNestedUniqueRefTrees(node, lastModifyNodesByRefId);
+    const varModifyDataNodes = new Map();
+    const lastNestedDataNodeId = this.#collectNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyDataNodes);
 
+    // add ref snapshots
     /**
      * @type {SnapshotMap}
      */
@@ -286,32 +288,54 @@ export default class DataDependencyGraph extends BaseDDG {
       this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
     }
 
-    const summaryRoots = Array.from(snapshotsByRefId.values())
-      .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId);
+    // add var nodes
+    const varNodesByDeclarationTid = new Map();
+    for (const [declarationTid, varNodeTimelineId] of varModifyDataNodes) {
+      varNodesByDeclarationTid.set(declarationTid, this.deepCloneNode(varNodeTimelineId));
+    }
 
-    this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, summaryRoots);
+    const summaryRoots = (
+      // ref roots
+      Array.from(snapshotsByRefId.values())
+        .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
+        .concat(
+          // var roots
+          Array.from(varNodesByDeclarationTid.values()).map(n => n.timelineId)
+        ));
+
+    this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots);
   }
 
   /**
    * Finds all nested modified `refId`s nested in the given node and its descendants.
    * 
+   * @param {DDGTimelineNode} summarizingNode
    * @param {DDGTimelineNode} node
    * @param {Map.<number, number>} lastModifyNodesByRefId
    * @return {number} The `lastDataNodeId` of the entire node.
    */
-  #collectNestedUniqueRefTrees(node, lastModifyNodesByRefId) {
+  #collectNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyDataNodes) {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
     if (node.dataNodeId) {
       const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
+      let varDeclarationTid;
       if (refId) {
+        // Ref Write
         lastModifyNodesByRefId.set(refId, node.dataNodeId);
+      }
+      else if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
+        // Variable Write
+        if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
+          // store variable writes, if variable was declared before summarizingNode
+          varModifyDataNodes.set(varDeclarationTid, node.timelineId);
+        }
       }
     }
     if (node.children) {
       for (const childId of Object.values(node.children)) {
         const childNode = this.timelineNodes[childId];
-        const lastChildDataNodeId = this.#collectNestedUniqueRefTrees(childNode, lastModifyNodesByRefId);
+        const lastChildDataNodeId = this.#collectNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyDataNodes);
         if (lastChildDataNodeId) {
           lastDataNodeId = lastChildDataNodeId;
         }
@@ -576,6 +600,11 @@ export default class DataDependencyGraph extends BaseDDG {
       const snapshot = this.timelineNodes[snapshotId];
       const childId = snapshot.children[prop];
       return this.timelineNodes[childId];
+    }
+    const varTid = dataNode.varAccess?.declarationTid;
+    if (varTid) {
+      const varNodeId = nodeSummary.varNodesByDeclarationTid[varTid];
+      return this.timelineNodes[varNodeId];
     }
     return null;
   }

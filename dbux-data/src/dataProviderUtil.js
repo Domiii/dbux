@@ -858,6 +858,18 @@ export default {
     return 0;
   },
 
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @return {DataNode}
+   */
+  getDataNodeModifyingVarDeclarationTid(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (isDataNodeModifyType(dataNode.type)) {
+      return dataNode?.varAccess?.declarationTid;
+    }
+    return 0;
+  },
+
 
   /** ###########################################################################
    * {@link constructValueFull}

@@ -430,7 +430,7 @@ export default class BaseDDG {
         }
         else {
           // original is timelineId
-          newChild = this.#deepCloneNode(original, snapshotsByRefId);
+          newChild = this.deepCloneNode(original, snapshotsByRefId);
         }
       }
       else {
@@ -457,7 +457,7 @@ export default class BaseDDG {
    * @param {*} timelineId
    * @param {SnapshotMap?} snapshotsByRefId
    */
-  #deepCloneNode(timelineId, snapshotsByRefId) {
+  deepCloneNode(timelineId, snapshotsByRefId) {
     const originalNode = this.timelineNodes[timelineId];
 
     let cloned;
@@ -549,7 +549,7 @@ export default class BaseDDG {
     const existingSnapshot = this._refSnapshotsByDataNodeId[ownDataNode.nodeId];
     if (existingSnapshot) {
       // clone existing snapshot
-      return this.#deepCloneNode(existingSnapshot.timelineId, snapshotsByRefId);
+      return this.deepCloneNode(existingSnapshot.timelineId, snapshotsByRefId);
     }
 
     /**

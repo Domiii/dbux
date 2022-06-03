@@ -10,14 +10,21 @@ export default class DDGNodeSummary {
   snapshotsByRefId;
 
   /**
+   * @type {Map.<number, number>}
+   */
+  varNodesByDeclarationTid;
+
+
+  /**
    * Set of {@link RefSnapshotTimelineNode#timelineId} 
    * @type {Array.<number>}
    */
   summaryRoots;
 
-  constructor(timelineId, snapshotsByRefId, summaryRoots) {
+  constructor(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots) {
     this.timelineId = timelineId;
     this.snapshotsByRefId = snapshotsByRefId;
+    this.varNodesByDeclarationTid = varNodesByDeclarationTid;
     this.summaryRoots = summaryRoots;
   }
 }

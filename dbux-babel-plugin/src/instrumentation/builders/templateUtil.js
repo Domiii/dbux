@@ -1,7 +1,7 @@
+import * as t from '@babel/types';
 import template from '@babel/template';
 import NestedError from '@dbux/common/src/NestedError';
 import { addMoreTraceCallArgs } from './buildUtil';
-// import * as t from '@babel/types';
 
 
 /**
@@ -18,10 +18,18 @@ export function buildTraceCall(templateString, varFn) {
       const vars = varFn(...args);
       let newNode = templ(vars);
       const cfg = args[args.length - 1];
-      if (!cfg?.meta?.keepStatement && newNode.type === 'ExpressionStatement') {
-        // we wanted an expression, not a statement
-        newNode = newNode.expression;
+      const shouldBeStatement = cfg?.meta?.isStatement;
+      const isStatement = newNode.type === 'ExpressionStatement';
+      if (shouldBeStatement !== isStatement) {
+        if (!shouldBeStatement) {
+          // we wanted an expression, not a statement
+          newNode = newNode.expression;
+        }
+        // else {  // not necessary
+        //   newNode = t.expressionStatement(newNode);
+        // }
       }
+
       addMoreTraceCallArgs(newNode.arguments, cfg);
       return newNode;
     }
