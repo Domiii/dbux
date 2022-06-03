@@ -203,12 +203,17 @@ class ComponentEndpoint {
         if (!Array.isArray(orig)) {
           throw new Error(`Cannot apply state op "arrayAdd" for key "${key}" in comp "${this.debugTag}": orig is not array`);
         }
-        
-        state[key] = orig.concat(orig, upd);
+
+        try {
+          state[key] = orig.concat(upd);
+        }
+        catch (err) {
+          this.logger.error(new NestedError(`setState → arrayAdd failed - for array "${key}" (orig.length=${orig.length}, upd.length=${upd?.length})`, err));
+        }
       }
     },
     objectMerge: (state, delta) => {
-      console.log('objectMerge', delta);
+      // console.log('objectMerge', delta);
       for (const key in delta) {
         const orig = state[key];
         const upd = delta[key];
