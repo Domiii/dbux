@@ -110,7 +110,7 @@ const ddgQueries = {
    */
   isNodeSummarized(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    return isSummaryMode(summaryMode) && !!node.hasRefWriteNodes;
+    return isSummaryMode(summaryMode) && !!node.hasSummarizableWrites;
   },
 
   /**

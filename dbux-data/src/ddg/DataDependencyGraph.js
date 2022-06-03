@@ -260,7 +260,7 @@ export default class DataDependencyGraph extends BaseDDG {
   #buildNodeSummarySnapshots(timelineId) {
     const { dp } = this;
     const node = this.timelineNodes[timelineId];
-    if (!node.hasRefWriteNodes || this.nodeSummaries[timelineId]) {
+    if (!node.hasSummarizableWrites || this.nodeSummaries[timelineId]) {
       // already built or nothing to build
       return;
     }
@@ -291,7 +291,10 @@ export default class DataDependencyGraph extends BaseDDG {
     // add var nodes
     const varNodesByDeclarationTid = new Map();
     for (const [declarationTid, varNodeTimelineId] of varModifyDataNodes) {
-      varNodesByDeclarationTid.set(declarationTid, this.deepCloneNode(varNodeTimelineId));
+      const varNode = this.deepCloneNode(varNodeTimelineId);
+      // override label to be the var name (if possible)
+      varNode.label = dp.util.getDataNodeDeclarationVarName(varNode.dataNodeId) || varNode.label;
+      varNodesByDeclarationTid.set(declarationTid, varNode.timelineId);
     }
 
     const summaryRoots = (
@@ -300,7 +303,7 @@ export default class DataDependencyGraph extends BaseDDG {
         .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
         .concat(
           // var roots
-          Array.from(varNodesByDeclarationTid.values()).map(n => n.timelineId)
+          Array.from(varNodesByDeclarationTid.values())
         ));
 
     this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots);
@@ -603,7 +606,7 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     const varTid = dataNode.varAccess?.declarationTid;
     if (varTid) {
-      const varNodeId = nodeSummary.varNodesByDeclarationTid[varTid];
+      const varNodeId = nodeSummary.varNodesByDeclarationTid.get(varTid);
       return this.timelineNodes[varNodeId];
     }
     return null;

@@ -2,7 +2,7 @@
 // import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
-// import omit from 'lodash/omit';
+import merge from 'lodash/merge';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -245,14 +245,14 @@ export default class Traces extends BasePlugin {
    */
   addDefaultDeclarationTrace(id, valuePathOrNode, moreTraceData = null) {
     moreTraceData = moreTraceData || {};
-    moreTraceData.staticTraceData = moreTraceData.staticTraceData || {
+    moreTraceData.staticTraceData = merge({
       type: TraceType.Declaration,
       dataNode: {
         // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valueNode` not given)
         //      Notable exception: `param`.
         isNew: true
       }
-    };
+    }, moreTraceData.staticTraceData);
 
     const traceData = {
       path: id.path,

@@ -783,7 +783,8 @@ export default {
   getDataNodeDeclarationVarName(dp, dataNodeId) {
     const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
     if (declarationTid) {
-      return dp.util.getStaticTrace(declarationTid).displayName;
+      const staticTrace = dp.util.getStaticTrace(declarationTid);
+      return staticTrace.data?.name || staticTrace.displayName;
     }
     return null;
   },

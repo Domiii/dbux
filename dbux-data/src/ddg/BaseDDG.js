@@ -310,10 +310,12 @@ export default class BaseDDG {
    * @param {DataTimelineNode} newNode 
    */
   addDataNode(newNode) {
-    const { dp } = this;
+    // const { dp } = this;
     this.addNode(newNode);
-    this._firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
-    // newNode.hasRefNodes = !!dp.util.getDataNodeModifyingRefId(newNode.dataNodeId);
+    if (this.timelineBuilder) {
+      // hackfix: we only need these during initial build
+      this._firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
+    }
   }
 
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
@@ -443,7 +445,7 @@ export default class BaseDDG {
         else {
           // primitive
           newChild = this.addValueDataNode(lastModDataNode);
-          this.timelineBuilder?.onNewDataTimelineNode(newChild);
+          this.timelineBuilder?.onNewSnapshotValueNode(newChild);
         }
       }
       newChild.parentNodeId = parentSnapshot.timelineId;

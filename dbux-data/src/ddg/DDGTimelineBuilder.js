@@ -154,7 +154,7 @@ export default class DDGTimelineBuilder {
   /**
    * @param {DataTimelineNode} newNode 
    */
-  onNewDataTimelineNode(newNode) {
+  onNewSnapshotValueNode(newNode) {
     const fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
     if (fromNode) {
       // add edges, but not during summarization
@@ -453,17 +453,6 @@ export default class DDGTimelineBuilder {
     }
 
 
-    // register DataNode by refId
-    const accessedRefId = dp.util.getDataNodeAccessedRefId(ownDataNode.nodeId);
-    const valueRefId = ownDataNode.refId;
-    if (accessedRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = ownDataNode.nodeId;
-    }
-    if (valueRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = ownDataNode.nodeId;
-    }
-
-
     const isDecision = dp.util.isTraceControlDecision(traceId);
     // Verbose && this.debug(`trace ${traceId} (${trace.staticTraceId}), decision=${isDecision}`);
 
@@ -494,6 +483,17 @@ export default class DDGTimelineBuilder {
         this.skippedNodesByDataNodeId[ownDataNode.nodeId] = skippedBy;
         return;
       }
+    }
+
+    // bookkeeping for summaries
+    const accessedRefId = dp.util.getDataNodeAccessedRefId(ownDataNode.nodeId);
+    const valueRefId = ownDataNode.refId;
+    const varDeclarationTid = ownDataNode.varAccess?.declarationTid;
+    if (accessedRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = ownDataNode.nodeId;
+    }
+    if (valueRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = ownDataNode.nodeId;
     }
 
     if (ownDataNode.inputs) {
@@ -535,11 +535,11 @@ export default class DDGTimelineBuilder {
        */
       newNode = this.#addDataNodeToTimeline(ownDataNode, dataNodes);
     }
-    newNode.hasRefWriteNodes = !!accessedRefId;
+    newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 
     // update group
     const currentGroup = this.peekStack();
-    currentGroup.hasRefWriteNodes ||= newNode.hasRefWriteNodes;
+    currentGroup.hasSummarizableWrites ||= newNode.hasSummarizableWrites;
 
     // add edges
     if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
@@ -561,15 +561,15 @@ export default class DDGTimelineBuilder {
     this.ddg.addNode(newGroup);
     this.#addNodeToGroup(newGroup);
 
-    // Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
+    Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
     this.stack.push(newGroup);
   }
 
   #popGroup() {
     const nestedGroup = this.stack.pop();
-    // Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
+    Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
     const currentGroup = this.peekStack();
-    currentGroup.hasRefWriteNodes ||= nestedGroup.hasRefWriteNodes;
+    currentGroup.hasSummarizableWrites ||= nestedGroup.hasSummarizableWrites;
     return nestedGroup;
   }
 

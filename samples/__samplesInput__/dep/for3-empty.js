@@ -1,10 +1,10 @@
 /**
  * @file
- */
+*/
 
 function main(n, a) {
-  var c = 1;
   let i = n;
+  var c = 1;
   for (; ;) {
     // if (i % 2) {
     c += i * a;
