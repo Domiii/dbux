@@ -1024,15 +1024,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     //    -> offer an API to get (and/or flush) cache folder in babel-register (see `prepareCache`)
     const cacheRoot = this.getCacheRoot();
     const relativeProjectPath = this.getRelativeProjectPath();
-    const cacheFolderStr = `${cacheRoot}/\n  ${relativeProjectPath}`;  // NOTE: path too long for modal
+    // const cacheFolderStr = `${relativeProjectPath}`;  // NOTE: path too long for modal
     if (this.doesCacheFolderExist()) {
-      if (await this.manager.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
+      if (await this.manager.externals.confirm(`This will flush the cache at "${relativeProjectPath}", are you sure?\n (cacheRoot="${cacheRoot}")`)) {
         this.deleteCacheFolder();
         await this.manager.externals.alert(`Successfully deleted cache folder for project "${this.name}"`, true);
       }
     }
     else {
-      await this.manager.externals.alert(`Cache for project "${this.name}" is empty (${cacheFolderStr})`, false);
+      await this.manager.externals.alert(`Cache for project "${this.name}" is empty: ${relativeProjectPath}\n (cacheRoot="${cacheRoot}")`, false);
     }
   }
 

@@ -156,7 +156,7 @@ export default class DotBuilder {
       this.controlGroup(node);
     }
     else if (ddgQueries.isSnapshot(ddg, node)) {
-      this.refSnapshotNode(node);
+      this.refSnapshotRoot(node);
     }
     else if (force || ddgQueries.isVisible(ddg, node)) {
       this.valueNode(node);

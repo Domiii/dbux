@@ -398,7 +398,8 @@ export default class DDGTimelineBuilder {
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
       const controlStatementId = staticTrace.controlId;
-      const { syntax } = dp.collections.staticTraces.getById(controlStatementId);
+      const controlStaticTrace = dp.collections.staticTraces.getById(controlStatementId);
+      const { syntax } = controlStaticTrace;
       const ControlGroupCtor = branchSyntaxNodeCreators[syntax];
       if (!ControlGroupCtor) {
         this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace.staticTraceId)}"`);

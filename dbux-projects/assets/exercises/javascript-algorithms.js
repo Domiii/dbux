@@ -7,14 +7,15 @@ const configs = [
     id: 1,
     name: 'bubbleSort1',
     label: 'BubbleSort bug#1',
-    testNamePattern: 'BubbleSort should sort array',
     patch: 'bubbleSort1',
+    testNamePattern: 'BubbleSort should sort array',
     testFilePaths: ['src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js']
   },
   {
     id: 2,
     name: 'bubble-ok',
     label: 'BubbleSort (baseline)',
+    patch: 'bubbleSort0',
     testNamePattern: 'BubbleSort should sort array',
     testFilePaths: ['src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js']
   },

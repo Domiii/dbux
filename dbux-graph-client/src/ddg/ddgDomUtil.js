@@ -40,7 +40,9 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
     if (needsToDecorate) {
       // hackfix
       btnEl._updateDeco = () => {
-        decorateSummaryButton(btnEl, mode, doc.state.summaryModes[timelineId]);
+        if (doc.state.summaryModes) {
+          decorateSummaryButton(btnEl, mode, doc.state.summaryModes[timelineId]);
+        }
       };
     }
     frag.appendChild(btnEl);

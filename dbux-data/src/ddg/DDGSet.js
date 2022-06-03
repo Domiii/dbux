@@ -1,3 +1,4 @@
+import RuntimeDataProvider from '../RuntimeDataProvider';
 import DataDependencyGraph from './DataDependencyGraph';
 
 export default class DDGSet {
@@ -6,6 +7,10 @@ export default class DDGSet {
    */
   graphs;
 
+  /**
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
   constructor(dp) {
     this.dp = dp;
     this.clear();

@@ -597,17 +597,21 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   #lookupSummaryNode(dataNode, nodeSummary) {
     const refId = this.dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
+    let varTid;
     if (refId) {
       const { prop } = dataNode.varAccess;
       const snapshotId = nodeSummary.snapshotsByRefId.get(refId);
-      const snapshot = this.timelineNodes[snapshotId];
-      const childId = snapshot.children[prop];
-      return this.timelineNodes[childId];
+      if (snapshotId) {
+        const snapshot = this.timelineNodes[snapshotId];
+        const childId = snapshot.children[prop];
+        return this.timelineNodes[childId];
+      }
     }
-    const varTid = dataNode.varAccess?.declarationTid;
-    if (varTid) {
+    else if ((varTid = dataNode.varAccess?.declarationTid)) {
       const varNodeId = nodeSummary.varNodesByDeclarationTid.get(varTid);
-      return this.timelineNodes[varNodeId];
+      if (varNodeId) {
+        return this.timelineNodes[varNodeId];
+      }
     }
     return null;
   }
