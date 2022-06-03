@@ -48,10 +48,6 @@ export default class JavascriptAlgorithmProject extends Project {
     };
   }
 
-  async selectExercise(exercise) {
-    // nothing to do here
-  }
-
   async runCommand(bug, cfg) {
     const { projectPath } = this;
     // const bugArgs = this.getMochaRunArgs(bug);

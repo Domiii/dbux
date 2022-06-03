@@ -1343,7 +1343,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     try {
       return await this.execGitCaptureErr(
-        `apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`
+        `apply ${revert ? '-R ' : ''}--ignore-space-change --ignore-whitespace "${patchPath}"`
       );
     }
     catch (err) {

@@ -16,6 +16,7 @@ export default class RealworldWebComponentsProject extends Project {
   }
 
   async selectExercise(bug) {
+    super.selectExercise(bug);
     // start webpack and webpack-dev-server
     this.runWebpack();
   }

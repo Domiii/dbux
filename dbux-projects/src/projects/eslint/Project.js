@@ -60,9 +60,6 @@ export default class EslintProject extends Project {
     return `Bug-${exerciseNumber}-${tagCategory}`;
   }
 
-  async selectExercise(bug) {
-  }
-
 
   // ###########################################################################
   // run
