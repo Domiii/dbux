@@ -1,83 +1,65 @@
 module.exports = [
   {
-    "name": "KnapsackItem should create knapsack item and count its total weight and value",
-    "label": "KnapsackItem should create knapsack item and count its total weight and value",
-    "testNamePattern": "KnapsackItem should create knapsack item and count its total weight and value",
-    "chapter": "KnapsackItem",
+    "name": "breadthFirstSearch should perform BFS operation on tree",
+    "label": "breadthFirstSearch should perform BFS operation on tree",
+    "testNamePattern": "breadthFirstSearch should perform BFS operation on tree",
+    "chapter": "breadthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js"
+      "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
     ]
   },
   {
-    "name": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
-    "label": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
-    "testNamePattern": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
-    "chapter": "bfMaximumSubarray",
+    "name": "breadthFirstSearch allow users to redefine node visiting logic",
+    "label": "breadthFirstSearch allow users to redefine node visiting logic",
+    "testNamePattern": "breadthFirstSearch allow users to redefine node visiting logic",
+    "chapter": "breadthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
+      "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
     ]
   },
   {
-    "name": "Knapsack should solve 0/1 knapsack problem",
-    "label": "Knapsack should solve 0/1 knapsack problem",
-    "testNamePattern": "Knapsack should solve 0/1 knapsack problem",
-    "chapter": "Knapsack",
+    "name": "kruskal should fire an error for directed graph",
+    "label": "kruskal should fire an error for directed graph",
+    "testNamePattern": "kruskal should fire an error for directed graph",
+    "chapter": "kruskal",
     "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
     ]
   },
   {
-    "name": "Knapsack should solve 0/1 knapsack problem regardless of items order",
-    "label": "Knapsack should solve 0/1 knapsack problem regardless of items order",
-    "testNamePattern": "Knapsack should solve 0/1 knapsack problem regardless of items order",
-    "chapter": "Knapsack",
+    "name": "kruskal should find minimum spanning tree",
+    "label": "kruskal should find minimum spanning tree",
+    "testNamePattern": "kruskal should find minimum spanning tree",
+    "chapter": "kruskal",
     "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
     ]
   },
   {
-    "name": "Knapsack should solve 0/1 knapsack problem with impossible items set",
-    "label": "Knapsack should solve 0/1 knapsack problem with impossible items set",
-    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with impossible items set",
-    "chapter": "Knapsack",
+    "name": "kruskal should find minimum spanning tree for simple graph",
+    "label": "kruskal should find minimum spanning tree for simple graph",
+    "testNamePattern": "kruskal should find minimum spanning tree for simple graph",
+    "chapter": "kruskal",
     "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
     ]
   },
   {
-    "name": "Knapsack should solve 0/1 knapsack problem with all equal weights",
-    "label": "Knapsack should solve 0/1 knapsack problem with all equal weights",
-    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with all equal weights",
-    "chapter": "Knapsack",
+    "name": "depthFirstSearch should perform DFS operation on tree",
+    "label": "depthFirstSearch should perform DFS operation on tree",
+    "testNamePattern": "depthFirstSearch should perform DFS operation on tree",
+    "chapter": "depthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+      "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
     ]
   },
   {
-    "name": "Knapsack should solve unbound knapsack problem",
-    "label": "Knapsack should solve unbound knapsack problem",
-    "testNamePattern": "Knapsack should solve unbound knapsack problem",
-    "chapter": "Knapsack",
+    "name": "depthFirstSearch allow users to redefine node visiting logic",
+    "label": "depthFirstSearch allow users to redefine node visiting logic",
+    "testNamePattern": "depthFirstSearch allow users to redefine node visiting logic",
+    "chapter": "depthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
-  },
-  {
-    "name": "Knapsack should solve unbound knapsack problem with items in stock",
-    "label": "Knapsack should solve unbound knapsack problem with items in stock",
-    "testNamePattern": "Knapsack should solve unbound knapsack problem with items in stock",
-    "chapter": "Knapsack",
-    "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
-  },
-  {
-    "name": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
-    "label": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
-    "testNamePattern": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
-    "chapter": "Knapsack",
-    "testFilePaths": [
-      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+      "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
     ]
   },
   {
@@ -96,6 +78,150 @@ module.exports = [
     "chapter": "PolynomialHash",
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js"
+    ]
+  },
+  {
+    "name": "resizeImageWidth should perform content-aware image width reduction",
+    "label": "resizeImageWidth should perform content-aware image width reduction",
+    "testNamePattern": "resizeImageWidth should perform content-aware image width reduction",
+    "chapter": "resizeImageWidth",
+    "testFilePaths": [
+      "src/algorithms/image-processing/seam-carving/__tests__/resizeImageWidth.test.js"
+    ]
+  },
+  {
+    "name": "detectDirectedCycle should detect directed cycle",
+    "label": "detectDirectedCycle should detect directed cycle",
+    "testNamePattern": "detectDirectedCycle should detect directed cycle",
+    "chapter": "detectDirectedCycle",
+    "testFilePaths": [
+      "src/algorithms/graph/detect-cycle/__test__/detectDirectedCycle.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should sort array",
+    "label": "SelectionSort should sort array",
+    "testNamePattern": "SelectionSort should sort array",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should sort array with custom comparator",
+    "label": "SelectionSort should sort array with custom comparator",
+    "testNamePattern": "SelectionSort should sort array with custom comparator",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should sort negative numbers",
+    "label": "SelectionSort should sort negative numbers",
+    "testNamePattern": "SelectionSort should sort negative numbers",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should visit EQUAL array element specified number of times",
+    "label": "SelectionSort should visit EQUAL array element specified number of times",
+    "testNamePattern": "SelectionSort should visit EQUAL array element specified number of times",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should visit SORTED array element specified number of times",
+    "label": "SelectionSort should visit SORTED array element specified number of times",
+    "testNamePattern": "SelectionSort should visit SORTED array element specified number of times",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should visit NOT SORTED array element specified number of times",
+    "label": "SelectionSort should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "SelectionSort should visit NOT SORTED array element specified number of times",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should visit REVERSE SORTED array element specified number of times",
+    "label": "SelectionSort should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "SelectionSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "PolynomialHash should generate numeric hashed less than 100",
+    "label": "PolynomialHash should generate numeric hashed less than 100",
+    "testNamePattern": "PolynomialHash should generate numeric hashed less than 100",
+    "chapter": "PolynomialHash",
+    "testFilePaths": [
+      "src/algorithms/cryptography/polynomial-hash/__test__/PolynomialHash.test.js"
+    ]
+  },
+  {
+    "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
+    "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
+    "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
+    "chapter": "fastFourierTransform",
+    "testFilePaths": [
+      "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
+    ]
+  },
+  {
+    "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
+    "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
+    "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
+    "chapter": "fastFourierTransform",
+    "testFilePaths": [
+      "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
+    ]
+  },
+  {
+    "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
+    "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
+    "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
+    "chapter": "fastFourierTransform",
+    "testFilePaths": [
+      "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
+    ]
+  },
+  {
+    "name": "eulerianPath should throw an error when graph is not Eulerian",
+    "label": "eulerianPath should throw an error when graph is not Eulerian",
+    "testNamePattern": "eulerianPath should throw an error when graph is not Eulerian",
+    "chapter": "eulerianPath",
+    "testFilePaths": [
+      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+    ]
+  },
+  {
+    "name": "eulerianPath should find Eulerian Circuit in graph",
+    "label": "eulerianPath should find Eulerian Circuit in graph",
+    "testNamePattern": "eulerianPath should find Eulerian Circuit in graph",
+    "chapter": "eulerianPath",
+    "testFilePaths": [
+      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+    ]
+  },
+  {
+    "name": "eulerianPath should find Eulerian Path in graph",
+    "label": "eulerianPath should find Eulerian Path in graph",
+    "testNamePattern": "eulerianPath should find Eulerian Path in graph",
+    "chapter": "eulerianPath",
+    "testFilePaths": [
+      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
     ]
   },
   {
@@ -225,84 +351,93 @@ module.exports = [
     ]
   },
   {
-    "name": "resizeImageWidth should perform content-aware image width reduction",
-    "label": "resizeImageWidth should perform content-aware image width reduction",
-    "testNamePattern": "resizeImageWidth should perform content-aware image width reduction",
-    "chapter": "resizeImageWidth",
+    "name": "euclideanAlgorithm should calculate GCD recursively",
+    "label": "euclideanAlgorithm should calculate GCD recursively",
+    "testNamePattern": "euclideanAlgorithm should calculate GCD recursively",
+    "chapter": "euclideanAlgorithm",
     "testFilePaths": [
-      "src/algorithms/image-processing/seam-carving/__tests__/resizeImageWidth.test.js"
+      "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js"
     ]
   },
   {
-    "name": "eulerianPath should throw an error when graph is not Eulerian",
-    "label": "eulerianPath should throw an error when graph is not Eulerian",
-    "testNamePattern": "eulerianPath should throw an error when graph is not Eulerian",
-    "chapter": "eulerianPath",
+    "name": "nQueensBitwise should have solutions for 4 to N queens",
+    "label": "nQueensBitwise should have solutions for 4 to N queens",
+    "testNamePattern": "nQueensBitwise should have solutions for 4 to N queens",
+    "chapter": "nQueensBitwise",
     "testFilePaths": [
-      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+      "src/algorithms/uncategorized/n-queens/__test__/nQueensBitwise.test.js"
     ]
   },
   {
-    "name": "eulerianPath should find Eulerian Circuit in graph",
-    "label": "eulerianPath should find Eulerian Circuit in graph",
-    "testNamePattern": "eulerianPath should find Eulerian Circuit in graph",
-    "chapter": "eulerianPath",
+    "name": "kNN should throw an error on invalid data",
+    "label": "kNN should throw an error on invalid data",
+    "testNamePattern": "kNN should throw an error on invalid data",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
-    "name": "eulerianPath should find Eulerian Path in graph",
-    "label": "eulerianPath should find Eulerian Path in graph",
-    "testNamePattern": "eulerianPath should find Eulerian Path in graph",
-    "chapter": "eulerianPath",
+    "name": "kNN should throw an error on invalid labels",
+    "label": "kNN should throw an error on invalid labels",
+    "testNamePattern": "kNN should throw an error on invalid labels",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
-    "name": "depthFirstSearch should perform DFS operation on graph",
-    "label": "depthFirstSearch should perform DFS operation on graph",
-    "testNamePattern": "depthFirstSearch should perform DFS operation on graph",
-    "chapter": "depthFirstSearch",
+    "name": "kNN should throw an error on not giving classification vector",
+    "label": "kNN should throw an error on not giving classification vector",
+    "testNamePattern": "kNN should throw an error on not giving classification vector",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
-    "name": "depthFirstSearch allow users to redefine vertex visiting logic",
-    "label": "depthFirstSearch allow users to redefine vertex visiting logic",
-    "testNamePattern": "depthFirstSearch allow users to redefine vertex visiting logic",
-    "chapter": "depthFirstSearch",
+    "name": "kNN should find the nearest neighbour",
+    "label": "kNN should find the nearest neighbour",
+    "testNamePattern": "kNN should find the nearest neighbour",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
-    "name": "greedyJumpGame should solve Jump Game problem in greedy manner",
-    "label": "greedyJumpGame should solve Jump Game problem in greedy manner",
-    "testNamePattern": "greedyJumpGame should solve Jump Game problem in greedy manner",
-    "chapter": "greedyJumpGame",
+    "name": "kNN should find the nearest neighbour with equal distances",
+    "label": "kNN should find the nearest neighbour with equal distances",
+    "testNamePattern": "kNN should find the nearest neighbour with equal distances",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
-    "name": "breadthFirstSearch should perform BFS operation on graph",
-    "label": "breadthFirstSearch should perform BFS operation on graph",
-    "testNamePattern": "breadthFirstSearch should perform BFS operation on graph",
-    "chapter": "breadthFirstSearch",
+    "name": "kNN should find the nearest neighbour in 3D space",
+    "label": "kNN should find the nearest neighbour in 3D space",
+    "testNamePattern": "kNN should find the nearest neighbour in 3D space",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
-    "name": "breadthFirstSearch should allow to create custom vertex visiting logic",
-    "label": "breadthFirstSearch should allow to create custom vertex visiting logic",
-    "testNamePattern": "breadthFirstSearch should allow to create custom vertex visiting logic",
-    "chapter": "breadthFirstSearch",
+    "name": "floatAs32Binary should create a binary representation of the floating numbers",
+    "label": "floatAs32Binary should create a binary representation of the floating numbers",
+    "testNamePattern": "floatAs32Binary should create a binary representation of the floating numbers",
+    "chapter": "floatAs32Binary",
     "testFilePaths": [
-      "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+      "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
+    ]
+  },
+  {
+    "name": "floatAs64Binary should create a binary representation of the floating numbers",
+    "label": "floatAs64Binary should create a binary representation of the floating numbers",
+    "testNamePattern": "floatAs64Binary should create a binary representation of the floating numbers",
+    "chapter": "floatAs64Binary",
+    "testFilePaths": [
+      "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
     ]
   },
   {
@@ -351,48 +486,696 @@ module.exports = [
     ]
   },
   {
-    "name": "PolynomialHash should generate numeric hashed less than 100",
-    "label": "PolynomialHash should generate numeric hashed less than 100",
-    "testNamePattern": "PolynomialHash should generate numeric hashed less than 100",
-    "chapter": "PolynomialHash",
+    "name": "multiply should multiply two numbers",
+    "label": "multiply should multiply two numbers",
+    "testNamePattern": "multiply should multiply two numbers",
+    "chapter": "multiply",
     "testFilePaths": [
-      "src/algorithms/cryptography/polynomial-hash/__test__/PolynomialHash.test.js"
+      "src/algorithms/math/bits/__test__/multiply.test.js"
     ]
   },
   {
-    "name": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
-    "label": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
-    "testNamePattern": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
-    "chapter": "inverseDiscreteFourierTransform",
+    "name": "articulationPoints should find articulation points in simple graph",
+    "label": "articulationPoints should find articulation points in simple graph",
+    "testNamePattern": "articulationPoints should find articulation points in simple graph",
+    "chapter": "articulationPoints",
     "testFilePaths": [
-      "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js"
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
     ]
   },
   {
-    "name": "knightTour should not find solution on 3x3 board",
-    "label": "knightTour should not find solution on 3x3 board",
-    "testNamePattern": "knightTour should not find solution on 3x3 board",
-    "chapter": "knightTour",
+    "name": "articulationPoints should find articulation points in simple graph with back edge",
+    "label": "articulationPoints should find articulation points in simple graph with back edge",
+    "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge",
+    "chapter": "articulationPoints",
     "testFilePaths": [
-      "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
     ]
   },
   {
-    "name": "knightTour should find one solution to do knight tour on 5x5 board",
-    "label": "knightTour should find one solution to do knight tour on 5x5 board",
-    "testNamePattern": "knightTour should find one solution to do knight tour on 5x5 board",
-    "chapter": "knightTour",
+    "name": "articulationPoints should find articulation points in simple graph with back edge #2",
+    "label": "articulationPoints should find articulation points in simple graph with back edge #2",
+    "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge #2",
+    "chapter": "articulationPoints",
     "testFilePaths": [
-      "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
     ]
   },
   {
-    "name": "radianToDegree should convert radian to degree",
-    "label": "radianToDegree should convert radian to degree",
-    "testNamePattern": "radianToDegree should convert radian to degree",
-    "chapter": "radianToDegree",
+    "name": "articulationPoints should find articulation points in graph",
+    "label": "articulationPoints should find articulation points in graph",
+    "testNamePattern": "articulationPoints should find articulation points in graph",
+    "chapter": "articulationPoints",
     "testFilePaths": [
-      "src/algorithms/math/radian/__test__/radianToDegree.test.js"
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ]
+  },
+  {
+    "name": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+    "label": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+    "testNamePattern": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+    "chapter": "articulationPoints",
+    "testFilePaths": [
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ]
+  },
+  {
+    "name": "articulationPoints should find articulation points in yet another graph #1",
+    "label": "articulationPoints should find articulation points in yet another graph #1",
+    "testNamePattern": "articulationPoints should find articulation points in yet another graph #1",
+    "chapter": "articulationPoints",
+    "testFilePaths": [
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ]
+  },
+  {
+    "name": "articulationPoints should find articulation points in yet another graph #2",
+    "label": "articulationPoints should find articulation points in yet another graph #2",
+    "testNamePattern": "articulationPoints should find articulation points in yet another graph #2",
+    "chapter": "articulationPoints",
+    "testFilePaths": [
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should sort array",
+    "label": "HeapSort should sort array",
+    "testNamePattern": "HeapSort should sort array",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should sort array with custom comparator",
+    "label": "HeapSort should sort array with custom comparator",
+    "testNamePattern": "HeapSort should sort array with custom comparator",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should sort negative numbers",
+    "label": "HeapSort should sort negative numbers",
+    "testNamePattern": "HeapSort should sort negative numbers",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should visit EQUAL array element specified number of times",
+    "label": "HeapSort should visit EQUAL array element specified number of times",
+    "testNamePattern": "HeapSort should visit EQUAL array element specified number of times",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should visit SORTED array element specified number of times",
+    "label": "HeapSort should visit SORTED array element specified number of times",
+    "testNamePattern": "HeapSort should visit SORTED array element specified number of times",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should visit NOT SORTED array element specified number of times",
+    "label": "HeapSort should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "HeapSort should visit NOT SORTED array element specified number of times",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "HeapSort should visit REVERSE SORTED array element specified number of times",
+    "label": "HeapSort should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "HeapSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should sort array",
+    "label": "QuickSortInPlace should sort array",
+    "testNamePattern": "QuickSortInPlace should sort array",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should sort array with custom comparator",
+    "label": "QuickSortInPlace should sort array with custom comparator",
+    "testNamePattern": "QuickSortInPlace should sort array with custom comparator",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should sort negative numbers",
+    "label": "QuickSortInPlace should sort negative numbers",
+    "testNamePattern": "QuickSortInPlace should sort negative numbers",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should visit EQUAL array element specified number of times",
+    "label": "QuickSortInPlace should visit EQUAL array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit EQUAL array element specified number of times",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "label": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
+    "label": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+    "label": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "factorialRecursive should calculate factorial",
+    "label": "factorialRecursive should calculate factorial",
+    "testNamePattern": "factorialRecursive should calculate factorial",
+    "chapter": "factorialRecursive",
+    "testFilePaths": [
+      "src/algorithms/math/factorial/__test__/factorialRecursive.test.js"
+    ]
+  },
+  {
+    "name": "prim should fire an error for directed graph",
+    "label": "prim should fire an error for directed graph",
+    "testNamePattern": "prim should fire an error for directed graph",
+    "chapter": "prim",
+    "testFilePaths": [
+      "src/algorithms/graph/prim/__test__/prim.test.js"
+    ]
+  },
+  {
+    "name": "prim should find minimum spanning tree",
+    "label": "prim should find minimum spanning tree",
+    "testNamePattern": "prim should find minimum spanning tree",
+    "chapter": "prim",
+    "testFilePaths": [
+      "src/algorithms/graph/prim/__test__/prim.test.js"
+    ]
+  },
+  {
+    "name": "prim should find minimum spanning tree for simple graph",
+    "label": "prim should find minimum spanning tree for simple graph",
+    "testNamePattern": "prim should find minimum spanning tree for simple graph",
+    "chapter": "prim",
+    "testFilePaths": [
+      "src/algorithms/graph/prim/__test__/prim.test.js"
+    ]
+  },
+  {
+    "name": "euclideanDistance should calculate euclidean distance between vectors",
+    "label": "euclideanDistance should calculate euclidean distance between vectors",
+    "testNamePattern": "euclideanDistance should calculate euclidean distance between vectors",
+    "chapter": "euclideanDistance",
+    "testFilePaths": [
+      "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
+    ]
+  },
+  {
+    "name": "euclideanDistance should throw an error in case if two matrices are of different shapes",
+    "label": "euclideanDistance should throw an error in case if two matrices are of different shapes",
+    "testNamePattern": "euclideanDistance should throw an error in case if two matrices are of different shapes",
+    "chapter": "euclideanDistance",
+    "testFilePaths": [
+      "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
+    ]
+  },
+  {
+    "name": "hamiltonianCycle should find hamiltonian paths in graph",
+    "label": "hamiltonianCycle should find hamiltonian paths in graph",
+    "testNamePattern": "hamiltonianCycle should find hamiltonian paths in graph",
+    "chapter": "hamiltonianCycle",
+    "testFilePaths": [
+      "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
+    ]
+  },
+  {
+    "name": "hamiltonianCycle should return false for graph without Hamiltonian path",
+    "label": "hamiltonianCycle should return false for graph without Hamiltonian path",
+    "testNamePattern": "hamiltonianCycle should return false for graph without Hamiltonian path",
+    "chapter": "hamiltonianCycle",
+    "testFilePaths": [
+      "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
+    ]
+  },
+  {
+    "name": "discreteFourierTransform should split signal into frequencies",
+    "label": "discreteFourierTransform should split signal into frequencies",
+    "testNamePattern": "discreteFourierTransform should split signal into frequencies",
+    "chapter": "discreteFourierTransform",
+    "testFilePaths": [
+      "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js"
+    ]
+  },
+  {
+    "name": "linearSearch should search all numbers in array",
+    "label": "linearSearch should search all numbers in array",
+    "testNamePattern": "linearSearch should search all numbers in array",
+    "chapter": "linearSearch",
+    "testFilePaths": [
+      "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+    ]
+  },
+  {
+    "name": "linearSearch should search all strings in array",
+    "label": "linearSearch should search all strings in array",
+    "testNamePattern": "linearSearch should search all strings in array",
+    "chapter": "linearSearch",
+    "testFilePaths": [
+      "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+    ]
+  },
+  {
+    "name": "linearSearch should search through objects as well",
+    "label": "linearSearch should search through objects as well",
+    "testNamePattern": "linearSearch should search through objects as well",
+    "chapter": "linearSearch",
+    "testFilePaths": [
+      "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+    ]
+  },
+  {
+    "name": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "chapter": "bellmanFord",
+    "testFilePaths": [
+      "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ]
+  },
+  {
+    "name": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+    "label": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+    "testNamePattern": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+    "chapter": "bellmanFord",
+    "testFilePaths": [
+      "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ]
+  },
+  {
+    "name": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
+    "label": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
+    "testNamePattern": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
+    "chapter": "pascalTriangle",
+    "testFilePaths": [
+      "src/algorithms/math/pascal-triangle/__test__/pascalTriangle.test.js"
+    ]
+  },
+  {
+    "name": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
+    "label": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
+    "testNamePattern": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
+    "chapter": "hornerMethod",
+    "testFilePaths": [
+      "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
+    ]
+  },
+  {
+    "name": "hornerMethod should evaluate the same polynomial value as classical approach",
+    "label": "hornerMethod should evaluate the same polynomial value as classical approach",
+    "testNamePattern": "hornerMethod should evaluate the same polynomial value as classical approach",
+    "chapter": "hornerMethod",
+    "testFilePaths": [
+      "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
+    ]
+  },
+  {
+    "name": "floydWarshall should find minimum paths to all vertices for undirected graph",
+    "label": "floydWarshall should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "floydWarshall should find minimum paths to all vertices for undirected graph",
+    "chapter": "floydWarshall",
+    "testFilePaths": [
+      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ]
+  },
+  {
+    "name": "floydWarshall should find minimum paths to all vertices for directed graph",
+    "label": "floydWarshall should find minimum paths to all vertices for directed graph",
+    "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph",
+    "chapter": "floydWarshall",
+    "testFilePaths": [
+      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ]
+  },
+  {
+    "name": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
+    "label": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
+    "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
+    "chapter": "floydWarshall",
+    "testFilePaths": [
+      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ]
+  },
+  {
+    "name": "leastCommonMultiple should find least common multiple",
+    "label": "leastCommonMultiple should find least common multiple",
+    "testNamePattern": "leastCommonMultiple should find least common multiple",
+    "chapter": "leastCommonMultiple",
+    "testFilePaths": [
+      "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js"
+    ]
+  },
+  {
+    "name": "permutateWithoutRepetitions should permutate string",
+    "label": "permutateWithoutRepetitions should permutate string",
+    "testNamePattern": "permutateWithoutRepetitions should permutate string",
+    "chapter": "permutateWithoutRepetitions",
+    "testFilePaths": [
+      "src/algorithms/sets/permutations/__test__/permutateWithoutRepetitions.test.js"
+    ]
+  },
+  {
+    "name": "factorial should calculate factorial",
+    "label": "factorial should calculate factorial",
+    "testNamePattern": "factorial should calculate factorial",
+    "chapter": "factorial",
+    "testFilePaths": [
+      "src/algorithms/math/factorial/__test__/factorial.test.js"
+    ]
+  },
+  {
+    "name": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "label": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "testNamePattern": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "chapter": "dqBestTimeToBuySellStocks",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dqBestTimeToBuySellStocks.test.js"
+    ]
+  },
+  {
+    "name": "isEven should detect if a number is even",
+    "label": "isEven should detect if a number is even",
+    "testNamePattern": "isEven should detect if a number is even",
+    "chapter": "isEven",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/isEven.test.js"
+    ]
+  },
+  {
+    "name": "bitsDiff should calculate bits difference between two numbers",
+    "label": "bitsDiff should calculate bits difference between two numbers",
+    "testNamePattern": "bitsDiff should calculate bits difference between two numbers",
+    "chapter": "bitsDiff",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/bitsDiff.test.js"
+    ]
+  },
+  {
+    "name": "zAlgorithm should find word positions in given text",
+    "label": "zAlgorithm should find word positions in given text",
+    "testNamePattern": "zAlgorithm should find word positions in given text",
+    "chapter": "zAlgorithm",
+    "testFilePaths": [
+      "src/algorithms/string/z-algorithm/__test__/zAlgorithm.test.js"
+    ]
+  },
+  {
+    "name": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
+    "label": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
+    "testNamePattern": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
+    "chapter": "dpMaximumSubarray",
+    "testFilePaths": [
+      "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js"
+    ]
+  },
+  {
+    "name": "RadixSort should sort array",
+    "label": "RadixSort should sort array",
+    "testNamePattern": "RadixSort should sort array",
+    "chapter": "RadixSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
+    ]
+  },
+  {
+    "name": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "label": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "testNamePattern": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "chapter": "RadixSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
+    ]
+  },
+  {
+    "name": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
+    "label": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
+    "testNamePattern": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
+    "chapter": "RadixSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
+    ]
+  },
+  {
+    "name": "topologicalSort should do topological sorting on graph",
+    "label": "topologicalSort should do topological sorting on graph",
+    "testNamePattern": "topologicalSort should do topological sorting on graph",
+    "chapter": "topologicalSort",
+    "testFilePaths": [
+      "src/algorithms/graph/topological-sorting/__test__/topologicalSort.test.js"
+    ]
+  },
+  {
+    "name": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
+    "label": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
+    "testNamePattern": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
+    "chapter": "detectUndirectedCycleUsingDisjointSet",
+    "testFilePaths": [
+      "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycleUsingDisjointSet.test.js"
+    ]
+  },
+  {
+    "name": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
+    "label": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
+    "testNamePattern": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
+    "chapter": "dpBottomUpJumpGame",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js"
+    ]
+  },
+  {
+    "name": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
+    "label": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
+    "testNamePattern": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
+    "chapter": "shortestCommonSupersequence",
+    "testFilePaths": [
+      "src/algorithms/sets/shortest-common-supersequence/__test__/shortestCommonSupersequence.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should sort array",
+    "label": "MergeSort should sort array",
+    "testNamePattern": "MergeSort should sort array",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should sort array with custom comparator",
+    "label": "MergeSort should sort array with custom comparator",
+    "testNamePattern": "MergeSort should sort array with custom comparator",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should do stable sorting",
+    "label": "MergeSort should do stable sorting",
+    "testNamePattern": "MergeSort should do stable sorting",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should sort negative numbers",
+    "label": "MergeSort should sort negative numbers",
+    "testNamePattern": "MergeSort should sort negative numbers",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should visit EQUAL array element specified number of times",
+    "label": "MergeSort should visit EQUAL array element specified number of times",
+    "testNamePattern": "MergeSort should visit EQUAL array element specified number of times",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should visit SORTED array element specified number of times",
+    "label": "MergeSort should visit SORTED array element specified number of times",
+    "testNamePattern": "MergeSort should visit SORTED array element specified number of times",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should visit NOT SORTED array element specified number of times",
+    "label": "MergeSort should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "MergeSort should visit NOT SORTED array element specified number of times",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should visit REVERSE SORTED array element specified number of times",
+    "label": "MergeSort should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "MergeSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "breadthFirstSearch should perform BFS operation on graph",
+    "label": "breadthFirstSearch should perform BFS operation on graph",
+    "testNamePattern": "breadthFirstSearch should perform BFS operation on graph",
+    "chapter": "breadthFirstSearch",
+    "testFilePaths": [
+      "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+    ]
+  },
+  {
+    "name": "breadthFirstSearch should allow to create custom vertex visiting logic",
+    "label": "breadthFirstSearch should allow to create custom vertex visiting logic",
+    "testNamePattern": "breadthFirstSearch should allow to create custom vertex visiting logic",
+    "chapter": "breadthFirstSearch",
+    "testFilePaths": [
+      "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve 0/1 knapsack problem",
+    "label": "Knapsack should solve 0/1 knapsack problem",
+    "testNamePattern": "Knapsack should solve 0/1 knapsack problem",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve 0/1 knapsack problem regardless of items order",
+    "label": "Knapsack should solve 0/1 knapsack problem regardless of items order",
+    "testNamePattern": "Knapsack should solve 0/1 knapsack problem regardless of items order",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+    "label": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+    "label": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve unbound knapsack problem",
+    "label": "Knapsack should solve unbound knapsack problem",
+    "testNamePattern": "Knapsack should solve unbound knapsack problem",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve unbound knapsack problem with items in stock",
+    "label": "Knapsack should solve unbound knapsack problem with items in stock",
+    "testNamePattern": "Knapsack should solve unbound knapsack problem with items in stock",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
+    "label": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
+    "testNamePattern": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
+    "chapter": "Knapsack",
+    "testFilePaths": [
+      "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ]
+  },
+  {
+    "name": "squareRoot should throw for negative numbers",
+    "label": "squareRoot should throw for negative numbers",
+    "testNamePattern": "squareRoot should throw for negative numbers",
+    "chapter": "squareRoot",
+    "testFilePaths": [
+      "src/algorithms/math/square-root/__test__/squareRoot.test.js"
+    ]
+  },
+  {
+    "name": "squareRoot should correctly calculate square root with default tolerance",
+    "label": "squareRoot should correctly calculate square root with default tolerance",
+    "testNamePattern": "squareRoot should correctly calculate square root with default tolerance",
+    "chapter": "squareRoot",
+    "testFilePaths": [
+      "src/algorithms/math/square-root/__test__/squareRoot.test.js"
+    ]
+  },
+  {
+    "name": "squareRoot should correctly calculate square root for integers with custom tolerance",
+    "label": "squareRoot should correctly calculate square root for integers with custom tolerance",
+    "testNamePattern": "squareRoot should correctly calculate square root for integers with custom tolerance",
+    "chapter": "squareRoot",
+    "testFilePaths": [
+      "src/algorithms/math/square-root/__test__/squareRoot.test.js"
     ]
   },
   {
@@ -468,192 +1251,192 @@ module.exports = [
     ]
   },
   {
-    "name": "dpRainTerraces should find the amount of water collected after raining",
-    "label": "dpRainTerraces should find the amount of water collected after raining",
-    "testNamePattern": "dpRainTerraces should find the amount of water collected after raining",
-    "chapter": "dpRainTerraces",
+    "name": "InsertionSort should sort array",
+    "label": "InsertionSort should sort array",
+    "testNamePattern": "InsertionSort should sort array",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "divideByTwo should divide numbers by two using bitwise operations",
-    "label": "divideByTwo should divide numbers by two using bitwise operations",
-    "testNamePattern": "divideByTwo should divide numbers by two using bitwise operations",
-    "chapter": "divideByTwo",
+    "name": "InsertionSort should sort array with custom comparator",
+    "label": "InsertionSort should sort array with custom comparator",
+    "testNamePattern": "InsertionSort should sort array with custom comparator",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/divideByTwo.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "prim should fire an error for directed graph",
-    "label": "prim should fire an error for directed graph",
-    "testNamePattern": "prim should fire an error for directed graph",
-    "chapter": "prim",
+    "name": "InsertionSort should do stable sorting",
+    "label": "InsertionSort should do stable sorting",
+    "testNamePattern": "InsertionSort should do stable sorting",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/graph/prim/__test__/prim.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "prim should find minimum spanning tree",
-    "label": "prim should find minimum spanning tree",
-    "testNamePattern": "prim should find minimum spanning tree",
-    "chapter": "prim",
+    "name": "InsertionSort should sort negative numbers",
+    "label": "InsertionSort should sort negative numbers",
+    "testNamePattern": "InsertionSort should sort negative numbers",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/graph/prim/__test__/prim.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "prim should find minimum spanning tree for simple graph",
-    "label": "prim should find minimum spanning tree for simple graph",
-    "testNamePattern": "prim should find minimum spanning tree for simple graph",
-    "chapter": "prim",
+    "name": "InsertionSort should visit EQUAL array element specified number of times",
+    "label": "InsertionSort should visit EQUAL array element specified number of times",
+    "testNamePattern": "InsertionSort should visit EQUAL array element specified number of times",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/graph/prim/__test__/prim.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "kruskal should fire an error for directed graph",
-    "label": "kruskal should fire an error for directed graph",
-    "testNamePattern": "kruskal should fire an error for directed graph",
-    "chapter": "kruskal",
+    "name": "InsertionSort should visit SORTED array element specified number of times",
+    "label": "InsertionSort should visit SORTED array element specified number of times",
+    "testNamePattern": "InsertionSort should visit SORTED array element specified number of times",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "kruskal should find minimum spanning tree",
-    "label": "kruskal should find minimum spanning tree",
-    "testNamePattern": "kruskal should find minimum spanning tree",
-    "chapter": "kruskal",
+    "name": "InsertionSort should visit NOT SORTED array element specified number of times",
+    "label": "InsertionSort should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "InsertionSort should visit NOT SORTED array element specified number of times",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "kruskal should find minimum spanning tree for simple graph",
-    "label": "kruskal should find minimum spanning tree for simple graph",
-    "testNamePattern": "kruskal should find minimum spanning tree for simple graph",
-    "chapter": "kruskal",
+    "name": "InsertionSort should visit REVERSE SORTED array element specified number of times",
+    "label": "InsertionSort should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "InsertionSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "InsertionSort",
     "testFilePaths": [
-      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
     ]
   },
   {
-    "name": "SelectionSort should sort array",
-    "label": "SelectionSort should sort array",
-    "testNamePattern": "SelectionSort should sort array",
-    "chapter": "SelectionSort",
+    "name": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
+    "label": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
+    "testNamePattern": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
+    "chapter": "inverseDiscreteFourierTransform",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js"
     ]
   },
   {
-    "name": "SelectionSort should sort array with custom comparator",
-    "label": "SelectionSort should sort array with custom comparator",
-    "testNamePattern": "SelectionSort should sort array with custom comparator",
-    "chapter": "SelectionSort",
+    "name": "nQueens should not hae solution for 3 queens",
+    "label": "nQueens should not hae solution for 3 queens",
+    "testNamePattern": "nQueens should not hae solution for 3 queens",
+    "chapter": "nQueens",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
     ]
   },
   {
-    "name": "SelectionSort should sort negative numbers",
-    "label": "SelectionSort should sort negative numbers",
-    "testNamePattern": "SelectionSort should sort negative numbers",
-    "chapter": "SelectionSort",
+    "name": "nQueens should solve n-queens problem for 4 queens",
+    "label": "nQueens should solve n-queens problem for 4 queens",
+    "testNamePattern": "nQueens should solve n-queens problem for 4 queens",
+    "chapter": "nQueens",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
     ]
   },
   {
-    "name": "SelectionSort should visit EQUAL array element specified number of times",
-    "label": "SelectionSort should visit EQUAL array element specified number of times",
-    "testNamePattern": "SelectionSort should visit EQUAL array element specified number of times",
-    "chapter": "SelectionSort",
+    "name": "nQueens should solve n-queens problem for 6 queens",
+    "label": "nQueens should solve n-queens problem for 6 queens",
+    "testNamePattern": "nQueens should solve n-queens problem for 6 queens",
+    "chapter": "nQueens",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
     ]
   },
   {
-    "name": "SelectionSort should visit SORTED array element specified number of times",
-    "label": "SelectionSort should visit SORTED array element specified number of times",
-    "testNamePattern": "SelectionSort should visit SORTED array element specified number of times",
-    "chapter": "SelectionSort",
+    "name": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
+    "label": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
+    "testNamePattern": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
+    "chapter": "dcMaximumSubarraySum",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js"
     ]
   },
   {
-    "name": "SelectionSort should visit NOT SORTED array element specified number of times",
-    "label": "SelectionSort should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "SelectionSort should visit NOT SORTED array element specified number of times",
-    "chapter": "SelectionSort",
+    "name": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+    "label": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+    "testNamePattern": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+    "chapter": "fibonacciClosedForm",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
     ]
   },
   {
-    "name": "SelectionSort should visit REVERSE SORTED array element specified number of times",
-    "label": "SelectionSort should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "SelectionSort should visit REVERSE SORTED array element specified number of times",
-    "chapter": "SelectionSort",
+    "name": "fibonacciClosedForm should calculate fibonacci correctly",
+    "label": "fibonacciClosedForm should calculate fibonacci correctly",
+    "testNamePattern": "fibonacciClosedForm should calculate fibonacci correctly",
+    "chapter": "fibonacciClosedForm",
     "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+      "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
     ]
   },
   {
-    "name": "hammingDistance should throw an error when trying to compare the strings of different lengths",
-    "label": "hammingDistance should throw an error when trying to compare the strings of different lengths",
-    "testNamePattern": "hammingDistance should throw an error when trying to compare the strings of different lengths",
-    "chapter": "hammingDistance",
+    "name": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "label": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "testNamePattern": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "chapter": "peakvalleyBestTimeToBuySellStocks",
     "testFilePaths": [
-      "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
+      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/peakvalleyBestTimeToBuySellStocks.test.js"
     ]
   },
   {
-    "name": "hammingDistance should calculate difference between two strings",
-    "label": "hammingDistance should calculate difference between two strings",
-    "testNamePattern": "hammingDistance should calculate difference between two strings",
-    "chapter": "hammingDistance",
+    "name": "binarySearch should search number in sorted array",
+    "label": "binarySearch should search number in sorted array",
+    "testNamePattern": "binarySearch should search number in sorted array",
+    "chapter": "binarySearch",
     "testFilePaths": [
-      "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
+      "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
     ]
   },
   {
-    "name": "sieveOfEratosthenes should find all primes less than or equal to n",
-    "label": "sieveOfEratosthenes should find all primes less than or equal to n",
-    "testNamePattern": "sieveOfEratosthenes should find all primes less than or equal to n",
-    "chapter": "sieveOfEratosthenes",
+    "name": "binarySearch should search object in sorted array",
+    "label": "binarySearch should search object in sorted array",
+    "testNamePattern": "binarySearch should search object in sorted array",
+    "chapter": "binarySearch",
     "testFilePaths": [
-      "src/algorithms/math/sieve-of-eratosthenes/__test__/sieveOfEratosthenes.test.js"
+      "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
     ]
   },
   {
-    "name": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
-    "label": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
-    "testNamePattern": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
-    "chapter": "bitsToFloat16",
+    "name": "euclideanAlgorithmIterative should calculate GCD iteratively",
+    "label": "euclideanAlgorithmIterative should calculate GCD iteratively",
+    "testNamePattern": "euclideanAlgorithmIterative should calculate GCD iteratively",
+    "chapter": "euclideanAlgorithmIterative",
     "testFilePaths": [
-      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
+      "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js"
     ]
   },
   {
-    "name": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
-    "label": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
-    "testNamePattern": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
-    "chapter": "bitsToFloat32",
+    "name": "knuthMorrisPratt should find word position in given text",
+    "label": "knuthMorrisPratt should find word position in given text",
+    "testNamePattern": "knuthMorrisPratt should find word position in given text",
+    "chapter": "knuthMorrisPratt",
     "testFilePaths": [
-      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
+      "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js"
     ]
   },
   {
-    "name": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
-    "label": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
-    "testNamePattern": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
-    "chapter": "bitsToFloat64",
+    "name": "greedyJumpGame should solve Jump Game problem in greedy manner",
+    "label": "greedyJumpGame should solve Jump Game problem in greedy manner",
+    "testNamePattern": "greedyJumpGame should solve Jump Game problem in greedy manner",
+    "chapter": "greedyJumpGame",
     "testFilePaths": [
-      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
+      "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js"
     ]
   },
   {
@@ -702,147 +1485,435 @@ module.exports = [
     ]
   },
   {
-    "name": "kNN should throw an error on invalid data",
-    "label": "kNN should throw an error on invalid data",
-    "testNamePattern": "kNN should throw an error on invalid data",
-    "chapter": "kNN",
+    "name": "railFenceCipher encodes a string correctly for base=3",
+    "label": "railFenceCipher encodes a string correctly for base=3",
+    "testNamePattern": "railFenceCipher encodes a string correctly for base=3",
+    "chapter": "railFenceCipher",
     "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
+      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ]
   },
   {
-    "name": "kNN should throw an error on invalid labels",
-    "label": "kNN should throw an error on invalid labels",
-    "testNamePattern": "kNN should throw an error on invalid labels",
-    "chapter": "kNN",
+    "name": "railFenceCipher decodes a string correctly for base=3",
+    "label": "railFenceCipher decodes a string correctly for base=3",
+    "testNamePattern": "railFenceCipher decodes a string correctly for base=3",
+    "chapter": "railFenceCipher",
     "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
+      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ]
   },
   {
-    "name": "kNN should throw an error on not giving classification vector",
-    "label": "kNN should throw an error on not giving classification vector",
-    "testNamePattern": "kNN should throw an error on not giving classification vector",
-    "chapter": "kNN",
+    "name": "railFenceCipher encodes a string correctly for base=4",
+    "label": "railFenceCipher encodes a string correctly for base=4",
+    "testNamePattern": "railFenceCipher encodes a string correctly for base=4",
+    "chapter": "railFenceCipher",
     "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
+      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ]
   },
   {
-    "name": "kNN should find the nearest neighbour",
-    "label": "kNN should find the nearest neighbour",
-    "testNamePattern": "kNN should find the nearest neighbour",
-    "chapter": "kNN",
+    "name": "railFenceCipher decodes a string correctly for base=4",
+    "label": "railFenceCipher decodes a string correctly for base=4",
+    "testNamePattern": "railFenceCipher decodes a string correctly for base=4",
+    "chapter": "railFenceCipher",
     "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
+      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ]
   },
   {
-    "name": "kNN should find the nearest neighbour with equal distances",
-    "label": "kNN should find the nearest neighbour with equal distances",
-    "testNamePattern": "kNN should find the nearest neighbour with equal distances",
-    "chapter": "kNN",
+    "name": "combineWithoutRepetitions should combine string without repetitions",
+    "label": "combineWithoutRepetitions should combine string without repetitions",
+    "testNamePattern": "combineWithoutRepetitions should combine string without repetitions",
+    "chapter": "combineWithoutRepetitions",
     "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
+      "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js"
     ]
   },
   {
-    "name": "kNN should find the nearest neighbour in 3D space",
-    "label": "kNN should find the nearest neighbour in 3D space",
-    "testNamePattern": "kNN should find the nearest neighbour in 3D space",
-    "chapter": "kNN",
+    "name": "trialDivision should detect prime numbers",
+    "label": "trialDivision should detect prime numbers",
+    "testNamePattern": "trialDivision should detect prime numbers",
+    "chapter": "trialDivision",
     "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
+      "src/algorithms/math/primality-test/__test__/trialDivision.test.js"
     ]
   },
   {
-    "name": "topologicalSort should do topological sorting on graph",
-    "label": "topologicalSort should do topological sorting on graph",
-    "testNamePattern": "topologicalSort should do topological sorting on graph",
-    "chapter": "topologicalSort",
+    "name": "caesarCipher should not change a string with zero shift",
+    "label": "caesarCipher should not change a string with zero shift",
+    "testNamePattern": "caesarCipher should not change a string with zero shift",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/graph/topological-sorting/__test__/topologicalSort.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
-    "name": "HeapSort should sort array",
-    "label": "HeapSort should sort array",
-    "testNamePattern": "HeapSort should sort array",
-    "chapter": "HeapSort",
+    "name": "caesarCipher should cipher a string with different shifts",
+    "label": "caesarCipher should cipher a string with different shifts",
+    "testNamePattern": "caesarCipher should cipher a string with different shifts",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
-    "name": "HeapSort should sort array with custom comparator",
-    "label": "HeapSort should sort array with custom comparator",
-    "testNamePattern": "HeapSort should sort array with custom comparator",
-    "chapter": "HeapSort",
+    "name": "caesarCipher should be case insensitive",
+    "label": "caesarCipher should be case insensitive",
+    "testNamePattern": "caesarCipher should be case insensitive",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
-    "name": "HeapSort should sort negative numbers",
-    "label": "HeapSort should sort negative numbers",
-    "testNamePattern": "HeapSort should sort negative numbers",
-    "chapter": "HeapSort",
+    "name": "caesarCipher should correctly handle an empty strings",
+    "label": "caesarCipher should correctly handle an empty strings",
+    "testNamePattern": "caesarCipher should correctly handle an empty strings",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
-    "name": "HeapSort should visit EQUAL array element specified number of times",
-    "label": "HeapSort should visit EQUAL array element specified number of times",
-    "testNamePattern": "HeapSort should visit EQUAL array element specified number of times",
-    "chapter": "HeapSort",
+    "name": "caesarCipher should not cipher unknown chars",
+    "label": "caesarCipher should not cipher unknown chars",
+    "testNamePattern": "caesarCipher should not cipher unknown chars",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
-    "name": "HeapSort should visit SORTED array element specified number of times",
-    "label": "HeapSort should visit SORTED array element specified number of times",
-    "testNamePattern": "HeapSort should visit SORTED array element specified number of times",
-    "chapter": "HeapSort",
+    "name": "caesarCipher should encrypt and decrypt full phrases",
+    "label": "caesarCipher should encrypt and decrypt full phrases",
+    "testNamePattern": "caesarCipher should encrypt and decrypt full phrases",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
-    "name": "HeapSort should visit NOT SORTED array element specified number of times",
-    "label": "HeapSort should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "HeapSort should visit NOT SORTED array element specified number of times",
-    "chapter": "HeapSort",
+    "name": "knightTour should not find solution on 3x3 board",
+    "label": "knightTour should not find solution on 3x3 board",
+    "testNamePattern": "knightTour should not find solution on 3x3 board",
+    "chapter": "knightTour",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
     ]
   },
   {
-    "name": "HeapSort should visit REVERSE SORTED array element specified number of times",
-    "label": "HeapSort should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "HeapSort should visit REVERSE SORTED array element specified number of times",
-    "chapter": "HeapSort",
+    "name": "knightTour should find one solution to do knight tour on 5x5 board",
+    "label": "knightTour should find one solution to do knight tour on 5x5 board",
+    "testNamePattern": "knightTour should find one solution to do knight tour on 5x5 board",
+    "chapter": "knightTour",
     "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+      "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
     ]
   },
   {
-    "name": "discreteFourierTransform should split signal into frequencies",
-    "label": "discreteFourierTransform should split signal into frequencies",
-    "testNamePattern": "discreteFourierTransform should split signal into frequencies",
-    "chapter": "discreteFourierTransform",
+    "name": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+    "label": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+    "testNamePattern": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+    "chapter": "hammingDistance",
     "testFilePaths": [
-      "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js"
+      "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
     ]
   },
   {
-    "name": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
-    "label": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
-    "testNamePattern": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
-    "chapter": "shortestCommonSupersequence",
+    "name": "hammingDistance should calculate difference between two strings",
+    "label": "hammingDistance should calculate difference between two strings",
+    "testNamePattern": "hammingDistance should calculate difference between two strings",
+    "chapter": "hammingDistance",
     "testFilePaths": [
-      "src/algorithms/sets/shortest-common-supersequence/__test__/shortestCommonSupersequence.test.js"
+      "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in simple graph",
+    "label": "graphBridges should find bridges in simple graph",
+    "testNamePattern": "graphBridges should find bridges in simple graph",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in simple graph with back edge",
+    "label": "graphBridges should find bridges in simple graph with back edge",
+    "testNamePattern": "graphBridges should find bridges in simple graph with back edge",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in graph",
+    "label": "graphBridges should find bridges in graph",
+    "testNamePattern": "graphBridges should find bridges in graph",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in graph starting with different root vertex",
+    "label": "graphBridges should find bridges in graph starting with different root vertex",
+    "testNamePattern": "graphBridges should find bridges in graph starting with different root vertex",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in yet another graph #1",
+    "label": "graphBridges should find bridges in yet another graph #1",
+    "testNamePattern": "graphBridges should find bridges in yet another graph #1",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in yet another graph #2",
+    "label": "graphBridges should find bridges in yet another graph #2",
+    "testNamePattern": "graphBridges should find bridges in yet another graph #2",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
+    "label": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
+    "testNamePattern": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
+    "chapter": "recursiveStaircaseMEM",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseMEM.test.js"
+    ]
+  },
+  {
+    "name": "isPositive should detect if a number is positive",
+    "label": "isPositive should detect if a number is positive",
+    "testNamePattern": "isPositive should detect if a number is positive",
+    "chapter": "isPositive",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/isPositive.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should sort array",
+    "label": "ShellSort should sort array",
+    "testNamePattern": "ShellSort should sort array",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should sort array with custom comparator",
+    "label": "ShellSort should sort array with custom comparator",
+    "testNamePattern": "ShellSort should sort array with custom comparator",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should sort negative numbers",
+    "label": "ShellSort should sort negative numbers",
+    "testNamePattern": "ShellSort should sort negative numbers",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should visit EQUAL array element specified number of times",
+    "label": "ShellSort should visit EQUAL array element specified number of times",
+    "testNamePattern": "ShellSort should visit EQUAL array element specified number of times",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should visit SORTED array element specified number of times",
+    "label": "ShellSort should visit SORTED array element specified number of times",
+    "testNamePattern": "ShellSort should visit SORTED array element specified number of times",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should visit NOT SORTED array element specified number of times",
+    "label": "ShellSort should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "ShellSort should visit NOT SORTED array element specified number of times",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should visit REVERSE SORTED array element specified number of times",
+    "label": "ShellSort should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "ShellSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "primeFactors should find prime factors",
+    "label": "primeFactors should find prime factors",
+    "testNamePattern": "primeFactors should find prime factors",
+    "chapter": "primeFactors",
+    "testFilePaths": [
+      "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
+    ]
+  },
+  {
+    "name": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
+    "label": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
+    "testNamePattern": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
+    "chapter": "primeFactors",
+    "testFilePaths": [
+      "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
+    ]
+  },
+  {
+    "name": "primeFactors should give correct deviation between exact and approx counts",
+    "label": "primeFactors should give correct deviation between exact and approx counts",
+    "testNamePattern": "primeFactors should give correct deviation between exact and approx counts",
+    "chapter": "primeFactors",
+    "testFilePaths": [
+      "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
+    ]
+  },
+  {
+    "name": "permutateWithRepetitions should permutate string with repetition",
+    "label": "permutateWithRepetitions should permutate string with repetition",
+    "testNamePattern": "permutateWithRepetitions should permutate string with repetition",
+    "chapter": "permutateWithRepetitions",
+    "testFilePaths": [
+      "src/algorithms/sets/permutations/__test__/permutateWithRepetitions.test.js"
+    ]
+  },
+  {
+    "name": "bfTravellingSalesman should solve problem for simple graph",
+    "label": "bfTravellingSalesman should solve problem for simple graph",
+    "testNamePattern": "bfTravellingSalesman should solve problem for simple graph",
+    "chapter": "bfTravellingSalesman",
+    "testFilePaths": [
+      "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js"
+    ]
+  },
+  {
+    "name": "reverseTraversal should traverse linked list in reverse order",
+    "label": "reverseTraversal should traverse linked list in reverse order",
+    "testNamePattern": "reverseTraversal should traverse linked list in reverse order",
+    "chapter": "reverseTraversal",
+    "testFilePaths": [
+      "src/algorithms/linked-list/reverse-traversal/__test__/reverseTraversal.test.js"
+    ]
+  },
+  {
+    "name": "levenshteinDistance should calculate edit distance between two strings",
+    "label": "levenshteinDistance should calculate edit distance between two strings",
+    "testNamePattern": "levenshteinDistance should calculate edit distance between two strings",
+    "chapter": "levenshteinDistance",
+    "testFilePaths": [
+      "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js"
+    ]
+  },
+  {
+    "name": "combineWithRepetitions should combine string with repetitions",
+    "label": "combineWithRepetitions should combine string with repetitions",
+    "testNamePattern": "combineWithRepetitions should combine string with repetitions",
+    "chapter": "combineWithRepetitions",
+    "testFilePaths": [
+      "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js"
+    ]
+  },
+  {
+    "name": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
+    "label": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
+    "testNamePattern": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
+    "chapter": "isPowerOfTwoBitwise",
+    "testFilePaths": [
+      "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js"
+    ]
+  },
+  {
+    "name": "integerPartition should partition the number",
+    "label": "integerPartition should partition the number",
+    "testNamePattern": "integerPartition should partition the number",
+    "chapter": "integerPartition",
+    "testFilePaths": [
+      "src/algorithms/math/integer-partition/__test__/integerPartition.test.js"
+    ]
+  },
+  {
+    "name": "weightedRandom should throw an error when the number of weights does not match the number of items",
+    "label": "weightedRandom should throw an error when the number of weights does not match the number of items",
+    "testNamePattern": "weightedRandom should throw an error when the number of weights does not match the number of items",
+    "chapter": "weightedRandom",
+    "testFilePaths": [
+      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
+    ]
+  },
+  {
+    "name": "weightedRandom should throw an error when the number of weights or items are empty",
+    "label": "weightedRandom should throw an error when the number of weights or items are empty",
+    "testNamePattern": "weightedRandom should throw an error when the number of weights or items are empty",
+    "chapter": "weightedRandom",
+    "testFilePaths": [
+      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
+    ]
+  },
+  {
+    "name": "weightedRandom should correctly do random selection based on wights in straightforward cases",
+    "label": "weightedRandom should correctly do random selection based on wights in straightforward cases",
+    "testNamePattern": "weightedRandom should correctly do random selection based on wights in straightforward cases",
+    "chapter": "weightedRandom",
+    "testFilePaths": [
+      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
+    ]
+  },
+  {
+    "name": "weightedRandom should correctly do random selection based on wights",
+    "label": "weightedRandom should correctly do random selection based on wights",
+    "testNamePattern": "weightedRandom should correctly do random selection based on wights",
+    "chapter": "weightedRandom",
+    "testFilePaths": [
+      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
+    ]
+  },
+  {
+    "name": "fullAdder should add up two numbers",
+    "label": "fullAdder should add up two numbers",
+    "testNamePattern": "fullAdder should add up two numbers",
+    "chapter": "fullAdder",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/fullAdder.test.js"
+    ]
+  },
+  {
+    "name": "bfRainTerraces should find the amount of water collected after raining",
+    "label": "bfRainTerraces should find the amount of water collected after raining",
+    "testNamePattern": "bfRainTerraces should find the amount of water collected after raining",
+    "chapter": "bfRainTerraces",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js"
+    ]
+  },
+  {
+    "name": "fibonacciNth should calculate fibonacci correctly",
+    "label": "fibonacciNth should calculate fibonacci correctly",
+    "testNamePattern": "fibonacciNth should calculate fibonacci correctly",
+    "chapter": "fibonacciNth",
+    "testFilePaths": [
+      "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js"
     ]
   },
   {
@@ -864,336 +1935,201 @@ module.exports = [
     ]
   },
   {
-    "name": "detectDirectedCycle should detect directed cycle",
-    "label": "detectDirectedCycle should detect directed cycle",
-    "testNamePattern": "detectDirectedCycle should detect directed cycle",
-    "chapter": "detectDirectedCycle",
+    "name": "radianToDegree should convert radian to degree",
+    "label": "radianToDegree should convert radian to degree",
+    "testNamePattern": "radianToDegree should convert radian to degree",
+    "chapter": "radianToDegree",
     "testFilePaths": [
-      "src/algorithms/graph/detect-cycle/__test__/detectDirectedCycle.test.js"
+      "src/algorithms/math/radian/__test__/radianToDegree.test.js"
     ]
   },
   {
-    "name": "multiply should multiply two numbers",
-    "label": "multiply should multiply two numbers",
-    "testNamePattern": "multiply should multiply two numbers",
-    "chapter": "multiply",
+    "name": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
+    "label": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
+    "testNamePattern": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
+    "chapter": "recursiveStaircaseDP",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/multiply.test.js"
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseDP.test.js"
     ]
   },
   {
-    "name": "euclideanDistance should calculate euclidean distance between vectors",
-    "label": "euclideanDistance should calculate euclidean distance between vectors",
-    "testNamePattern": "euclideanDistance should calculate euclidean distance between vectors",
-    "chapter": "euclideanDistance",
+    "name": "Sort should throw an error when trying to call Sort.sort() method directly",
+    "label": "Sort should throw an error when trying to call Sort.sort() method directly",
+    "testNamePattern": "Sort should throw an error when trying to call Sort.sort() method directly",
+    "chapter": "Sort",
     "testFilePaths": [
-      "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
+      "src/algorithms/sorting/__test__/Sort.test.js"
     ]
   },
   {
-    "name": "euclideanDistance should throw an error in case if two matrices are of different shapes",
-    "label": "euclideanDistance should throw an error in case if two matrices are of different shapes",
-    "testNamePattern": "euclideanDistance should throw an error in case if two matrices are of different shapes",
-    "chapter": "euclideanDistance",
+    "name": "fisherYates should shuffle small arrays",
+    "label": "fisherYates should shuffle small arrays",
+    "testNamePattern": "fisherYates should shuffle small arrays",
+    "chapter": "fisherYates",
     "testFilePaths": [
-      "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
+      "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
     ]
   },
   {
-    "name": "RadixSort should sort array",
-    "label": "RadixSort should sort array",
-    "testNamePattern": "RadixSort should sort array",
-    "chapter": "RadixSort",
+    "name": "fisherYates should shuffle array randomly",
+    "label": "fisherYates should shuffle array randomly",
+    "testNamePattern": "fisherYates should shuffle array randomly",
+    "chapter": "fisherYates",
     "testFilePaths": [
-      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
+      "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
     ]
   },
   {
-    "name": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "label": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "testNamePattern": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "chapter": "RadixSort",
+    "name": "detectUndirectedCycle should detect undirected cycle",
+    "label": "detectUndirectedCycle should detect undirected cycle",
+    "testNamePattern": "detectUndirectedCycle should detect undirected cycle",
+    "chapter": "detectUndirectedCycle",
     "testFilePaths": [
-      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
+      "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js"
     ]
   },
   {
-    "name": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
-    "label": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
-    "testNamePattern": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
-    "chapter": "RadixSort",
+    "name": "sieveOfEratosthenes should find all primes less than or equal to n",
+    "label": "sieveOfEratosthenes should find all primes less than or equal to n",
+    "testNamePattern": "sieveOfEratosthenes should find all primes less than or equal to n",
+    "chapter": "sieveOfEratosthenes",
     "testFilePaths": [
-      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
+      "src/algorithms/math/sieve-of-eratosthenes/__test__/sieveOfEratosthenes.test.js"
     ]
   },
   {
-    "name": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "label": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "testNamePattern": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "chapter": "dqBestTimeToBuySellStocks",
+    "name": "traversal should traverse linked list",
+    "label": "traversal should traverse linked list",
+    "testNamePattern": "traversal should traverse linked list",
+    "chapter": "traversal",
     "testFilePaths": [
-      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dqBestTimeToBuySellStocks.test.js"
+      "src/algorithms/linked-list/traversal/__test__/traversal.test.js"
     ]
   },
   {
-    "name": "floydWarshall should find minimum paths to all vertices for undirected graph",
-    "label": "floydWarshall should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "floydWarshall should find minimum paths to all vertices for undirected graph",
-    "chapter": "floydWarshall",
+    "name": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
+    "label": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
+    "testNamePattern": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
+    "chapter": "bitsToFloat16",
     "testFilePaths": [
-      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
     ]
   },
   {
-    "name": "floydWarshall should find minimum paths to all vertices for directed graph",
-    "label": "floydWarshall should find minimum paths to all vertices for directed graph",
-    "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph",
-    "chapter": "floydWarshall",
+    "name": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
+    "label": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
+    "testNamePattern": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
+    "chapter": "bitsToFloat32",
     "testFilePaths": [
-      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
     ]
   },
   {
-    "name": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
-    "label": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
-    "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
-    "chapter": "floydWarshall",
+    "name": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
+    "label": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
+    "testNamePattern": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
+    "chapter": "bitsToFloat64",
     "testFilePaths": [
-      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
     ]
   },
   {
-    "name": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
-    "label": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
-    "testNamePattern": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
-    "chapter": "pascalTriangleRecursive",
+    "name": "regularExpressionMatching should match regular expressions in a string",
+    "label": "regularExpressionMatching should match regular expressions in a string",
+    "testNamePattern": "regularExpressionMatching should match regular expressions in a string",
+    "chapter": "regularExpressionMatching",
     "testFilePaths": [
-      "src/algorithms/math/pascal-triangle/__test__/pascalTriangleRecursive.test.js"
+      "src/algorithms/string/regular-expression-matching/__test__/regularExpressionMatching.test.js"
     ]
   },
   {
-    "name": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
-    "label": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
-    "testNamePattern": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
-    "chapter": "fibonacciClosedForm",
+    "name": "dpRainTerraces should find the amount of water collected after raining",
+    "label": "dpRainTerraces should find the amount of water collected after raining",
+    "testNamePattern": "dpRainTerraces should find the amount of water collected after raining",
+    "chapter": "dpRainTerraces",
     "testFilePaths": [
-      "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
+      "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js"
     ]
   },
   {
-    "name": "fibonacciClosedForm should calculate fibonacci correctly",
-    "label": "fibonacciClosedForm should calculate fibonacci correctly",
-    "testNamePattern": "fibonacciClosedForm should calculate fibonacci correctly",
-    "chapter": "fibonacciClosedForm",
+    "name": "liuHui should calculate π based on 12-gon",
+    "label": "liuHui should calculate π based on 12-gon",
+    "testNamePattern": "liuHui should calculate π based on 12-gon",
+    "chapter": "liuHui",
     "testFilePaths": [
-      "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
+      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
     ]
   },
   {
-    "name": "uniquePaths should find the number of unique paths on board",
-    "label": "uniquePaths should find the number of unique paths on board",
-    "testNamePattern": "uniquePaths should find the number of unique paths on board",
-    "chapter": "uniquePaths",
+    "name": "liuHui should calculate π based on 24-gon",
+    "label": "liuHui should calculate π based on 24-gon",
+    "testNamePattern": "liuHui should calculate π based on 24-gon",
+    "chapter": "liuHui",
     "testFilePaths": [
-      "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js"
+      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
     ]
   },
   {
-    "name": "combineWithoutRepetitions should combine string without repetitions",
-    "label": "combineWithoutRepetitions should combine string without repetitions",
-    "testNamePattern": "combineWithoutRepetitions should combine string without repetitions",
-    "chapter": "combineWithoutRepetitions",
+    "name": "liuHui should calculate π based on 6144-gon",
+    "label": "liuHui should calculate π based on 6144-gon",
+    "testNamePattern": "liuHui should calculate π based on 6144-gon",
+    "chapter": "liuHui",
     "testFilePaths": [
-      "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js"
+      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
     ]
   },
   {
-    "name": "zAlgorithm should find word positions in given text",
-    "label": "zAlgorithm should find word positions in given text",
-    "testNamePattern": "zAlgorithm should find word positions in given text",
-    "chapter": "zAlgorithm",
+    "name": "liuHui should calculate π based on 201326592-gon",
+    "label": "liuHui should calculate π based on 201326592-gon",
+    "testNamePattern": "liuHui should calculate π based on 201326592-gon",
+    "chapter": "liuHui",
     "testFilePaths": [
-      "src/algorithms/string/z-algorithm/__test__/zAlgorithm.test.js"
+      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
     ]
   },
   {
-    "name": "depthFirstSearch should perform DFS operation on tree",
-    "label": "depthFirstSearch should perform DFS operation on tree",
-    "testNamePattern": "depthFirstSearch should perform DFS operation on tree",
-    "chapter": "depthFirstSearch",
+    "name": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "label": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "testNamePattern": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "chapter": "accumulatorBestTimeToBuySellStocks",
     "testFilePaths": [
-      "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
+      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
     ]
   },
   {
-    "name": "depthFirstSearch allow users to redefine node visiting logic",
-    "label": "depthFirstSearch allow users to redefine node visiting logic",
-    "testNamePattern": "depthFirstSearch allow users to redefine node visiting logic",
-    "chapter": "depthFirstSearch",
+    "name": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
+    "label": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
+    "testNamePattern": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
+    "chapter": "recursiveStaircaseBF",
     "testFilePaths": [
-      "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseBF.test.js"
     ]
   },
   {
-    "name": "reverseTraversal should traverse linked list in reverse order",
-    "label": "reverseTraversal should traverse linked list in reverse order",
-    "testNamePattern": "reverseTraversal should traverse linked list in reverse order",
-    "chapter": "reverseTraversal",
+    "name": "dpUniquePaths should find the number of unique paths on board",
+    "label": "dpUniquePaths should find the number of unique paths on board",
+    "testNamePattern": "dpUniquePaths should find the number of unique paths on board",
+    "chapter": "dpUniquePaths",
     "testFilePaths": [
-      "src/algorithms/linked-list/reverse-traversal/__test__/reverseTraversal.test.js"
+      "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js"
     ]
   },
   {
-    "name": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
-    "label": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
-    "testNamePattern": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
-    "chapter": "dpBottomUpJumpGame",
+    "name": "jumpSearch should search for an element in sorted array",
+    "label": "jumpSearch should search for an element in sorted array",
+    "testNamePattern": "jumpSearch should search for an element in sorted array",
+    "chapter": "jumpSearch",
     "testFilePaths": [
-      "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js"
+      "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
     ]
   },
   {
-    "name": "nQueensBitwise should have solutions for 4 to N queens",
-    "label": "nQueensBitwise should have solutions for 4 to N queens",
-    "testNamePattern": "nQueensBitwise should have solutions for 4 to N queens",
-    "chapter": "nQueensBitwise",
+    "name": "jumpSearch should search object in sorted array",
+    "label": "jumpSearch should search object in sorted array",
+    "testNamePattern": "jumpSearch should search object in sorted array",
+    "chapter": "jumpSearch",
     "testFilePaths": [
-      "src/algorithms/uncategorized/n-queens/__test__/nQueensBitwise.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should sort array",
-    "label": "QuickSortInPlace should sort array",
-    "testNamePattern": "QuickSortInPlace should sort array",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should sort array with custom comparator",
-    "label": "QuickSortInPlace should sort array with custom comparator",
-    "testNamePattern": "QuickSortInPlace should sort array with custom comparator",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should sort negative numbers",
-    "label": "QuickSortInPlace should sort negative numbers",
-    "testNamePattern": "QuickSortInPlace should sort negative numbers",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should visit EQUAL array element specified number of times",
-    "label": "QuickSortInPlace should visit EQUAL array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit EQUAL array element specified number of times",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "label": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
-    "label": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
-    "label": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should sort array",
-    "label": "BubbleSort should sort array",
-    "testNamePattern": "BubbleSort should sort array",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should sort array with custom comparator",
-    "label": "BubbleSort should sort array with custom comparator",
-    "testNamePattern": "BubbleSort should sort array with custom comparator",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should do stable sorting",
-    "label": "BubbleSort should do stable sorting",
-    "testNamePattern": "BubbleSort should do stable sorting",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should sort negative numbers",
-    "label": "BubbleSort should sort negative numbers",
-    "testNamePattern": "BubbleSort should sort negative numbers",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should visit EQUAL array element specified number of times",
-    "label": "BubbleSort should visit EQUAL array element specified number of times",
-    "testNamePattern": "BubbleSort should visit EQUAL array element specified number of times",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should visit SORTED array element specified number of times",
-    "label": "BubbleSort should visit SORTED array element specified number of times",
-    "testNamePattern": "BubbleSort should visit SORTED array element specified number of times",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should visit NOT SORTED array element specified number of times",
-    "label": "BubbleSort should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "BubbleSort should visit NOT SORTED array element specified number of times",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should visit REVERSE SORTED array element specified number of times",
-    "label": "BubbleSort should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "BubbleSort should visit REVERSE SORTED array element specified number of times",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+      "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
     ]
   },
   {
@@ -1287,750 +2223,84 @@ module.exports = [
     ]
   },
   {
-    "name": "bitLength should calculate number of bits that the number is consists of",
-    "label": "bitLength should calculate number of bits that the number is consists of",
-    "testNamePattern": "bitLength should calculate number of bits that the number is consists of",
-    "chapter": "bitLength",
+    "name": "interpolationSearch should search elements in sorted array of numbers",
+    "label": "interpolationSearch should search elements in sorted array of numbers",
+    "testNamePattern": "interpolationSearch should search elements in sorted array of numbers",
+    "chapter": "interpolationSearch",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/bitLength.test.js"
+      "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js"
     ]
   },
   {
-    "name": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
-    "label": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
-    "testNamePattern": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
-    "chapter": "detectUndirectedCycleUsingDisjointSet",
+    "name": "BubbleSort should sort array",
+    "label": "BubbleSort should sort array",
+    "testNamePattern": "BubbleSort should sort array",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycleUsingDisjointSet.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should sort array",
-    "label": "MergeSort should sort array",
-    "testNamePattern": "MergeSort should sort array",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should sort array with custom comparator",
+    "label": "BubbleSort should sort array with custom comparator",
+    "testNamePattern": "BubbleSort should sort array with custom comparator",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should sort array with custom comparator",
-    "label": "MergeSort should sort array with custom comparator",
-    "testNamePattern": "MergeSort should sort array with custom comparator",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should do stable sorting",
+    "label": "BubbleSort should do stable sorting",
+    "testNamePattern": "BubbleSort should do stable sorting",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should do stable sorting",
-    "label": "MergeSort should do stable sorting",
-    "testNamePattern": "MergeSort should do stable sorting",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should sort negative numbers",
+    "label": "BubbleSort should sort negative numbers",
+    "testNamePattern": "BubbleSort should sort negative numbers",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should sort negative numbers",
-    "label": "MergeSort should sort negative numbers",
-    "testNamePattern": "MergeSort should sort negative numbers",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should visit EQUAL array element specified number of times",
+    "label": "BubbleSort should visit EQUAL array element specified number of times",
+    "testNamePattern": "BubbleSort should visit EQUAL array element specified number of times",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should visit EQUAL array element specified number of times",
-    "label": "MergeSort should visit EQUAL array element specified number of times",
-    "testNamePattern": "MergeSort should visit EQUAL array element specified number of times",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should visit SORTED array element specified number of times",
+    "label": "BubbleSort should visit SORTED array element specified number of times",
+    "testNamePattern": "BubbleSort should visit SORTED array element specified number of times",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should visit SORTED array element specified number of times",
-    "label": "MergeSort should visit SORTED array element specified number of times",
-    "testNamePattern": "MergeSort should visit SORTED array element specified number of times",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should visit NOT SORTED array element specified number of times",
+    "label": "BubbleSort should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "BubbleSort should visit NOT SORTED array element specified number of times",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
-    "name": "MergeSort should visit NOT SORTED array element specified number of times",
-    "label": "MergeSort should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "MergeSort should visit NOT SORTED array element specified number of times",
-    "chapter": "MergeSort",
+    "name": "BubbleSort should visit REVERSE SORTED array element specified number of times",
+    "label": "BubbleSort should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "BubbleSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "BubbleSort",
     "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
-  },
-  {
-    "name": "MergeSort should visit REVERSE SORTED array element specified number of times",
-    "label": "MergeSort should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "MergeSort should visit REVERSE SORTED array element specified number of times",
-    "chapter": "MergeSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
-  },
-  {
-    "name": "squareRoot should throw for negative numbers",
-    "label": "squareRoot should throw for negative numbers",
-    "testNamePattern": "squareRoot should throw for negative numbers",
-    "chapter": "squareRoot",
-    "testFilePaths": [
-      "src/algorithms/math/square-root/__test__/squareRoot.test.js"
-    ]
-  },
-  {
-    "name": "squareRoot should correctly calculate square root with default tolerance",
-    "label": "squareRoot should correctly calculate square root with default tolerance",
-    "testNamePattern": "squareRoot should correctly calculate square root with default tolerance",
-    "chapter": "squareRoot",
-    "testFilePaths": [
-      "src/algorithms/math/square-root/__test__/squareRoot.test.js"
-    ]
-  },
-  {
-    "name": "squareRoot should correctly calculate square root for integers with custom tolerance",
-    "label": "squareRoot should correctly calculate square root for integers with custom tolerance",
-    "testNamePattern": "squareRoot should correctly calculate square root for integers with custom tolerance",
-    "chapter": "squareRoot",
-    "testFilePaths": [
-      "src/algorithms/math/square-root/__test__/squareRoot.test.js"
-    ]
-  },
-  {
-    "name": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
-    "label": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
-    "testNamePattern": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
-    "chapter": "recursiveStaircaseIT",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseIT.test.js"
-    ]
-  },
-  {
-    "name": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "label": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "testNamePattern": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "chapter": "peakvalleyBestTimeToBuySellStocks",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/peakvalleyBestTimeToBuySellStocks.test.js"
-    ]
-  },
-  {
-    "name": "longestCommonSubsequence should find longest common subsequence for two strings",
-    "label": "longestCommonSubsequence should find longest common subsequence for two strings",
-    "testNamePattern": "longestCommonSubsequence should find longest common subsequence for two strings",
-    "chapter": "longestCommonSubsequence",
-    "testFilePaths": [
-      "src/algorithms/sets/longest-common-subsequence/__test__/longestCommonSubsequence.test.js"
-    ]
-  },
-  {
-    "name": "multiplyUnsigned should multiply two unsigned numbers",
-    "label": "multiplyUnsigned should multiply two unsigned numbers",
-    "testNamePattern": "multiplyUnsigned should multiply two unsigned numbers",
-    "chapter": "multiplyUnsigned",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/multiplyUnsigned.test.js"
-    ]
-  },
-  {
-    "name": "btPowerSet should calculate power set of given set using backtracking approach",
-    "label": "btPowerSet should calculate power set of given set using backtracking approach",
-    "testNamePattern": "btPowerSet should calculate power set of given set using backtracking approach",
-    "chapter": "btPowerSet",
-    "testFilePaths": [
-      "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
-    ]
-  },
-  {
-    "name": "isPowerOfTwo should check if the number is made by multiplying twos",
-    "label": "isPowerOfTwo should check if the number is made by multiplying twos",
-    "testNamePattern": "isPowerOfTwo should check if the number is made by multiplying twos",
-    "chapter": "isPowerOfTwo",
-    "testFilePaths": [
-      "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js"
-    ]
-  },
-  {
-    "name": "nQueens should not hae solution for 3 queens",
-    "label": "nQueens should not hae solution for 3 queens",
-    "testNamePattern": "nQueens should not hae solution for 3 queens",
-    "chapter": "nQueens",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
-    ]
-  },
-  {
-    "name": "nQueens should solve n-queens problem for 4 queens",
-    "label": "nQueens should solve n-queens problem for 4 queens",
-    "testNamePattern": "nQueens should solve n-queens problem for 4 queens",
-    "chapter": "nQueens",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
-    ]
-  },
-  {
-    "name": "nQueens should solve n-queens problem for 6 queens",
-    "label": "nQueens should solve n-queens problem for 6 queens",
-    "testNamePattern": "nQueens should solve n-queens problem for 6 queens",
-    "chapter": "nQueens",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
-    ]
-  },
-  {
-    "name": "dpUniquePaths should find the number of unique paths on board",
-    "label": "dpUniquePaths should find the number of unique paths on board",
-    "testNamePattern": "dpUniquePaths should find the number of unique paths on board",
-    "chapter": "dpUniquePaths",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js"
-    ]
-  },
-  {
-    "name": "fibonacci should calculate fibonacci correctly",
-    "label": "fibonacci should calculate fibonacci correctly",
-    "testNamePattern": "fibonacci should calculate fibonacci correctly",
-    "chapter": "fibonacci",
-    "testFilePaths": [
-      "src/algorithms/math/fibonacci/__test__/fibonacci.test.js"
-    ]
-  },
-  {
-    "name": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
-    "label": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
-    "testNamePattern": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
-    "chapter": "dpMaximumSubarray",
-    "testFilePaths": [
-      "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in simple graph",
-    "label": "articulationPoints should find articulation points in simple graph",
-    "testNamePattern": "articulationPoints should find articulation points in simple graph",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in simple graph with back edge",
-    "label": "articulationPoints should find articulation points in simple graph with back edge",
-    "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in simple graph with back edge #2",
-    "label": "articulationPoints should find articulation points in simple graph with back edge #2",
-    "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge #2",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in graph",
-    "label": "articulationPoints should find articulation points in graph",
-    "testNamePattern": "articulationPoints should find articulation points in graph",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in graph starting with articulation root vertex",
-    "label": "articulationPoints should find articulation points in graph starting with articulation root vertex",
-    "testNamePattern": "articulationPoints should find articulation points in graph starting with articulation root vertex",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in yet another graph #1",
-    "label": "articulationPoints should find articulation points in yet another graph #1",
-    "testNamePattern": "articulationPoints should find articulation points in yet another graph #1",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in yet another graph #2",
-    "label": "articulationPoints should find articulation points in yet another graph #2",
-    "testNamePattern": "articulationPoints should find articulation points in yet another graph #2",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "palindromeCheck should return whether or not the string is a palindrome",
-    "label": "palindromeCheck should return whether or not the string is a palindrome",
-    "testNamePattern": "palindromeCheck should return whether or not the string is a palindrome",
-    "chapter": "palindromeCheck",
-    "testFilePaths": [
-      "src/algorithms/string/palindrome/__test__/isPalindrome.test.js"
-    ]
-  },
-  {
-    "name": "traversal should traverse linked list",
-    "label": "traversal should traverse linked list",
-    "testNamePattern": "traversal should traverse linked list",
-    "chapter": "traversal",
-    "testFilePaths": [
-      "src/algorithms/linked-list/traversal/__test__/traversal.test.js"
-    ]
-  },
-  {
-    "name": "bwPowerSet should calculate power set of given set using bitwise approach",
-    "label": "bwPowerSet should calculate power set of given set using bitwise approach",
-    "testNamePattern": "bwPowerSet should calculate power set of given set using bitwise approach",
-    "chapter": "bwPowerSet",
-    "testFilePaths": [
-      "src/algorithms/sets/power-set/__test__/bwPowerSet.test.js"
-    ]
-  },
-  {
-    "name": "switchSign should switch the sign of the number using twos complement approach",
-    "label": "switchSign should switch the sign of the number using twos complement approach",
-    "testNamePattern": "switchSign should switch the sign of the number using twos complement approach",
-    "chapter": "switchSign",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/switchSign.test.js"
-    ]
-  },
-  {
-    "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
-    "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
-    "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
-    "chapter": "fastFourierTransform",
-    "testFilePaths": [
-      "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
-    ]
-  },
-  {
-    "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
-    "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
-    "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
-    "chapter": "fastFourierTransform",
-    "testFilePaths": [
-      "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
-    ]
-  },
-  {
-    "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
-    "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
-    "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
-    "chapter": "fastFourierTransform",
-    "testFilePaths": [
-      "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
-    ]
-  },
-  {
-    "name": "permutateWithRepetitions should permutate string with repetition",
-    "label": "permutateWithRepetitions should permutate string with repetition",
-    "testNamePattern": "permutateWithRepetitions should permutate string with repetition",
-    "chapter": "permutateWithRepetitions",
-    "testFilePaths": [
-      "src/algorithms/sets/permutations/__test__/permutateWithRepetitions.test.js"
-    ]
-  },
-  {
-    "name": "railFenceCipher encodes a string correctly for base=3",
-    "label": "railFenceCipher encodes a string correctly for base=3",
-    "testNamePattern": "railFenceCipher encodes a string correctly for base=3",
-    "chapter": "railFenceCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
-    ]
-  },
-  {
-    "name": "railFenceCipher decodes a string correctly for base=3",
-    "label": "railFenceCipher decodes a string correctly for base=3",
-    "testNamePattern": "railFenceCipher decodes a string correctly for base=3",
-    "chapter": "railFenceCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
-    ]
-  },
-  {
-    "name": "railFenceCipher encodes a string correctly for base=4",
-    "label": "railFenceCipher encodes a string correctly for base=4",
-    "testNamePattern": "railFenceCipher encodes a string correctly for base=4",
-    "chapter": "railFenceCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
-    ]
-  },
-  {
-    "name": "railFenceCipher decodes a string correctly for base=4",
-    "label": "railFenceCipher decodes a string correctly for base=4",
-    "testNamePattern": "railFenceCipher decodes a string correctly for base=4",
-    "chapter": "railFenceCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should not change a string with zero shift",
-    "label": "caesarCipher should not change a string with zero shift",
-    "testNamePattern": "caesarCipher should not change a string with zero shift",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should cipher a string with different shifts",
-    "label": "caesarCipher should cipher a string with different shifts",
-    "testNamePattern": "caesarCipher should cipher a string with different shifts",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should be case insensitive",
-    "label": "caesarCipher should be case insensitive",
-    "testNamePattern": "caesarCipher should be case insensitive",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should correctly handle an empty strings",
-    "label": "caesarCipher should correctly handle an empty strings",
-    "testNamePattern": "caesarCipher should correctly handle an empty strings",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should not cipher unknown chars",
-    "label": "caesarCipher should not cipher unknown chars",
-    "testNamePattern": "caesarCipher should not cipher unknown chars",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should encrypt and decrypt full phrases",
-    "label": "caesarCipher should encrypt and decrypt full phrases",
-    "testNamePattern": "caesarCipher should encrypt and decrypt full phrases",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "squareMatrixRotation should rotate matrix #0 in-place",
-    "label": "squareMatrixRotation should rotate matrix #0 in-place",
-    "testNamePattern": "squareMatrixRotation should rotate matrix #0 in-place",
-    "chapter": "squareMatrixRotation",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
-  },
-  {
-    "name": "squareMatrixRotation should rotate matrix #1 in-place",
-    "label": "squareMatrixRotation should rotate matrix #1 in-place",
-    "testNamePattern": "squareMatrixRotation should rotate matrix #1 in-place",
-    "chapter": "squareMatrixRotation",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
-  },
-  {
-    "name": "squareMatrixRotation should rotate matrix #2 in-place",
-    "label": "squareMatrixRotation should rotate matrix #2 in-place",
-    "testNamePattern": "squareMatrixRotation should rotate matrix #2 in-place",
-    "chapter": "squareMatrixRotation",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
-  },
-  {
-    "name": "squareMatrixRotation should rotate matrix #3 in-place",
-    "label": "squareMatrixRotation should rotate matrix #3 in-place",
-    "testNamePattern": "squareMatrixRotation should rotate matrix #3 in-place",
-    "chapter": "squareMatrixRotation",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should sort array",
-    "label": "ShellSort should sort array",
-    "testNamePattern": "ShellSort should sort array",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should sort array with custom comparator",
-    "label": "ShellSort should sort array with custom comparator",
-    "testNamePattern": "ShellSort should sort array with custom comparator",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should sort negative numbers",
-    "label": "ShellSort should sort negative numbers",
-    "testNamePattern": "ShellSort should sort negative numbers",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should visit EQUAL array element specified number of times",
-    "label": "ShellSort should visit EQUAL array element specified number of times",
-    "testNamePattern": "ShellSort should visit EQUAL array element specified number of times",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should visit SORTED array element specified number of times",
-    "label": "ShellSort should visit SORTED array element specified number of times",
-    "testNamePattern": "ShellSort should visit SORTED array element specified number of times",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should visit NOT SORTED array element specified number of times",
-    "label": "ShellSort should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "ShellSort should visit NOT SORTED array element specified number of times",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "ShellSort should visit REVERSE SORTED array element specified number of times",
-    "label": "ShellSort should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "ShellSort should visit REVERSE SORTED array element specified number of times",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
-    "name": "factorial should calculate factorial",
-    "label": "factorial should calculate factorial",
-    "testNamePattern": "factorial should calculate factorial",
-    "chapter": "factorial",
-    "testFilePaths": [
-      "src/algorithms/math/factorial/__test__/factorial.test.js"
-    ]
-  },
-  {
-    "name": "isPowerOfTwo should detect if the number is power of two",
-    "label": "isPowerOfTwo should detect if the number is power of two",
-    "testNamePattern": "isPowerOfTwo should detect if the number is power of two",
-    "chapter": "isPowerOfTwo",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
-    ]
-  },
-  {
-    "name": "weightedRandom should throw an error when the number of weights does not match the number of items",
-    "label": "weightedRandom should throw an error when the number of weights does not match the number of items",
-    "testNamePattern": "weightedRandom should throw an error when the number of weights does not match the number of items",
-    "chapter": "weightedRandom",
-    "testFilePaths": [
-      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
-  },
-  {
-    "name": "weightedRandom should throw an error when the number of weights or items are empty",
-    "label": "weightedRandom should throw an error when the number of weights or items are empty",
-    "testNamePattern": "weightedRandom should throw an error when the number of weights or items are empty",
-    "chapter": "weightedRandom",
-    "testFilePaths": [
-      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
-  },
-  {
-    "name": "weightedRandom should correctly do random selection based on wights in straightforward cases",
-    "label": "weightedRandom should correctly do random selection based on wights in straightforward cases",
-    "testNamePattern": "weightedRandom should correctly do random selection based on wights in straightforward cases",
-    "chapter": "weightedRandom",
-    "testFilePaths": [
-      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
-  },
-  {
-    "name": "weightedRandom should correctly do random selection based on wights",
-    "label": "weightedRandom should correctly do random selection based on wights",
-    "testNamePattern": "weightedRandom should correctly do random selection based on wights",
-    "chapter": "weightedRandom",
-    "testFilePaths": [
-      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
-  },
-  {
-    "name": "combinationSum should find all combinations with specific sum",
-    "label": "combinationSum should find all combinations with specific sum",
-    "testNamePattern": "combinationSum should find all combinations with specific sum",
-    "chapter": "combinationSum",
-    "testFilePaths": [
-      "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should sort array",
-    "label": "InsertionSort should sort array",
-    "testNamePattern": "InsertionSort should sort array",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should sort array with custom comparator",
-    "label": "InsertionSort should sort array with custom comparator",
-    "testNamePattern": "InsertionSort should sort array with custom comparator",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should do stable sorting",
-    "label": "InsertionSort should do stable sorting",
-    "testNamePattern": "InsertionSort should do stable sorting",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should sort negative numbers",
-    "label": "InsertionSort should sort negative numbers",
-    "testNamePattern": "InsertionSort should sort negative numbers",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should visit EQUAL array element specified number of times",
-    "label": "InsertionSort should visit EQUAL array element specified number of times",
-    "testNamePattern": "InsertionSort should visit EQUAL array element specified number of times",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should visit SORTED array element specified number of times",
-    "label": "InsertionSort should visit SORTED array element specified number of times",
-    "testNamePattern": "InsertionSort should visit SORTED array element specified number of times",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should visit NOT SORTED array element specified number of times",
-    "label": "InsertionSort should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "InsertionSort should visit NOT SORTED array element specified number of times",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should visit REVERSE SORTED array element specified number of times",
-    "label": "InsertionSort should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "InsertionSort should visit REVERSE SORTED array element specified number of times",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "fullAdder should add up two numbers",
-    "label": "fullAdder should add up two numbers",
-    "testNamePattern": "fullAdder should add up two numbers",
-    "chapter": "fullAdder",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/fullAdder.test.js"
-    ]
-  },
-  {
-    "name": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
-    "label": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
-    "testNamePattern": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
-    "chapter": "hornerMethod",
-    "testFilePaths": [
-      "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
-    ]
-  },
-  {
-    "name": "hornerMethod should evaluate the same polynomial value as classical approach",
-    "label": "hornerMethod should evaluate the same polynomial value as classical approach",
-    "testNamePattern": "hornerMethod should evaluate the same polynomial value as classical approach",
-    "chapter": "hornerMethod",
-    "testFilePaths": [
-      "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
-    ]
-  },
-  {
-    "name": "countSetBits should return number of set bits",
-    "label": "countSetBits should return number of set bits",
-    "testNamePattern": "countSetBits should return number of set bits",
-    "chapter": "countSetBits",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/countSetBits.test.js"
-    ]
-  },
-  {
-    "name": "primeFactors should find prime factors",
-    "label": "primeFactors should find prime factors",
-    "testNamePattern": "primeFactors should find prime factors",
-    "chapter": "primeFactors",
-    "testFilePaths": [
-      "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
-    ]
-  },
-  {
-    "name": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
-    "label": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
-    "testNamePattern": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
-    "chapter": "primeFactors",
-    "testFilePaths": [
-      "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
-    ]
-  },
-  {
-    "name": "primeFactors should give correct deviation between exact and approx counts",
-    "label": "primeFactors should give correct deviation between exact and approx counts",
-    "testNamePattern": "primeFactors should give correct deviation between exact and approx counts",
-    "chapter": "primeFactors",
-    "testFilePaths": [
-      "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ]
   },
   {
@@ -2043,12 +2313,57 @@ module.exports = [
     ]
   },
   {
-    "name": "getBit should get bit at specific position",
-    "label": "getBit should get bit at specific position",
-    "testNamePattern": "getBit should get bit at specific position",
-    "chapter": "getBit",
+    "name": "btPowerSet should calculate power set of given set using backtracking approach",
+    "label": "btPowerSet should calculate power set of given set using backtracking approach",
+    "testNamePattern": "btPowerSet should calculate power set of given set using backtracking approach",
+    "chapter": "btPowerSet",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/getBit.test.js"
+      "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
+    ]
+  },
+  {
+    "name": "depthFirstSearch should perform DFS operation on graph",
+    "label": "depthFirstSearch should perform DFS operation on graph",
+    "testNamePattern": "depthFirstSearch should perform DFS operation on graph",
+    "chapter": "depthFirstSearch",
+    "testFilePaths": [
+      "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+    ]
+  },
+  {
+    "name": "depthFirstSearch allow users to redefine vertex visiting logic",
+    "label": "depthFirstSearch allow users to redefine vertex visiting logic",
+    "testNamePattern": "depthFirstSearch allow users to redefine vertex visiting logic",
+    "chapter": "depthFirstSearch",
+    "testFilePaths": [
+      "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+    ]
+  },
+  {
+    "name": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "label": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "testNamePattern": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "chapter": "dpBestTimeToBuySellStocks",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js"
+    ]
+  },
+  {
+    "name": "cartesianProduct should return null if there is not enough info for calculation",
+    "label": "cartesianProduct should return null if there is not enough info for calculation",
+    "testNamePattern": "cartesianProduct should return null if there is not enough info for calculation",
+    "chapter": "cartesianProduct",
+    "testFilePaths": [
+      "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
+    ]
+  },
+  {
+    "name": "cartesianProduct should calculate the product of two sets",
+    "label": "cartesianProduct should calculate the product of two sets",
+    "testNamePattern": "cartesianProduct should calculate the product of two sets",
+    "chapter": "cartesianProduct",
+    "testFilePaths": [
+      "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
     ]
   },
   {
@@ -2070,318 +2385,30 @@ module.exports = [
     ]
   },
   {
-    "name": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
-    "label": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
-    "testNamePattern": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
-    "chapter": "dpLongestIncreasingSubsequence",
+    "name": "KnapsackItem should create knapsack item and count its total weight and value",
+    "label": "KnapsackItem should create knapsack item and count its total weight and value",
+    "testNamePattern": "KnapsackItem should create knapsack item and count its total weight and value",
+    "chapter": "KnapsackItem",
     "testFilePaths": [
-      "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js"
+      "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js"
     ]
   },
   {
-    "name": "fisherYates should shuffle small arrays",
-    "label": "fisherYates should shuffle small arrays",
-    "testNamePattern": "fisherYates should shuffle small arrays",
-    "chapter": "fisherYates",
+    "name": "bwPowerSet should calculate power set of given set using bitwise approach",
+    "label": "bwPowerSet should calculate power set of given set using bitwise approach",
+    "testNamePattern": "bwPowerSet should calculate power set of given set using bitwise approach",
+    "chapter": "bwPowerSet",
     "testFilePaths": [
-      "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
+      "src/algorithms/sets/power-set/__test__/bwPowerSet.test.js"
     ]
   },
   {
-    "name": "fisherYates should shuffle array randomly",
-    "label": "fisherYates should shuffle array randomly",
-    "testNamePattern": "fisherYates should shuffle array randomly",
-    "chapter": "fisherYates",
+    "name": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
+    "label": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
+    "testNamePattern": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
+    "chapter": "recursiveStaircaseIT",
     "testFilePaths": [
-      "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
-    ]
-  },
-  {
-    "name": "btUniquePaths should find the number of unique paths on board",
-    "label": "btUniquePaths should find the number of unique paths on board",
-    "testNamePattern": "btUniquePaths should find the number of unique paths on board",
-    "chapter": "btUniquePaths",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/unique-paths/__test__/btUniquePaths.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in simple graph",
-    "label": "graphBridges should find bridges in simple graph",
-    "testNamePattern": "graphBridges should find bridges in simple graph",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in simple graph with back edge",
-    "label": "graphBridges should find bridges in simple graph with back edge",
-    "testNamePattern": "graphBridges should find bridges in simple graph with back edge",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in graph",
-    "label": "graphBridges should find bridges in graph",
-    "testNamePattern": "graphBridges should find bridges in graph",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in graph starting with different root vertex",
-    "label": "graphBridges should find bridges in graph starting with different root vertex",
-    "testNamePattern": "graphBridges should find bridges in graph starting with different root vertex",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in yet another graph #1",
-    "label": "graphBridges should find bridges in yet another graph #1",
-    "testNamePattern": "graphBridges should find bridges in yet another graph #1",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in yet another graph #2",
-    "label": "graphBridges should find bridges in yet another graph #2",
-    "testNamePattern": "graphBridges should find bridges in yet another graph #2",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "liuHui should calculate π based on 12-gon",
-    "label": "liuHui should calculate π based on 12-gon",
-    "testNamePattern": "liuHui should calculate π based on 12-gon",
-    "chapter": "liuHui",
-    "testFilePaths": [
-      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
-  },
-  {
-    "name": "liuHui should calculate π based on 24-gon",
-    "label": "liuHui should calculate π based on 24-gon",
-    "testNamePattern": "liuHui should calculate π based on 24-gon",
-    "chapter": "liuHui",
-    "testFilePaths": [
-      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
-  },
-  {
-    "name": "liuHui should calculate π based on 6144-gon",
-    "label": "liuHui should calculate π based on 6144-gon",
-    "testNamePattern": "liuHui should calculate π based on 6144-gon",
-    "chapter": "liuHui",
-    "testFilePaths": [
-      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
-  },
-  {
-    "name": "liuHui should calculate π based on 201326592-gon",
-    "label": "liuHui should calculate π based on 201326592-gon",
-    "testNamePattern": "liuHui should calculate π based on 201326592-gon",
-    "chapter": "liuHui",
-    "testFilePaths": [
-      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
-  },
-  {
-    "name": "factorialRecursive should calculate factorial",
-    "label": "factorialRecursive should calculate factorial",
-    "testNamePattern": "factorialRecursive should calculate factorial",
-    "chapter": "factorialRecursive",
-    "testFilePaths": [
-      "src/algorithms/math/factorial/__test__/factorialRecursive.test.js"
-    ]
-  },
-  {
-    "name": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
-    "label": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
-    "testNamePattern": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
-    "chapter": "backtrackingJumpGame",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
-    ]
-  },
-  {
-    "name": "bitsDiff should calculate bits difference between two numbers",
-    "label": "bitsDiff should calculate bits difference between two numbers",
-    "testNamePattern": "bitsDiff should calculate bits difference between two numbers",
-    "chapter": "bitsDiff",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/bitsDiff.test.js"
-    ]
-  },
-  {
-    "name": "floatAs32Binary should create a binary representation of the floating numbers",
-    "label": "floatAs32Binary should create a binary representation of the floating numbers",
-    "testNamePattern": "floatAs32Binary should create a binary representation of the floating numbers",
-    "chapter": "floatAs32Binary",
-    "testFilePaths": [
-      "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
-    ]
-  },
-  {
-    "name": "floatAs64Binary should create a binary representation of the floating numbers",
-    "label": "floatAs64Binary should create a binary representation of the floating numbers",
-    "testNamePattern": "floatAs64Binary should create a binary representation of the floating numbers",
-    "chapter": "floatAs64Binary",
-    "testFilePaths": [
-      "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
-    ]
-  },
-  {
-    "name": "breadthFirstSearch should perform BFS operation on tree",
-    "label": "breadthFirstSearch should perform BFS operation on tree",
-    "testNamePattern": "breadthFirstSearch should perform BFS operation on tree",
-    "chapter": "breadthFirstSearch",
-    "testFilePaths": [
-      "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
-    ]
-  },
-  {
-    "name": "breadthFirstSearch allow users to redefine node visiting logic",
-    "label": "breadthFirstSearch allow users to redefine node visiting logic",
-    "testNamePattern": "breadthFirstSearch allow users to redefine node visiting logic",
-    "chapter": "breadthFirstSearch",
-    "testFilePaths": [
-      "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
-    ]
-  },
-  {
-    "name": "integerPartition should partition the number",
-    "label": "integerPartition should partition the number",
-    "testNamePattern": "integerPartition should partition the number",
-    "chapter": "integerPartition",
-    "testFilePaths": [
-      "src/algorithms/math/integer-partition/__test__/integerPartition.test.js"
-    ]
-  },
-  {
-    "name": "clearBit should clear bit at specific position",
-    "label": "clearBit should clear bit at specific position",
-    "testNamePattern": "clearBit should clear bit at specific position",
-    "chapter": "clearBit",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/clearBit.test.js"
-    ]
-  },
-  {
-    "name": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
-    "label": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
-    "testNamePattern": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
-    "chapter": "dpTopDownJumpGame",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js"
-    ]
-  },
-  {
-    "name": "knuthMorrisPratt should find word position in given text",
-    "label": "knuthMorrisPratt should find word position in given text",
-    "testNamePattern": "knuthMorrisPratt should find word position in given text",
-    "chapter": "knuthMorrisPratt",
-    "testFilePaths": [
-      "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js"
-    ]
-  },
-  {
-    "name": "Sort should throw an error when trying to call Sort.sort() method directly",
-    "label": "Sort should throw an error when trying to call Sort.sort() method directly",
-    "testNamePattern": "Sort should throw an error when trying to call Sort.sort() method directly",
-    "chapter": "Sort",
-    "testFilePaths": [
-      "src/algorithms/sorting/__test__/Sort.test.js"
-    ]
-  },
-  {
-    "name": "bfRainTerraces should find the amount of water collected after raining",
-    "label": "bfRainTerraces should find the amount of water collected after raining",
-    "testNamePattern": "bfRainTerraces should find the amount of water collected after raining",
-    "chapter": "bfRainTerraces",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js"
-    ]
-  },
-  {
-    "name": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
-    "label": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
-    "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
-    "chapter": "hanoiTower",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
-    ]
-  },
-  {
-    "name": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
-    "label": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
-    "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
-    "chapter": "hanoiTower",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
-    ]
-  },
-  {
-    "name": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
-    "label": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
-    "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
-    "chapter": "hanoiTower",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
-    ]
-  },
-  {
-    "name": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "label": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "testNamePattern": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "chapter": "accumulatorBestTimeToBuySellStocks",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
-    ]
-  },
-  {
-    "name": "isPositive should detect if a number is positive",
-    "label": "isPositive should detect if a number is positive",
-    "testNamePattern": "isPositive should detect if a number is positive",
-    "chapter": "isPositive",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isPositive.test.js"
-    ]
-  },
-  {
-    "name": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
-    "label": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
-    "testNamePattern": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
-    "chapter": "isPowerOfTwoBitwise",
-    "testFilePaths": [
-      "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js"
-    ]
-  },
-  {
-    "name": "updateBit should update bit at specific position",
-    "label": "updateBit should update bit at specific position",
-    "testNamePattern": "updateBit should update bit at specific position",
-    "chapter": "updateBit",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/updateBit.test.js"
-    ]
-  },
-  {
-    "name": "bfTravellingSalesman should solve problem for simple graph",
-    "label": "bfTravellingSalesman should solve problem for simple graph",
-    "testNamePattern": "bfTravellingSalesman should solve problem for simple graph",
-    "chapter": "bfTravellingSalesman",
-    "testFilePaths": [
-      "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js"
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseIT.test.js"
     ]
   },
   {
@@ -2412,84 +2439,39 @@ module.exports = [
     ]
   },
   {
-    "name": "trialDivision should detect prime numbers",
-    "label": "trialDivision should detect prime numbers",
-    "testNamePattern": "trialDivision should detect prime numbers",
-    "chapter": "trialDivision",
+    "name": "combinationSum should find all combinations with specific sum",
+    "label": "combinationSum should find all combinations with specific sum",
+    "testNamePattern": "combinationSum should find all combinations with specific sum",
+    "chapter": "combinationSum",
     "testFilePaths": [
-      "src/algorithms/math/primality-test/__test__/trialDivision.test.js"
+      "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js"
     ]
   },
   {
-    "name": "interpolationSearch should search elements in sorted array of numbers",
-    "label": "interpolationSearch should search elements in sorted array of numbers",
-    "testNamePattern": "interpolationSearch should search elements in sorted array of numbers",
-    "chapter": "interpolationSearch",
+    "name": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
+    "label": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
+    "testNamePattern": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
+    "chapter": "backtrackingJumpGame",
     "testFilePaths": [
-      "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js"
+      "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
     ]
   },
   {
-    "name": "hamiltonianCycle should find hamiltonian paths in graph",
-    "label": "hamiltonianCycle should find hamiltonian paths in graph",
-    "testNamePattern": "hamiltonianCycle should find hamiltonian paths in graph",
-    "chapter": "hamiltonianCycle",
+    "name": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
+    "label": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
+    "testNamePattern": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
+    "chapter": "dpLongestIncreasingSubsequence",
     "testFilePaths": [
-      "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
+      "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js"
     ]
   },
   {
-    "name": "hamiltonianCycle should return false for graph without Hamiltonian path",
-    "label": "hamiltonianCycle should return false for graph without Hamiltonian path",
-    "testNamePattern": "hamiltonianCycle should return false for graph without Hamiltonian path",
-    "chapter": "hamiltonianCycle",
+    "name": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
+    "label": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
+    "testNamePattern": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
+    "chapter": "classicPolynome",
     "testFilePaths": [
-      "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
-    ]
-  },
-  {
-    "name": "detectUndirectedCycle should detect undirected cycle",
-    "label": "detectUndirectedCycle should detect undirected cycle",
-    "testNamePattern": "detectUndirectedCycle should detect undirected cycle",
-    "chapter": "detectUndirectedCycle",
-    "testFilePaths": [
-      "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js"
-    ]
-  },
-  {
-    "name": "jumpSearch should search for an element in sorted array",
-    "label": "jumpSearch should search for an element in sorted array",
-    "testNamePattern": "jumpSearch should search for an element in sorted array",
-    "chapter": "jumpSearch",
-    "testFilePaths": [
-      "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
-    ]
-  },
-  {
-    "name": "jumpSearch should search object in sorted array",
-    "label": "jumpSearch should search object in sorted array",
-    "testNamePattern": "jumpSearch should search object in sorted array",
-    "chapter": "jumpSearch",
-    "testFilePaths": [
-      "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
-    ]
-  },
-  {
-    "name": "binarySearch should search number in sorted array",
-    "label": "binarySearch should search number in sorted array",
-    "testNamePattern": "binarySearch should search number in sorted array",
-    "chapter": "binarySearch",
-    "testFilePaths": [
-      "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
-    ]
-  },
-  {
-    "name": "binarySearch should search object in sorted array",
-    "label": "binarySearch should search object in sorted array",
-    "testNamePattern": "binarySearch should search object in sorted array",
-    "chapter": "binarySearch",
-    "testFilePaths": [
-      "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
+      "src/algorithms/math/horner-method/__test__/classicPolynome.test.js"
     ]
   },
   {
@@ -2502,57 +2484,12 @@ module.exports = [
     ]
   },
   {
-    "name": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "chapter": "bellmanFord",
+    "name": "multiplyUnsigned should multiply two unsigned numbers",
+    "label": "multiplyUnsigned should multiply two unsigned numbers",
+    "testNamePattern": "multiplyUnsigned should multiply two unsigned numbers",
+    "chapter": "multiplyUnsigned",
     "testFilePaths": [
-      "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
-    ]
-  },
-  {
-    "name": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
-    "label": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
-    "testNamePattern": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
-    "chapter": "bellmanFord",
-    "testFilePaths": [
-      "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
-    ]
-  },
-  {
-    "name": "permutateWithoutRepetitions should permutate string",
-    "label": "permutateWithoutRepetitions should permutate string",
-    "testNamePattern": "permutateWithoutRepetitions should permutate string",
-    "chapter": "permutateWithoutRepetitions",
-    "testFilePaths": [
-      "src/algorithms/sets/permutations/__test__/permutateWithoutRepetitions.test.js"
-    ]
-  },
-  {
-    "name": "leastCommonMultiple should find least common multiple",
-    "label": "leastCommonMultiple should find least common multiple",
-    "testNamePattern": "leastCommonMultiple should find least common multiple",
-    "chapter": "leastCommonMultiple",
-    "testFilePaths": [
-      "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js"
-    ]
-  },
-  {
-    "name": "combineWithRepetitions should combine string with repetitions",
-    "label": "combineWithRepetitions should combine string with repetitions",
-    "testNamePattern": "combineWithRepetitions should combine string with repetitions",
-    "chapter": "combineWithRepetitions",
-    "testFilePaths": [
-      "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js"
-    ]
-  },
-  {
-    "name": "degreeToRadian should convert degree to radian",
-    "label": "degreeToRadian should convert degree to radian",
-    "testNamePattern": "degreeToRadian should convert degree to radian",
-    "chapter": "degreeToRadian",
-    "testFilePaths": [
-      "src/algorithms/math/radian/__test__/degreeToRadian.test.js"
+      "src/algorithms/math/bits/__test__/multiplyUnsigned.test.js"
     ]
   },
   {
@@ -2619,102 +2556,12 @@ module.exports = [
     ]
   },
   {
-    "name": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
-    "label": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
-    "testNamePattern": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
-    "chapter": "recursiveStaircaseMEM",
+    "name": "getBit should get bit at specific position",
+    "label": "getBit should get bit at specific position",
+    "testNamePattern": "getBit should get bit at specific position",
+    "chapter": "getBit",
     "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseMEM.test.js"
-    ]
-  },
-  {
-    "name": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
-    "label": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
-    "testNamePattern": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
-    "chapter": "recursiveStaircaseDP",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseDP.test.js"
-    ]
-  },
-  {
-    "name": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "label": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "testNamePattern": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "chapter": "dpBestTimeToBuySellStocks",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js"
-    ]
-  },
-  {
-    "name": "euclideanAlgorithmIterative should calculate GCD iteratively",
-    "label": "euclideanAlgorithmIterative should calculate GCD iteratively",
-    "testNamePattern": "euclideanAlgorithmIterative should calculate GCD iteratively",
-    "chapter": "euclideanAlgorithmIterative",
-    "testFilePaths": [
-      "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js"
-    ]
-  },
-  {
-    "name": "regularExpressionMatching should match regular expressions in a string",
-    "label": "regularExpressionMatching should match regular expressions in a string",
-    "testNamePattern": "regularExpressionMatching should match regular expressions in a string",
-    "chapter": "regularExpressionMatching",
-    "testFilePaths": [
-      "src/algorithms/string/regular-expression-matching/__test__/regularExpressionMatching.test.js"
-    ]
-  },
-  {
-    "name": "levenshteinDistance should calculate edit distance between two strings",
-    "label": "levenshteinDistance should calculate edit distance between two strings",
-    "testNamePattern": "levenshteinDistance should calculate edit distance between two strings",
-    "chapter": "levenshteinDistance",
-    "testFilePaths": [
-      "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js"
-    ]
-  },
-  {
-    "name": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
-    "label": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
-    "testNamePattern": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
-    "chapter": "classicPolynome",
-    "testFilePaths": [
-      "src/algorithms/math/horner-method/__test__/classicPolynome.test.js"
-    ]
-  },
-  {
-    "name": "multiplyByTwo should multiply numbers by two using bitwise operations",
-    "label": "multiplyByTwo should multiply numbers by two using bitwise operations",
-    "testNamePattern": "multiplyByTwo should multiply numbers by two using bitwise operations",
-    "chapter": "multiplyByTwo",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/multiplyByTwo.test.js"
-    ]
-  },
-  {
-    "name": "cartesianProduct should return null if there is not enough info for calculation",
-    "label": "cartesianProduct should return null if there is not enough info for calculation",
-    "testNamePattern": "cartesianProduct should return null if there is not enough info for calculation",
-    "chapter": "cartesianProduct",
-    "testFilePaths": [
-      "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
-    ]
-  },
-  {
-    "name": "cartesianProduct should calculate the product of two sets",
-    "label": "cartesianProduct should calculate the product of two sets",
-    "testNamePattern": "cartesianProduct should calculate the product of two sets",
-    "chapter": "cartesianProduct",
-    "testFilePaths": [
-      "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
-    ]
-  },
-  {
-    "name": "euclideanAlgorithm should calculate GCD recursively",
-    "label": "euclideanAlgorithm should calculate GCD recursively",
-    "testNamePattern": "euclideanAlgorithm should calculate GCD recursively",
-    "chapter": "euclideanAlgorithm",
-    "testFilePaths": [
-      "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js"
+      "src/algorithms/math/bits/__test__/getBit.test.js"
     ]
   },
   {
@@ -2727,75 +2574,183 @@ module.exports = [
     ]
   },
   {
-    "name": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
-    "label": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
-    "testNamePattern": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
-    "chapter": "dcMaximumSubarraySum",
+    "name": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
+    "label": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
+    "testNamePattern": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
+    "chapter": "dpTopDownJumpGame",
     "testFilePaths": [
-      "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js"
+      "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js"
     ]
   },
   {
-    "name": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
-    "label": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
-    "testNamePattern": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
-    "chapter": "recursiveStaircaseBF",
+    "name": "clearBit should clear bit at specific position",
+    "label": "clearBit should clear bit at specific position",
+    "testNamePattern": "clearBit should clear bit at specific position",
+    "chapter": "clearBit",
     "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseBF.test.js"
+      "src/algorithms/math/bits/__test__/clearBit.test.js"
     ]
   },
   {
-    "name": "linearSearch should search all numbers in array",
-    "label": "linearSearch should search all numbers in array",
-    "testNamePattern": "linearSearch should search all numbers in array",
-    "chapter": "linearSearch",
+    "name": "degreeToRadian should convert degree to radian",
+    "label": "degreeToRadian should convert degree to radian",
+    "testNamePattern": "degreeToRadian should convert degree to radian",
+    "chapter": "degreeToRadian",
     "testFilePaths": [
-      "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+      "src/algorithms/math/radian/__test__/degreeToRadian.test.js"
     ]
   },
   {
-    "name": "linearSearch should search all strings in array",
-    "label": "linearSearch should search all strings in array",
-    "testNamePattern": "linearSearch should search all strings in array",
-    "chapter": "linearSearch",
+    "name": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
+    "label": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
+    "testNamePattern": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
+    "chapter": "pascalTriangleRecursive",
     "testFilePaths": [
-      "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+      "src/algorithms/math/pascal-triangle/__test__/pascalTriangleRecursive.test.js"
     ]
   },
   {
-    "name": "linearSearch should search through objects as well",
-    "label": "linearSearch should search through objects as well",
-    "testNamePattern": "linearSearch should search through objects as well",
-    "chapter": "linearSearch",
+    "name": "palindromeCheck should return whether or not the string is a palindrome",
+    "label": "palindromeCheck should return whether or not the string is a palindrome",
+    "testNamePattern": "palindromeCheck should return whether or not the string is a palindrome",
+    "chapter": "palindromeCheck",
     "testFilePaths": [
-      "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+      "src/algorithms/string/palindrome/__test__/isPalindrome.test.js"
     ]
   },
   {
-    "name": "isEven should detect if a number is even",
-    "label": "isEven should detect if a number is even",
-    "testNamePattern": "isEven should detect if a number is even",
-    "chapter": "isEven",
+    "name": "fibonacci should calculate fibonacci correctly",
+    "label": "fibonacci should calculate fibonacci correctly",
+    "testNamePattern": "fibonacci should calculate fibonacci correctly",
+    "chapter": "fibonacci",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isEven.test.js"
+      "src/algorithms/math/fibonacci/__test__/fibonacci.test.js"
     ]
   },
   {
-    "name": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
-    "label": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
-    "testNamePattern": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
-    "chapter": "pascalTriangle",
+    "name": "bitLength should calculate number of bits that the number is consists of",
+    "label": "bitLength should calculate number of bits that the number is consists of",
+    "testNamePattern": "bitLength should calculate number of bits that the number is consists of",
+    "chapter": "bitLength",
     "testFilePaths": [
-      "src/algorithms/math/pascal-triangle/__test__/pascalTriangle.test.js"
+      "src/algorithms/math/bits/__test__/bitLength.test.js"
     ]
   },
   {
-    "name": "fibonacciNth should calculate fibonacci correctly",
-    "label": "fibonacciNth should calculate fibonacci correctly",
-    "testNamePattern": "fibonacciNth should calculate fibonacci correctly",
-    "chapter": "fibonacciNth",
+    "name": "isPowerOfTwo should detect if the number is power of two",
+    "label": "isPowerOfTwo should detect if the number is power of two",
+    "testNamePattern": "isPowerOfTwo should detect if the number is power of two",
+    "chapter": "isPowerOfTwo",
     "testFilePaths": [
-      "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js"
+      "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
+    ]
+  },
+  {
+    "name": "countSetBits should return number of set bits",
+    "label": "countSetBits should return number of set bits",
+    "testNamePattern": "countSetBits should return number of set bits",
+    "chapter": "countSetBits",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/countSetBits.test.js"
+    ]
+  },
+  {
+    "name": "updateBit should update bit at specific position",
+    "label": "updateBit should update bit at specific position",
+    "testNamePattern": "updateBit should update bit at specific position",
+    "chapter": "updateBit",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/updateBit.test.js"
+    ]
+  },
+  {
+    "name": "isPowerOfTwo should check if the number is made by multiplying twos",
+    "label": "isPowerOfTwo should check if the number is made by multiplying twos",
+    "testNamePattern": "isPowerOfTwo should check if the number is made by multiplying twos",
+    "chapter": "isPowerOfTwo",
+    "testFilePaths": [
+      "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js"
+    ]
+  },
+  {
+    "name": "switchSign should switch the sign of the number using twos complement approach",
+    "label": "switchSign should switch the sign of the number using twos complement approach",
+    "testNamePattern": "switchSign should switch the sign of the number using twos complement approach",
+    "chapter": "switchSign",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/switchSign.test.js"
+    ]
+  },
+  {
+    "name": "squareMatrixRotation should rotate matrix #0 in-place",
+    "label": "squareMatrixRotation should rotate matrix #0 in-place",
+    "testNamePattern": "squareMatrixRotation should rotate matrix #0 in-place",
+    "chapter": "squareMatrixRotation",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
+    ]
+  },
+  {
+    "name": "squareMatrixRotation should rotate matrix #1 in-place",
+    "label": "squareMatrixRotation should rotate matrix #1 in-place",
+    "testNamePattern": "squareMatrixRotation should rotate matrix #1 in-place",
+    "chapter": "squareMatrixRotation",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
+    ]
+  },
+  {
+    "name": "squareMatrixRotation should rotate matrix #2 in-place",
+    "label": "squareMatrixRotation should rotate matrix #2 in-place",
+    "testNamePattern": "squareMatrixRotation should rotate matrix #2 in-place",
+    "chapter": "squareMatrixRotation",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
+    ]
+  },
+  {
+    "name": "squareMatrixRotation should rotate matrix #3 in-place",
+    "label": "squareMatrixRotation should rotate matrix #3 in-place",
+    "testNamePattern": "squareMatrixRotation should rotate matrix #3 in-place",
+    "chapter": "squareMatrixRotation",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
+    ]
+  },
+  {
+    "name": "multiplyByTwo should multiply numbers by two using bitwise operations",
+    "label": "multiplyByTwo should multiply numbers by two using bitwise operations",
+    "testNamePattern": "multiplyByTwo should multiply numbers by two using bitwise operations",
+    "chapter": "multiplyByTwo",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/multiplyByTwo.test.js"
+    ]
+  },
+  {
+    "name": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
+    "label": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
+    "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
+    "chapter": "hanoiTower",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ]
+  },
+  {
+    "name": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
+    "label": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
+    "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
+    "chapter": "hanoiTower",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ]
+  },
+  {
+    "name": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
+    "label": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
+    "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
+    "chapter": "hanoiTower",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
     ]
   },
   {
@@ -2814,6 +2769,51 @@ module.exports = [
     "chapter": "longestCommonSubstring",
     "testFilePaths": [
       "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js"
+    ]
+  },
+  {
+    "name": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
+    "label": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
+    "testNamePattern": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
+    "chapter": "bfMaximumSubarray",
+    "testFilePaths": [
+      "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
+    ]
+  },
+  {
+    "name": "divideByTwo should divide numbers by two using bitwise operations",
+    "label": "divideByTwo should divide numbers by two using bitwise operations",
+    "testNamePattern": "divideByTwo should divide numbers by two using bitwise operations",
+    "chapter": "divideByTwo",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/divideByTwo.test.js"
+    ]
+  },
+  {
+    "name": "longestCommonSubsequence should find longest common subsequence for two strings",
+    "label": "longestCommonSubsequence should find longest common subsequence for two strings",
+    "testNamePattern": "longestCommonSubsequence should find longest common subsequence for two strings",
+    "chapter": "longestCommonSubsequence",
+    "testFilePaths": [
+      "src/algorithms/sets/longest-common-subsequence/__test__/longestCommonSubsequence.test.js"
+    ]
+  },
+  {
+    "name": "uniquePaths should find the number of unique paths on board",
+    "label": "uniquePaths should find the number of unique paths on board",
+    "testNamePattern": "uniquePaths should find the number of unique paths on board",
+    "chapter": "uniquePaths",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js"
+    ]
+  },
+  {
+    "name": "btUniquePaths should find the number of unique paths on board",
+    "label": "btUniquePaths should find the number of unique paths on board",
+    "testNamePattern": "btUniquePaths should find the number of unique paths on board",
+    "chapter": "btUniquePaths",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/unique-paths/__test__/btUniquePaths.test.js"
     ]
   }
 ]

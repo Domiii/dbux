@@ -84,7 +84,7 @@
         },
         {
           "id": "dbuxChapterListBuilderView",
-          "name": "Tools",
+          "name": "JavaScript Algorithms",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         }
       ]

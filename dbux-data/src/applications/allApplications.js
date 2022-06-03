@@ -189,9 +189,10 @@ export class AllApplications {
   clear() {
     this._all = [null];
     this._activeApplicationsByPath = new Map();
-
+    
     this.applicationSelection.clear();
-
+    lastApplicationId = 0;
+    
     this._emitter.emit('clear');
   }
 
