@@ -80,6 +80,9 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
   }
 );
 
+/**
+ * Rval ME.
+ */
 export function buildtraceExpressionME(state, traceCfg) {
   // const meNode = getInstrumentTargetAstNode(state, traceCfg);
   // if (meNode.optional) {
@@ -129,6 +132,7 @@ export const buildTraceWriteME = buildTraceCall(
     const {
       data: {
         objectTid,
+        propertyTid,
         isObjectTracedAlready,
         objectAstNode: objectVar,
         propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`

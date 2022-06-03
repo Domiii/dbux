@@ -1,10 +1,10 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
 import { buildTraceWriteME } from '../../instrumentation/builders/me';
-import { ZeroNode } from '../../instrumentation/builders/buildUtil';
 import MemberExpression from '../MemberExpression';
-import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
+import { makeMETraceData } from '../helpers/me';
 
 /**
  * @example
@@ -62,7 +62,7 @@ export default class AssignmentLValME extends BasePlugin {
     const { Traces } = node;
     const [, valuePath] = node.getChildPaths();
 
-    const data = this.meNode.makeMETraceData();
+    const data = makeMETraceData(this.meNode);
 
     // add actual WriteME trace
     const traceData = {
