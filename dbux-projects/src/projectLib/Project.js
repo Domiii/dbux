@@ -1464,11 +1464,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // exercises
   // ###########################################################################
 
+  getExercisePath() {
+    return this.getAssetPath('exercises', `${this.name}.js`);
+  }
+
   /**
    * @return {ExerciseConfig[]}
    */
   loadExerciseConfigs() {
-    const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
+    const rawConfigFile = this.getExercisePath();
     try {
       const configs = requireUncached(rawConfigFile);
       return configs;

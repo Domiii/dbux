@@ -222,7 +222,12 @@ export default class ProjectsManager {
       return realPathSyncNormalized(pathResolve(...segments));
     }
     else {
-      return this.externals.resources.getResourcePath('dist', 'projects', ...segments);
+      if (process.env.NODE_ENV === 'development') {
+        return this.getDevAssetPath(...segments);
+      }
+      else {
+        return this.externals.resources.getResourcePath('dist', 'projects', ...segments);
+      }
     }
   }
 
@@ -920,6 +925,10 @@ export default class ProjectsManager {
   getDevPackageRoot() {
     // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
     return realPathSyncNormalized(path.join(__dirname, '..', '..'));
+  }
+
+  getDevAssetPath(...segments) {
+    return pathResolve(this.getDevPackageRoot(), `dbux-projects/assets`, ...segments);
   }
 
   // _convertPkgToLocalIfNecessary(pkgName, version = null) {

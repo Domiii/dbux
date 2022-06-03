@@ -6,7 +6,7 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
 
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
-  gitCommit = '9bb60fa';
+  gitCommit = 'cb7afe1';
 
   rmFiles = [
     'package-lock.json',
