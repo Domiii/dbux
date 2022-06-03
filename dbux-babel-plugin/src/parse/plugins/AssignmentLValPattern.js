@@ -1,35 +1,47 @@
 import BasePlugin from './BasePlugin';
 
 
-class BasePatternTreeNode {
+class PatternTreeNode {
+  tid;
 }
 
-class PropAccessNode extends BasePatternTreeNode {
+class PropPatternTraceNode {
   /**
    * @type {string}
    */
   prop;
 }
 
-class WriteVarNode extends BasePatternTreeNode {
-  // tid, declarationTid, inputs
+class WriteVarNode extends PropPatternTraceNode {
+  // declarationTid, inputs
   
   getValue() {
     // TODO
   }
 }
 
-class WriteMENode extends BasePatternTreeNode {
-  // propValue, tid, objectTid, propTid, inputs
+class WriteMENode extends PropPatternTraceNode {
+  // propValue, objectTid, propTid, inputs
 
   getValue() {
     // TODO
   }
 }
 
+/**
+ * NOTE: Rest is a simpler version of spread (in that, it does not affect other indexes)
+ * NOTE2: has no `prop`
+ * TODO:
+ * → makeSpreadableArgumentArrayCfg
+ * → buildSpreadableArgArrayNoSpread
+ * → 
+ */
+class RestNode extends PatternTreeNode {
+}
+
 class PatternTree {
   /**
-   * @type {BasePatternTreeNode}
+   * @type {PatternTreeNode}
    */
   root;
 }
@@ -45,6 +57,12 @@ export default class AssignmentLValPattern extends BasePlugin {
   }
 
   exit() {
-    // TODO: build `PatternTree`
+    // TODO: 
+    // 1. build `PatternTree`
+  }
+
+  instrument() {
+    // TODO: replace rval with `tracePattern(tree, rvalTid, rval)`
+    //    → in `tracePattern`, return a reconstruction of the rval, so the lval does not need changing
   }
 }
