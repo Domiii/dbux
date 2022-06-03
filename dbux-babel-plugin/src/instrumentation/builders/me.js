@@ -118,8 +118,8 @@ export const buildTraceWriteME = buildTraceCall(
 
     const assignmentExpression = getInstrumentTargetAstNode(state, traceCfg);
     const {
-      left: meNode,
-      right: rVal,
+      left: lvalNode,
+      right: rvalNode,
       operator
     } = assignmentExpression;
 
@@ -127,7 +127,7 @@ export const buildTraceWriteME = buildTraceCall(
       object: objectNode,
       property: propertyNode,
       computed
-    } = meNode;
+    } = lvalNode;
 
     const {
       data: {
@@ -151,25 +151,27 @@ export const buildTraceWriteME = buildTraceCall(
       );
     }
 
-    // build value
-    const newMemberExpression = t.memberExpression(
+    // build lval + final expression
+    const newLvalNode = t.memberExpression(
       objectVar,
       propertyVar || propertyNode,
-      computed, false
+      computed, 
+      false
     );
-    const value = t.assignmentExpression(
+    const newMENode = t.assignmentExpression(
       operator,
-      newMemberExpression,
-      rVal
+      newLvalNode,
+      rvalNode
     );
 
     return {
       trace,
       object: o,
       property: propertyValue,
-      value,
+      value: newMENode,
       tid,
       objectTid,
+      // propertyTid, // TODO!
       inputs: makeInputs(traceCfg)
     };
   }

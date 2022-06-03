@@ -35,8 +35,8 @@ export function getAssignmentLValPlugin(node) {
 
 const DeclaratorLValPluginsByType = {
   Identifier: 'VariableDeclaratorLVal',
-  // ObjectPattern: 'AssignmentLValPattern',
-  // ArrayPattern: 'AssignmentLValPattern',
+  ObjectPattern: 'AssignmentLValPattern',
+  ArrayPattern: 'AssignmentLValPattern',
   // MemberExpression: 'AssignmentLValME'
 };
 
