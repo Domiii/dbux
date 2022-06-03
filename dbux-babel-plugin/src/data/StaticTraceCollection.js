@@ -20,6 +20,7 @@ const traceCustomizationsByType = {
   [TraceType.PopImmediate]: tracePathEndContext,
 
   [TraceType.BranchPush]: tracePathStartBranch,
+  [TraceType.BranchDecision]: tracePathStartBranch,
   [TraceType.BranchPop]: tracePathEndBranch,
 
   [TraceType.BeforeExpression]: traceBeforeExpression,

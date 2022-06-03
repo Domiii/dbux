@@ -125,7 +125,10 @@ export default class DDGTimelineBuilder {
         // make sure, we are in the correct loop
         return null;
       }
-      if (dp.util.isDataNodeValueTruthy(dataNode.nodeId)) {
+      if (
+        TraceType.is.BranchDecision(staticTrace.type) || // only used in case of `for (;;) { ... }`?
+        dp.util.isDataNodeValueTruthy(dataNode.nodeId)   // else, loop decisions are always controlled by true/false values
+      ) {
         // push next iteration
         const iterationNode = new IterationNode(decisionNode.timelineId);
         this.#addAndPushGroup(iterationNode);
@@ -360,15 +363,23 @@ export default class DDGTimelineBuilder {
       // sanity check
       const groupTag = `[${DDGTimelineNodeType.nameFrom(currentGroup.type)}]`;
       const groupControlInfo = `${currentGroup.controlStatementId && dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}`;
-      this.logger.trace(`Invalid Decision node.\n  ` +
+      this.logger.trace(`Invalid Control Group.\n  ` +
         `${trace && `At trace: ${dp.util.makeTraceInfo(trace)}` || ''}\n  ` +
         // eslint-disable-next-line max-len
-        `Expected control group for: ${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)},\n  ` +
+        `Expected control group of: ${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)},\n  ` +
         `Actual group: ${groupTag} ${groupControlInfo} (${JSON.stringify(currentGroup)})\n\n`
       );
       return false;
     }
     return true;
+  }
+
+  #makeGroupDebugTag(group) {
+    return DDGTimelineNodeType.nameFrom(group.type);
+  }
+
+  #makeGroupLabel(group) {
+    return controlGroupLabelMaker[group.type]?.(this.ddg, group) || '';
   }
 
   /**
@@ -414,8 +425,7 @@ export default class DDGTimelineBuilder {
         if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
           return;
         }
-        const label = controlGroupLabelMaker[currentGroup.type]?.(ddg, currentGroup);
-        currentGroup.label = label || '';
+        currentGroup.label = this.#makeGroupLabel(currentGroup);
       }
       this.#popGroup();
     }
@@ -455,6 +465,7 @@ export default class DDGTimelineBuilder {
 
 
     const isDecision = dp.util.isTraceControlDecision(traceId);
+    // Verbose && this.debug(`trace ${traceId} (${trace.staticTraceId}), decision=${isDecision}`);
 
     // if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
     //   // future-work: add two nodes in this case
@@ -472,7 +483,7 @@ export default class DDGTimelineBuilder {
     if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
       if (this.#shouldIgnoreDataNode(ownDataNode.nodeId)) {
         // ignore entirely
-        this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(ownDataNode));
+        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(ownDataNode));
         return;
       }
       const skippedBy = this.#skipDataNode(ownDataNode);
@@ -543,18 +554,29 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   /**
-   * @param {GroupTimelineNode} newGroupNode 
+   * @param {GroupTimelineNode} newGroup 
    */
-  #addAndPushGroup(newGroupNode) {
-    this.ddg.addNode(newGroupNode);
-    this.#addNodeToGroup(newGroupNode);
-    this.stack.push(newGroupNode);
+  #addAndPushGroup(newGroup) {
+    this.ddg.addNode(newGroup);
+    this.#addNodeToGroup(newGroup);
+
+    Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
+    this.stack.push(newGroup);
   }
 
   #popGroup() {
     const nestedGroup = this.stack.pop();
+    Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
     const currentGroup = this.peekStack();
     currentGroup.hasRefWriteNodes ||= nestedGroup.hasRefWriteNodes;
     return nestedGroup;
+  }
+
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  debug(...args) {
+    this.logger.debug(`${'  '.repeat(this.stack.length - 1).substring(1)}`, ...args);
   }
 }

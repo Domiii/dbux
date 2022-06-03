@@ -24,25 +24,31 @@ const traceTypeObj = {
   BranchExpression: 10,
   /**
    * Dedicated branch push.
-   * NOTE: Not all branches have one. Use `controlRole` instead.
+   * NOTE: Not all branches have one. Use `controlRole` for this.
    */
   BranchPush: 11,
   /**
    * Dedicated branch pop.
-   * NOTE: Not all branches have one. Use `controlRole` instead.
+   * NOTE: Not all branches have one. Use `controlRole` for this.
    */
   BranchPop: 12,
 
-  Statement: 13,
-  BlockStart: 14,
-  BlockEnd: 15,
+  /**
+   * Dedicated decision branch.
+   * NOTE: Not all branches have one. Use `controlRole` for this.
+   */
+  BranchDecision: 13,
+
+  Statement: 14,
+  BlockStart: 15,
+  BlockEnd: 16,
 
   // Return
-  ReturnArgument: 16,
-  ReturnNoArgument: 17,
+  ReturnArgument: 17,
+  ReturnNoArgument: 18,
 
   // Throw
-  ThrowArgument: 18,
+  ThrowArgument: 19,
 
   // Await
   Await: 20,

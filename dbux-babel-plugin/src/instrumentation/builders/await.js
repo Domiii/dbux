@@ -62,6 +62,8 @@ export const buildPostAwait = buildTraceCall(
       }
     } = traceCfg;
     const awaitNode = getInstrumentTargetAstNode(state, traceCfg);
+
+    // TODO: possibly bug? `buildTraceIdValue` does not actually take a value!
     const tid = buildTraceIdValue(state, traceCfg, resultVar);
 
     return {

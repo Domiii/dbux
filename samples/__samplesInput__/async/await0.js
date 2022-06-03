@@ -6,8 +6,8 @@ async function main() {
   console.log(1);
   await 0;
   console.log(2);
-  await 0;
-  console.log(3);
+  // await 0;
+  // console.log(3);
 }
 
 main();

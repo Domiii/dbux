@@ -1,8 +1,9 @@
 import TraceControlRole from '@dbux/common/src/types/constants/TraceControlRole';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import { TrueNode } from '../../helpers/traceUtil';
 import { buildTraceStatic } from '../../instrumentation/builders/misc';
-import { insertAfterNode, insertBeforeNode } from '../../instrumentation/instrumentMisc';
+import { insertAfterBody, insertAfterNode, insertBeforeNode, instrumentUnshiftBody } from '../../instrumentation/instrumentMisc';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../../definitions/TraceCfg").default } TraceCfg */
@@ -161,6 +162,38 @@ export default class BranchStatement extends BasePlugin {
     });
 
     this.setPopTrace(trace);
+
+    return trace;
+  }
+
+  insertDecisionTraceBeforeBody() {
+    const {
+      node,
+      node: {
+        path,
+        Traces
+      }
+    } = this;
+
+    const trace = Traces.addTrace({
+      path,
+      node,
+      staticTraceData: {
+        type: TraceType.BranchDecision
+      },
+      meta: {
+        noTidIdentifier: true,
+        // build: buildTraceStatic, // NOTE: default = buildTraceExpression
+        // traceCall: 'newTraceId',
+
+        // NOTE: we need a DataNode, so we simply pass in `true`
+        targetNode() { return TrueNode; },
+
+        instrument: instrumentUnshiftBody,
+      }
+    });
+
+    this.setDecisionTrace(trace);
 
     return trace;
   }
