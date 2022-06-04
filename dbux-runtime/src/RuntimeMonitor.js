@@ -4,6 +4,7 @@ import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
@@ -1255,10 +1256,10 @@ export default class RuntimeMonitor {
    * Patterns
    * ##########################################################################*/
 
-  tracePattern(programId, tree, rvalInProgramStaticTraceId, rval) {
+  tracePattern(programId, nodes, node, rvalInProgramStaticTraceId, rval) {
     // NOTE: we need to reconstruct a new object, so the original object props are not accessed twice
     const reconstructed = TODO;
-    
+
     /**
      * Cases:
      * 1. Prop
@@ -1273,6 +1274,21 @@ export default class RuntimeMonitor {
 
     return reconstructed;
   }
+
+  _tracePatternHandlers = {
+    [PatternAstNodeType.Prop](nodes, node, rvalInProgramStaticTraceId, rval) {
+
+    },
+    [PatternAstNodeType.Array]: () => {
+
+    },
+    [PatternAstNodeType.Object]: () => {
+
+    },
+    [PatternAstNodeType.Rest]: () => {
+      
+    }
+  };
 
   // // ###########################################################################
   // // Loops (unfinished)
