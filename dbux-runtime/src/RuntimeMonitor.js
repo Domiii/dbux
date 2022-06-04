@@ -956,6 +956,10 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
+  /** ###########################################################################
+   * try/catch/finally
+   * ##########################################################################*/
+
   traceCatch(programId, inProgramStaticTraceId) {
     if (!this.areTracesDisabled) {
       this.newTraceId(programId, inProgramStaticTraceId);
@@ -1245,6 +1249,29 @@ export default class RuntimeMonitor {
     }
 
     return value;
+  }
+
+  /** ###########################################################################
+   * Patterns
+   * ##########################################################################*/
+
+  tracePattern(programId, tree, rvalInProgramStaticTraceId, rval) {
+    // NOTE: we need to reconstruct a new object, so the original object props are not accessed twice
+    const reconstructed = TODO;
+    
+    /**
+     * Cases:
+     * 1. Prop
+     * 2. Array
+     * 3. Object
+     * 4. Rest
+     * 
+     * Lval Flavors:
+     * 1. ME or Var
+     * 2. DefaultValue (see DefaultInitializerIndicator)
+     */
+
+    return reconstructed;
   }
 
   // // ###########################################################################
