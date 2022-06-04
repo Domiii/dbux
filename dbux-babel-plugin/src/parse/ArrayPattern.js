@@ -17,8 +17,40 @@ export default class ArrayPattern extends BaseNode {
   //   t.callExpression(this.hub.addHelper('slicedToArray'), args);
   // }
 
-  enter() {
-    // TODO!
-    this.path.skip();
+  buildPatternNode(prop, patternNodes, preInitSequenceAstNodes) {
+    const [elementNodes] = this.getChildNodes();
+    const children = [];
+    const newNode = {
+      prop,
+      children
+    };
+    patternNodes.push(newNode);
+
+    for (let i = 0; i < elementNodes.length; ++i) {
+      /**
+       * @type {BaseNode}
+       */
+      const childNodes = elementNodes[i];
+      const childPath = childNodes.path;
+
+      let childPatternNode;
+      if (childPath.isIdentifier()) {
+        // Var
+      }
+      else if (childPath.isMemberExpression()) {
+        // ME
+      }
+      else if (childPath.isAssignmentPattern()) {
+        // TODO
+      }
+      else if (childPath.isRestElement()) {
+        // Var or ME
+      }
+      else if (childPath.isPattern()) {
+        childPatternNode = childNodes.buildPatternNode(i, patternNodes, preInitSequenceAstNodes);
+      }
+
+      patternNodes.push(childPatternNode);
+    }
   }
 }

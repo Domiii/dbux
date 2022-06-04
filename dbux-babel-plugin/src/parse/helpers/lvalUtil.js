@@ -1,5 +1,3 @@
-import { pathToString } from '../../helpers/pathHelpers';
-
 /** @typedef { import("@babel/types").Node } AstNode */
 
 

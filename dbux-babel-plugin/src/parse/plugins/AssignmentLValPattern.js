@@ -1,3 +1,4 @@
+import { buildAndInstrumentPatternTree } from '../helpers/patterns';
 import BasePlugin from './BasePlugin';
 
 
@@ -17,7 +18,7 @@ class PropPatternTraceNode extends PatternTreeNode {
 
 class WriteVarNode extends PropPatternTraceNode {
   // declarationTid, inputs
-  
+
   getValue() {
     // TODO
   }
@@ -58,40 +59,10 @@ export class PatternTree {
  * @see https://tc39.es/ecma262/#prod-BindingPattern
  */
 export default class AssignmentLValPattern extends BasePlugin {
-  enter() {
-    const {
-      node: {
-        stack
-      }
-    } = this;
-
-    if (!stack.specialNodes.patternTree) {
-      stack.specialNodes.patternTree = this;
-    }
-  }
-
-  exit1() {
-    const {
-      node: {
-        stack
-      }
-    } = this;
-
-    if (stack.specialNodes.patternTree === this) {
-      stack.specialNodes.patternTree = null;
-    }
-  }
-
   instrument() {
-    /**
-     * Cases:
-     * 1. AssignmentExpression
-     * 2. DefaultDeclaratorLVal (adds `Write` trace, while VariableDeclarator might add a hoisted `Declaration` trace)
-     * 3. Params
-     * 4. ForDeclaratorLVal (will probably use `Params` logic)
-     */
+    const { node } = this;
 
-    // TODO: replace rval with `tracePattern(tree, rvalTid, rval)`
-    // TODO: the `tracePattern` function returns a reconstruction of the rval, so the lval does not need changing
+    const [left, right] = node.getChildNodes();
+    buildAndInstrumentPatternTree(left, right.path);
   }
 }

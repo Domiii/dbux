@@ -1279,6 +1279,8 @@ export default class RuntimeMonitor {
   /**
    * NOTE: Pattern trace is attached to its rval.
    * 
+   * TODO: default values (see DefaultInitializerIndicator)
+   * 
    * @param {*} programId 
    * @param {*} writeNodes 
    * @param {*} rvalTid 
@@ -1289,27 +1291,14 @@ export default class RuntimeMonitor {
       return rval;
     }
 
-    /**
-     * Cases:
-     * 1. Prop
-     * 2. Array
-     * 3. Object
-     * 4. Rest
-     * 
-     * Lval Flavors:
-     * 1. ME or Var
-     * 2. DefaultValue (see DefaultInitializerIndicator)
-     */
-    // return this._tracePattern(programId, nodes, root, rvalInProgramStaticTraceId, rvalTid, rval);
-
     const rvalStaticTrace = traceCollection.getStaticTraceByTraceId(rvalTid);
-    const { tree } = rvalStaticTrace.data;
+    // const { tree } = rvalStaticTrace.data;
 
     const root = writeNodes[0];
     const varAccess = null;
     const inputs = [dataNodeCollection.getOwnDataNodeIdByTraceId(rvalTid)];
     const rvalDataNode = dataNodeCollection.createOwnDataNode(rval, rvalTid, DataNodeType.Read, varAccess, inputs);
-    return this._tracePatternHandlers[root.type](tree, writeNodes, root, rval, rvalDataNode);
+    return this._tracePatternHandlers[root.type](writeNodes, root, null, rval, rvalTid, rvalDataNode);
   }
 
   _getPatternProp(obj, prop) {
@@ -1317,10 +1306,10 @@ export default class RuntimeMonitor {
     return valueCollection._readProperty(obj, prop);
   }
 
-  _tracePatternRecurse = (tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result) => {
+  _tracePatternRecurse = (nodes, node, childValues, value, rvalTid, readDataNode, result) => {
     const { children } = node;
     for (const iChild of children) {
-      const child = writeNodes[iChild];
+      const child = nodes[iChild];
       const childValue = this._getPatternProp(childValues, child.prop);
       const varAccess = {
         objectNodeId: readDataNode.nodeId,
@@ -1329,39 +1318,39 @@ export default class RuntimeMonitor {
       // const inputs = [parentReadDataNode.nodeId];
       const childReadDataNode = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess);
       this._tracePatternHandlers[node.type](
-        tree, writeNodes, child, value, childValue, rvalTid, childReadDataNode
+        nodes, child, value, childValue, rvalTid, childReadDataNode
       );
     }
     return result;
   }
 
   _tracePatternHandlers = {
-    [PatternAstNodeType.Array]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+    [PatternAstNodeType.Array]: (nodes, node, parentValue, value, rvalTid, readDataNode) => {
       const result = []; // NOTE: we need to reconstruct rval, so rval props are not accessed twice
       // NOTE: array destructuring can also be used on iterables
       const childValues = _slicedToArray(value, node.children.length);
-      this._tracePatternRecurse(tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result);
+      this._tracePatternRecurse(nodes, node, childValues, value, rvalTid, readDataNode, result);
       if (parentValue) {
         parentValue[node.prop] = result;
       }
       return result;
     },
-    [PatternAstNodeType.Object]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+    [PatternAstNodeType.Object]: (nodes, node, parentValue, value, rvalTid, readDataNode) => {
       const result = {}; // NOTE: we need to reconstruct rval, so rval props are not accessed twice
       // NOTE: object destructuring just reads props as-is
       const childValues = value;
-      this._tracePatternRecurse(tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result);
+      this._tracePatternRecurse(nodes, node, childValues, value, rvalTid, readDataNode, result);
       if (parentValue) {
         parentValue[node.prop] = result;
       }
       return result;
     },
-    [PatternAstNodeType.Var]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+    [PatternAstNodeType.Var]: (nodes, node, parentValue, value, rvalTid, readDataNode) => {
       const { tid, declarationTid } = node;
       const inputs = [readDataNode.nodeId];
       parentValue[node.prop] = this._traceWriteVar(value, tid, declarationTid, inputs);
     },
-    [PatternAstNodeType.ME]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+    [PatternAstNodeType.ME]: (nodes, node, parentValue, value, rvalTid, readDataNode) => {
       const { tid, propValue, propTid, objectNodeId } = node;
       const inputs = [readDataNode.nodeId];
       parentValue[node.prop] = this._traceWriteME(value, propValue, propTid, objectNodeId, tid, inputs);
@@ -1369,10 +1358,10 @@ export default class RuntimeMonitor {
 
 
     // [rest]
-    [PatternAstNodeType.RestArray]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+    [PatternAstNodeType.RestArray]: (nodes, node, parentValue, value, rvalTid, readDataNode) => {
       const { tid, innerType, startIndex } = node;
       const result = [];
-      this._tracePatternHandlers[innerType](tree, writeNodes, node, parentValue, result, rvalTid, readDataNode);
+      this._tracePatternHandlers[innerType](nodes, node, parentValue, result, rvalTid, readDataNode);
       const resultObjectNodeId = traceCollection.getOwnDataNodeIdByTraceId(tid);
 
       for (let iRead = startIndex; iRead < value.length; iRead++) {
@@ -1392,10 +1381,10 @@ export default class RuntimeMonitor {
       }
     },
 
-    [PatternAstNodeType.RestObject]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+    [PatternAstNodeType.RestObject]: (nodes, node, parentValue, value, rvalTid, readDataNode) => {
       const { tid, innerType, excluded } = node;
       const result = {};
-      this._tracePatternHandlers[innerType](tree, writeNodes, node, parentValue, result, rvalTid, readDataNode);
+      this._tracePatternHandlers[innerType](nodes, node, parentValue, result, rvalTid, readDataNode);
       const resultObjectNodeId = traceCollection.getOwnDataNodeIdByTraceId(tid);
 
       /**
