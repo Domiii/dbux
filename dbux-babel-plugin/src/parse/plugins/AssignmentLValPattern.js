@@ -39,26 +39,49 @@ class WriteMENode extends PropPatternTraceNode {
 class RestNode extends PatternTreeNode {
 }
 
-class PatternTree {
+export class PatternTree {
   /**
    * @type {PatternTreeNode}
    */
   root;
 }
 
+/**
+ * Takes care of all patterns/pattern-likes.
+ * 
+ * @implements {PatternTree}
+ * 
+ * @see https://babeljs.io/docs/en/babel-types#patternlike
+ * @see https://tc39.es/ecma262/#prod-BindingPattern
+ */
 export default class AssignmentLValPattern extends BasePlugin {
   /**
-   * @type {PatternTree}
+   * @type {PatternTreeNode}
    */
-  patternTree;
+  root;
 
   enter() {
+    const {
+      node: {
+        stack
+      }
+    } = this;
 
+    if (!stack.specialNodes.patternTree) {
+      stack.specialNodes.patternTree = this;
+    }
   }
 
   exit() {
-    // TODO: 
-    // 1. build `PatternTree`
+    const {
+      node: {
+        stack
+      }
+    } = this;
+
+    if (stack.specialNodes.patternTree === this) {
+      stack.specialNodes.patternTree = null;
+    }
   }
 
   instrument() {

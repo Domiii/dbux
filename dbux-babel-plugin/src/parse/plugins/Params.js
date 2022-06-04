@@ -83,43 +83,6 @@ export default class Params extends BasePlugin {
     const defaultInitializerPath = getParamDefaultInitializerPath(paramPath);
     const defaultInitializerNode = defaultInitializerPath && this.node.getNodeOfPath(defaultInitializerPath);
 
-    // ########################################
-    // parameter declaration (with defaultInitializer) [v1]
-    // ########################################
-
-    // let defaultInitializerTrace;
-    // if (defaultInitializerPath) {
-    //   // NOTE: defaultInitializerTrace will not be triggered if the parameter has matching argument (no default value)
-
-    //   // const paramNode = paramPath.node;
-    //   const defaultInitializerTraceData = {
-    //     path: paramPath,
-    //     scope: this.node.path.scope.parent,  // important: declare in Function's (or CatchClause's) parent scope
-    //     node: paramNode,
-    //     staticTraceData: {
-    //       // NOTE: we use `Param` type because several algorithms depend on this.
-    //       type: TraceType.Param
-    //     },
-    //     meta: {
-    //       build: buildTraceWriteVar,
-    //       targetPath: defaultInitializerPath,
-    //       hoisted: false
-    //       // moreTraceCallArgs: () => {
-    //       //   return [
-    //       //     // idPath.node,
-    //       //     t.arrayExpression()
-    //       //   ];
-    //       // }
-    //     }
-    //   };
-
-    //   const inputs = [defaultInitializerPath];
-    //   defaultInitializerTrace = paramNode.Traces.addTraceWithInputs(defaultInitializerTraceData, inputs);
-    // }
-    // else {
-    //   // no default value
-    // }
-
     // parameter declaration (without defaultInitializer)
     const paramTraceData = {
       path: paramNode.path,

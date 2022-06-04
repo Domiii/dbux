@@ -1,6 +1,6 @@
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-// import { buildtraceExpressionME } from '../instrumentation/builders/me';
+import { buildtraceExpressionME } from '../instrumentation/builders/me';
 import BaseNode from './BaseNode';
 import { makeMETraceData } from './helpers/me';
 

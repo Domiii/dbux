@@ -5,6 +5,9 @@ import BaseNode from './BaseNode';
 import { skipPath } from '../helpers/traversalHelpers';
 // import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
+/** @typedef { import("./plugins/Params").default } Params */
+/** @typedef { import("./plugins/AssignmentLValPattern").PatternTree } PatternTree */
+
 
 function isSupported(paramPath) {
   // TODO: `RestElement` (good news: never has default initializer)
@@ -20,17 +23,19 @@ function isSupported(paramPath) {
 // ###########################################################################
 
 /**
- * NOTE: this is also Babel's translation of a default parameter to es5.
+ * NOTE: this is also Babel's translation of a default parameters to es5.
+ * NOTE2: we are not using `arguments` because those won't work in lambda expressions.
  * 
- * TODO: `arguments` does not work for lambda expressions.
  * However, in order to assure correct order of execution, we cannot just instrument in place...?
  */
-const builddefaultInitializerAccessor = template(
+const buildDefaultInitializerAccessor = template(
   // `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultInitializer%% : arguments[%%i%%]`
   `%%var%% === %%DefaultInitializerIndicator%% ? %%defaultInitializer%% : %%var%%`
 );
 
 /**
+ * Found in {@link Params} and in {@link PatternTree} for default values.
+ * 
  * @implements {LValHolderNode}
  */
 export default class AssignmentPattern extends BaseNode {
@@ -65,7 +70,7 @@ export default class AssignmentPattern extends BaseNode {
   }
 
   /**
-   * NOTE: called by {@link ./plugins/Params}
+   * NOTE: called by {@link Params}
    */
   buildAndReplaceParam(state) {
     // const { path: paramPath } = this;
@@ -79,7 +84,7 @@ export default class AssignmentPattern extends BaseNode {
       DefaultInitializerIndicator,
       defaultInitializer: this.defaultInitializerPath.node
     };
-    const repl = builddefaultInitializerAccessor(args).expression;
+    const repl = buildDefaultInitializerAccessor(args).expression;
 
     rightPath.replaceWith(DefaultInitializerIndicator);
 

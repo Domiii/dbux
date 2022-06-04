@@ -13,7 +13,7 @@ import { ZeroNode } from '../../helpers/traceUtil';
  */
 export function makeMETraceData(parseNode, objectAstNode = null) {
   const { path, Traces } = parseNode;
-  const [objectNode, propertyNode] = this.getChildNodes();
+  const [objectNode, propertyNode] = parseNode.getChildNodes();
   const {
     computed
   } = path.node;
@@ -25,7 +25,7 @@ export function makeMETraceData(parseNode, objectAstNode = null) {
   const objectTraceCfg = objectNode.addDefaultTrace();
   let objectTid = objectTraceCfg?.tidIdentifier;
   if (!objectTid) {
-    this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+    parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     objectTid = ZeroNode;
   }
   objectAstNode = objectAstNode || Traces.generateDeclaredUidIdentifier('o');
