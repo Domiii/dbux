@@ -1318,16 +1318,16 @@ export default class RuntimeMonitor {
   }
 
   _tracePatternRecurse = (tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result) => {
-    const { prop, children } = node;
+    const { children } = node;
     for (const iChild of children) {
       const child = writeNodes[iChild];
-      const childValue = this._getPatternProp(childValues, prop);
+      const childValue = this._getPatternProp(childValues, child.prop);
       const varAccess = {
         objectNodeId: readDataNode.nodeId,
-        prop
+        prop: child.prop
       };
       // const inputs = [parentReadDataNode.nodeId];
-      const childReadDataNode = dataNodeCollection.createDataNode(value, rvalTid, DataNodeType.Read, varAccess);
+      const childReadDataNode = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess);
       this._tracePatternHandlers[node.type](
         tree, writeNodes, child, value, childValue, rvalTid, childReadDataNode
       );
@@ -1401,7 +1401,7 @@ export default class RuntimeMonitor {
       /**
        * NOTE: this is based on Babel's `_objectWithoutPropertiesLoose`
        */
-      const keys = difference(valueCollection._readKeys(value), excluded);
+      const keys = difference(valueCollection.readKeys(value), excluded);
       for (const prop of keys) {
         let val = result[prop] = this._getPatternProp(value, prop);
 
