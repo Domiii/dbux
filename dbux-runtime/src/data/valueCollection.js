@@ -469,7 +469,7 @@ class ValueCollection extends Collection {
   /**
    * 
    */
-  _getProperties(obj) {
+  _readKeys(obj) {
     try {
       this._startAccess(obj);
 
@@ -720,7 +720,7 @@ class ValueCollection extends Collection {
         }
         else {
           // iterate over all object properties
-          let props = this._getProperties(value);
+          let props = this._readKeys(value);
 
           // special handling for promise
           this.registerPromiseValue(valueRef, value);

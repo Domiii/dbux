@@ -532,22 +532,22 @@ export default class ProgramMonitor {
   /**
    * 
    */
-  traceExpr(inProgramStaticTraceId, value) {
+  traceExpr(tid, value) {
     value = wrapValue(value);
     // this._logger.debug('trace expr', { inProgramStaticTraceId, value });
     if (this.areTracesDisabled) {
       return value;
     }
-    return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), tid, value);
   }
 
-  traceArg(inProgramStaticTraceId, value) {
-    value = wrapValue(value);
-    if (this.areTracesDisabled) {
-      return value;
-    }
-    return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
-  }
+  // traceArg(inProgramStaticTraceId, value) {
+  //   value = wrapValue(value);
+  //   if (this.areTracesDisabled) {
+  //     return value;
+  //   }
+  //   return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
+  // }
 
   // ###########################################################################
   // loops

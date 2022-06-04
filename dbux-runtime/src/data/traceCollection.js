@@ -13,6 +13,12 @@ class TraceCollection extends Collection {
   }
 
   getOwnDataNodeIdByTraceId(traceId) {
+    // NOTE: Yes, `this.getById(traceId)` can be `null`!
+    //      e.g. when a LogicalExpression does not execute both sides (e.g. `te(1) || te(2)` will not execute `te(2)`)
+    //      e.g. ConditionalExpression (e.g. `x ? a : b`, will only execute either `a` or `b`)
+
+    // const traceInfo = this.makeTraceInfo(tid);
+    // warn(new Error(`Could not lookup trace of traceId=${traceId} in getDataNodeIdsByTraceIds([${traceIds.join(', ')}])\n  at trace #${tid}: ${traceInfo} `));
     return this.getById(traceId)?.nodeId || 0;
   }
 
@@ -20,19 +26,7 @@ class TraceCollection extends Collection {
     if (!traceIds) {
       return null;
     }
-    return traceIds.map(traceId => {
-      const trace = this.getById(traceId);
-      if (!trace) {
-        // NOTE: this is as intended.
-        //      Can happen when a LogicalExpression does not execute both sides (e.g. `te(1) || te(2)` will not execute `te(2)`)
-        //      Or from ConditionalExpression (e.g. `x ? a : b`, will only execute either `a` or `b`)
-
-        // const traceInfo = this.makeTraceInfo(tid);
-        // warn(new Error(`Could not lookup trace of traceId=${traceId} in getDataNodeIdsByTraceIds([${traceIds.join(', ')}])\n  at trace #${tid}: ${traceInfo} `));
-        return null;
-      }
-      return trace.nodeId;
-    }).filter(id => !!id);
+    return traceIds.map(traceId => this.getOwnDataNodeIdByTraceId(traceId)).filter(Boolean);
   }
 
   getStaticTraceByTraceId(traceId) {

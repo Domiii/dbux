@@ -5,10 +5,11 @@ import Enum from "../../util/Enum";
  */
 // eslint-disable-next-line import/no-mutable-exports
 let patternAstNodeTypeObj = {
-  Prop: 1,
-  Array: 2,
-  Object: 3,
-  Rest: 4
+  Array: 1,
+  Object: 2,
+  Var: 3,
+  ME: 4,
+  Rest: 5
 };
 const PatternAstNodeType = new Enum(patternAstNodeTypeObj);
 

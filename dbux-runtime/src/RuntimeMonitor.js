@@ -1,3 +1,4 @@
+import difference from 'lodash/difference';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
 import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
@@ -23,6 +24,7 @@ import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
+import { _slicedToArray } from './util/builtinUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -43,6 +45,7 @@ const debug = (...args) => Verbose && _debug(...args);
 //     subClass.__proto__ = superClass;
 //   }
 // }
+
 
 /**
  * 
@@ -770,17 +773,24 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    // [future-work] `declarationTid` should always be defined. If not, assume global?
+    return this._traceWriteVar(value, tid, declarationTid, inputs);
+  }
+
+  _traceWriteVar(value, tid, declarationTid, inputs) {
+    // [future-work] `declarationTid` should always have a declaration.
+    //    If not, we did not record its declaration. E.g. for global built-ins.
     if (!declarationTid) {
       declarationTid = tid;
     }
     // console.warn('twv', tid, declarationTid);
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
+    const inputsNodeIds = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, inputsNodeIds);
     return value;
   }
 
-  traceWriteME(programId, value, propValue, tid, objectTid, inputs) {
+  // TODO: propTid
+  traceWriteME(programId, propValue, propTid, objectTid, value, tid, inputTids) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -789,15 +799,24 @@ export default class RuntimeMonitor {
       return value;
     }
 
+    const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
+    const inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputTids);
+    return this._traceWriteME(value, propValue, propTid, tid, objectNodeId, inputs);
+  }
+
+  // TODO: propTid
+  _traceWriteME(value, propValue, propTid, objectNodeId, tid, inputs) {
     // this.registerTrace(value, tid);
     const varAccess = {
-      objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
-      prop: propValue
+      objectNodeId,
+      prop: propValue,
+      propNodeId: traceCollection.getOwnDataNodeIdByTraceId(propTid)
     };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, inputs);
     return value;
   }
 
+  // TODO: propTid
   traceDeleteME(programId, result, propValue, tid, objectTid) {
     if (!this._ensureExecuting()) {
       return result;
@@ -828,7 +847,7 @@ export default class RuntimeMonitor {
     // DataNodeType.Create
     const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess);
 
-    // [runtime-error] potential runtime error (but should actually never happen)
+    // [runtime-error] runtime value access (but should actually never happen)
     const proto = value.prototype;
 
     // add prototype node
@@ -1072,10 +1091,11 @@ export default class RuntimeMonitor {
 
     const spreadArgs = args?.map((a, i) => {
       // [runtime-error] potential runtime error
-      // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
+      // NOTE: trying to spread a non-iterable results in Error; e.g.:
       //      "Found non-callable @@iterator"
       //      "XX is not iterable"
-      return argConfigs?.[i]?.isSpread && Array.from(a);
+      const spreadable = Array.from(a); // alternative: _slicedToArray(a)
+      return argConfigs?.[i]?.isSpread && spreadable;
     }) || EmptyArray;
 
     const bceTrace = traceCollection.getById(callId);
@@ -1167,15 +1187,15 @@ export default class RuntimeMonitor {
     let idx = 0;
     for (let i = 0; i < argTids.length; i++) {
       const argTid = argTids[i];
-      const len = spreadLengths[i];
+      const spreadLen = spreadLengths[i];
 
       if (!argTid) {
         // empty (omitted) array element (e.g.: [1, , 2])
         continue;
       }
-      else if (len >= 0) {
+      else if (spreadLen >= 0) {
         // [spread]
-        for (let j = 0; j < len; j++) {
+        for (let j = 0; j < spreadLen; j++) {
           const readAccess = {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(argTid),
             prop: j
@@ -1256,9 +1276,18 @@ export default class RuntimeMonitor {
    * Patterns
    * ##########################################################################*/
 
-  tracePattern(programId, nodes, node, rvalInProgramStaticTraceId, rval) {
-    // NOTE: we need to reconstruct a new object, so the original object props are not accessed twice
-    const reconstructed = TODO;
+  /**
+   * NOTE: Pattern trace is attached to its rval.
+   * 
+   * @param {*} programId 
+   * @param {*} writeNodes 
+   * @param {*} rvalTid 
+   * @param {*} rval 
+   */
+  tracePattern(programId, writeNodes, rvalTid, rval) {
+    if (!this._ensureExecuting()) {
+      return rval;
+    }
 
     /**
      * Cases:
@@ -1271,22 +1300,122 @@ export default class RuntimeMonitor {
      * 1. ME or Var
      * 2. DefaultValue (see DefaultInitializerIndicator)
      */
+    // return this._tracePattern(programId, nodes, root, rvalInProgramStaticTraceId, rvalTid, rval);
 
-    return reconstructed;
+    const rvalStaticTrace = traceCollection.getStaticTraceByTraceId(rvalTid);
+    const { tree } = rvalStaticTrace.data;
+
+    const root = writeNodes[0];
+    const varAccess = null;
+    const inputs = [dataNodeCollection.getOwnDataNodeIdByTraceId(rvalTid)];
+    const rvalDataNode = dataNodeCollection.createOwnDataNode(rval, rvalTid, DataNodeType.Read, varAccess, inputs);
+    return this._tracePatternHandlers[root.type](tree, writeNodes, root, rval, rvalDataNode);
+  }
+
+  _getPatternProp(obj, prop) {
+    // [runtime-error] runtime value access
+    return valueCollection._readProperty(obj, prop);
+  }
+
+  _tracePatternRecurse = (tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result) => {
+    const { prop, children } = node;
+    for (const iChild of children) {
+      const child = writeNodes[iChild];
+      const childValue = this._getPatternProp(childValues, prop);
+      const varAccess = {
+        objectNodeId: readDataNode.nodeId,
+        prop
+      };
+      // const inputs = [parentReadDataNode.nodeId];
+      const childReadDataNode = dataNodeCollection.createDataNode(value, rvalTid, DataNodeType.Read, varAccess);
+      this._tracePatternHandlers[node.type](
+        tree, writeNodes, child, value, childValue, rvalTid, childReadDataNode
+      );
+    }
+    return result;
   }
 
   _tracePatternHandlers = {
-    [PatternAstNodeType.Prop](nodes, node, rvalInProgramStaticTraceId, rval) {
-
+    [PatternAstNodeType.Array]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+      const result = []; // NOTE: we need to reconstruct rval, so rval props are not accessed twice
+      // NOTE: array destructuring can also be used on iterables
+      const childValues = _slicedToArray(value, node.children.length);
+      this._tracePatternRecurse(tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result);
+      if (parentValue) {
+        parentValue[node.prop] = result;
+      }
+      return result;
     },
-    [PatternAstNodeType.Array]: () => {
-
+    [PatternAstNodeType.Object]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+      const result = {}; // NOTE: we need to reconstruct rval, so rval props are not accessed twice
+      // NOTE: object destructuring just reads props as-is
+      const childValues = value;
+      this._tracePatternRecurse(tree, writeNodes, node, childValues, value, rvalTid, readDataNode, result);
+      if (parentValue) {
+        parentValue[node.prop] = result;
+      }
+      return result;
     },
-    [PatternAstNodeType.Object]: () => {
-
+    [PatternAstNodeType.Var]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+      const { tid, declarationTid } = node;
+      const inputs = [readDataNode.nodeId];
+      parentValue[node.prop] = this._traceWriteVar(value, tid, declarationTid, inputs);
     },
-    [PatternAstNodeType.Rest]: () => {
-      
+    [PatternAstNodeType.ME]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+      const { tid, propValue, propTid, objectNodeId } = node;
+      const inputs = [readDataNode.nodeId];
+      parentValue[node.prop] = this._traceWriteME(value, propValue, propTid, objectNodeId, tid, inputs);
+    },
+
+
+    // [rest]
+    [PatternAstNodeType.RestArray]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+      const { tid, innerType, startIndex } = node;
+      const result = [];
+      this._tracePatternHandlers[innerType](tree, writeNodes, node, parentValue, result, rvalTid, readDataNode);
+      const resultObjectNodeId = traceCollection.getOwnDataNodeIdByTraceId(tid);
+
+      for (let iRead = startIndex; iRead < value.length; iRead++) {
+        const iWrite = iRead - startIndex;
+        let val = result[iWrite] = this._getPatternProp(value, iRead);
+
+        const readAccess = {
+          objectNodeId: readDataNode.nodeId,
+          prop: iRead
+        };
+        const readNode = dataNodeCollection.createDataNode(val, tid, DataNodeType.Read, readAccess);
+        const writeAccess = {
+          objectNodeId: resultObjectNodeId,
+          prop: iWrite
+        };
+        dataNodeCollection.createWriteNodeFromReadNode(tid, readNode, writeAccess);
+      }
+    },
+
+    [PatternAstNodeType.RestObject]: (tree, writeNodes, node, parentValue, value, rvalTid, readDataNode) => {
+      const { tid, innerType, excluded } = node;
+      const result = {};
+      this._tracePatternHandlers[innerType](tree, writeNodes, node, parentValue, result, rvalTid, readDataNode);
+      const resultObjectNodeId = traceCollection.getOwnDataNodeIdByTraceId(tid);
+
+      /**
+       * NOTE: this is based on Babel's `_objectWithoutPropertiesLoose`
+       */
+      const keys = difference(valueCollection._readKeys(value), excluded);
+      for (const prop of keys) {
+        let val = result[prop] = this._getPatternProp(value, prop);
+
+        const readAccess = {
+          objectNodeId: readDataNode.nodeId,
+          prop
+        };
+        const readNode = dataNodeCollection.createDataNode(val, tid, DataNodeType.Read, readAccess);
+        const writeAccess = {
+          objectNodeId: resultObjectNodeId,
+          prop
+        };
+        dataNodeCollection.createWriteNodeFromReadNode(tid, readNode, writeAccess);
+      }
     }
   };
 
@@ -1363,10 +1492,10 @@ export default class RuntimeMonitor {
   // traces (OLD)
   // ###########################################################################
 
-  traceArg(programId, inProgramStaticTraceId, value) {
-    // currently behaves exactly the same as traceExpression
-    return this.traceExpression(programId, inProgramStaticTraceId, value);
-  }
+  // traceArg(programId, inProgramStaticTraceId, value) {
+  //   // currently behaves exactly the same as traceExpression
+  //   return this.traceExpression(programId, inProgramStaticTraceId, value);
+  // }
 
 
   // /**
