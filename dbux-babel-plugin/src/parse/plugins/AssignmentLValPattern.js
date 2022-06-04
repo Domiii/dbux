@@ -2,10 +2,13 @@ import BasePlugin from './BasePlugin';
 
 
 class PatternTreeNode {
-  tid;
+  /**
+   * @type {BaseNode}
+   */
+  parseNode;
 }
 
-class PropPatternTraceNode {
+class PropPatternTraceNode extends PatternTreeNode {
   /**
    * @type {string}
    */
@@ -55,11 +58,6 @@ export class PatternTree {
  * @see https://tc39.es/ecma262/#prod-BindingPattern
  */
 export default class AssignmentLValPattern extends BasePlugin {
-  /**
-   * @type {PatternTreeNode}
-   */
-  root;
-
   enter() {
     const {
       node: {
@@ -72,7 +70,7 @@ export default class AssignmentLValPattern extends BasePlugin {
     }
   }
 
-  exit() {
+  exit1() {
     const {
       node: {
         stack
@@ -85,7 +83,15 @@ export default class AssignmentLValPattern extends BasePlugin {
   }
 
   instrument() {
+    /**
+     * Cases:
+     * 1. AssignmentExpression
+     * 2. DefaultDeclaratorLVal (adds `Write` trace, while VariableDeclarator might add a hoisted `Declaration` trace)
+     * 3. Params
+     * 4. ForDeclaratorLVal (will probably use `Params` logic)
+     */
+
     // TODO: replace rval with `tracePattern(tree, rvalTid, rval)`
-    //    → in `tracePattern`, return a reconstruction of the rval, so the lval does not need changing
+    // TODO: the `tracePattern` function returns a reconstruction of the rval, so the lval does not need changing
   }
 }

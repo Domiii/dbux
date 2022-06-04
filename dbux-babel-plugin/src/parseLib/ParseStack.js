@@ -42,6 +42,8 @@ export default class ParseStack {
   /**
    * A dictionary of "special nodes" that themselves can subscribe themselves here
    * to be accessible by others.
+   * Important: depending nodes should only use this up until `Exit1`, after
+   * which the stack loses its structure.
    */
   specialNodes = {};
 
@@ -76,7 +78,19 @@ export default class ParseStack {
   }
   
   isNodeOnStack(name) {
+    this.#assureStackStructure();
     return !!this._stackNodesByType.get(name)?.length;
+  }
+
+  getSpecialNode(name) {
+    this.#assureStackStructure();
+    return this.specialNodes[name];
+  }
+
+  #assureStackStructure() {
+    if (this.phase > ParsePhase.Exit1) {
+      throw new Error(`Cannot query stack structure after "Exit1".`);
+    }
   }
 
   // ###########################################################################

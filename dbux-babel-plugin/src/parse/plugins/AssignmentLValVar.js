@@ -36,7 +36,10 @@ export default class AssignmentLValVar extends BasePlugin {
         type: TraceType.WriteVar,
         syntax: SyntaxType.AssignmentLValVar,
         dataNode: {
-          isNew: node.isNewValue?.() || false
+          /**
+           * Whether this is a "computational assignment" (+= etc.)
+           */
+          isNew: node.isNewValue?.() || false,
         }
       },
       meta: {

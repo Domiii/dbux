@@ -3,7 +3,7 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { pathToStringAnnotated } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
-import { getVariableDeclaratorLValPlugin } from './helpers/lvalUtil';
+import { getDeclaratorLValPlugin } from './helpers/lvalUtil';
 
 /**
  * @implements {LValHolderNode}
@@ -12,7 +12,7 @@ export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
   static plugins = [
     {
-      plugin: getVariableDeclaratorLValPlugin,
+      plugin: getDeclaratorLValPlugin,
       alias: 'lval'
     }
   ];
@@ -22,7 +22,7 @@ export default class VariableDeclarator extends BaseNode {
   }
 
   /**
-   * Used by `VariableDeclaratorLVal`
+   * Used by `DefaultDeclaratorLVal`
    */
   get writeTraceType() {
     // NOTE: `write` trace doubles as declaration trace, if not hoisted to beginning of function scope

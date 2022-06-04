@@ -33,18 +33,26 @@ export function getAssignmentLValPlugin(node) {
 }
 
 
-const DeclaratorLValPluginsByType = {
-  Identifier: 'VariableDeclaratorLVal',
-  ObjectPattern: 'AssignmentLValPattern',
-  ArrayPattern: 'AssignmentLValPattern',
-  // MemberExpression: 'AssignmentLValME'
-};
+// const DeclaratorLValPluginsByType = {
+//   Identifier: 'VariableDeclaratorLVal',
+//   // ObjectPattern: 'AssignmentLValPattern',
+//   // ArrayPattern: 'AssignmentLValPattern'
+// };
 
-export function getVariableDeclaratorLValPlugin(node) {
-  if (node.path.parentPath.parentPath.isForInStatement()) {
-    // NOTE: `ForInStatement` is grand-parent (not parent) of `VariableDeclarator`
-    return 'ForInLValVar';
+const DefaultLValPlugin = 'VariableDeclaratorLVal';
+
+export function getDeclaratorLValPlugin(node) {
+  const declaration = node.path.parentPath;
+  const grandParent = declaration.parentPath;
+  if (grandParent.isForXStatement() && grandParent.get('left') === declaration) {
+    /**
+     * `ForXStatement`
+     * @see https://babeljs.io/docs/en/babel-types#forxstatement
+     */
+    return 'ForDeclaratorLVal';
   }
 
-  return getLValPlugin(node, DeclaratorLValPluginsByType);
+  return DefaultLValPlugin;
+
+  // return getLValPlugin(node, DeclaratorLValPluginsByType);
 }

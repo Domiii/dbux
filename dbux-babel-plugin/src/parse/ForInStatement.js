@@ -2,7 +2,7 @@ import BaseNode from './BaseNode';
 
 
 /**
- * NOTE: Most instrumentation comes from `VariableDeclarator`'s `ForInLValVar` plugin
+ * NOTE: Most instrumentation comes from `VariableDeclarator`'s `ForDeclaratorLVal` plugin
  */
 export default class ForInStatement extends BaseNode {
   static children = ['left', 'right', 'body'];
