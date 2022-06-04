@@ -1,4 +1,5 @@
 import difference from 'lodash/difference';
+import omit from 'lodash/omit';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
 import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
@@ -32,6 +33,7 @@ const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger
 // const Verbose = 2;
 // const Verbose = 1;
 const Verbose = 0;
+const VerbosePatterns = 1;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -1310,6 +1312,7 @@ export default class RuntimeMonitor {
     const { children } = node;
     for (const iChild of children) {
       const child = nodes[iChild];
+      VerbosePatterns && debug(`[Pattern] ${PatternAstNodeType.nameFrom(child.type)}: ${JSON.stringify(omit(child, ['type']))}\n  value="${value?.toString()}"`);
       const childValue = this._getPatternProp(childValues, child.prop);
       const varAccess = {
         objectNodeId: readDataNode.nodeId,
