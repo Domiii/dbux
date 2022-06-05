@@ -28,9 +28,9 @@ export class PatternBuildConfig {
   /**
    * Only: AssignmenLValPattern
    * Used for preparing (nested) lval MEs.
-   * @type {Array.<AstNode>}
+   * @type {Array.<Function>}
    */
-  preInitTraceCfgs = [];
+  preInitNodeBuilders = [];
 
   addBuilder(buildFn) {
     const index = this.lvalTreeNodeBuilders.length;
@@ -78,7 +78,7 @@ export function addPatternChildNode(patternCfg, prop, node) {
     return addPatternTraceCfg(patternCfg, buildVarNodeAst, {
       node,
       path,
-      // scope, // TODO!
+      // scope, // TODO: declarators
       staticTraceData: {
         type: TraceType.PatternWriteVar
       },
@@ -91,19 +91,18 @@ export function addPatternChildNode(patternCfg, prop, node) {
   }
   else if (path.isMemberExpression()) {
     // ME
-    // TODO: a lot more work necessary here
-    // return addPatternTraceCfg(patternCfg, buildMENodeAst, {
-    //   node,
-    //   path,
-    //   // scope, // TODO!
-    //   staticTraceData: {
-    //     type: TraceType.PatternWriteME
-    //   },
-    //   meta: {
-    //     build: buildTraceId,
-    //     instrument: null, // disable default instrumentation
-    //   }
-    // });
+    patternCfg.preInitNodeBuilders.push(() => buildMEPreInitNode(node));
+    return addPatternTraceCfg(patternCfg, buildMENodeAst, {
+      node,
+      path,
+      staticTraceData: {
+        type: TraceType.PatternWriteME
+      },
+      meta: {
+        build: buildTraceId,
+        instrument: null, // disable default instrumentation
+      }
+    });
   }
   else if (path.isAssignmentPattern()) {
     // TODO
@@ -120,6 +119,16 @@ export function addPatternChildNode(patternCfg, prop, node) {
   throw new Error(`Unknown lval pattern node found: "${node.debugTag}"`);
 }
 
+export function buildGroupNodeAst(prop, childIndexes) {
+  return t.objectExpression([
+    t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.Array)),
+    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(prop || '')),
+    t.objectProperty(t.stringLiteral('children'),
+      t.arrayExpression(childIndexes.map(childIndex => t.numericLiteral(childIndex)))
+    )
+  ]);
+}
+
 function buildVarNodeAst(state, traceCfg) {
   const tid = doBuild(state, traceCfg); // ← calls `traceCfg.meta.build`
   const declarationTid = getDeclarationTid(traceCfg);
@@ -133,20 +142,18 @@ function buildVarNodeAst(state, traceCfg) {
 
 function buildMENodeAst(state, traceCfg) {
   const tid = doBuild(state, traceCfg); // ← calls `traceCfg.meta.build`
-  TODO;
-  // TODO: isObjectTracedAlready
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.ME)),
+    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(traceCfg.data.prop + '')),
+    // TODO: propValue, propTid, objectNodeId,
     t.objectProperty(t.stringLiteral('tid'), tid),
   ]);
 }
 
-export function buildArrayNodeAst(prop, childIndexes) {
-  return t.objectExpression([
-    t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.Array)),
-    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(prop || '')),
-    t.objectProperty(t.stringLiteral('children'),
-      t.arrayExpression(childIndexes.map(childIndex => t.numericLiteral(childIndex)))
-    )
-  ]);
+/**
+ * @param {BaseNode} node 
+ */
+function buildMEPreInitNode(node) {
+  const { state, traceCfg } = node;
+  return TODO;
 }

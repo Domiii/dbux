@@ -43,7 +43,7 @@ export default class CalleeME extends BasePlugin {
     // NOTE: for the final CallExpression, the callee is split -
     //  1. store object (`o`) in variable `_o` and use in both:
     //        callee node (as `objectVar`) and call node (as `objectVar`).
-    //  2. store `calleeAstNode` in callee trace (`o[prop]`).
+    //  2. store `calleeAstNode` (`o[prop]`) in callee trace.
     traceCfg.data.objectVar = objectVar;
 
     // NOTE:

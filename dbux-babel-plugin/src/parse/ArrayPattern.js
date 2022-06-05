@@ -1,5 +1,5 @@
 import BaseNode from './BaseNode';
-import { buildArrayNodeAst, addPatternChildNode, PatternBuildConfig } from './helpers/patterns';
+import { buildGroupNodeAst, addPatternChildNode, PatternBuildConfig } from './helpers/patterns';
 
 /**
  * Notes:
@@ -25,7 +25,7 @@ export default class ArrayPattern extends BaseNode {
   addPatternNode(patternCfg, prop) {
     const [elementNodes] = this.getChildNodes();
     const childIndexes = [];
-    const nodeIndex = patternCfg.addBuilder(buildArrayNodeAst.bind(this, prop, childIndexes));
+    const nodeIndex = patternCfg.addBuilder(buildGroupNodeAst.bind(this, prop, childIndexes));
 
     for (let i = 0; i < elementNodes.length; ++i) {
       const childNode = elementNodes[i];

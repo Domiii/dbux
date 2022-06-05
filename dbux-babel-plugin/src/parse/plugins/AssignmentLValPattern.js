@@ -94,7 +94,7 @@ export default class AssignmentLValPattern extends BasePlugin {
          */
         targetPath: rvalNode.path,
         // targetNode() { return rvalNode.path.node; },
-        
+
         moreTraceCallArgs() {
           // add `treeNodes` array
           return [t.arrayExpression(
@@ -111,14 +111,15 @@ export default class AssignmentLValPattern extends BasePlugin {
    * future-work: ensure correct stepping order:
    * 1. pre-init for lval -> 1b. (nothing else to do in lval) -> 2. rval -> 3. writes
    */
-  instrument1() {
-    // // TODO
-    // if (preInitTraceCfgs.expressions.length) {
-    //   // There are MEs in the pattern trees that need some work done before the lval.
-    //   // → Replace assignment with sequence (add assignment to end of sequence).
-    //   preInitTraceCfgs.push(node);
-    //   const seq = t.sequenceExpression(preInitTraceCfgs);
-    //   node.path.replacePath(seq);
-    // }
+  instrument() {
+    const { preInitNodeBuilders } = this.patternCfg;
+    if (this.patternCfg.preInitNodeBuilders.length) {
+      // Nested ME lvals need extra work done before the lval.
+      // → Replace assignment with sequence → add assignment to end of sequence → replace self with sequence
+      const sequenceNodes = preInitNodeBuilders.map(fn => fn());
+      sequenceNodes.push(this.path.node);
+      const seq = t.sequenceExpression(sequenceNodes);
+      this.path.replacePath(seq);
+    }
   }
 }

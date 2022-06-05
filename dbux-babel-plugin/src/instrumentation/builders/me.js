@@ -43,11 +43,11 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
     const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
 
     // build propertyValue
-    let propertyValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
+    let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
     if (computed) {
-      propertyValue = t.assignmentExpression('=',
+      propValue = t.assignmentExpression('=',
         propertyVar,
-        propertyValue
+        propValue
       );
     }
 
@@ -62,7 +62,7 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
     return {
       tme: trace,
       object: o,
-      property: propertyValue,
+      property: propValue,
       value: newMemberExpression,
       tid,
       objectTid
@@ -130,24 +130,15 @@ export const buildTraceWriteME = buildTraceCall(
     } = traceCfg;
 
     // build object
-    const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
+    const o = isObjectTracedAlready ? objectVar : buildMEObject();
 
-    // build propertyValue
-    let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
-    if (computed) {
-      propValue = t.assignmentExpression('=',
-        propertyVar,
-        propValue
-      );
-    }
+    // build propValue
+    let propValue = buildMEProp();
 
-    // build lval + final expression
-    const newLvalNode = t.memberExpression(
-      objectVar,
-      propertyVar || propertyNode,
-      computed, 
-      false
-    );
+    // build lval
+    const newLvalNode = buildMELval();
+
+    // build final ME assignment
     const newMENode = t.assignmentExpression(
       operator,
       newLvalNode,
@@ -158,7 +149,7 @@ export const buildTraceWriteME = buildTraceCall(
       trace,
       object: o,
       propValue,
-      propTid: propTid || ZeroNode,
+      propTid,
       objectTid,
       value: newMENode,
       tid,
@@ -226,3 +217,33 @@ export const buildTraceDeleteME = buildTraceCall(
     };
   }
 );
+
+
+/** ###########################################################################
+ * ME utils
+ * ##########################################################################*/
+
+export function buildMEObject() {
+  return t.assignmentExpression('=', objectVar, objectNode);
+}
+
+export function buildMEProp() {
+  let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
+  if (computed) {
+    // store in var because we need `propValue` in multiple places
+    propValue = t.assignmentExpression('=',
+      propertyVar,
+      propValue
+    );
+  }
+  return propValue;
+}
+
+export function buildMELval() {
+  return t.memberExpression(
+    objectVar,
+    propertyVar || propertyNode,
+    computed,
+    false
+  );
+}

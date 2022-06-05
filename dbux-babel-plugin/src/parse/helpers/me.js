@@ -40,6 +40,7 @@ export function makeMETraceData(parseNode, objectVar = null) {
   }
   else {
     // NOTE: we generally don't need a `propTid` if not computed
+    propTid = ZeroNode;
   }
 
   return {

@@ -79,7 +79,8 @@ export default class MemberExpression extends BaseNode {
    * Delete
    */
   get hasHandler() {
-    return !!this._handler;
+    return !!this._handler || 
+      this.getParent()?.path.isPattern(); // hackfix
   }
 
   buildDefaultTrace() {
@@ -257,6 +258,8 @@ export default class MemberExpression extends BaseNode {
     /**
      * Whether caller already took care of tracing object.
      * If not, builder needs to trace object explicitely.
+     * 
+     * Used in `CallExpression`: object assignment (objectVar = o...) is done in `buildTraceCallME`.
      */
     data.isObjectTracedAlready = !!objectVar;
     // NOTE: at build time, the original ME node might have already been replaced
