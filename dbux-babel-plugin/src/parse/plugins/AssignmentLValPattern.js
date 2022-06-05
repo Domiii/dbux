@@ -117,7 +117,7 @@ export default class AssignmentLValPattern extends BasePlugin {
     if (this.patternCfg.preInitNodeBuilders.length) {
       // Nested ME lvals need extra work done before the lval.
       // → Replace assignment with sequence → add assignment to end of sequence → replace self with sequence
-      const sequenceNodes = preInitNodeBuilders.map(fn => fn());
+      const sequenceNodes = preInitNodeBuilders.flatMap(fn => fn());
       sequenceNodes.push(this.node.path.node);
       this.sequence = t.sequenceExpression(sequenceNodes);
     }

@@ -31,8 +31,8 @@ const NodeMenuHeight = 12;
 let documentMouseMoveHandler;
 
 const GroupDefaultSummaryModes = [
-  DDGSummaryMode.CollapseSummary, 
-  DDGSummaryMode.SummarizeChildren, 
+  DDGSummaryMode.CollapseSummary,
+  DDGSummaryMode.SummarizeChildren,
   DDGSummaryMode.ExpandSubgraph
 ];
 
@@ -67,7 +67,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   createEl() {
-    return compileHtmlElement(/*html*/`<div id="ddg-timeline" class="timeline-view">
+    return compileHtmlElement(/*html*/`<div id="ddg-timeline" data-el="graph" class="timeline-view">
       <div data-el="status"></div>
       <!-- <div data-el="view" class="timeline-view timeline-sigma-container"></div> -->
       <!-- <div data-el="view" class="timeline-view timeline-jsplumb-container"></div> -->
@@ -111,8 +111,132 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   /** ###########################################################################
-   * popups
+   * buildGraph
    * ##########################################################################*/
+
+  /**
+   * @type {RenderState}
+   */
+  get renderState() {
+    return this.context.doc.state;
+  }
+
+  get root() {
+    return this.renderState.timelineNodes?.[RootTimelineId];
+  }
+
+  /** ###########################################################################
+   * d3-graphviz implementation
+   *  #########################################################################*/
+
+  rebuildGraph() {
+    this.initGraphImplementation();
+
+    this.buildGraph();
+  }
+
+  buildGraph() {
+    const { root } = this;
+
+    if (!root) {
+      return;
+    }
+
+    const graphString = this.buildDot();
+    // const graphString = 'digraph { a -> b }';
+    this.graphviz
+      .renderDot(graphString)
+      .on('end', this.decorateAfterRender);
+  }
+
+  initGraphImplementation() {
+    // NOTE: use `this.el`'s id
+    this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
+  }
+
+  /**
+   * 
+   */
+  buildDot() {
+    this.dotBuilder = new DotBuilder(this.doc, this.renderState);
+    return this.dotBuilder.build();
+  }
+
+  /** ###########################################################################
+   * timeline controls
+   *  #########################################################################*/
+
+  async setSummaryMode(timelineId, mode) {
+    await this.remote.setSummaryMode(timelineId, mode);
+  }
+
+  /** ###########################################################################
+   * misc
+   * ##########################################################################*/
+
+  public = {
+    buildDot() {
+      return this.buildDot();
+    }
+  };
+
+
+  /** ###########################################################################
+   * decorate graph HTML
+   * ##########################################################################*/
+
+  decorateAfterRender = () => {
+    // rendering finished
+    const nodeEls = Array.from(this.el.querySelectorAll('.node'));
+    for (const nodeEl of nodeEls) {
+      const { id: timelineId } = nodeEl;
+      const node = this.renderState.timelineNodes[timelineId];
+      if (node) {
+        this.decorateNode(node, nodeEl);
+      }
+    }
+  }
+
+  decorateNode(node, nodeEl) {
+    const { type } = node;
+    if (isDataTimelineNode(type)) {
+      // add overlays
+      let debugOverlay;
+      this.addNodeEventListener(node, nodeEl, 'mouseover', (evt) => {
+        if (!debugOverlay) {
+          // create overlay lazily
+          console.debug(`Hover node:`, evt.target);
+          this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+          // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+        }
+        // this.maybeShowNodePopupEl(node, nodeEl);
+      });
+      this.addNodeEventListener(node, nodeEl, 'mouseout', () => {
+        debugOverlay.remove();
+        debugOverlay = null;
+      });
+    }
+  }
+
+  /**
+   * @param {*} node 
+   * @param {Element} nodeEl 
+   * @param {*} evt 
+   * @param {*} fn 
+   */
+  addNodeEventListener(node, nodeEl, evt, fn) {
+    nodeEl.addEventListener(evt, fn);
+    // // hackfix: if we don't do it this way, many events go unnoticed?
+    // for (const el of nodeEl.children) {
+    //   el.addEventListener(evt, fn);
+    // }
+  }
+
+  makeNodeDebugOverlay(node) {
+    const content = `Node = ${JSON.stringify(node, null, 2)}`;
+    return compileHtmlElement(/*html*/`<pre class="node-debug-overlay" >${content}</pre>`);
+  }
+
 
   _removeNodePopup(hoverEl) {
     if (this.currentHoverEl !== hoverEl) { // race condition check
@@ -200,74 +324,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // this.el.appendChild(this.currentHoverEl);
     nodeEl.appendChild(hoverEl);
   }
-
-  /** ###########################################################################
-   * buildGraph
-   * ##########################################################################*/
-
-  /**
-   * @type {RenderState}
-   */
-  get renderState() {
-    return this.context.doc.state;
-  }
-
-  get root() {
-    return this.renderState.timelineNodes?.[RootTimelineId];
-  }
-
-  /** ###########################################################################
-   * d3-graphviz implementation
-   *  #########################################################################*/
-
-  rebuildGraph() {
-    this.initGraphImplementation();
-
-    this.buildGraph();
-  }
-
-  buildGraph() {
-    const { root } = this;
-
-    if (!root) {
-      return;
-    }
-
-    const graphString = this.buildDot();
-    // const graphString = 'digraph { a -> b }';
-    this.graphviz.renderDot(graphString);
-  }
-
-  initGraphImplementation() {
-    // NOTE: use `this.el`'s id
-    this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
-  }
-
-  /**
-   * 
-   */
-  buildDot() {
-    this.dotBuilder = new DotBuilder(this.doc, this.renderState);
-    return this.dotBuilder.build();
-  }
-
-  /** ###########################################################################
-   * timeline controls
-   *  #########################################################################*/
-
-  async setSummaryMode(timelineId, mode) {
-    await this.remote.setSummaryMode(timelineId, mode);
-  }
-
-  /** ###########################################################################
-   * misc
-   * ##########################################################################*/
-
-  public = {
-    buildDot() {
-      return this.buildDot();
-    }
-  };
 }
 
 
@@ -428,11 +484,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 //     this.clearGraph();
 //     this.buildGraph();
 //   });
-// }
-
-// makeNodeDebugOverlay(node) {
-//   const content = `Node = ${ JSON.stringify(node, null, 2) } `;
-//   return compileHtmlElement(/*html*/`< pre class="node-debug-overlay" > ${ content }</pre > `);
 // }
 
 // makeNodeEl(node, label) {

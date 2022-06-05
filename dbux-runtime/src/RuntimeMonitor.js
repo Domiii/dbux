@@ -1359,10 +1359,10 @@ export default class RuntimeMonitor {
       parentResult[node.prop] = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
     },
     [PatternAstNodeType.ME]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
-      const { tid, objectTid, prop, propTid } = node;
+      const { tid, objectTid, propValue, propTid } = node;
       const inputs = [readDataNodeId];
       const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
-      parentResult[node.prop] = this.#addWriteMEDataNodes(value, objectNodeId, prop, propTid, tid, inputs);
+      parentResult[node.prop] = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
     },
 
 

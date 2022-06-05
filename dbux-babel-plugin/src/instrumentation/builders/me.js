@@ -135,7 +135,7 @@ export const buildTraceWriteME = buildTraceCall(
 
     // build lval
     // NOTE: buildMELval does uses `propVar`. We could have also used `propValue`, and then passed `propVar` to trace call.
-    const newLvalNode = buildMELval(meAstNode, traceCfg, propertyVar || propertyNode);
+    const newLvalNode = buildMELval(meAstNode, traceCfg);
 
     // build final assignment
     const newMENode = t.assignmentExpression(
@@ -288,16 +288,20 @@ export function getMEpropVal(meAstNode, traceCfg) {
  * @param {AstNode} meAstNode 
  * @param {TraceCfg} traceCfg 
  */
-export function buildMELval(meAstNode, traceCfg, prop = buildMEProp(meAstNode, traceCfg)) {
+export function buildMELval(meAstNode, traceCfg) {
   const {
+    property: propertyAstNode,
     computed
   } = meAstNode;
 
   const {
     data: {
       objectVar,
+      propertyVar
     }
   } = traceCfg;
+
+  const prop = propertyVar || propertyAstNode;
 
   return t.memberExpression(
     objectVar,

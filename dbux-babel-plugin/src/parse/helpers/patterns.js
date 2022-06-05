@@ -9,7 +9,7 @@ import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { getDeclarationTid } from '../../helpers/traceUtil';
 import { pathToStringAnnotated } from '../../helpers/pathHelpers';
 import { makeMETraceData } from './me';
-import { buildMELval, buildMEObject, getMEpropVal } from '../../instrumentation/builders/me';
+import { buildMELval, buildMEObject, buildMEProp, getMEpropVal } from '../../instrumentation/builders/me';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -113,7 +113,7 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
         },
       }
     };
-    patternCfg.preInitNodeBuilders.push(() => buildMEPreInitNode(node));
+    patternCfg.preInitNodeBuilders.push(() => buildMEPreInitNodes(node));
     return addPatternTraceCfg(patternCfg, buildMENodeAst, traceCfgInput);
   }
   else if (path.isAssignmentPattern()) {
@@ -142,21 +142,30 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
 /**
  * @param {BaseNode} meNode 
  */
-function buildMEPreInitNode(meNode) {
+function buildMEPreInitNodes(meNode) {
   const { state, traceCfg } = meNode;
-  const [objectNode] = meNode.getChildNodes();
+  const [objectNode, propNode] = meNode.getChildNodes();
+  const meAstNode = meNode.path.node;
   
-  // don't instrument object node
+  // don't further instrument object or prop node
   //    (there are issues with ordering, that lead to object node not getting built on time, so we do it here instead)
-  objectNode.traceCfg.instrument = null;
+  objectNode.traceCfg && (objectNode.traceCfg.instrument = null);
+  propNode.traceCfg && (propNode.traceCfg.instrument = null);
 
   const objectAstNode = doBuild(state, objectNode.traceCfg);
+
+  // hackfix: store in meAstNode, so it will get picked up by buildMEProp
+  meAstNode.property = doBuild(state, propNode.traceCfg);
+
   const {
     data: {
       objectVar
     }
   } = traceCfg;
-  return t.assignmentExpression('=', objectVar, objectAstNode);
+  return [
+    t.assignmentExpression('=', objectVar, objectAstNode),
+    buildMEProp(meAstNode, traceCfg)
+  ];
   // return buildMEObject(meNode, traceCfg);
 }
 
@@ -191,6 +200,7 @@ function buildMENodeAst(state, traceCfg) {
   const {
     patternProp,
     objectTid,
+    propertyVar,
     propTid
   } = traceCfg.data;
   return t.objectExpression([
@@ -199,7 +209,7 @@ function buildMENodeAst(state, traceCfg) {
     t.objectProperty(t.stringLiteral('tid'), tid),
 
     t.objectProperty(t.stringLiteral('objectTid'), objectTid),
-    t.objectProperty(t.stringLiteral('propValue'), getMEpropVal(traceCfg.node, traceCfg)),
+    t.objectProperty(t.stringLiteral('propValue'), getMEpropVal(traceCfg.node, traceCfg, propertyVar)),
     t.objectProperty(t.stringLiteral('propTid'), propTid),
   ]);
 }

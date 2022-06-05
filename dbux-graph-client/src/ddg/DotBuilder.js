@@ -60,6 +60,10 @@ export default class DotBuilder {
     return `label=${JSON.stringify(text)}`;
   }
 
+  nodeId(timelineId) {
+    return `id=${timelineId}`;
+  }
+
   /** ###########################################################################
    * indent, lines + fragments
    * ##########################################################################*/
@@ -240,11 +244,11 @@ export default class DotBuilder {
     label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
     const childrenItems = Object.entries(children)
       .map(([key, nodeId]) => this.makeRecordEntry(key, nodeId));
-    this.command(`${timelineId} [label="${label}|${childrenItems.join('|')}"]`);
+    this.command(`${timelineId} [${this.nodeId(timelineId)},label="${label}|${childrenItems.join('|')}"]`);
   }
 
   valueNode(node) {
-    this.command(`${this.makeNodeId(node)} [${this.makeLabel(node.label)}]`);
+    this.command(`${this.makeNodeId(node)} [${this.nodeId(node.timelineId)},${this.makeLabel(node.label)}]`);
   }
 
   buildEdge(edge) {
