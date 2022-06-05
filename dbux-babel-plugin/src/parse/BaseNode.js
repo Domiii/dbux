@@ -101,9 +101,7 @@ export default class BaseNode extends ParseNode {
   }
 
   /**
-   * NOTE: this is a relatively new method, to allow overriding default paths in node for further use in Plugin (amongst other use cases).
-   * Only used by `ArithmeticExpression` (as it traces all children by default).
-   * There are probably only few other potential use cases.
+   * Hackfix for `ArithmeticExpression` to deal w/ `UnaryExpression` children.
    */
   getDefaultChildPaths() {
     return this.getChildPaths();

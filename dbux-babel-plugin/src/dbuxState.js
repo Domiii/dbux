@@ -155,6 +155,9 @@ export default function injectDbuxState(programPath, programState) {
         wrapYield: makeProgramId('yi1'),
         postYield: makeProgramId('yi2'),
         // traceAwaitResult: makeProgramId('aw3')
+
+        // patterns
+        tracePattern: makeProgramId('tp')
       }
     },
 

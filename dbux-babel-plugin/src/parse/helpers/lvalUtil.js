@@ -1,5 +1,9 @@
 /** @typedef { import("@babel/types").Node } AstNode */
 
+import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
+
 
 const AssignmentLValPluginsByType = {
   Identifier: 'AssignmentLValVar',
@@ -53,4 +57,31 @@ export function getDeclaratorLValPlugin(node) {
   return DefaultLValPlugin;
 
   // return getLValPlugin(node, DeclaratorLValPluginsByType);
+}
+
+export function makeLValVarTrace(node, path, targetPath, syntax, isNew, rvalPath) {
+  const traceData = {
+    node,
+    path,
+    staticTraceData: {
+      type: TraceType.WriteVar,
+      syntax,
+      dataNode: {
+        isNew
+      }
+    },
+    meta: {
+      // instrument: Traces.instrumentTraceWrite
+      build: buildTraceWriteVar,
+      targetPath
+    }
+  };
+
+  // NOTE: `declarationTid` comes from `node.getDeclarationNode`
+  if (rvalPath) {
+    return node.Traces.addTraceWithInputs(traceData, [rvalPath]);
+  }
+  else {
+    return node.Traces.addTrace(traceData);
+  }
 }

@@ -1284,23 +1284,23 @@ export default class RuntimeMonitor {
    * TODO: default values (see DefaultInitializerIndicator)
    * 
    * @param {*} programId 
-   * @param {*} writeNodes 
-   * @param {*} rvalTid 
    * @param {*} rval 
+   * @param {*} rvalTid 
+   * @param {*} nodes 
    */
-  tracePattern(programId, writeNodes, rvalTid, rval) {
+  tracePattern(programId, rval, rvalTid, nodes) {
     if (!this._ensureExecuting()) {
       return rval;
     }
 
-    const rvalStaticTrace = traceCollection.getStaticTraceByTraceId(rvalTid);
+    // const rvalStaticTrace = traceCollection.getStaticTraceByTraceId(rvalTid);
     // const { tree } = rvalStaticTrace.data;
 
-    const root = writeNodes[0];
+    const root = nodes[0];
     const varAccess = null;
     const inputs = [dataNodeCollection.getOwnDataNodeIdByTraceId(rvalTid)];
     const rvalDataNode = dataNodeCollection.createOwnDataNode(rval, rvalTid, DataNodeType.Read, varAccess, inputs);
-    return this._tracePatternHandlers[root.type](writeNodes, root, null, rval, rvalTid, rvalDataNode);
+    return this._tracePatternHandlers[root.type](nodes, root, null, rval, rvalTid, rvalDataNode);
   }
 
   _getPatternProp(obj, prop) {

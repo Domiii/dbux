@@ -15,26 +15,26 @@ export class ArrayPatternNode extends PatternGroupNode { }
 export class ObjectPatternNode extends PatternGroupNode { }
 
 
-export class PatternWriteNode extends PatternNodeBase {
+export class PatternWriteNodeBase extends PatternNodeBase {
   tid;
 }
 
-export class VarPatternNode extends PatternWriteNode {
+export class VarPatternNode extends PatternWriteNodeBase {
   declarationTid;
 }
 
-export class MEPatternNode extends PatternWriteNode {
+export class MEPatternNode extends PatternWriteNodeBase {
   propValue;
   propTid;
   objectNodeId
 }
 
-export class RestArrayPatternNode extends PatternWriteNode {
+export class RestArrayPatternNode extends PatternWriteNodeBase {
   innerType;
   startIndex;
 }
 
-export class RestObjectPatternNode extends PatternWriteNode {
+export class RestObjectPatternNode extends PatternWriteNodeBase {
   innerType;
   excluded;
 }

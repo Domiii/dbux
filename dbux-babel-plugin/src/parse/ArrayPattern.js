@@ -1,4 +1,5 @@
 import BaseNode from './BaseNode';
+import { buildPatternChildTraceCfg, PatternBuildConfig } from './helpers/patterns';
 
 /**
  * Notes:
@@ -17,40 +18,24 @@ export default class ArrayPattern extends BaseNode {
   //   t.callExpression(this.hub.addHelper('slicedToArray'), args);
   // }
 
-  buildPatternNode(prop, patternNodes, preInitSequenceAstNodes) {
+  /**
+   * @param {PatternBuildConfig} patternCfg
+   * @param {BaseNode} node
+   */
+  buildPatternTraceCfg(patternCfg, prop) {
+    const { lvalNodeTraceCfgs } = patternCfg;
     const [elementNodes] = this.getChildNodes();
     const children = [];
-    const newNode = {
+    const newNode = TODO {
       prop,
       children
     };
-    patternNodes.push(newNode);
+    lvalNodeTraceCfgs.push(newNode);
 
     for (let i = 0; i < elementNodes.length; ++i) {
-      /**
-       * @type {BaseNode}
-       */
-      const childNodes = elementNodes[i];
-      const childPath = childNodes.path;
-
-      let childPatternNode;
-      if (childPath.isIdentifier()) {
-        // Var
-      }
-      else if (childPath.isMemberExpression()) {
-        // ME
-      }
-      else if (childPath.isAssignmentPattern()) {
-        // TODO
-      }
-      else if (childPath.isRestElement()) {
-        // Var or ME
-      }
-      else if (childPath.isPattern()) {
-        childPatternNode = childNodes.buildPatternNode(i, patternNodes, preInitSequenceAstNodes);
-      }
-
-      patternNodes.push(childPatternNode);
+      const childNode = elementNodes[i];
+      buildPatternChildTraceCfg(patternCfg, i, childNode);
+      lvalNodeTraceCfgs.push(childNode);
     }
   }
 }

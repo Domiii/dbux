@@ -25,8 +25,15 @@ export class TraceCfgMeta {
   preCondition;
 
   /**
+   * The input {@link AstNode} for the build function.
+   */
+  targetNode;
+
+  /**
+   * The {@link NodePath} to be replaced by instrumentation function.
+   * 
    * If `false`, it indicates that instrumentation should build, but not store the `trace` call `AstNode`.
-   * In that case, it can be accessed via `traceCfg.data.resultNode`
+   * (In that case, it can be accessed via `traceCfg.data.resultNode`?)
    * @type {(NodePath | false)?}
    */
   targetPath;
@@ -48,10 +55,20 @@ export class TraceCfgMeta {
    * 
    */
   noTidIdentifier;
+
+  /**
+   * Used in pattern lval traces.
+   * In that case, usually, default instrumentation is disabled, and we call this function to generate
+   * the {@link AstNode} (to represent the corresponding PatternTreeNode).
+   * 
+   * @type {Function?}
+   */
+  buildPatternNode;
 }
 
 export class TraceCfgData {
   /**
+   * The resulting {@link AstNode} produced by `build` function.
    * @type {AstNode | undefined}
    */
   resultNode;

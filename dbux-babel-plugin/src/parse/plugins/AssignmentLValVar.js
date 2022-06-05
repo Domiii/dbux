@@ -3,6 +3,7 @@ import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import { LValHolderNode } from '../_types'; 
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
+import { makeLValVarTrace } from '../helpers/lvalUtil';
 
 export default class AssignmentLValVar extends BasePlugin {
   /**
@@ -14,43 +15,29 @@ export default class AssignmentLValVar extends BasePlugin {
     const {
       node
     } = this;
-    const { Traces } = node;
+    const { path } = node;
 
     // const [/* lvalNode */, valueNode] = node.getChildNodes();
-    const [/* lvalPath */, valuePath] = node.getChildPaths();
+    const [/* lvalPath */, rvalPath] = node.getChildPaths();
 
-    if (!valuePath) {
+    if (!rvalPath) {
       this.error(`missing RVal node in "${this.node}"`);
       return;
     }
 
-    if (!valuePath.node) {
+    if (!rvalPath.node) {
       // no write?
       return;
     }
 
     // console.error('assignment', !!node.isNewValue, node.isNewValue?.(), node.debugTag);
 
-    const traceData = {
-      staticTraceData: {
-        type: TraceType.WriteVar,
-        syntax: SyntaxType.AssignmentLValVar,
-        dataNode: {
-          /**
-           * Whether this is a "computational assignment" (+= etc.)
-           */
-          isNew: node.isNewValue?.() || false,
-        }
-      },
-      meta: {
-        // instrument: Traces.instrumentTraceWrite
-        build: buildTraceWriteVar
-      }
-    };
-
-    node.decorateWriteTraceData(traceData);
-    
-    // NOTE: `declarationTid` comes from `node.getDeclarationNode`
-    Traces.addTraceWithInputs(traceData, [valuePath]);
+    const targetPath = path;
+    const syntax = SyntaxType.AssignmentLValVar;
+    /**
+     * Whether this is a "computational assignment" (+= etc.)
+     */
+    const isNew = node.isNewValue?.() || false;
+    makeLValVarTrace(node, path, targetPath, syntax, isNew, rvalPath);
   }
 }

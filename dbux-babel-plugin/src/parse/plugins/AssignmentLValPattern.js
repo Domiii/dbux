@@ -1,4 +1,6 @@
-import { buildAndInstrumentPatternTree } from '../helpers/patterns';
+import * as t from '@babel/types';
+import { buildTraceExpressionNoInput } from '../../instrumentation/builders/misc';
+import { PatternBuildConfig } from '../helpers/patterns';
 import BasePlugin from './BasePlugin';
 
 
@@ -59,10 +61,51 @@ export class PatternTree {
  * @see https://tc39.es/ecma262/#prod-BindingPattern
  */
 export default class AssignmentLValPattern extends BasePlugin {
-  instrument() {
-    const { node } = this;
+  /**
+   * @type {PatternBuildConfig}
+   */
+  patternCfg;
 
-    const [left, right] = node.getChildNodes();
-    buildAndInstrumentPatternTree(left, right.path);
+  exit() {
+    const { node } = this;
+    const [lvalNode, rvalNode] = node.getChildNodes();
+    const patternCfg = this.patternCfg = new PatternBuildConfig();
+
+    // add rval trace
+    rvalNode.addDefaultTrace();
+
+    /**
+     * PatternTree DSF traversal
+     */
+    lvalNode.buildPatternTraceCfg(patternCfg, null);
+
+    node.Traces.addTrace({
+      node,
+      path: node.path,
+      meta: {
+        build: buildTraceExpressionNoInput,
+        traceCall: 'tracePattern',
+        moreTraceCallArgs() {
+          return patternCfg.lvalNodeTraceCfgs.map(nodeTraceCfg => nodeTraceCfg.meta.buildPatternNode());
+        }
+      }
+    });
+  }
+
+  /**
+   * Build and insert preInit nodes before our actual nodes.
+   * 
+   * future-work: ensure correct stepping order:
+   * 1. pre-init for lval -> 1b. (nothing else to do in lval) -> 2. rval -> 3. writes
+   */
+  instrument1() {
+    // // TODO
+    // if (preInitTraceCfgs.expressions.length) {
+    //   // There are MEs in the pattern trees that need some work done before the lval.
+    //   // → Replace assignment with sequence (add assignment to end of sequence).
+    //   preInitTraceCfgs.push(node);
+    //   const seq = t.sequenceExpression(preInitTraceCfgs);
+    //   node.path.replacePath(seq);
+    // }
   }
 }

@@ -342,6 +342,10 @@ export default class Traces extends BasePlugin {
     }
   }
 
+  /**
+   * Order of execution follows {@link ParseStack#genAll}.
+   * Since this is a Plugin, it will run BEFORE {@link ParseNode#instrument}, but after {@link ParseNode#instrument1}.
+   */
   instrument() {
     const { node, traces, hoistedTraces } = this;
 

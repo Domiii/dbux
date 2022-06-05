@@ -110,6 +110,9 @@ const traceTypeObj = {
 
   Yield: 50,
   ResumeGen: 51,
+
+  PatternWriteVar: 60,
+  PatternWriteME: 61
 };
 
 /**
@@ -219,6 +222,7 @@ declarationTypes[TraceType.ClassDeclaration] = true;
 declarationTypes[TraceType.DeclareAndWriteVar] = true;
 declarationTypes[TraceType.Param] = true;
 declarationTypes[TraceType.CatchParam] = true;
+declarationTypes[TraceType.PatternWriteVar] = true;
 
 export function isDeclarationTrace(traceType) {
   return declarationTypes[traceType];
