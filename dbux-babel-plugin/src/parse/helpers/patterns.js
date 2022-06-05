@@ -142,8 +142,22 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
  * @param {BaseNode} meNode 
  */
 function buildMEPreInitNode(meNode) {
-  const { traceCfg } = meNode;
-  return buildMEObject(meNode, traceCfg);
+  const { state, traceCfg } = meNode;
+  const [objectNode] = meNode.getChildNodes();
+  
+  // don't instrument object node
+  //    (there are issues with ordering, that lead to object node not getting built on time)
+  objectNode.traceCfg.instrument = null;
+
+  const objectAstNode = doBuild(state, objectNode.traceCfg);
+
+  const {
+    data: {
+      objectVar
+    }
+  } = traceCfg;
+  return t.assignmentExpression('=', objectVar, objectAstNode);
+  // return buildMEObject(meNode, traceCfg);
 }
 
 /** ###########################################################################
