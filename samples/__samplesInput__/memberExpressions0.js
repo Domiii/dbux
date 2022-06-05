@@ -13,3 +13,8 @@ console.log(o);
 o.b.c = { d: 1 };
 var a = o.b;
 console.log(o, o.b, a);
+
+
+
+callbacks.compareCallback = callbacks.compareCallback || undefined;
+callbacks.visitingCallback = callbacks.visitingCallback || stubCallback;

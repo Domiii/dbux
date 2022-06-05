@@ -26,6 +26,7 @@ import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
 import { _slicedToArray } from './util/builtinUtil';
+import { isFunction } from 'lodash';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -807,6 +808,10 @@ export default class RuntimeMonitor {
 
   #addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs) {
     // this.registerTrace(value, tid);
+    if (isFunction(propValue)) {
+      // sanity check
+      debugger;
+    }
     const varAccess = {
       objectNodeId,
       prop: propValue,

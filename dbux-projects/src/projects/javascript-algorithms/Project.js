@@ -53,6 +53,7 @@ export default class JavascriptAlgorithmProject extends Project {
     // const bugArgs = this.getMochaRunArgs(bug);
     const testCfg = this.getJestCfg(bug, [
       '--setupFilesAfterEnv ./dbuxJestSetup.js',
+      '--no-cache', // no cache for now
       '--colors'
     ]);
 

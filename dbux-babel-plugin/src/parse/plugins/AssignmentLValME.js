@@ -5,6 +5,7 @@ import { LValHolderNode } from '../_types';
 import { buildTraceWriteME } from '../../instrumentation/builders/me';
 import MemberExpression from '../MemberExpression';
 import { makeMETraceData } from '../helpers/me';
+import { astNodeToString } from '../../helpers/pathHelpers';
 
 /**
  * Some examples: "chained (default)" (d) and "not chained (simple)" (s):
@@ -77,6 +78,11 @@ export default class AssignmentLValME extends BasePlugin {
       meta: {
         // instrument: Traces.instrumentTraceWrite
         build: buildTraceWriteME
+        // build: (...args) => {
+        //   const astNode = buildTraceWriteME(...args);
+        //   this.debug('TWME', astNodeToString(astNode));
+        //   return astNode;
+        // }
       }
     };
 

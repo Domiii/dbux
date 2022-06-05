@@ -220,7 +220,7 @@ export default class Client {
       const errorListener = err => {
         // NOTE: we had a bug where sometimes functions were accidentally sent. This helps check for that possibility.
         const functionPath = findPathInObject(data, val => isFunction(val));
-        reject(new NestedError(`sendWithAck failed - functionPath=${functionPath} - data: ${JSON.stringify(data, null, 2)}`, err));
+        reject(new NestedError(`sendWithAck failed - possibly caused by non-serializable function at "${functionPath}"`, err));
       };
       try {
         // debug(`SEND`, this._sending, msg);

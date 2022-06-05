@@ -1,3 +1,4 @@
+import isFunction from 'lodash/isFunction';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import Trace from '@dbux/common/src/types/Trace';
 import Collection from './Collection';
@@ -115,6 +116,11 @@ export class DataNodeCollection extends Collection {
     dataNode.traceId = traceId;
     dataNode.type = type;
     dataNode.inputs = inputs;
+
+    if (isFunction(varAccess?.prop)) {
+      // sanity check: it just creeped right in
+      throw new Error(`Invalid function prop: ${varAccess.prop} - at "${traceCollection.makeTraceInfo(traceId)}"`);
+    }
 
     this.push(dataNode);
 
