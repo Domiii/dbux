@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import template from '@babel/template';
 import { buildTraceCall, bindExpressionTemplate } from './templateUtil';
-import { getTraceCall, makeInputs } from './buildUtil';
+import { getTraceCall, makeInputs, ZeroNode } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
@@ -109,7 +109,7 @@ export function buildtraceExpressionME(state, traceCfg) {
  * ```
  */
 export const buildTraceWriteME = buildTraceCall(
-  '%%trace%%(%%object%%, %%property%%, %%value%%, %%tid%%, %%objectTid%%, %%inputs%%)',
+  '%%trace%%(%%object%%, %%objectTid%%, %%propValue%%, %%propTid%%, %%value%%, %%tid%%, %%inputs%%)',
   function buildTraceWriteME(state, traceCfg) {
     const { ids: { aliases: {
       traceWriteME: trace
@@ -132,7 +132,7 @@ export const buildTraceWriteME = buildTraceCall(
     const {
       data: {
         objectTid,
-        propertyTid,
+        propTid,
         isObjectTracedAlready,
         objectAstNode: objectVar,
         propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
@@ -143,11 +143,11 @@ export const buildTraceWriteME = buildTraceCall(
     const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
 
     // build propertyValue
-    let propertyValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
+    let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
     if (computed) {
-      propertyValue = t.assignmentExpression('=',
+      propValue = t.assignmentExpression('=',
         propertyVar,
-        propertyValue
+        propValue
       );
     }
 
@@ -167,11 +167,11 @@ export const buildTraceWriteME = buildTraceCall(
     return {
       trace,
       object: o,
-      property: propertyValue,
+      propValue,
+      propTid: propTid || ZeroNode,
+      objectTid,
       value: newMENode,
       tid,
-      objectTid,
-      // propertyTid, // TODO!
       inputs: makeInputs(traceCfg)
     };
   }

@@ -775,10 +775,10 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    return this._traceWriteVar(value, tid, declarationTid, inputs);
+    return this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
   }
 
-  _traceWriteVar(value, tid, declarationTid, inputs) {
+  #addWriteVarDataNodes(value, tid, declarationTid, inputs) {
     // [future-work] `declarationTid` should always have a declaration.
     //    If not, we did not record its declaration. E.g. for global built-ins.
     if (!declarationTid) {
@@ -791,8 +791,7 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  // TODO: propTid
-  traceWriteME(programId, propValue, propTid, objectTid, value, tid, inputTids) {
+  traceWriteME(programId, objectTid, propValue, propTid, value, tid, inputTids) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -803,11 +802,10 @@ export default class RuntimeMonitor {
 
     const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
     const inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputTids);
-    return this._traceWriteME(value, propValue, propTid, tid, objectNodeId, inputs);
+    return this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
   }
 
-  // TODO: propTid
-  _traceWriteME(value, propValue, propTid, objectNodeId, tid, inputs) {
+  #addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs) {
     // this.registerTrace(value, tid);
     const varAccess = {
       objectNodeId,
@@ -1357,12 +1355,12 @@ export default class RuntimeMonitor {
     [PatternAstNodeType.Var]: (nodes, node, value, rvalTid, readDataNode, parentResult) => {
       const { tid, declarationTid } = node;
       const inputs = [readDataNode.nodeId];
-      parentResult[node.prop] = this._traceWriteVar(value, tid, declarationTid, inputs);
+      parentResult[node.prop] = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
     },
     [PatternAstNodeType.ME]: (nodes, node, value, rvalTid, readDataNode, parentResult) => {
       const { tid, propValue, propTid, objectNodeId } = node;
       const inputs = [readDataNode.nodeId];
-      parentResult[node.prop] = this._traceWriteME(value, propValue, propTid, objectNodeId, tid, inputs);
+      parentResult[node.prop] = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
     },
 
 

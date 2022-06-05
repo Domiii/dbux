@@ -134,6 +134,7 @@ function buildVarNodeAst(state, traceCfg) {
 function buildMENodeAst(state, traceCfg) {
   const tid = doBuild(state, traceCfg); // ← calls `traceCfg.meta.build`
   TODO;
+  // TODO: isObjectTracedAlready
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.ME)),
     t.objectProperty(t.stringLiteral('tid'), tid),

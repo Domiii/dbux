@@ -32,17 +32,20 @@ export function makeMETraceData(parseNode, objectAstNode = null) {
 
   // prepare property
   let propertyAstNode;
-  let propertyTid;
+  let propTid;
   if (computed) {
     propertyNode.addDefaultTrace();
-    propertyTid = propertyNode?.tidIdentifier;
+    propTid = propertyNode?.tidIdentifier;
     propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
+  }
+  else {
+    // NOTE: we generally don't need a `propTid` if not computed
   }
 
   return {
     objectTid,
     objectAstNode,
-    propertyTid,
+    propTid,
     propertyAstNode
   };
 }

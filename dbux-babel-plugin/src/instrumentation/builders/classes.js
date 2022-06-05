@@ -365,7 +365,7 @@ const writePropertyTemplate = template(
  */
 export function buildTraceWriteClassProperty(state, traceCfg) {
   const { ids: { aliases: {
-    traceWriteME: trace
+    traceWriteME
   } } } = state;
   const tid = buildTraceId(state, traceCfg);
 
@@ -397,12 +397,13 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
 
   // build `value`
   valueNode = writePropertyTemplate({
-    trace,
+    trace: traceWriteME,
     object: o,
+    objectTid,
     property: propertyVar || p,
+    propTid,
     value: valueNode,
     tid,
-    objectTid,
     inputs: makeInputs(traceCfg)
   }).expression;
 

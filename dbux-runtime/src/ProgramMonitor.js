@@ -319,7 +319,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
-  traceWriteME = (objValue, propValue, value, tid, objectTid, inputs) => {
+  traceWriteME = (objValue, objectTid, propValue, propTid, value, tid, inputTids) => {
     value = wrapValue(value);
 
     // // [runtime-error] potential run-time error
@@ -328,7 +328,7 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objectTid, inputs);
+    return this._runtimeMonitor.traceWriteME(this.getProgramId(), objectTid, propValue, propTid, value, tid, inputTids);
   }
 
   traceDeleteME = (objValue, propValue, tid, objectTid) => {
@@ -506,6 +506,7 @@ export default class ProgramMonitor {
    *  #########################################################################*/
 
   tracePattern = (rval, rvalTid, treeNodes) => {
+    rval = wrapValue(rval);
     if (this.areTracesDisabled) {
       return rval;
     }
