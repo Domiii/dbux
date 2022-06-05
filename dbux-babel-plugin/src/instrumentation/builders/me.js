@@ -124,8 +124,8 @@ export const buildTraceWriteME = buildTraceCall(
         objectTid,
         propTid,
         isObjectTracedAlready,
-        objectVar: objectVar,
-        propertyVar: propertyVar // NOTE: this is `undefined`, if `!computed`
+        objectVar,
+        propertyVar // NOTE: this is `undefined`, if `!computed`
       }
     } = traceCfg;
 
@@ -200,8 +200,8 @@ export const buildTraceDeleteME = buildTraceCall(
     const {
       data: {
         objectTid,
-        objectVar: objectVar,
-        propertyVar: propertyVar
+        objectVar,
+        propertyVar
       }
     } = traceCfg;
 
