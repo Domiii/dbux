@@ -34,8 +34,8 @@ export function makeMETraceData(parseNode, objectVar = null) {
   let propertyVar;
   let propTid;
   if (computed) {
-    propertyNode.addDefaultTrace();
-    propTid = propertyNode?.tidIdentifier;
+    const propTraceCfg = propertyNode.addDefaultTrace();
+    propTid = propTraceCfg?.tidIdentifier;
     propertyVar = Traces.generateDeclaredUidIdentifier('p');
   }
   else {
@@ -44,9 +44,9 @@ export function makeMETraceData(parseNode, objectVar = null) {
   }
 
   return {
-    objectTid,
     objectVar,
-    propTid,
-    propertyVar
+    objectTid,
+    propertyVar,
+    propTid
   };
 }

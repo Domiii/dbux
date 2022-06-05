@@ -183,7 +183,7 @@ export function initUserCommands(extensionContext) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
       const dp = firstApplication.dataProvider;
-      const needsNewContextId = !contextId;
+      const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
       if (needsNewContextId) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().
           find(context => dp.util.isContextFunctionContext(context.contextId));

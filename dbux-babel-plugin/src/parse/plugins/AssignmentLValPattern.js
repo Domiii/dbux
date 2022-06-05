@@ -67,6 +67,8 @@ export default class AssignmentLValPattern extends BasePlugin {
    */
   patternCfg;
 
+  sequence;
+
   exit() {
     const { node } = this;
     const [lvalNode, rvalNode] = node.getChildNodes();
@@ -105,6 +107,17 @@ export default class AssignmentLValPattern extends BasePlugin {
     });
   }
 
+  instrument1() {
+    const { preInitNodeBuilders } = this.patternCfg;
+    if (this.patternCfg.preInitNodeBuilders.length) {
+      // Nested ME lvals need extra work done before the lval.
+      // → Replace assignment with sequence → add assignment to end of sequence → replace self with sequence
+      const sequenceNodes = preInitNodeBuilders.map(fn => fn());
+      sequenceNodes.push(this.node.path.node);
+      this.sequence = t.sequenceExpression(sequenceNodes);
+    }
+  }
+
   /**
    * Build and insert preInit nodes before our actual nodes.
    * 
@@ -112,14 +125,8 @@ export default class AssignmentLValPattern extends BasePlugin {
    * 1. pre-init for lval -> 1b. (nothing else to do in lval) -> 2. rval -> 3. writes
    */
   instrument() {
-    const { preInitNodeBuilders } = this.patternCfg;
-    if (this.patternCfg.preInitNodeBuilders.length) {
-      // Nested ME lvals need extra work done before the lval.
-      // → Replace assignment with sequence → add assignment to end of sequence → replace self with sequence
-      const sequenceNodes = preInitNodeBuilders.map(fn => fn());
-      sequenceNodes.push(this.path.node);
-      const seq = t.sequenceExpression(sequenceNodes);
-      this.path.replacePath(seq);
+    if (this.sequence) {
+      this.node.path.replaceWith(this.sequence);
     }
   }
 }

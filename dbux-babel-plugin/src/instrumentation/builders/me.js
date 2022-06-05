@@ -108,41 +108,40 @@ export const buildTraceWriteME = buildTraceCall(
 
     const assignmentExpression = getInstrumentTargetAstNode(state, traceCfg);
     const {
-      left: lvalNode,
-      right: rvalNode,
+      left: meAstNode,
+      right: rvalAstNode,
       operator
     } = assignmentExpression;
 
     const {
-      object: objectNode,
-      property: propertyNode,
-      computed
-    } = lvalNode;
+      property: propertyNode
+    } = meAstNode;
 
     const {
       data: {
         objectTid,
         propTid,
         isObjectTracedAlready,
-        objectVar,
-        propertyVar // NOTE: this is `undefined`, if `!computed`
+        propertyVar, // NOTE: this is `undefined`, if `!computed`
+        objectVar
       }
     } = traceCfg;
 
     // build object
-    const o = isObjectTracedAlready ? objectVar : buildMEObject();
+    const o = isObjectTracedAlready ? objectVar : buildMEObject(traceCfg.node, traceCfg);
 
     // build propValue
-    let propValue = buildMEProp();
+    let propValue = buildMEProp(traceCfg.node, traceCfg);
 
     // build lval
-    const newLvalNode = buildMELval();
+    // NOTE: buildMELval does uses `propVar`. We could have also used `propValue`, and then passed `propVar` to trace call.
+    const newLvalNode = buildMELval(traceCfg.node, traceCfg, propertyVar || propertyNode);
 
-    // build final ME assignment
+    // build final assignment
     const newMENode = t.assignmentExpression(
       operator,
       newLvalNode,
-      rvalNode
+      rvalAstNode
     );
 
     return {
@@ -223,11 +222,38 @@ export const buildTraceDeleteME = buildTraceCall(
  * ME utils
  * ##########################################################################*/
 
-export function buildMEObject() {
+/**
+ * @param {BaseNode} meNode 
+ * @param {TraceCfg} traceCfg 
+ */
+export function buildMEObject(meNode, traceCfg) {
+  const {
+    object: objectNode,
+  } = meNode.path.node;
+
+  const {
+    data: {
+      objectVar
+    }
+  } = traceCfg;
   return t.assignmentExpression('=', objectVar, objectNode);
 }
 
-export function buildMEProp() {
+/**
+ * @param {BaseNode} meNode 
+ * @param {TraceCfg} traceCfg 
+ */
+export function buildMEProp(meNode, traceCfg) {
+  const {
+    property: propertyNode,
+    computed
+  } = meNode.path.node;
+  const {
+    data: {
+      propertyVar // NOTE: this is `undefined`, if `!computed`
+    }
+  } = traceCfg;
+
   let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
   if (computed) {
     // store in var because we need `propValue` in multiple places
@@ -239,11 +265,40 @@ export function buildMEProp() {
   return propValue;
 }
 
-export function buildMELval() {
+export function getMEpropVal(meNode, traceCfg) {
+  const {
+    property: propertyNode,
+    computed
+  } = meNode.path.node;
+  const {
+    data: {
+      propertyVar // NOTE: this is `undefined`, if `!computed`
+    }
+  } = traceCfg;
+
+  return propertyVar || convertNonComputedPropToStringLiteral(propertyNode, computed);
+}
+
+/**
+ * @param {BaseNode} meNode 
+ * @param {TraceCfg} traceCfg 
+ */
+export function buildMELval(meNode, traceCfg, prop = buildMEProp(meNode, traceCfg)) {
+  const {
+    computed
+  } = meNode.path.node;
+
+  const {
+    data: {
+      objectVar,
+    }
+  } = traceCfg;
+
   return t.memberExpression(
     objectVar,
-    propertyVar || propertyNode,
+    prop,
     computed,
     false
   );
 }
+

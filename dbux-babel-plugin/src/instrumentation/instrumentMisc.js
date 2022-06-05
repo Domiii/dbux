@@ -5,7 +5,7 @@ import { getInstrumentPath, getBuildTargetPath } from './builders/common';
 import { doBuild, buildAll, buildTraceDeclarationVar } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
-export function instrumentExpression(state, traceCfg) {
+export function instrumentInPlace(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
   const resultNode = doBuild(state, traceCfg);
 

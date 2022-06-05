@@ -200,7 +200,7 @@ export default class MemberExpression extends BaseNode {
   // ###########################################################################
 
   exit() {
-    if (this.hasHandler()) {
+    if (this.hasHandler) {
       // disable default behavior
       return;
     }

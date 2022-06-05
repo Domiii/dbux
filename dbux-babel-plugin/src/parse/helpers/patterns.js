@@ -8,6 +8,8 @@ import { buildTraceExpressionNoInput, doBuild } from '../../instrumentation/buil
 import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { getDeclarationTid } from '../../helpers/traceUtil';
 import { pathToStringAnnotated } from '../../helpers/pathHelpers';
+import { makeMETraceData } from './me';
+import { buildMELval, buildMEObject, getMEpropVal } from '../../instrumentation/builders/me';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -68,13 +70,15 @@ export function addPatternTraceCfg(patternCfg, buildFn, traceCfgInput) {
  * @param {BaseNode} node
  * @return {number} Index of node in final `treeNodes` array.
  */
-export function addPatternChildNode(patternCfg, prop, node) {
+export function addPatternChildNode(patternCfg, patternProp, node) {
   const { path } = node;
 
   Verbose && debug(`addPatternChildNode: "${node.debugTag}"`);
 
   if (path.isIdentifier()) {
-    // Var
+    /** ###########################################################################
+     * // Var
+     * ##########################################################################*/
     return addPatternTraceCfg(patternCfg, buildVarNodeAst, {
       node,
       path,
@@ -82,27 +86,34 @@ export function addPatternChildNode(patternCfg, prop, node) {
       staticTraceData: {
         type: TraceType.PatternWriteVar
       },
-      data: { prop },
+      data: { patternProp },
       meta: {
-        build: buildTraceId,
         instrument: null, // disable default instrumentation
       }
     });
   }
   else if (path.isMemberExpression()) {
-    // ME
-    patternCfg.preInitNodeBuilders.push(() => buildMEPreInitNode(node));
-    return addPatternTraceCfg(patternCfg, buildMENodeAst, {
+    /** ###########################################################################
+     * ME
+     * ##########################################################################*/
+    const meTraceData = makeMETraceData(node);
+    const data = { patternProp, ...meTraceData };
+    const traceCfgInput = {
       node,
       path,
       staticTraceData: {
         type: TraceType.PatternWriteME
       },
+      data,
       meta: {
-        build: buildTraceId,
-        instrument: null, // disable default instrumentation
+        build(state, traceCfg) {
+          // replace original with object var instead
+          return buildMELval(node, traceCfg);
+        },
       }
-    });
+    };
+    patternCfg.preInitNodeBuilders.push(() => buildMEPreInitNode(node));
+    return addPatternTraceCfg(patternCfg, buildMENodeAst, traceCfgInput);
   }
   else if (path.isAssignmentPattern()) {
     // TODO
@@ -114,15 +125,35 @@ export function addPatternChildNode(patternCfg, prop, node) {
     throw new Error(`Rest patterns not yet supported, in: "${node.getExistingParent().debugTag}"`);
   }
   else if (path.isPattern()) {
-    return node.addPatternNode(patternCfg, prop);
+    /** ###########################################################################
+     * Array + Object
+     * ##########################################################################*/
+    return node.addPatternNode(patternCfg, patternProp);
   }
   throw new Error(`Unknown lval pattern node found: "${node.debugTag}"`);
 }
 
+
+/** ###########################################################################
+ * instrument1
+ * ##########################################################################*/
+
+/**
+ * @param {BaseNode} meNode 
+ */
+function buildMEPreInitNode(meNode) {
+  const { traceCfg } = meNode;
+  return buildMEObject(meNode, traceCfg);
+}
+
+/** ###########################################################################
+ * instrument
+ * ##########################################################################*/
+
 export function buildGroupNodeAst(prop, childIndexes) {
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.Array)),
-    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(prop || '')),
+    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(prop ? (prop + '') : '')),
     t.objectProperty(t.stringLiteral('children'),
       t.arrayExpression(childIndexes.map(childIndex => t.numericLiteral(childIndex)))
     )
@@ -130,30 +161,31 @@ export function buildGroupNodeAst(prop, childIndexes) {
 }
 
 function buildVarNodeAst(state, traceCfg) {
-  const tid = doBuild(state, traceCfg); // ← calls `traceCfg.meta.build`
+  const tid = buildTraceId(state, traceCfg);
   const declarationTid = getDeclarationTid(traceCfg);
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.Var)),
-    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(traceCfg.data.prop + '')),
+    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(traceCfg.data.patternProp + '')),
     t.objectProperty(t.stringLiteral('tid'), tid),
+
     t.objectProperty(t.stringLiteral('declarationTid'), declarationTid),
   ]);
 }
 
 function buildMENodeAst(state, traceCfg) {
-  const tid = doBuild(state, traceCfg); // ← calls `traceCfg.meta.build`
+  const tid = buildTraceId(state, traceCfg);
+  const {
+    patternProp,
+    objectTid,
+    propTid
+  } = traceCfg.data;
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.ME)),
-    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(traceCfg.data.prop + '')),
-    // TODO: propValue, propTid, objectNodeId,
+    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(patternProp + '')),
     t.objectProperty(t.stringLiteral('tid'), tid),
-  ]);
-}
 
-/**
- * @param {BaseNode} node 
- */
-function buildMEPreInitNode(node) {
-  const { state, traceCfg } = node;
-  return TODO;
+    t.objectProperty(t.stringLiteral('objectTid'), objectTid),
+    t.objectProperty(t.stringLiteral('propValue'), getMEpropVal(traceCfg.node, traceCfg)),
+    t.objectProperty(t.stringLiteral('propTid'), propTid),
+  ]);
 }

@@ -342,7 +342,7 @@ function buildPostClassNodes(classVar, state) {
 // ###########################################################################
 
 const writePropertyTemplate = template(
-  '%%trace%%(%%object%%, %%property%%, %%value%%, %%tid%%, %%objectTid%%, %%inputs%%)'
+  '%%trace%%(%%object%%, %%objectTid%%, %%propValue%%, %%propTid%%, %%value%%, %%tid%%, %%inputs%%)',
 );
 
 /**
@@ -380,7 +380,8 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
     data: {
       objectTid,
       objectTraceCfg,
-      propertyVar // NOTE: this is `undefined`, if `!computed`
+      propertyVar, // NOTE: this is `undefined`, if `!computed`
+      propTid
     }
   } = traceCfg;
 
@@ -400,7 +401,7 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
     trace: traceWriteME,
     object: o,
     objectTid,
-    property: propertyVar || p,
+    propValue: propertyVar || p,
     propTid,
     value: valueNode,
     tid,
