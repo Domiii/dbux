@@ -41,7 +41,7 @@ export function getAssignmentLValPlugin(node) {
 //   // ArrayPattern: 'AssignmentLValPattern'
 // };
 
-const DefaultLValPlugin = 'VariableDeclaratorLVal';
+const DefaultLValPlugin = 'DefaultDeclaratorLVal';
 
 export function getDeclaratorLValPlugin(node) {
   const declaration = node.path.parentPath;

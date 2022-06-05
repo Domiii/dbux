@@ -1,4 +1,5 @@
 import * as t from '@babel/types';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { buildTraceExpressionNoInput } from '../../instrumentation/builders/misc';
 import { PatternBuildConfig } from '../helpers/patterns';
 import BasePlugin from './BasePlugin';
@@ -77,16 +78,28 @@ export default class AssignmentLValPattern extends BasePlugin {
     /**
      * PatternTree DSF traversal
      */
-    lvalNode.buildPatternTraceCfg(patternCfg, null);
+    lvalNode.addPatternNode(patternCfg, null);
 
     node.Traces.addTrace({
       node,
       path: node.path,
+      staticTraceData: {
+        type: TraceType.PatternAssignment
+      },
       meta: {
         build: buildTraceExpressionNoInput,
         traceCall: 'tracePattern',
+        /**
+         * Replace rval
+         */
+        targetPath: rvalNode.path,
+        // targetNode() { return rvalNode.path.node; },
+        
         moreTraceCallArgs() {
-          return patternCfg.lvalNodeTraceCfgs.map(nodeTraceCfg => nodeTraceCfg.meta.buildPatternNode());
+          // add `treeNodes` array
+          return [t.arrayExpression(
+            patternCfg.lvalTreeNodeBuilders.map(build => build())
+          )];
         }
       }
     });

@@ -142,8 +142,9 @@ export default class Traces extends BasePlugin {
     } = traceData;
 
     if (!path || !staticTraceData) {
+      const what = !path ? 'path' : 'staticTraceData';
       throw new Error(
-        `addTrace data missing \`path\` or \`staticTraceData\`: node=${node}, path=${path && pathToString(path)}, staticTraceData=${JSON.stringify(staticTraceData)}`
+        `addTrace data missing "${what}": node=${node}, path=${path && pathToString(path)}, staticTraceData=${JSON.stringify(staticTraceData)}`
       );
     }
 
@@ -195,7 +196,7 @@ export default class Traces extends BasePlugin {
       if (!declarationNode) {
         node.getOwnDeclarationNode();
         throw new Error(`Assertion failed - node.getOwnDeclarationNode() returned nothing ` +
-          `for Declaration "${node}" in "${node.getParentString()}`);
+          `for Declaration "${node}" in "${node.getParentString()} (→ might be caused by BaseId.getOwnDeclarationNode hackfix)`);
       }
 
       // eslint-disable-next-line max-len

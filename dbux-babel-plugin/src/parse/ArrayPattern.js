@@ -1,5 +1,5 @@
 import BaseNode from './BaseNode';
-import { buildPatternChildTraceCfg, PatternBuildConfig } from './helpers/patterns';
+import { buildArrayNodeAst, addPatternChildNode, PatternBuildConfig } from './helpers/patterns';
 
 /**
  * Notes:
@@ -22,20 +22,17 @@ export default class ArrayPattern extends BaseNode {
    * @param {PatternBuildConfig} patternCfg
    * @param {BaseNode} node
    */
-  buildPatternTraceCfg(patternCfg, prop) {
-    const { lvalNodeTraceCfgs } = patternCfg;
+  addPatternNode(patternCfg, prop) {
     const [elementNodes] = this.getChildNodes();
-    const children = [];
-    const newNode = TODO {
-      prop,
-      children
-    };
-    lvalNodeTraceCfgs.push(newNode);
+    const childIndexes = [];
+    const nodeIndex = patternCfg.addBuilder(buildArrayNodeAst.bind(this, prop, childIndexes));
 
     for (let i = 0; i < elementNodes.length; ++i) {
       const childNode = elementNodes[i];
-      buildPatternChildTraceCfg(patternCfg, i, childNode);
-      lvalNodeTraceCfgs.push(childNode);
+      const childIdx = addPatternChildNode(patternCfg, i, childNode);
+      childIndexes.push(childIdx);
     }
+
+    return nodeIndex;
   }
 }

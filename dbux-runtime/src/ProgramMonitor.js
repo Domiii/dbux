@@ -501,6 +501,16 @@ export default class ProgramMonitor {
 
     return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
   }
+  /** ###########################################################################
+   * patterns
+   *  #########################################################################*/
+
+  tracePattern = (rval, rvalTid, treeNodes) => {
+    if (this.areTracesDisabled) {
+      return rval;
+    }
+    return this._runtimeMonitor.tracePattern(this.getProgramId(), rval, rvalTid, treeNodes);
+  };
 
   // /** ###########################################################################
   //  * loops
@@ -515,12 +525,17 @@ export default class ProgramMonitor {
   //   return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
   // }
 
+  pushLoop() {
+  }
+
+
   // ###########################################################################
-  // old traces
+  // old stuff
   // ###########################################################################
 
   /**
    * `t` is short for `trace`
+   * @deprecated
    */
   t(inProgramStaticTraceId) {
     if (this.areTracesDisabled) {
@@ -531,6 +546,7 @@ export default class ProgramMonitor {
 
   /**
    * 
+   * @deprecated
    */
   traceExpr(tid, value) {
     value = wrapValue(value);
@@ -549,12 +565,6 @@ export default class ProgramMonitor {
   //   return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   // }
 
-  // ###########################################################################
-  // loops
-  // ###########################################################################
-
-  pushLoop() {
-  }
 
   // ###########################################################################
   // internal stuff

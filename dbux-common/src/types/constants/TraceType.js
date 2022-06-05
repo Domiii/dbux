@@ -111,8 +111,10 @@ const traceTypeObj = {
   Yield: 50,
   ResumeGen: 51,
 
-  PatternWriteVar: 60,
-  PatternWriteME: 61
+  PatternAssignment: 60,
+  PatternWriteVar: 61,
+  PatternWriteAndDeclareVar: 62,
+  PatternWriteME: 63
 };
 
 /**
@@ -176,6 +178,7 @@ expressionTypes[TraceType.UpdateExpression] = true;
 expressionTypes[TraceType.Identifier] = true;
 expressionTypes[TraceType.Literal] = true;
 expressionTypes[TraceType.ME] = true;
+expressionTypes[TraceType.PatternAssignment] = true;
 // expressionTypes[TraceType.ReturnArgument] = true;
 // expressionTypes[TraceType.ThrowArgument] = true;
 
@@ -222,7 +225,7 @@ declarationTypes[TraceType.ClassDeclaration] = true;
 declarationTypes[TraceType.DeclareAndWriteVar] = true;
 declarationTypes[TraceType.Param] = true;
 declarationTypes[TraceType.CatchParam] = true;
-declarationTypes[TraceType.PatternWriteVar] = true;
+declarationTypes[TraceType.PatternWriteAndDeclareVar] = true;
 
 export function isDeclarationTrace(traceType) {
   return declarationTypes[traceType];

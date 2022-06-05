@@ -195,8 +195,9 @@ export default class ParseNode {
 
   getParseNodeStackToString() {
     const stack = this.getParseNodeStack();
-    return ` - current stack (${stack.length}):\n  ` +
-      stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join('\n  ');
+    const indent = '    ';
+    return ` - current stack (${stack.length}):\n${indent}` +
+      stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join(`\n${indent}`);
   }
 
 

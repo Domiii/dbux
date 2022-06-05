@@ -55,15 +55,6 @@ export class TraceCfgMeta {
    * 
    */
   noTidIdentifier;
-
-  /**
-   * Used in pattern lval traces.
-   * In that case, usually, default instrumentation is disabled, and we call this function to generate
-   * the {@link AstNode} (to represent the corresponding PatternTreeNode).
-   * 
-   * @type {Function?}
-   */
-  buildPatternNode;
 }
 
 export class TraceCfgData {
