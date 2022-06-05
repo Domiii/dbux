@@ -9,9 +9,9 @@ import { ZeroNode } from '../../helpers/traceUtil';
 /**
  * 
  * @param {BaseNode} parseNode 
- * @param {AstNode} objectAstNode
+ * @param {AstNode} objectVar
  */
-export function makeMETraceData(parseNode, objectAstNode = null) {
+export function makeMETraceData(parseNode, objectVar = null) {
   const { path, Traces } = parseNode;
   const [objectNode, propertyNode] = parseNode.getChildNodes();
   const {
@@ -28,15 +28,15 @@ export function makeMETraceData(parseNode, objectAstNode = null) {
     parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     objectTid = ZeroNode;
   }
-  objectAstNode = objectAstNode || Traces.generateDeclaredUidIdentifier('o');
+  objectVar = objectVar || Traces.generateDeclaredUidIdentifier('o');
 
   // prepare property
-  let propertyAstNode;
+  let propertyVar;
   let propTid;
   if (computed) {
     propertyNode.addDefaultTrace();
     propTid = propertyNode?.tidIdentifier;
-    propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
+    propertyVar = Traces.generateDeclaredUidIdentifier('p');
   }
   else {
     // NOTE: we generally don't need a `propTid` if not computed
@@ -44,8 +44,8 @@ export function makeMETraceData(parseNode, objectAstNode = null) {
 
   return {
     objectTid,
-    objectAstNode,
+    objectVar,
     propTid,
-    propertyAstNode
+    propertyVar
   };
 }

@@ -99,8 +99,8 @@ export function buildUpdateExpressionME(state, traceCfg) {
   const {
     tidIdentifier: readTid,
     data: {
-      objectAstNode: objectVar,
-      propertyAstNode: propertyVar
+      objectVar: objectVar,
+      propertyVar: propertyVar
     }
   } = readTraceCfg;
   const meNode = path.node.argument;

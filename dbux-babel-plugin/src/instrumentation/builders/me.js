@@ -12,16 +12,6 @@ import { buildTraceExpression } from './misc';
 // traceExpressionME
 // ###########################################################################
 
-
-function getMEObjectNode(meNode, traceCfg) {
-  return traceCfg.data.objectAstNode || meNode.object;
-}
-
-function getMEPropertyNode(meNode, traceCfg) {
-  return traceCfg.data.propertyAstNode ||
-    convertNonComputedPropToStringLiteral(meNode.property, meNode.computed);
-}
-
 /**
  * [ME]
  */
@@ -43,8 +33,8 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
       data: {
         objectTid,
         isObjectTracedAlready,
-        objectAstNode: objectVar,
-        propertyAstNode: propertyVar, // NOTE: this is `undefined`, if `!computed`
+        objectVar,
+        propertyVar, // NOTE: this is `undefined`, if `!computed`
         optional
       }
     } = traceCfg;
@@ -134,8 +124,8 @@ export const buildTraceWriteME = buildTraceCall(
         objectTid,
         propTid,
         isObjectTracedAlready,
-        objectAstNode: objectVar,
-        propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
+        objectVar: objectVar,
+        propertyVar: propertyVar // NOTE: this is `undefined`, if `!computed`
       }
     } = traceCfg;
 
@@ -210,8 +200,8 @@ export const buildTraceDeleteME = buildTraceCall(
     const {
       data: {
         objectTid,
-        objectAstNode: objectVar,
-        propertyAstNode: propertyVar
+        objectVar: objectVar,
+        propertyVar: propertyVar
       }
     } = traceCfg;
 

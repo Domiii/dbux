@@ -331,9 +331,9 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceWriteME(this.getProgramId(), objectTid, propValue, propTid, value, tid, inputTids);
   }
 
-  traceDeleteME = (objValue, propValue, tid, objectTid) => {
+  traceDeleteME = (value, propValue, tid, objectTid) => {
     // [runtime-error] potential run-time error
-    const result = delete objValue[propValue];
+    const result = delete value[propValue];
     if (this.areTracesDisabled) {
       return result;
     }

@@ -58,7 +58,8 @@ export default class MemberExpression extends BaseNode {
   }
 
   /**
-   * Set `handler` recursively
+   * Set `handler` recursively.
+   * NOTE: only used by `CallExpression` in case of untraceable callee.
    */
   set handlerDeep(handler) {
     this._handler = handler;
@@ -66,6 +67,19 @@ export default class MemberExpression extends BaseNode {
     if (objectNode instanceof MemberExpression) {
       objectNode.handlerDeep = handler;
     }
+  }
+
+  /**
+   * Handler is set in several cases:
+   * 
+   * AssignmentLValME
+   * UpdateLValME
+   * CalleeME
+   * CallExpression (if callee is not traceable)
+   * Delete
+   */
+  get hasHandler() {
+    return !!this._handler;
   }
 
   buildDefaultTrace() {
@@ -185,7 +199,7 @@ export default class MemberExpression extends BaseNode {
   // ###########################################################################
 
   exit() {
-    if (this._handler) {
+    if (this.hasHandler()) {
       // disable default behavior
       return;
     }
@@ -208,7 +222,7 @@ export default class MemberExpression extends BaseNode {
    * `g().[f(x)]` ->
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
-  addRValTrace(targetPath, objectAstNode) {
+  addRValTrace(targetPath, objectVar) {
     if (this.shouldIgnoreThisRVal()) {
       // this.debug(`[addRValTrace IGNORE] ${this.debugTag}`);
       return null;
@@ -239,12 +253,12 @@ export default class MemberExpression extends BaseNode {
       optional
     } = path.node;
 
-    const data = makeMETraceData(this, objectAstNode);
+    const data = makeMETraceData(this, objectVar);
     /**
      * Whether caller already took care of tracing object.
      * If not, builder needs to trace object explicitely.
      */
-    data.isObjectTracedAlready = !!objectAstNode;
+    data.isObjectTracedAlready = !!objectVar;
     // NOTE: at build time, the original ME node might have already been replaced
     data.optional = optional;
 

@@ -7,19 +7,19 @@ import MemberExpression from '../MemberExpression';
 import { makeMETraceData } from '../helpers/me';
 
 /**
+ * Some examples: "chained (default)" (d) and "not chained (simple)" (s):
+ * NOTE: we now do not distinguish between the two cases anymore.
+ *    → All writes are now handled by {@link buildTraceWriteME}.
+ * 
  * @example
- * 
- * Two situations: "default" (d) and "simple object" (s)
- * 
  * Case d-1:
  * `a.b.c.prop = f(x)` ->
  * `twME(o = tme(a.b.c..., objectTid), p = 'prop', o[p] = te(f(x)..., rhsTid), tid, objectTid, rhsTid)`
  *
- * Case d-3:
+ * Case d-2:
  * `a.b.c[prop()] = f(x)` ->
- * `twME(tme(a.b.c..., objectTid), te(prop()...), te(f(x), rhsTid), tid, objectTid, rhsTid)`
+ * `twME(o = tme(a.b.c..., objectTid), te(prop()...), te(f(x), rhsTid), tid, objectTid, rhsTid)`
  *
- * TODO: "simple object" NYI
  * Case s-1: 
  * `o.prop = f(x)` ->
  * `twME(te(o..., objectTid), p = 'prop', o[p] = te(f(x)..., rhsTid), tid, objectTid, rhsTid)`
