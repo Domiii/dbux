@@ -7,8 +7,8 @@ import ParsePhase from './ParsePhase';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
-// const Verbose = 2;
-const Verbose = 0;
+const Verbose = 2;
+// const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');

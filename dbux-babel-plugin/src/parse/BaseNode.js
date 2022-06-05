@@ -138,7 +138,12 @@ export default class BaseNode extends ParseNode {
         if (!traceData) {
           return null;
         }
-        this.Traces.addTrace(traceData);
+        const trace = this.Traces.addTrace(traceData);
+        if (trace && !this._traceCfg) {
+          // hackfix: target trace got attached to another trace, probably a binding trace...
+          //      not sure, if we can just do this, but for now it works.
+          this._traceCfg = trace;
+        }
       }
       else {
         // NOTE: This is a common ocurrence. Only add default trace if noy already added.

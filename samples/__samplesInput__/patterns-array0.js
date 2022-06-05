@@ -1,8 +1,8 @@
-function main(a = [1, 2, 3]) {
-  var x, y;
-  ([x, y] = a);
+function main(a) {
+  const j = 0;
+  ([a[j + 1], a[j]] = [a[j], a[j + 1]]);
 
-  return [y, x];
+  return [...a];
 }
 
-main();
+console.log(main([1, 2, 3]));
