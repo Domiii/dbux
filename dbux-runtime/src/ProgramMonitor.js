@@ -505,12 +505,12 @@ export default class ProgramMonitor {
    * patterns
    *  #########################################################################*/
 
-  tracePattern = (rval, rvalTid, treeNodes) => {
+  tracePattern = (rval, tid, rvalTid, treeNodes) => {
     rval = wrapValue(rval);
     if (this.areTracesDisabled) {
       return rval;
     }
-    return this._runtimeMonitor.tracePattern(this.getProgramId(), rval, rvalTid, treeNodes);
+    return this._runtimeMonitor.tracePattern(this.getProgramId(), rval, tid, rvalTid, treeNodes);
   };
 
   // /** ###########################################################################

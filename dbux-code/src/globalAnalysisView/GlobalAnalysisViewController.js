@@ -121,12 +121,12 @@ export default class GlobalAnalysisViewController {
     const debugNode = this.treeDataProvider.getRootByClass(GlobalDebugNode);
 
     await this.treeView.reveal(debugNode, { expand: true });
-    // await sleep(50);
+    await sleep(50);
 
     const ddgsNode = debugNode.children.find(n => n.label === 'DDG');
     if (ddgsNode) {
       await this.treeView.reveal(ddgsNode, { expand: true });
-      // await sleep(50);
+      await sleep(50);
 
       const ddgNode = ddgsNode.children.find(n => n.ddg === ddg);
       if (ddgNode) {

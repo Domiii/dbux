@@ -455,7 +455,7 @@ export default class DDGTimelineBuilder {
 
 
     const isDecision = dp.util.isTraceControlDecision(traceId);
-    // Verbose && this.debug(`trace ${traceId} (${trace.staticTraceId}), decision=${isDecision}`);
+    Verbose && this.debug(`Adding Trace: t#${traceId}, n#${ownDataNode.nodeId}, s#${trace.staticTraceId}, ${isDecision}`);
 
     // if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
     //   // future-work: add two nodes in this case

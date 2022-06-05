@@ -75,7 +75,7 @@ export default class AssignmentLValPattern extends BasePlugin {
     const patternCfg = this.patternCfg = new PatternBuildConfig();
 
     // add rval trace
-    rvalNode.addDefaultTrace();
+    const rvalTrace = rvalNode.addDefaultTrace();
 
     /**
      * PatternTree DSF traversal
@@ -99,9 +99,14 @@ export default class AssignmentLValPattern extends BasePlugin {
 
         moreTraceCallArgs() {
           // add `treeNodes` array
-          return [t.arrayExpression(
+          const rvalTid = rvalTrace?.tidIdentifier;
+          const treeNodes = t.arrayExpression(
             patternCfg.lvalTreeNodeBuilders.map(build => build())
-          )];
+          );
+          return [
+            rvalTid,
+            treeNodes
+          ];
         }
       }
     });

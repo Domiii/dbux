@@ -4,7 +4,7 @@ function main(a = [1, 2, 3]) {
   // [a[j]] = a;
   [a[j], a[j + 1]] = [a[j + 1], a[j]];
 
-  console.log(a);
+  return a;
 }
 
 main();

@@ -775,10 +775,11 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    return this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
+    const inputsNodeIds = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
+    return this.#addWriteVarDataNodes(value, tid, declarationTid, inputsNodeIds);
   }
 
-  #addWriteVarDataNodes(value, tid, declarationTid, inputs) {
+  #addWriteVarDataNodes(value, tid, declarationTid, inputsNodeIds) {
     // [future-work] `declarationTid` should always have a declaration.
     //    If not, we did not record its declaration. E.g. for global built-ins.
     if (!declarationTid) {
@@ -786,7 +787,6 @@ export default class RuntimeMonitor {
     }
     // console.warn('twv', tid, declarationTid);
     const varAccess = declarationTid && { declarationTid };
-    const inputsNodeIds = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, inputsNodeIds);
     return value;
   }
@@ -1286,7 +1286,7 @@ export default class RuntimeMonitor {
    * @param {*} rvalTid 
    * @param {*} treeNodes 
    */
-  tracePattern(programId, rval, rvalTid, treeNodes) {
+  tracePattern(programId, rval, tid, rvalTid, treeNodes) {
     if (!this._ensureExecuting()) {
       return rval;
     }
