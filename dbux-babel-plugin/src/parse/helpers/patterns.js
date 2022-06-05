@@ -108,7 +108,8 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
       meta: {
         build(state, traceCfg) {
           // replace original with object var instead
-          return buildMELval(node, traceCfg);
+          const meAstNode = node.path.node;
+          return buildMELval(meAstNode, traceCfg);
         },
       }
     };
@@ -146,11 +147,10 @@ function buildMEPreInitNode(meNode) {
   const [objectNode] = meNode.getChildNodes();
   
   // don't instrument object node
-  //    (there are issues with ordering, that lead to object node not getting built on time)
+  //    (there are issues with ordering, that lead to object node not getting built on time, so we do it here instead)
   objectNode.traceCfg.instrument = null;
 
   const objectAstNode = doBuild(state, objectNode.traceCfg);
-
   const {
     data: {
       objectVar
