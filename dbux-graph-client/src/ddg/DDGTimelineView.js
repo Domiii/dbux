@@ -190,12 +190,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   // rendering finished
   decorateAfterRender = async () => {
     try {
-      // sort everything
-      //    (there seems to be a bug where render order is different from input (DOT) order, causing unwanted obstruction)
-      // const gs = selectAll('.graph > g');
+      // sort everything: edges should always be at the bottom
       Array.from(this.el.querySelectorAll('.graph > g'))
         .sort((a, b) => {
-          console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
+          // const aEdge = a.classList.contains('edge');
+          // const bEdge = b.classList.contains('edge');
+          // return TODO;
+          // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
           return a.id?.localeCompare(b.id || '');
         })
         .forEach(item => item.parentNode.appendChild(item));
