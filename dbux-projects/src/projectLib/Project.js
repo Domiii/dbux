@@ -140,7 +140,7 @@ export default class Project extends ProjectBase {
     this.name = this.folderName = name || this.constructor.constructorName;
     this.logger = newLogger(this.debugTag);
 
-    this.reloadExercises();
+    // this.reloadExercises();
   }
 
   get originalGitFolderPath() {
@@ -1464,11 +1464,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // exercises
   // ###########################################################################
 
+  getExercisePath(exerciseFileName = this.name) {
+    return this.getAssetPath('exercises', `${exerciseFileName}.js`);
+  }
+
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExerciseConfigs() {
-    const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
+  loadExerciseConfigs(exerciseFileName) {
+    const rawConfigFile = this.getExercisePath(exerciseFileName);
     try {
       const configs = requireUncached(rawConfigFile);
       return configs;
@@ -1483,8 +1487,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * Get all exercises for this project
    * @return {ExerciseList}
    */
-  reloadExercises() {
-    let exerciseConfigs = this.loadExerciseConfigs()
+  reloadExercises(exerciseFileName) {
+    let exerciseConfigs = this.loadExerciseConfigs(exerciseFileName)
       .filter(this.canRunExercise.bind(this))
       .map(this.decorateExercise.bind(this));
     const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
@@ -1531,6 +1535,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // );
 
     this._exercises = new ExerciseList(exercises);
+
+    for (const exercise of exercises) {
+      this.manager.registerNewExercise(exercise);
+    }
 
     return this._exercises;
   }

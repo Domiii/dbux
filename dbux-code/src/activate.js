@@ -21,6 +21,7 @@ import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
+import { initChapterListBuilderView } from './chapterListBuilderView/chapterListBuilderViewController';
 // import { initPlugins } from './PluginMgr';
 
 // eslint-disable-next-line no-unused-vars
@@ -49,6 +50,7 @@ export default async function activate(context) {
   initWebviewWrapper(context);
 
   initApplicationsView(context);
+  initChapterListBuilderView(context);
   const globalAnalysisViewController = initGlobalAnalysisView(context);
   const traceDetailsController = initTraceDetailsView(context);
   const dataFlowController = initDataFlowView(context);

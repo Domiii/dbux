@@ -222,7 +222,12 @@ export default class ProjectsManager {
       return realPathSyncNormalized(pathResolve(...segments));
     }
     else {
-      return this.externals.resources.getResourcePath('dist', 'projects', ...segments);
+      if (process.env.NODE_ENV === 'development') {
+        return this.getDevAssetPath(...segments);
+      }
+      else {
+        return this.externals.resources.getResourcePath('dist', 'projects', ...segments);
+      }
     }
   }
 
@@ -263,13 +268,13 @@ export default class ProjectsManager {
     return this._projects;
   }
 
-  reloadChapterList() {
+  reloadChapterList(chapterListName = 'list1') {
+    const chapters = [];
     try {
       // future-work: allow for loading/choosing any chapter list
-      const chapterListFile = this.getAssetPath('chapterLists', 'list1.js');
+      const chapterListFile = this.getAssetPath('chapterLists', `${chapterListName}.js`);
       // const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
       const chapterRegistry = requireUncached(chapterListFile);
-      this.chapters = [];
       for (const chapterConfig of chapterRegistry) {
         const { id, name, exercises: exerciseIdOrNames } = chapterConfig;
         const exercises = exerciseIdOrNames.map(idOrName => {
@@ -284,14 +289,13 @@ export default class ProjectsManager {
           return exercise;
         }).filter(Boolean);
         const chapter = new Chapter(this, id, name, exercises);
-        this.chapters.push(chapter);
+        chapters.push(chapter);
       }
-      return this.chapters;
+      return chapters;
     }
     catch (err) {
       logError(`Cannot load chapters: ${err.stack}`);
-      this.chapters = EmptyArray;
-      return this.chapters;
+      return chapters;
     }
   }
 
@@ -302,14 +306,16 @@ export default class ProjectsManager {
     this._allExercisesById = new Map();
     this._allExercisesByName = new Map();
     for (const project of this.projects) {
-      for (const exercise of project.reloadExercises()) {
-        this._allExercisesById.set(exercise.id, exercise);
-        if (exercise.uniqueName) {
-          this._allExercisesByName.set(exercise.uniqueName, exercise);
-        }
-      }
+      project.reloadExercises();
     }
-    this.reloadChapterList();
+    this.chapters = this.reloadChapterList();
+  }
+
+  registerNewExercise(exercise) {
+    this._allExercisesById.set(exercise.id, exercise);
+    if (exercise.uniqueName) {
+      this._allExercisesByName.set(exercise.uniqueName, exercise);
+    }
   }
 
   getExerciseById(id) {
@@ -920,6 +926,10 @@ export default class ProjectsManager {
   getDevPackageRoot() {
     // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
     return realPathSyncNormalized(path.join(__dirname, '..', '..'));
+  }
+
+  getDevAssetPath(...segments) {
+    return pathResolve(this.getDevPackageRoot(), `dbux-projects/assets`, ...segments);
   }
 
   // _convertPkgToLocalIfNecessary(pkgName, version = null) {
