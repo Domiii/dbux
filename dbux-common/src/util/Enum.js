@@ -139,7 +139,6 @@ export default class Enum {
   nameFromForce = (nameOrValue) => {
     const value = this.nameFrom(nameOrValue);
     if (value === undefined) {
-      debugger;
       throw new Error(`Invalid name or value: ${nameOrValue} (enum = ${JSON.stringify(this.valuesByNames)})`);
     }
     return value;

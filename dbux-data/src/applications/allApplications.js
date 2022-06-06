@@ -251,7 +251,6 @@ try {
 }
 catch (err) {
   logError(err);
-  debugger;
 }
 
 export default allApplications;

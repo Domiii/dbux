@@ -19,10 +19,11 @@ export function wrapScriptTag(src) {
  */
 export async function wrapScriptFileInTag(scriptPath) {
   let src = await fs.readFile(scriptPath, "utf8");
-  if (process.env.NODE_ENV === 'development') {
-    const prettier = await import('prettier');
-    src = prettier.format(src, { parser: 'babel' });
-  }
+  // WARNING: this works VERY well, but is SUPER slow! (e.g. some 5-10s every time we want to restart DDG)
+  // if (process.env.NODE_ENV === 'development') {
+  //   const prettier = await import('prettier');
+  //   src = prettier.format(src, { parser: 'babel' });
+  // }
   return wrapScriptTag(src);
   // NOTE: "panel.webview.asWebviewUri" errors out ("unknown url scheme")
   // let graphJsUri = Uri.file(scriptPath);

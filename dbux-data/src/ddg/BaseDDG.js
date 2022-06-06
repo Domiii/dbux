@@ -314,11 +314,17 @@ export default class BaseDDG {
     this.addNode(newNode);
 
     // store some relevant data values
-    const dataNode = dp.util.getDataNode(newNode.dataNodeId);
+    let dataNode = dp.util.getDataNode(newNode.dataNodeId);
     if (dataNode) {
+      newNode.varAccess = dataNode.varAccess; // get original varAccess
+
+      while (dataNode?.valueFromId && !dataNode.hasValue) {
+        dataNode = dp.util.getDataNode(dataNode.valueFromId);
+      }
+
+      // get value from a node that has it
       newNode.value = dataNode.hasValue ? dataNode.value : undefined; //dp.util.getDataNodeValueStringShort(newNode.dataNodeId);
       newNode.refId = dataNode.refId;
-      newNode.varAccess = dataNode.varAccess;
     }
 
     if (this.timelineBuilder) {

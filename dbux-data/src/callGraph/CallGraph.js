@@ -238,8 +238,7 @@ export default class CallGraph {
     const traces = this.dp.util.getTracesOfRealContext(traceId);
     const index = binarySearchByKey(traces, trace, (t) => t.traceId);
     if (index === null) {
-      logError('Trace not found in traces');
-      debugger;
+      logError('Trace not found in traces:', traceId);
       return null;
     }
     const nextTraceById = this.dp.collections.traces.getById(traceId + 1);

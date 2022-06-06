@@ -94,6 +94,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   update() {
+    debugger;
     this.refreshGraph();
   }
 
@@ -152,19 +153,18 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     const graphString = this.buildDot();
     // const graphString = 'digraph { a -> b }';
-
-    if (isNew) {
-      this.graphviz
-        .transition(() => { // transition
-          // return d3selection.transition()
-          return d3transition()
-            .duration(800);
-        })
-        .on('end', this.decorateAfterRender);
-    }
-
     this.graphviz
       .renderDot(graphString);
+
+    // if (isNew) {
+    //   this.graphviz
+    //     .transition(() => { // transition
+    //       // return d3selection.transition()
+    //       return d3transition()
+    //         .duration(800);
+    //     })
+    //     .on('end', this.decorateAfterRender);
+    // }
   }
 
   initGraphImplementation() {
@@ -211,7 +211,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   registerDeco(el) {
-    el.classList.add('deco');
+    el.classList?.add('deco');
   }
 
   // rendering finished
