@@ -2,7 +2,9 @@
 // import { AnchorLocations } from '@jsplumb/common';
 // import { BezierConnector } from '@jsplumb/connector-bezier';
 
-import * as d3 from 'd3-graphviz';
+// import * as d3selection from 'd3-selection';
+import { transition as d3transition } from 'd3-transition';
+import * as d3Graphviz from 'd3-graphviz';
 
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
@@ -134,12 +136,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    *  #########################################################################*/
 
   rebuildGraph() {
-    this.initGraphImplementation();
+    const isNew = this.initGraphImplementation();
 
-    this.buildGraph();
+    this.buildGraph(isNew);
   }
 
-  buildGraph() {
+  buildGraph(isNew) {
     const { root } = this;
 
     if (!root) {
@@ -150,14 +152,26 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     const graphString = this.buildDot();
     // const graphString = 'digraph { a -> b }';
+
+    if (isNew) {
+      this.graphviz
+        .transition(() => { // transition
+          // return d3selection.transition()
+          return d3transition()
+            .duration(800);
+        })
+        .on('end', this.decorateAfterRender);
+    }
+
     this.graphviz
-      .renderDot(graphString)
-      .on('end', this.decorateAfterRender);
+      .renderDot(graphString);
   }
 
   initGraphImplementation() {
     // NOTE: use `this.el`'s id
-    this.graphviz = d3.graphviz('#ddg-timeline', GraphVizCfg);
+    const isNew = !!this.graphviz;
+    this.graphviz = this.graphviz || d3Graphviz.graphviz('#ddg-timeline', GraphVizCfg);
+    return isNew;
   }
 
   /**
@@ -281,7 +295,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         this.maybeShowNodePopupEl(node, nodeEl, popupTriggerEl);
       });
       this.addNodeEventListener(node, popupTriggerEl, 'mouseout', () => {
-        debugOverlay.remove();
+        debugOverlay?.remove();
         debugOverlay = null;
       });
     }
@@ -355,6 +369,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       return;
     }
 
+    // console.log('popUP');
     this._removeNodePopup(this.currentHoverEl);
 
     const rect = nodeEl.getBoundingClientRect();
@@ -395,6 +410,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
          */
         const hoverStack = Array.from(document.querySelectorAll(":hover"));
         if (!hoverStack.includes(nodeEl) && !hoverStack.includes(hoverEl)) {
+          // console.log('popout', hoverStack);
           this._removeNodePopup(hoverEl);
         }
       }, 80);

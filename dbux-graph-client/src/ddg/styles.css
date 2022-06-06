@@ -95,6 +95,15 @@ svg.jtk-connector path {
   z-index: 1000;
 }
 
+/** ###########################################################################
+ * fix shape backgrounds
+ * ############################################################################*/
+
+/* hackfix: this `path` is used during animations (only?) */
+.graph > path {
+  fill: #222 !important;
+}
+
 .timeline-view g polygon,ellipse {
   /* fill: transparent; */  /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
   fill: #222; /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
