@@ -233,7 +233,7 @@ export default class DotBuilder {
     this.command(`color="transparent"`);
     this.command(`fontcolor="${Colors.groupLabel}"`);
     this.command(this.nodeIdAttr(timelineId));
-    label && this.label(label);
+    this.label(label || '');
 
     this.snapshotTable(node);
 

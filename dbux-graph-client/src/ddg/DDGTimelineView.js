@@ -204,6 +204,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // decorate all nodes
       const nodeEls = Array.from(this.el.querySelectorAll('.node'));
       const clusterEls = Array.from(this.el.querySelectorAll('.cluster'));
+      // const clusterEls = Array.from(this.el.querySelectorAll('.cluster')).map(el => ({
+      //   el: el.querySelector('text') // grab the label for clusters
+      // }));
       const allEls = [...nodeEls, ...clusterEls];
       for (const el of allEls) {
         const { id: timelineId } = el;
@@ -224,7 +227,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   decorateNode(node, nodeEl) {
     const { type } = node;
-    const triggerEl = isControlGroupTimelineNode(type) ? nodeEl.querySelector('text') : nodeEl;
+    const triggerEl = isControlGroupTimelineNode(type) ? 
+      nodeEl.querySelector('text') : 
+      nodeEl;
 
     // add overlays
     let debugOverlay;
