@@ -319,7 +319,7 @@ export default class DotBuilder {
   makeTablePropValueCell(timelineId, prop) {
     const { timelineNodes } = this.renderState;
     const node = timelineNodes[timelineId];
-    return `<TD ROWSPAN="2" PORT="${timelineId}">
+    return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}"><FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
         <TR><TD><FONT COLOR="${Colors.snapshotValue}">${node.value}</FONT></TD></TR>
