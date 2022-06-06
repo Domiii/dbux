@@ -171,6 +171,7 @@ export default class DotBuilder {
     const { timelineId } = node;
 
     this.fragment(`subgraph cluster_group_${timelineId} {`);
+    this.command(this.nodeId(timelineId));
     this.label(node.label || '');
     this.indentLevel += 1;
     this.subgraphAttrs();
@@ -224,6 +225,7 @@ export default class DotBuilder {
     this.indentLevel += 1;
     this.command(`color="transparent"`);
     this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
+    this.command(this.nodeId(timelineId));
     label && this.label(label);
     this.command(`node [shape=record]`);
 

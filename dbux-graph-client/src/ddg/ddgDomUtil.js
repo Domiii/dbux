@@ -25,6 +25,7 @@ const summaryIconHtml = {
  * @return {{ el: DocumentFragment, els: Array.<Element>}}
  */
 export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDecorate = false) {
+  btnClass = btnClass + ' summary-button';
   const { summaryIconUris } = doc.state;
   const frag = document.createDocumentFragment();
   const els = modes.map(mode => {
@@ -44,6 +45,7 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
           decorateSummaryButton(btnEl, mode, doc.state.summaryModes[timelineId]);
         }
       };
+      btnEl._updateDeco();
     }
     frag.appendChild(btnEl);
     return btnEl;

@@ -9,8 +9,8 @@ import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { compileHtmlElement, delegate } from '../util/domUtil';
-import { makeSummaryButtons } from './ddgDomUtil';
+import { compileHtmlElement } from '../util/domUtil';
+import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
 
@@ -198,6 +198,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         this.decorateNode(node, el);
       }
     }
+
+    const summaryButtons = this.el.querySelectorAll('.summary-button');
+    decorateSummaryModeButtons(summaryButtons);
   }
 
   decorateNode(node, nodeEl) {
@@ -268,7 +271,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       </div>
     `);
 
-    const { el: btns } = makeSummaryButtons(this.doc, node.timelineId, 'btn btn-primary no-padding', modesForThisNode);
+    const { el: btns } = makeSummaryButtons(this.doc, node.timelineId, 'btn btn-primary no-padding', modesForThisNode, true);
     el.appendChild(btns);
 
     return el;
