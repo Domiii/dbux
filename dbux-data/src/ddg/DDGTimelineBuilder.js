@@ -209,9 +209,12 @@ export default class DDGTimelineBuilder {
   }
 
   #shouldSkipDataNode(dataNodeId) {
-    if (this.dp.util.isDataNodePassAlong(dataNodeId)) {
+    const { dp } = this;
+    if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
-      return true;
+      const dataNode = dp.util.getDataNode(dataNodeId);
+      return !isDataNodeModifyType(dataNode.type) || // Read
+        !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
     }
     return false;
   }

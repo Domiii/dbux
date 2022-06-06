@@ -1,6 +1,6 @@
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
-import TraceType, { isTraceFunctionExit, isTracePop, isTraceReturn, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
+import TraceType, { isTraceFunctionExit, isTracePop, isTraceReturn, isTraceReturnOrBranchPop, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
 import Trace from '@dbux/common/src/types/Trace';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Collection from '../Collection';
@@ -286,13 +286,13 @@ export default class TraceCollection extends Collection {
           this._newPotentialErrorTraces.push(previousTrace);
         }
         else if (TraceType.is.Finally(traceType)) {
-          if (!TraceType.is.TryExit(previousTraceType) && !isTraceReturn(previousTraceType)) {
+          if (!TraceType.is.TryExit(previousTraceType) && !isTraceReturnOrBranchPop(previousTraceType)) {
             previousTrace.error = true;
             this._newPotentialErrorTraces.push(previousTrace);
           }
         }
         else if (isTracePop(traceType)) {
-          if (!isTraceReturn(previousTraceType) && !isTraceFunctionExit(previousTraceType) && !TraceType.is.FinallyExit(previousTraceType)) {
+          if (!isTraceReturnOrBranchPop(previousTraceType) && !isTraceFunctionExit(previousTraceType) && !TraceType.is.FinallyExit(previousTraceType)) {
             previousTrace.error = true;
             this._newPotentialErrorTraces.push(previousTrace);
           }

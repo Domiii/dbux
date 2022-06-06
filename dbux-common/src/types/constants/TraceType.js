@@ -148,6 +148,12 @@ export function isTraceReturn(traceType) {
   return returnTraceTypes[traceType];
 }
 
+const traceReturnOrBranchPopTypes = [...returnTraceTypes];
+traceReturnOrBranchPopTypes[TraceType.BranchPop];
+export function isTraceReturnOrBranchPop(traceType) {
+  return traceReturnOrBranchPopTypes[traceType] || false;
+}
+
 
 const functionExitTypes = [...returnTraceTypes];
 // functionExitTypes[TraceType.ThrowArgument] = true;

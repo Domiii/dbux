@@ -822,7 +822,7 @@ export default {
   isDataNodePassAlong(dp, nodeId) {
     const dataNode = dp.util.getDataNode(nodeId);
     return (
-      (DataNodeType.is.Read(dataNode.type)) &&
+      // (DataNodeType.is.Read(dataNode.type)) &&
       !!dataNode.valueFromId
     );
   },
