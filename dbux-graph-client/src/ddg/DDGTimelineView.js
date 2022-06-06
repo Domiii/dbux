@@ -190,14 +190,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   // rendering finished
   decorateAfterRender = async () => {
     try {
-      // sort everything: edges should always be at the bottom
+      // hackfix: sort so clusters dont obstruct other elements
       Array.from(this.el.querySelectorAll('.graph > g'))
         .sort((a, b) => {
-          // const aEdge = a.classList.contains('edge');
-          // const bEdge = b.classList.contains('edge');
+          const aBack = a.classList.contains('cluster');
+          const bBack = b.classList.contains('cluster');
+          return bBack - aBack;
           // return TODO;
           // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
-          return a.id?.localeCompare(b.id || '');
+          // return a.id?.localeCompare(b.id || '');
         })
         .forEach(item => item.parentNode.appendChild(item));
 
@@ -230,6 +231,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const triggerEl = isControlGroupTimelineNode(type) ? 
       nodeEl.querySelector('text') : 
       nodeEl;
+
+    if (!triggerEl) {
+      // TODO: handle all edge cases
+      return;
+    }
 
     // add overlays
     let debugOverlay;

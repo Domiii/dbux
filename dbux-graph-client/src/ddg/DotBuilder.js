@@ -23,7 +23,8 @@ const Colors = {
   groupLabel: 'gray',
   snapshotSeparator: 'gray',
   snapshotProp: 'gray',
-  snapshotValue: 'white'
+
+  value: 'lightblue'
 };
 
 
@@ -242,8 +243,15 @@ export default class DotBuilder {
   }
 
   valueNode(node) {
-    // this.command(`${this.makeNodeId(node)} [${this.nodeIdAttr(node.timelineId)},${this.makeLabel(node.label)}]`);
-    this.dataNodeRecord(node);
+    if (node.varAccess || node.value !== node.label) {
+      // record
+      this.nodeRecord(node);
+    }
+    else {
+      // simple label
+      const attrs = [this.nodeIdAttr(node.timelineId), `fontcolor="${Colors.value}"`, this.makeLabel(node.label)].join(',');
+      this.command(`${this.makeNodeId(node)} [${attrs}]`);
+    }
   }
 
   buildEdge(edge) {
@@ -258,32 +266,43 @@ export default class DotBuilder {
    *  #########################################################################*/
 
 
-  makeRecordEntry(timelineId, label) {
-    return `<${timelineId}> ${label}`;
-  }
+  // makeRecordEntry(timelineId, label) {
+  //   return `<${timelineId}> ${label}`;
+  // }
 
-  dataNodeRecord(node) {
+  nodeRecord(node) {
     let { timelineId, label, value } = node;
     // TODO: use table instead, so we can have key + val rows
 
     // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
-    const valueItem = this.makeRecordEntry(timelineId, value);
-    this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},shape=record,label="${label}|${valueItem}}"]`);
+    // const valueItem = this.makeRecordEntry(timelineId, value);
+    // const l = this.makeLabel(`${label}|${valueItem}}`);
+    const l = `label=<
+<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+  <TR>
+    <TD BORDER="1" SIDES="R">${label}</TD>
+    <TD ID="${timelineId}" TITLE="${timelineId}" PORT="${timelineId}"><FONT COLOR="${Colors.value}">${value}</FONT></TD>
+  </TR>
+</TABLE>
+>`;
+    const attrs = [this.nodeIdAttr(node.timelineId), `shape=record`, l].join(',');
+    this.command(`${timelineId} [${attrs}]`);
   }
 
-  /**
-   * @param {DDGTimelineNode} node 
-   */
-  snapshotRecord(node) {
-    let { timelineId, label, children } = node;
-    // TODO: use table instead, so we can have key + val rows
+  // /**
+  //  * @param {DDGTimelineNode} node 
+  //  */
+  // snapshotRecord(node) {
+  //   let { timelineId, label, children } = node;
+  //   // TODO: use table instead, so we can have key + val rows
 
-    // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
-    label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
-    const childrenItems = Object.entries(children)
-      .map(([prop, nodeId]) => this.makeRecordEntry(nodeId, prop));
-    this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label="${label}|${childrenItems.join('|')}"]`);
-  }
+  //   // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
+  //   label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
+  //   const childrenItems = Object.entries(children)
+  //     .map(([prop, nodeId]) => this.makeRecordEntry(nodeId, prop));
+  //   const l = this.makeLabel(`${label}|${childrenItems.join('|')}`);
+  //   this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},${l}]`);
+  // }
 
   /** ###########################################################################
    * tables
@@ -322,7 +341,7 @@ export default class DotBuilder {
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}"><FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.snapshotValue}">${node.value}</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.value}">${node.value}</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }

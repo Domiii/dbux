@@ -1,14 +1,15 @@
 /** ###########################################################################
+ * NOTE: UNUSED
  * jsplumb defaults
  * @see https://docs.jsplumbtoolkit.com/community/lib/styling-via-css
  * ############################################################################*/
-
+/* 
 .jtk-connector {
   z-index: -10;
 }
 
 svg.jtk-connector path {
-  /* stroke: red; */
+  /* stroke: red; * /
   stroke-width: 1;
 }
 
@@ -20,6 +21,13 @@ svg.jtk-connector path {
   -ms-user-select: none;
   user-select: none;
 }
+
+
+.timeline-ref-node>.timeline-node {
+  position: unset;
+} */
+
+
 
 /** ###########################################################################
  * components
@@ -79,10 +87,6 @@ svg.jtk-connector path {
   background-color: black;
 }
 
-.timeline-ref-node>.timeline-node {
-  position: unset;
-}
-
 
 .node-overlay {
   position: absolute;
@@ -95,3 +99,22 @@ svg.jtk-connector path {
   /* fill: transparent; */  /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
   fill: #222; /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
 }
+
+/** ###########################################################################
+ * highlight nodes
+ * ############################################################################*/
+
+.node:hover polygon,ellipse {
+  fill: orangered;
+  cursor: pointer;
+}
+
+/** ###########################################################################
+ * highlight cluster label
+ * ############################################################################*/
+
+.cluster > text:hover {
+  fill: yellow;
+  cursor: pointer;
+}
+

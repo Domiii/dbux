@@ -312,7 +312,14 @@ export default class BaseDDG {
   addDataNode(newNode) {
     const { dp } = this;
     this.addNode(newNode);
-    newNode.value = dp.util.getDataNodeValueStringShort(newNode.dataNodeId);
+
+    // store some relevant data values
+    const dataNode = dp.util.getDataNode(newNode.dataNodeId);
+    if (dataNode) {
+      newNode.value = dp.util.getDataNodeValueStringShort(newNode.dataNodeId);
+      newNode.varAccess = dataNode.varAccess;
+    }
+
     if (this.timelineBuilder) {
       // hackfix: we only need these during initial build
       this._firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
