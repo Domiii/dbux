@@ -1,3 +1,4 @@
+import { TreeItemCollapsibleState } from 'vscode';
 import fs from 'fs';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
@@ -104,7 +105,7 @@ class GenerateListNode extends ToolNode {
           exercises.push(exerciseConfig);
         }
       }
-      exercises.sort((a, b) => a.chapter.localeCompare(b.chapter));
+      exercises.sort((a, b) => a.name.localeCompare(b.name));
 
       progress.report({ message: `Generating exercise file...` });
       this.writeExerciseJs('javascript-algorithms-all.js', exercises);
@@ -118,6 +119,9 @@ class GenerateListNode extends ToolNode {
 
       progress.report({ message: `Loading chapter list...` });
       this.treeNodeProvider.controller.chapters = this.manager.reloadChapterList('javascript-algorithms-all');
+
+      const { chapters } = this.treeNodeProvider.controller;
+      showInformationMessage(`List generated, found ${exercises.length} exercise(s) in ${chapters.length} chapter(s).`);
 
       this.treeNodeProvider.refresh();
     }, { title: 'Generating Chapter List' });
@@ -205,8 +209,18 @@ class DeleteExportedApplicationNode extends ToolNode {
   }
 }
 
-export const ToolNodeClasses = [
-  GenerateListNode,
-  ExportApplicationsForceNode,
-  DeleteExportedApplicationNode,
-];
+export default class ToolRootNode extends BaseTreeViewNode {
+  static makeLabel() {
+    return 'Tools';
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Expanded;
+  }
+
+  childClasses = [
+    GenerateListNode,
+    ExportApplicationsForceNode,
+    DeleteExportedApplicationNode,
+  ]
+}
