@@ -9,6 +9,24 @@ module.exports = [
     ]
   },
   {
+    "name": "articulationPoints should find articulation points in graph",
+    "label": "articulationPoints should find articulation points in graph",
+    "testNamePattern": "articulationPoints should find articulation points in graph",
+    "chapter": "articulationPoints",
+    "testFilePaths": [
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ]
+  },
+  {
+    "name": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+    "label": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+    "testNamePattern": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+    "chapter": "articulationPoints",
+    "testFilePaths": [
+      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ]
+  },
+  {
     "name": "articulationPoints should find articulation points in simple graph",
     "label": "articulationPoints should find articulation points in simple graph",
     "testNamePattern": "articulationPoints should find articulation points in simple graph",
@@ -30,24 +48,6 @@ module.exports = [
     "name": "articulationPoints should find articulation points in simple graph with back edge #2",
     "label": "articulationPoints should find articulation points in simple graph with back edge #2",
     "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge #2",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in graph",
-    "label": "articulationPoints should find articulation points in graph",
-    "testNamePattern": "articulationPoints should find articulation points in graph",
-    "chapter": "articulationPoints",
-    "testFilePaths": [
-      "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
-  },
-  {
-    "name": "articulationPoints should find articulation points in graph starting with articulation root vertex",
-    "label": "articulationPoints should find articulation points in graph starting with articulation root vertex",
-    "testNamePattern": "articulationPoints should find articulation points in graph starting with articulation root vertex",
     "chapter": "articulationPoints",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
@@ -81,18 +81,18 @@ module.exports = [
     ]
   },
   {
-    "name": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "name": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+    "label": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+    "testNamePattern": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
     "chapter": "bellmanFord",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
     ]
   },
   {
-    "name": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
-    "label": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
-    "testNamePattern": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+    "name": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
     "chapter": "bellmanFord",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
@@ -189,12 +189,12 @@ module.exports = [
     ]
   },
   {
-    "name": "breadthFirstSearch should perform BFS operation on graph",
-    "label": "breadthFirstSearch should perform BFS operation on graph",
-    "testNamePattern": "breadthFirstSearch should perform BFS operation on graph",
+    "name": "breadthFirstSearch allow users to redefine node visiting logic",
+    "label": "breadthFirstSearch allow users to redefine node visiting logic",
+    "testNamePattern": "breadthFirstSearch allow users to redefine node visiting logic",
     "chapter": "breadthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+      "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
     ]
   },
   {
@@ -207,18 +207,18 @@ module.exports = [
     ]
   },
   {
-    "name": "breadthFirstSearch should perform BFS operation on tree",
-    "label": "breadthFirstSearch should perform BFS operation on tree",
-    "testNamePattern": "breadthFirstSearch should perform BFS operation on tree",
+    "name": "breadthFirstSearch should perform BFS operation on graph",
+    "label": "breadthFirstSearch should perform BFS operation on graph",
+    "testNamePattern": "breadthFirstSearch should perform BFS operation on graph",
     "chapter": "breadthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
+      "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
     ]
   },
   {
-    "name": "breadthFirstSearch allow users to redefine node visiting logic",
-    "label": "breadthFirstSearch allow users to redefine node visiting logic",
-    "testNamePattern": "breadthFirstSearch allow users to redefine node visiting logic",
+    "name": "breadthFirstSearch should perform BFS operation on tree",
+    "label": "breadthFirstSearch should perform BFS operation on tree",
+    "testNamePattern": "breadthFirstSearch should perform BFS operation on tree",
     "chapter": "breadthFirstSearch",
     "testFilePaths": [
       "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
@@ -243,6 +243,15 @@ module.exports = [
     ]
   },
   {
+    "name": "BubbleSort should do stable sorting",
+    "label": "BubbleSort should do stable sorting",
+    "testNamePattern": "BubbleSort should do stable sorting",
+    "chapter": "BubbleSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ]
+  },
+  {
     "name": "BubbleSort should sort array",
     "label": "BubbleSort should sort array",
     "testNamePattern": "BubbleSort should sort array",
@@ -255,15 +264,6 @@ module.exports = [
     "name": "BubbleSort should sort array with custom comparator",
     "label": "BubbleSort should sort array with custom comparator",
     "testNamePattern": "BubbleSort should sort array with custom comparator",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should do stable sorting",
-    "label": "BubbleSort should do stable sorting",
-    "testNamePattern": "BubbleSort should do stable sorting",
     "chapter": "BubbleSort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
@@ -288,15 +288,6 @@ module.exports = [
     ]
   },
   {
-    "name": "BubbleSort should visit SORTED array element specified number of times",
-    "label": "BubbleSort should visit SORTED array element specified number of times",
-    "testNamePattern": "BubbleSort should visit SORTED array element specified number of times",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
     "name": "BubbleSort should visit NOT SORTED array element specified number of times",
     "label": "BubbleSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "BubbleSort should visit NOT SORTED array element specified number of times",
@@ -315,6 +306,15 @@ module.exports = [
     ]
   },
   {
+    "name": "BubbleSort should visit SORTED array element specified number of times",
+    "label": "BubbleSort should visit SORTED array element specified number of times",
+    "testNamePattern": "BubbleSort should visit SORTED array element specified number of times",
+    "chapter": "BubbleSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ]
+  },
+  {
     "name": "bwPowerSet should calculate power set of given set using bitwise approach",
     "label": "bwPowerSet should calculate power set of given set using bitwise approach",
     "testNamePattern": "bwPowerSet should calculate power set of given set using bitwise approach",
@@ -324,9 +324,9 @@ module.exports = [
     ]
   },
   {
-    "name": "caesarCipher should not change a string with zero shift",
-    "label": "caesarCipher should not change a string with zero shift",
-    "testNamePattern": "caesarCipher should not change a string with zero shift",
+    "name": "caesarCipher should be case insensitive",
+    "label": "caesarCipher should be case insensitive",
+    "testNamePattern": "caesarCipher should be case insensitive",
     "chapter": "caesarCipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
@@ -342,27 +342,9 @@ module.exports = [
     ]
   },
   {
-    "name": "caesarCipher should be case insensitive",
-    "label": "caesarCipher should be case insensitive",
-    "testNamePattern": "caesarCipher should be case insensitive",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
     "name": "caesarCipher should correctly handle an empty strings",
     "label": "caesarCipher should correctly handle an empty strings",
     "testNamePattern": "caesarCipher should correctly handle an empty strings",
-    "chapter": "caesarCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
-    ]
-  },
-  {
-    "name": "caesarCipher should not cipher unknown chars",
-    "label": "caesarCipher should not cipher unknown chars",
-    "testNamePattern": "caesarCipher should not cipher unknown chars",
     "chapter": "caesarCipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
@@ -378,18 +360,36 @@ module.exports = [
     ]
   },
   {
-    "name": "cartesianProduct should return null if there is not enough info for calculation",
-    "label": "cartesianProduct should return null if there is not enough info for calculation",
-    "testNamePattern": "cartesianProduct should return null if there is not enough info for calculation",
-    "chapter": "cartesianProduct",
+    "name": "caesarCipher should not change a string with zero shift",
+    "label": "caesarCipher should not change a string with zero shift",
+    "testNamePattern": "caesarCipher should not change a string with zero shift",
+    "chapter": "caesarCipher",
     "testFilePaths": [
-      "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ]
+  },
+  {
+    "name": "caesarCipher should not cipher unknown chars",
+    "label": "caesarCipher should not cipher unknown chars",
+    "testNamePattern": "caesarCipher should not cipher unknown chars",
+    "chapter": "caesarCipher",
+    "testFilePaths": [
+      "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ]
   },
   {
     "name": "cartesianProduct should calculate the product of two sets",
     "label": "cartesianProduct should calculate the product of two sets",
     "testNamePattern": "cartesianProduct should calculate the product of two sets",
+    "chapter": "cartesianProduct",
+    "testFilePaths": [
+      "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
+    ]
+  },
+  {
+    "name": "cartesianProduct should return null if there is not enough info for calculation",
+    "label": "cartesianProduct should return null if there is not enough info for calculation",
+    "testNamePattern": "cartesianProduct should return null if there is not enough info for calculation",
     "chapter": "cartesianProduct",
     "testFilePaths": [
       "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
@@ -441,9 +441,9 @@ module.exports = [
     ]
   },
   {
-    "name": "ComplexNumber should create complex numbers",
-    "label": "ComplexNumber should create complex numbers",
-    "testNamePattern": "ComplexNumber should create complex numbers",
+    "name": "ComplexNumber should add complex and natural numbers",
+    "label": "ComplexNumber should add complex and natural numbers",
+    "testNamePattern": "ComplexNumber should add complex and natural numbers",
     "chapter": "ComplexNumber",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
@@ -459,27 +459,27 @@ module.exports = [
     ]
   },
   {
-    "name": "ComplexNumber should add complex and natural numbers",
-    "label": "ComplexNumber should add complex and natural numbers",
-    "testNamePattern": "ComplexNumber should add complex and natural numbers",
+    "name": "ComplexNumber should calculate i in power of two",
+    "label": "ComplexNumber should calculate i in power of two",
+    "testNamePattern": "ComplexNumber should calculate i in power of two",
     "chapter": "ComplexNumber",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
     ]
   },
   {
-    "name": "ComplexNumber should subtract complex numbers",
-    "label": "ComplexNumber should subtract complex numbers",
-    "testNamePattern": "ComplexNumber should subtract complex numbers",
+    "name": "ComplexNumber should create complex numbers",
+    "label": "ComplexNumber should create complex numbers",
+    "testNamePattern": "ComplexNumber should create complex numbers",
     "chapter": "ComplexNumber",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
     ]
   },
   {
-    "name": "ComplexNumber should subtract complex and natural numbers",
-    "label": "ComplexNumber should subtract complex and natural numbers",
-    "testNamePattern": "ComplexNumber should subtract complex and natural numbers",
+    "name": "ComplexNumber should divide complex numbers",
+    "label": "ComplexNumber should divide complex numbers",
+    "testNamePattern": "ComplexNumber should divide complex numbers",
     "chapter": "ComplexNumber",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
@@ -504,30 +504,39 @@ module.exports = [
     ]
   },
   {
-    "name": "ComplexNumber should calculate i in power of two",
-    "label": "ComplexNumber should calculate i in power of two",
-    "testNamePattern": "ComplexNumber should calculate i in power of two",
-    "chapter": "ComplexNumber",
-    "testFilePaths": [
-      "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
-  },
-  {
-    "name": "ComplexNumber should divide complex numbers",
-    "label": "ComplexNumber should divide complex numbers",
-    "testNamePattern": "ComplexNumber should divide complex numbers",
-    "chapter": "ComplexNumber",
-    "testFilePaths": [
-      "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
-  },
-  {
     "name": "ComplexNumber should return complex number in polar form",
     "label": "ComplexNumber should return complex number in polar form",
     "testNamePattern": "ComplexNumber should return complex number in polar form",
     "chapter": "ComplexNumber",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ]
+  },
+  {
+    "name": "ComplexNumber should subtract complex and natural numbers",
+    "label": "ComplexNumber should subtract complex and natural numbers",
+    "testNamePattern": "ComplexNumber should subtract complex and natural numbers",
+    "chapter": "ComplexNumber",
+    "testFilePaths": [
+      "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ]
+  },
+  {
+    "name": "ComplexNumber should subtract complex numbers",
+    "label": "ComplexNumber should subtract complex numbers",
+    "testNamePattern": "ComplexNumber should subtract complex numbers",
+    "chapter": "ComplexNumber",
+    "testFilePaths": [
+      "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ]
+  },
+  {
+    "name": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
+    "label": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
+    "testNamePattern": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
+    "chapter": "CountingSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
     ]
   },
   {
@@ -549,27 +558,9 @@ module.exports = [
     ]
   },
   {
-    "name": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
-    "label": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
-    "testNamePattern": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
-    "chapter": "CountingSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
-  },
-  {
     "name": "CountingSort should visit EQUAL array element specified number of times",
     "label": "CountingSort should visit EQUAL array element specified number of times",
     "testNamePattern": "CountingSort should visit EQUAL array element specified number of times",
-    "chapter": "CountingSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
-  },
-  {
-    "name": "CountingSort should visit SORTED array element specified number of times",
-    "label": "CountingSort should visit SORTED array element specified number of times",
-    "testNamePattern": "CountingSort should visit SORTED array element specified number of times",
     "chapter": "CountingSort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
@@ -588,6 +579,15 @@ module.exports = [
     "name": "CountingSort should visit REVERSE SORTED array element specified number of times",
     "label": "CountingSort should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "CountingSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "CountingSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ]
+  },
+  {
+    "name": "CountingSort should visit SORTED array element specified number of times",
+    "label": "CountingSort should visit SORTED array element specified number of times",
+    "testNamePattern": "CountingSort should visit SORTED array element specified number of times",
     "chapter": "CountingSort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
@@ -621,12 +621,12 @@ module.exports = [
     ]
   },
   {
-    "name": "depthFirstSearch should perform DFS operation on graph",
-    "label": "depthFirstSearch should perform DFS operation on graph",
-    "testNamePattern": "depthFirstSearch should perform DFS operation on graph",
+    "name": "depthFirstSearch allow users to redefine node visiting logic",
+    "label": "depthFirstSearch allow users to redefine node visiting logic",
+    "testNamePattern": "depthFirstSearch allow users to redefine node visiting logic",
     "chapter": "depthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+      "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
     ]
   },
   {
@@ -639,18 +639,18 @@ module.exports = [
     ]
   },
   {
-    "name": "depthFirstSearch should perform DFS operation on tree",
-    "label": "depthFirstSearch should perform DFS operation on tree",
-    "testNamePattern": "depthFirstSearch should perform DFS operation on tree",
+    "name": "depthFirstSearch should perform DFS operation on graph",
+    "label": "depthFirstSearch should perform DFS operation on graph",
+    "testNamePattern": "depthFirstSearch should perform DFS operation on graph",
     "chapter": "depthFirstSearch",
     "testFilePaths": [
-      "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
+      "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
     ]
   },
   {
-    "name": "depthFirstSearch allow users to redefine node visiting logic",
-    "label": "depthFirstSearch allow users to redefine node visiting logic",
-    "testNamePattern": "depthFirstSearch allow users to redefine node visiting logic",
+    "name": "depthFirstSearch should perform DFS operation on tree",
+    "label": "depthFirstSearch should perform DFS operation on tree",
+    "testNamePattern": "depthFirstSearch should perform DFS operation on tree",
     "chapter": "depthFirstSearch",
     "testFilePaths": [
       "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
@@ -684,18 +684,18 @@ module.exports = [
     ]
   },
   {
-    "name": "dijkstra should find minimum paths to all vertices for undirected graph",
-    "label": "dijkstra should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "dijkstra should find minimum paths to all vertices for undirected graph",
+    "name": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
+    "label": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
+    "testNamePattern": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
     ]
   },
   {
-    "name": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
-    "label": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
-    "testNamePattern": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
+    "name": "dijkstra should find minimum paths to all vertices for undirected graph",
+    "label": "dijkstra should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "dijkstra should find minimum paths to all vertices for undirected graph",
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
@@ -828,15 +828,6 @@ module.exports = [
     ]
   },
   {
-    "name": "eulerianPath should throw an error when graph is not Eulerian",
-    "label": "eulerianPath should throw an error when graph is not Eulerian",
-    "testNamePattern": "eulerianPath should throw an error when graph is not Eulerian",
-    "chapter": "eulerianPath",
-    "testFilePaths": [
-      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
-    ]
-  },
-  {
     "name": "eulerianPath should find Eulerian Circuit in graph",
     "label": "eulerianPath should find Eulerian Circuit in graph",
     "testNamePattern": "eulerianPath should find Eulerian Circuit in graph",
@@ -849,6 +840,15 @@ module.exports = [
     "name": "eulerianPath should find Eulerian Path in graph",
     "label": "eulerianPath should find Eulerian Path in graph",
     "testNamePattern": "eulerianPath should find Eulerian Path in graph",
+    "chapter": "eulerianPath",
+    "testFilePaths": [
+      "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+    ]
+  },
+  {
+    "name": "eulerianPath should throw an error when graph is not Eulerian",
+    "label": "eulerianPath should throw an error when graph is not Eulerian",
+    "testNamePattern": "eulerianPath should throw an error when graph is not Eulerian",
     "chapter": "eulerianPath",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
@@ -918,18 +918,18 @@ module.exports = [
     ]
   },
   {
-    "name": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
-    "label": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
-    "testNamePattern": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+    "name": "fibonacciClosedForm should calculate fibonacci correctly",
+    "label": "fibonacciClosedForm should calculate fibonacci correctly",
+    "testNamePattern": "fibonacciClosedForm should calculate fibonacci correctly",
     "chapter": "fibonacciClosedForm",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
     ]
   },
   {
-    "name": "fibonacciClosedForm should calculate fibonacci correctly",
-    "label": "fibonacciClosedForm should calculate fibonacci correctly",
-    "testNamePattern": "fibonacciClosedForm should calculate fibonacci correctly",
+    "name": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+    "label": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+    "testNamePattern": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
     "chapter": "fibonacciClosedForm",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
@@ -945,18 +945,18 @@ module.exports = [
     ]
   },
   {
-    "name": "fisherYates should shuffle small arrays",
-    "label": "fisherYates should shuffle small arrays",
-    "testNamePattern": "fisherYates should shuffle small arrays",
+    "name": "fisherYates should shuffle array randomly",
+    "label": "fisherYates should shuffle array randomly",
+    "testNamePattern": "fisherYates should shuffle array randomly",
     "chapter": "fisherYates",
     "testFilePaths": [
       "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
     ]
   },
   {
-    "name": "fisherYates should shuffle array randomly",
-    "label": "fisherYates should shuffle array randomly",
-    "testNamePattern": "fisherYates should shuffle array randomly",
+    "name": "fisherYates should shuffle small arrays",
+    "label": "fisherYates should shuffle small arrays",
+    "testNamePattern": "fisherYates should shuffle small arrays",
     "chapter": "fisherYates",
     "testFilePaths": [
       "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
@@ -981,15 +981,6 @@ module.exports = [
     ]
   },
   {
-    "name": "floydWarshall should find minimum paths to all vertices for undirected graph",
-    "label": "floydWarshall should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "floydWarshall should find minimum paths to all vertices for undirected graph",
-    "chapter": "floydWarshall",
-    "testFilePaths": [
-      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
-    ]
-  },
-  {
     "name": "floydWarshall should find minimum paths to all vertices for directed graph",
     "label": "floydWarshall should find minimum paths to all vertices for directed graph",
     "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph",
@@ -1002,6 +993,15 @@ module.exports = [
     "name": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
     "label": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
     "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
+    "chapter": "floydWarshall",
+    "testFilePaths": [
+      "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ]
+  },
+  {
+    "name": "floydWarshall should find minimum paths to all vertices for undirected graph",
+    "label": "floydWarshall should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "floydWarshall should find minimum paths to all vertices for undirected graph",
     "chapter": "floydWarshall",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
@@ -1026,24 +1026,6 @@ module.exports = [
     ]
   },
   {
-    "name": "graphBridges should find bridges in simple graph",
-    "label": "graphBridges should find bridges in simple graph",
-    "testNamePattern": "graphBridges should find bridges in simple graph",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
-    "name": "graphBridges should find bridges in simple graph with back edge",
-    "label": "graphBridges should find bridges in simple graph with back edge",
-    "testNamePattern": "graphBridges should find bridges in simple graph with back edge",
-    "chapter": "graphBridges",
-    "testFilePaths": [
-      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
-  },
-  {
     "name": "graphBridges should find bridges in graph",
     "label": "graphBridges should find bridges in graph",
     "testNamePattern": "graphBridges should find bridges in graph",
@@ -1056,6 +1038,24 @@ module.exports = [
     "name": "graphBridges should find bridges in graph starting with different root vertex",
     "label": "graphBridges should find bridges in graph starting with different root vertex",
     "testNamePattern": "graphBridges should find bridges in graph starting with different root vertex",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in simple graph",
+    "label": "graphBridges should find bridges in simple graph",
+    "testNamePattern": "graphBridges should find bridges in simple graph",
+    "chapter": "graphBridges",
+    "testFilePaths": [
+      "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ]
+  },
+  {
+    "name": "graphBridges should find bridges in simple graph with back edge",
+    "label": "graphBridges should find bridges in simple graph with back edge",
+    "testNamePattern": "graphBridges should find bridges in simple graph with back edge",
     "chapter": "graphBridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
@@ -1107,18 +1107,18 @@ module.exports = [
     ]
   },
   {
-    "name": "hammingDistance should throw an error when trying to compare the strings of different lengths",
-    "label": "hammingDistance should throw an error when trying to compare the strings of different lengths",
-    "testNamePattern": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+    "name": "hammingDistance should calculate difference between two strings",
+    "label": "hammingDistance should calculate difference between two strings",
+    "testNamePattern": "hammingDistance should calculate difference between two strings",
     "chapter": "hammingDistance",
     "testFilePaths": [
       "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
     ]
   },
   {
-    "name": "hammingDistance should calculate difference between two strings",
-    "label": "hammingDistance should calculate difference between two strings",
-    "testNamePattern": "hammingDistance should calculate difference between two strings",
+    "name": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+    "label": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+    "testNamePattern": "hammingDistance should throw an error when trying to compare the strings of different lengths",
     "chapter": "hammingDistance",
     "testFilePaths": [
       "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
@@ -1188,15 +1188,6 @@ module.exports = [
     ]
   },
   {
-    "name": "HeapSort should visit SORTED array element specified number of times",
-    "label": "HeapSort should visit SORTED array element specified number of times",
-    "testNamePattern": "HeapSort should visit SORTED array element specified number of times",
-    "chapter": "HeapSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
-  },
-  {
     "name": "HeapSort should visit NOT SORTED array element specified number of times",
     "label": "HeapSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "HeapSort should visit NOT SORTED array element specified number of times",
@@ -1215,9 +1206,18 @@ module.exports = [
     ]
   },
   {
-    "name": "hillCipher should throw an exception when trying to decipher",
-    "label": "hillCipher should throw an exception when trying to decipher",
-    "testNamePattern": "hillCipher should throw an exception when trying to decipher",
+    "name": "HeapSort should visit SORTED array element specified number of times",
+    "label": "HeapSort should visit SORTED array element specified number of times",
+    "testNamePattern": "HeapSort should visit SORTED array element specified number of times",
+    "chapter": "HeapSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ]
+  },
+  {
+    "name": "hillCipher should encrypt passed message using Hill Cipher",
+    "label": "hillCipher should encrypt passed message using Hill Cipher",
+    "testNamePattern": "hillCipher should encrypt passed message using Hill Cipher",
     "chapter": "hillCipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
@@ -1233,15 +1233,6 @@ module.exports = [
     ]
   },
   {
-    "name": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
-    "label": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
-    "testNamePattern": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
-    "chapter": "hillCipher",
-    "testFilePaths": [
-      "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
-    ]
-  },
-  {
     "name": "hillCipher should throw an error when the length of the keyString does not equal to the power of length of the message",
     "label": "hillCipher should throw an error when the length of the keyString does not equal to the power of length of the message",
     "testNamePattern": "hillCipher should throw an error when the length of the keyString does not equal to the power of length of the message",
@@ -1251,9 +1242,18 @@ module.exports = [
     ]
   },
   {
-    "name": "hillCipher should encrypt passed message using Hill Cipher",
-    "label": "hillCipher should encrypt passed message using Hill Cipher",
-    "testNamePattern": "hillCipher should encrypt passed message using Hill Cipher",
+    "name": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
+    "label": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
+    "testNamePattern": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
+    "chapter": "hillCipher",
+    "testFilePaths": [
+      "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ]
+  },
+  {
+    "name": "hillCipher should throw an exception when trying to decipher",
+    "label": "hillCipher should throw an exception when trying to decipher",
+    "testNamePattern": "hillCipher should throw an exception when trying to decipher",
     "chapter": "hillCipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
@@ -1278,6 +1278,15 @@ module.exports = [
     ]
   },
   {
+    "name": "InsertionSort should do stable sorting",
+    "label": "InsertionSort should do stable sorting",
+    "testNamePattern": "InsertionSort should do stable sorting",
+    "chapter": "InsertionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ]
+  },
+  {
     "name": "InsertionSort should sort array",
     "label": "InsertionSort should sort array",
     "testNamePattern": "InsertionSort should sort array",
@@ -1290,15 +1299,6 @@ module.exports = [
     "name": "InsertionSort should sort array with custom comparator",
     "label": "InsertionSort should sort array with custom comparator",
     "testNamePattern": "InsertionSort should sort array with custom comparator",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
-    "name": "InsertionSort should do stable sorting",
-    "label": "InsertionSort should do stable sorting",
-    "testNamePattern": "InsertionSort should do stable sorting",
     "chapter": "InsertionSort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
@@ -1323,15 +1323,6 @@ module.exports = [
     ]
   },
   {
-    "name": "InsertionSort should visit SORTED array element specified number of times",
-    "label": "InsertionSort should visit SORTED array element specified number of times",
-    "testNamePattern": "InsertionSort should visit SORTED array element specified number of times",
-    "chapter": "InsertionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
-  },
-  {
     "name": "InsertionSort should visit NOT SORTED array element specified number of times",
     "label": "InsertionSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "InsertionSort should visit NOT SORTED array element specified number of times",
@@ -1344,6 +1335,15 @@ module.exports = [
     "name": "InsertionSort should visit REVERSE SORTED array element specified number of times",
     "label": "InsertionSort should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "InsertionSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "InsertionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ]
+  },
+  {
+    "name": "InsertionSort should visit SORTED array element specified number of times",
+    "label": "InsertionSort should visit SORTED array element specified number of times",
+    "testNamePattern": "InsertionSort should visit SORTED array element specified number of times",
     "chapter": "InsertionSort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
@@ -1440,18 +1440,9 @@ module.exports = [
     ]
   },
   {
-    "name": "kMeans should throw an error on invalid data",
-    "label": "kMeans should throw an error on invalid data",
-    "testNamePattern": "kMeans should throw an error on invalid data",
-    "chapter": "kMeans",
-    "testFilePaths": [
-      "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ]
-  },
-  {
-    "name": "kMeans should throw an error on inconsistent data",
-    "label": "kMeans should throw an error on inconsistent data",
-    "testNamePattern": "kMeans should throw an error on inconsistent data",
+    "name": "kMeans should find the clusters with equal distances",
+    "label": "kMeans should find the clusters with equal distances",
+    "testNamePattern": "kMeans should find the clusters with equal distances",
     "chapter": "kMeans",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
@@ -1467,18 +1458,27 @@ module.exports = [
     ]
   },
   {
-    "name": "kMeans should find the clusters with equal distances",
-    "label": "kMeans should find the clusters with equal distances",
-    "testNamePattern": "kMeans should find the clusters with equal distances",
+    "name": "kMeans should find the nearest neighbour in 3D space",
+    "label": "kMeans should find the nearest neighbour in 3D space",
+    "testNamePattern": "kMeans should find the nearest neighbour in 3D space",
     "chapter": "kMeans",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
     ]
   },
   {
-    "name": "kMeans should find the nearest neighbour in 3D space",
-    "label": "kMeans should find the nearest neighbour in 3D space",
-    "testNamePattern": "kMeans should find the nearest neighbour in 3D space",
+    "name": "kMeans should throw an error on inconsistent data",
+    "label": "kMeans should throw an error on inconsistent data",
+    "testNamePattern": "kMeans should throw an error on inconsistent data",
+    "chapter": "kMeans",
+    "testFilePaths": [
+      "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ]
+  },
+  {
+    "name": "kMeans should throw an error on invalid data",
+    "label": "kMeans should throw an error on invalid data",
+    "testNamePattern": "kMeans should throw an error on invalid data",
     "chapter": "kMeans",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
@@ -1503,18 +1503,18 @@ module.exports = [
     ]
   },
   {
-    "name": "Knapsack should solve 0/1 knapsack problem with impossible items set",
-    "label": "Knapsack should solve 0/1 knapsack problem with impossible items set",
-    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+    "name": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+    "label": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with all equal weights",
     "chapter": "Knapsack",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
     ]
   },
   {
-    "name": "Knapsack should solve 0/1 knapsack problem with all equal weights",
-    "label": "Knapsack should solve 0/1 knapsack problem with all equal weights",
-    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+    "name": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+    "label": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+    "testNamePattern": "Knapsack should solve 0/1 knapsack problem with impossible items set",
     "chapter": "Knapsack",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
@@ -1557,6 +1557,15 @@ module.exports = [
     ]
   },
   {
+    "name": "knightTour should find one solution to do knight tour on 5x5 board",
+    "label": "knightTour should find one solution to do knight tour on 5x5 board",
+    "testNamePattern": "knightTour should find one solution to do knight tour on 5x5 board",
+    "chapter": "knightTour",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
+    ]
+  },
+  {
     "name": "knightTour should not find solution on 3x3 board",
     "label": "knightTour should not find solution on 3x3 board",
     "testNamePattern": "knightTour should not find solution on 3x3 board",
@@ -1566,12 +1575,30 @@ module.exports = [
     ]
   },
   {
-    "name": "knightTour should find one solution to do knight tour on 5x5 board",
-    "label": "knightTour should find one solution to do knight tour on 5x5 board",
-    "testNamePattern": "knightTour should find one solution to do knight tour on 5x5 board",
-    "chapter": "knightTour",
+    "name": "kNN should find the nearest neighbour",
+    "label": "kNN should find the nearest neighbour",
+    "testNamePattern": "kNN should find the nearest neighbour",
+    "chapter": "kNN",
     "testFilePaths": [
-      "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
+      "src/algorithms/ml/knn/__test__/knn.test.js"
+    ]
+  },
+  {
+    "name": "kNN should find the nearest neighbour in 3D space",
+    "label": "kNN should find the nearest neighbour in 3D space",
+    "testNamePattern": "kNN should find the nearest neighbour in 3D space",
+    "chapter": "kNN",
+    "testFilePaths": [
+      "src/algorithms/ml/knn/__test__/knn.test.js"
+    ]
+  },
+  {
+    "name": "kNN should find the nearest neighbour with equal distances",
+    "label": "kNN should find the nearest neighbour with equal distances",
+    "testNamePattern": "kNN should find the nearest neighbour with equal distances",
+    "chapter": "kNN",
+    "testFilePaths": [
+      "src/algorithms/ml/knn/__test__/knn.test.js"
     ]
   },
   {
@@ -1602,48 +1629,12 @@ module.exports = [
     ]
   },
   {
-    "name": "kNN should find the nearest neighbour",
-    "label": "kNN should find the nearest neighbour",
-    "testNamePattern": "kNN should find the nearest neighbour",
-    "chapter": "kNN",
-    "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
-  },
-  {
-    "name": "kNN should find the nearest neighbour with equal distances",
-    "label": "kNN should find the nearest neighbour with equal distances",
-    "testNamePattern": "kNN should find the nearest neighbour with equal distances",
-    "chapter": "kNN",
-    "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
-  },
-  {
-    "name": "kNN should find the nearest neighbour in 3D space",
-    "label": "kNN should find the nearest neighbour in 3D space",
-    "testNamePattern": "kNN should find the nearest neighbour in 3D space",
-    "chapter": "kNN",
-    "testFilePaths": [
-      "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
-  },
-  {
     "name": "knuthMorrisPratt should find word position in given text",
     "label": "knuthMorrisPratt should find word position in given text",
     "testNamePattern": "knuthMorrisPratt should find word position in given text",
     "chapter": "knuthMorrisPratt",
     "testFilePaths": [
       "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js"
-    ]
-  },
-  {
-    "name": "kruskal should fire an error for directed graph",
-    "label": "kruskal should fire an error for directed graph",
-    "testNamePattern": "kruskal should fire an error for directed graph",
-    "chapter": "kruskal",
-    "testFilePaths": [
-      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
     ]
   },
   {
@@ -1659,6 +1650,15 @@ module.exports = [
     "name": "kruskal should find minimum spanning tree for simple graph",
     "label": "kruskal should find minimum spanning tree for simple graph",
     "testNamePattern": "kruskal should find minimum spanning tree for simple graph",
+    "chapter": "kruskal",
+    "testFilePaths": [
+      "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+    ]
+  },
+  {
+    "name": "kruskal should fire an error for directed graph",
+    "label": "kruskal should fire an error for directed graph",
+    "testNamePattern": "kruskal should fire an error for directed graph",
     "chapter": "kruskal",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
@@ -1719,6 +1719,15 @@ module.exports = [
     ]
   },
   {
+    "name": "liuHui should calculate π based on 201326592-gon",
+    "label": "liuHui should calculate π based on 201326592-gon",
+    "testNamePattern": "liuHui should calculate π based on 201326592-gon",
+    "chapter": "liuHui",
+    "testFilePaths": [
+      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
+    ]
+  },
+  {
     "name": "liuHui should calculate π based on 24-gon",
     "label": "liuHui should calculate π based on 24-gon",
     "testNamePattern": "liuHui should calculate π based on 24-gon",
@@ -1731,15 +1740,6 @@ module.exports = [
     "name": "liuHui should calculate π based on 6144-gon",
     "label": "liuHui should calculate π based on 6144-gon",
     "testNamePattern": "liuHui should calculate π based on 6144-gon",
-    "chapter": "liuHui",
-    "testFilePaths": [
-      "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
-  },
-  {
-    "name": "liuHui should calculate π based on 201326592-gon",
-    "label": "liuHui should calculate π based on 201326592-gon",
-    "testNamePattern": "liuHui should calculate π based on 201326592-gon",
     "chapter": "liuHui",
     "testFilePaths": [
       "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
@@ -1773,9 +1773,9 @@ module.exports = [
     ]
   },
   {
-    "name": "Matrix should throw when trying to add matrices of invalid shapes",
-    "label": "Matrix should throw when trying to add matrices of invalid shapes",
-    "testNamePattern": "Matrix should throw when trying to add matrices of invalid shapes",
+    "name": "Matrix should add two matrices",
+    "label": "Matrix should add two matrices",
+    "testNamePattern": "Matrix should add two matrices",
     "chapter": "Matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
@@ -1785,6 +1785,33 @@ module.exports = [
     "name": "Matrix should calculate matrices dimensions",
     "label": "Matrix should calculate matrices dimensions",
     "testNamePattern": "Matrix should calculate matrices dimensions",
+    "chapter": "Matrix",
+    "testFilePaths": [
+      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ]
+  },
+  {
+    "name": "Matrix should do element wise multiplication two matrices",
+    "label": "Matrix should do element wise multiplication two matrices",
+    "testNamePattern": "Matrix should do element wise multiplication two matrices",
+    "chapter": "Matrix",
+    "testFilePaths": [
+      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ]
+  },
+  {
+    "name": "Matrix should do element wise subtraction two matrices",
+    "label": "Matrix should do element wise subtraction two matrices",
+    "testNamePattern": "Matrix should do element wise subtraction two matrices",
+    "chapter": "Matrix",
+    "testFilePaths": [
+      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ]
+  },
+  {
+    "name": "Matrix should generate a custom matrix based on specific cell indices",
+    "label": "Matrix should generate a custom matrix based on specific cell indices",
+    "testNamePattern": "Matrix should generate a custom matrix based on specific cell indices",
     "chapter": "Matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
@@ -1809,45 +1836,9 @@ module.exports = [
     ]
   },
   {
-    "name": "Matrix should generate a custom matrix based on specific cell indices",
-    "label": "Matrix should generate a custom matrix based on specific cell indices",
-    "testNamePattern": "Matrix should generate a custom matrix based on specific cell indices",
-    "chapter": "Matrix",
-    "testFilePaths": [
-      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
-  },
-  {
     "name": "Matrix should multiply two matrices",
     "label": "Matrix should multiply two matrices",
     "testNamePattern": "Matrix should multiply two matrices",
-    "chapter": "Matrix",
-    "testFilePaths": [
-      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
-  },
-  {
-    "name": "Matrix should transpose matrices",
-    "label": "Matrix should transpose matrices",
-    "testNamePattern": "Matrix should transpose matrices",
-    "chapter": "Matrix",
-    "testFilePaths": [
-      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
-  },
-  {
-    "name": "Matrix should throw when trying to transpose non 2D matrix",
-    "label": "Matrix should throw when trying to transpose non 2D matrix",
-    "testNamePattern": "Matrix should throw when trying to transpose non 2D matrix",
-    "chapter": "Matrix",
-    "testFilePaths": [
-      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
-  },
-  {
-    "name": "Matrix should add two matrices",
-    "label": "Matrix should add two matrices",
-    "testNamePattern": "Matrix should add two matrices",
     "chapter": "Matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
@@ -1863,9 +1854,9 @@ module.exports = [
     ]
   },
   {
-    "name": "Matrix should do element wise multiplication two matrices",
-    "label": "Matrix should do element wise multiplication two matrices",
-    "testNamePattern": "Matrix should do element wise multiplication two matrices",
+    "name": "Matrix should throw when trying to add matrices of invalid shapes",
+    "label": "Matrix should throw when trying to add matrices of invalid shapes",
+    "testNamePattern": "Matrix should throw when trying to add matrices of invalid shapes",
     "chapter": "Matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
@@ -1881,21 +1872,39 @@ module.exports = [
     ]
   },
   {
-    "name": "Matrix should do element wise subtraction two matrices",
-    "label": "Matrix should do element wise subtraction two matrices",
-    "testNamePattern": "Matrix should do element wise subtraction two matrices",
-    "chapter": "Matrix",
-    "testFilePaths": [
-      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
-  },
-  {
     "name": "Matrix should throw when trying to subtract matrices element-wise of different shape",
     "label": "Matrix should throw when trying to subtract matrices element-wise of different shape",
     "testNamePattern": "Matrix should throw when trying to subtract matrices element-wise of different shape",
     "chapter": "Matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ]
+  },
+  {
+    "name": "Matrix should throw when trying to transpose non 2D matrix",
+    "label": "Matrix should throw when trying to transpose non 2D matrix",
+    "testNamePattern": "Matrix should throw when trying to transpose non 2D matrix",
+    "chapter": "Matrix",
+    "testFilePaths": [
+      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ]
+  },
+  {
+    "name": "Matrix should transpose matrices",
+    "label": "Matrix should transpose matrices",
+    "testNamePattern": "Matrix should transpose matrices",
+    "chapter": "Matrix",
+    "testFilePaths": [
+      "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should do stable sorting",
+    "label": "MergeSort should do stable sorting",
+    "testNamePattern": "MergeSort should do stable sorting",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
     ]
   },
   {
@@ -1911,15 +1920,6 @@ module.exports = [
     "name": "MergeSort should sort array with custom comparator",
     "label": "MergeSort should sort array with custom comparator",
     "testNamePattern": "MergeSort should sort array with custom comparator",
-    "chapter": "MergeSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
-  },
-  {
-    "name": "MergeSort should do stable sorting",
-    "label": "MergeSort should do stable sorting",
-    "testNamePattern": "MergeSort should do stable sorting",
     "chapter": "MergeSort",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
@@ -1944,15 +1944,6 @@ module.exports = [
     ]
   },
   {
-    "name": "MergeSort should visit SORTED array element specified number of times",
-    "label": "MergeSort should visit SORTED array element specified number of times",
-    "testNamePattern": "MergeSort should visit SORTED array element specified number of times",
-    "chapter": "MergeSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
-  },
-  {
     "name": "MergeSort should visit NOT SORTED array element specified number of times",
     "label": "MergeSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "MergeSort should visit NOT SORTED array element specified number of times",
@@ -1965,6 +1956,15 @@ module.exports = [
     "name": "MergeSort should visit REVERSE SORTED array element specified number of times",
     "label": "MergeSort should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "MergeSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "MergeSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ]
+  },
+  {
+    "name": "MergeSort should visit SORTED array element specified number of times",
+    "label": "MergeSort should visit SORTED array element specified number of times",
+    "testNamePattern": "MergeSort should visit SORTED array element specified number of times",
     "chapter": "MergeSort",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
@@ -2115,15 +2115,6 @@ module.exports = [
     ]
   },
   {
-    "name": "prim should fire an error for directed graph",
-    "label": "prim should fire an error for directed graph",
-    "testNamePattern": "prim should fire an error for directed graph",
-    "chapter": "prim",
-    "testFilePaths": [
-      "src/algorithms/graph/prim/__test__/prim.test.js"
-    ]
-  },
-  {
     "name": "prim should find minimum spanning tree",
     "label": "prim should find minimum spanning tree",
     "testNamePattern": "prim should find minimum spanning tree",
@@ -2136,6 +2127,15 @@ module.exports = [
     "name": "prim should find minimum spanning tree for simple graph",
     "label": "prim should find minimum spanning tree for simple graph",
     "testNamePattern": "prim should find minimum spanning tree for simple graph",
+    "chapter": "prim",
+    "testFilePaths": [
+      "src/algorithms/graph/prim/__test__/prim.test.js"
+    ]
+  },
+  {
+    "name": "prim should fire an error for directed graph",
+    "label": "prim should fire an error for directed graph",
+    "testNamePattern": "prim should fire an error for directed graph",
     "chapter": "prim",
     "testFilePaths": [
       "src/algorithms/graph/prim/__test__/prim.test.js"
@@ -2178,6 +2178,15 @@ module.exports = [
     ]
   },
   {
+    "name": "QuickSort should do stable sorting",
+    "label": "QuickSort should do stable sorting",
+    "testNamePattern": "QuickSort should do stable sorting",
+    "chapter": "QuickSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
+    ]
+  },
+  {
     "name": "QuickSort should sort array",
     "label": "QuickSort should sort array",
     "testNamePattern": "QuickSort should sort array",
@@ -2190,15 +2199,6 @@ module.exports = [
     "name": "QuickSort should sort array with custom comparator",
     "label": "QuickSort should sort array with custom comparator",
     "testNamePattern": "QuickSort should sort array with custom comparator",
-    "chapter": "QuickSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
-  },
-  {
-    "name": "QuickSort should do stable sorting",
-    "label": "QuickSort should do stable sorting",
-    "testNamePattern": "QuickSort should do stable sorting",
     "chapter": "QuickSort",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
@@ -2223,15 +2223,6 @@ module.exports = [
     ]
   },
   {
-    "name": "QuickSort should visit SORTED array element specified number of times",
-    "label": "QuickSort should visit SORTED array element specified number of times",
-    "testNamePattern": "QuickSort should visit SORTED array element specified number of times",
-    "chapter": "QuickSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
-  },
-  {
     "name": "QuickSort should visit NOT SORTED array element specified number of times",
     "label": "QuickSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "QuickSort should visit NOT SORTED array element specified number of times",
@@ -2244,6 +2235,15 @@ module.exports = [
     "name": "QuickSort should visit REVERSE SORTED array element specified number of times",
     "label": "QuickSort should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "QuickSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "QuickSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
+    ]
+  },
+  {
+    "name": "QuickSort should visit SORTED array element specified number of times",
+    "label": "QuickSort should visit SORTED array element specified number of times",
+    "testNamePattern": "QuickSort should visit SORTED array element specified number of times",
     "chapter": "QuickSort",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
@@ -2286,15 +2286,6 @@ module.exports = [
     ]
   },
   {
-    "name": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "label": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "chapter": "QuickSortInPlace",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
     "name": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
     "label": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
     "testNamePattern": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
@@ -2307,6 +2298,15 @@ module.exports = [
     "name": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
     "label": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+    "chapter": "QuickSortInPlace",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "name": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "label": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
     "chapter": "QuickSortInPlace",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
@@ -2358,15 +2358,6 @@ module.exports = [
     ]
   },
   {
-    "name": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "label": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "testNamePattern": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "chapter": "RadixSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
-    ]
-  },
-  {
     "name": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
     "label": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
     "testNamePattern": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
@@ -2376,12 +2367,12 @@ module.exports = [
     ]
   },
   {
-    "name": "railFenceCipher encodes a string correctly for base=3",
-    "label": "railFenceCipher encodes a string correctly for base=3",
-    "testNamePattern": "railFenceCipher encodes a string correctly for base=3",
-    "chapter": "railFenceCipher",
+    "name": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "label": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "testNamePattern": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "chapter": "RadixSort",
     "testFilePaths": [
-      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
+      "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
     ]
   },
   {
@@ -2394,18 +2385,27 @@ module.exports = [
     ]
   },
   {
-    "name": "railFenceCipher encodes a string correctly for base=4",
-    "label": "railFenceCipher encodes a string correctly for base=4",
-    "testNamePattern": "railFenceCipher encodes a string correctly for base=4",
+    "name": "railFenceCipher decodes a string correctly for base=4",
+    "label": "railFenceCipher decodes a string correctly for base=4",
+    "testNamePattern": "railFenceCipher decodes a string correctly for base=4",
     "chapter": "railFenceCipher",
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ]
   },
   {
-    "name": "railFenceCipher decodes a string correctly for base=4",
-    "label": "railFenceCipher decodes a string correctly for base=4",
-    "testNamePattern": "railFenceCipher decodes a string correctly for base=4",
+    "name": "railFenceCipher encodes a string correctly for base=3",
+    "label": "railFenceCipher encodes a string correctly for base=3",
+    "testNamePattern": "railFenceCipher encodes a string correctly for base=3",
+    "chapter": "railFenceCipher",
+    "testFilePaths": [
+      "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
+    ]
+  },
+  {
+    "name": "railFenceCipher encodes a string correctly for base=4",
+    "label": "railFenceCipher encodes a string correctly for base=4",
+    "testNamePattern": "railFenceCipher encodes a string correctly for base=4",
     "chapter": "railFenceCipher",
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
@@ -2511,15 +2511,6 @@ module.exports = [
     ]
   },
   {
-    "name": "SelectionSort should visit SORTED array element specified number of times",
-    "label": "SelectionSort should visit SORTED array element specified number of times",
-    "testNamePattern": "SelectionSort should visit SORTED array element specified number of times",
-    "chapter": "SelectionSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
-  },
-  {
     "name": "SelectionSort should visit NOT SORTED array element specified number of times",
     "label": "SelectionSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "SelectionSort should visit NOT SORTED array element specified number of times",
@@ -2532,6 +2523,15 @@ module.exports = [
     "name": "SelectionSort should visit REVERSE SORTED array element specified number of times",
     "label": "SelectionSort should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "SelectionSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "SelectionSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
+    ]
+  },
+  {
+    "name": "SelectionSort should visit SORTED array element specified number of times",
+    "label": "SelectionSort should visit SORTED array element specified number of times",
+    "testNamePattern": "SelectionSort should visit SORTED array element specified number of times",
     "chapter": "SelectionSort",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
@@ -2583,15 +2583,6 @@ module.exports = [
     ]
   },
   {
-    "name": "ShellSort should visit SORTED array element specified number of times",
-    "label": "ShellSort should visit SORTED array element specified number of times",
-    "testNamePattern": "ShellSort should visit SORTED array element specified number of times",
-    "chapter": "ShellSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
-  },
-  {
     "name": "ShellSort should visit NOT SORTED array element specified number of times",
     "label": "ShellSort should visit NOT SORTED array element specified number of times",
     "testNamePattern": "ShellSort should visit NOT SORTED array element specified number of times",
@@ -2604,6 +2595,15 @@ module.exports = [
     "name": "ShellSort should visit REVERSE SORTED array element specified number of times",
     "label": "ShellSort should visit REVERSE SORTED array element specified number of times",
     "testNamePattern": "ShellSort should visit REVERSE SORTED array element specified number of times",
+    "chapter": "ShellSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
+    ]
+  },
+  {
+    "name": "ShellSort should visit SORTED array element specified number of times",
+    "label": "ShellSort should visit SORTED array element specified number of times",
+    "testNamePattern": "ShellSort should visit SORTED array element specified number of times",
     "chapter": "ShellSort",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
@@ -2673,9 +2673,9 @@ module.exports = [
     ]
   },
   {
-    "name": "squareRoot should throw for negative numbers",
-    "label": "squareRoot should throw for negative numbers",
-    "testNamePattern": "squareRoot should throw for negative numbers",
+    "name": "squareRoot should correctly calculate square root for integers with custom tolerance",
+    "label": "squareRoot should correctly calculate square root for integers with custom tolerance",
+    "testNamePattern": "squareRoot should correctly calculate square root for integers with custom tolerance",
     "chapter": "squareRoot",
     "testFilePaths": [
       "src/algorithms/math/square-root/__test__/squareRoot.test.js"
@@ -2691,27 +2691,27 @@ module.exports = [
     ]
   },
   {
-    "name": "squareRoot should correctly calculate square root for integers with custom tolerance",
-    "label": "squareRoot should correctly calculate square root for integers with custom tolerance",
-    "testNamePattern": "squareRoot should correctly calculate square root for integers with custom tolerance",
+    "name": "squareRoot should throw for negative numbers",
+    "label": "squareRoot should throw for negative numbers",
+    "testNamePattern": "squareRoot should throw for negative numbers",
     "chapter": "squareRoot",
     "testFilePaths": [
       "src/algorithms/math/square-root/__test__/squareRoot.test.js"
     ]
   },
   {
-    "name": "stronglyConnectedComponents should detect strongly connected components in simple graph",
-    "label": "stronglyConnectedComponents should detect strongly connected components in simple graph",
-    "testNamePattern": "stronglyConnectedComponents should detect strongly connected components in simple graph",
+    "name": "stronglyConnectedComponents should detect strongly connected components in graph",
+    "label": "stronglyConnectedComponents should detect strongly connected components in graph",
+    "testNamePattern": "stronglyConnectedComponents should detect strongly connected components in graph",
     "chapter": "stronglyConnectedComponents",
     "testFilePaths": [
       "src/algorithms/graph/strongly-connected-components/__test__/stronglyConnectedComponents.test.js"
     ]
   },
   {
-    "name": "stronglyConnectedComponents should detect strongly connected components in graph",
-    "label": "stronglyConnectedComponents should detect strongly connected components in graph",
-    "testNamePattern": "stronglyConnectedComponents should detect strongly connected components in graph",
+    "name": "stronglyConnectedComponents should detect strongly connected components in simple graph",
+    "label": "stronglyConnectedComponents should detect strongly connected components in simple graph",
+    "testNamePattern": "stronglyConnectedComponents should detect strongly connected components in simple graph",
     "chapter": "stronglyConnectedComponents",
     "testFilePaths": [
       "src/algorithms/graph/strongly-connected-components/__test__/stronglyConnectedComponents.test.js"
@@ -2772,18 +2772,9 @@ module.exports = [
     ]
   },
   {
-    "name": "weightedRandom should throw an error when the number of weights does not match the number of items",
-    "label": "weightedRandom should throw an error when the number of weights does not match the number of items",
-    "testNamePattern": "weightedRandom should throw an error when the number of weights does not match the number of items",
-    "chapter": "weightedRandom",
-    "testFilePaths": [
-      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
-  },
-  {
-    "name": "weightedRandom should throw an error when the number of weights or items are empty",
-    "label": "weightedRandom should throw an error when the number of weights or items are empty",
-    "testNamePattern": "weightedRandom should throw an error when the number of weights or items are empty",
+    "name": "weightedRandom should correctly do random selection based on wights",
+    "label": "weightedRandom should correctly do random selection based on wights",
+    "testNamePattern": "weightedRandom should correctly do random selection based on wights",
     "chapter": "weightedRandom",
     "testFilePaths": [
       "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
@@ -2799,9 +2790,18 @@ module.exports = [
     ]
   },
   {
-    "name": "weightedRandom should correctly do random selection based on wights",
-    "label": "weightedRandom should correctly do random selection based on wights",
-    "testNamePattern": "weightedRandom should correctly do random selection based on wights",
+    "name": "weightedRandom should throw an error when the number of weights does not match the number of items",
+    "label": "weightedRandom should throw an error when the number of weights does not match the number of items",
+    "testNamePattern": "weightedRandom should throw an error when the number of weights does not match the number of items",
+    "chapter": "weightedRandom",
+    "testFilePaths": [
+      "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
+    ]
+  },
+  {
+    "name": "weightedRandom should throw an error when the number of weights or items are empty",
+    "label": "weightedRandom should throw an error when the number of weights or items are empty",
+    "testNamePattern": "weightedRandom should throw an error when the number of weights or items are empty",
     "chapter": "weightedRandom",
     "testFilePaths": [
       "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
