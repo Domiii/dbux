@@ -3,15 +3,14 @@
 // import { BezierConnector } from '@jsplumb/connector-bezier';
 
 import * as d3 from 'd3-graphviz';
-import { selectAll } from 'd3-selection';
 
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
-import { RenderState } from '@dbux/data/src/ddg/ddgQueries';
+import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement } from '../util/domUtil';
-import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
+import { decorateSummaryModeButtons, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
 
@@ -122,6 +121,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   get renderState() {
     return this.context.doc.state;
   }
+  get ddg() {
+    return this.renderState;
+  }
 
   get root() {
     return this.renderState.timelineNodes?.[RootTimelineId];
@@ -143,6 +145,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     if (!root) {
       return;
     }
+
+    this.clearDeco();  // remove all non-graph elements from graph to avoid errors
 
     const graphString = this.buildDot();
     // const graphString = 'digraph { a -> b }';
@@ -187,6 +191,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * decorate graph HTML
    * ##########################################################################*/
 
+  clearDeco() {
+    const els = Array.from(this.el.querySelectorAll('.deco'));
+    els.forEach(el => el.remove());
+  }
+
+  registerDeco(el) {
+    el.classList.add('deco');
+  }
+
   // rendering finished
   decorateAfterRender = async () => {
     try {
@@ -222,36 +235,60 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
     catch (err) {
       // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
-      console.error(`decorateAfterRender FAILED: `, err);
+      this.logger.error(`decorateAfterRender FAILED: `, err);
     }
   }
 
+  /**
+   * @param {DDGTimelineNode} node 
+   * @param {Element} nodeEl 
+   */
   decorateNode(node, nodeEl) {
-    const { type } = node;
-    const triggerEl = isControlGroupTimelineNode(type) ?
-      nodeEl.querySelector('text') :
-      nodeEl;
+    const { ddg } = this;
+    let popupTriggerEl = nodeEl;
 
-    if (!triggerEl) {
-      // TODO: handle all edge cases
-      return;
+    if (ddgQueries.isNodeSummarizable(node)) {
+      // hackfix: since DOT is very limited, we have to add custom rendering logic here
+      const labelEl = this.getSummarizableNodeLabelEl(node, nodeEl);
+      const mode = ddgQueries.getNodeSummaryMode(ddg, node);
+      const xOffset = 12;// hackfix: move both off to the right a bit
+      const yOffset = 10;
+      const sepX = 12; // separate them by this much
+      const x = parseFloat(labelEl.getAttribute('x'));
+      const y = parseFloat(labelEl.getAttribute('y')) - yOffset;
+      const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x - sepX + xOffset, y);
+      this.registerDeco(modeEl);
+      nodeEl.appendChild(modeEl);
+      labelEl.setAttribute('x', x + xOffset);
+      // labelEl.innerHTML = '&nbsp;&nbsp;&nbsp;' + labelEl.innerHTML;
+      // console.log('label x,y', x, y);
+
+      // future-work: add a bigger popup area, to make things better clickable
+      // popupTriggerEl = compileHtmlElement(/*html*/`<`);
+      popupTriggerEl = labelEl;
     }
 
     // add overlays
-    let debugOverlay;
-    this.addNodeEventListener(node, triggerEl, 'mouseover', (evt) => {
-      // create overlay lazily
-      if (!debugOverlay) {
-        // console.debug(`Hover node:`, evt.target);
-        this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-        // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-      }
-      this.maybeShowNodePopupEl(node, nodeEl);
-    });
-    this.addNodeEventListener(node, triggerEl, 'mouseout', () => {
-      debugOverlay.remove();
-      debugOverlay = null;
-    });
+    if (popupTriggerEl) {
+      let debugOverlay;
+      this.addNodeEventListener(node, popupTriggerEl, 'mouseover', (evt) => {
+        // create overlay lazily
+        if (!debugOverlay) {
+          // console.debug(`Hover node:`, evt.target);
+          this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+          // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+        }
+        this.maybeShowNodePopupEl(node, nodeEl, popupTriggerEl);
+      });
+      this.addNodeEventListener(node, popupTriggerEl, 'mouseout', () => {
+        debugOverlay.remove();
+        debugOverlay = null;
+      });
+    }
+  }
+
+  getSummarizableNodeLabelEl(node, nodeEl) {
+    return nodeEl.querySelector('text');
   }
 
   /**
@@ -270,7 +307,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   makeNodeDebugOverlay(node) {
     const content = `Node = ${JSON.stringify(node, null, 2)}`;
-    return compileHtmlElement(/*html*/`<pre class="node-debug-overlay" >${content}</pre>`);
+    const el = compileHtmlElement(/*html*/`<pre class="node-debug-overlay" >${content}</pre>`);
+    this.registerDeco(el);
+    return el;
   }
 
 
@@ -335,9 +374,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
       <div class="node-overlay"></div>
     `);
+    this.registerDeco(hoverEl);
     const x = rect.left;
     const y = rect.top - NodeMenuHeight - NodeMenuYOffset;
-    hoverEl.appendChild(nodeBtns);
     hoverEl.style.left = `${x}px`;
     hoverEl.style.top = `${y}px`;
     // NOTE: mouseover + mouseout are not very reliable events for this
@@ -363,6 +402,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     // this.el.appendChild(this.currentHoverEl);
     // nodeEl.appendChild(hoverEl);
+    hoverEl.appendChild(nodeBtns);
     this.el.appendChild(hoverEl);
   }
 }

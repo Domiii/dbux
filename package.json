@@ -57,6 +57,7 @@
     "cross-spawn": "^7.0.3",
     "find-package-json": "^1.2.0",
     "lodash": "^4.17.21",
+    "prettier": "^2.6.2",
     "shell-escape": "^0.2.0",
     "shelljs": "0.8.5",
     "yargs": "^16.2.0"
@@ -106,14 +107,11 @@
     "dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
     "dbux-all": "bash scripts/dbux-run-all.sh",
     "yalc": "yalc push dbux-babel-plugin && yalc push dbux-runtime && yalc push dbux-cli && yalc push dbux-common && yalc push dbux-common-node && yalc push babel-register-fork",
-
     "docs": "cd ./docs_site && yarn start",
     "docs:build": "cd ./docs_site && yarn build",
     "docs:serve": "cd ./docs_site && yarn serve",
     "docs:deploy": "cd ./docs_site && yarn deploy",
-
     "w": "echo Copying write assets... && bash -cl \"cp -Trv ./docs_site/static/w ./docs/w\"",
-
     "clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
     "cloc": "bash scripts/cloc.sh",
     "cloc-eslint": "cd dbux_projects/eslint && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin tests templates packages",

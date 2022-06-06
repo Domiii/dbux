@@ -15,7 +15,11 @@ class NestedError extends Error {
     if (message instanceof Error) {
       cause = message;
     }
-    
+    if (!cause) {
+      // odd...
+      cause = { message: '(no error object provided)', stack: undefined };
+    }
+
     // hackfix: we also nest `message`, because the custom `stack` is ignored in some environments (e.g. jest (i.e. vm2))
     const nestedMsg = cause.message && `\n  [Caused By] ${cause.message}` || '';
     this.message = `${message}${nestedMsg}`;

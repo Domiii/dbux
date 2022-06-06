@@ -1,3 +1,4 @@
+import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { addElementEventListeners, compileHtmlElement, decorateClasses } from '../util/domUtil';
@@ -10,12 +11,39 @@ const defaultIconSize = '12px';
 const summaryIconHtml = {
   [DDGSummaryMode.Hide]: '⛒',
   [DDGSummaryMode.HideChildren]: '⛒',
-  [DDGSummaryMode.CollapseSummary]: '💢'
+  // [DDGSummaryMode.CollapseSummary]: '💢'
 };
 
 /** ###########################################################################
  * Summary Mode
  * ##########################################################################*/
+
+export function makeSummaryLabel(docState, mode) {
+  const { summaryIconUris } = docState;
+  if (!summaryIconUris[mode]) {
+    return summaryIconHtml[mode]; // hackfix
+  }
+  return /*html*/`<img width="${defaultIconSize}" src="${summaryIconUris[mode]}" />`;
+}
+
+export function makeSummaryLabelSvgCompiled(docState, mode, x, y) {
+  const { summaryIconUris } = docState;
+  if (!summaryIconUris[mode]) {
+    return summaryIconHtml[mode];
+  }
+
+  /**
+   * @see https://stackoverflow.com/a/10859332
+   */
+  const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+  img.setAttributeNS(null, 'height', defaultIconSize);
+  img.setAttributeNS(null, 'width', defaultIconSize);
+  img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', summaryIconUris[mode]);
+  img.setAttributeNS(null, 'x', x);
+  img.setAttributeNS(null, 'y', y);
+  img.setAttributeNS(null, 'visibility', 'visible');
+  return img;
+}
 
 /**
  * @param {DDGDocument} doc
@@ -26,12 +54,9 @@ const summaryIconHtml = {
  */
 export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDecorate = false) {
   btnClass = btnClass + ' summary-button';
-  const { summaryIconUris } = doc.state;
   const frag = document.createDocumentFragment();
   const els = modes.map(mode => {
-    const label = summaryIconUris[mode] ?
-      /*html*/`<img width="${defaultIconSize}" src="${summaryIconUris[mode]}" />` :
-      summaryIconHtml[mode]; // hackfix
+    const label = makeSummaryLabel(doc.state, mode);
     const modeName = DDGSummaryMode.nameFrom(mode);
     const btnEl = compileHtmlElement(
     /*html*/`<button title="${modeName}" class="${btnClass}">
@@ -42,7 +67,7 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
       // hackfix
       btnEl._updateDeco = () => {
         if (doc.state.summaryModes) {
-          decorateSummaryButton(btnEl, mode, doc.state.summaryModes[timelineId]);
+          decorateSummaryButton(btnEl, mode, doc.state, timelineId);
         }
       };
       btnEl._updateDeco();
@@ -57,9 +82,17 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
   };
 }
 
-export function decorateSummaryButton(btnEl, ownMode, actualMode) {
+/**
+ * Apply decorations to `btnEl` that represents given `btnMode` for node of given `timelineId`
+ */
+export function decorateSummaryButton(btnEl, btnMode, ddg, timelineId) {
+  const node = ddg.timelineNodes[timelineId];
+  const actualMode = ddg.summaryModes[timelineId];
+  const disabled = !ddgQueries.canApplySummaryMode(node, btnMode);
+  btnEl.disabled = disabled;
   decorateClasses(btnEl, {
-    active: ownMode === actualMode
+    disabled,
+    active: btnMode === actualMode
   });
 }
 

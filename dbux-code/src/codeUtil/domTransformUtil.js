@@ -18,7 +18,11 @@ export function wrapScriptTag(src) {
  * Loads the script from given path and wraps it in a <script> element.
  */
 export async function wrapScriptFileInTag(scriptPath) {
-  const src = await fs.readFile(scriptPath, "utf8");
+  let src = await fs.readFile(scriptPath, "utf8");
+  if (process.env.NODE_ENV === 'development') {
+    const prettier = await import('prettier');
+    src = prettier.format(src, { parser: 'babel' });
+  }
   return wrapScriptTag(src);
   // NOTE: "panel.webview.asWebviewUri" errors out ("unknown url scheme")
   // let graphJsUri = Uri.file(scriptPath);

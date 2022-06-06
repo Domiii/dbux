@@ -186,7 +186,8 @@ module.exports = (env, argv) => {
        * @see https://github.com/cthackers/adm-zip/issues/242
        */
       'original-fs': 'original-fs',
-      firebase: 'commonjs firebase'
+      firebase: 'commonjs firebase',
+      prettier: 'prettier'
     },
     node: {
       // generate actual output file information

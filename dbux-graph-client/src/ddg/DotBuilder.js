@@ -3,6 +3,7 @@ import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode } f
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { makeSummaryLabel } from './ddgDomUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -36,6 +37,10 @@ export default class DotBuilder {
   constructor(doc, renderState) {
     this.doc = doc;
     this.renderState = renderState;
+  }
+
+  get ddg() {
+    return this.renderState;
   }
 
   get root() {
@@ -161,7 +166,7 @@ export default class DotBuilder {
   }
 
   node(node, force = false) {
-    const ddg = this.renderState;
+    const { ddg } = this;
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
     }
@@ -177,10 +182,16 @@ export default class DotBuilder {
   }
 
   _groupAttrs(node) {
+    // const { ddg } = this;
     const { timelineId, label } = node;
     this.command(this.nodeIdAttr(timelineId));
     // this.label(node.label || '');
-    this.command(`label=<<u>${label || '()'}</u>>`);
+    // NOTE: mode is hacked in in `decorateNode`
+
+    // const mode = ddgQueries.getNodeSummaryMode(ddg, node);
+    // const modeEl = makeSummaryLabel(ddg, mode);
+    // ${modeEl}
+    this.command(`label=<${label || '()'}>`);
     this.subgraphAttrs();
   }
 

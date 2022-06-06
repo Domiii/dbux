@@ -1,10 +1,9 @@
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
@@ -46,6 +45,55 @@ export class RenderState {
   nodeSummaries;
 }
 
+/** ###########################################################################
+ * {@link _canApplySummaryMode}
+ * ##########################################################################*/
+
+const _canApplySummaryMode = {
+  [DDGSummaryMode.Show]: (node) => {
+    return (
+      !!node.dataNodeId && // ← implies that root is excluded
+      !node.watched // cannot change state of watched nodes
+    );
+  },
+  [DDGSummaryMode.Hide]: (node) => {
+    return (
+      !isRoot(node.timelineId) && // cannot hide the root
+      !node.watched // cannot change state of watched nodes
+    );
+  },
+  [DDGSummaryMode.Collapse]: (node) => {
+    return !isRoot(node.timelineId) &&
+      isControlGroupTimelineNode(node.type);
+  },
+  /**
+   * 
+   * @param {DDGTimelineNode} node 
+   */
+  [DDGSummaryMode.CollapseSummary]: (node) => {
+    // TODO: improve this
+    // eslint-disable-next-line no-use-before-define
+    return ddgQueries.isNodeSummarizable(node);
+  },
+  [DDGSummaryMode.SummarizeChildren]: (node) => {
+    return isControlGroupTimelineNode(node.type);
+  },
+  [DDGSummaryMode.ExpandSelf]: (node) => {
+    return isControlGroupTimelineNode(node.type);
+  },
+  [DDGSummaryMode.ExpandSubgraph]: (node) => {
+    return isControlGroupTimelineNode(node.type);
+  },
+  [DDGSummaryMode.HideChildren]: (node) => {
+    // only applies to root (all other nodes are "collapse"d instead)
+    return isRoot(node.timelineId);
+  }
+};
+
+/** ###########################################################################
+ * {@link ddgQueries}
+ * ##########################################################################*/
+
 /**
  * Queries shared to be used before and after serialization.
  * (Similar to what `dataProviderUtil` is to `RuntimeDataProvider`.)
@@ -58,6 +106,14 @@ const ddgQueries = {
    */
   getTimelineNode(ddg, timelineId) {
     return ddg.timelineNodes[timelineId];
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getNodeSummaryMode(ddg, node) {
+    return ddg.summaryModes[node.timelineId];
   },
 
   /**
@@ -111,7 +167,17 @@ const ddgQueries = {
    */
   isNodeSummarized(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    return isSummaryMode(summaryMode) && !!node.hasSummarizableWrites;
+    return isSummaryMode(summaryMode);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isNodeSummarizable(node) {
+    return !isRoot(node.timelineId) &&
+      isControlGroupTimelineNode(node.type) &&
+      node.hasSummarizableWrites;
   },
 
   /**
@@ -196,45 +262,8 @@ const ddgQueries = {
    */
   canApplySummaryMode(node, mode) {
     // const node = ddg.timelineNodes[timelineId];
-    return this._canApplySummaryMode[mode](node);
+    return _canApplySummaryMode[mode](node);
   },
-
-  _canApplySummaryMode: {
-    [DDGSummaryMode.Show]: (node) => {
-      return (
-        !!node.dataNodeId && // ← implies that root is excluded
-        !node.watched // cannot change state of watched nodes
-      );
-    },
-    [DDGSummaryMode.Hide]: (node) => {
-      return (
-        !isRoot(node.timelineId) && // cannot hide the root
-        !node.watched // cannot change state of watched nodes
-      );
-    },
-    [DDGSummaryMode.Collapse]: (node) => {
-      return !isRoot(node.timelineId) &&
-        isControlGroupTimelineNode(node.type);
-    },
-    [DDGSummaryMode.CollapseSummary]: (node) => {
-      // TODO: improve this
-      return !isRoot(node.timelineId) &&
-        isControlGroupTimelineNode(node.type);
-    },
-    [DDGSummaryMode.SummarizeChildren]: (node) => {
-      return isControlGroupTimelineNode(node.type);
-    },
-    [DDGSummaryMode.ExpandSelf]: (node) => {
-      return isControlGroupTimelineNode(node.type);
-    },
-    [DDGSummaryMode.ExpandSubgraph]: (node) => {
-      return isControlGroupTimelineNode(node.type);
-    },
-    [DDGSummaryMode.HideChildren]: (node) => {
-      // only applies to root (all other nodes are "collapse"d instead)
-      return isRoot(node.timelineId);
-    }
-  }
 };
 
 export default ddgQueries;

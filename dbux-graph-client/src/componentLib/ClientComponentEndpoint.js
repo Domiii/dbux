@@ -1,3 +1,4 @@
+import NestedError from '@dbux/common/src/NestedError';
 import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
 import DOMWrapper from '../dom/DOMWrapper';
 import ClientComponentList from './ClientComponentList';
@@ -150,8 +151,13 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    */
   _publicInternal = {
     updateClient(stateDelta, stateOps) {
-      this._updateState(stateDelta, stateOps);
-      this._performUpdate();
+      try {
+        this._updateState(stateDelta, stateOps);
+        this._performUpdate();
+      }
+      catch (err) {
+        throw new NestedError(`Update failed in "${this.debugTag}"`, err);
+      }
     },
     updateContext: this._updateContext,
 
