@@ -16,8 +16,8 @@ import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineCont
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-const Verbose = 1;
-// const Verbose = 0;
+// const Verbose = 1;
+const Verbose = 0;
 
 /** ###########################################################################
  * {@link DDGTimelineBuilder}

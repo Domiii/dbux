@@ -28,6 +28,10 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
             Rebuild 🔁
           </button>
+          <button title="Toggle value mode" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">
+            val
+          </button>
+
           
           ${BootstrapBtnGroupSeparatorHtml}
 

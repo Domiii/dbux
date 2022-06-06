@@ -11,12 +11,19 @@ const Verbose = 1;
 
 // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
 //    → (see: https://stackoverflow.com/a/56759634)
-const DotCfg = {
-  textColor: 'white',
-  edgeTextColor: 'gray',
-  lineColor: 'white',
-  groupBorderColor: 'gray',
-  groupLabelColor: 'gray'
+const Colors = {
+  /**
+   * Default text
+   */
+  text: 'white',
+
+  edgeText: 'gray',
+  line: 'white',
+  groupBorder: 'gray',
+  groupLabel: 'gray',
+  snapshotSeparator: 'gray',
+  snapshotProp: 'gray',
+  snapshotValue: 'white'
 };
 
 
@@ -60,7 +67,7 @@ export default class DotBuilder {
     return `label=${JSON.stringify(text)}`;
   }
 
-  nodeId(timelineId) {
+  nodeIdAttr(timelineId) {
     return `id=${timelineId}`;
   }
 
@@ -108,8 +115,8 @@ export default class DotBuilder {
    * attrs that apply to graph and all subgraphs.
    */
   subgraphAttrs() {
-    this.command(`color="${DotCfg.groupBorderColor}"`);
-    this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
+    this.command(`color="${Colors.groupBorder}"`);
+    this.command(`fontcolor="${Colors.groupLabel}"`);
   }
 
   buildRoot() {
@@ -119,9 +126,9 @@ export default class DotBuilder {
     this.indentLevel += 1;
 
     // global settings
-    this.command(`node[color="${DotCfg.lineColor}", fontcolor="${DotCfg.textColor}"]`);
+    this.command(`node[color="${Colors.line}", fontcolor="${Colors.text}"]`);
     // `node [fontsize=9]`,
-    this.command(`edge[arrowsize=0.5, arrowhead="open", color="${DotCfg.lineColor}", fontcolor="${DotCfg.edgeTextColor}"]`);
+    this.command(`edge[arrowsize=0.5, arrowhead="open", color="${Colors.line}", fontcolor="${Colors.edgeText}"]`);
     this.command(`labeljust=l`); // graph/cluster label left justified
     this.subgraphAttrs();
 
@@ -200,8 +207,8 @@ export default class DotBuilder {
   summaryGroup(summaryNode, nodes, label = null) {
     this.fragment(`subgraph cluster_summary_${summaryNode.timelineId} {`);
     this.indentLevel += 1;
-    this.command(`color="${DotCfg.groupBorderColor}"`);
-    this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
+    this.command(`color="${Colors.groupBorder}"`);
+    this.command(`fontcolor="${Colors.groupLabel}"`);
     label && this.label(label);
 
     for (const node of nodes) {
@@ -221,34 +228,18 @@ export default class DotBuilder {
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
     this.command(`color="transparent"`);
-    this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
+    this.command(`fontcolor="${Colors.groupLabel}"`);
     label && this.label(label);
-    this.command(`node [shape=record]`);
 
-    this.snapshotRecord(node);
+    this.snapshotTable(node);
 
     this.indentLevel -= 1;
     this.fragment(`}`);
   }
 
-  makeRecordEntry(key, nodeId) {
-    const { timelineId } = this.renderState.timelineNodes[nodeId];
-    return `<${timelineId}> ${key}`;
-  }
-
-  snapshotRecord(node) {
-    let { timelineId, label, children } = node;
-    // TODO: use table instead, so we can have key + val rows
-
-    // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
-    label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
-    const childrenItems = Object.entries(children)
-      .map(([key, nodeId]) => this.makeRecordEntry(key, nodeId));
-    this.command(`${timelineId} [${this.nodeId(timelineId)},label="${label}|${childrenItems.join('|')}"]`);
-  }
-
   valueNode(node) {
-    this.command(`${this.makeNodeId(node)} [${this.nodeId(node.timelineId)},${this.makeLabel(node.label)}]`);
+    // this.command(`${this.makeNodeId(node)} [${this.nodeId(node.timelineId)},${this.makeLabel(node.label)}]`);
+    this.dataNodeRecord(node);
   }
 
   buildEdge(edge) {
@@ -256,5 +247,79 @@ export default class DotBuilder {
     const to = this.makeNodeId(this.getNode(edge.to));
     const debugInfo = Verbose && ` [label=${edge.edgeId}]` || '';
     this.command(`${from} -> ${to}${debugInfo}`);
+  }
+
+  /** ###########################################################################
+   * records, tables + structs
+   *  #########################################################################*/
+
+
+  makeRecordEntry(timelineId, label) {
+    return `<${timelineId}> ${label}`;
+  }
+
+  dataNodeRecord(node) {
+    let { timelineId, label, value } = node;
+    // TODO: use table instead, so we can have key + val rows
+
+    // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
+    const valueItem = this.makeRecordEntry(timelineId, value);
+    this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},shape=record,label="${label}|${valueItem}}"]`);
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   */
+  snapshotRecord(node) {
+    let { timelineId, label, children } = node;
+    // TODO: use table instead, so we can have key + val rows
+
+    // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
+    label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
+    const childrenItems = Object.entries(children)
+      .map(([prop, nodeId]) => this.makeRecordEntry(nodeId, prop));
+    this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label="${label}|${childrenItems.join('|')}"]`);
+  }
+
+  /** ###########################################################################
+   * tables
+   *  #########################################################################*/
+
+  /**
+   * Produce snapshot table with prop and value for each entry.
+   * @param {DDGTimelineNode} node
+   * @see https://graphviz.org/doc/info/shapes.html#html-like-label-examples
+   */
+  snapshotTable(node) {
+    // this.command(`node [shape=record]`);
+    this.command(`node [shape=plaintext]`);
+
+    const { timelineId, label, children } = node;
+    const childrenCells = Object.entries(children)
+      .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
+      .join('');
+    this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+  <TR>
+    <TD ROWSPAN="2">${label}</TD>
+    ${childrenCells}
+  </TR>
+</TABLE>
+>]`);
+  }
+
+  /**
+   * Build a row of "column" cells containing tables.
+   * We do this, so every node's column has a singular addressable PORT.
+   */
+  makeTablePropValueCell(timelineId, prop) {
+    const { timelineNodes } = this.renderState;
+    const node = timelineNodes[timelineId];
+    return `<TD ROWSPAN="2" PORT="${timelineId}">
+      <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}"><FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.snapshotValue}">${node.value}</FONT></TD></TR>
+      </TABLE>
+    </TD>`;
   }
 }

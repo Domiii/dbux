@@ -149,7 +149,7 @@ export function isTraceReturn(traceType) {
 }
 
 const traceReturnOrBranchPopTypes = [...returnTraceTypes];
-traceReturnOrBranchPopTypes[TraceType.BranchPop];
+traceReturnOrBranchPopTypes[TraceType.BranchPop] = true;
 export function isTraceReturnOrBranchPop(traceType) {
   return traceReturnOrBranchPopTypes[traceType] || false;
 }

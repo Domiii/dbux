@@ -3,6 +3,7 @@
 // import { BezierConnector } from '@jsplumb/connector-bezier';
 
 import * as d3 from 'd3-graphviz';
+import { selectAll } from 'd3-selection';
 
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
@@ -185,15 +186,32 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * decorate graph HTML
    * ##########################################################################*/
 
-  decorateAfterRender = () => {
-    // rendering finished
-    const nodeEls = Array.from(this.el.querySelectorAll('.node'));
-    for (const nodeEl of nodeEls) {
-      const { id: timelineId } = nodeEl;
-      const node = this.renderState.timelineNodes[timelineId];
-      if (node) {
-        this.decorateNode(node, nodeEl);
+  // rendering finished
+  decorateAfterRender = async () => {
+    try {
+      // sort everything
+      //    (there seems to be a bug where render order is different from input (DOT) order, causing unwanted obstruction)
+      // const gs = selectAll('.graph > g');
+      Array.from(this.el.querySelectorAll('.graph > g'))
+        .sort((a, b) => {
+          console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
+          return a.id?.localeCompare(b.id || '');
+        })
+        .forEach(item => item.parentNode.appendChild(item));
+
+      // decorate all nodes
+      const nodeEls = Array.from(this.el.querySelectorAll('.node'));
+      for (const nodeEl of nodeEls) {
+        const { id: timelineId } = nodeEl;
+        const node = this.renderState.timelineNodes[timelineId];
+        if (node) {
+          this.decorateNode(node, nodeEl);
+        }
       }
+    }
+    catch (err) {
+      // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
+      console.error(`decorateAfterRender FAILED: `, err);
     }
   }
 

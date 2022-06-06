@@ -1101,7 +1101,8 @@ export default {
    * ##########################################################################*/
 
   /**
-   * Handle special circumstances.
+   * Return a string, describing only special circumstances of DataNodes.
+   * @param {RuntimeDataProvider} dp
    */
   getDataNodeValueMessage(dp, nodeId) {
     const valueRef = dp.util.getDataNodeValueRef(nodeId);
@@ -1295,6 +1296,24 @@ export default {
     }
 
     return valueString;
+  },
+
+  /** 
+   * Uses some heuristics to find the first var a given ref was assigned to.
+   * @param {RuntimeDataProvider} dp 
+   */
+  getRefVarName(dp, refId) {
+    // 1. all dataNodes who held the value of given refId
+    const dataNodes = dp.util.getDataNodesByRefId(refId);
+    if (dataNodes) {
+      // 2. find first DataNode that represents a variable
+      const varNode = dataNodes.find(n => n.varAccess?.declarationTid);
+      if (varNode) {
+        // 3. return name of variable
+        return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
+      }
+    }
+    return null;
   },
 
   /** ###########################################################################

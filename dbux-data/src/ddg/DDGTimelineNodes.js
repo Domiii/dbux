@@ -83,6 +83,7 @@ export class DataTimelineNode extends DDGTimelineNode {
    * @type {number}
    */
   dataNodeId;
+  value;
   connected = false;
 
   /** ########################################

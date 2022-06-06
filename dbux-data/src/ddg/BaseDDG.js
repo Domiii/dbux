@@ -310,8 +310,9 @@ export default class BaseDDG {
    * @param {DataTimelineNode} newNode 
    */
   addDataNode(newNode) {
-    // const { dp } = this;
+    const { dp } = this;
     this.addNode(newNode);
+    newNode.value = dp.util.getDataNodeValueStringShort(newNode.dataNodeId);
     if (this.timelineBuilder) {
       // hackfix: we only need these during initial build
       this._firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
@@ -558,7 +559,7 @@ export default class BaseDDG {
      * Create new
      */
     const snapshot = new RefSnapshotTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId);
-    snapshot.label = this.makeDataNodeLabel(ownDataNode);
+    snapshot.label = dp.util.getRefVarName(refId) || this.makeDataNodeLabel(ownDataNode);
     this.#addRefSnapshotNode(snapshot, snapshotsByRefId);
 
     /**
