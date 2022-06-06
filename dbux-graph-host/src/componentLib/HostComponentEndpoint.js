@@ -79,6 +79,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
     this._updateState(stateDelta, stateOps);
     this._stateDelta = stateDelta;
+    this._stateDeltaOps = stateOps;
 
     this._startUpdate();
   }
@@ -277,7 +278,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }).
       then(() => {
         // future-work: don't resend unchanged data
-        return this._remoteInternal.updateClient(this._stateDelta); // 2. client: update
+        return this._remoteInternal.updateClient(this._stateDelta, this._stateDeltaOps); // 2. client: update
       }).
       then(
         (resultFromClientInit) => {

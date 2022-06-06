@@ -228,8 +228,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   decorateNode(node, nodeEl) {
     const { type } = node;
-    const triggerEl = isControlGroupTimelineNode(type) ? 
-      nodeEl.querySelector('text') : 
+    const triggerEl = isControlGroupTimelineNode(type) ?
+      nodeEl.querySelector('text') :
       nodeEl;
 
     if (!triggerEl) {
@@ -240,9 +240,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // add overlays
     let debugOverlay;
     this.addNodeEventListener(node, triggerEl, 'mouseover', (evt) => {
+      // create overlay lazily
       if (!debugOverlay) {
-        // create overlay lazily
-        console.debug(`Hover node:`, evt.target);
+        // console.debug(`Hover node:`, evt.target);
         this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
         // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
       }

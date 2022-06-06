@@ -243,7 +243,7 @@ export default class DotBuilder {
   }
 
   valueNode(node) {
-    if (node.varAccess || node.value !== node.label) {
+    if (node.varAccess || node.value !== node.label) { // hackfix heuristic
       // record
       this.nodeRecord(node);
     }
@@ -262,16 +262,26 @@ export default class DotBuilder {
   }
 
   /** ###########################################################################
-   * records, tables + structs
+   * values, records, tables, structs
    *  #########################################################################*/
 
+  makeNodeValue(node) {
+    if (node.refId) {
+      return `📦`; // special icon
+    }
+    if (node.value !== undefined) {
+      return JSON.stringify(node.value);
+    }
+    return '?';
+  }
 
   // makeRecordEntry(timelineId, label) {
   //   return `<${timelineId}> ${label}`;
   // }
 
   nodeRecord(node) {
-    let { timelineId, label, value } = node;
+    let { timelineId, label } = node;
+    const value = this.makeNodeValue(node);
     // TODO: use table instead, so we can have key + val rows
 
     // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
@@ -341,7 +351,7 @@ export default class DotBuilder {
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}"><FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.value}">${node.value}</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.value}">${this.makeNodeValue(node)}</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }

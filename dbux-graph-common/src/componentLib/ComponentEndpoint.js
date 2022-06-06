@@ -213,7 +213,7 @@ class ComponentEndpoint {
       }
     },
     objectMerge: (state, delta) => {
-      // console.log('objectMerge', delta);
+      console.log('objectMerge', delta);
       for (const key in delta) {
         const orig = state[key];
         const upd = delta[key];
@@ -224,6 +224,7 @@ class ComponentEndpoint {
   };
 
   _updateState(stateDelta, stateOps) {
+    console.log(`_updateState`, stateDelta, stateOps, '|', this.state);
     if (stateDelta) {
       Object.assign(this.state, stateDelta);
     }

@@ -316,7 +316,8 @@ export default class BaseDDG {
     // store some relevant data values
     const dataNode = dp.util.getDataNode(newNode.dataNodeId);
     if (dataNode) {
-      newNode.value = dp.util.getDataNodeValueStringShort(newNode.dataNodeId);
+      newNode.value = dataNode.value; //dp.util.getDataNodeValueStringShort(newNode.dataNodeId);
+      newNode.refId = dataNode.refId;
       newNode.varAccess = dataNode.varAccess;
     }
 
