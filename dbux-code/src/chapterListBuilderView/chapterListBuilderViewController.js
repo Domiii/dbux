@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
@@ -6,6 +7,8 @@ import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 const { log, debug, warn, error: logError } = newLogger('ChapterListBuilderViewController');
 
 let controller;
+const ProjectName = 'javascript-algorithms';
+const ChapterListName = 'javascript-algorithms-all';
 
 export default class ChapterListBuilderViewController {
   constructor() {
@@ -18,6 +21,33 @@ export default class ChapterListBuilderViewController {
 
   get manager() {
     return getProjectManager();
+  }
+
+  get project() {
+    return this.manager.projects.getByName(ProjectName);
+  }
+
+  reloadExerciseList() {
+    if (fs.existsSync(this.project.getExercisePath(ChapterListName))) {
+      const exerciseList = this.project.reloadExercises(ChapterListName);
+      this.treeNodeProvider.controller.exerciseList = exerciseList;
+      return exerciseList;
+    }
+    return null;
+  }
+
+  reloadChapterList() {
+    if (fs.existsSync(this.project.getAssetPath('chapterLists', `${ChapterListName}.js`))) {
+      this.chapters = this.manager.reloadChapterList(ChapterListName);
+      return this.chapters;
+    }
+    return null;
+  }
+
+  init() {
+    this.reloadExerciseList();
+    this.reloadChapterList();
+    this.treeNodeProvider.refresh();
   }
 
   initOnActivate(context) {
@@ -36,4 +66,6 @@ export function initChapterListBuilderView(context) {
 
   // refresh right away
   controller.treeNodeProvider.refresh();
+
+  return controller;
 }
