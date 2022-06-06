@@ -98,6 +98,13 @@ export default class DDGTimelineBuilder {
    * create and/or add nodes (basics)
    * ##########################################################################*/
 
+  /**
+   * hackfix: determine iteration counter (→ O(n^2) too costly for big graphs)
+   */
+  #getCurrentGroupIterationCount() {
+    const group = this.peekStack();
+    return group.children.filter(c => this.ddg.timelineNodes[c] instanceof IterationNode).length;
+  }
 
   /**
    * Decision nodes are control nodes.
@@ -129,8 +136,8 @@ export default class DDGTimelineBuilder {
         dp.util.isDataNodeValueTruthy(dataNode.nodeId)   // else, loop decisions are always controlled by true/false values
       ) {
         // push next iteration
-        const iterationNode = new IterationNode(decisionNode.timelineId, trace.traceId);
-        this.#addAndPushGroup(iterationNode);
+        const iterationNode = new IterationNode(decisionNode.timelineId, this.#getCurrentGroupIterationCount());
+        this.#addAndPushGroup(iterationNode, trace.traceId);
       }
     }
     else {
@@ -139,8 +146,8 @@ export default class DDGTimelineBuilder {
       }
       if (isLoopTimelineNode(currentGroup.type)) {
         // push first iteration of loop
-        const iterationNode = new IterationNode(decisionNode.timelineId, trace.traceId);
-        this.#addAndPushGroup(iterationNode);
+        const iterationNode = new IterationNode(decisionNode.timelineId, this.#getCurrentGroupIterationCount());
+        this.#addAndPushGroup(iterationNode, trace.traceId);
       }
       else {
         // non-loop branch

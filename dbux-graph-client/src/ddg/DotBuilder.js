@@ -20,7 +20,8 @@ const Colors = {
   edgeText: 'gray',
   line: 'white',
   groupBorder: 'gray',
-  groupLabel: 'gray',
+
+  groupLabel: 'yellow',
   snapshotSeparator: 'gray',
   snapshotProp: 'gray',
 
@@ -175,14 +176,20 @@ export default class DotBuilder {
     }
   }
 
+  _groupAttrs(node) {
+    const { timelineId, label } = node;
+    this.command(this.nodeIdAttr(timelineId));
+    // this.label(node.label || '');
+    this.command(`label=<<u>${label || '()'}</u>>`);
+    this.subgraphAttrs();
+  }
+
   controlGroup(node) {
-    const { timelineId } = node;
+    const { timelineId, label } = node;
 
     this.fragment(`subgraph cluster_group_${timelineId} {`);
-    this.command(this.nodeIdAttr(timelineId));
-    this.label(node.label || '');
     this.indentLevel += 1;
-    this.subgraphAttrs();
+    this._groupAttrs(node);
 
     this.nodesByIds(node.children);
 
@@ -198,7 +205,7 @@ export default class DotBuilder {
     const roots = ddgQueries.getSummaryRoots(renderState, summary);
     if (roots?.length) {
       // render summary nodes
-      this.summaryGroup(summaryNode, roots, summaryNode.label);
+      this.summaryGroup(summaryNode, roots);
     }
     else {
       // render node as-is
@@ -206,14 +213,11 @@ export default class DotBuilder {
     }
   }
 
-  summaryGroup(summaryNode, nodes, label = null) {
+  summaryGroup(summaryNode, nodes) {
     const { timelineId } = summaryNode;
     this.fragment(`subgraph cluster_summary_${timelineId} {`);
     this.indentLevel += 1;
-    this.command(`color="${Colors.groupBorder}"`);
-    this.command(`fontcolor="${Colors.groupLabel}"`);
-    this.command(this.nodeIdAttr(timelineId));
-    label && this.label(label);
+    this._groupAttrs(summaryNode);
 
     for (const node of nodes) {
       this.node(node, true);

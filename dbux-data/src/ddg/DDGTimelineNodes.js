@@ -251,10 +251,16 @@ export class IterationNode extends GroupTimelineNode {
    * {@link DecisionTimelineNode#timelineId} of this iteration's decision node.
    */
   decision;
+  /**
+   * The how many'th iteration of parent loop.
+   */
+  i;
 
-  constructor(decisionTimelineId) {
+  constructor(decisionTimelineId, i) {
     super(DDGTimelineNodeType.Iteration);
     this.decision = decisionTimelineId;
+    this.i = i;
+    this.label = i + '';
   }
 }
 

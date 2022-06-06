@@ -224,7 +224,7 @@ class ComponentEndpoint {
   };
 
   _updateState(stateDelta, stateOps) {
-    console.log(`_updateState`, stateDelta, stateOps, '|', this.state);
+    // console.log(`_updateState`, stateDelta, stateOps, '|', this.state);
     if (stateDelta) {
       Object.assign(this.state, stateDelta);
     }
