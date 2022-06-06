@@ -244,7 +244,7 @@ export default class BaseDDG {
 
     // hackfix: set children of watched snapshots to watched
     if (node.children) {
-      for (const childId of node.children) {
+      for (const childId of Object.values(node.children)) {
         const childNode = this.timelineNodes[childId];
         this.#setWatchedDFS(childNode);
       }
