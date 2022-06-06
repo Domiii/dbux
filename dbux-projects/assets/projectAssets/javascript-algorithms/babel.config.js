@@ -26,6 +26,11 @@ const ignore = [
   makeIgnore(ignoreOptions)
 ];
 
+const dbuxBabelPluginName = "@dbux/babel-plugin";
+const dbuxBabelPlugin = require(dbuxBabelPluginName);
+
+console.log(`Loading ${dbuxBabelPluginName} from: "${require.resolve(dbuxBabelPluginName)}"`);
+
 
 module.exports = {
   // sourceMaps: false,
@@ -46,7 +51,7 @@ module.exports = {
     ]
   ],
   plugins: [
-    ["@dbux/babel-plugin", {
+    [dbuxBabelPlugin, {
       verbose: 1,
       // runtime: '{"tracesDisabled": 1}'
     }]],

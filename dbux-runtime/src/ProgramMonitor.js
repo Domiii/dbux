@@ -319,7 +319,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
-  traceWriteME = (objValue, propValue, value, tid, objectTid, inputs) => {
+  traceWriteME = (objValue, objectTid, propValue, propTid, value, tid, inputTids) => {
     value = wrapValue(value);
 
     // // [runtime-error] potential run-time error
@@ -328,12 +328,12 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objectTid, inputs);
+    return this._runtimeMonitor.traceWriteME(this.getProgramId(), objectTid, propValue, propTid, value, tid, inputTids);
   }
 
-  traceDeleteME = (objValue, propValue, tid, objectTid) => {
+  traceDeleteME = (value, propValue, tid, objectTid) => {
     // [runtime-error] potential run-time error
-    const result = delete objValue[propValue];
+    const result = delete value[propValue];
     if (this.areTracesDisabled) {
       return result;
     }
@@ -501,6 +501,17 @@ export default class ProgramMonitor {
 
     return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
   }
+  /** ###########################################################################
+   * patterns
+   *  #########################################################################*/
+
+  tracePattern = (rval, tid, rvalTid, treeNodes) => {
+    rval = wrapValue(rval);
+    if (this.areTracesDisabled) {
+      return rval;
+    }
+    return this._runtimeMonitor.tracePattern(this.getProgramId(), rval, tid, rvalTid, treeNodes);
+  };
 
   // /** ###########################################################################
   //  * loops
@@ -515,12 +526,17 @@ export default class ProgramMonitor {
   //   return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
   // }
 
+  pushLoop() {
+  }
+
+
   // ###########################################################################
-  // old traces
+  // old stuff
   // ###########################################################################
 
   /**
    * `t` is short for `trace`
+   * @deprecated
    */
   t(inProgramStaticTraceId) {
     if (this.areTracesDisabled) {
@@ -531,30 +547,25 @@ export default class ProgramMonitor {
 
   /**
    * 
+   * @deprecated
    */
-  traceExpr(inProgramStaticTraceId, value) {
+  traceExpr(tid, value) {
     value = wrapValue(value);
     // this._logger.debug('trace expr', { inProgramStaticTraceId, value });
     if (this.areTracesDisabled) {
       return value;
     }
-    return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), tid, value);
   }
 
-  traceArg(inProgramStaticTraceId, value) {
-    value = wrapValue(value);
-    if (this.areTracesDisabled) {
-      return value;
-    }
-    return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
-  }
+  // traceArg(inProgramStaticTraceId, value) {
+  //   value = wrapValue(value);
+  //   if (this.areTracesDisabled) {
+  //     return value;
+  //   }
+  //   return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
+  // }
 
-  // ###########################################################################
-  // loops
-  // ###########################################################################
-
-  pushLoop() {
-  }
 
   // ###########################################################################
   // internal stuff

@@ -1,8 +1,9 @@
 import { LValHolderNode } from '../_types';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
+import { decorateStaticIdData } from '../BindingIdentifier';
 
-export default class VariableDeclaratorLVal extends BasePlugin {
+export default class DefaultDeclaratorLVal extends BasePlugin {
   /**
    * @type {LValHolderNode}
    */
@@ -17,7 +18,7 @@ export default class VariableDeclaratorLVal extends BasePlugin {
     const { path } = this.node;
 
     // if `var`, hoist to function scope
-    // if no `initNode`, there is no write trace, so we need an independent `Declaration` trace anyway
+    // if no `initNode`, there is no write trace, so `Declaration` is independent.
     return path.parentPath.node.kind === 'var' || !this.rvalNode;
   }
 
@@ -38,7 +39,7 @@ export default class VariableDeclaratorLVal extends BasePlugin {
       return;
     }
 
-    const [, initPath] = this.node.getChildPaths();
+    const [idPath, initPath] = this.node.getChildPaths();
 
     const traceData = {
       path,
@@ -57,6 +58,8 @@ export default class VariableDeclaratorLVal extends BasePlugin {
       // hackfix for `ForStatement.init`: prevent adding `tid` variable to own body
       traceData.scope = path.parentPath.scope;
     }
+
+    decorateStaticIdData(traceData, idPath);
 
     // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rvalNode.path]);

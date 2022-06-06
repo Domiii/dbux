@@ -1,9 +1,12 @@
+import difference from 'lodash/difference';
+import omit from 'lodash/omit';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
 import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
@@ -22,15 +25,18 @@ import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
+import { _slicedToArray } from './util/builtinUtil';
+import { isFunction } from 'lodash';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
 // const Verbose = 2;
 // const Verbose = 1;
 const Verbose = 0;
+const VerbosePatterns = 1;
 
-const debug = (...args) => Verbose && _debug(...args);
+const verboseDebug = (...args) => Verbose && debug(...args);
 
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {
@@ -42,6 +48,7 @@ const debug = (...args) => Verbose && _debug(...args);
 //     subClass.__proto__ = superClass;
 //   }
 // }
+
 
 /**
  * 
@@ -121,7 +128,7 @@ export default class RuntimeMonitor {
     staticContextCollection.addEntries(programId, staticContexts);
 
 
-    Verbose && debug(`addProgram ${programId}: ${programData.fileName}`);
+    Verbose && verboseDebug(`addProgram ${programId}: ${programData.fileName}`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
@@ -207,7 +214,7 @@ export default class RuntimeMonitor {
     this._runtime.push(contextId, isInterruptable || false);
 
     if (Verbose) {
-      _debug(
+      debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
         `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
@@ -323,7 +330,7 @@ export default class RuntimeMonitor {
     else {
       // just pop from stack
       if (Verbose) {
-        debug(
+        verboseDebug(
           `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId})`
         );
       }
@@ -373,7 +380,7 @@ export default class RuntimeMonitor {
     this._runtime.registerAwait(awaitContextId, realContextId, awaitArgument);  // mark as "waiting"
 
     if (Verbose) {
-      debug(
+      verboseDebug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
         `[preAwait]${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(awaitContextId)} (pid=${programId}, realCid=${realContextId}, pcid=${parentContextId})`
@@ -416,7 +423,7 @@ export default class RuntimeMonitor {
       this._runtime.resumeWaitingStackAndPop(awaitContextId);
 
       if (Verbose) {
-        debug(
+        verboseDebug(
           // ${JSON.stringify(staticContext)}
           `[postAwait]${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Await ${awaitContextId}`
         );
@@ -490,7 +497,7 @@ export default class RuntimeMonitor {
 
     if (Verbose) {
       // const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
-      _debug(
+      debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
         `> ${' '.repeat(this.runtime._executingStack._stack?.length || 0)} (Resume) ${executionContextCollection.makeContextInfo(resumeContextId)} (pid=${programId}, realCid=${realContextId}, pcid=${parentContextId})`
@@ -517,7 +524,7 @@ export default class RuntimeMonitor {
     }
 
     if (Verbose) {
-      debug(
+      verboseDebug(
         // ${JSON.stringify(staticContext)}
         `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)}${executionContextCollection.makeContextInfo(resumeContextId)}`
       );
@@ -769,17 +776,23 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    // [future-work] `declarationTid` should always be defined. If not, assume global?
+    const inputsNodeIds = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
+    return this.#addWriteVarDataNodes(value, tid, declarationTid, inputsNodeIds);
+  }
+
+  #addWriteVarDataNodes(value, tid, declarationTid, inputsNodeIds) {
+    // [future-work] `declarationTid` should always have a declaration.
+    //    If not, we did not record its declaration. E.g. for global built-ins.
     if (!declarationTid) {
       declarationTid = tid;
     }
     // console.warn('twv', tid, declarationTid);
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, inputsNodeIds);
     return value;
   }
 
-  traceWriteME(programId, value, propValue, tid, objectTid, inputs) {
+  traceWriteME(programId, objectTid, propValue, propTid, value, tid, inputTids) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -788,15 +801,27 @@ export default class RuntimeMonitor {
       return value;
     }
 
+    const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
+    const inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputTids);
+    return this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
+  }
+
+  #addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs) {
     // this.registerTrace(value, tid);
+    if (isFunction(propValue)) {
+      // sanity check
+      debugger;
+    }
     const varAccess = {
-      objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
-      prop: propValue
+      objectNodeId,
+      prop: propValue,
+      propNodeId: traceCollection.getOwnDataNodeIdByTraceId(propTid)
     };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, inputs);
     return value;
   }
 
+  // TODO: propTid
   traceDeleteME(programId, result, propValue, tid, objectTid) {
     if (!this._ensureExecuting()) {
       return result;
@@ -827,7 +852,7 @@ export default class RuntimeMonitor {
     // DataNodeType.Create
     const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess);
 
-    // [runtime-error] potential runtime error (but should actually never happen)
+    // [runtime-error] runtime value access (but should actually never happen)
     const proto = value.prototype;
 
     // add prototype node
@@ -956,6 +981,10 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
+  /** ###########################################################################
+   * try/catch/finally
+   * ##########################################################################*/
+
   traceCatch(programId, inProgramStaticTraceId) {
     if (!this.areTracesDisabled) {
       this.newTraceId(programId, inProgramStaticTraceId);
@@ -988,7 +1017,7 @@ export default class RuntimeMonitor {
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
       // we are resuming an async context without knowing how we got here.
       // Caused by error thrown asynchronously down the async stack while async function was waiting.
-      Verbose > 1 && debug(`fixContextAsync(${[programId, realContextId, awaitContextId]})`);
+      Verbose > 1 && verboseDebug(`fixContextAsync(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, realContextId, awaitContextId);
     }
   }
@@ -997,7 +1026,7 @@ export default class RuntimeMonitor {
     if (inProgramStaticResumeContextId && !this.runtime.isStaticContextOnStack(programId, inProgramStaticResumeContextId)) {
       // we are back in generator, but yield context is not on stack yet.
       // Caused by error back-injected into generator when it was not on stack, via `yield * erroneousCall()` or `Generator.throw()`.
-      Verbose > 1 && debug(`fixContextGen(${[programId, realContextId, inProgramStaticResumeContextId]})`);
+      Verbose > 1 && verboseDebug(`fixContextGen(${[programId, realContextId, inProgramStaticResumeContextId]})`);
       this.postYield(programId, realContextId, undefined, undefined, inProgramStaticResumeContextId);
     }
   }
@@ -1067,10 +1096,11 @@ export default class RuntimeMonitor {
 
     const spreadArgs = args?.map((a, i) => {
       // [runtime-error] potential runtime error
-      // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
+      // NOTE: trying to spread a non-iterable results in Error; e.g.:
       //      "Found non-callable @@iterator"
       //      "XX is not iterable"
-      return argConfigs?.[i]?.isSpread && Array.from(a);
+      return argConfigs?.[i]?.isSpread &&
+        Array.from(a); // alternative: _slicedToArray(a)
     }) || EmptyArray;
 
     const bceTrace = traceCollection.getById(callId);
@@ -1162,15 +1192,15 @@ export default class RuntimeMonitor {
     let idx = 0;
     for (let i = 0; i < argTids.length; i++) {
       const argTid = argTids[i];
-      const len = spreadLengths[i];
+      const spreadLen = spreadLengths[i];
 
       if (!argTid) {
         // empty (omitted) array element (e.g.: [1, , 2])
         continue;
       }
-      else if (len >= 0) {
+      else if (spreadLen >= 0) {
         // [spread]
-        for (let j = 0; j < len; j++) {
+        for (let j = 0; j < spreadLen; j++) {
           const readAccess = {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(argTid),
             prop: j
@@ -1247,6 +1277,153 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  /** ###########################################################################
+   * Patterns
+   * ##########################################################################*/
+
+  /**
+   * NOTE: Pattern trace is attached to its rval.
+   * 
+   * TODO: default values (see DefaultInitializerIndicator)
+   * 
+   * @param {*} programId 
+   * @param {*} rval 
+   * @param {*} rvalTid 
+   * @param {*} treeNodes 
+   */
+  tracePattern(programId, rval, tid, rvalTid, treeNodes) {
+    if (!this._ensureExecuting()) {
+      return rval;
+    }
+
+    // const rvalStaticTrace = traceCollection.getStaticTraceByTraceId(rvalTid);
+    // const { tree } = rvalStaticTrace.data;
+
+    const root = treeNodes[0];
+    const rvalDataNodeId = traceCollection.getOwnDataNodeIdByTraceId(rvalTid);
+    // const varAccess = null;
+    // const inputs = [rvalDataNodeId];
+    // const rvalDataNode = dataNodeCollection.createOwnDataNode(rval, rvalTid, DataNodeType.Read, varAccess, inputs);
+    return this._tracePatternHandlers[root.type](treeNodes, root, rval, rvalTid, rvalDataNodeId);
+  }
+
+  _getPatternProp(obj, prop) {
+    // [runtime-error] runtime value access
+    return valueCollection._readProperty(obj, prop);
+  }
+
+  _tracePatternRecurse = (nodes, node, childValues, value, rvalTid, readDataNodeId, result) => {
+    const { children } = node;
+    for (const iChild of children) {
+      const childNode = nodes[iChild];
+      VerbosePatterns && debug(`[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ${JSON.stringify(omit(childNode, ['type']))}\n  value="${value?.toString()}"`);
+      const childValue = this._getPatternProp(childValues, childNode.prop);
+      const varAccess = {
+        objectNodeId: readDataNodeId,
+        prop: childNode.prop
+      };
+      // const inputs = [parentReadDataNodeId];
+      const childReadDataNodeId = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess).nodeId;
+      try {
+        this._tracePatternHandlers[childNode.type](
+          nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
+        );
+      }
+      catch (err) {
+        throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
+      }
+    }
+    VerbosePatterns && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}: "${JSON.stringify(result)}"`);
+    return result;
+  }
+
+  _tracePatternHandlers = {
+    [PatternAstNodeType.Array]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
+      const result = []; // NOTE: we need to reconstruct rval, so rval props are not accessed twice
+      // NOTE: array destructuring can also be used on iterables
+      const childValues = _slicedToArray(value, node.children.length);
+      this._tracePatternRecurse(nodes, node, childValues, value, rvalTid, readDataNodeId, result);
+      if (parentResult) {
+        parentResult[node.prop] = result;
+      }
+      return result;
+    },
+    [PatternAstNodeType.Object]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
+      const result = {}; // NOTE: we need to reconstruct rval, so rval props are not accessed twice
+      // NOTE: object destructuring just reads props as-is
+      const childValues = value;
+      this._tracePatternRecurse(nodes, node, childValues, value, rvalTid, readDataNodeId, result);
+      if (parentResult) {
+        parentResult[node.prop] = result;
+      }
+      return result;
+    },
+    [PatternAstNodeType.Var]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
+      const { tid, declarationTid } = node;
+      const inputs = [readDataNodeId];
+      parentResult[node.prop] = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
+    },
+    [PatternAstNodeType.ME]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
+      const { tid, objectTid, propValue, propTid } = node;
+      const inputs = [readDataNodeId];
+      const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
+      parentResult[node.prop] = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
+    },
+
+
+    // [rest]
+    [PatternAstNodeType.RestArray]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
+      const { tid, innerType, startIndex } = node;
+      const result = [];
+      this._tracePatternHandlers[innerType](nodes, node, result, rvalTid, readDataNodeId);
+      const resultObjectNodeId = traceCollection.getOwnDataNodeIdByTraceId(tid);
+
+      for (let iRead = startIndex; iRead < value.length; iRead++) {
+        const iWrite = iRead - startIndex;
+        let val = result[iWrite] = this._getPatternProp(value, iRead);
+        parentResult[iRead] = val;
+
+        const readAccess = {
+          objectNodeId: readDataNodeId,
+          prop: iRead
+        };
+        const readNode = dataNodeCollection.createDataNode(val, tid, DataNodeType.Read, readAccess);
+        const writeAccess = {
+          objectNodeId: resultObjectNodeId,
+          prop: iWrite
+        };
+        dataNodeCollection.createWriteNodeFromReadNode(tid, readNode, writeAccess);
+      }
+    },
+
+    [PatternAstNodeType.RestObject]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
+      const { tid, innerType, excluded } = node;
+      const result = {};
+      this._tracePatternHandlers[innerType](nodes, node, result, rvalTid, readDataNodeId);
+      const resultObjectNodeId = traceCollection.getOwnDataNodeIdByTraceId(tid);
+
+      /**
+       * NOTE: this is based on Babel's `_objectWithoutPropertiesLoose`
+       */
+      const keys = difference(valueCollection.readKeys(value), excluded);
+      for (const prop of keys) {
+        let val = result[prop] = this._getPatternProp(value, prop);
+        parentResult[prop] = val;
+
+        const readAccess = {
+          objectNodeId: readDataNodeId,
+          prop
+        };
+        const readNode = dataNodeCollection.createDataNode(val, tid, DataNodeType.Read, readAccess);
+        const writeAccess = {
+          objectNodeId: resultObjectNodeId,
+          prop
+        };
+        dataNodeCollection.createWriteNodeFromReadNode(tid, readNode, writeAccess);
+      }
+    }
+  };
+
   // // ###########################################################################
   // // Loops (unfinished)
   // // ###########################################################################
@@ -1320,10 +1497,10 @@ export default class RuntimeMonitor {
   // traces (OLD)
   // ###########################################################################
 
-  traceArg(programId, inProgramStaticTraceId, value) {
-    // currently behaves exactly the same as traceExpression
-    return this.traceExpression(programId, inProgramStaticTraceId, value);
-  }
+  // traceArg(programId, inProgramStaticTraceId, value) {
+  //   // currently behaves exactly the same as traceExpression
+  //   return this.traceExpression(programId, inProgramStaticTraceId, value);
+  // }
 
 
   // /**

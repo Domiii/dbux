@@ -29,6 +29,9 @@ const { log, debug, warn, error: logError } = newLogger('visitors');
 // new visit
 // ###########################################################################
 
+/**
+ * See {@link ParsePhase} for phase ordering.
+ */
 function visitEnter(ParserNodeClazz, path, state) {
   // return visit(InstrumentationDirection.Enter, state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
   if (!state.onTrace(path)) {
@@ -36,6 +39,11 @@ function visitEnter(ParserNodeClazz, path, state) {
   }
   visit(ParseDirection.Enter, ParserNodeClazz, path, state);
 }
+
+/**
+ * NOTE: triggers `Exit1` (not `Exit`)
+ * See {@link ParsePhase} for phase ordering.
+ */
 function visitExit(ParserNodeClazz, path, state) {
   // return visit(InstrumentationDirection.Exit, state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
   if (!state.onTraceExit(path)) {
@@ -45,6 +53,8 @@ function visitExit(ParserNodeClazz, path, state) {
 }
 
 /**
+ * See {@link ParsePhase} for phase ordering.
+ * 
  * @param {*} path 
  * @param {DbuxState} state
  */

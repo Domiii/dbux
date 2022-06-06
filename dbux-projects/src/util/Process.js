@@ -277,14 +277,19 @@ export default class Process {
         if (isDone) { return; }
         this.code = code;
 
+        let more;
+        if (this.err) {
+          more = ` - ${this.err}`;
+        }
+
         if (this._dieSilent) {
           resolve();
         }
         else if (this._killed) {
-          reject(new Error(`Process "${processExecLabel}" was killed`));
+          reject(new Error(`Process "${processExecLabel}" was killed${more}`));
         }
         else if (failOnStatusCode && code) {
-          reject(new Error(`Process "${processExecLabel}" failed with status code: ${code}`));
+          reject(new Error(`Process "${processExecLabel}" failed with status code: ${code}${more}`));
         }
         else {
           resolve(code);

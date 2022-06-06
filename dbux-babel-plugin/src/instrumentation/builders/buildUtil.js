@@ -44,6 +44,9 @@ export function addMoreTraceCallArgs(args, traceCfg) {
     if (isFunction(moreTraceCallArgs)) {
       moreTraceCallArgs = moreTraceCallArgs();
     }
+    if (!Array.isArray(moreTraceCallArgs)) {
+      throw new Error(`moreTraceCallArgs must return array (but did not) at "${traceCfg.node?.debugTag}"`);
+    }
     args.push(...moreTraceCallArgs);
   }
 }

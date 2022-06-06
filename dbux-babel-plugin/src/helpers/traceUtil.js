@@ -7,6 +7,8 @@ const { log, debug, warn, error: logError } = newLogger('traceUtil');
 
 export const ZeroNode = t.numericLiteral(0);
 
+export const TrueNode = t.booleanLiteral(true);
+
 export function getDeclarationTid(traceCfg) {
   const {
     isDeclaration

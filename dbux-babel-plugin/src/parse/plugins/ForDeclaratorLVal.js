@@ -1,7 +1,7 @@
 import { LValHolderNode } from '../_types';
 import BasePlugin from './BasePlugin';
 
-export default class ForInLValVar extends BasePlugin {
+export default class ForDeclaratorLVal extends BasePlugin {
   /**
    * @type {LValHolderNode}
    */
@@ -24,6 +24,7 @@ export default class ForInLValVar extends BasePlugin {
   exit() {
     // NOTE: there is no tracing of the lval itself.
     //    Instead, we handle the iterator variable similar to parameters.
+    // TODO: see `ForOfStatement` for `params` solution
 
     // const {
     //   node,

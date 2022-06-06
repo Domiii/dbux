@@ -1,8 +1,8 @@
 import isFunction from 'lodash/isFunction';
 import * as t from '@babel/types';
 import NestedError from '@dbux/common/src/NestedError';
-import { pathToStringAnnotated } from 'src/helpers/pathHelpers';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { pathToStringAnnotated } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
 import { addMoreTraceCallArgs, getTraceCall, makeInputs } from './buildUtil';
 import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
@@ -43,6 +43,8 @@ export const buildTraceExpression = buildTraceCall(
     const trace = getTraceCall(state, traceCfg);
     const expr = getInstrumentTargetAstNode(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
+
+    // console.debug(`traceExpression ${traceCfg.inProgramStaticTraceId} ${expr.type}`);
 
     return {
       trace,
@@ -118,7 +120,7 @@ export const buildTraceNoValue_OLD = bindTemplate(
 
 const keepStatementCfg = {
   meta: {
-    keepStatement: true
+    isStatement: true
   }
 };
 

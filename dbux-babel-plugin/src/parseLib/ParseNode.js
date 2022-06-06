@@ -180,6 +180,9 @@ export default class ParseNode {
   // stack
   // ###########################################################################
 
+  /**
+   * NOTE: we use this because the {@link ParseStack} does not maintain this structure forever.
+   */
   getParseNodeStack() {
     const arr = [];
     let { path } = this;
@@ -192,8 +195,9 @@ export default class ParseNode {
 
   getParseNodeStackToString() {
     const stack = this.getParseNodeStack();
-    return ` - current stack (${stack.length}):\n  ` +
-      stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join('\n  ');
+    const indent = '    ';
+    return ` - current stack (${stack.length}):\n${indent}` +
+      stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join(`\n${indent}`);
   }
 
 
@@ -208,6 +212,8 @@ export default class ParseNode {
     const Clazz = isString(nameOrParseNodeClazz) ?
       ParseRegistry.getNodeClassByName(nameOrParseNodeClazz) :
       nameOrParseNodeClazz;
+
+    // TODO: why not use ParseStack._peekNode instead?
 
     let current = this;
     let { path } = this;

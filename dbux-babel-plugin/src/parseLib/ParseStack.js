@@ -22,9 +22,10 @@ function debugTag(obj) {
  */
 export default class ParseStack {
   /**
+   * Nodes by type on the stack.
    * @type {Map.<string, ParseNode>}
    */
-  _stacksByType = new Map();
+  _stackNodesByType = new Map();
   /**
    * @type {Array.<ParseNode>}
    */
@@ -38,11 +39,23 @@ export default class ParseStack {
   recordedDepth = 0;
   lastId = 0;
 
+  /**
+   * A dictionary of "special nodes" that themselves can subscribe themselves here
+   * to be accessible by others.
+   * Important: depending nodes should only use this up until `Exit1`, after
+   * which the stack loses its structure.
+   */
+  specialNodes = {};
+
   constructor(state) {
     this.state = state;
     this.logger = newLogger(`Stack`);
     Verbose && this.logger.debug(`${state.fileName}`);
   }
+
+  /** ###########################################################################
+   * logging
+   * ##########################################################################*/
 
   get Verbose() {
     return Verbose;
@@ -56,8 +69,32 @@ export default class ParseStack {
     this.logger.warn(`${' '.repeat(this.recordedDepth)}${arg0}`, ...args);
   }
 
+  /** ###########################################################################
+   * stack getters + queries
+   * ##########################################################################*/
+
+  getNodeOfPath(path) {
+    return getNodeOfPath(path);
+  }
+  
+  isNodeOnStack(name) {
+    this.#assureStackStructure();
+    return !!this._stackNodesByType.get(name)?.length;
+  }
+
+  getSpecialNode(name) {
+    this.#assureStackStructure();
+    return this.specialNodes[name];
+  }
+
+  #assureStackStructure() {
+    if (this.phase > ParsePhase.Exit1) {
+      throw new Error(`Cannot query stack structure after "Exit1".`);
+    }
+  }
+
   // ###########################################################################
-  // getters
+  // private stuff
   // ###########################################################################
 
   /**
@@ -67,8 +104,8 @@ export default class ParseStack {
    */
   _peekNode(nameOrParseNodeClazz) {
     const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
-    const { _stacksByType } = this;
-    const nodesOfType = _stacksByType.get(name);
+    const { _stackNodesByType } = this;
+    const nodesOfType = _stackNodesByType.get(name);
     if (nodesOfType?.length) {
       return nodesOfType[nodesOfType.length - 1];
     }
@@ -85,10 +122,6 @@ export default class ParseStack {
     return node;
   }
 
-  getNodeOfPath(path) {
-    return getNodeOfPath(path);
-  }
-
   // ###########################################################################
   // push + pop
   // ###########################################################################
@@ -103,11 +136,11 @@ export default class ParseStack {
       throw new Error(`\`static name\` is missing on ParseNode class: ${debugTag(ParseNodeClazz)}`);
     }
 
-    const { _stack, _stacksByType } = this;
+    const { _stack, _stackNodesByType } = this;
     _stack.push(newNode);
-    let nodesOfType = _stacksByType.get(name);
+    let nodesOfType = _stackNodesByType.get(name);
     if (!nodesOfType) {
-      _stacksByType.set(name, nodesOfType = []);
+      _stackNodesByType.set(name, nodesOfType = []);
     }
     (Verbose >= 3) && this.debug(`push ${name}`);
     nodesOfType.push(newNode);
@@ -115,8 +148,8 @@ export default class ParseStack {
 
   pop(path, ParseNodeClazz) {
     const { name } = ParseNodeClazz;
-    const { _stack, _stacksByType } = this;
-    const nodesOfType = _stacksByType.get(name);
+    const { _stack, _stackNodesByType } = this;
+    const nodesOfType = _stackNodesByType.get(name);
     (Verbose >= 3) && this.debug(`pop ${name}`);
     const node = nodesOfType.pop();
     if (node.path !== path) {
@@ -160,6 +193,9 @@ export default class ParseStack {
   // enter
   // ###########################################################################
 
+  /**
+   * See {@link ParsePhase} for phase ordering.
+   */
   enter(path, ParseNodeClazz) {
     // if (path.shouldSkip) {
     //   console.error(`!!path.shouldSkip: "${pathToStringAnnotated(path, true)}"`);
@@ -203,6 +239,9 @@ export default class ParseStack {
   // exit
   // ###########################################################################
 
+  /**
+   * See {@link ParsePhase} for phase ordering.
+   */
   exit1(path, ParseNodeClazz) {
     const parseNode = this._peekNode(ParseNodeClazz);
     if (!parseNode) {
@@ -241,6 +280,7 @@ export default class ParseStack {
   /**
    * Iterates through `this.genTasks` to gen (transpile) the code.
    * NOTE: the order of `genTasks` is that of the `exit` call, meaning inner-most first.
+   * See {@link ParsePhase} for phase ordering.
    */
   genAll() {
     this.isGen = true;

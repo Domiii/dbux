@@ -4,11 +4,13 @@ import { NodePath } from '@babel/traverse';
 /**
  * @param {NodePath} scopePath 
  * 
+ * WARNING: might convert the path (`ensureBlock`). Thus must run during instrumentation, and not before.
+ * 
  * Based on `Scope.push`.
  * @see `@babel/traverse/lib/scope/index.js`
  * @return {NodePath}
  */
-export function getScopeBlockPath(path) {
+export function getScopeBlockPathInstrument(path) {
   const { scope } = path;
   let scopePath = scope.path;
 

@@ -4,6 +4,18 @@ import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 import BaseNode from './BaseNode';
 
+export function decorateStaticIdData(moreTraceData, idPath) {
+  moreTraceData ||= {};
+  moreTraceData.staticTraceData ||= {};
+  moreTraceData.staticTraceData.dataNode ||= {};
+  moreTraceData.staticTraceData.data ||= {};
+  moreTraceData.staticTraceData.dataNode.label = moreTraceData.staticTraceData.data.name = idPath.toString();
+
+  // console.debug(`[DECL] ${JSON.stringify(moreTraceData.staticTraceData)}`);
+
+  return moreTraceData;
+}
+
 /**
  * 
  */
@@ -114,10 +126,7 @@ export default class BindingIdentifier extends BaseId {
     //      -> will fail in some cases, such as `FunctionExpression` (which needs to add variable to own body).
     const bindingScopeNode = this.getBindingScopeNode(/* moreTraceData?.scope */);
 
-    moreTraceData ||= {};
-    moreTraceData.dataNode ||= {};
-    moreTraceData.data ||= {};
-    moreTraceData.dataNode.label = moreTraceData.data.name = this.id;
+    moreTraceData = decorateStaticIdData(moreTraceData, this.path);
 
     if (!moreTraceData?.scope) {
       moreTraceData.scope = bindingScopeNode.path.scope;

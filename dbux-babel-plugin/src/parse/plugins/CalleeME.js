@@ -40,9 +40,10 @@ export default class CalleeME extends BasePlugin {
     const objectVar = Traces.generateDeclaredUidIdentifier('o');
 
 
-    // NOTE: for the final CallExpression, the callee is chopped into pieces -
-    //  1. store object (`o`) in both, callee node (as `objectAstNode`) and call node (as `objectVar`)
-    //  2. store calleeAstNode in callee trace (`o[prop]`)
+    // NOTE: for the final CallExpression, the callee is split -
+    //  1. store object (`o`) in variable `_o` and use in both:
+    //        callee node (as `objectVar`) and call node (as `objectVar`).
+    //  2. store `calleeAstNode` (`o[prop]`) in callee trace.
     traceCfg.data.objectVar = objectVar;
 
     // NOTE:

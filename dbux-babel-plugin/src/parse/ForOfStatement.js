@@ -21,6 +21,8 @@ export default class ForOfStatement extends BaseNode {
     const [leftNode, rightNode] = this.getChildNodes();
 
     // insert trace in `body` to track write to `left` variable(s)
+    // TODO: move corresponding logic to `ForDeclaratorLVal`
+    // TODO: `hoisted` logic is decided in 
     const moreTraceData = {
       meta: {
         hoisted: false

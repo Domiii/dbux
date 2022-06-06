@@ -17,17 +17,16 @@ export default class ArithmeticExpression extends BasePlugin {
     // this.warn('childPaths', childPaths.map(c => pathToString(c)));
 
     // trace AE itself
-    const staticTraceData = {
-      type: TraceType.ExpressionResult,
-      dataNode: {
-        isNew: this.isNew,
-        label: node.operator || path.node?.operator
-      }
-    };
-    const traceData = { 
+    const traceData = {
       path,
       node,
-      staticTraceData
+      staticTraceData: {
+        type: TraceType.ExpressionResult,
+        dataNode: {
+          isNew: this.isNew,
+          label: node.operator || path.node?.operator
+        }
+      }
     };
     Traces.addTraceWithInputs(traceData, childPaths);
   }

@@ -32,25 +32,26 @@ export default class HexoProject extends Project {
     return `Bug-${exerciseNumber}-${tagCategory}`;
   }
 
-  async selectExercise(bug) {
-    const {
-      number, name
-    } = bug;
-    const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getExerciseGitTag(number, tagCategory);
+  // TODO: legacy code below
+  // async selectExercise(bug) {
+  //   const {
+  //     number, name
+  //   } = bug;
+  //   const tagCategory = "test"; // "test", "fix" or "full"
+  //   const tag = this.getExerciseGitTag(number, tagCategory);
 
-    if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
-      // do not checkout bug, if we already on the right tag
-      return;
-    }
+  //   if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
+  //     // do not checkout bug, if we already on the right tag
+  //     return;
+  //   }
 
-    // checkout the bug branch
-    sh.cd(this.projectPath);
-    this.log(`Checking out bug ${name || number}...`);
+  //   // checkout the bug branch
+  //   sh.cd(this.projectPath);
+  //   this.log(`Checking out bug ${name || number}...`);
 
-    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
-    await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
-  }
+  //   // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
+  //   await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
+  // }
 
   async runCommand(exercise, cfg) {
     const { projectPath } = this;

@@ -1,20 +1,22 @@
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import { buildtraceExpressionME } from '../instrumentation/builders/me';
 import BaseNode from './BaseNode';
+import { makeMETraceData } from './helpers/me';
+
+/** @typedef { import("@babel/types").Node } AstNode */
 
 
 
 /** @typedef {import('@babel/types/lib').Identifier} Identifier */
 
-/**
- * NOTE: only assignments can have ME LVals
- */
-function isRValME(node) {
-  const { path: p } = node;
-  return !(p.parentPath.isAssignment() && p.node === p.parentPath.node.id);
-}
+// /**
+//  * NOTE: only assignments can have ME LVals
+//  */
+// function isRValME(node) {
+//   const { path: p } = node;
+//   return !(p.parentPath.isAssignment() && p.node === p.parentPath.node.id);
+// }
 
 // class MemberElement {
 //   /**
@@ -56,7 +58,8 @@ export default class MemberExpression extends BaseNode {
   }
 
   /**
-   * Set `handler` recursively
+   * Set `handler` recursively.
+   * NOTE: only used by `CallExpression` in case of untraceable callee.
    */
   set handlerDeep(handler) {
     this._handler = handler;
@@ -64,6 +67,20 @@ export default class MemberExpression extends BaseNode {
     if (objectNode instanceof MemberExpression) {
       objectNode.handlerDeep = handler;
     }
+  }
+
+  /**
+   * Handler is set in several cases:
+   * 
+   * AssignmentLValME
+   * UpdateLValME
+   * CalleeME
+   * CallExpression (if callee is not traceable)
+   * Delete
+   */
+  get hasHandler() {
+    return !!this._handler || 
+      this.getParent()?.path.isPattern(); // hackfix
   }
 
   buildDefaultTrace() {
@@ -98,7 +115,7 @@ export default class MemberExpression extends BaseNode {
     const [objectNode] = this.getChildNodes();
     return objectNode.specialType === specialIdentifierType;
   }
-  
+
   /** ########################################
    * Special MEs: specific
    * #######################################*/
@@ -178,47 +195,12 @@ export default class MemberExpression extends BaseNode {
     return this.hasObjectExports() || this.isModuleExports() || this.containsModuleExports();
   }
 
-  /** ###########################################################################
-   * Common (l + r)val stuff
-   * ##########################################################################*/
-
-  makeMETraceData(objectAstNode = null) {
-    const { path, Traces } = this;
-
-    const [objectNode, propertyNode] = this.getChildNodes();
-    const {
-      computed
-    } = path.node;
-
-    // prepare object
-    const objectTraceCfg = objectNode.addDefaultTrace();
-    let objectTid = objectTraceCfg?.tidIdentifier;
-    if (!objectTid) {
-      this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
-      objectTid = ZeroNode;
-    }
-    objectAstNode = objectAstNode || Traces.generateDeclaredUidIdentifier('o');
-
-    // prepare property
-    let propertyAstNode;
-    if (computed) {
-      propertyNode.addDefaultTrace();
-      propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
-    }
-
-    return {
-      objectTid,
-      objectAstNode,
-      propertyAstNode
-    };
-  }
-
   // ###########################################################################
   // ME rval handling
   // ###########################################################################
 
   exit() {
-    if (this._handler) {
+    if (this.hasHandler) {
       // disable default behavior
       return;
     }
@@ -241,7 +223,7 @@ export default class MemberExpression extends BaseNode {
    * `g().[f(x)]` ->
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
-  addRValTrace(targetPath, objectAstNode) {
+  addRValTrace(targetPath, objectVar) {
     if (this.shouldIgnoreThisRVal()) {
       // this.debug(`[addRValTrace IGNORE] ${this.debugTag}`);
       return null;
@@ -272,12 +254,14 @@ export default class MemberExpression extends BaseNode {
       optional
     } = path.node;
 
-    const data = this.makeMETraceData(objectAstNode);
+    const data = makeMETraceData(this, objectVar);
     /**
      * Whether caller already took care of tracing object.
      * If not, builder needs to trace object explicitely.
+     * 
+     * Used in `CallExpression`: object assignment (objectVar = o...) is done in `buildTraceCallME`.
      */
-    data.isObjectTracedAlready = !!objectAstNode;
+    data.isObjectTracedAlready = !!objectVar;
     // NOTE: at build time, the original ME node might have already been replaced
     data.optional = optional;
 

@@ -23,23 +23,6 @@ export function buildNamedExport(ids) {
 // throw err;
 // `);
 
-export function buildTryFinally(tryNodes, finallyNodes) {
-  if (tryNodes.length === 1 && t.isBlockStatement(tryNodes[0])) {
-    [tryNodes] = tryNodes; // same as: `tryNodes = tryNodes[0]`
-  }
-  else {
-    tryNodes = t.blockStatement(tryNodes);
-  }
-
-  const catchClause = null;
-  // const catchClause = t.catchClause(
-  //   t.identifier('err'),
-  //   t.blockStatement(errHandlerTemplate({
-  //   }))
-  // );
-  return t.tryStatement(tryNodes, catchClause, t.blockStatement(finallyNodes));
-}
-
 export function buildBlock(statements) {
   return t.blockStatement(Array.isArray(statements) ? statements : [statements]);
 }
@@ -59,6 +42,34 @@ export function buildVarAssignments(ids, values) {
   return assignments;
 }
 
+export function buildProgram(origPathOrNode, bodyNodes) {
+  const newProgramNode = t.cloneNode(origPathOrNode.node || origPathOrNode);
+  newProgramNode.body = bodyNodes;
+  return newProgramNode;
+}
+
+/** ###########################################################################
+ * try/finally
+ *  #########################################################################*/
+
+
+export function wrapPushPopBlock(bodyPath, pushes, pops) {
+  const newBody = buildBlock([
+    ...pushes,
+    // ...recordParams,
+    buildWrapTryFinally(bodyPath.node, pops)
+  ]);
+
+  // bodyPath.context.create(bodyNode, bodyNode, 'xx')
+  bodyPath.replaceWith(newBody);
+}
+
+export function replaceNodeTryFinallyPop(path, pops) {
+  const tryNode = buildWrapTryFinally(path.node, pops);
+  // bodyPath.context.create(bodyNode, bodyNode, 'xx')
+  path.replaceWith(tryNode);
+}
+
 /**
  * Wrap a block with a try/finally pair
  */
@@ -67,10 +78,32 @@ export function buildWrapTryFinally(tryNodes, finallyBody) {
   return buildTryFinally(tryNodes, finallyBody);
 }
 
-export function buildProgram(origPathOrNode, bodyNodes) {
-  const newProgramNode = t.cloneNode(origPathOrNode.node || origPathOrNode);
-  newProgramNode.body = bodyNodes;
-  return newProgramNode;
+export function buildTryFinally(tryNodes, finallyNodes) {
+  if (tryNodes.length === 1 && t.isBlockStatement(tryNodes[0])) {
+    [tryNodes] = tryNodes; // same as: `tryNodes = tryNodes[0]`
+  }
+  else {
+    tryNodes = t.blockStatement(tryNodes);
+  }
+
+  const catchClause = null;
+  // const catchClause = t.catchClause(
+  //   t.identifier('err'),
+  //   t.blockStatement(errHandlerTemplate({
+  //   }))
+  // );
+  return t.tryStatement(tryNodes, catchClause, t.blockStatement(finallyNodes));
+}
+
+/** ###########################################################################
+ * blocks + bodies
+ * ##########################################################################*/
+
+export function ensureBlock(blockPath) {
+  if (!Array.isArray(blockPath.node) && !blockPath.isBlock()) {
+    blockPath.ensureBlock();
+  }
+  // bodyPath.unshiftContainer('body', newNode);
 }
 
 // ###########################################################################
@@ -132,10 +165,7 @@ export function getInstrumentPath(traceCfg) {
 }
 
 /**
- * NOTE: sometimes we want to trace something that is not the original AST node.
- *    -> e.g. `ClassDeclaration`
- * NOTE2: actual `targetNode` node might have been moved
- *    -> E.g. by `CallExpression`, `CalleeME`, `ObjectMethod`.
+ * Get the node that the builder is to work on.
  */
 export function getInstrumentTargetAstNode(state, traceCfg) {
   let {

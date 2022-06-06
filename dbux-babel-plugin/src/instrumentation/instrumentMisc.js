@@ -1,10 +1,11 @@
 // import * as t from '@babel/types';
 // import { pathToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import { getInstrumentPath, getBuildTargetPath } from './builders/common';
 import { doBuild, buildAll, buildTraceDeclarationVar } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
-export function instrumentExpression(state, traceCfg) {
+export function instrumentInPlace(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
   const resultNode = doBuild(state, traceCfg);
 
@@ -29,13 +30,17 @@ export function instrumentUnshiftBody(state, traceCfg) {
   // const { type } = path.node;
 
   // console.debug(`instrumentUnshitBody`, pathToStringAnnotated(path));
-  path.unshiftContainer('body', resultNode);
+  const bodyPath = path.get('body');
+  if (!Array.isArray(bodyPath.node) && !bodyPath.isBlock()) {
+    bodyPath.ensureBlock();
+  }
+  bodyPath.unshiftContainer('body', resultNode);
 
   postInstrument(traceCfg, resultNode);
 }
 
 /**
- * Insert trace call behind `targetPath`.
+ * Insert trace call at end of or right behind body of `targetPath`.
  */
 export function insertAfterBody(state, traceCfg) {
   let path = getInstrumentPath(traceCfg);
@@ -45,17 +50,11 @@ export function insertAfterBody(state, traceCfg) {
 
   const resultNode = doBuild(state, traceCfg);
 
-  // hackfix: babel seems to force us to handle array and non-array separately
   const bodyPath = path.get('body');
-  if (bodyPath.node) {
-    // array?
-    bodyPath.insertAfter(resultNode);
+  if (!Array.isArray(bodyPath) && !bodyPath.isBlock()) {
+    bodyPath.ensureBlock();
   }
-  else {
-    // non-array?
-    path.pushContainer('body', resultNode);
-  }
-  // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
+  bodyPath.pushContainer('body', resultNode);
 
   postInstrument(traceCfg, resultNode);
 }

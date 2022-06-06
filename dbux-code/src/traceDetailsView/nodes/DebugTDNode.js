@@ -9,6 +9,7 @@ import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems, makeTreeChildren }
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './TraceDetailNode';
 import { makeObjectArrayNodes } from '../../helpers/treeViewUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -150,24 +151,44 @@ export class DebugTDNode extends TraceDetailNode {
 
     const ownDataNodeContainer = isInValueTraceDataNodes ? 'resultDataNodes' : 'ownDataNodes';
     const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `resultDataNodes: []`;
-    const valueTraceDataNodeCount = valueTraceDataNodes?.length || 0;
+    // const valueTraceDataNodeCount = valueTraceDataNodes?.length || 0;
+
+    function renderDataNode(n) {
+      const nodeLabel = `${n.nodeId} [${DataNodeType.nameFrom(n.type)}]`;
+      const renderNode = { ...n };
+      // renderNode.inputs = n.inputs?.map(inputNodeId => {
+      //   return makeTreeItem(nodeLabel, dp.collections.dataNodes.getById(inputNodeId), {
+      //     description: ``,
+      //     handleClick() {
+      //       const { traceId: inputTraceId } = dp.collections.dataNodes.getById(inputNodeId);
+      //       const inputTrace = dp.collections.traces.getById(inputTraceId);
+      //       traceSelection.selectTrace(inputTrace, null, inputNodeId);
+      //     }
+      //   });
+      // });
+      return makeTreeItem(nodeLabel, renderNode, {
+        description: ``,
+        handleClick() {
+          traceSelection.selectTrace(trace, null, n.nodeId);
+        }
+      });
+    }
 
     const allDataNodes = [];
+    allDataNodes.push(makeTreeItem(
+      `all dataNodes`,
+      (valueTraceDataNodes || (dataNode ? [dataNode] : EmptyArray)).map(renderDataNode)
+    ));
     !!dataNode && allDataNodes.push([
       ownDataNodeLabel,
-      dataNode,
-      { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
+      [renderDataNode(dataNode)],
+      {
+        description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}`
+      }
     ]);
-    valueTraceDataNodeCount > 1 && allDataNodes.push(makeTreeItem(
-      `all dataNodes`,
-      valueTraceDataNodes.map((n) => {
-        const nodeLabel = `${n.nodeId} [${DataNodeType.nameFrom(n.type)}]`;
-        return makeTreeItem(nodeLabel, n);
-      })
-    ));
     ownDataNodes && ownDataNodes !== valueTraceDataNodes && allDataNodes.push(makeTreeItem(
       `ownDataNodes (${ownDataNodes.length})`,
-      ownDataNodes
+      ownDataNodes.map(renderDataNode)
     ));
 
 

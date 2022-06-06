@@ -32,18 +32,21 @@ class StaticTraceCollection extends Collection {
       this.push(entry);
     }
 
-    // fix up callId + resultCallId, then send out
+    // patch up linkage ids, then send out
     for (let i2 = 0; i2 < list.length; ++i2) {
-      const entry2 = list[i2];
-      if (entry2._callId) {
-        const calleeTrace = this.getTrace(programId, entry2._callId);
-        entry2.callId = calleeTrace.staticTraceId;
-        delete entry2._callId;
-      }
-      if (entry2._resultCallId) {
-        const calleeTrace = this.getTrace(programId, entry2._resultCallId);
-        entry2.resultCallId = calleeTrace.staticTraceId;
-        delete entry2._resultCallId;
+      const other = list[i2];
+      // if (other._callId) {
+      //   const calleeTrace = this.getStaticTrace(programId, other._callId);
+      //   other.callId = calleeTrace.staticTraceId;
+      //   delete other._callId;
+      // }
+      // if (other._resultCallId) {
+      //   const calleeTrace = this.getStaticTrace(programId, other._resultCallId);
+      //   other.resultCallId = calleeTrace.staticTraceId;
+      //   delete other._resultCallId;
+      // }
+      if (other.controlId) {
+        other.controlId = this.getStaticTrace(programId, other.controlId).staticTraceId;
       }
     }
 

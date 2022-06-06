@@ -57,19 +57,24 @@ svg.jtk-connector path {
   cursor: pointer;
   z-index: 20;
 }
+/* 
+.node>* polygon:hover,ellipse:hover {
+  fill: red !important;
+} */
 
-.timeline-node:hover .node-debug-overlay {
+.node:hover .node-debug-overlay {
   display: initial;
 }
 
 .node-debug-overlay {
+  /* display: none; */
+  display: initial;
   position: fixed;
   right: 0;
   bottom: 0;
   max-width: 35vw;
   padding: 4px;
   margin: 1px;
-  display: none;
   border: 1px solid white;
   background-color: black;
 }
@@ -86,6 +91,7 @@ svg.jtk-connector path {
   z-index: 1000;
 }
 
-g polygon {
-  fill: transparent;
-};
+.timeline-view g polygon,ellipse {
+  /* fill: transparent; */  /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
+  fill: #222; /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
+}

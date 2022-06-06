@@ -5,7 +5,7 @@ import StaticContextType from '@dbux/common/src/types/constants/StaticContextTyp
 import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { doesNodeEndScope } from '../../helpers/astUtil';
-import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/common';
+import { buildWrapTryFinally, buildBlock, wrapPushPopBlock } from '../../instrumentation/builders/common';
 import { buildContextEndTrace } from '../../instrumentation/context';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 // import { locToString } from '../../helpers/locHelpers';
@@ -408,27 +408,19 @@ export default class Function extends BasePlugin {
       // pushes = [
       //   ...pushes,
       // ];
-
-      pops = [
-        // popResumeTemplate({
-        //   dbux,
-        //   // resumeContextId,
-        //   // traceId: t.numericLiteral(popTraceCfg.tidIdentifier),
-        //   // contextId: contextIdVar
-        // }),
-        ...pops
-      ];
+      // pops = [
+      //   // popResumeTemplate({
+      //   //   dbux,
+      //   //   // resumeContextId,
+      //   //   // traceId: t.numericLiteral(popTraceCfg.tidIdentifier),
+      //   //   // contextId: contextIdVar
+      //   // }),
+      //   ...pops
+      // ];
     }
 
     // wrap the function in a try/finally statement
-    const newBody = buildBlock([
-      ...pushes,
-      // ...recordParams,
-      buildWrapTryFinally(bodyNode, pops)
-    ]);
-
-    // bodyPath.context.create(bodyNode, bodyNode, 'xx')
-    bodyPath.replaceWith(newBody);
+    wrapPushPopBlock(bodyPath, pushes, pops);
   }
 }
 

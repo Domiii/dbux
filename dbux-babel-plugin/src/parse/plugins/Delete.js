@@ -30,8 +30,8 @@ export default class Delete extends BasePlugin {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     }
 
-    const objectAstNode = Traces.generateDeclaredUidIdentifier('o');
-    const propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
+    const objectVar = Traces.generateDeclaredUidIdentifier('o');
+    const propertyVar = Traces.generateDeclaredUidIdentifier('p');
 
     // add delete trace
     const traceData = {
@@ -42,8 +42,8 @@ export default class Delete extends BasePlugin {
       },
       data: {
         objectTid,
-        objectAstNode,
-        propertyAstNode
+        objectVar,
+        propertyVar
       },
       meta: {
         build: buildTraceDeleteME

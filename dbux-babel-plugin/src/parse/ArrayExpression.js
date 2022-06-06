@@ -36,7 +36,10 @@ export default class ArrayExpression extends BaseNode {
      * NOTE: arrays can contain empty elements, e.g.: `[,2,3,4,,5,,,6]`
      * Based on Traces#addDefaultTraces.
      */
-    const inputs = elementNodes.map(el => el?.addDefaultTrace() || ZeroInputTrace);
+    const inputs = elementNodes.map(el => {
+      const elTraceCfg = el?.addDefaultTrace();
+      return elTraceCfg || ZeroInputTrace;
+    });
     this.Traces.addTraceWithInputTraceCfgs(traceData, inputs);
   }
 }

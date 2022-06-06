@@ -220,8 +220,8 @@ function buildCallNodeME(path, objectVar, calleeVar, args) {
     args
   };
 
-  // NOTE: no need to trace `o` separately for `NewExpression`
   if (type !== 'NewExpression') {
+    // NOTE: `NewExpression` does not have `o` (no need to trace separately)
     templateArgs.o = objectVar;
   }
 

@@ -15,7 +15,8 @@ export function convertNonComputedPropToStringLiteral(keyAstNode, computed) {
     // NOTE: ME can be `Identifier` or `PrivateName` (https://babeljs.io/docs/en/babel-types#privatename)
     // NOTE2: official babel documentation is incorrect (as of 7/2021) - https://babeljs.io/docs/en/babel-types.html#memberexpression
     //        -> "property: if computed then Expression else Identifier (required)"
-    //        -> official specs do mention `PrivateIdentifier` - https://tc39.es/ecma262/#prod-MemberExpression
+    //        -> its actually `PrivateName`, not `Identifier`
+    //        -> official specs say `PrivateIdentifier` instead - https://tc39.es/ecma262/#prod-MemberExpression
     let propName = t.isPrivateName(keyAstNode) ? 
       `#${keyAstNode.id.name}` :
       keyAstNode.name;

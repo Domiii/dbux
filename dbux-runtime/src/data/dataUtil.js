@@ -1,7 +1,6 @@
 import { isFunctionDefinitionTrace } from '@dbux/common/src/types/constants/TraceType';
 import { hasCallId, isCallResult } from '@dbux/common/src/types/constants/traceCategorization';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import Trace from '@dbux/common/src/types/Trace';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';

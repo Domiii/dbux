@@ -101,9 +101,7 @@ export default class BaseNode extends ParseNode {
   }
 
   /**
-   * NOTE: this is a relatively new method, to allow overriding default paths in node for further use in Plugin (amongst other use cases).
-   * Only used by `ArithmeticExpression` (as it traces all children by default).
-   * There are probably only few other potential use cases.
+   * Hackfix for `ArithmeticExpression` to deal w/ `UnaryExpression` children.
    */
   getDefaultChildPaths() {
     return this.getChildPaths();
@@ -140,7 +138,12 @@ export default class BaseNode extends ParseNode {
         if (!traceData) {
           return null;
         }
-        this.Traces.addTrace(traceData);
+        const trace = this.Traces.addTrace(traceData);
+        if (trace && !this._traceCfg) {
+          // hackfix: target trace got attached to another trace, probably a binding trace...
+          //      not sure, if we can just do this, but for now it works.
+          this._traceCfg = trace;
+        }
       }
       else {
         // NOTE: This is a common ocurrence. Only add default trace if noy already added.

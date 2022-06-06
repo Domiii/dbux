@@ -60,6 +60,10 @@ export default class DotBuilder {
     return `label=${JSON.stringify(text)}`;
   }
 
+  nodeId(timelineId) {
+    return `id=${timelineId}`;
+  }
+
   /** ###########################################################################
    * indent, lines + fragments
    * ##########################################################################*/
@@ -147,7 +151,7 @@ export default class DotBuilder {
     }
   }
 
-  node(node) {
+  node(node, force = false) {
     const ddg = this.renderState;
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
@@ -156,9 +160,9 @@ export default class DotBuilder {
       this.controlGroup(node);
     }
     else if (ddgQueries.isSnapshot(ddg, node)) {
-      this.refSnapshotNode(node);
+      this.refSnapshotRoot(node);
     }
-    else if (ddgQueries.isVisible(ddg, node)) {
+    else if (force || ddgQueries.isVisible(ddg, node)) {
       this.valueNode(node);
     }
   }
@@ -172,51 +176,56 @@ export default class DotBuilder {
     this.label(node.label || '');
 
     this.nodesByIds(node.children);
-    
+
     this.indentLevel -= 1;
     this.fragment(`}`);
   }
 
-  nodeSummary(node) {
+  nodeSummary(summaryNode) {
     const { renderState } = this;
     const { nodeSummaries } = renderState;
 
-    const summary = nodeSummaries[node.timelineId];
+    const summary = nodeSummaries[summaryNode.timelineId];
     const roots = ddgQueries.getSummaryRoots(renderState, summary);
     if (roots?.length) {
-      this.refSnapshotNode(roots, node.label);
+      // render summary nodes
+      this.summaryGroup(summaryNode, roots, summaryNode.label);
     }
     else {
       // render node as-is
-      this.valueNode(node);
+      this.valueNode(summaryNode);
     }
   }
 
-  refSnapshotNode(nodesOrNode, label = null) {
-    const isGroupOfSnapshots = Array.isArray(nodesOrNode);
-    const first = isGroupOfSnapshots ? nodesOrNode[0] : nodesOrNode;
-    const { timelineId } = first;
+  summaryGroup(summaryNode, nodes, label = null) {
+    this.fragment(`subgraph cluster_summary_${summaryNode.timelineId} {`);
+    this.indentLevel += 1;
+    this.command(`color="${DotCfg.groupBorderColor}"`);
+    this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
+    label && this.label(label);
+
+    for (const node of nodes) {
+      this.node(node, true);
+    }
+
+    this.indentLevel -= 1;
+    this.fragment(`}`);
+  }
+
+  /**
+   * A root of a snapshot
+   */
+  refSnapshotRoot(node, label = null) {
+    const { timelineId } = node;
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    if (isGroupOfSnapshots) {
-      this.command(`color="${DotCfg.groupBorderColor}"`);
-    }
-    else {
-      this.command(`color="transparent"`);
-    }
+    this.command(`color="transparent"`);
     this.command(`fontcolor="${DotCfg.groupLabelColor}"`);
     label && this.label(label);
     this.command(`node [shape=record]`);
 
-    if (isGroupOfSnapshots) {
-      for (const node of nodesOrNode) {
-        this.snapshotRecord(node);
-      }
-    }
-    else {
-      this.snapshotRecord(nodesOrNode);
-    }
+    this.snapshotRecord(node);
 
     this.indentLevel -= 1;
     this.fragment(`}`);
@@ -235,11 +244,11 @@ export default class DotBuilder {
     label ||= 'arr';    // TODO: proper snapshot label (e.g. by first `declarationTid` of `ref`)
     const childrenItems = Object.entries(children)
       .map(([key, nodeId]) => this.makeRecordEntry(key, nodeId));
-    this.command(`${timelineId} [label="${label}|${childrenItems.join('|')}"]`);
+    this.command(`${timelineId} [${this.nodeId(timelineId)},label="${label}|${childrenItems.join('|')}"]`);
   }
 
   valueNode(node) {
-    this.command(`${this.makeNodeId(node)} [${this.makeLabel(node.label)}]`);
+    this.command(`${this.makeNodeId(node)} [${this.nodeId(node.timelineId)},${this.makeLabel(node.label)}]`);
   }
 
   buildEdge(edge) {

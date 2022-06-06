@@ -89,6 +89,8 @@ export default class DataNodeCollection extends Collection {
 
   syntaxUtil = {
     /**
+     * This adds the `Read` input for "computational assignment operators" (`+=`, `||=` etc).
+     * 
      * NOTE: we do this currently only for assignment, and not for `UpdateExpression`, because
      * `UpdateExpression` has a legacy solution (using a more convoluted runtime scheme).
      * 
@@ -96,7 +98,8 @@ export default class DataNodeCollection extends Collection {
      * @param {StaticTrace} staticTrace 
      */
     addReadSelfNodeIdToInput: (dataNode, staticTrace) => {
-      if (staticTrace.dataNode.isNew && dataNode.accessId) {
+      const isComputation = staticTrace.dataNode.isNew;
+      if (isComputation && dataNode.accessId) {
         // → this is re-assignment (rather than assignment)
 
         // get the last dataNode of same accessId (before this one)

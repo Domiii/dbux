@@ -16,7 +16,9 @@ class NestedError extends Error {
       cause = message;
     }
     
-    this.message = message;
+    // hackfix: we also nest `message`, because the custom `stack` is ignored in some environments (e.g. jest (i.e. vm2))
+    const nestedMsg = cause.message && `\n  [Caused By] ${cause.message}` || '';
+    this.message = `${message}${nestedMsg}`;
 
     this.name = 'NestedError';
     this.cause = cause;

@@ -29,10 +29,10 @@ export class DDGTimelineNode {
   parentNodeId;
 
   /**
-   * Whether there are any writes to a ref's props happening in this node.
+   * Whether there are any writes to a ref's props or an outside variable in this node.
    * This is needed to build `summaryNodes`.
    */
-  hasRefWriteNodes = false;
+  hasSummarizableWrites = false;
 
   /**
    * @param {DDGTimelineNodeTypeValues} type
@@ -49,6 +49,11 @@ export class DDGTimelineNode {
 }
 
 export class GroupTimelineNode extends DDGTimelineNode {
+  /**
+   * `traceId` that caused this group to be pushed.
+   */
+  pushTid;
+
   /**
    * `timelineId` of children in order.
    * 

@@ -25,8 +25,15 @@ export class TraceCfgMeta {
   preCondition;
 
   /**
+   * The input {@link AstNode} for the build function.
+   */
+  targetNode;
+
+  /**
+   * The {@link NodePath} to be replaced by instrumentation function.
+   * 
    * If `false`, it indicates that instrumentation should build, but not store the `trace` call `AstNode`.
-   * In that case, it can be accessed via `traceCfg.data.resultNode`
+   * (In that case, it can be accessed via `traceCfg.data.resultNode`?)
    * @type {(NodePath | false)?}
    */
   targetPath;
@@ -52,6 +59,7 @@ export class TraceCfgMeta {
 
 export class TraceCfgData {
   /**
+   * The resulting {@link AstNode} produced by `build` function.
    * @type {AstNode | undefined}
    */
   resultNode;

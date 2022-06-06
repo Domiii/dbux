@@ -23,24 +23,28 @@ export default class ForStatement extends BaseNode {
     } = this;
     const [initNode, testNode, updateNode] = this.getChildNodes();
 
-    if (initNode.path.node) {
+    if (initNode?.path.node) {
       initNode.Traces.addDefaultTrace(initNode.path);
     }
-    if (testNode.path.node) {
+    if (testNode?.path.node) {
       testNode.Traces.addDefaultTrace(testNode.path);
     }
-    if (updateNode.path.node) {
+    if (updateNode?.path.node) {
       updateNode.Traces.addDefaultTrace(updateNode.path);
     }
 
     // set up branch data
     BranchStatement.createBranchStaticTrace(SyntaxType.For);
 
-    const testTrace = testNode.traceCfg;
+    const testTrace = testNode?.traceCfg;
+
+    BranchStatement.insertPushTrace();
     if (testTrace) {
-      BranchStatement.insertPushTrace();
       BranchStatement.setDecisionTrace(testTrace);
-      BranchStatement.insertPopTrace();
     }
+    else {
+      BranchStatement.insertDecisionTraceBeforeBody();
+    }
+    BranchStatement.insertPopTrace();
   }
 }

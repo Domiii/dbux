@@ -9,8 +9,8 @@ export default class SwitchCase extends BaseNode {
     if (test.node) {
       // i.e. `case x:`
       const testTrace = this.Traces.addDefaultTrace(test);
-      testTrace.staticTraceData.controlId = testTrace.inProgramStaticTraceId;
-      testTrace.staticTraceData.controlGroupId = TODO;
+      // testTrace.staticTraceData.controlId = testTrace.inProgramStaticTraceId;
+      // testTrace.staticTraceData.controlGroupId = TODO;
     }
     else {
       // i.e. `default:`

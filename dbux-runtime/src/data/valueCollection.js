@@ -466,14 +466,23 @@ class ValueCollection extends Collection {
     }
   }
 
+  readKeys(obj) {
+    try {
+      this._startAccess(obj);
+      return Object.keys(obj);
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
   /**
-   * 
+   * NOTE: we use `for in` to get a lot of enumerable properties that `Object.keys` does not get
    */
-  _getProperties(obj) {
+  _readExtraKeys(obj) {
     try {
       this._startAccess(obj);
 
-      // NOTE: `for in` gets a lot of enumerable properties that `Object.keys` does not get
       const keys = [];
       for (const key in obj) {
         // if (!isFunction(obj[key])) {
@@ -481,10 +490,6 @@ class ValueCollection extends Collection {
         // }
       }
       return keys;
-
-      // // `Object.keys` can also invoke user - defined functions.
-      // // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/ownKeys*} obj
-      // return Object.keys(obj);
     }
     catch (err) {
       VerboseErrors && this.logger.debug(`accessing object ${Object.getPrototypeOf(obj)} caused exception:`, err.message);
@@ -720,7 +725,7 @@ class ValueCollection extends Collection {
         }
         else {
           // iterate over all object properties
-          let props = this._getProperties(value);
+          let props = this._readExtraKeys(value);
 
           // special handling for promise
           this.registerPromiseValue(valueRef, value);

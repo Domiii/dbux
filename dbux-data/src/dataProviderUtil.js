@@ -783,7 +783,8 @@ export default {
   getDataNodeDeclarationVarName(dp, dataNodeId) {
     const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
     if (declarationTid) {
-      return dp.util.getStaticTrace(declarationTid).displayName;
+      const staticTrace = dp.util.getStaticTrace(declarationTid);
+      return staticTrace.data?.name || staticTrace.displayName;
     }
     return null;
   },
@@ -854,6 +855,18 @@ export default {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isDataNodeModifyType(dataNode.type)) {
       return dp.util.getDataNodeAccessedRefId(nodeId) || 0;
+    }
+    return 0;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @return {DataNode}
+   */
+  getDataNodeModifyingVarDeclarationTid(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (isDataNodeModifyType(dataNode.type)) {
+      return dataNode?.varAccess?.declarationTid;
     }
     return 0;
   },

@@ -84,7 +84,6 @@ export default class DDGTimelineBuilder {
     return this.lastTimelineVarSnapshotNodeByDeclarationTid[declarationTid];
   }
 
-
   getDataTimelineInputNode(dataNodeId) {
     // 1. look for skips
     let inputNode = this.skippedNodesByDataNodeId[dataNodeId];
@@ -125,9 +124,12 @@ export default class DDGTimelineBuilder {
         // make sure, we are in the correct loop
         return null;
       }
-      if (dp.util.isDataNodeValueTruthy(dataNode.nodeId)) {
+      if (
+        TraceType.is.BranchDecision(staticTrace.type) || // only used in case of `for (;;) { ... }`?
+        dp.util.isDataNodeValueTruthy(dataNode.nodeId)   // else, loop decisions are always controlled by true/false values
+      ) {
         // push next iteration
-        const iterationNode = new IterationNode(decisionNode.timelineId);
+        const iterationNode = new IterationNode(decisionNode.timelineId, trace.traceId);
         this.#addAndPushGroup(iterationNode);
       }
     }
@@ -137,7 +139,7 @@ export default class DDGTimelineBuilder {
       }
       if (isLoopTimelineNode(currentGroup.type)) {
         // push first iteration of loop
-        const iterationNode = new IterationNode(decisionNode.timelineId);
+        const iterationNode = new IterationNode(decisionNode.timelineId, trace.traceId);
         this.#addAndPushGroup(iterationNode);
       }
       else {
@@ -147,11 +149,11 @@ export default class DDGTimelineBuilder {
     }
     return decisionNode;
   }
-  
+
   /**
    * @param {DataTimelineNode} newNode 
    */
-  onNewDataTimelineNode(newNode) {
+  onNewSnapshotValueNode(newNode) {
     const fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
     if (fromNode) {
       // add edges, but not during summarization
@@ -160,6 +162,30 @@ export default class DDGTimelineBuilder {
       const edgeState = { nByType: { [edgeType]: 1 } };
       this.ddg.addEdge(edgeType, fromNode.timelineId, newNode.timelineId, edgeState);
     }
+  }
+
+  /** ###########################################################################
+   * skip + ignore
+   * ##########################################################################*/
+
+  #processSkipAndIgnore(dataNode, isDecision) {
+    // TODO: allow for decision skips as well
+    if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)) {
+      if (this.#shouldIgnoreDataNode(dataNode.nodeId)) {
+        // ignore entirely
+        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
+        return false;
+      }
+      const skippedBy = this.#skipDataNode(dataNode);
+      if (skippedBy) {
+        // → This node SHOULD be skipped and CAN be skipped.
+        // → register skip node
+        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
+        this.skippedNodesByDataNodeId[dataNode.nodeId] = skippedBy;
+        return false;
+      }
+    }
+    return true;
   }
 
   #shouldIgnoreDataNode(dataNodeId) {
@@ -252,27 +278,26 @@ export default class DDGTimelineBuilder {
   /**
    * 
    */
-  #addDataNodeToTimeline(ownDataNode, dataNodes) {
+  #addSnapshotOrDataNode(dataNode) {
     let newNode;
-
-    const { dp } = this;
+    // const { dp } = this;
 
     // create node based on DDGTimelineNodeType
     // if() {
     //   TODO: add DecisionTimelineNode
     // }
     // else 
-    const refId = this.#getRefIdForSnapshot(ownDataNode);
+    const refId = this.#getRefIdForSnapshot(dataNode);
     if (refId) {
       // TODO: handle assignment patterns (→ can have multiple write targets)
-      const refNodeId = ownDataNode.varAccess?.objectNodeId;
+      // const refNodeId = dataNode.varAccess?.objectNodeId;
       // ref type access → add Snapshot
-      if (dataNodes.some(dataNode => dataNode.varAccess?.objectNodeId !== refNodeId)) {
-        // sanity checks
-        this.logger.trace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
-      }
+      // if (dataNodesOfTrace?.some(n => n.varAccess?.objectNodeId !== refNodeId)) {
+      //   // sanity checks
+      //   this.logger.trace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(dataNode.traceId)}"`);
+      // }
       const snapshotsByRefId = new Map();
-      newNode = this.ddg.addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, null);
+      newNode = this.ddg.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
     }
     else {
       // this is not a watched ref
@@ -281,15 +306,15 @@ export default class DDGTimelineBuilder {
       //   // eslint-disable-next-line max-len
       //   this.logger.trace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       // }
-      newNode = this.ddg.addValueDataNode(ownDataNode);
+      newNode = this.ddg.addValueDataNode(dataNode);
     }
 
-    if (ownDataNode.varAccess?.declarationTid && (
-      isDataNodeModifyType(ownDataNode.type) ||
-      !this.lastTimelineVarSnapshotNodeByDeclarationTid[ownDataNode.varAccess.declarationTid]
+    if (dataNode.varAccess?.declarationTid && (
+      isDataNodeModifyType(dataNode.type) ||
+      !this.lastTimelineVarSnapshotNodeByDeclarationTid[dataNode.varAccess.declarationTid]
     )) {
       // register node by var
-      this.lastTimelineVarSnapshotNodeByDeclarationTid[ownDataNode.varAccess.declarationTid] = newNode;
+      this.lastTimelineVarSnapshotNodeByDeclarationTid[dataNode.varAccess.declarationTid] = newNode;
     }
 
     // add to parent
@@ -360,15 +385,23 @@ export default class DDGTimelineBuilder {
       // sanity check
       const groupTag = `[${DDGTimelineNodeType.nameFrom(currentGroup.type)}]`;
       const groupControlInfo = `${currentGroup.controlStatementId && dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}`;
-      this.logger.trace(`Invalid Decision node.\n  ` +
+      this.logger.trace(`Invalid Control Group.\n  ` +
         `${trace && `At trace: ${dp.util.makeTraceInfo(trace)}` || ''}\n  ` +
         // eslint-disable-next-line max-len
-        `Expected control group for: ${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)},\n  ` +
+        `Expected control group of: ${staticTrace.controlId && dp.util.makeStaticTraceInfo(staticTrace.controlId)},\n  ` +
         `Actual group: ${groupTag} ${groupControlInfo} (${JSON.stringify(currentGroup)})\n\n`
       );
       return false;
     }
     return true;
+  }
+
+  #makeGroupDebugTag(group) {
+    return DDGTimelineNodeType.nameFrom(group.type);
+  }
+
+  #makeGroupLabel(group) {
+    return controlGroupLabelMaker[group.type]?.(this.ddg, group) || '';
   }
 
   /**
@@ -382,18 +415,19 @@ export default class DDGTimelineBuilder {
       // push context
       const context = dp.collections.executionContexts.getById(trace.contextId);
       const contextLabel = makeContextLabel(context, dp.application);
-      this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel));
+      this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel), traceId);
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
       // push branch statement
       const controlStatementId = staticTrace.controlId;
-      const { syntax } = dp.collections.staticTraces.getById(controlStatementId);
+      const controlStaticTrace = dp.collections.staticTraces.getById(controlStatementId);
+      const { syntax } = controlStaticTrace;
       const ControlGroupCtor = branchSyntaxNodeCreators[syntax];
       if (!ControlGroupCtor) {
         this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace.staticTraceId)}"`);
       }
       else {
-        this.#addAndPushGroup(new ControlGroupCtor(controlStatementId));
+        this.#addAndPushGroup(new ControlGroupCtor(controlStatementId), traceId);
       }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
@@ -414,8 +448,7 @@ export default class DDGTimelineBuilder {
         if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
           return;
         }
-        const label = controlGroupLabelMaker[currentGroup.type]?.(ddg, currentGroup);
-        currentGroup.label = label || '';
+        currentGroup.label = this.#makeGroupLabel(currentGroup);
       }
       this.#popGroup();
     }
@@ -431,30 +464,36 @@ export default class DDGTimelineBuilder {
    *   2. a Decision node that is also a Write Node (e.g. `if (x = f())`)
    */
   addTraceToTimeline(traceId) {
-    const { dp, ddg: { bounds } } = this;
+    const { dp/* , ddg: { bounds } */ } = this;
     const trace = dp.util.getTrace(traceId);
-    const dataNodes = dp.util.getDataNodesOfTrace(traceId);
+    const dataNodesOfTrace = dp.util.getDataNodesOfTrace(traceId);
     // const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
-    const ownDataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
+    // const dataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
 
-    if (!ownDataNode) {
+    if (dataNodesOfTrace?.length) {
+      let newNode = this.#addDataNodeToTimeline(dataNodesOfTrace[0], trace);
+      if (newNode && isSnapshotTimelineNode(newNode.type)) {
+        // TODO: also add all DataNodes that do not belong to given snapshot
+      }
+      else {
+        for (let i = 1; i < dataNodesOfTrace.length; ++i) {
+          /* newNode = */ this.#addDataNodeToTimeline(dataNodesOfTrace[i], trace);
+        }
+      }
+    }
+  }
+
+  #addDataNodeToTimeline(dataNode, trace) {
+    const { dp } = this;
+
+    if (!dataNode) {
       // this.logger.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
-      return;
+      return null;
     }
 
 
-    // register DataNode by refId
-    const accessedRefId = dp.util.getDataNodeAccessedRefId(ownDataNode.nodeId);
-    const valueRefId = ownDataNode.refId;
-    if (accessedRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = ownDataNode.nodeId;
-    }
-    if (valueRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = ownDataNode.nodeId;
-    }
-
-
-    const isDecision = dp.util.isTraceControlDecision(traceId);
+    const isDecision = dp.util.isTraceControlDecision(trace.traceId);
+    Verbose && this.debug(`Adding Trace: t#${trace.traceId}, n#${dataNode.nodeId}, s#${trace.staticTraceId}, ${isDecision}`);
 
     // if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
     //   // future-work: add two nodes in this case
@@ -468,25 +507,23 @@ export default class DDGTimelineBuilder {
     const inputNodes = new Map();
 
     // ignore + skip logic
-    // TODO: allow for decision skips as well
-    if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(ownDataNode.nodeId)) {
-      if (this.#shouldIgnoreDataNode(ownDataNode.nodeId)) {
-        // ignore entirely
-        this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(ownDataNode));
-        return;
-      }
-      const skippedBy = this.#skipDataNode(ownDataNode);
-      if (skippedBy) {
-        // → This node SHOULD be skipped and CAN be skipped.
-        // → register skip node
-        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
-        this.skippedNodesByDataNodeId[ownDataNode.nodeId] = skippedBy;
-        return;
-      }
+    if (!this.#processSkipAndIgnore(dataNode, isDecision)) {
+      return null;
     }
 
-    if (ownDataNode.inputs) {
-      for (const inputDataNodeId of ownDataNode.inputs) {
+    // bookkeeping for summaries
+    const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
+    const valueRefId = dataNode.refId;
+    const varDeclarationTid = dataNode.varAccess?.declarationTid;
+    if (accessedRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = dataNode.nodeId;
+    }
+    if (valueRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = dataNode.nodeId;
+    }
+
+    if (dataNode.inputs) {
+      for (const inputDataNodeId of dataNode.inputs) {
         const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
 
         if (inputNode) {
@@ -510,9 +547,9 @@ export default class DDGTimelineBuilder {
 
     let newNode;
     if (isDecision) {
-      newNode = this.addDecisionNode(ownDataNode, trace);
+      newNode = this.addDecisionNode(dataNode, trace);
       if (!newNode) {
-        return;
+        return null;
       }
     }
     else {
@@ -522,13 +559,13 @@ export default class DDGTimelineBuilder {
        * NOTE2: For now, don't skip adding since that causes issues with final node ordering.
        * @type {DataTimelineNode}
        */
-      newNode = this.#addDataNodeToTimeline(ownDataNode, dataNodes);
+      newNode = this.#addSnapshotOrDataNode(dataNode);
     }
-    newNode.hasRefWriteNodes = !!accessedRefId;
+    newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 
     // update group
     const currentGroup = this.peekStack();
-    currentGroup.hasRefWriteNodes ||= newNode.hasRefWriteNodes;
+    currentGroup.hasSummarizableWrites ||= newNode.hasSummarizableWrites;
 
     // add edges
     if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
@@ -536,6 +573,7 @@ export default class DDGTimelineBuilder {
         this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, newNode.timelineId, edgeProps);
       }
     }
+    return newNode;
   }
 
   /** ###########################################################################
@@ -543,18 +581,30 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   /**
-   * @param {GroupTimelineNode} newGroupNode 
+   * @param {GroupTimelineNode} newGroup 
    */
-  #addAndPushGroup(newGroupNode) {
-    this.ddg.addNode(newGroupNode);
-    this.#addNodeToGroup(newGroupNode);
-    this.stack.push(newGroupNode);
+  #addAndPushGroup(newGroup, pushTid) {
+    newGroup.pushTid = pushTid;
+    this.ddg.addNode(newGroup);
+    this.#addNodeToGroup(newGroup);
+
+    Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
+    this.stack.push(newGroup);
   }
 
   #popGroup() {
     const nestedGroup = this.stack.pop();
+    Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
     const currentGroup = this.peekStack();
-    currentGroup.hasRefWriteNodes ||= nestedGroup.hasRefWriteNodes;
+    currentGroup.hasSummarizableWrites ||= nestedGroup.hasSummarizableWrites;
     return nestedGroup;
+  }
+
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  debug(...args) {
+    this.logger.debug(`${'  '.repeat(this.stack.length - 1).substring(1)}`, ...args);
   }
 }

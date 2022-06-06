@@ -2,14 +2,14 @@
 // import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
-// import omit from 'lodash/omit';
+import merge from 'lodash/merge';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
-import { instrumentExpression, instrumentHoisted } from '../../instrumentation/instrumentMisc';
+import { instrumentInPlace, instrumentHoisted } from '../../instrumentation/instrumentMisc';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
@@ -142,8 +142,9 @@ export default class Traces extends BasePlugin {
     } = traceData;
 
     if (!path || !staticTraceData) {
+      const what = !path ? 'path' : 'staticTraceData';
       throw new Error(
-        `addTrace data missing \`path\` or \`staticTraceData\`: node=${node}, path=${path && pathToString(path)}, staticTraceData=${JSON.stringify(staticTraceData)}`
+        `addTrace data missing "${what}": node=${node}, path=${path && pathToString(path)}, staticTraceData=${JSON.stringify(staticTraceData)}`
       );
     }
 
@@ -195,7 +196,7 @@ export default class Traces extends BasePlugin {
       if (!declarationNode) {
         node.getOwnDeclarationNode();
         throw new Error(`Assertion failed - node.getOwnDeclarationNode() returned nothing ` +
-          `for Declaration "${node}" in "${node.getParentString()}`);
+          `for Declaration "${node}" in "${node.getParentString()} (→ might be caused by BaseId.getOwnDeclarationNode hackfix)`);
       }
 
       // eslint-disable-next-line max-len
@@ -245,14 +246,14 @@ export default class Traces extends BasePlugin {
    */
   addDefaultDeclarationTrace(id, valuePathOrNode, moreTraceData = null) {
     moreTraceData = moreTraceData || {};
-    moreTraceData.staticTraceData = moreTraceData.staticTraceData || {
+    moreTraceData.staticTraceData = merge({
       type: TraceType.Declaration,
       dataNode: {
         // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valueNode` not given)
         //      Notable exception: `param`.
         isNew: true
       }
-    };
+    }, moreTraceData.staticTraceData);
 
     const traceData = {
       path: id.path,
@@ -342,6 +343,10 @@ export default class Traces extends BasePlugin {
     }
   }
 
+  /**
+   * Order of execution follows {@link ParseStack#genAll}.
+   * Since this is a Plugin, it will run BEFORE {@link ParseNode#instrument}, but after {@link ParseNode#instrument1}.
+   */
   instrument() {
     const { node, traces, hoistedTraces } = this;
 
@@ -362,7 +367,7 @@ export default class Traces extends BasePlugin {
         staticTraceData: { type: traceType },
         meta: {
           preInstrument,
-          instrument = instrumentExpression
+          instrument = instrumentInPlace
         } = EmptyObject
       } = traceCfg;
 
