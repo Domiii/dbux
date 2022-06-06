@@ -5,13 +5,13 @@ import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/
 import Process from '@dbux/projects/src/util/Process';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
-import { showInformationMessage } from '../codeUtil/codeModals';
+import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
 const ProjectName = 'javascript-algorithms';
-const ExportExercises = 20;
+const ExportExercises = 4;
 
 class ToolNode extends BaseTreeViewNode {
   /**
@@ -78,7 +78,8 @@ class GenerateListNode extends ToolNode {
         cwd: this.projectPath,
       };
       const testDirectory = 'src/algorithms';
-      const testData = JSON.parse(await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory}`, { processOptions }));
+      const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory}`, { processOptions });
+      const testData = JSON.parse(testDataRaw);
 
       const exercises = [];
       const addedPattern = new Set();
@@ -103,6 +104,7 @@ class GenerateListNode extends ToolNode {
           exercises.push(exerciseConfig);
         }
       }
+      exercises.sort((a, b) => a.chapter.localeCompare(b.chapter));
 
       progress.report({ message: `Generating exercise file...` });
       this.writeExerciseJs('javascript-algorithms-all.js', exercises);
@@ -122,15 +124,15 @@ class GenerateListNode extends ToolNode {
   }
 }
 
-class ExportApplicationsNode extends ToolNode {
-  static makeLabel() {
-    return `Export all exercise applications`;
-  }
+// class ExportApplicationsNode extends ToolNode {
+//   static makeLabel() {
+//     return `Export all exercise applications`;
+//   }
 
-  async handleClick() {
+//   async handleClick() {
 
-  }
-}
+//   }
+// }
 
 class ExportApplicationsForceNode extends ToolNode {
   static makeLabel() {
@@ -164,7 +166,47 @@ class ExportApplicationsForceNode extends ToolNode {
   }
 }
 
+
+class DeleteExportedApplicationNode extends ToolNode {
+  static makeLabel() {
+    return `Delete all exported applications`;
+  }
+
+  async handleClick() {
+    const { exerciseList } = this.treeNodeProvider.controller;
+    if (!exerciseList) {
+      showInformationMessage(`Please generate chapter list before delete`);
+      return;
+    }
+
+    await runTaskWithProgressBar(async (progress) => {
+      progress.report({ message: `Listing exported files...` });
+      const existingFiles = [];
+      for (const exercise of exerciseList.getAll()) {
+        const filePath = getCurrentResearch().getAppZipFilePath({ experimentId: exercise.id });
+        if (fs.existsSync(filePath)) {
+          existingFiles.push(filePath);
+        }
+      }
+
+      if (existingFiles.length) {
+        const result = await confirm(`Do you want to delete ${existingFiles.length} exported application file(s)?`);
+        if (result) {
+          for (const filePath of existingFiles) {
+            fs.rmSync(filePath);
+          }
+          showInformationMessage(`${existingFiles.length} file(s) deleted successfully.`);
+        }
+      }
+      else {
+        showInformationMessage(`No exported file found`);
+      }
+    }, { title: `Delete exported applications` });
+  }
+}
+
 export const ToolNodeClasses = [
   GenerateListNode,
-  ExportApplicationsForceNode
+  ExportApplicationsForceNode,
+  DeleteExportedApplicationNode,
 ];

@@ -1,93 +1,131 @@
 module.exports = [
   {
     "id": 1,
-    "name": "breadthFirstSearch",
+    "name": "accumulatorBestTimeToBuySellStocks",
     "exercises": [
-      "javascript-algorithms#1",
-      "javascript-algorithms#2",
-      "javascript-algorithms#120",
-      "javascript-algorithms#121"
+      "javascript-algorithms#1"
     ]
   },
   {
     "id": 2,
-    "name": "kruskal",
+    "name": "articulationPoints",
     "exercises": [
+      "javascript-algorithms#2",
       "javascript-algorithms#3",
       "javascript-algorithms#4",
-      "javascript-algorithms#5"
+      "javascript-algorithms#5",
+      "javascript-algorithms#6",
+      "javascript-algorithms#7",
+      "javascript-algorithms#8"
     ]
   },
   {
     "id": 3,
-    "name": "depthFirstSearch",
+    "name": "backtrackingJumpGame",
     "exercises": [
-      "javascript-algorithms#6",
-      "javascript-algorithms#7",
-      "javascript-algorithms#259",
-      "javascript-algorithms#260"
+      "javascript-algorithms#9"
     ]
   },
   {
     "id": 4,
-    "name": "PolynomialHash",
+    "name": "bellmanFord",
     "exercises": [
-      "javascript-algorithms#8",
-      "javascript-algorithms#9",
-      "javascript-algorithms#19"
-    ]
-  },
-  {
-    "id": 5,
-    "name": "resizeImageWidth",
-    "exercises": [
-      "javascript-algorithms#10"
-    ]
-  },
-  {
-    "id": 6,
-    "name": "detectDirectedCycle",
-    "exercises": [
+      "javascript-algorithms#10",
       "javascript-algorithms#11"
     ]
   },
   {
-    "id": 7,
-    "name": "SelectionSort",
+    "id": 5,
+    "name": "bfMaximumSubarray",
     "exercises": [
-      "javascript-algorithms#12",
-      "javascript-algorithms#13",
-      "javascript-algorithms#14",
-      "javascript-algorithms#15",
-      "javascript-algorithms#16",
-      "javascript-algorithms#17",
-      "javascript-algorithms#18"
+      "javascript-algorithms#12"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "bfRainTerraces",
+    "exercises": [
+      "javascript-algorithms#13"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "bfTravellingSalesman",
+    "exercises": [
+      "javascript-algorithms#14"
     ]
   },
   {
     "id": 8,
-    "name": "fastFourierTransform",
+    "name": "binarySearch",
     "exercises": [
-      "javascript-algorithms#20",
-      "javascript-algorithms#21",
-      "javascript-algorithms#22"
+      "javascript-algorithms#15",
+      "javascript-algorithms#16"
     ]
   },
   {
     "id": 9,
-    "name": "eulerianPath",
+    "name": "bitLength",
     "exercises": [
+      "javascript-algorithms#17"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "bitsDiff",
+    "exercises": [
+      "javascript-algorithms#18"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "bitsToFloat16",
+    "exercises": [
+      "javascript-algorithms#19"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "bitsToFloat32",
+    "exercises": [
+      "javascript-algorithms#20"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "bitsToFloat64",
+    "exercises": [
+      "javascript-algorithms#21"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "breadthFirstSearch",
+    "exercises": [
+      "javascript-algorithms#22",
       "javascript-algorithms#23",
       "javascript-algorithms#24",
       "javascript-algorithms#25"
     ]
   },
   {
-    "id": 10,
-    "name": "Matrix",
+    "id": 15,
+    "name": "btPowerSet",
     "exercises": [
-      "javascript-algorithms#26",
-      "javascript-algorithms#27",
+      "javascript-algorithms#26"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "btUniquePaths",
+    "exercises": [
+      "javascript-algorithms#27"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "BubbleSort",
+    "exercises": [
       "javascript-algorithms#28",
       "javascript-algorithms#29",
       "javascript-algorithms#30",
@@ -95,417 +133,509 @@ module.exports = [
       "javascript-algorithms#32",
       "javascript-algorithms#33",
       "javascript-algorithms#34",
-      "javascript-algorithms#35",
-      "javascript-algorithms#36",
+      "javascript-algorithms#35"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "bwPowerSet",
+    "exercises": [
+      "javascript-algorithms#36"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "caesarCipher",
+    "exercises": [
       "javascript-algorithms#37",
       "javascript-algorithms#38",
-      "javascript-algorithms#39"
+      "javascript-algorithms#39",
+      "javascript-algorithms#40",
+      "javascript-algorithms#41",
+      "javascript-algorithms#42"
     ]
   },
   {
-    "id": 11,
-    "name": "euclideanAlgorithm",
+    "id": 20,
+    "name": "cartesianProduct",
     "exercises": [
-      "javascript-algorithms#40"
-    ]
-  },
-  {
-    "id": 12,
-    "name": "nQueensBitwise",
-    "exercises": [
-      "javascript-algorithms#41"
-    ]
-  },
-  {
-    "id": 13,
-    "name": "kNN",
-    "exercises": [
-      "javascript-algorithms#42",
       "javascript-algorithms#43",
-      "javascript-algorithms#44",
-      "javascript-algorithms#45",
-      "javascript-algorithms#46",
+      "javascript-algorithms#44"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "classicPolynome",
+    "exercises": [
+      "javascript-algorithms#45"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "clearBit",
+    "exercises": [
+      "javascript-algorithms#46"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "combinationSum",
+    "exercises": [
       "javascript-algorithms#47"
     ]
   },
   {
-    "id": 14,
-    "name": "floatAs32Binary",
+    "id": 24,
+    "name": "combineWithoutRepetitions",
     "exercises": [
       "javascript-algorithms#48"
     ]
   },
   {
-    "id": 15,
-    "name": "floatAs64Binary",
+    "id": 25,
+    "name": "combineWithRepetitions",
     "exercises": [
       "javascript-algorithms#49"
     ]
   },
   {
-    "id": 16,
-    "name": "kMeans",
+    "id": 26,
+    "name": "ComplexNumber",
     "exercises": [
       "javascript-algorithms#50",
       "javascript-algorithms#51",
       "javascript-algorithms#52",
       "javascript-algorithms#53",
-      "javascript-algorithms#54"
-    ]
-  },
-  {
-    "id": 17,
-    "name": "multiply",
-    "exercises": [
-      "javascript-algorithms#55"
-    ]
-  },
-  {
-    "id": 18,
-    "name": "articulationPoints",
-    "exercises": [
+      "javascript-algorithms#54",
+      "javascript-algorithms#55",
       "javascript-algorithms#56",
       "javascript-algorithms#57",
       "javascript-algorithms#58",
-      "javascript-algorithms#59",
-      "javascript-algorithms#60",
-      "javascript-algorithms#61",
-      "javascript-algorithms#62"
+      "javascript-algorithms#59"
     ]
   },
   {
-    "id": 19,
-    "name": "HeapSort",
+    "id": 27,
+    "name": "CountingSort",
     "exercises": [
+      "javascript-algorithms#60",
+      "javascript-algorithms#61",
+      "javascript-algorithms#62",
       "javascript-algorithms#63",
       "javascript-algorithms#64",
       "javascript-algorithms#65",
-      "javascript-algorithms#66",
-      "javascript-algorithms#67",
-      "javascript-algorithms#68",
+      "javascript-algorithms#66"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "countSetBits",
+    "exercises": [
+      "javascript-algorithms#67"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "dcMaximumSubarraySum",
+    "exercises": [
+      "javascript-algorithms#68"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "degreeToRadian",
+    "exercises": [
       "javascript-algorithms#69"
     ]
   },
   {
-    "id": 20,
-    "name": "QuickSortInPlace",
+    "id": 31,
+    "name": "depthFirstSearch",
     "exercises": [
       "javascript-algorithms#70",
       "javascript-algorithms#71",
       "javascript-algorithms#72",
-      "javascript-algorithms#73",
-      "javascript-algorithms#74",
-      "javascript-algorithms#75",
+      "javascript-algorithms#73"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "detectDirectedCycle",
+    "exercises": [
+      "javascript-algorithms#74"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "detectUndirectedCycle",
+    "exercises": [
+      "javascript-algorithms#75"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "detectUndirectedCycleUsingDisjointSet",
+    "exercises": [
       "javascript-algorithms#76"
     ]
   },
   {
-    "id": 21,
-    "name": "factorialRecursive",
+    "id": 35,
+    "name": "dijkstra",
     "exercises": [
-      "javascript-algorithms#77"
+      "javascript-algorithms#77",
+      "javascript-algorithms#78"
     ]
   },
   {
-    "id": 22,
-    "name": "prim",
+    "id": 36,
+    "name": "discreteFourierTransform",
     "exercises": [
-      "javascript-algorithms#78",
-      "javascript-algorithms#79",
+      "javascript-algorithms#79"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "divideByTwo",
+    "exercises": [
       "javascript-algorithms#80"
     ]
   },
   {
-    "id": 23,
-    "name": "euclideanDistance",
+    "id": 38,
+    "name": "dpBestTimeToBuySellStocks",
     "exercises": [
-      "javascript-algorithms#81",
+      "javascript-algorithms#81"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "dpBottomUpJumpGame",
+    "exercises": [
       "javascript-algorithms#82"
     ]
   },
   {
-    "id": 24,
-    "name": "hamiltonianCycle",
+    "id": 40,
+    "name": "dpLongestIncreasingSubsequence",
     "exercises": [
-      "javascript-algorithms#83",
+      "javascript-algorithms#83"
+    ]
+  },
+  {
+    "id": 41,
+    "name": "dpMaximumSubarray",
+    "exercises": [
       "javascript-algorithms#84"
     ]
   },
   {
-    "id": 25,
-    "name": "discreteFourierTransform",
+    "id": 42,
+    "name": "dpRainTerraces",
     "exercises": [
       "javascript-algorithms#85"
     ]
   },
   {
-    "id": 26,
-    "name": "linearSearch",
+    "id": 43,
+    "name": "dpTopDownJumpGame",
     "exercises": [
-      "javascript-algorithms#86",
-      "javascript-algorithms#87",
+      "javascript-algorithms#86"
+    ]
+  },
+  {
+    "id": 44,
+    "name": "dpUniquePaths",
+    "exercises": [
+      "javascript-algorithms#87"
+    ]
+  },
+  {
+    "id": 45,
+    "name": "dqBestTimeToBuySellStocks",
+    "exercises": [
       "javascript-algorithms#88"
     ]
   },
   {
-    "id": 27,
-    "name": "bellmanFord",
+    "id": 46,
+    "name": "euclideanAlgorithm",
     "exercises": [
-      "javascript-algorithms#89",
+      "javascript-algorithms#89"
+    ]
+  },
+  {
+    "id": 47,
+    "name": "euclideanAlgorithmIterative",
+    "exercises": [
       "javascript-algorithms#90"
     ]
   },
   {
-    "id": 28,
-    "name": "pascalTriangle",
+    "id": 48,
+    "name": "euclideanDistance",
     "exercises": [
-      "javascript-algorithms#91"
+      "javascript-algorithms#91",
+      "javascript-algorithms#92"
     ]
   },
   {
-    "id": 29,
-    "name": "hornerMethod",
+    "id": 49,
+    "name": "eulerianPath",
     "exercises": [
-      "javascript-algorithms#92",
-      "javascript-algorithms#93"
-    ]
-  },
-  {
-    "id": 30,
-    "name": "floydWarshall",
-    "exercises": [
+      "javascript-algorithms#93",
       "javascript-algorithms#94",
-      "javascript-algorithms#95",
+      "javascript-algorithms#95"
+    ]
+  },
+  {
+    "id": 50,
+    "name": "factorial",
+    "exercises": [
       "javascript-algorithms#96"
     ]
   },
   {
-    "id": 31,
-    "name": "leastCommonMultiple",
+    "id": 51,
+    "name": "factorialRecursive",
     "exercises": [
       "javascript-algorithms#97"
     ]
   },
   {
-    "id": 32,
-    "name": "permutateWithoutRepetitions",
+    "id": 52,
+    "name": "fastFourierTransform",
     "exercises": [
-      "javascript-algorithms#98"
-    ]
-  },
-  {
-    "id": 33,
-    "name": "factorial",
-    "exercises": [
-      "javascript-algorithms#99"
-    ]
-  },
-  {
-    "id": 34,
-    "name": "dqBestTimeToBuySellStocks",
-    "exercises": [
+      "javascript-algorithms#98",
+      "javascript-algorithms#99",
       "javascript-algorithms#100"
     ]
   },
   {
-    "id": 35,
-    "name": "isEven",
+    "id": 53,
+    "name": "fastPowering",
     "exercises": [
       "javascript-algorithms#101"
     ]
   },
   {
-    "id": 36,
-    "name": "bitsDiff",
+    "id": 54,
+    "name": "fibonacci",
     "exercises": [
       "javascript-algorithms#102"
     ]
   },
   {
-    "id": 37,
-    "name": "zAlgorithm",
+    "id": 55,
+    "name": "fibonacciClosedForm",
     "exercises": [
-      "javascript-algorithms#103"
-    ]
-  },
-  {
-    "id": 38,
-    "name": "dpMaximumSubarray",
-    "exercises": [
+      "javascript-algorithms#103",
       "javascript-algorithms#104"
     ]
   },
   {
-    "id": 39,
-    "name": "RadixSort",
+    "id": 56,
+    "name": "fibonacciNth",
     "exercises": [
-      "javascript-algorithms#105",
+      "javascript-algorithms#105"
+    ]
+  },
+  {
+    "id": 57,
+    "name": "fisherYates",
+    "exercises": [
       "javascript-algorithms#106",
       "javascript-algorithms#107"
     ]
   },
   {
-    "id": 40,
-    "name": "topologicalSort",
+    "id": 58,
+    "name": "floatAs32Binary",
     "exercises": [
       "javascript-algorithms#108"
     ]
   },
   {
-    "id": 41,
-    "name": "detectUndirectedCycleUsingDisjointSet",
+    "id": 59,
+    "name": "floatAs64Binary",
     "exercises": [
       "javascript-algorithms#109"
     ]
   },
   {
-    "id": 42,
-    "name": "dpBottomUpJumpGame",
+    "id": 60,
+    "name": "floydWarshall",
     "exercises": [
-      "javascript-algorithms#110"
+      "javascript-algorithms#110",
+      "javascript-algorithms#111",
+      "javascript-algorithms#112"
     ]
   },
   {
-    "id": 43,
-    "name": "shortestCommonSupersequence",
+    "id": 61,
+    "name": "fullAdder",
     "exercises": [
-      "javascript-algorithms#111"
+      "javascript-algorithms#113"
     ]
   },
   {
-    "id": 44,
-    "name": "MergeSort",
+    "id": 62,
+    "name": "getBit",
     "exercises": [
-      "javascript-algorithms#112",
-      "javascript-algorithms#113",
-      "javascript-algorithms#114",
+      "javascript-algorithms#114"
+    ]
+  },
+  {
+    "id": 63,
+    "name": "graphBridges",
+    "exercises": [
       "javascript-algorithms#115",
       "javascript-algorithms#116",
       "javascript-algorithms#117",
       "javascript-algorithms#118",
-      "javascript-algorithms#119"
+      "javascript-algorithms#119",
+      "javascript-algorithms#120"
     ]
   },
   {
-    "id": 45,
-    "name": "Knapsack",
+    "id": 64,
+    "name": "greedyJumpGame",
+    "exercises": [
+      "javascript-algorithms#121"
+    ]
+  },
+  {
+    "id": 65,
+    "name": "hamiltonianCycle",
     "exercises": [
       "javascript-algorithms#122",
-      "javascript-algorithms#123",
+      "javascript-algorithms#123"
+    ]
+  },
+  {
+    "id": 66,
+    "name": "hammingDistance",
+    "exercises": [
       "javascript-algorithms#124",
-      "javascript-algorithms#125",
+      "javascript-algorithms#125"
+    ]
+  },
+  {
+    "id": 67,
+    "name": "hanoiTower",
+    "exercises": [
       "javascript-algorithms#126",
       "javascript-algorithms#127",
       "javascript-algorithms#128"
     ]
   },
   {
-    "id": 46,
-    "name": "squareRoot",
+    "id": 68,
+    "name": "HeapSort",
     "exercises": [
       "javascript-algorithms#129",
       "javascript-algorithms#130",
-      "javascript-algorithms#131"
-    ]
-  },
-  {
-    "id": 47,
-    "name": "QuickSort",
-    "exercises": [
+      "javascript-algorithms#131",
       "javascript-algorithms#132",
       "javascript-algorithms#133",
       "javascript-algorithms#134",
-      "javascript-algorithms#135",
-      "javascript-algorithms#136",
-      "javascript-algorithms#137",
-      "javascript-algorithms#138",
-      "javascript-algorithms#139"
+      "javascript-algorithms#135"
     ]
   },
   {
-    "id": 48,
+    "id": 69,
+    "name": "hillCipher",
+    "exercises": [
+      "javascript-algorithms#136",
+      "javascript-algorithms#137",
+      "javascript-algorithms#138",
+      "javascript-algorithms#139",
+      "javascript-algorithms#140"
+    ]
+  },
+  {
+    "id": 70,
+    "name": "hornerMethod",
+    "exercises": [
+      "javascript-algorithms#141",
+      "javascript-algorithms#142"
+    ]
+  },
+  {
+    "id": 71,
     "name": "InsertionSort",
     "exercises": [
-      "javascript-algorithms#140",
-      "javascript-algorithms#141",
-      "javascript-algorithms#142",
       "javascript-algorithms#143",
       "javascript-algorithms#144",
       "javascript-algorithms#145",
       "javascript-algorithms#146",
-      "javascript-algorithms#147"
-    ]
-  },
-  {
-    "id": 49,
-    "name": "inverseDiscreteFourierTransform",
-    "exercises": [
-      "javascript-algorithms#148"
-    ]
-  },
-  {
-    "id": 50,
-    "name": "nQueens",
-    "exercises": [
+      "javascript-algorithms#147",
+      "javascript-algorithms#148",
       "javascript-algorithms#149",
-      "javascript-algorithms#150",
+      "javascript-algorithms#150"
+    ]
+  },
+  {
+    "id": 72,
+    "name": "integerPartition",
+    "exercises": [
       "javascript-algorithms#151"
     ]
   },
   {
-    "id": 51,
-    "name": "dcMaximumSubarraySum",
+    "id": 73,
+    "name": "interpolationSearch",
     "exercises": [
       "javascript-algorithms#152"
     ]
   },
   {
-    "id": 52,
-    "name": "fibonacciClosedForm",
+    "id": 74,
+    "name": "inverseDiscreteFourierTransform",
     "exercises": [
-      "javascript-algorithms#153",
+      "javascript-algorithms#153"
+    ]
+  },
+  {
+    "id": 75,
+    "name": "isEven",
+    "exercises": [
       "javascript-algorithms#154"
     ]
   },
   {
-    "id": 53,
-    "name": "peakvalleyBestTimeToBuySellStocks",
+    "id": 76,
+    "name": "isPositive",
     "exercises": [
       "javascript-algorithms#155"
     ]
   },
   {
-    "id": 54,
-    "name": "binarySearch",
+    "id": 77,
+    "name": "isPowerOfTwo",
     "exercises": [
       "javascript-algorithms#156",
       "javascript-algorithms#157"
     ]
   },
   {
-    "id": 55,
-    "name": "euclideanAlgorithmIterative",
+    "id": 78,
+    "name": "isPowerOfTwoBitwise",
     "exercises": [
       "javascript-algorithms#158"
     ]
   },
   {
-    "id": 56,
-    "name": "knuthMorrisPratt",
+    "id": 79,
+    "name": "jumpSearch",
     "exercises": [
-      "javascript-algorithms#159"
-    ]
-  },
-  {
-    "id": 57,
-    "name": "greedyJumpGame",
-    "exercises": [
+      "javascript-algorithms#159",
       "javascript-algorithms#160"
     ]
   },
   {
-    "id": 58,
-    "name": "hillCipher",
+    "id": 80,
+    "name": "kMeans",
     "exercises": [
       "javascript-algorithms#161",
       "javascript-algorithms#162",
@@ -515,633 +645,503 @@ module.exports = [
     ]
   },
   {
-    "id": 59,
-    "name": "railFenceCipher",
+    "id": 81,
+    "name": "Knapsack",
     "exercises": [
       "javascript-algorithms#166",
       "javascript-algorithms#167",
       "javascript-algorithms#168",
-      "javascript-algorithms#169"
+      "javascript-algorithms#169",
+      "javascript-algorithms#170",
+      "javascript-algorithms#171",
+      "javascript-algorithms#172"
     ]
   },
   {
-    "id": 60,
-    "name": "combineWithoutRepetitions",
+    "id": 82,
+    "name": "KnapsackItem",
     "exercises": [
-      "javascript-algorithms#170"
+      "javascript-algorithms#173"
     ]
   },
   {
-    "id": 61,
-    "name": "trialDivision",
-    "exercises": [
-      "javascript-algorithms#171"
-    ]
-  },
-  {
-    "id": 62,
-    "name": "caesarCipher",
-    "exercises": [
-      "javascript-algorithms#172",
-      "javascript-algorithms#173",
-      "javascript-algorithms#174",
-      "javascript-algorithms#175",
-      "javascript-algorithms#176",
-      "javascript-algorithms#177"
-    ]
-  },
-  {
-    "id": 63,
+    "id": 83,
     "name": "knightTour",
     "exercises": [
-      "javascript-algorithms#178",
-      "javascript-algorithms#179"
+      "javascript-algorithms#174",
+      "javascript-algorithms#175"
     ]
   },
   {
-    "id": 64,
-    "name": "hammingDistance",
+    "id": 84,
+    "name": "kNN",
     "exercises": [
+      "javascript-algorithms#176",
+      "javascript-algorithms#177",
+      "javascript-algorithms#178",
+      "javascript-algorithms#179",
       "javascript-algorithms#180",
       "javascript-algorithms#181"
     ]
   },
   {
-    "id": 65,
-    "name": "graphBridges",
-    "exercises": [
-      "javascript-algorithms#182",
-      "javascript-algorithms#183",
-      "javascript-algorithms#184",
-      "javascript-algorithms#185",
-      "javascript-algorithms#186",
-      "javascript-algorithms#187"
-    ]
-  },
-  {
-    "id": 66,
-    "name": "recursiveStaircaseMEM",
-    "exercises": [
-      "javascript-algorithms#188"
-    ]
-  },
-  {
-    "id": 67,
-    "name": "isPositive",
-    "exercises": [
-      "javascript-algorithms#189"
-    ]
-  },
-  {
-    "id": 68,
-    "name": "ShellSort",
-    "exercises": [
-      "javascript-algorithms#190",
-      "javascript-algorithms#191",
-      "javascript-algorithms#192",
-      "javascript-algorithms#193",
-      "javascript-algorithms#194",
-      "javascript-algorithms#195",
-      "javascript-algorithms#196"
-    ]
-  },
-  {
-    "id": 69,
-    "name": "primeFactors",
-    "exercises": [
-      "javascript-algorithms#197",
-      "javascript-algorithms#198",
-      "javascript-algorithms#199"
-    ]
-  },
-  {
-    "id": 70,
-    "name": "permutateWithRepetitions",
-    "exercises": [
-      "javascript-algorithms#200"
-    ]
-  },
-  {
-    "id": 71,
-    "name": "bfTravellingSalesman",
-    "exercises": [
-      "javascript-algorithms#201"
-    ]
-  },
-  {
-    "id": 72,
-    "name": "reverseTraversal",
-    "exercises": [
-      "javascript-algorithms#202"
-    ]
-  },
-  {
-    "id": 73,
-    "name": "levenshteinDistance",
-    "exercises": [
-      "javascript-algorithms#203"
-    ]
-  },
-  {
-    "id": 74,
-    "name": "combineWithRepetitions",
-    "exercises": [
-      "javascript-algorithms#204"
-    ]
-  },
-  {
-    "id": 75,
-    "name": "isPowerOfTwoBitwise",
-    "exercises": [
-      "javascript-algorithms#205"
-    ]
-  },
-  {
-    "id": 76,
-    "name": "integerPartition",
-    "exercises": [
-      "javascript-algorithms#206"
-    ]
-  },
-  {
-    "id": 77,
-    "name": "weightedRandom",
-    "exercises": [
-      "javascript-algorithms#207",
-      "javascript-algorithms#208",
-      "javascript-algorithms#209",
-      "javascript-algorithms#210"
-    ]
-  },
-  {
-    "id": 78,
-    "name": "fullAdder",
-    "exercises": [
-      "javascript-algorithms#211"
-    ]
-  },
-  {
-    "id": 79,
-    "name": "bfRainTerraces",
-    "exercises": [
-      "javascript-algorithms#212"
-    ]
-  },
-  {
-    "id": 80,
-    "name": "fibonacciNth",
-    "exercises": [
-      "javascript-algorithms#213"
-    ]
-  },
-  {
-    "id": 81,
-    "name": "stronglyConnectedComponents",
-    "exercises": [
-      "javascript-algorithms#214",
-      "javascript-algorithms#215"
-    ]
-  },
-  {
-    "id": 82,
-    "name": "radianToDegree",
-    "exercises": [
-      "javascript-algorithms#216"
-    ]
-  },
-  {
-    "id": 83,
-    "name": "recursiveStaircaseDP",
-    "exercises": [
-      "javascript-algorithms#217"
-    ]
-  },
-  {
-    "id": 84,
-    "name": "Sort",
-    "exercises": [
-      "javascript-algorithms#218"
-    ]
-  },
-  {
     "id": 85,
-    "name": "fisherYates",
+    "name": "knuthMorrisPratt",
     "exercises": [
-      "javascript-algorithms#219",
-      "javascript-algorithms#220"
+      "javascript-algorithms#182"
     ]
   },
   {
     "id": 86,
-    "name": "detectUndirectedCycle",
+    "name": "kruskal",
+    "exercises": [
+      "javascript-algorithms#183",
+      "javascript-algorithms#184",
+      "javascript-algorithms#185"
+    ]
+  },
+  {
+    "id": 87,
+    "name": "leastCommonMultiple",
+    "exercises": [
+      "javascript-algorithms#186"
+    ]
+  },
+  {
+    "id": 88,
+    "name": "levenshteinDistance",
+    "exercises": [
+      "javascript-algorithms#187"
+    ]
+  },
+  {
+    "id": 89,
+    "name": "linearSearch",
+    "exercises": [
+      "javascript-algorithms#188",
+      "javascript-algorithms#189",
+      "javascript-algorithms#190"
+    ]
+  },
+  {
+    "id": 90,
+    "name": "liuHui",
+    "exercises": [
+      "javascript-algorithms#191",
+      "javascript-algorithms#192",
+      "javascript-algorithms#193",
+      "javascript-algorithms#194"
+    ]
+  },
+  {
+    "id": 91,
+    "name": "longestCommonSubsequence",
+    "exercises": [
+      "javascript-algorithms#195"
+    ]
+  },
+  {
+    "id": 92,
+    "name": "longestCommonSubstring",
+    "exercises": [
+      "javascript-algorithms#196",
+      "javascript-algorithms#197"
+    ]
+  },
+  {
+    "id": 93,
+    "name": "Matrix",
+    "exercises": [
+      "javascript-algorithms#198",
+      "javascript-algorithms#199",
+      "javascript-algorithms#200",
+      "javascript-algorithms#201",
+      "javascript-algorithms#202",
+      "javascript-algorithms#203",
+      "javascript-algorithms#204",
+      "javascript-algorithms#205",
+      "javascript-algorithms#206",
+      "javascript-algorithms#207",
+      "javascript-algorithms#208",
+      "javascript-algorithms#209",
+      "javascript-algorithms#210",
+      "javascript-algorithms#211"
+    ]
+  },
+  {
+    "id": 94,
+    "name": "MergeSort",
+    "exercises": [
+      "javascript-algorithms#212",
+      "javascript-algorithms#213",
+      "javascript-algorithms#214",
+      "javascript-algorithms#215",
+      "javascript-algorithms#216",
+      "javascript-algorithms#217",
+      "javascript-algorithms#218",
+      "javascript-algorithms#219"
+    ]
+  },
+  {
+    "id": 95,
+    "name": "multiply",
+    "exercises": [
+      "javascript-algorithms#220"
+    ]
+  },
+  {
+    "id": 96,
+    "name": "multiplyByTwo",
     "exercises": [
       "javascript-algorithms#221"
     ]
   },
   {
-    "id": 87,
-    "name": "sieveOfEratosthenes",
+    "id": 97,
+    "name": "multiplyUnsigned",
     "exercises": [
       "javascript-algorithms#222"
     ]
   },
   {
-    "id": 88,
-    "name": "traversal",
+    "id": 98,
+    "name": "nQueens",
     "exercises": [
-      "javascript-algorithms#223"
-    ]
-  },
-  {
-    "id": 89,
-    "name": "bitsToFloat16",
-    "exercises": [
-      "javascript-algorithms#224"
-    ]
-  },
-  {
-    "id": 90,
-    "name": "bitsToFloat32",
-    "exercises": [
+      "javascript-algorithms#223",
+      "javascript-algorithms#224",
       "javascript-algorithms#225"
     ]
   },
   {
-    "id": 91,
-    "name": "bitsToFloat64",
+    "id": 99,
+    "name": "nQueensBitwise",
     "exercises": [
       "javascript-algorithms#226"
     ]
   },
   {
-    "id": 92,
-    "name": "regularExpressionMatching",
+    "id": 100,
+    "name": "palindromeCheck",
     "exercises": [
       "javascript-algorithms#227"
     ]
   },
   {
-    "id": 93,
-    "name": "dpRainTerraces",
+    "id": 101,
+    "name": "pascalTriangle",
     "exercises": [
       "javascript-algorithms#228"
     ]
   },
   {
-    "id": 94,
-    "name": "liuHui",
+    "id": 102,
+    "name": "pascalTriangleRecursive",
     "exercises": [
-      "javascript-algorithms#229",
-      "javascript-algorithms#230",
-      "javascript-algorithms#231",
+      "javascript-algorithms#229"
+    ]
+  },
+  {
+    "id": 103,
+    "name": "peakvalleyBestTimeToBuySellStocks",
+    "exercises": [
+      "javascript-algorithms#230"
+    ]
+  },
+  {
+    "id": 104,
+    "name": "permutateWithoutRepetitions",
+    "exercises": [
+      "javascript-algorithms#231"
+    ]
+  },
+  {
+    "id": 105,
+    "name": "permutateWithRepetitions",
+    "exercises": [
       "javascript-algorithms#232"
     ]
   },
   {
-    "id": 95,
-    "name": "accumulatorBestTimeToBuySellStocks",
+    "id": 106,
+    "name": "PolynomialHash",
     "exercises": [
-      "javascript-algorithms#233"
-    ]
-  },
-  {
-    "id": 96,
-    "name": "recursiveStaircaseBF",
-    "exercises": [
-      "javascript-algorithms#234"
-    ]
-  },
-  {
-    "id": 97,
-    "name": "dpUniquePaths",
-    "exercises": [
+      "javascript-algorithms#233",
+      "javascript-algorithms#234",
       "javascript-algorithms#235"
     ]
   },
   {
-    "id": 98,
-    "name": "jumpSearch",
+    "id": 107,
+    "name": "prim",
     "exercises": [
       "javascript-algorithms#236",
-      "javascript-algorithms#237"
+      "javascript-algorithms#237",
+      "javascript-algorithms#238"
     ]
   },
   {
-    "id": 99,
-    "name": "ComplexNumber",
+    "id": 108,
+    "name": "primeFactors",
     "exercises": [
-      "javascript-algorithms#238",
       "javascript-algorithms#239",
       "javascript-algorithms#240",
-      "javascript-algorithms#241",
-      "javascript-algorithms#242",
+      "javascript-algorithms#241"
+    ]
+  },
+  {
+    "id": 109,
+    "name": "QueenPosition",
+    "exercises": [
+      "javascript-algorithms#242"
+    ]
+  },
+  {
+    "id": 110,
+    "name": "QuickSort",
+    "exercises": [
       "javascript-algorithms#243",
       "javascript-algorithms#244",
       "javascript-algorithms#245",
       "javascript-algorithms#246",
-      "javascript-algorithms#247"
-    ]
-  },
-  {
-    "id": 100,
-    "name": "interpolationSearch",
-    "exercises": [
-      "javascript-algorithms#248"
-    ]
-  },
-  {
-    "id": 101,
-    "name": "BubbleSort",
-    "exercises": [
+      "javascript-algorithms#247",
+      "javascript-algorithms#248",
       "javascript-algorithms#249",
-      "javascript-algorithms#250",
+      "javascript-algorithms#250"
+    ]
+  },
+  {
+    "id": 111,
+    "name": "QuickSortInPlace",
+    "exercises": [
       "javascript-algorithms#251",
       "javascript-algorithms#252",
       "javascript-algorithms#253",
       "javascript-algorithms#254",
       "javascript-algorithms#255",
-      "javascript-algorithms#256"
-    ]
-  },
-  {
-    "id": 102,
-    "name": "fastPowering",
-    "exercises": [
+      "javascript-algorithms#256",
       "javascript-algorithms#257"
     ]
   },
   {
-    "id": 103,
-    "name": "btPowerSet",
+    "id": 112,
+    "name": "rabinKarp",
     "exercises": [
-      "javascript-algorithms#258"
+      "javascript-algorithms#258",
+      "javascript-algorithms#259",
+      "javascript-algorithms#260"
     ]
   },
   {
-    "id": 104,
-    "name": "dpBestTimeToBuySellStocks",
+    "id": 113,
+    "name": "radianToDegree",
     "exercises": [
       "javascript-algorithms#261"
     ]
   },
   {
-    "id": 105,
-    "name": "cartesianProduct",
+    "id": 114,
+    "name": "RadixSort",
     "exercises": [
       "javascript-algorithms#262",
-      "javascript-algorithms#263"
+      "javascript-algorithms#263",
+      "javascript-algorithms#264"
     ]
   },
   {
-    "id": 106,
-    "name": "dijkstra",
+    "id": 115,
+    "name": "railFenceCipher",
     "exercises": [
-      "javascript-algorithms#264",
-      "javascript-algorithms#265"
-    ]
-  },
-  {
-    "id": 107,
-    "name": "KnapsackItem",
-    "exercises": [
-      "javascript-algorithms#266"
-    ]
-  },
-  {
-    "id": 108,
-    "name": "bwPowerSet",
-    "exercises": [
-      "javascript-algorithms#267"
-    ]
-  },
-  {
-    "id": 109,
-    "name": "recursiveStaircaseIT",
-    "exercises": [
+      "javascript-algorithms#265",
+      "javascript-algorithms#266",
+      "javascript-algorithms#267",
       "javascript-algorithms#268"
     ]
   },
   {
-    "id": 110,
-    "name": "rabinKarp",
+    "id": 116,
+    "name": "recursiveStaircaseBF",
     "exercises": [
-      "javascript-algorithms#269",
-      "javascript-algorithms#270",
+      "javascript-algorithms#269"
+    ]
+  },
+  {
+    "id": 117,
+    "name": "recursiveStaircaseDP",
+    "exercises": [
+      "javascript-algorithms#270"
+    ]
+  },
+  {
+    "id": 118,
+    "name": "recursiveStaircaseIT",
+    "exercises": [
       "javascript-algorithms#271"
     ]
   },
   {
-    "id": 111,
-    "name": "combinationSum",
+    "id": 119,
+    "name": "recursiveStaircaseMEM",
     "exercises": [
       "javascript-algorithms#272"
     ]
   },
   {
-    "id": 112,
-    "name": "backtrackingJumpGame",
+    "id": 120,
+    "name": "regularExpressionMatching",
     "exercises": [
       "javascript-algorithms#273"
     ]
   },
   {
-    "id": 113,
-    "name": "dpLongestIncreasingSubsequence",
+    "id": 121,
+    "name": "resizeImageWidth",
     "exercises": [
       "javascript-algorithms#274"
     ]
   },
   {
-    "id": 114,
-    "name": "classicPolynome",
+    "id": 122,
+    "name": "reverseTraversal",
     "exercises": [
       "javascript-algorithms#275"
     ]
   },
   {
-    "id": 115,
-    "name": "setBit",
+    "id": 123,
+    "name": "SelectionSort",
     "exercises": [
-      "javascript-algorithms#276"
-    ]
-  },
-  {
-    "id": 116,
-    "name": "multiplyUnsigned",
-    "exercises": [
-      "javascript-algorithms#277"
-    ]
-  },
-  {
-    "id": 117,
-    "name": "CountingSort",
-    "exercises": [
+      "javascript-algorithms#276",
+      "javascript-algorithms#277",
       "javascript-algorithms#278",
       "javascript-algorithms#279",
       "javascript-algorithms#280",
       "javascript-algorithms#281",
-      "javascript-algorithms#282",
-      "javascript-algorithms#283",
-      "javascript-algorithms#284"
-    ]
-  },
-  {
-    "id": 118,
-    "name": "getBit",
-    "exercises": [
-      "javascript-algorithms#285"
-    ]
-  },
-  {
-    "id": 119,
-    "name": "QueenPosition",
-    "exercises": [
-      "javascript-algorithms#286"
-    ]
-  },
-  {
-    "id": 120,
-    "name": "dpTopDownJumpGame",
-    "exercises": [
-      "javascript-algorithms#287"
-    ]
-  },
-  {
-    "id": 121,
-    "name": "clearBit",
-    "exercises": [
-      "javascript-algorithms#288"
-    ]
-  },
-  {
-    "id": 122,
-    "name": "degreeToRadian",
-    "exercises": [
-      "javascript-algorithms#289"
-    ]
-  },
-  {
-    "id": 123,
-    "name": "pascalTriangleRecursive",
-    "exercises": [
-      "javascript-algorithms#290"
+      "javascript-algorithms#282"
     ]
   },
   {
     "id": 124,
-    "name": "palindromeCheck",
+    "name": "setBit",
+    "exercises": [
+      "javascript-algorithms#283"
+    ]
+  },
+  {
+    "id": 125,
+    "name": "ShellSort",
+    "exercises": [
+      "javascript-algorithms#284",
+      "javascript-algorithms#285",
+      "javascript-algorithms#286",
+      "javascript-algorithms#287",
+      "javascript-algorithms#288",
+      "javascript-algorithms#289",
+      "javascript-algorithms#290"
+    ]
+  },
+  {
+    "id": 126,
+    "name": "shortestCommonSupersequence",
     "exercises": [
       "javascript-algorithms#291"
     ]
   },
   {
-    "id": 125,
-    "name": "fibonacci",
+    "id": 127,
+    "name": "sieveOfEratosthenes",
     "exercises": [
       "javascript-algorithms#292"
     ]
   },
   {
-    "id": 126,
-    "name": "bitLength",
+    "id": 128,
+    "name": "Sort",
     "exercises": [
       "javascript-algorithms#293"
     ]
   },
   {
-    "id": 127,
-    "name": "isPowerOfTwo",
+    "id": 129,
+    "name": "squareMatrixRotation",
     "exercises": [
       "javascript-algorithms#294",
+      "javascript-algorithms#295",
+      "javascript-algorithms#296",
       "javascript-algorithms#297"
     ]
   },
   {
-    "id": 128,
-    "name": "countSetBits",
-    "exercises": [
-      "javascript-algorithms#295"
-    ]
-  },
-  {
-    "id": 129,
-    "name": "updateBit",
-    "exercises": [
-      "javascript-algorithms#296"
-    ]
-  },
-  {
     "id": 130,
-    "name": "switchSign",
+    "name": "squareRoot",
     "exercises": [
-      "javascript-algorithms#298"
+      "javascript-algorithms#298",
+      "javascript-algorithms#299",
+      "javascript-algorithms#300"
     ]
   },
   {
     "id": 131,
-    "name": "squareMatrixRotation",
+    "name": "stronglyConnectedComponents",
     "exercises": [
-      "javascript-algorithms#299",
-      "javascript-algorithms#300",
       "javascript-algorithms#301",
       "javascript-algorithms#302"
     ]
   },
   {
     "id": 132,
-    "name": "multiplyByTwo",
+    "name": "switchSign",
     "exercises": [
       "javascript-algorithms#303"
     ]
   },
   {
     "id": 133,
-    "name": "hanoiTower",
+    "name": "topologicalSort",
     "exercises": [
-      "javascript-algorithms#304",
-      "javascript-algorithms#305",
-      "javascript-algorithms#306"
+      "javascript-algorithms#304"
     ]
   },
   {
     "id": 134,
-    "name": "longestCommonSubstring",
+    "name": "traversal",
     "exercises": [
-      "javascript-algorithms#307",
-      "javascript-algorithms#308"
+      "javascript-algorithms#305"
     ]
   },
   {
     "id": 135,
-    "name": "bfMaximumSubarray",
+    "name": "trialDivision",
     "exercises": [
-      "javascript-algorithms#309"
+      "javascript-algorithms#306"
     ]
   },
   {
     "id": 136,
-    "name": "divideByTwo",
+    "name": "uniquePaths",
     "exercises": [
-      "javascript-algorithms#310"
+      "javascript-algorithms#307"
     ]
   },
   {
     "id": 137,
-    "name": "longestCommonSubsequence",
+    "name": "updateBit",
     "exercises": [
-      "javascript-algorithms#311"
+      "javascript-algorithms#308"
     ]
   },
   {
     "id": 138,
-    "name": "uniquePaths",
+    "name": "weightedRandom",
     "exercises": [
+      "javascript-algorithms#309",
+      "javascript-algorithms#310",
+      "javascript-algorithms#311",
       "javascript-algorithms#312"
     ]
   },
   {
     "id": 139,
-    "name": "btUniquePaths",
+    "name": "zAlgorithm",
     "exercises": [
       "javascript-algorithms#313"
     ]

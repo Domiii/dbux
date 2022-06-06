@@ -29,7 +29,7 @@ const ignore = [
 const dbuxBabelPluginName = "@dbux/babel-plugin";
 const dbuxBabelPlugin = require(dbuxBabelPluginName);
 
-console.log(`Loading ${dbuxBabelPluginName} from: "${require.resolve(dbuxBabelPluginName)}"`);
+// console.log(`Loading ${dbuxBabelPluginName} from: "${require.resolve(dbuxBabelPluginName)}"`);
 
 
 module.exports = {
