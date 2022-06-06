@@ -16,8 +16,8 @@ import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineCont
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-// const Verbose = 1;
-const Verbose = 0;
+const Verbose = 1;
+// const Verbose = 0;
 
 /** ###########################################################################
  * {@link DDGTimelineBuilder}
@@ -201,11 +201,6 @@ export default class DDGTimelineBuilder {
       const { traceId } = trace;
       const dataNode = this.dp.util.getDataNode(dataNodeId);
       const traceType = this.dp.util.getTraceType(traceId);
-      if (isBeforeCallExpression(traceType)) {
-        // ignore BCEs for now
-        // TODO: some built-in BCEs carry DataNodes
-        return true;
-      }
       if (TraceType.is.Declaration(traceType) && !dataNode.inputs) {
         // ignore declaration-only nodes
         // → connect to first write instead
@@ -476,18 +471,19 @@ export default class DDGTimelineBuilder {
   addTraceToTimeline(traceId) {
     const { dp/* , ddg: { bounds } */ } = this;
     const trace = dp.util.getTrace(traceId);
-    const dataNodesOfTrace = dp.util.getDataNodesOfTrace(traceId);
+    // const dataNodesOfTrace = dp.util.getDataNodesOfTrace(traceId);
+    const dataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
     // const ownDataNode = trace.nodeId && dataNodes.find(dataNode => dataNode.nodeId === trace.nodeId);
     // const dataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
 
-    if (dataNodesOfTrace?.length) {
-      let newNode = this.#addDataNodeToTimeline(dataNodesOfTrace[0], trace);
+    if (dataNodes?.length) {
+      let newNode = this.#addDataNodeToTimeline(dataNodes[0], trace);
       if (newNode && isSnapshotTimelineNode(newNode.type)) {
         // TODO: also add all DataNodes that do not belong to given snapshot
       }
       else {
-        for (let i = 1; i < dataNodesOfTrace.length; ++i) {
-          /* newNode = */ this.#addDataNodeToTimeline(dataNodesOfTrace[i], trace);
+        for (let i = 1; i < dataNodes.length; ++i) {
+          /* newNode = */ this.#addDataNodeToTimeline(dataNodes[i], trace);
         }
       }
     }

@@ -615,10 +615,12 @@ export default {
   },
 
   /** 
+   * 
    * @param {RuntimeDataProvider} dp
    * @return {DataNode[]?}
    */
   getDataNodesOfTrace(dp, traceId) {
+    // TODO: maybe pick a better name (the `valueTrace` irritates when dealing with BCEs)
     const valueTrace = dp.util.getValueTrace(traceId);
     return valueTrace ? dp.indexes.dataNodes.byTrace.get(valueTrace.traceId) : null;
   },

@@ -149,7 +149,7 @@ export default class DotBuilder {
     //   });
     for (const edge of edges) {
       if (!edge) continue;
-      this.buildEdge(edge);
+      this.edge(edge);
     }
 
     this.indentLevel -= 1;
@@ -242,11 +242,13 @@ export default class DotBuilder {
    * A root of a snapshot
    */
   refSnapshotRoot(node, label = null) {
+    const { ddg } = this;
     const { timelineId } = node;
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    this.command(`color="transparent"`);
+    const color = ddgQueries.isNestingSnapshot(ddg, node) ? 'gray' : 'transparent';
+    this.command(`color="${color}"`);
     this.command(`fontcolor="${Colors.groupLabel}"`);
     this.command(this.nodeIdAttr(timelineId));
     this.label(label || '');
@@ -269,23 +271,37 @@ export default class DotBuilder {
     }
   }
 
-  buildEdge(edge) {
+  /**
+   * Edge from nested reference DataNode to its own snapshot node.
+   */
+  snapshotEdge(node) {
+    this.edgeRaw(this.makeNodeId(node), node.timelineId);
+  }
+
+  edge(edge) {
     const from = this.makeNodeId(this.getNode(edge.from));
     const to = this.makeNodeId(this.getNode(edge.to));
     const debugInfo = Verbose && ` [label=${edge.edgeId}]` || '';
     this.command(`${from} -> ${to}${debugInfo}`);
   }
 
+  edgeRaw(from, to) {
+    this.command(`${from} -> ${to} [arrowhead="odot", color="gray"]`);
+  }
+
   /** ###########################################################################
    * values, records, tables, structs
    *  #########################################################################*/
 
-  makeNodeValue(node) {
-    if (node.refId) {
-      return `📦`; // special icon
+  makeNodeValueString(node) {
+    if (ddgQueries.isSnapshot(this.ddg, node)) {
+      return Array.isArray(node.children) ? '[]' : '{}';
     }
     if (node.value !== undefined) {
       return JSON.stringify(node.value);
+    }
+    if (node.refId) {
+      return '📦';  // ref value node but without snapshot
     }
     return '?';
   }
@@ -296,7 +312,7 @@ export default class DotBuilder {
 
   nodeRecord(node) {
     let { timelineId, label } = node;
-    const value = this.makeNodeValue(node);
+    const value = this.makeNodeValueString(node);
     // TODO: use table instead, so we can have key + val rows
 
     // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
@@ -330,7 +346,7 @@ export default class DotBuilder {
   // }
 
   /** ###########################################################################
-   * tables
+   * snapshotTable
    *  #########################################################################*/
 
   /**
@@ -339,21 +355,34 @@ export default class DotBuilder {
    * @see https://graphviz.org/doc/info/shapes.html#html-like-label-examples
    */
   snapshotTable(node) {
+    const { ddg, ddg: { timelineNodes } } = this;
     // this.command(`node [shape=record]`);
     this.command(`node [shape=plaintext]`);
 
     const { timelineId, label, children } = node;
-    const childrenCells = Object.entries(children)
+    const childEntries = Object.entries(children);
+    const childrenCells = childEntries
       .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
       .join('');
     this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
-    <TD ROWSPAN="2">${label}</TD>
+    ${label !== undefined ? `<TD ROWSPAN="2">${label}</TD>` : ''}
     ${childrenCells}
   </TR>
 </TABLE>
 >]`);
+
+    for (const [prop, childId] of childEntries) {
+      const child = timelineNodes[childId];
+      if (ddgQueries.isSnapshot(ddg, child)) {
+        // add child snapshot
+        this.snapshotTable(child);
+
+        // add edge
+        this.snapshotEdge(child);
+      }
+    }
   }
 
   /**
@@ -366,7 +395,7 @@ export default class DotBuilder {
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}"><FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.value}">${this.makeNodeValue(node)}</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.value}">${this.makeNodeValueString(node)}</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }

@@ -113,7 +113,7 @@ svg.jtk-connector path {
  * highlight nodes
  * ############################################################################*/
 
-.node:hover polygon,ellipse {
+.node:hover polygon,.node:hover ellipse {
   fill: orangered;
   cursor: pointer;
 }

@@ -188,6 +188,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
       ddgNode = {
         children: allDDGs.map((ddg) => {
           const { graphId, og } = ddg;
+          const { dp } = ddg;
           const {
             timelineNodes,
             edges: allEdges,
@@ -208,7 +209,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
               const childNode = timelineNodes[childId];
               children[key] = makeTreeNode(childNode);
             });
-            return makeTimelineNodeEntry(node, children);
+            return renderNode(node, children);
           }
 
           function makeNodeDescription(node) {
@@ -231,12 +232,18 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           /**
            * @param {DDGTimelineNode} node 
            */
-          function makeTimelineNodeEntry(node, children = node, moreProps = EmptyObject, labelPrefix = '') {
+          function renderNode(node, children = node, moreProps = EmptyObject, labelPrefix = '') {
             const label = makeNodeLabel(node.timelineId);
+            if (children === node) {
+              children = { ...node };
+              if (node.dataNodeId) {
+                children.dataNode = dp.util.getDataNode(node.dataNodeId);
+                delete children.dataNodeId;
+              }
+            }
             return makeTreeItem(labelPrefix + label, children, {
               description: makeNodeDescription(node),
               handleClick() {
-                const { dp } = ddg;
                 let { dataNodeId = null, traceId } = node;
 
                 if (!traceId && dataNodeId) {
@@ -283,8 +290,8 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                   const toNode = timelineNodes[to];
                   const label = `${fromNode?.label} -> ${toNode?.label}`;
                   const children = makeTreeItems(
-                    makeTimelineNodeEntry(fromNode, fromNode, {}, 'from: '),
-                    makeTimelineNodeEntry(toNode, toNode, {}, 'to: '),
+                    renderNode(fromNode, fromNode, {}, 'from: '),
+                    renderNode(toNode, toNode, {}, 'to: '),
                     ...objectToTreeItems(entry)
                   );
                   return makeTreeItem(label, children, {
@@ -309,9 +316,9 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           function renderNodes(nodes) {
             return {
               children: nodes.map((node) => {
-                const { timelineId, label: nodeLabel, ...entry } = node;
+                // const { timelineId, label: nodeLabel } = node;
                 // delete entry.timelineId;
-                return makeTimelineNodeEntry(node, entry);
+                return renderNode(node, node);
               }),
               props: {
                 description: `(${nodes.length})`
@@ -386,7 +393,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                       const node = timelineNodes[timelineId];
                       return makeTreeItem(node.label,
                         {
-                          node: makeTimelineNodeEntry(node),
+                          node: renderNode(node),
                           roots: summaryRoots.map(rootId => {
                             const root = timelineNodes[rootId];
                             return makeTreeNode(root);

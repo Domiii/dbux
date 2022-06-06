@@ -162,6 +162,17 @@ const ddgQueries = {
   },
 
   /**
+   * Whether given node is a snapshot that has at least one nested snapshot.
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGSnapshotNode} node 
+   */
+  isNestingSnapshot(ddg, node) {
+    return ddgQueries.isSnapshot(ddg, node) && 
+      Object.values(node.children).some(childId => ddgQueries.isSnapshot(ddg, ddg.timelineNodes[childId]));
+  },
+
+  /**
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
