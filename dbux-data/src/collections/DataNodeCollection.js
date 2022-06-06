@@ -47,7 +47,10 @@ export default class DataNodeCollection extends Collection {
     const { dp } = this;
     for (const dataNode of dataNodes) {
       const { nodeId, traceId } = dataNode;
-      if (dataNode.type === DataNodeType.Read) {            // is Read
+      if (!traceId) {
+        this.logger.warn(`Invalid DataNode has no traceId: ${JSON.stringify(dataNode)}`);
+      }
+      else if (dataNode.type === DataNodeType.Read) {            // is Read
         const trace = dp.util.getTrace(traceId);
         if (trace.nodeId === nodeId) {                      // is owned by its `trace`
           const traceType = dp.util.getTraceType(traceId);

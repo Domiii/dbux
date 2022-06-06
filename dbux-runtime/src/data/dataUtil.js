@@ -137,6 +137,7 @@ export function getOrCreateRealArgumentDataNodeIds(bceTrace, args) {
     }
     case SpecialCallType.Bind:
       // TODO: handle bind
+      console.warn(`NYI: built-in HOF, called with bind (e.g. "arr.push.bind()") at "${traceCollection.makeTraceInfo(callId)}"`);
       argTids = EmptyArray;
       break;
     default:
@@ -402,6 +403,35 @@ export function getSpecialCallType(callId) {
 
   return null;
 }
+/**
+ * Accounts for `call`, `apply`, `bind`.
+ * @param {DataProvider} dp
+ */
+export function getRealBCE(callId) {
+  const bceTrace = traceCollection.getById(callId);
+  if (!bceTrace?.data) {
+    return null;
+  }
+
+  const callType = getSpecialCallType(callId);
+  switch (callType) {
+    case SpecialCallType.Call:
+    case SpecialCallType.Apply:
+      return bceTrace;
+    case SpecialCallType.Bind:
+    default: {
+      // nothing to do here -> handle `Bound` case below
+      break;
+    }
+  }
+
+  // no match -> check for Bound
+  const { calleeTid } = bceTrace.data;
+  const bindTrace = getBindCallTrace(calleeTid);
+
+  return bindTrace || bceTrace;
+}
+
 
 
 /**
@@ -462,6 +492,16 @@ export function getBindCallTrace(functionTraceId) {
     return bindTrace;
   }
   return null;
+}
+
+/** ###########################################################################
+ * deal with "special" HOF arguments
+ * ##########################################################################*/
+
+export function getRealCallArgs(callId) {
+  // TODO: see `dataProviderUtil.getCallArgDataNodes`
+  // TODO: merge argTids and spreadArgs
+  // return { argTids, spreadArgs };
 }
 
 /** ###########################################################################

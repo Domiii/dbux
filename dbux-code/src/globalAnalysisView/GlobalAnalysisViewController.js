@@ -118,20 +118,25 @@ export default class GlobalAnalysisViewController {
    * ##########################################################################*/
 
   async revealDDG(ddg) {
-    const debugNode = this.treeDataProvider.getRootByClass(GlobalDebugNode);
+    try {
+      const debugNode = this.treeDataProvider.getRootByClass(GlobalDebugNode);
 
-    await this.treeView.reveal(debugNode, { expand: true });
-    await sleep(50);
+      await this.treeView.reveal(debugNode, { expand: true });
+      await sleep(100);
 
-    const ddgsNode = debugNode.children.find(n => n.label === 'DDG');
-    if (ddgsNode) {
-      await this.treeView.reveal(ddgsNode, { expand: true });
-      await sleep(50);
+      const ddgsNode = debugNode.children.find(n => n.label === 'DDG');
+      if (ddgsNode) {
+        await this.treeView.reveal(ddgsNode, { expand: true });
+        await sleep(100);
 
-      const ddgNode = ddgsNode.children.find(n => n.ddg === ddg);
-      if (ddgNode) {
-        await this.treeView.reveal(ddgNode, { expand: true, select: true });
+        const ddgNode = ddgsNode.children.find(n => n.ddg === ddg);
+        if (ddgNode) {
+          await this.treeView.reveal(ddgNode, { expand: true, select: true });
+        }
       }
+    }
+    catch (err) {
+      this.treeDataProvider.logger.warn(`revealDDG failed: ${err.stack || err}`);
     }
   }
 }

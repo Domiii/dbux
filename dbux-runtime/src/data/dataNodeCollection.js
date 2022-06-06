@@ -117,10 +117,10 @@ export class DataNodeCollection extends Collection {
     dataNode.type = type;
     dataNode.inputs = inputs;
 
-    if (isFunction(varAccess?.prop)) {
-      // sanity check: it just creeped right in
-      throw new Error(`Invalid function prop: ${varAccess.prop} - at "${traceCollection.makeTraceInfo(traceId)}"`);
-    }
+    // if (inputs?.[0] === null) {
+    //   // sanity check: it just creeped right in
+    //   throw new Error(`Invalid createDataNode call has "null" input, at "${traceCollection.makeTraceInfo(traceId)}"`);
+    // }
 
     this.push(dataNode);
 

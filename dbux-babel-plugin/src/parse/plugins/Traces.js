@@ -120,6 +120,7 @@ export default class Traces extends BasePlugin {
   // ###########################################################################
 
   /**
+   * @param {TraceCfgInput} traceData
    * @return {TraceCfg}
    */
   addTrace(traceData) {

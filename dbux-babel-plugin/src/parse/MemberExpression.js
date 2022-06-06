@@ -279,6 +279,8 @@ export default class MemberExpression extends BaseNode {
       }
     };
 
-    return this.Traces.addTrace(traceData);
+    const trace = this.Traces.addTrace(traceData);
+    // this.logger.debug(`ME.exit`, this._traceCfg);
+    return trace;
   }
 }

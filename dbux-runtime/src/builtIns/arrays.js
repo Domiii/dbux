@@ -33,6 +33,7 @@ export default function patchArray() {
   monkeyPatchMethod(Array, 'push',
     (arr, args, originalFunction, patchedFunction) => {
       const ref = valueCollection.getRefByValue(arr);
+      // TODO: get real args → see `getCallArgDataNodes`
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
       if (!bceTrace?.data?.argTids) {
         return originalFunction.apply(arr, args);
@@ -40,21 +41,52 @@ export default function patchArray() {
 
       const {
         traceId: callId,
-        // data: { argTids }
+        data: {
+          argTids,
+          spreadLengths
+        }
       } = bceTrace;
 
       const inputNodeIds = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
 
       const arrNodeId = getNodeIdFromRef(ref);
 
-      for (let i = 0; i < args.length; ++i) {
-        const varAccess = {
-          objectNodeId: arrNodeId,
-          prop: arr.length + i
-        };
-        // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
-        const inputs = [inputNodeIds[i]];
-        dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess, inputs);
+      let idx = arr.length;
+      for (let i = 0; i < argTids.length; ++i) {
+        // const argTid = argTids[i];
+        // const targetTid = argTid || callId;
+        const targetTid = callId;
+        const spreadLen = spreadLengths[i];
+
+        if (!spreadLen) {
+          // default push
+          const varAccess = {
+            objectNodeId: arrNodeId,
+            prop: idx
+          };
+          // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
+          const inputs = [inputNodeIds[i]];
+          dataNodeCollection.createDataNode(args[idx], targetTid, DataNodeType.Write, varAccess, inputs);
+          idx++;
+        }
+        else {
+          // spread push
+          // Add one `DataNode` per spread argument
+          for (let j = 0; j < spreadLen; j++) {
+            const varAccess = {
+              objectNodeId: inputNodeIds[i],
+              prop: j
+            };
+            const readNode = dataNodeCollection.createDataNode(args[idx], targetTid, DataNodeType.Read, varAccess);
+
+            const varAccessWrite = {
+              objectNodeId: arrNodeId,
+              prop: idx
+            };
+            dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, varAccessWrite);
+            idx++;
+          }
+        }
       }
 
       // [edit-after-send]

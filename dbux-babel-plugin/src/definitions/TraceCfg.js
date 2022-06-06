@@ -122,3 +122,5 @@ export class InputTrace {
    */
   tidIdentifier;
 }
+
+export const TraceCfgInput = TraceCfg; // NOTE: the two are very similar

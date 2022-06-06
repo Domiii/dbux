@@ -9,16 +9,17 @@ export default class SpreadElement extends BaseNode {
     return argNode?.traceCfg;
   }
 
-  buildDefaultTrace() {
+  addDefaultTrace() {
     const [argNode] = this.getChildNodes();
-    const traceData = argNode?.buildDefaultTrace(); // || this.createOwnDefaultTrace();
+    const traceData = argNode?.addDefaultTrace(); // || this.createOwnDefaultTrace();
 
-    if (traceData.path === argNode.path) {  // small sanity check
+    if (traceData?.path === argNode.path) {  // small sanity check
+      // hackfix the argument trace
       // NOTE: we actually tace `argument`, but we want the "selectable trace" to be the entire `SpreadElement`
       traceData.path = this.path;
       traceData.meta = traceData.meta || {};
       traceData.meta.targetPath = argNode.path;
-      traceData.dataNode ||= {}; 
+      traceData.dataNode ||= {};
       traceData.dataNode.label = '...';
     }
 
