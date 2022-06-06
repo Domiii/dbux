@@ -32,13 +32,9 @@ class GenerateListNode extends ToolNode {
     return pathResolve(this.manager.config.projectsRoot, ProjectName);
   }
 
-  getExerciseFilePath(project) {
-    return project.getAss;
-  }
-
   writeExerciseJs(fileName, exercises) {
     const content = `module.exports = ${JSON.stringify(exercises, null, 2)}`;
-    fs.writeFileSync(pathResolve(this.manager.getAssetPath('exercises'), fileName), content);
+    fs.writeFileSync(this.manager.getAssetPath('exercises', fileName), content);
   }
 
   writeChapterListJs(fileName, exerciseList) {
@@ -60,7 +56,7 @@ class GenerateListNode extends ToolNode {
     });
 
     const content = `module.exports = ${JSON.stringify(chapters, null, 2)}`;
-    fs.writeFileSync(pathResolve(this.manager.getAssetPath('chapterLists'), fileName), content);
+    fs.writeFileSync(this.manager.getAssetPath('chapterLists', fileName), content);
   }
 
   async handleClick() {
