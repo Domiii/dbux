@@ -81,6 +81,11 @@
           "id": "dbuxSessionView",
           "name": "Practice Session",
           "when": "dbux.context.activated && dbux.context.showPracticeViews && dbux.context.hasPracticeSession"
+        },
+        {
+          "id": "dbuxChapterListBuilderView",
+          "name": "JavaScript Algorithms",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         }
       ]
     },

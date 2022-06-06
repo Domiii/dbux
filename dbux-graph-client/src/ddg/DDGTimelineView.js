@@ -8,9 +8,9 @@ import { selectAll } from 'd3-selection';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
-import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { compileHtmlElement, delegate } from '../util/domUtil';
+import { RenderState } from '@dbux/data/src/ddg/ddgQueries';
+import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import { compileHtmlElement } from '../util/domUtil';
 import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
@@ -25,6 +25,7 @@ import DotBuilder from './DotBuilder';
 // const YGroupPadding = 4;
 
 const NodeMenuHeight = 12;
+const NodeMenuYOffset = 4;
 // const NodeHeight = 20;
 // const NodeWidth = 40;
 
@@ -201,13 +202,18 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
       // decorate all nodes
       const nodeEls = Array.from(this.el.querySelectorAll('.node'));
-      for (const nodeEl of nodeEls) {
-        const { id: timelineId } = nodeEl;
+      const clusterEls = Array.from(this.el.querySelectorAll('.cluster'));
+      const allEls = [...nodeEls, ...clusterEls];
+      for (const el of allEls) {
+        const { id: timelineId } = el;
         const node = this.renderState.timelineNodes[timelineId];
         if (node) {
-          this.decorateNode(node, nodeEl);
+          this.decorateNode(node, el);
         }
       }
+
+      const summaryButtons = this.el.querySelectorAll('.summary-button');
+      decorateSummaryModeButtons(summaryButtons);
     }
     catch (err) {
       // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
@@ -217,23 +223,23 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   decorateNode(node, nodeEl) {
     const { type } = node;
-    if (isDataTimelineNode(type)) {
-      // add overlays
-      let debugOverlay;
-      this.addNodeEventListener(node, nodeEl, 'mouseover', (evt) => {
-        if (!debugOverlay) {
-          // create overlay lazily
-          console.debug(`Hover node:`, evt.target);
-          this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-          // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-        }
-        // this.maybeShowNodePopupEl(node, nodeEl);
-      });
-      this.addNodeEventListener(node, nodeEl, 'mouseout', () => {
-        debugOverlay.remove();
-        debugOverlay = null;
-      });
-    }
+    const triggerEl = isControlGroupTimelineNode(type) ? nodeEl.querySelector('text') : nodeEl;
+
+    // add overlays
+    let debugOverlay;
+    this.addNodeEventListener(node, triggerEl, 'mouseover', (evt) => {
+      if (!debugOverlay) {
+        // create overlay lazily
+        console.debug(`Hover node:`, evt.target);
+        this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+        // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+      }
+      this.maybeShowNodePopupEl(node, nodeEl);
+    });
+    this.addNodeEventListener(node, triggerEl, 'mouseout', () => {
+      debugOverlay.remove();
+      debugOverlay = null;
+    });
   }
 
   /**
@@ -279,11 +285,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       modesForThisNode = GroupDefaultSummaryModes;
     }
     const el = compileHtmlElement(/*html*/`
-      <div class="flex-row" style="flex-shrink: 1; justify-content: flex-start;">
+      <div class="flex-row" style="flex-shrink: 1; justify-content: flex-start; height: ${NodeMenuHeight}px;">
       </div>
     `);
 
-    const { el: btns } = makeSummaryButtons(this.doc, node.timelineId, 'btn btn-primary no-padding', modesForThisNode);
+    const { el: btns } = makeSummaryButtons(this.doc, node.timelineId, 'btn btn-primary no-padding', modesForThisNode, true);
     el.appendChild(btns);
 
     return el;
@@ -307,17 +313,21 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
      */
     // const y = rect.top - rect.height;
     // const y = nodeEl.style.top;
-    const x = 0 - getElLeftOffset(nodeEl);
+    // const x = 0 - getElLeftOffset(nodeEl);
     // const y = 0 - getElTopOffset(nodeEl) - NodeMenuYOffset;
-    const y = 0 - NodeMenuHeight;
-    const w = rect.width;
-    const h = NodeMenuHeight;
+    // const y = 0 - NodeMenuHeight;
+    // const w = rect.width;
+    // const h = NodeMenuHeight;
     // <div class="node-overlay">
     const nodeBtns = this.makeNodeButtons(node);
     const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
-      <div class="node-overlay" style="left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;"></div>
+      <div class="node-overlay"></div>
     `);
+    const x = rect.left;
+    const y = rect.top - NodeMenuHeight - NodeMenuYOffset;
     hoverEl.appendChild(nodeBtns);
+    hoverEl.style.left = `${x}px`;
+    hoverEl.style.top = `${y}px`;
     // NOTE: mouseover + mouseout are not very reliable events for this
     // this.currentHoverEl.addEventListener('mouseout', () => {
     //   this._removeNodePopup();
@@ -340,7 +350,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     });
 
     // this.el.appendChild(this.currentHoverEl);
-    nodeEl.appendChild(hoverEl);
+    // nodeEl.appendChild(hoverEl);
+    this.el.appendChild(hoverEl);
   }
 }
 

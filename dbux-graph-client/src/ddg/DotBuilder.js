@@ -178,9 +178,10 @@ export default class DotBuilder {
     const { timelineId } = node;
 
     this.fragment(`subgraph cluster_group_${timelineId} {`);
+    this.command(this.nodeId(timelineId));
+    this.label(node.label || '');
     this.indentLevel += 1;
     this.subgraphAttrs();
-    this.label(node.label || '');
 
     this.nodesByIds(node.children);
 
@@ -205,10 +206,12 @@ export default class DotBuilder {
   }
 
   summaryGroup(summaryNode, nodes, label = null) {
-    this.fragment(`subgraph cluster_summary_${summaryNode.timelineId} {`);
+    const { timelineId } = summaryNode;
+    this.fragment(`subgraph cluster_summary_${timelineId} {`);
     this.indentLevel += 1;
     this.command(`color="${Colors.groupBorder}"`);
     this.command(`fontcolor="${Colors.groupLabel}"`);
+    this.command(this.nodeId(timelineId));
     label && this.label(label);
 
     for (const node of nodes) {
@@ -229,6 +232,7 @@ export default class DotBuilder {
     this.indentLevel += 1;
     this.command(`color="transparent"`);
     this.command(`fontcolor="${Colors.groupLabel}"`);
+    this.command(this.nodeId(timelineId));
     label && this.label(label);
 
     this.snapshotTable(node);
