@@ -11,7 +11,6 @@ import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
-const ProjectName = 'javascript-algorithms';
 const ExportExercises = 4;
 
 class ToolNode extends BaseTreeViewNode {
@@ -26,10 +25,6 @@ class ToolNode extends BaseTreeViewNode {
 class GenerateListNode extends ToolNode {
   static makeLabel() {
     return 'Generate List';
-  }
-
-  get projectPath() {
-    return pathResolve(this.manager.config.projectsRoot, ProjectName);
   }
 
   writeExerciseJs(fileName, exercises) {
@@ -60,7 +55,7 @@ class GenerateListNode extends ToolNode {
   }
 
   async handleClick() {
-    const project = this.manager.projects.getByName(ProjectName);
+    const { project } = this.treeNodeProvider.controller;
 
     await runTaskWithProgressBar(async (progress) => {
       if (!project.doesProjectFolderExist()) {
@@ -72,7 +67,7 @@ class GenerateListNode extends ToolNode {
 
       progress.report({ message: 'Parsing tests...' });
       const processOptions = {
-        cwd: this.projectPath,
+        cwd: project.projectPath,
       };
       const testDirectory = 'src/algorithms';
       const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory}`, { processOptions });
@@ -96,7 +91,7 @@ class GenerateListNode extends ToolNode {
             label: fullName,
             testNamePattern: fullName,
             chapter,
-            testFilePaths: [pathRelative(this.projectPath, testResult.name)],
+            testFilePaths: [pathRelative(project.projectPath, testResult.name)],
           };
           exercises.push(exerciseConfig);
         }
@@ -107,16 +102,14 @@ class GenerateListNode extends ToolNode {
       this.writeExerciseJs('javascript-algorithms-all.js', exercises);
 
       progress.report({ message: `Loading exercises...` });
-      const exerciseList = project.reloadExercises('javascript-algorithms-all');
-      this.treeNodeProvider.controller.exerciseList = exerciseList;
+      const exerciseList = this.treeNodeProvider.controller.reloadExerciseList();
 
       progress.report({ message: `Generating chapter list file...` });
       this.writeChapterListJs('javascript-algorithms-all.js', exerciseList);
 
       progress.report({ message: `Loading chapter list...` });
-      this.treeNodeProvider.controller.chapters = this.manager.reloadChapterList('javascript-algorithms-all');
+      const chapters = this.treeNodeProvider.controller.reloadChapterList();
 
-      const { chapters } = this.treeNodeProvider.controller;
       showInformationMessage(`List generated, found ${exercises.length} exercise(s) in ${chapters.length} chapter(s).`);
 
       this.treeNodeProvider.refresh();

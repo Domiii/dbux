@@ -228,4 +228,13 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxSessionView.node.showEntryFile', async (node) => {
     return await node.showEntry();
   });
+
+  /** ###########################################################################
+   * JavaScript-algorithms view
+   *  #########################################################################*/
+
+
+  registerCommand(extensionContext, 'dbuxChapterListBuilderView.node.runDDG', async (node) => {
+    return await node.runDDG();
+  });
 }
