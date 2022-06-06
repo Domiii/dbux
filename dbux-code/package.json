@@ -733,6 +733,14 @@
           "light": "resources/light/document.svg",
           "dark": "resources/dark/document.svg"
         }
+      },
+      {
+        "command": "dbuxChapterListBuilderView.node.runDDG",
+        "title": "Dev: run and show DDG",
+        "icon": {
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
+        }
       }
     ],
     "menus": {
@@ -958,6 +966,11 @@
           "command": "dbuxSessionView.node.showEntryFile",
           "when": "viewItem == dbuxSessionView.openWorkspaceNode",
           "group": "inline"
+        },
+        {
+          "command": "dbuxChapterListBuilderView.node.runDDG",
+          "when": "viewItem == dbuxChapterListBuilderView.DDGExerciseNode && !dbuxProjectView.context.isBusy",
+          "group": "inline@20"
         }
       ],
       "view/title": [
@@ -1447,6 +1460,10 @@
         },
         {
           "command": "dbuxSessionView.node.showEntryFile",
+          "when": "false"
+        },
+        {
+          "command": "dbuxChapterListBuilderView.node.runDDG",
           "when": "false"
         }
       ]

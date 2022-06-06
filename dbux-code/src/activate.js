@@ -50,7 +50,7 @@ export default async function activate(context) {
   initWebviewWrapper(context);
 
   initApplicationsView(context);
-  initChapterListBuilderView(context);
+  const chapterListBuilderViewController = initChapterListBuilderView(context);
   const globalAnalysisViewController = initGlobalAnalysisView(context);
   const traceDetailsController = initTraceDetailsView(context);
   const dataFlowController = initDataFlowView(context);
@@ -69,6 +69,7 @@ export default async function activate(context) {
   await initPathwaysView();
 
   await projectViewController.doInitWork();
+  chapterListBuilderViewController.init();
 
   const dialogController = initDialogController();
   maybeStartTutorial(dialogController, context);

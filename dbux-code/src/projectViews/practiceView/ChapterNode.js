@@ -6,9 +6,15 @@ import ExerciseNode from './ExerciseNode';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
+const DefaultExerciseNodeClass = ExerciseNode;
+
 export default class ChapterNode extends BaseTreeViewNode {
   static makeLabel({ id, name }) {
     return `Chapter ${id}: ${name}`;
+  }
+
+  get ExerciseNodeClass() {
+    return DefaultExerciseNodeClass;
   }
 
   /**
@@ -57,6 +63,6 @@ export default class ChapterNode extends BaseTreeViewNode {
   }
 
   buildExerciseNode(exercise) {
-    return this.treeNodeProvider.buildNode(ExerciseNode, exercise, this);
+    return this.treeNodeProvider.buildNode(this.ExerciseNodeClass, exercise, this);
   }
 }
