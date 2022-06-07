@@ -57,6 +57,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
     this.application = application;
 
     // NOTE: we have to hardcode these so we get Intellisense
+    // NOTE2: order matters!!!
     this.collections = {
       staticProgramContexts: new StaticProgramContextCollection(this),
       staticContexts: new StaticContextCollection(this),

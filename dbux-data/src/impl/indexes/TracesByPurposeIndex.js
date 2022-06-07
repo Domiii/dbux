@@ -14,11 +14,13 @@ export default class TracesByPurposeIndex extends CollectionIndex {
     super('traces', 'byPurpose');
   }
 
+
   /** 
    * @override
    */
   addEntry(trace) {
     if (trace.purposes) {
+      // multiple, complex purposes
       for (const purpose of trace.purposes) {
         const key = purpose.type;
         if (!key) {

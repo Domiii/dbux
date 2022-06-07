@@ -1,5 +1,6 @@
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
+import { isDataLinkPurpose } from '@dbux/common/src/types/constants/TracePurpose';
 import TraceType, { isTraceFunctionExit, isTracePop, isTraceReturn, isTraceReturnOrBranchPop, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
 import Trace from '@dbux/common/src/types/Trace';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -49,9 +50,12 @@ export default class TraceCollection extends Collection {
     this.errorWrapMethod('resolveCallIds', traces);
   }
 
+  /**
+   * NOTE: We do DataNodes here. They are needed in {@link DataNodeCollection#postIndexProcessed}
+   */
   postIndexRaw(traces) {
     // this.errorWrapMethod('resolveMonkeyParams', traces);
-    this.errorWrapMethod('resolveBuiltInHOFParams', traces);
+    this.errorWrapMethod('resolveDataNodes', traces);
   }
 
   postIndexProcessed(traces) {
@@ -146,10 +150,17 @@ export default class TraceCollection extends Collection {
   /**
    * @param {Trace[]} traces 
    */
-  resolveBuiltInHOFParams(traces) {
+  resolveDataNodes(traces) {
     for (const trace of traces) {
+      // TODO: fix specialDynamicType vs. purpose. Just stick with one?
       if (SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType)) {
-        this.dp.collections.executionContexts.resolveBuiltInHOFParams(trace);
+        this.dp.collections.executionContexts.resolveBuiltInHOFParamDataNodes(trace);
+      }
+
+      if (trace.purposes) {
+        for (const purpose of trace.purposes) {
+          this.dp.collections.dataNodes.resolveDataNodeLinks(trace, purpose);
+        }
       }
     }
   }

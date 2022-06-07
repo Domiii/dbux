@@ -218,10 +218,15 @@ export default class DDGTimelineBuilder {
 
   #shouldSkipDataNode(dataNodeId) {
     const { dp } = this;
+
+    // NOTE: this logic is not ideal. Single-input Compute nodes will not show, but multi-input Compute nodes will.
+    // future-work: proper, dedicated Compute merge logic (maybe in summarizer tho)
+
     if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
       const dataNode = dp.util.getDataNode(dataNodeId);
-      return !isDataNodeModifyType(dataNode.type) || // Read
+
+      return !isDataNodeModifyType(dataNode.type) || // Read or Compute
         !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
     }
     return false;

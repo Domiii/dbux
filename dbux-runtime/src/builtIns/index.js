@@ -6,6 +6,7 @@ import patchFunction from './functions';
 import patchObject from './objects';
 import patchSet from './Set';
 import patchMap from './Map';
+import patchMath from './Math';
 
 /** @typedef { import("../RuntimeMonitor").default } RuntimeMonitor */
 
@@ -20,8 +21,10 @@ export default function initPatchBuiltins(runtimeMonitor) {
   patchEventTarget(runtimeMonitor);
   patchError(runtimeMonitor);
 
+  patchMath(runtimeMonitor);
   patchSet(runtimeMonitor);
   patchMap(runtimeMonitor);
+
   
   patchNode(runtimeMonitor);
 }

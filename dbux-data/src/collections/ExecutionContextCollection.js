@@ -36,7 +36,7 @@ export default class ExecutionContextCollection extends Collection {
    * Hook up array HOFs via dp.indexes.executionContexts.byCallerTrace.getById().
    * @param {Trace} hofCallTrace 
    */
-  resolveBuiltInHOFParams(hofCallTrace) {
+  resolveBuiltInHOFParamDataNodes(hofCallTrace) {
     const { dp: { util } } = this;
     const callId = hofCallTrace.traceId;
     const contexts = this.dp.indexes.executionContexts.byCallerTrace.get(callId);
@@ -75,8 +75,9 @@ export default class ExecutionContextCollection extends Collection {
   }
 
   /**
-   * Set Param trace `inputs` to `[argNodeId]`.
-   * NOTE: for linking input of monkey-patched builtin calls, consider {@link TraceCollection#resolveMonkeyCalls}.
+   * Link args → params.
+   * Set Param trace `inputs` to each arg's `[argNodeId]`.
+   * NOTE: for linking input of monkey-patched builtin calls, consider {@link TraceCollection#resolveMonkeyParams}.
    */
   setParamInputs(contexts) {
     const { dp: { util } } = this;

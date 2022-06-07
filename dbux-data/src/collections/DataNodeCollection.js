@@ -5,6 +5,7 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 import DataNode from '@dbux/common/src/types/DataNode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import Collection from '../Collection';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 
 /**
  * @extends {Collection<DataNode>}
@@ -25,6 +26,43 @@ export default class DataNodeCollection extends Collection {
       // set applicationId
       dataNode.applicationId = this.dp.application.applicationId;
     }
+  }
+
+  /** ###########################################################################
+   * purpose
+   * ##########################################################################*/
+
+  #purposeHandlers = {
+    [TracePurpose.Compute]: (trace, purpose) => {
+      const { dp } = this;
+      const callId = trace.traceId;
+      if (!TraceType.is.BeforeCallExpression(dp.util.getTraceType(callId))) {
+        this.logger.error(`Invalid TracePurpose.Compute for trace (should be BCE but is not): ${dp.util.makeTraceInfo(trace)}`);
+        return;
+      }
+
+      const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+      const resultDataNode = trace.resultId && dp.util.getDataNodeOfTrace(trace.resultId);
+      if (argDataNodes && resultDataNode) {
+        if (resultDataNode.inputs?.length) {
+          this.logger.error(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
+        }
+        else {
+          resultDataNode.type = DataNodeType.Compute;
+          resultDataNode.label = purpose.name;
+          resultDataNode.inputs = argDataNodes.map(n => n.nodeId);
+        }
+      }
+    }
+  };
+
+  resolveDataNodeLinks(trace, purpose) {
+    const { dp } = this;
+    const handler = this.#purposeHandlers[purpose.type];
+    if (!handler) {
+      this.logger.error(`Invalid TracePurpose ${JSON.stringify(purpose)} not handled in resolveDataNodeLinks for trace: ${dp.util.makeTraceInfo(trace)}`);
+    }
+    handler(trace, purpose);
   }
 
   /** ###########################################################################

@@ -2,6 +2,7 @@ import { consoleOutputStreams } from '@dbux/common/src/console';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchFunctionHolder, monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { addPurpose } from './builtin-util';
 
 export default function patchConsole() {
   if (!globalThis.console) {
@@ -16,9 +17,7 @@ export default function patchConsole() {
         const bceTrace = peekBCEMatchCallee(patchedFunction);
         const result = originalFunction.apply(arr, args);
         if (bceTrace) {
-          // [edit-after-send]
-          bceTrace.purposes = bceTrace.purpose || [];
-          bceTrace.purposes.push({
+          addPurpose(bceTrace, {
             type: TracePurpose.Console,
             name
           });

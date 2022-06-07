@@ -374,6 +374,10 @@ export default class BaseDDG {
     }
 
     if (!label) {
+      label = dataNode?.label;
+    }
+
+    if (!label) {
       const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
       if (!isNewValue && varName) {
         label = varName;
