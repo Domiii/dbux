@@ -179,8 +179,26 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   isNodeSummarized(ddg, node) {
+    return ddgQueries.isNodeSummarizedMode(ddg, node) &&
+      ddgQueries.doesNodeHaveSummary(ddg, node);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isNodeSummarizedMode(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
     return isSummaryMode(summaryMode);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  doesNodeHaveSummary(ddg, node) {
+    const nodeSummary = ddg.nodeSummaries[node.timelineId];
+    return nodeSummary?.summaryRoots?.length;
   },
 
   /**

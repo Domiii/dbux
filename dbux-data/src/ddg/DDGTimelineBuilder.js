@@ -526,17 +526,6 @@ export default class DDGTimelineBuilder {
       return null;
     }
 
-    // bookkeeping for summaries
-    const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
-    const valueRefId = dataNode.refId;
-    const varDeclarationTid = dataNode.varAccess?.declarationTid;
-    if (accessedRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = dataNode.nodeId;
-    }
-    if (valueRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = dataNode.nodeId;
-    }
-
     if (dataNode.inputs) {
       for (const inputDataNodeId of dataNode.inputs) {
         const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
@@ -575,6 +564,18 @@ export default class DDGTimelineBuilder {
        * @type {DataTimelineNode}
        */
       newNode = this.#addSnapshotOrDataNode(dataNode);
+    }
+
+
+    // bookkeeping for summaries
+    const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
+    const valueRefId = dataNode.refId;
+    const varDeclarationTid = dataNode.varAccess?.declarationTid;
+    if (accessedRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.startDataNodeId || dataNode.nodeId;
+    }
+    if (valueRefId) {
+      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = newNode.startDataNodeId || dataNode.nodeId;
     }
     newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 

@@ -81,6 +81,8 @@ svg.jtk-connector path {
   right: 0;
   bottom: 0;
   max-width: 35vw;
+  max-height: 50vh;
+  overflow: auto;
   padding: 4px;
   margin: 1px;
   border: 1px solid white;

@@ -206,7 +206,7 @@ export default class DataDependencyGraph extends BaseDDG {
    * When investigating a node's details, this function needs to run first.
    */
   #buildNodeSummary(timelineId) {
-    this.#buildNodeSummarySnapshots(timelineId);
+    return this.#buildNodeSummarySnapshotsAndVars(timelineId);
   }
 
 
@@ -257,12 +257,12 @@ export default class DataDependencyGraph extends BaseDDG {
   /**
    * @param {number} timelineId
    */
-  #buildNodeSummarySnapshots(timelineId) {
+  #buildNodeSummarySnapshotsAndVars(timelineId) {
     const { dp } = this;
     const node = this.timelineNodes[timelineId];
     if (!node.hasSummarizableWrites || this.nodeSummaries[timelineId]) {
       // already built or nothing to build
-      return;
+      return this.nodeSummaries[timelineId];
     }
 
     const lastModifyNodesByRefId = new Map();
@@ -275,7 +275,8 @@ export default class DataDependencyGraph extends BaseDDG {
      */
     const snapshotsByRefId = new Map();
     for (const [refId, dataNodeId] of lastModifyNodesByRefId) {
-      const lastDataNodeIdOfRef = this.og._lastAccessDataNodeIdByRefId[refId];
+      // const lastDataNodeIdOfRef = this.og._lastAccessDataNodeIdByRefId[refId];
+      const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
       if (lastDataNodeIdOfRef <= lastNestedDataNodeId) {
         // skip: this ref is only used internally (or before) this node. It is not accessed AFTER this node.
         continue;
@@ -306,7 +307,7 @@ export default class DataDependencyGraph extends BaseDDG {
           Array.from(varNodesByDeclarationTid.values())
         ));
 
-    this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots);
+    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots);
   }
 
   /**
@@ -493,7 +494,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
     let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
     const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
-    const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarized(this, node);
+    const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarizedMode(this, node);
     let targetNode = currentCollapsedAncestor || node;
     let isSummarized = ddgQueries.isNodeSummarized(this, targetNode);
 
@@ -519,26 +520,25 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
 
-    // prep summary
-    let nodeSummary;
+    // find summary targetNode (if it has any)
     if (isSummarized) {
-      nodeSummary = this.nodeSummaries[targetNode.timelineId];
-      isSummarized = !!nodeSummary?.summaryRoots?.length;
-      if (isSummarized) {
-        if (!dataNodeId) {
-          // summarized nodes without `dataNodeId` (such as groups) are simply hidden
-          targetNode = null;
+      if (
+        // summarized nodes without own `dataNodeId` (such as groups) are simply hidden
+        !node.dataNodeId ||
+        // summarization is empty → hide it (for now)
+        !ddgQueries.doesNodeHaveSummary(this, targetNode)
+      ) {
+        targetNode = null;
+        isVisible = false;
+      }
+      else {
+        const nodeSummary = this.nodeSummaries[targetNode.timelineId];
+        const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
+        // link to summaryNode instead of `targetNode`
+        targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
+        if (!targetNode) {
+          // NOTE: we simply "hide" nodes that do not have a summarized representation (leads to its edges getting propagated)
           isVisible = false;
-        }
-        else {
-          const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
-          // link to summaryNode instead of `targetNode`
-          targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
-          if (!targetNode) {
-            // NOTE: we simply "hide" nodes that are not in `summaryNodes`
-            // → meaning, we "propagate" its edges
-            isVisible = false;
-          }
         }
       }
     }
@@ -599,6 +599,7 @@ export default class DataDependencyGraph extends BaseDDG {
     const refId = this.dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     let varTid;
     if (refId) {
+      // node is summarized by snapshot child node
       const { prop } = dataNode.varAccess;
       const snapshotId = nodeSummary.snapshotsByRefId.get(refId);
       if (snapshotId) {
@@ -608,6 +609,7 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
     else if ((varTid = dataNode.varAccess?.declarationTid)) {
+      // node is summarized by variable node
       const varNodeId = nodeSummary.varNodesByDeclarationTid.get(varTid);
       if (varNodeId) {
         return this.timelineNodes[varNodeId];

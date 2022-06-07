@@ -2,6 +2,7 @@
 /** @typedef {import('./BaseDDG').default} DataDependencyGraph */
 
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import { RefSnapshotTimelineNode } from './DDGTimelineNodes';
 
 /**
  * 
@@ -33,7 +34,13 @@ export default class DDGWatchSet {
    * @type {Set<number>}
    */
   declarationTids;
-  refIds;
+
+  /**
+   * @type {Map.<number, RefSnapshotTimelineNode>}
+   */
+  watchSnapshotsByRef = new Map();
+
+  lastDataNodeByWatchedRefs = new Map();
 
   /**
    * 
@@ -135,6 +142,20 @@ export default class DDGWatchSet {
     // TODO: watched refs
 
     return false;
+  }
+
+  /**
+   * @param {RefSnapshotTimelineNode} node 
+   */
+  addWatchedNode(node) {
+    if (node instanceof RefSnapshotTimelineNode) {
+      const { refId/* , dataNodeId */, startDataNodeId } = node;
+      this.watchSnapshotsByRef.set(refId, node);
+
+      // NOTE: this is similar to `this.lastDataNodeByWatchedRefs`, but with a watched constraint
+      const lastDataNodeId = startDataNodeId;
+      this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
+    }
   }
 
   // /**

@@ -215,6 +215,7 @@ export default class BaseDDG {
 
         if (this.watchSet.isWatchedDataNode(node.dataNodeId)) {
           this.#setWatchedDFS(node);
+          this.watchSet.addWatchedNode(node);
         }
         node.nInputs = nIncomingEdges;
         node.nOutputs = nOutgoingEdges;
@@ -608,7 +609,7 @@ export default class BaseDDG {
      * NOTE: this is loosely based on {@link dp.util.constructVersionedValueSnapshot}.
      */
     const valueRef = this.dp.collections.values.getById(refId);
-    Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
+    // Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
     this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true, snapshotsByRefId);
 
     // TODO: add refNode edge!

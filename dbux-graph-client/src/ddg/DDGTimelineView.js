@@ -209,13 +209,17 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * decorate graph HTML
    * ##########################################################################*/
 
+  /**
+   * NOTE: deco elements are mostly elements that we add to the graph.
+   * We have to remove them when changing the graph, for graphviz own algorithms to work.
+   */
+  registerDeco(el) {
+    el.classList?.add('deco');
+  }
+
   clearDeco() {
     const els = Array.from(this.el.querySelectorAll('.deco'));
     els.forEach(el => el.remove());
-  }
-
-  registerDeco(el) {
-    el.classList?.add('deco');
   }
 
   // rendering finished
@@ -265,7 +269,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const { ddg } = this;
     let popupTriggerEl = nodeEl;
 
-    if (ddgQueries.isNodeSummarizable(node)) {
+    if (
+      ddgQueries.isNodeSummarizable(node) &&
+      (!ddgQueries.isNodeSummarized(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
+    ) {
       // hackfix: since DOT is very limited, we have to add custom rendering logic here
       const labelEl = this.getSummarizableNodeLabelEl(node, nodeEl);
       const mode = ddgQueries.getNodeSummaryMode(ddg, node);
@@ -324,8 +331,19 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   makeNodeDebugOverlay(node) {
-    const content = `Node = ${JSON.stringify(node, null, 2)}`;
-    const el = compileHtmlElement(/*html*/`<pre class="node-debug-overlay" >${content}</pre>`);
+    const { ddg } = this;
+    const o = { ...node };
+    o.children = JSON.stringify(o.children); // simplify children
+    o.summaryMode = DDGSummaryMode.nameFrom(ddg.summaryModes[node.timelineId]);
+    debugger;
+    if (ddgQueries.isNodeSummarizable(node)) {
+      o.summary = ddg.nodeSummaries[node.timelineId]; // add summary info
+    }
+
+    const content = `Node = ${JSON.stringify(o, null, 2)}`;
+    const el = compileHtmlElement(/*html*/`
+      <pre class="node-debug-overlay">${content}</pre>`
+    );
     this.registerDeco(el);
     return el;
   }

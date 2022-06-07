@@ -208,29 +208,30 @@ export default class DotBuilder {
     this.fragment(`}`);
   }
 
-  nodeSummary(summaryNode) {
-    const { renderState } = this;
-    const { nodeSummaries } = renderState;
-
-    const summary = nodeSummaries[summaryNode.timelineId];
-    const roots = ddgQueries.getSummaryRoots(renderState, summary);
-    if (roots?.length) {
+  nodeSummary(node) {
+    const { ddg } = this;
+    if (ddgQueries.doesNodeHaveSummary(ddg, node)) {
       // render summary nodes
-      this.summaryGroup(summaryNode, roots);
+      this.summaryGroup(node);
     }
     else {
       // render node as-is
-      this.valueNode(summaryNode);
+      this.valueNode(node);
     }
   }
 
-  summaryGroup(summaryNode, nodes) {
-    const { timelineId } = summaryNode;
+  summaryGroup(node) {
+    const { ddg } = this;
+    const { nodeSummaries } = ddg;
+
+    const summary = nodeSummaries[node.timelineId];
+    const roots = ddgQueries.getSummaryRoots(ddg, summary);
+    const { timelineId } = node;
     this.fragment(`subgraph cluster_summary_${timelineId} {`);
     this.indentLevel += 1;
-    this._groupAttrs(summaryNode);
+    this._groupAttrs(node);
 
-    for (const node of nodes) {
+    for (const node of roots) {
       this.node(node, true);
     }
 
@@ -359,7 +360,8 @@ export default class DotBuilder {
     // this.command(`node [shape=record]`);
     this.command(`node [shape=plaintext]`);
 
-    const { timelineId, label, children } = node;
+    const { timelineId, label, parentNodeId, children } = node;
+    const hasLabel = !parentNodeId && label !== undefined;
     const childEntries = Object.entries(children);
     const childrenCells = childEntries
       .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
@@ -367,7 +369,7 @@ export default class DotBuilder {
     this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
-    ${label !== undefined ? `<TD ROWSPAN="2">${label}</TD>` : ''}
+    ${hasLabel ? `<TD ROWSPAN="2">${label}</TD>` : ''}
     ${childrenCells}
   </TR>
 </TABLE>
