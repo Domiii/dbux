@@ -244,6 +244,9 @@ export default class BaseDDG {
    * @param {DataTimelineNode} node 
    */
   #setWatchedDFS(node) {
+    if (!node) {
+      throw new Error(`no node given`);
+    }
     node.watched = true;
 
     // hackfix: set children of watched snapshots to watched
@@ -470,7 +473,12 @@ export default class BaseDDG {
           this.timelineBuilder?.onNewSnapshotValueNode(newChild);
         }
       }
-      parentSnapshot.children[prop] = newChild.timelineId;
+      if (!newChild.dataNodeId || this.dp.util.getDataNode(newChild.dataNodeId)) {
+        console.error(`invalid snapshot child has no DataNode: ${JSON.stringify(newChild)}`);
+      }
+      else {
+        parentSnapshot.children[prop] = newChild.timelineId;
+      }
     }
   }
 

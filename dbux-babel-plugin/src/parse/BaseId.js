@@ -49,6 +49,10 @@ export default class BaseId extends BaseNode {
   getOwnDeclarationNode() {
     let path = this.binding?.path;
     if (!path) {
+      // TODO: fix this to allow for undeclared var access (non-strict mode)
+      if (this.state.verbose.nyi) {
+        this.logger.warn(`[NYI] node has no binding (undeclared var?):" ${pathToStringAnnotated(path)}"`); // in "${this.getParentString()}")`);
+      }
       return null;
     }
 
@@ -82,9 +86,8 @@ export default class BaseId extends BaseNode {
     }
 
     if (!declarationNode) {
-      // TODO: support for `RestElement`
       if (this.state.verbose.nyi) {
-        this.logger.warn(`[NYI] Could not look up binding path for lval:" ${pathToStringAnnotated(path)}" (in "${this}")`); // in "${this.getParentString()}")`);
+        this.logger.warn(`[NYI] Could not look up binding path for lval:" ${pathToStringAnnotated(path)}"`); // in "${this.getParentString()}")`);
       }
       return null;
     }

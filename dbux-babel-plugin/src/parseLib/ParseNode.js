@@ -102,10 +102,6 @@ export default class ParseNode {
     return this.plugins[pluginName] || null;
   }
 
-  toString() {
-    return `[${this.nodeTypeName}] ${pathToString(this.enterPath)}`;
-  }
-
   // ###########################################################################
   // children + parent getters
   // ###########################################################################
@@ -276,11 +272,21 @@ export default class ParseNode {
   }
 
   warn(...args) {
-    return this.stack.warn(' >', ...args);
+    return this.stack.warn(' >', `[${this.verboseDebugTag}]`, ...args);
   }
 
   get debugTag() {
     return this.toString();
+  }
+
+  get verboseDebugTag() {
+    const loc = this.path?.node?.loc;
+    const locStr = `${this.state.filePath}:${loc ? `${loc.start.line}:${loc.start.end}` : '?'}`;
+    return `[${this.nodeTypeName}] "${pathToString(this.enterPath)}" in "${locStr}"`;
+  }
+
+  toString() {
+    return `[${this.nodeTypeName}] ${pathToString(this.enterPath)}`;
   }
 
   // ###########################################################################

@@ -73,7 +73,7 @@ export function addPatternTraceCfg(patternCfg, buildFn, traceCfgInput) {
 export function addPatternChildNode(patternCfg, patternProp, node) {
   const { path } = node;
 
-  Verbose && debug(`addPatternChildNode: "${node.debugTag}"`);
+  Verbose && debug(`addPatternChildNode at ${patternProp}: "${node.debugTag}"`);
 
   if (path.isIdentifier()) {
     /** ###########################################################################
@@ -173,9 +173,9 @@ function buildMEPreInitNodes(meNode) {
  * instrument
  * ##########################################################################*/
 
-export function buildGroupNodeAst(prop, childIndexes) {
+export function buildGroupNodeAst(prop, childIndexes, patternType) {
   return t.objectExpression([
-    t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.Array)),
+    t.objectProperty(t.stringLiteral('type'), t.numericLiteral(patternType)),
     t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(prop ? (prop + '') : '')),
     t.objectProperty(t.stringLiteral('children'),
       t.arrayExpression(childIndexes.map(childIndex => t.numericLiteral(childIndex)))

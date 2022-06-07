@@ -1316,8 +1316,8 @@ export default class RuntimeMonitor {
     const { children } = node;
     for (const iChild of children) {
       const childNode = nodes[iChild];
-      VerbosePatterns && debug(`[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ${JSON.stringify(omit(childNode, ['type']))}\n  value="${value?.toString()}"`);
       const childValue = this._getPatternProp(childValues, childNode.prop);
+      VerbosePatterns && debug(`[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ${JSON.stringify(omit(childNode, ['type']))}\n  value="${childValue?.toString()}"`);
       const varAccess = {
         objectNodeId: readDataNodeId,
         prop: childNode.prop
@@ -1359,8 +1359,11 @@ export default class RuntimeMonitor {
       return result;
     },
     [PatternAstNodeType.Var]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
-      const { tid, declarationTid } = node;
+      let { tid, declarationTid } = node;
       const inputs = [readDataNodeId];
+      // TODO: declarationTid might be 0, because in non-strict mode, we might assign to non-declared vars.
+      //    → We need to fix `getOwnDeclarationNode` for this
+      // declarationTid ||= tid;
       parentResult[node.prop] = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
     },
     [PatternAstNodeType.ME]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
