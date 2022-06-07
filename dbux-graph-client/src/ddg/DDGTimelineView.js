@@ -342,7 +342,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const o = { ...node };
     o.children = JSON.stringify(o.children); // simplify children
     o.summaryMode = DDGSummaryMode.nameFrom(ddg.summaryModes[node.timelineId]);
-    debugger;
     if (ddgQueries.isNodeSummarizable(node)) {
       o.summary = ddg.nodeSummaries[node.timelineId]; // add summary info
     }

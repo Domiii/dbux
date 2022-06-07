@@ -56,6 +56,7 @@ async function doImportApplication(filePath) {
   });
 }
 
+const ZipDefault = true;
 
 export function initUserCommands(extensionContext) {
   // ###########################################################################
@@ -65,10 +66,9 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
 
-    let exportFpath = application.getDefaultApplicationExportPath();
-    if (await confirm('Zip?', true, true)) {
-      exportFpath += '.zip';
-    }
+    const zip = ZipDefault;
+    // const zip = await confirm('Zip?', true, true);
+    let exportFpath = application.getDefaultApplicationExportPath(zip);
     if (existsSync(exportFpath)) {
       if (!await confirm(`File already exists: "${exportFpath}" - Overwrite?`, true, true)) {
         return;
@@ -215,19 +215,21 @@ export function initUserCommands(extensionContext) {
 
     if (trace) {
       contextId = trace.contextId;
-      
+
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
       await getOrOpenTraceEditor(trace);
 
       // clear all previous DDGs
-      const dp = allApplications.getById(trace.applicationId).dataProvider;
+      const app = allApplications.getById(trace.applicationId);
+      const dp = app.dataProvider;
       dp.ddgs.clear();
       disposeDDGWebviews();
 
       // show webview
       await showDDGViewForContextOfSelectedTrace();
 
-      // this worked! Hooray! → update memento
+      // this worked! Hooray! → update memento (and hope that app is already exported)
+      testFilePath = app.getDefaultApplicationExportPath(ZipDefault);
       await mementoSet(TestDDGKeyName, { testFilePath, contextId });
 
       // select DDG Debug node

@@ -29,7 +29,7 @@ export function makeSummaryLabel(docState, mode) {
 export function makeSummaryLabelSvgCompiled(docState, mode, x, y) {
   const { summaryIconUris } = docState;
   if (!summaryIconUris[mode]) {
-    return compileHtmlElement(summaryIconHtml[mode]);
+    return compileHtmlElement(`<text>summaryIconHtml[mode]</text>`);
   }
 
   /**

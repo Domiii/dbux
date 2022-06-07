@@ -21,10 +21,14 @@ export class CodeApplication extends Application {
     projectManager._handleNewApplication(this);
   }
 
-  getDefaultApplicationExportPath() {
+  getDefaultApplicationExportPath(zip) {
     const applicationName = this.getSafeFileName();
     const projectName = this.projectName && pathSafe(this.projectName) || '';
-    return pathJoin(getDefaultExportDirectory(), projectName, `${applicationName || '(unknown)'}_data.json`);
+    let exportPath = pathJoin(getDefaultExportDirectory(), projectName, `${applicationName || '(unknown)'}_data.json`);
+    if (zip) {
+      exportPath += '.zip';
+    }
+    return exportPath;
   }
 }
 
