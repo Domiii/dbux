@@ -451,9 +451,7 @@ export default class BaseDDG {
         else {
           // original is timelineId
           newChild = this.deepCloneNode(original, snapshotsByRefId);
-          if (newChild instanceof RefSnapshotTimelineNode) {
-            this.#onSnapshotCreated(newChild, parentSnapshot);
-          }
+          this.#onSnapshotNodeCreated(newChild, parentSnapshot);
         }
       }
       else {
@@ -466,6 +464,7 @@ export default class BaseDDG {
         else {
           // primitive
           newChild = this.addValueDataNode(lastModDataNode);
+          this.#onSnapshotNodeCreated(newChild, parentSnapshot);
           newChild.parentNodeId = parentSnapshot.timelineId;
           this.timelineBuilder?.onNewSnapshotValueNode(newChild);
         }
@@ -567,7 +566,7 @@ export default class BaseDDG {
 
       // if circular or otherwise repeated → add repeater node
       const snapshot = new RepeatedRefTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId, snapshotOfRef.timelineId);
-      this.#onSnapshotCreated(snapshot, parentSnapshot);
+      this.#onSnapshotNodeCreated(snapshot, parentSnapshot);
       return snapshot;
     }
 
@@ -600,7 +599,7 @@ export default class BaseDDG {
     const ownTraceId = ownDataNode.traceId; /*TODO: are we really using traceId?*/
     const snapshot = new RefSnapshotTimelineNode(ownTraceId, ownDataNode.nodeId, refId);
     this.#addRefSnapshotNode(snapshot, snapshotsByRefId);
-    this.#onSnapshotCreated(snapshot, parentSnapshot);
+    this.#onSnapshotNodeCreated(snapshot, parentSnapshot);
     snapshot.label = dp.util.getRefVarName(refId) || this.makeDataNodeLabel(ownDataNode);
 
 
@@ -632,10 +631,10 @@ export default class BaseDDG {
     return snapshot;
   }
 
-  #onSnapshotCreated(snapshot, parentSnapshot) {
+  #onSnapshotNodeCreated(newNode, parentSnapshot) {
     // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
-    snapshot.parentNodeId = parentSnapshot?.timelineId;
-    snapshot.startDataNodeId = parentSnapshot?.startDataNodeId || snapshot.dataNodeId;
+    newNode.parentNodeId = parentSnapshot?.timelineId;
+    newNode.startDataNodeId = parentSnapshot?.startDataNodeId || newNode.dataNodeId;
   }
 
   /** ###########################################################################

@@ -83,6 +83,10 @@ export class DataTimelineNode extends DDGTimelineNode {
    * @type {number}
    */
   dataNodeId;
+  /**
+   * NOTE: only set for in-snapshot nodes.
+   */
+  startDataNodeId;
   value;
   connected = false;
 
