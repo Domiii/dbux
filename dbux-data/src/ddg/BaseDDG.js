@@ -4,6 +4,7 @@
 
 
 // import DDGTimeline from './DDGTimeline';
+import last from 'lodash/last';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
@@ -22,6 +23,8 @@ import { makeTraceLabel } from '../helpers/makeLabels';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
+
+const Verbose = 2;
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
@@ -448,6 +451,9 @@ export default class BaseDDG {
         else {
           // original is timelineId
           newChild = this.deepCloneNode(original, snapshotsByRefId);
+          if (newChild instanceof RefSnapshotTimelineNode) {
+            this.#onSnapshotCreated(newChild, parentSnapshot);
+          }
         }
       }
       else {
@@ -460,10 +466,10 @@ export default class BaseDDG {
         else {
           // primitive
           newChild = this.addValueDataNode(lastModDataNode);
+          newChild.parentNodeId = parentSnapshot.timelineId;
           this.timelineBuilder?.onNewSnapshotValueNode(newChild);
         }
       }
-      newChild.parentNodeId = parentSnapshot.timelineId;
       parentSnapshot.children[prop] = newChild.timelineId;
     }
   }
@@ -560,32 +566,50 @@ export default class BaseDDG {
       }
 
       // if circular or otherwise repeated → add repeater node
-      return new RepeatedRefTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId, snapshotOfRef.timelineId);
+      const snapshot = new RepeatedRefTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId, snapshotOfRef.timelineId);
+      this.#onSnapshotCreated(snapshot, parentSnapshot);
+      return snapshot;
     }
 
-    const existingSnapshot = this._refSnapshotsByDataNodeId[ownDataNode.nodeId];
-    if (existingSnapshot) {
-      // clone existing snapshot
-      return this.deepCloneNode(existingSnapshot.timelineId, snapshotsByRefId);
-    }
+    // get modifications on nested refs first
+    const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
+    const startDataNode = parentSnapshot?.startDataNodeId && dp.util.getDataNode(parentSnapshot.startDataNodeId);
+    const toTraceId = startDataNode?.traceId || ownDataNode.traceId;
+    const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
+
+    // future-work: consider first getting the tree of all effective modificationDataNodes.
+    //    → at each level, the actual `dataNodeId` would correspond to the max of the entire tree.
+    // // determine actual dataNodeId (effective time of snapshot)
+    // const realDataNodeId = modificationDataNodes?.length ? 
+    //   last(modificationDataNodes).nodeId :
+    //   ownDataNode.nodeId;
+
+    // NOTE: we are not taking an early out here, since we don't know about deeper modifications (yet)
+    // // existing
+    // const existingSnapshot = this._refSnapshotsByDataNodeId[realDataNodeId];
+    // if (existingSnapshot) {
+    //   // clone existing snapshot
+    //   const snapshot = this.deepCloneNode(existingSnapshot.timelineId, snapshotsByRefId);
+    //   this.#onSnapshotCreated(snapshot, parentSnapshot);
+    //   return snapshot;
+    // }
 
     /**
      * Create new
      */
-    const snapshot = new RefSnapshotTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId);
-    snapshot.label = dp.util.getRefVarName(refId) || this.makeDataNodeLabel(ownDataNode);
+    const ownTraceId = ownDataNode.traceId; /*TODO: are we really using traceId?*/
+    const snapshot = new RefSnapshotTimelineNode(ownTraceId, ownDataNode.nodeId, refId);
     this.#addRefSnapshotNode(snapshot, snapshotsByRefId);
+    this.#onSnapshotCreated(snapshot, parentSnapshot);
+    snapshot.label = dp.util.getRefVarName(refId) || this.makeDataNodeLabel(ownDataNode);
+
 
     /**
-     * → build new snapshot.
+     * → build new snapshot, starting from initially recorded valueRef state.
      * NOTE: this is loosely based on {@link dp.util.constructVersionedValueSnapshot}.
      */
     const valueRef = this.dp.collections.values.getById(refId);
-
-    // get last modifications by prop
-    const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
-    const toTraceId = ownDataNode.traceId;
-    const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
+    Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
     this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true, snapshotsByRefId);
 
     // TODO: add refNode edge!
@@ -606,6 +630,12 @@ export default class BaseDDG {
     this._refSnapshotsByDataNodeId[snapshot.dataNodeId] = snapshot;
 
     return snapshot;
+  }
+
+  #onSnapshotCreated(snapshot, parentSnapshot) {
+    // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
+    snapshot.parentNodeId = parentSnapshot?.timelineId;
+    snapshot.startDataNodeId = parentSnapshot?.startDataNodeId || snapshot.dataNodeId;
   }
 
   /** ###########################################################################

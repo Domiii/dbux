@@ -235,6 +235,7 @@ export default class DataNodeCollection extends Collection {
           }
 
           dataNode.valueFromId = inputDataNode.nodeId;
+          dataNode.refId ||= inputDataNode.refId; // also set refId
           return inputDataNode.valueId;
         }
 
@@ -245,6 +246,7 @@ export default class DataNodeCollection extends Collection {
           const lastNode = this.getLastDataNodeByAccessId(accessId);
           if (lastNode) {
             dataNode.valueFromId = lastNode.nodeId;
+            dataNode.refId ||= lastNode.refId; // also set refId
             return lastNode.valueId;
           }
         }

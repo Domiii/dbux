@@ -322,7 +322,7 @@ export default class DotBuilder {
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
   <TR>
     <TD BORDER="1" SIDES="R">${label}</TD>
-    <TD ID="${timelineId}" TITLE="${timelineId}" PORT="${timelineId}"><FONT COLOR="${Colors.value}">${value}</FONT></TD>
+    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${value}</FONT></TD>
   </TR>
 </TABLE>
 >`;

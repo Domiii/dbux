@@ -148,6 +148,11 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
   children;
 
   /**
+   * We use `startDataNodeId` to determine modifications.
+   */
+  startDataNodeId;
+
+  /**
    * @param {number} dataNodeId 
    */
   constructor(traceId, dataNodeId, refId) {

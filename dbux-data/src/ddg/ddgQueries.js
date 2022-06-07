@@ -133,7 +133,9 @@ const ddgQueries = {
    */
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    return node.watched || (isShownMode(summaryMode) && ddgQueries.isNodeConnected(ddg, node));
+    return node.watched || (
+      isShownMode(summaryMode) //&& ddgQueries.isNodeConnected(ddg, node)
+    );
   },
 
   /**

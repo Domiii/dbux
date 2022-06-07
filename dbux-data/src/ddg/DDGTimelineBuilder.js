@@ -162,12 +162,14 @@ export default class DDGTimelineBuilder {
    */
   onNewSnapshotValueNode(newNode) {
     const fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
-    if (fromNode) {
-      // add edges, but not during summarization
+    if (fromNode && fromNode !== newNode && !fromNode.parentNodeId) {
+      // hackfix1: add edges, but not during summarization
+      // if (fromNode.dataNodeId !== newNode.dataNodeId) {
       // TODO: determine correct DDGEdgeType
       const edgeType = DDGEdgeType.Data;
       const edgeState = { nByType: { [edgeType]: 1 } };
       this.ddg.addEdge(edgeType, fromNode.timelineId, newNode.timelineId, edgeState);
+      // }
     }
   }
 
@@ -499,7 +501,7 @@ export default class DDGTimelineBuilder {
 
 
     const isDecision = dp.util.isTraceControlDecision(trace.traceId);
-    Verbose && this.debug(`Adding Trace: t#${trace.traceId}, n#${dataNode.nodeId}, s#${trace.staticTraceId}, ${isDecision}`);
+    // Verbose && this.debug(`Adding Trace: t#${trace.traceId}, n#${dataNode.nodeId}, s#${trace.staticTraceId}, ${isDecision}`);
 
     // if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
     //   // future-work: add two nodes in this case

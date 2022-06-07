@@ -1040,7 +1040,7 @@ export default {
       filter(node => {
         return (
           // time constraints
-          // future-work: use binary search etc. to get the relevant segment
+          // future-work: use binary search etc. to get the relevant segment faster
           (
             (!fromTraceId || node.traceId > fromTraceId) &&
             node.traceId <= toTraceId
