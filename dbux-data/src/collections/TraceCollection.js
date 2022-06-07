@@ -152,14 +152,31 @@ export default class TraceCollection extends Collection {
    */
   resolveDataNodes(traces) {
     for (const trace of traces) {
-      // TODO: fix specialDynamicType vs. purpose. Just stick with one?
       if (SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType)) {
+        // 1. Array HOFs
+        // TODO: fix specialDynamicType vs. purpose. Just stick with one?
         this.dp.collections.executionContexts.resolveBuiltInHOFParamDataNodes(trace);
       }
-
       if (trace.purposes) {
+        // 2. Purpose-based DataNode linkage
         for (const purpose of trace.purposes) {
           this.dp.collections.dataNodes.resolveDataNodeLinks(trace, purpose);
+        }
+      }
+
+      const { dp } = this;
+      const traceType = dp.util.getTraceType(trace.traceId);
+      if (TraceType.is.BeforeCallExpression(traceType)) {
+        // 3. BCE has "own" DataNode (caused by monkey patching, specifically by `createBCEOwnDataNode`)
+        const callId = trace.traceId;
+        const bceDataNode = dp.util.getOwnDataNodeOfTrace(callId);
+        if (bceDataNode) {
+          if (trace.resultId) {
+            const resultDataNode = dp.util.getOwnDataNodeOfTrace(trace.resultId);
+            if (resultDataNode && !resultDataNode.inputs?.length) {
+              resultDataNode.inputs = [bceDataNode.nodeId];
+            }
+          }
         }
       }
     }

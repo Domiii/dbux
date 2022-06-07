@@ -12,7 +12,13 @@ let tracePurposeObj = {
    */
   Compute: 10,
   MathMax: 11,
-  MathMin: 12
+  MathMin: 12,
+
+  /**
+   * Callee of function call should be added as input to own DataNode.
+   * Similar assumption to Compute: used on BCE with `createBCEOwnDataNode`.
+   */
+  CalleeInput: 20
 };
 
 /**
@@ -25,6 +31,7 @@ const dataLinkPurposes = new Array(TracePurpose.getValueMaxIndex()).map(() => fa
 dataLinkPurposes[TracePurpose.Compute] = true;
 dataLinkPurposes[TracePurpose.MathMax] = true;
 dataLinkPurposes[TracePurpose.MathMin] = true;
+dataLinkPurposes[TracePurpose.CalleeInput] = true;
 export function isDataLinkPurpose(purpose) {
   return dataLinkPurposes[purpose];
 }

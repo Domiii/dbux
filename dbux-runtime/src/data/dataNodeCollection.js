@@ -117,6 +117,8 @@ export class DataNodeCollection extends Collection {
     dataNode.type = type;
     dataNode.inputs = inputs;
 
+    // console.log(`createDataNode ${dataNode.nodeId}, input: ${inputs?.join(',')}`);
+
     // if (inputs?.[0] === null) {
     //   // sanity check: it just creeped right in
     //   throw new Error(`Invalid createDataNode call has "null" input, at "${traceCollection.makeTraceInfo(traceId)}"`);

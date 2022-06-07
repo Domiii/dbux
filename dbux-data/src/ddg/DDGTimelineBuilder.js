@@ -500,6 +500,27 @@ export default class DDGTimelineBuilder {
     }
   }
 
+  #addInputNode(inputDataNodeId, inputNodes) {
+    const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
+
+    if (inputNode) {
+      let edgeProps = inputNodes.get(inputNode);
+      if (!edgeProps) {
+        inputNodes.set(inputNode, edgeProps = { nByType: {} });
+      }
+      else {
+        // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
+      }
+      // TODO: geet correct edgeType
+      const edgeType = DDGEdgeType.Data;
+      edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
+    }
+    else {
+      // inputDataNodeId is ignored or external (are there other reasons?)
+      // this.#shouldIgnoreDataNode(ownDataNode.nodeId)
+    }
+  }
+
   #addDataNodeToTimeline(dataNode, trace) {
     const { dp } = this;
 
@@ -528,26 +549,13 @@ export default class DDGTimelineBuilder {
       return null;
     }
 
+    if (dataNode.valueFromId) {
+      this.#addInputNode(dataNode.valueFromId, inputNodes);
+    }
+
     if (dataNode.inputs) {
       for (const inputDataNodeId of dataNode.inputs) {
-        const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
-
-        if (inputNode) {
-          let edgeProps = inputNodes.get(inputNode);
-          if (!edgeProps) {
-            inputNodes.set(inputNode, edgeProps = { nByType: {} });
-          }
-          else {
-            // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
-          }
-          // TODO: geet correct edgeType
-          const edgeType = DDGEdgeType.Data;
-          edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
-        }
-        else {
-          // inputDataNodeId is ignored or external (are there other reasons?)
-          // this.#shouldIgnoreDataNode(ownDataNode.nodeId)
-        }
+        this.#addInputNode(inputDataNodeId, inputNodes);
       }
     }
 
@@ -586,11 +594,11 @@ export default class DDGTimelineBuilder {
     currentGroup.hasSummarizableWrites ||= newNode.hasSummarizableWrites;
 
     // add edges
-    if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
-      for (const [inputNode, edgeProps] of inputNodes) {
-        this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, newNode.timelineId, edgeProps);
-      }
+    // if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
+    for (const [inputNode, edgeProps] of inputNodes) {
+      this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, newNode.timelineId, edgeProps);
     }
+    // }
     return newNode;
   }
 

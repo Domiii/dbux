@@ -53,6 +53,19 @@ export default class DataNodeCollection extends Collection {
           resultDataNode.inputs = argDataNodes.map(n => n.nodeId);
         }
       }
+    },
+
+    [TracePurpose.CalleeInput]: (trace, purpose) => {
+      const { dp } = this;
+      const callId = trace.traceId;
+      const calleeObjectNodeId = dp.util.getCalleeObjectNodeId(callId);
+      if (calleeObjectNodeId) {
+        const bceDataNode = dp.util.getDataNode(trace.nodeId);
+
+        if (bceDataNode) {
+          bceDataNode.inputs = [calleeObjectNodeId];
+        }
+      }
     }
   };
 
@@ -240,18 +253,48 @@ export default class DataNodeCollection extends Collection {
     if (dataNode.valueId > 0) {
       return dataNode.valueId;
     }
+    const { nodeId, traceId, accessId } = dataNode;
 
     if (dataNode.refId) {
-      // TODO: fix 
+      // TODO: integrate with the logic below
       // TODO: deal with implicitly created ref type objects having a single nodeId for all children
       //      e.g. `JSON.parse('{...}')`
-      const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
-      // const firstNodeId = this.dp.util.getAnyFirstNodeIdByRefId(dataNode.refId);
-      // return Math.min(firstNodeId, firstRef.nodeId);
-      return firstRef.nodeId;
+
+      // 1. check for "pass-along"
+      if (
+        dataNode.inputs?.length === 1
+      ) {
+        // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
+        const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+        if (!inputDataNode) {
+          // sanity check
+          const traceInfo = this.dp.util.makeTraceInfo(traceId);
+          this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
+          return nodeId;
+        }
+
+        dataNode.valueFromId = inputDataNode.nodeId;
+        return inputDataNode.valueId;
+      }
+      // 2. if it is not a pass-along, look up accessId.
+      //    It is important we do this after (1), since 
+      //        looking up by `accessId` won't work on a new Write node.
+      if (accessId) {
+        const lastNode = this.getLastDataNodeByAccessId(accessId);
+        if (lastNode) {
+          dataNode.valueFromId = lastNode.nodeId;
+          return lastNode.valueId;
+        }
+      }
+
+      // if (nodeId !== firstRefNode.nodeId) {
+      //   dataNode.valueFromId = firstRefNode.nodeId;
+      // }
+      // refs have some magic up their sleeves
+      const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+      return firstRefNode.nodeId;
     }
     else {
-      const { nodeId, traceId, accessId } = dataNode;
       const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
       const isTraceOwnDataNode = traceNodeId === nodeId;
       const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);

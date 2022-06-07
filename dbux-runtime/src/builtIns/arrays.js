@@ -5,6 +5,8 @@ import dataNodeCollection from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
+import { addPurpose } from './builtin-util';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 
 
 // ###########################################################################
@@ -23,6 +25,12 @@ function wrapIndex(i, arr) {
   else {
     return arr.length + i;
   }
+}
+
+const _isNaN = globalThis.isNaN;
+
+function isNaN(x) {
+  return x === undefined || _isNaN(x);
 }
 
 export default function patchArray() {
@@ -119,7 +127,7 @@ export default function patchArray() {
         objectNodeId: arrNodeId,
         prop: 0
       };
-      dataNodeCollection.createOwnDataNode(undefined, callId, DataNodeType.Delete, shiftVarAccess);
+      dataNodeCollection.createBCEOwnDataNode(undefined, callId, DataNodeType.Delete, shiftVarAccess);
 
       // move up all other elements
       for (let i = 1; i < arr.length; ++i) {
@@ -166,10 +174,14 @@ export default function patchArray() {
 
       // let BCE hold DataNode of newArray
       // DataNodeType.Create
-      const newArrayNode = dataNodeCollection.createBCEOwnDataNode(newArray, callId, DataNodeType.Write);
+      const newArrayNode = dataNodeCollection.createBCEOwnDataNode(newArray, callId, DataNodeType.Compute);
 
-      start = !Number.isNaN(start) ? wrapIndex(start, arr) : 0;
-      end = !Number.isNaN(end) ? wrapIndex(end, arr) : arr.length - 1;
+      // console.log(`SLICE ${start}:${end} ${!isNaN(start)}`);
+      // console.log(`SLICE BCE-owned DataNode #${bceTrace.nodeId} - ${JSON.stringify(bceTrace)} (${JSON.stringify(newArrayNode)})`);
+
+      start = !isNaN(start) ? wrapIndex(start, arr) : 0;
+      end = !isNaN(end) ? wrapIndex(end, arr) : arr.length;
+      
 
       // record all DataNodes of copy operation
       for (let i = start; i < end; ++i) {
@@ -186,6 +198,12 @@ export default function patchArray() {
         };
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
+
+
+      addPurpose(bceTrace, {
+        type: TracePurpose.CalleeInput
+      });
+
       return newArray;
     }
   );

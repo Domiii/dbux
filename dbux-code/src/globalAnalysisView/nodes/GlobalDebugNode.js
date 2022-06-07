@@ -229,6 +229,17 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             return node.label || `${node.constructor.name}`;
           }
 
+          function renderDataNode(dataNodeId) {
+            const dataNode = dp.util.getDataNode(dataNodeId);
+            return makeTreeItem(
+              'dataNode',
+              dataNode,
+              {
+                description: `${dataNodeId}, refId=${dataNode.refId}, value=${dataNode.value}`
+              }
+            );
+          }
+
           /**
            * @param {DDGTimelineNode} node 
            */
@@ -237,7 +248,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             if (children === node) {
               children = { ...node };
               if (node.dataNodeId) {
-                children.dataNode = dp.util.getDataNode(node.dataNodeId);
+                children.dataNode = renderDataNode(node.dataNodeId);
                 delete children.dataNodeId;
               }
             }

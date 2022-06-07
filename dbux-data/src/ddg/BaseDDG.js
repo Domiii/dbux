@@ -68,7 +68,7 @@ export default class BaseDDG {
   /**
    * @type {Obejct.<number, DataTimelineNode>}
    */
-  _firstTimelineDataNodeByDataNodeId;
+  _firstTimelineDataOrSnapshotNodeByDataNodeId;
 
   /** ########################################
    * render data
@@ -168,7 +168,7 @@ export default class BaseDDG {
   resetBuild() {
     this._refSnapshotsByDataNodeId = [];
     this._lastAccessDataNodeIdByRefId = [];
-    this._firstTimelineDataNodeByDataNodeId = [];
+    this._firstTimelineDataOrSnapshotNodeByDataNodeId = [];
 
     this.resetEdges();
   }
@@ -344,12 +344,12 @@ export default class BaseDDG {
 
     if (this.timelineBuilder) {
       // hackfix: we only need these during initial build
-      this._firstTimelineDataNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
+      this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
     }
   }
 
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
-    return this._firstTimelineDataNodeByDataNodeId[dataNodeId];
+    return this._firstTimelineDataOrSnapshotNodeByDataNodeId[dataNodeId];
   }
 
   /** ###########################################################################
@@ -426,10 +426,10 @@ export default class BaseDDG {
       lastModsByProp[dataNode.varAccess.prop] = dataNode;
     }
 
-    const allProps = [
+    const allProps = new Set([
       ...Object.keys(lastModsByProp),
       ...Object.keys(originalChildren)
-    ];
+    ]);
 
     // create children
     parentSnapshot.children = new originalChildren.constructor();
@@ -658,6 +658,11 @@ export default class BaseDDG {
     // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
     newNode.parentNodeId = parentSnapshot?.timelineId;
     newNode.startDataNodeId = parentSnapshot?.startDataNodeId || newNode.dataNodeId;
+
+    if (this.timelineBuilder) {
+      // hackfix: we only need these during initial build
+      this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
+    }
   }
 
   /** ###########################################################################

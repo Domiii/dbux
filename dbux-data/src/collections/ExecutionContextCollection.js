@@ -153,31 +153,30 @@ export default class ExecutionContextCollection extends Collection {
   // }
 
   /**
-   * Set CallExpression result trace `inputs` to `[returnNodeId]`.
+   * Set CallExpression result trace `inputs` to:
+   * 1. `[returnNodeId]` if context was recorded
    */
   setCallExpressionResultInputs(contexts) {
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {
       const returnTrace = util.getReturnTraceOfContext(contextId);
-      if (!returnTrace) {
-        // function has no return value -> nothing to do
-        continue;
-      }
+      if (returnTrace) {
+        // 1. recorded context
+        const realContextId = util.getRealContextIdOfContext(contextId);
+        const bceTrace = util.getOwnCallerTraceOfContext(realContextId); // BCE
+        if (!bceTrace) {
+          // no BCE -> must be root context (not called by us) -> nothing to do
+          continue;
+        }
+        const cerTrace = dp.collections.traces.getById(bceTrace.resultId);
 
-      const realContextId = util.getRealContextIdOfContext(contextId);
-      const bceTrace = util.getOwnCallerTraceOfContext(realContextId); // BCE
-      if (!bceTrace) {
-        // no BCE -> must be root context (not called by us) -> nothing to do
-        continue;
-      }
-      const cerTrace = dp.collections.traces.getById(bceTrace.resultId);
-
-      if (!cerTrace) {
-        // NOTE: function was called, but did not have CER. Possible due to exceptions etc.
-      }
-      else {
-        const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
-        cerDataNode.inputs = [returnTrace.nodeId];
+        if (!cerTrace) {
+          // NOTE: function was called, but did not have CER. Possible due to exceptions etc.
+        }
+        else {
+          const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
+          cerDataNode.inputs = [returnTrace.nodeId];
+        }
       }
     }
   }

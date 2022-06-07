@@ -9,7 +9,8 @@ import DDGNodeSummary from './DDGNodeSummary';
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
 const DDGConfig = {
-  connectedOnly: true
+  // connectedOnly: true
+  connectedOnly: false
 };
 
 export class RenderState {

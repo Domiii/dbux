@@ -126,6 +126,9 @@ export default class BindingIdentifier extends BaseId {
     //      -> will fail in some cases, such as `FunctionExpression` (which needs to add variable to own body).
     const bindingScopeNode = this.getBindingScopeNode(/* moreTraceData?.scope */);
 
+    if (!moreTraceData) {
+      moreTraceData = {};
+    }
     moreTraceData.staticTraceData = merge(moreTraceData.staticTraceData, makeDeclarationVarStaticTraceData(this.path));
 
     if (!moreTraceData?.scope) {

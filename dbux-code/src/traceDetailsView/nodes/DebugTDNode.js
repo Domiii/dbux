@@ -5,11 +5,11 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems, makeTreeChildren } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './TraceDetailNode';
 import { makeObjectArrayNodes } from '../../helpers/treeViewUtil';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -106,6 +106,11 @@ export class DebugTDNode extends TraceDetailNode {
       staticTraceId,
       ...otherTraceProps
     } = trace;
+
+    const renderTrace = {
+      ...otherTraceProps,
+      nodeId: traceNodeId
+    };
 
     let context = dp.collections.executionContexts.getById(contextId) || EmptyObject;
     context = {
@@ -321,7 +326,7 @@ export class DebugTDNode extends TraceDetailNode {
         ContextTDNode,
       ]),
       ...makeTreeItems(
-        ['trace', otherTraceProps],
+        ['trace', renderTrace],
         contextNode,
         rootContextNode,
         makeTreeItem('value',

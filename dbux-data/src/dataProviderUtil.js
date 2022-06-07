@@ -1774,6 +1774,7 @@ export default {
   },
 
   /**
+   * @deprecated Use `getRealCalleeTrace` instead
    * @param {RuntimeDataProvider} dp
    */
   getCalleeTraceId(dp, callId) {
@@ -1865,48 +1866,6 @@ export default {
     }
 
     return null;
-  },
-
-  /**
-   * Accounts for `call`, `apply`, `bind`.
-   * @param {RuntimeDataProvider} dp
-   */
-  getRealCalleeTrace(dp, callId) {
-    const bceTrace = dp.util.getTrace(callId);
-    if (!bceTrace?.data) {
-      return null;
-    }
-
-    let realCalleeTid;
-    const callType = dp.util.getSpecialCallType(callId);
-    switch (callType) {
-      case SpecialCallType.Call:
-      case SpecialCallType.Apply:
-        realCalleeTid = bceTrace.data.calledFunctionTid;
-        break;
-      case SpecialCallType.Bind:
-      default: {
-        // nothing to do here -> handle `Bound` case below
-        break;
-      }
-    }
-
-    // no match -> check for Bound
-    const { calleeTid } = bceTrace.data;
-    const bindTrace = dp.util.getBindCallTrace(calleeTid);
-    if (bindTrace?.data) {
-      realCalleeTid = bindTrace.data.calledFunctionTid;
-    }
-
-    if (!realCalleeTid) {
-      // default
-      realCalleeTid = bceTrace.data.calleeTid;
-    }
-    else {
-      // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
-    }
-
-    return dp.collections.traces.getById(realCalleeTid);
   },
 
   /**
@@ -2010,6 +1969,68 @@ export default {
     });
     delete byRefId[0];  // remove those whose `refId` could not be recovered (e.g. due to disabled tracing)
     return byRefId;
+  },
+
+  /** ###########################################################################
+   * callees
+   * ##########################################################################*/
+
+  /**
+   * Accounts for `call`, `apply`, `bind`.
+   * @param {RuntimeDataProvider} dp
+   */
+  getRealCalleeTrace(dp, callId) {
+    const bceTrace = dp.util.getTrace(callId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+
+    let realCalleeTid;
+    const callType = dp.util.getSpecialCallType(callId);
+    switch (callType) {
+      case SpecialCallType.Call:
+      case SpecialCallType.Apply:
+        realCalleeTid = bceTrace.data.calledFunctionTid;
+        break;
+      case SpecialCallType.Bind:
+      default: {
+        // nothing to do here -> handle `Bound` case below
+        break;
+      }
+    }
+
+    // no match -> check for Bound
+    const { calleeTid } = bceTrace.data;
+    const bindTrace = dp.util.getBindCallTrace(calleeTid);
+    if (bindTrace?.data) {
+      realCalleeTid = bindTrace.data.calledFunctionTid;
+    }
+
+    if (!realCalleeTid) {
+      // default
+      realCalleeTid = bceTrace.data.calleeTid;
+    }
+    else {
+      // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
+    }
+
+    return dp.collections.traces.getById(realCalleeTid);
+  },
+
+  /** 
+   * @example `o` in `o.f(x)`
+   * 
+   * @param {RuntimeDataProvider} dp
+   */
+  getCalleeObjectNodeId(dp, callId) {
+    const calleeTrace = dp.util.getRealCalleeTrace(callId);
+    if (calleeTrace) {
+      const calleeDataNode = dp.util.getOwnDataNodeOfTrace(calleeTrace.traceId);
+      const calleeObjectNodeId = calleeDataNode?.varAccess.objectNodeId;
+      return calleeObjectNodeId;
+      // return calleeObjectNodeId && dp.util.getDataNode(calleeObjectNodeId);
+    }
+    return null;
   },
 
   // ###########################################################################
