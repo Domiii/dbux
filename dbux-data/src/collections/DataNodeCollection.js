@@ -57,12 +57,12 @@ export default class DataNodeCollection extends Collection {
   };
 
   resolveDataNodeLinks(trace, purpose) {
-    const { dp } = this;
+    // const { dp } = this;
     const handler = this.#purposeHandlers[purpose.type];
-    if (!handler) {
-      this.logger.error(`Invalid TracePurpose ${JSON.stringify(purpose)} not handled in resolveDataNodeLinks for trace: ${dp.util.makeTraceInfo(trace)}`);
+    if (handler) {
+      handler(trace, purpose);
     }
-    handler(trace, purpose);
+    // this.logger.error(`Invalid TracePurpose ${JSON.stringify(purpose)} not handled in resolveDataNodeLinks for trace: ${dp.util.makeTraceInfo(trace)}`);
   }
 
   /** ###########################################################################
