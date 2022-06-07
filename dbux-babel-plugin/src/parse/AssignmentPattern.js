@@ -42,16 +42,16 @@ export default class AssignmentPattern extends BaseNode {
   static children = ['left', 'right'];
 
   enter() {
-    const [leftPath, rightPath] = this.getChildPaths();
+    // const [leftPath, rightPath] = this.getChildPaths();
 
-    if (rightPath && !isSupported(leftPath)) {
-      // TODO: tracing the rhs would introduce new variables whose declaration would be moved into function body,
-      //      resulting in a TypeError
-      //    -> skip
-      //  e.g.: function f({ x } = {}) {}
-      skipPath(rightPath);
-      // this.warn(`skipped default initializer "${pathToStringAnnotated(rightPath, true)}"`, rightPath._traverseFlags);
-    }
+    // if (rightPath && !isSupported(leftPath)) {
+    //   // TODO: tracing the rhs would introduce new variables whose declaration would be moved into function body,
+    //   //      resulting in a TypeError
+    //   //    -> skip
+    //   //  e.g.: function f({ x } = {}) {}
+    //   skipPath(rightPath);
+    //   // this.warn(`skipped default initializer "${pathToStringAnnotated(rightPath, true)}"`, rightPath._traverseFlags);
+    // }
   }
 
   /**

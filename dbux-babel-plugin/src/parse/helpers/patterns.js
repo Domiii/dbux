@@ -136,8 +136,12 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
     return addPatternTraceCfg(patternCfg, buildMENodeAst, traceCfgInput);
   }
   else if (path.isAssignmentPattern()) {
-    // TODO
-    throw new Error(`Lval assignment patterns not yet supported, in: "${node.getExistingParent().debugTag}"`);
+    const [lvalNode, defaultValNode] = node.getChildNodes();
+
+    const result = addPatternChildNode(patternCfg, patternProp, lvalNode);
+    defaultValNode.addDefaultTrace();
+    return result;
+    // throw new Error(`Lval assignment patterns not yet supported, in: "${node.getExistingParent().debugTag}"`);
   }
   else if (path.isRestElement()) {
     // Var or ME
@@ -165,7 +169,7 @@ function buildMEPreInitNodes(meNode) {
   const { state, traceCfg } = meNode;
   const [objectNode, propNode] = meNode.getChildNodes();
   const meAstNode = meNode.path.node;
-  
+
   // don't further instrument object or prop node
   //    (there are issues with ordering, that lead to object node not getting built on time, so we do it here instead)
   objectNode.traceCfg && (objectNode.traceCfg.instrument = null);
