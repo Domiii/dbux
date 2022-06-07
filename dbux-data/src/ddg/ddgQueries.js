@@ -8,6 +8,10 @@ import DDGNodeSummary from './DDGNodeSummary';
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
+const DDGConfig = {
+  connectedOnly: true
+};
+
 export class RenderState {
   /**
    * @type {Array.<DDGTimelineNode>}
@@ -134,7 +138,7 @@ const ddgQueries = {
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
     return node.watched || (
-      isShownMode(summaryMode) //&& ddgQueries.isNodeConnected(ddg, node)
+      isShownMode(summaryMode) && (!DDGConfig.connectedOnly || ddgQueries.isNodeConnected(ddg, node))
     );
   },
 
