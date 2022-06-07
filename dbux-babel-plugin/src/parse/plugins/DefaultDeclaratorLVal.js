@@ -1,7 +1,8 @@
 import { LValHolderNode } from '../_types';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
-import { decorateStaticIdData } from '../BindingIdentifier';
+import { makeDeclarationVarStaticTraceData } from '../BindingIdentifier';
+import { addLValVarTrace } from '../helpers/lvalUtil';
 
 export default class DefaultDeclaratorLVal extends BasePlugin {
   /**
@@ -9,17 +10,20 @@ export default class DefaultDeclaratorLVal extends BasePlugin {
    */
   node;
 
+  get isHoisted() {
+    const { path } = this.node;
+    return path.parentPath.node.kind === 'var';
+  }
+
   get rvalNode() {
     const [, initNode] = this.node.getChildNodes();
     return initNode;
   }
 
   get hasSeparateDeclarationTrace() {
-    const { path } = this.node;
-
-    // if `var`, hoist to function scope
-    // if no `initNode`, there is no write trace, so `Declaration` is independent.
-    return path.parentPath.node.kind === 'var' || !this.rvalNode;
+    // if `var`: hoist to function scope.
+    // if no `initNode`: there is no write trace, so `Declaration` is independent.
+    return this.isHoisted || !this.rvalNode;
   }
 
   exit() {
@@ -27,7 +31,7 @@ export default class DefaultDeclaratorLVal extends BasePlugin {
       node,
       rvalNode
     } = this;
-    const { path, Traces, writeTraceType } = node;
+    const { path, writeTraceType } = node;
 
     if (!writeTraceType) {
       this.error(`missing writeTraceType in "${this.node}"`);
@@ -41,27 +45,18 @@ export default class DefaultDeclaratorLVal extends BasePlugin {
 
     const [idPath, initPath] = this.node.getChildPaths();
 
+    // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
+    const targetPath = initPath;
+
     const traceData = {
-      path,
-      node,
-      staticTraceData: {
-        type: writeTraceType
-      },
-      meta: {
-        // instrument: Traces.instrumentTraceWrite
-        build: buildTraceWriteVar,
-        targetPath: initPath
-      }
+      staticTraceData: makeDeclarationVarStaticTraceData(idPath)
     };
 
-    if (path.parentPath.node.kind !== 'var') {
+    if (!this.isHoisted) {
       // hackfix for `ForStatement.init`: prevent adding `tid` variable to own body
       traceData.scope = path.parentPath.scope;
     }
 
-    decorateStaticIdData(traceData, idPath);
-
-    // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
-    Traces.addTraceWithInputs(traceData, [rvalNode.path]);
+    addLValVarTrace(node, path, writeTraceType, targetPath, rvalNode.path, traceData);
   }
 }

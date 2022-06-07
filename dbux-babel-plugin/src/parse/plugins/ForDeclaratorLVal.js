@@ -14,17 +14,13 @@ export default class ForDeclaratorLVal extends BasePlugin {
   }
 
   get hasSeparateDeclarationTrace() {
-    const { path } = this.node;
-    // const [, initNode] = this.getChildNodes();
-
-    // if `var`, hoist to function scope
-    return path.parentPath.node.kind === 'var';
+    return this.isHoisted;
   }
 
   exit() {
+    // TODO: see `ForOfStatement` for `params` solution
     // NOTE: there is no tracing of the lval itself.
     //    Instead, we handle the iterator variable similar to parameters.
-    // TODO: see `ForOfStatement` for `params` solution
 
     // const {
     //   node,

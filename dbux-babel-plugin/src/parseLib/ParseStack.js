@@ -7,8 +7,15 @@ import ParsePhase from './ParsePhase';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
-// const Verbose = 2;
+
+/**
+ * Since declarations are such a nuisance, they got their own verbosity setting.
+ */
+const VerboseDecl = 0;
+// const VerboseDecl = 2;
+
 const Verbose = 0;
+// const Verbose = 1;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');
@@ -59,6 +66,10 @@ export default class ParseStack {
 
   get Verbose() {
     return Verbose;
+  }
+
+  get VerboseDecl() {
+    return VerboseDecl;
   }
 
   debug(arg0, ...args) {
@@ -209,7 +220,7 @@ export default class ParseStack {
     if (parseNode) {
       // push new node
       parseNode.phase = ParsePhase.Enter;
-      Verbose /* && parseNode.hasPhase('enter', 'exit') */ && this.debug(`ENTER ${parseNode}`);
+      Verbose > 1 /* && parseNode.hasPhase('enter', 'exit') */ && this.debug(`ENTER ${parseNode}`);
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter?.(path, state);
       parseNode.enterPlugins?.();
@@ -249,7 +260,7 @@ export default class ParseStack {
       throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${pathToString(path)}`);
     }
 
-    Verbose && parseNode.hasPhase('exit1') && this.debug(`exit1 ${parseNode}`);
+    Verbose > 1 && parseNode.hasPhase('exit1') && this.debug(`exit1 ${parseNode}`);
 
     if (parseNode._nestedEnterCount) {
       --parseNode._nestedEnterCount;
@@ -301,20 +312,20 @@ export default class ParseStack {
     // NOTE: the actual "exit" is run here for convinience. `exit1` is more of a "warm-up round".
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`EXIT ${parseNode}`);
+      Verbose > 1 && parseNode.hasPhase('enter', 'exit') && this.debug(`EXIT ${parseNode}`);
       this.nodePhase(ParsePhase.Exit, parseNode, parseNode.exitPlugins, parseNode.exit);
     }
 
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('instrument1') && debug(`instrument1 ${parseNode}`);
+      Verbose > 1 && parseNode.hasPhase('instrument1') && debug(`instrument1 ${parseNode}`);
       this.nodePhase(ParsePhase.Instrument1, parseNode, parseNode.instrument1Plugins, parseNode.instrument1);
     }
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('instrument') && debug(`instrument ${parseNode}`);
+      Verbose > 1 && parseNode.hasPhase('instrument') && debug(`instrument ${parseNode}`);
       this.nodePhase(ParsePhase.Instrument, parseNode, parseNode.instrumentPlugins, parseNode.instrument);
     }
   }

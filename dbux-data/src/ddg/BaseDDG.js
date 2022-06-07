@@ -12,6 +12,7 @@ import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeHaveData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
@@ -96,6 +97,12 @@ export default class BaseDDG {
    */
   inEdgesByTimelineId;
 
+  /** ########################################
+   * other fields
+   *  ######################################*/
+
+  logger;
+
   /** ###########################################################################
    * ctor
    * ##########################################################################*/
@@ -105,6 +112,7 @@ export default class BaseDDG {
    * @param {RuntimeDataProvider} dp 
    */
   constructor(dp, graphId) {
+    this.logger = newLogger('DDG');
     this.dp = dp;
     this.graphId = graphId;
   }
@@ -473,8 +481,9 @@ export default class BaseDDG {
           this.timelineBuilder?.onNewSnapshotValueNode(newChild);
         }
       }
-      if (!newChild.dataNodeId || this.dp.util.getDataNode(newChild.dataNodeId)) {
-        console.error(`invalid snapshot child has no DataNode: ${JSON.stringify(newChild)}`);
+      if (!newChild.dataNodeId || !this.dp.util.getDataNode(newChild.dataNodeId)) {
+        // sanity check
+        this.logger.error(`Invalid snapshot child has no DataNode: ${JSON.stringify(newChild)}\n  in "${JSON.stringify(parentSnapshot)}"`);
       }
       else {
         parentSnapshot.children[prop] = newChild.timelineId;

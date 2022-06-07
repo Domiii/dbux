@@ -1,5 +1,6 @@
 import truncate from 'lodash/truncate';
 import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import set from 'lodash/set';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
@@ -523,6 +524,10 @@ class ValueCollection extends Collection {
   _onAccessError(obj, errorsByType) {
     // TODO: consider adding a timeout for floodgates?
     ++this._readErrorCount;
+
+    if (!isObject(obj)) {
+      throw new Error(`Tried to access value as object, but is not object: ${obj}`);
+    }
 
     const proto = Object.getPrototypeOf(obj);
     if (!DefaultPrototypes.has(proto)) { // NOTE: cannot be `Object` or other generic type...

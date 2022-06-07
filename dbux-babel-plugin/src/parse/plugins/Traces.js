@@ -214,7 +214,7 @@ export default class Traces extends BasePlugin {
       // if (meta?.hoisted && !isRedeclaration) {
 
       // eslint-disable-next-line max-len
-      this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParentString()}" by "${node}" in "${node.getParentString()}" (${traceCfg.tidIdentifier.name})`);
+      this.VerboseDecl && this.debug(`DECL "${declarationNode}" in "${node.getParentString()}" (${traceCfg.tidIdentifier.name})`);
     }
     else {
       // not a declaration

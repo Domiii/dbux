@@ -13,6 +13,11 @@ import { buildGroupNodeAst, addPatternChildNode, PatternBuildConfig } from './he
 export default class ObjectPattern extends BaseNode {
   static children = ['properties'];
 
+  handleComputedProp() {
+    // NOTE: one problem is that rval is evaluated before lval props (its different order for id var declarators)
+    //  → see `pattern-CONFUSED.js` sample
+    // TODO!
+  }
 
   /**
    * @param {PatternBuildConfig} patternCfg

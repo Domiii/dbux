@@ -1309,6 +1309,10 @@ export default class RuntimeMonitor {
 
   _getPatternProp(obj, prop) {
     // [runtime-error] runtime value access
+    if (!obj) {
+      // value does not exist (or is primitive) → cause standard error message (if necessary)
+      return obj[prop];
+    }
     return valueCollection._readProperty(obj, prop);
   }
 
@@ -1317,7 +1321,12 @@ export default class RuntimeMonitor {
     for (const iChild of children) {
       const childNode = nodes[iChild];
       const childValue = this._getPatternProp(childValues, childNode.prop);
-      VerbosePatterns && debug(`[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ${JSON.stringify(omit(childNode, ['type']))}\n  value="${childValue?.toString()}"`);
+      // eslint-disable-next-line max-len
+      VerbosePatterns && debug(
+        `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
+        `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
+        `value=${childValue} (${typeof childValue})`
+      );
       const varAccess = {
         objectNodeId: readDataNodeId,
         prop: childNode.prop

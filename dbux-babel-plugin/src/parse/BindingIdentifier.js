@@ -1,19 +1,19 @@
+import merge from 'lodash/merge';
 import { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import { astNodeToString, pathToString } from '../helpers/pathHelpers';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 import BaseNode from './BaseNode';
 
-export function decorateStaticIdData(moreTraceData, idPath) {
-  moreTraceData ||= {};
-  moreTraceData.staticTraceData ||= {};
-  moreTraceData.staticTraceData.dataNode ||= {};
-  moreTraceData.staticTraceData.data ||= {};
-  moreTraceData.staticTraceData.dataNode.label = moreTraceData.staticTraceData.data.name = idPath.toString();
+export function makeDeclarationVarStaticTraceData(idPath) {
+  const staticTraceData = {};
+  staticTraceData.data = {};
+  staticTraceData.dataNode = {};
+  staticTraceData.dataNode.label = staticTraceData.data.name = idPath.toString();
 
   // console.debug(`[DECL] ${JSON.stringify(moreTraceData.staticTraceData)}`);
 
-  return moreTraceData;
+  return staticTraceData;
 }
 
 /**
@@ -126,7 +126,7 @@ export default class BindingIdentifier extends BaseId {
     //      -> will fail in some cases, such as `FunctionExpression` (which needs to add variable to own body).
     const bindingScopeNode = this.getBindingScopeNode(/* moreTraceData?.scope */);
 
-    moreTraceData = decorateStaticIdData(moreTraceData, this.path);
+    moreTraceData.staticTraceData = merge(moreTraceData.staticTraceData, makeDeclarationVarStaticTraceData(this.path));
 
     if (!moreTraceData?.scope) {
       moreTraceData.scope = bindingScopeNode.path.scope;

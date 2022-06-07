@@ -192,7 +192,7 @@ export default class ParseNode {
   getParseNodeStackToString() {
     const stack = this.getParseNodeStack();
     const indent = '    ';
-    return ` - current stack (${stack.length}):\n${indent}` +
+    return ` - Node stack (${stack.length}):\n${indent}` +
       stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join(`\n${indent}`);
   }
 
@@ -267,12 +267,20 @@ export default class ParseNode {
     return this.stack.Verbose;
   }
 
+  get VerboseDecl() {
+    return this.stack.VerboseDecl;
+  }
+
   debug(...args) {
-    return this.stack.debug(' >', ...args);
+    return this.stack.debug(' >', `[${this.debugTag}]`, ...args);
   }
 
   warn(...args) {
-    return this.stack.warn(' >', `[${this.verboseDebugTag}]`, ...args);
+    return this.stack.warn(' >', `[${this.debugTag}]`, ...args);
+  }
+
+  debugDecl(fn) {
+    this.Verbose
   }
 
   get debugTag() {
@@ -344,7 +352,7 @@ export default class ParseNode {
         const f = plugin[phase];
         // this.debug(` [P] ${name}`, !!f);
         if (f) {
-          this.Verbose && this.debug(`[P] ${plugin.name}`);
+          this.Verbose > 2 && this.debug(`[P] ${plugin.name}`);
           f.call(plugin);
         }
       }

@@ -1,7 +1,6 @@
 import last from 'lodash/last';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
-import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
@@ -46,11 +45,6 @@ export default class DDGTimelineBuilder {
    */
   lastTimelineVarSnapshotNodeByDeclarationTid = {};
 
-  /** ########################################
-   * other fields
-   *  ######################################*/
-
-  logger;
 
   /** ########################################
    * ctor
@@ -61,7 +55,6 @@ export default class DDGTimelineBuilder {
    */
   constructor(ddg) {
     this.ddg = ddg;
-    this.logger = newLogger(DDGTimelineBuilder.name);
 
     const timelineRoot = new TimelineRoot();
     this.ddg.addNode(timelineRoot);
@@ -74,6 +67,10 @@ export default class DDGTimelineBuilder {
 
   get dp() {
     return this.ddg.dp;
+  }
+
+  get logger() {
+    return this.ddg.logger;
   }
 
   peekStack() {

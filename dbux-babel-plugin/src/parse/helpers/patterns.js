@@ -10,6 +10,7 @@ import { getDeclarationTid } from '../../helpers/traceUtil';
 import { pathToStringAnnotated } from '../../helpers/pathHelpers';
 import { makeMETraceData } from './me';
 import { buildMELval, buildMEObject, buildMEProp, getMEpropVal } from '../../instrumentation/builders/me';
+import { makeDeclarationVarStaticTraceData } from '../BindingIdentifier';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -20,7 +21,7 @@ const { log, debug, warn, error: logError } = newLogger('Pattern Instrumentation
 /** @typedef { import("@dbux/common/src/types/StaticTrace").default } StaticTrace */
 /** @typedef { import("../BaseNode").default } BaseNode */
 
-const Verbose = 2;
+const Verbose = 1;
 
 export class PatternBuildConfig {
   /**
@@ -33,6 +34,13 @@ export class PatternBuildConfig {
    * @type {Array.<Function>}
    */
   preInitNodeBuilders = [];
+
+  lvalVarNodesByName = new Map();
+
+  constructor(patternRoot) {
+    this.patternRoot = patternRoot;
+  }
+
 
   addBuilder(buildFn) {
     const index = this.lvalTreeNodeBuilders.length;
@@ -79,12 +87,23 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
     /** ###########################################################################
      * // Var
      * ##########################################################################*/
+    const traceType = patternCfg.patternRoot.isDeclarator ? TraceType.PatternWriteAndDeclareVar : TraceType.PatternWriteVar;
+    let scope;
+    if (!patternCfg.patternRoot.isHoisted) {
+      // hackfix for `ForStatement.init`: prevent adding `tid` variable to own body
+      scope = path.parentPath.scope;
+    }
+
+    // add node by var (to look up declaration later)
+    patternCfg.lvalVarNodesByName.set(path.node.name, node);
+
     return addPatternTraceCfg(patternCfg, buildVarNodeAst, {
       node,
       path,
-      // scope, // TODO: declarators
+      scope,
       staticTraceData: {
-        type: TraceType.PatternWriteVar
+        type: traceType,
+        ...makeDeclarationVarStaticTraceData(path)
       },
       data: { patternProp },
       meta: {

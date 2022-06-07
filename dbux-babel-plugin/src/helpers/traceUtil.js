@@ -18,6 +18,10 @@ export function getDeclarationTid(traceCfg) {
   // NOTE: in case this is a declaration, it might not have a `bindingTrace`
   let declarationTid = traceCfg.node?.getDeclarationTidIdentifier();
 
+  traceCfg.node.VerboseDecl && traceCfg.node.debug(
+    `getDeclarationTid "${traceCfg.node.debugTag}" (${traceCfg.tidIdentifier?.name}): ${!!isDeclaration} ${declarationTid?.name}`
+  );
+
   if (!declarationTid && isDeclaration) {
     declarationTid = traceCfg.tidIdentifier;
   }

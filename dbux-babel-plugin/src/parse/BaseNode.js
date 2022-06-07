@@ -70,10 +70,10 @@ export default class BaseNode extends ParseNode {
     // NOTE: Babel's bindings can be recursive if a symbol name is defined multiple times inside the same scope.
     while ((next = declarationNode.getOwnDeclarationNode()) && next !== declarationNode) {
       declarationNode = next;
-      // this.logger.debug(`  ([getDeclarationNode] "${this.debugTag}" → "${declarationNode.debugTag}")`);
+      this.VerboseDecl > 1 && this.logger.debug(`  ([getDeclarationNode while] "${this.debugTag}": "${declarationNode.debugTag}")`);
     }
 
-    // this.logger.debug(`[getDeclarationNode] "${this.debugTag}" → "${declarationNode.debugTag}"`);
+    this.VerboseDecl && this.logger.debug(`[getDeclarationNode] "${this.debugTag}": "${declarationNode.debugTag}"`);
     return declarationNode;
   }
 
@@ -91,13 +91,15 @@ export default class BaseNode extends ParseNode {
 
   getDeclarationTidIdentifier() {
     const decl = this.getDeclarationNode();
+    
+    let id;
     if (decl) {
       if (!decl.getTidIdentifier) {
         throw new Error(`"getDeclarationNode" returned "${decl}", which has no "getTidIdentifier" in "${this}"`);
       }
-      return decl.getTidIdentifier();
+      id = decl.getTidIdentifier();
     }
-    return undefined;
+    return id;
   }
 
   /**

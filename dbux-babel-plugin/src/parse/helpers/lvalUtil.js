@@ -1,7 +1,6 @@
 /** @typedef { import("@babel/types").Node } AstNode */
 
-import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
+import merge from 'lodash/merge';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 
 
@@ -43,7 +42,19 @@ export function getAssignmentLValPlugin(node) {
 
 const DefaultLValPlugin = 'DefaultDeclaratorLVal';
 
+/**
+ * @param {VariableDeclarator} node 
+ */
 export function getDeclaratorLValPlugin(node) {
+  // NOTE: this will run very early, so we don't have access to `getChildNodes`
+  const [idPath] = node.getChildPaths();
+
+  // Pattern
+  if (idPath.isPattern()) {
+    return 'DeclaratorLValPattern';
+  }
+
+  // ForX
   const declaration = node.path.parentPath;
   const grandParent = declaration.parentPath;
   if (grandParent.isForXStatement() && grandParent.get('left') === declaration) {
@@ -59,23 +70,22 @@ export function getDeclaratorLValPlugin(node) {
   // return getLValPlugin(node, DeclaratorLValPluginsByType);
 }
 
-export function makeLValVarTrace(node, path, targetPath, syntax, isNew, rvalPath) {
-  const traceData = {
-    node,
-    path,
-    staticTraceData: {
-      type: TraceType.WriteVar,
-      syntax,
-      dataNode: {
-        isNew
+export function addLValVarTrace(node, path, traceType, targetPath, rvalPath, traceData) {
+  traceData = merge(
+    {
+      node,
+      path,
+      staticTraceData: {
+        type: traceType
+      },
+      meta: {
+        // instrument: Traces.instrumentTraceWrite
+        build: buildTraceWriteVar,
+        targetPath
       }
     },
-    meta: {
-      // instrument: Traces.instrumentTraceWrite
-      build: buildTraceWriteVar,
-      targetPath
-    }
-  };
+    traceData
+  );
 
   // NOTE: `declarationTid` comes from `node.getDeclarationNode`
   if (rvalPath) {

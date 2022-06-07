@@ -28,7 +28,9 @@ export default class ArrayPattern extends BaseNode {
     const childIndexes = [];
 
     // add own node
-    const nodeIndex = patternCfg.addBuilder(buildGroupNodeAst.bind(this, prop, childIndexes, PatternAstNodeType.Object));
+    const nodeIndex = patternCfg.addBuilder(
+      buildGroupNodeAst.bind(this, prop, childIndexes, PatternAstNodeType.Array)
+    );
 
     // add children (DFS)
     for (let i = 0; i < elementNodes.length; ++i) {

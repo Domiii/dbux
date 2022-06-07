@@ -29,15 +29,15 @@ export default class ParsePlugin {
   }
 
   debug(...args) {
-    return this.node.stack.debug(' >', ...args);
+    return this.node.debug(...args);
   }
 
   warn(...args) {
-    return this.node.stack.warn(' >', ...args);
+    return this.node.warn(...args);
   }
 
   error(...args) {
-    return this.node.logger.error(`[>${this.name}]`, ...args);
+    return this.node.error(`[>${this.name}]`, ...args);
   }
 
   get debugTag() {

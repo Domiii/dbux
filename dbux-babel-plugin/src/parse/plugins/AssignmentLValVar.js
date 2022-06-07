@@ -1,9 +1,9 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
-import { LValHolderNode } from '../_types'; 
+import { LValHolderNode } from '../_types';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
-import { makeLValVarTrace } from '../helpers/lvalUtil';
+import { addLValVarTrace } from '../helpers/lvalUtil';
 
 export default class AssignmentLValVar extends BasePlugin {
   /**
@@ -32,12 +32,22 @@ export default class AssignmentLValVar extends BasePlugin {
 
     // console.error('assignment', !!node.isNewValue, node.isNewValue?.(), node.debugTag);
 
+    const type = TraceType.WriteVar;
     const targetPath = path;
-    const syntax = SyntaxType.AssignmentLValVar;
+
     /**
      * Whether this is a "computational assignment" (+= etc.)
      */
     const isNew = node.isNewValue?.() || false;
-    makeLValVarTrace(node, path, targetPath, syntax, isNew, rvalPath);
+    const syntax = SyntaxType.AssignmentLValVar;
+    const traceData = {
+      staticTraceData: {
+        syntax,
+        dataNode: {
+          isNew
+        }
+      }
+    };
+    addLValVarTrace(node, path, type, targetPath, rvalPath, traceData);
   }
 }

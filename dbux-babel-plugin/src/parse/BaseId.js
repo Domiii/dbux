@@ -35,6 +35,9 @@ export default class BaseId extends BaseNode {
    */
   _binding;
 
+  /**
+   * @type {Binding}
+   */
   get binding() {
     if (!this._binding) {
       this._binding = getPathBinding(this.path);
@@ -46,18 +49,33 @@ export default class BaseId extends BaseNode {
     return !this.binding;
   }
 
+  /**
+   * @return {BaseNode}
+   */
   getOwnDeclarationNode() {
+    /**
+     * @type {NodePath}
+     */
     let path = this.binding?.path;
     if (!path) {
       // TODO: fix this to allow for undeclared var access (non-strict mode)
-      if (this.state.verbose.nyi) {
-        this.logger.warn(`[NYI] node has no binding (undeclared var?):" ${pathToStringAnnotated(path)}"`); // in "${this.getParentString()}")`);
+      if (this.state.verbose.nyi || this.VerboseDecl) {
+        this.logger.warn(`[NYI] node has no binding (undeclared var?) in "${this.verboseDebugTag}")`);
       }
       return null;
     }
 
-    // hackfix: check for actual declaration node
-    if (path.node.id) {
+    let declarationNode;
+
+    // hackfixes: check for actual declaration node
+
+    if (path.isVariableDeclarator() && path.get('id').isPattern()) {
+      // hackfix: in *Pattern, the lval variable binding path is the VariableDeclarator. We don't care about that one.
+      const declaratorNode = this.getNodeOfPath(path);
+      const patternNode = declaratorNode.plugins.lval;
+      declarationNode = patternNode.getVariableLvalNodeByName(this.path.node.name);
+    }
+    else if (path.node.id) {
       // future-work: this is a declaration -> override `getDeclarationNode` in AST node class instead
       path = path.get('id');
     }
@@ -80,18 +98,24 @@ export default class BaseId extends BaseNode {
 
     // NOTE: `binding.path` (if it is `Declaration`) refers to the Declaration, not the `id` node.
     // NOTE2: even more odd - for `CatchClause.param` it returns `CatchClause`.
-    let declarationNode;
     if (path.isIdentifier()) {
       declarationNode = this.getNodeOfPath(path);
     }
 
     if (!declarationNode) {
-      if (this.state.verbose.nyi) {
-        this.logger.warn(`[NYI] Could not look up binding path for lval:" ${pathToStringAnnotated(path)}"`); // in "${this.getParentString()}")`);
+      if (this.state.verbose.nyi || this.VerboseDecl) {
+        this.warn(`[NYI] Could not look up binding path for lval:" ${pathToStringAnnotated(path)}")`);
       }
       return null;
     }
+
+    // eslint-disable-next-line max-len
+    this.VerboseDecl && this.debug(`getOwnDeclarationNode: "${declarationNode.debugTag}", binding.path="${pathToString(this.binding.path)}" (is self: ${declarationNode === this})`);
     declarationNode = declarationNode === this ? declarationNode : declarationNode.getOwnDeclarationNode?.();
+
+    if (declarationNode !== this) {
+      this.VerboseDecl && this.debug(`  getOwnDeclarationNode2: "${declarationNode.debugTag}" (is self: ${declarationNode === this})`);
+    }
     return declarationNode;
   }
 
