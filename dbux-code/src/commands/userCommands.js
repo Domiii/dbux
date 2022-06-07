@@ -208,17 +208,14 @@ export function initUserCommands(extensionContext) {
         throw new Error(`Invalid contextId - context not found: ${contextId}`);
       }
 
-      if (needsNewContextId) {
-        // update memento
-        await mementoSet(TestDDGKeyName, { testFilePath, contextId });
-      }
-
       // trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
       traceSelection.selectTrace(trace);
       // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
     }
 
     if (trace) {
+      contextId = trace.contextId;
+      
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
       await getOrOpenTraceEditor(trace);
 
@@ -229,6 +226,9 @@ export function initUserCommands(extensionContext) {
 
       // show webview
       await showDDGViewForContextOfSelectedTrace();
+
+      // this worked! Hooray! → update memento
+      await mementoSet(TestDDGKeyName, { testFilePath, contextId });
 
       // select DDG Debug node
       const ddg = dp.ddgs.graphs[0];

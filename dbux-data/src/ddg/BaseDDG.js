@@ -481,9 +481,9 @@ export default class BaseDDG {
           this.timelineBuilder?.onNewSnapshotValueNode(newChild);
         }
       }
-      if (!newChild.dataNodeId || !this.dp.util.getDataNode(newChild.dataNodeId)) {
+      if (!newChild.timelineId || !newChild.dataNodeId || !this.dp.util.getDataNode(newChild.dataNodeId)) {
         // sanity check
-        this.logger.error(`Invalid snapshot child has no DataNode: ${JSON.stringify(newChild)}\n  in "${JSON.stringify(parentSnapshot)}"`);
+        throw new Error(`Invalid snapshot child: ${JSON.stringify(newChild)}\n  (in ${JSON.stringify(parentSnapshot)})`);
       }
       else {
         parentSnapshot.children[prop] = newChild.timelineId;
@@ -584,6 +584,7 @@ export default class BaseDDG {
 
       // if circular or otherwise repeated → add repeater node
       const snapshot = new RepeatedRefTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId, snapshotOfRef.timelineId);
+      this.addNode(snapshot);
       this.#onSnapshotNodeCreated(snapshot, parentSnapshot);
       return snapshot;
     }

@@ -267,7 +267,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    */
   decorateNode(node, nodeEl) {
     const { ddg } = this;
-    let popupTriggerEl = nodeEl;
+    let interactionEl = nodeEl;
 
     if (
       ddgQueries.isNodeSummarizable(node) &&
@@ -290,24 +290,31 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
       // future-work: add a bigger popup area, to make things better clickable
       // popupTriggerEl = compileHtmlElement(/*html*/`<`);
-      popupTriggerEl = labelEl;
+      interactionEl = labelEl;
     }
 
-    // add overlays
-    if (popupTriggerEl) {
+    if (interactionEl) {
+      // add overlays
       let debugOverlay;
-      this.addNodeEventListener(node, popupTriggerEl, 'mouseover', (evt) => {
+      this.addNodeEventListener(node, interactionEl, 'mouseover', (evt) => {
         // create overlay lazily
         if (!debugOverlay) {
           // console.debug(`Hover node:`, evt.target);
           this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
           // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
         }
-        this.maybeShowNodePopupEl(node, nodeEl, popupTriggerEl);
+        this.maybeShowNodePopupEl(node, nodeEl, interactionEl);
       });
-      this.addNodeEventListener(node, popupTriggerEl, 'mouseout', () => {
+      this.addNodeEventListener(node, interactionEl, 'mouseout', () => {
         debugOverlay?.remove();
         debugOverlay = null;
+      });
+
+      // add click handler
+      this.addNodeEventListener(node, interactionEl, 'click', async (evt) => {
+        if (node.dataNodeId) {
+          await this.remote.selectNode(node.timelineId);
+        }
       });
     }
   }

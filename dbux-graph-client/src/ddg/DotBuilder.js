@@ -1,5 +1,5 @@
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -231,8 +231,8 @@ export default class DotBuilder {
     this.indentLevel += 1;
     this._groupAttrs(node);
 
-    for (const node of roots) {
-      this.node(node, true);
+    for (const root of roots) {
+      this.node(root, true);
     }
 
     this.indentLevel -= 1;
@@ -276,7 +276,11 @@ export default class DotBuilder {
    * Edge from nested reference DataNode to its own snapshot node.
    */
   snapshotEdge(node) {
-    this.edgeRaw(this.makeNodeId(node), node.timelineId);
+    this.snapshotEdgeFromTo(this.makeNodeId(node), node.timelineId);
+  }
+
+  snapshotEdgeFromTo(from, to) {
+    this.command(`${from} -> ${to} [arrowhead="odot", color="gray"]`);
   }
 
   edge(edge) {
@@ -284,10 +288,6 @@ export default class DotBuilder {
     const to = this.makeNodeId(this.getNode(edge.to));
     const debugInfo = Verbose && ` [label=${edge.edgeId}]` || '';
     this.command(`${from} -> ${to}${debugInfo}`);
-  }
-
-  edgeRaw(from, to) {
-    this.command(`${from} -> ${to} [arrowhead="odot", color="gray"]`);
   }
 
   /** ###########################################################################
@@ -301,10 +301,13 @@ export default class DotBuilder {
     if (node.value !== undefined) {
       return JSON.stringify(node.value);
     }
+    if (isRepeatedRefTimelineNode(node.type)) {
+      return node.label;
+    }
     if (node.refId) {
       return '📦';  // ref value node but without snapshot
     }
-    return '?';
+    return node.label || '?';
   }
 
   // makeRecordEntry(timelineId, label) {
@@ -383,6 +386,10 @@ export default class DotBuilder {
 
         // add edge
         this.snapshotEdge(child);
+      }
+      else if (child.repeatedTimelineId) {
+        const repeatedNode = timelineNodes[child.repeatedTimelineId];
+        this.snapshotEdgeFromTo(this.makeNodeId(child), this.makeNodeId(repeatedNode));
       }
     }
   }

@@ -18,8 +18,8 @@ import { DDGTimelineNode } from './DDGTimelineNodes';
 
 // const RootDefaultSummaryMode = {
 // };
-const RootDefaultSummaryMode = DDGSummaryMode.SummarizeChildren;
-// const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
+// const RootDefaultSummaryMode = DDGSummaryMode.SummarizeChildren;
+const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
 
 /** ###########################################################################
  * {@link BuildStage}

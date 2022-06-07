@@ -601,13 +601,13 @@ export default class DDGTimelineBuilder {
     this.ddg.addNode(newGroup);
     this.#addNodeToGroup(newGroup);
 
-    Verbose && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
+    Verbose > 1 && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
     this.stack.push(newGroup);
   }
 
   #popGroup() {
     const nestedGroup = this.stack.pop();
-    Verbose && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
+    Verbose > 1 && this.debug(`POP ${this.#makeGroupDebugTag(nestedGroup)}`);
     const currentGroup = this.peekStack();
     currentGroup.hasSummarizableWrites ||= nestedGroup.hasSummarizableWrites;
     return nestedGroup;

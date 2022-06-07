@@ -17,9 +17,7 @@ function fixFetch(fixUrl) {
 export default class DDGDocument extends ClientComponentEndpoint {
   createEl() {
     const el = document.getElementById('root');
-    el.innerHTML = /*html*/`<div>
-      <div data-mount="Toolbar"></div>
-      <div data-el="timeline" data-mount="DDGTimelineView"></div>
+    el.innerHTML = /*html*/`<div data-mount="Toolbar,DDGTimelineView">
     </div>`;
     return el;
   }
@@ -28,7 +26,7 @@ export default class DDGDocument extends ClientComponentEndpoint {
     fixFetch(async (target) => {
       // if (target.endsWith('graphvizlib.wasm')) {
       if (target.startsWith('.')) {
-        // hackfix
+        // hackfix to allow loading graphvizlib.wasm (and maybe others)
         return this.getClientResourceUri('dist/web', target);
       }
       // }

@@ -1342,7 +1342,7 @@ export default class RuntimeMonitor {
         throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
       }
     }
-    VerbosePatterns && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}: "${JSON.stringify(result)}"`);
+    VerbosePatterns && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}:`, result);
     return result;
   }
 

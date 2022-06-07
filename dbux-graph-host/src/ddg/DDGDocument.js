@@ -49,8 +49,8 @@ export default class DDGDocument extends HostComponentEndpoint {
   }
 
   createOwnComponents() {
-    this.timelineView = this.children.createComponent('DDGTimelineView');
     this.toolbar = this.children.createComponent('Toolbar');
+    this.timelineView = this.children.createComponent('DDGTimelineView');
   }
 
   /** ###########################################################################

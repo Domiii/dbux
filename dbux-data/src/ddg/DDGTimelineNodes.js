@@ -176,14 +176,14 @@ export class RepeatedRefTimelineNode extends RefTimelineNode {
   /**
    * The `timelineId` of the {@link RefSnapshotTimelineNode} that this is a repition of.
    */
-  snapshotTimelineId;
+  repeatedTimelineId;
 
   /**
    * @param {number} dataNodeId 
    */
   constructor(traceId, dataNodeId, refId, originalTimelineId) {
     super(DDGTimelineNodeType.RepeatedRef, traceId, dataNodeId, refId);
-    this.snapshotTimelineId = originalTimelineId;
+    this.repeatedTimelineId = originalTimelineId;
   }
 }
 
