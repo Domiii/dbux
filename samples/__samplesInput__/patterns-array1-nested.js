@@ -5,7 +5,7 @@ function main(_a) {
   const i = 1;
   const j = 0;
 
-  2. make sure nested swap + patterns work
+  // 2. make sure nested swap + patterns work
   [
     a[j][i],
     a[i][j],
