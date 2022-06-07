@@ -43,23 +43,26 @@ export default class DDGSet {
   /**
    * @returns {DataDependencyGraph}
    */
-  getOrCreateDDGForContext({ applicationId, contextId }) {
+  getOrCreateDDG(ddgArgs) {
+    let { applicationId, contextId, watchTraceIds } = ddgArgs;
     const graphId = this.makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
-      const watchTraceIds = [];
-      const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
-      const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
+      if (!watchTraceIds) {
+        watchTraceIds = [];
+        const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
+        const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
 
-      if (!returnArgumentTrace) {
-        return null;
-      }
+        if (!returnArgumentTrace) {
+          return null;
+        }
 
-      for (const trace of [...paramTraces, returnArgumentTrace]) {
-        if (trace) {
-          // const dataNode = this.dp.util.getDataNodeOfTrace(trace.traceId);
-          // if (dataNode) {
-          watchTraceIds.push(trace.traceId);
-          // }
+        for (const trace of [...paramTraces, returnArgumentTrace]) {
+          if (trace) {
+            // const dataNode = this.dp.util.getDataNodeOfTrace(trace.traceId);
+            // if (dataNode) {
+            watchTraceIds.push(trace.traceId);
+            // }
+          }
         }
       }
 

@@ -103,7 +103,7 @@ export async function showDDGViewForArgs(ddgArgs) {
     initialState = makeFailureState(failureReason);
   }
   else {
-    ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
+    ddg = dp.ddgs.getOrCreateDDG(ddgArgs);
     initialState = makeGraphState(ddg);
     hostOnlyState = { ddg };
   }
