@@ -281,53 +281,53 @@ export default class DataNodeCollection extends Collection {
     }
     const { nodeId, traceId, accessId } = dataNode;
 
-    if (dataNode.refId) {
-      // TODO: integrate with the logic below
-      // TODO: deal with implicitly created ref type objects having a single nodeId for all children
-      //      e.g. `JSON.parse('{...}')`
+    const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
+    const isTraceOwnDataNode = traceNodeId === nodeId;
+    const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
+    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
 
-      // 1. check for "pass-along"
-      if (
-        dataNode.inputs?.length === 1
-      ) {
-        // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
-        const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
-        if (!inputDataNode) {
-          // sanity check
-          const traceInfo = this.dp.util.makeTraceInfo(traceId);
-          this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
-          return nodeId;
+    if (!isNewValue) {
+      if (dataNode.refId) {
+        // TODO: integrate with the logic below
+        // TODO: deal with implicitly created ref type objects having a single nodeId for all children
+        //      e.g. `JSON.parse('{...}')`
+
+        // 1. check for "pass-along"
+        if (
+          dataNode.inputs?.length === 1
+        ) {
+          // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
+          const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+          if (!inputDataNode) {
+            // sanity check
+            const traceInfo = this.dp.util.makeTraceInfo(traceId);
+            this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
+            return nodeId;
+          }
+
+          dataNode.valueFromId = inputDataNode.nodeId;
+          return inputDataNode.valueId;
+        }
+        // 2. if it is not a pass-along, look up accessId.
+        //    It is important we do this after (1), since 
+        //        looking up by `accessId` won't work on a new Write node.
+        if (accessId) {
+          const lastNode = this.getLastDataNodeByAccessId(accessId);
+          if (lastNode) {
+            dataNode.valueFromId = lastNode.nodeId;
+            return lastNode.valueId;
+          }
         }
 
-        dataNode.valueFromId = inputDataNode.nodeId;
-        return inputDataNode.valueId;
+        // if (nodeId !== firstRefNode.nodeId) {
+        //   dataNode.valueFromId = firstRefNode.nodeId;
+        // }
+        // refs have some magic up their sleeves
+        const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+        // TODO: get last node before this one instead, to have DDG link up correctly
+        return firstRefNode.nodeId;
       }
-      // 2. if it is not a pass-along, look up accessId.
-      //    It is important we do this after (1), since 
-      //        looking up by `accessId` won't work on a new Write node.
-      if (accessId) {
-        const lastNode = this.getLastDataNodeByAccessId(accessId);
-        if (lastNode) {
-          dataNode.valueFromId = lastNode.nodeId;
-          return lastNode.valueId;
-        }
-      }
-
-      // if (nodeId !== firstRefNode.nodeId) {
-      //   dataNode.valueFromId = firstRefNode.nodeId;
-      // }
-      // refs have some magic up their sleeves
-      const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
-      return firstRefNode.nodeId;
-    }
-    else {
-      const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
-      const isTraceOwnDataNode = traceNodeId === nodeId;
-      const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
-
-      const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
-
-      if (!isNewValue) {
+      else {
         // 1. check for "pass-along"
         if (
           dataNode.inputs?.length === 1
@@ -371,9 +371,8 @@ export default class DataNodeCollection extends Collection {
 
       // eslint-disable-next-line max-len
       // this.logger.warn(`[lookupValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
-
-      return nodeId;
     }
+    return nodeId;
   }
 
   /** ###########################################################################

@@ -1,5 +1,6 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItems, objectToTreeItems } from '../helpers/makeTreeItem';
@@ -56,6 +57,7 @@ export function renderDataNode(ddg, dataNodeId) {
 }
 
 /**
+ * @param {DataDependencyGraph} ddg
  * @param {DDGTimelineNode} node 
  */
 export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObject, labelPrefix = '') {
@@ -66,11 +68,13 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
   }
   const label = labelOverride || makeDDGNodeLabel(ddg, node.timelineId);
   if (children === node) {
+    // some default customized rendering
     children = { ...node };
     if (node.dataNodeId) {
       children.dataNode = renderDataNode(ddg, node.dataNodeId);
       delete children.dataNodeId;
     }
+    const out = ddg.outEdgesByTimelineId[node.timelineId];
   }
 
   // TODO: add value string (see DotBuilder.makeNodeValueString)
@@ -113,6 +117,10 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
 //     }
 //   };
 // }
+
+export function renderEdgeIds(ddg, edgeIds) {
+  // TODO
+}
 
 export function renderEdges(ddg, edges, nodeLabel = null, nodeDescription = null) {
   const { timelineNodes, dp } = ddg;

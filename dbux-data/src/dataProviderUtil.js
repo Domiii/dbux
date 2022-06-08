@@ -937,7 +937,7 @@ export default {
     return finalValue;
   },
 
-  
+
   /** ###########################################################################
    * value snapshots
    * ##########################################################################*/
@@ -1892,9 +1892,10 @@ export default {
       return null;
     }
 
-    const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
-    const context = dp.collections.executionContexts.getById(contextId);
-    if (context.definitionTid === traceId) {
+    // const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
+    // const context = dp.collections.executionContexts.getById(contextId);
+    // if (context.definitionTid === traceId) { // NOTE: in case of ctor, refId is the same, but trace is different
+    if (functionRef.refId === calleeDataNode.refId) {
       // Accept: definitionTid are matched
       return bceTrace;
     }

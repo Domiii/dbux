@@ -37,10 +37,11 @@ class Toolbar extends ClientComponentEndpoint {
     const btns = el.querySelector('.btn-group');
 
     // add settings buttons
-    btns.appendChild(makeSettingsButtons(this.doc).el);
-    btns.appendChild(makeBootstrapBtnGroupSeparatorEl());
+    if (this.doc.state.settings) {
+      btns.appendChild(makeSettingsButtons(this.doc).el);
+      btns.appendChild(makeBootstrapBtnGroupSeparatorEl());
+    }
 
-    
     // add root control buttons
     const {
       el: summaryRootButtonDom,

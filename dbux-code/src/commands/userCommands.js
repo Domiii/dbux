@@ -150,7 +150,7 @@ export function initUserCommands(extensionContext) {
     if (!app) {
       if (allApplications.selection.getFirst()) {
         // select first app instead → reset
-        contextId = watchTraceIds = null;
+        // contextId = watchTraceIds = null;
         app = allApplications.selection.getFirst();
       }
       else {
@@ -190,10 +190,12 @@ export function initUserCommands(extensionContext) {
     }
 
     let trace;
-    if (!watchTraceIds && !contextId) {
+    const dp = app.dataProvider;
+    if (!watchTraceIds &&
+      (!contextId || !!dp.ddgs.getCreateDDGFailureReason({ contextId }))
+    ) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
-      const dp = app.dataProvider;
       trace = traceSelection.selected;
       contextId = trace?.contextId;
       const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
@@ -231,7 +233,6 @@ export function initUserCommands(extensionContext) {
       trace && await getOrOpenTraceEditor(trace);
 
       // clear all previous DDGs
-      const dp = app.dataProvider;
       dp.ddgs.clear();
       disposeDDGWebviews();
 

@@ -259,6 +259,34 @@ function buildConstructor(classPath) {
   );
 }
 
+/**
+ * Insert given node after `super` call, or at top of ctor.
+ * This way, it can reference `this`.
+ */
+function unshiftCtorBody(classPath, astNode) {
+  // get ctor
+  let constructorPath = findConstructorMethod(classPath);
+  let superCallPath;
+  if (!constructorPath) {
+    // inject new ctor
+    const constructorNode = buildConstructor(classPath);
+    classPath.get('body').unshiftContainer('body', constructorNode);
+    constructorPath = findConstructorMethod(classPath);
+  }
+  superCallPath = findSuperCallPath(constructorPath);
+
+  // add to ctor
+  if (superCallPath) {
+    superCallPath.insertAfter(astNode);
+  }
+  else {
+    // place behind pushImmediate
+    // constructorPath.get('body').unshiftContainer('body', astNode);
+    const first = constructorPath.get('body.body.0'); // second body is that of `BlockStatement`
+    first.insertAfter(astNode);
+  }
+}
+
 function injectTraceInstance(state, traceCfg) {
   const { ids: { dbuxInstance, aliases: { traceInstance } } } = state;
   const {
@@ -270,36 +298,20 @@ function injectTraceInstance(state, traceCfg) {
 
   // dbux.traceInstance
   const traceInstanceCall = buildTraceInstanceExpression(state, instanceTraceCfg);
+  unshiftCtorBody(classPath, t.expressionStatement(traceInstanceCall));
 
-  // inject __dbux_instance iife property
-  const traceInstanceProperty = t.classProperty(
-    dbuxInstance,
-    t.callExpression(
-      t.arrowFunctionExpression([], traceInstanceCall),
-      EmptyArray
-    )
-  );
-  classPath.get('body').unshiftContainer('body', traceInstanceProperty);
-
+  // // (old version) inject __dbux_instance iife property
+  // const traceInstanceProperty = t.classProperty(
+  //   dbuxInstance,
+  //   t.callExpression(
+  //     t.arrowFunctionExpression([], traceInstanceCall),
+  //     EmptyArray
+  //   )
+  // );
+  // classPath.get('body').unshiftContainer('body', traceInstanceProperty);
   // delete __dbux_instance property after ctor
-  const traceInstanceCleanup = buildDelete(thisNode, dbuxInstance);
-  let constructorPath = findConstructorMethod(classPath);
-  let superCallPath;
-  if (!constructorPath) {
-    // inject new ctor
-    const constructorNode = buildConstructor(classPath);
-    classPath.get('body').unshiftContainer('body', constructorNode);
-    constructorPath = findConstructorMethod(classPath);
-  }
-  superCallPath = findSuperCallPath(constructorPath);
-
-  // insert `traceInstance` after `super` call, or at top of ctor
-  if (superCallPath) {
-    superCallPath.insertAfter(traceInstanceCleanup);
-  }
-  else {
-    constructorPath.get('body').unshiftContainer('body', traceInstanceCleanup);
-  }
+  // const traceInstanceCleanup = buildDelete(thisNode, dbuxInstance);
+  // unshiftCtorBody(traceInstanceCleanup);
 }
 
 // ###########################################################################
@@ -425,7 +437,7 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
   resultNode.key = keyNode;
   resultNode.value = valueNode;
 
-  console.log(`writeClassProperty, ${astNodeToString(resultNode)}`);
+  // console.log(`writeClassProperty, ${astNodeToString(resultNode)}`);
 
   return resultNode;
 }

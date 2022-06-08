@@ -303,7 +303,8 @@ export default class DotBuilder {
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    const color = !ddgQueries.isNestingSnapshot(ddg, node) ?
+    const isNesting = ddgQueries.isNestingSnapshot(ddg, node);
+    const color = !isNesting ?
       'transparent' : // no outline
       node.watched ?
         Colors.watchedNodeOutline :
@@ -313,7 +314,7 @@ export default class DotBuilder {
     this.command(this.nodeIdAttr(timelineId));
     this.label(label || '');
 
-    this.snapshotTable(node);
+    this.snapshotTable(node, !isNesting && node.watched ? Colors.watchedNodeOutline : null);
 
     this.indentLevel -= 1;
     this.fragment(`}`);
@@ -418,7 +419,7 @@ export default class DotBuilder {
    * @param {DDGTimelineNode} node
    * @see https://graphviz.org/doc/info/shapes.html#html-like-label-examples
    */
-  snapshotTable(node) {
+  snapshotTable(node, colorOverride) {
     const { ddg, ddg: { timelineNodes } } = this;
 
     const { timelineId, label, parentNodeId, children } = node;
@@ -433,10 +434,14 @@ export default class DotBuilder {
       // render snapshot
       // this.command(`node [shape=record]`);
       this.command(`node [shape=plaintext]`);
+      let attrs = this.nodeIdAttr(timelineId);
+      if (colorOverride) {
+        attrs += `color=${colorOverride}`;
+      }
       const childrenCells = childEntries
         .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
         .join('');
-      this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
+      this.command(`${timelineId} [${attrs},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
     ${hasLabel ? `<TD ROWSPAN="2">${dotEncode(label)}</TD>` : ''}

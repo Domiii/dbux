@@ -3,6 +3,7 @@ import isFunction from 'lodash/isFunction';
 
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee } from '../data/dataUtil';
+import valueCollection from '../data/valueCollection';
 import { addPurpose } from '../builtIns/builtin-util';
 
 // eslint-disable-next-line no-unused-vars
@@ -15,6 +16,12 @@ const functionProxiesByOriginalFunction = new Map();
 const originalFunctionsByProxy = new WeakMap();
 const callbackProxiesByOriginal = new Map();
 const originalCallbacksByProxy = new WeakMap();
+
+/**
+ * hackfix: prevent circular dependency
+ */
+valueCollection.getOriginalFunction = getOriginalFunction;
+valueCollection.getPatchedFunctionOrSelf = getPatchedFunctionOrSelf;
 
 /** ###########################################################################
  * {@link makeProxy}

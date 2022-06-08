@@ -429,7 +429,7 @@ export default class BaseTreeViewNodeProvider {
     }
     catch (err) {
       this.logger.error(`${this.constructor.name}.getChildren() failed`, err);
-      debugger;
+      // debugger;
       throw err;
     }
   }

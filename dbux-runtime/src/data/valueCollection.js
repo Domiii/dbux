@@ -10,7 +10,6 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNode from '@dbux/common/src/types/DataNode';
 import isThenable from '@dbux/common/src/util/isThenable';
-import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
 import getDbuxInstance from '../getDbuxInstance';
@@ -801,7 +800,7 @@ const valueCollection = new ValueCollection();
 export function wrapValue(value) {
   if (valueCollection.getIsInstanceOf(value, Function)) {
     // value = getUnpatchedCallbackOrPatchedFunction(value);
-    value = getPatchedFunctionOrSelf(value);
+    value = valueCollection.getPatchedFunctionOrSelf(value);
   }
   return value;
 }
@@ -809,7 +808,7 @@ export function wrapValue(value) {
 export function unwrapValue(value) {
   if (valueCollection.getIsInstanceOf(value, Function)) {
     // TODO: handle callback identity?
-    value = getOriginalFunction(value) || value;
+    value = valueCollection.getOriginalFunction(value) || value;
   }
   return value;
 }
