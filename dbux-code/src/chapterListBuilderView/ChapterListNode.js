@@ -5,6 +5,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
+import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import ChapterNode from '../projectViews/practiceView/ChapterNode';
 import ExerciseNode from '../projectViews/practiceView/ExerciseNode';
@@ -194,30 +195,50 @@ export default class ChapterListNode extends BaseTreeViewNode {
 function findDDGContextIdInApp(app, exercise) {
   const { project } = exercise;
   const dp = app.dataProvider;
+  // const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
   const testProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
     const { filePath } = staticProgramContext;
     const fileDir = dirname(filePath);
     const readmeFilePath = pathResolve(fileDir, 'README.md');
     const testFolderPath = pathResolve(fileDir, '__test__');
-    return fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
+    return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
   });
 
   const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
-  const contexts = staticContexts.flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray);
+  const contexts = staticContexts
+    .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
+    .sort((a, b) => a.contextId - b.contextId);
+  const addedContextIds = new Set();
   return contexts.map(context => {
     const { contextId } = context;
     const { applicationUuid } = app;
     const functionName = makeContextLabel(context, app);
-    const callerTrace = dp.util.getCallerTraceOfContext(contextId);
+    const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
     if (!callerTrace) {
       return null;
     }
+
+    let { parentContextId } = context;
+    while (parentContextId) {
+      if (addedContextIds.has(parentContextId)) {
+        return null;
+      }
+      ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
+    }
+
+    // const callerProgramPath = dp.util.getTraceFilePath(callerTrace.traceId);
+    // if (callerProgramPath !== testFilePath) {
+    //   return null;
+    // }
 
     const params = dp.util.getCallArgValueStrings(callerTrace.callId);
     const fullContextFilePath = dp.util.getContextFilePath(contextId);
     const filePath = pathRelative(project.projectPath, fullContextFilePath);
     const staticContext = dp.util.getContextStaticContext(contextId);
-    const { loc } = staticContext;
+    const loc = { ...staticContext.loc };
+    deleteCachedLocRange(loc);
+
+    addedContextIds.add(contextId);
 
     return {
       ddgTitle: `${functionName}(${params.join(', ')})`,
