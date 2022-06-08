@@ -200,7 +200,7 @@ export default class DotBuilder {
     // const mode = ddgQueries.getNodeSummaryMode(ddg, node);
     // const modeEl = makeSummaryLabel(ddg, mode);
     // ${modeEl}
-    this.command(`label=<${dotEncode(label) || '()'}>`);
+    this.command(`label="${dotEncode(label) || '()'}"`);
     this.subgraphAttrs();
   }
 

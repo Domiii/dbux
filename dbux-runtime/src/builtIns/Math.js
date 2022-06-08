@@ -1,6 +1,6 @@
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { peekBCEMatchCallee } from '../data/dataUtil';
-import { monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionHolder, monkeyPatchFunctionHolderPurpose } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -58,7 +58,6 @@ export default function patchMath() {
     );
   });
 
-  // TODO:
-  // "max",
-  // "min",
+  monkeyPatchFunctionHolderPurpose(Math, 'min', TracePurpose.MathMin);
+  monkeyPatchFunctionHolderPurpose(Math, 'max', TracePurpose.MathMax);
 }

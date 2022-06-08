@@ -1,11 +1,13 @@
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import DataNode from '@dbux/common/src/types/DataNode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import Collection from '../Collection';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
+import Collection from '../Collection';
 
 /**
  * @extends {Collection<DataNode>}
@@ -65,6 +67,30 @@ export default class DataNodeCollection extends Collection {
         if (bceDataNode) {
           bceDataNode.inputs = [calleeObjectNodeId];
         }
+      }
+    },
+
+    [TracePurpose.MathMax]: (trace, purpose) => {
+      const { dp } = this;
+      const callId = trace.traceId;
+      const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+      const resultDataNode = trace.resultId && dp.util.getDataNodeOfTrace(trace.resultId);
+      if (argDataNodes && resultDataNode) {
+        resultDataNode.type = DataNodeType.Compute;
+        resultDataNode.inputs = [maxBy(argDataNodes, n => n.value)?.nodeId];
+        resultDataNode.cinputs = argDataNodes.filter(n => n.nodeId !== resultDataNode.inputs[0]).map(n => n.nodeId);
+      }
+    },
+
+    [TracePurpose.MathMin]: (trace, purpose) => {
+      const { dp } = this;
+      const callId = trace.traceId;
+      const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+      const resultDataNode = trace.resultId && dp.util.getDataNodeOfTrace(trace.resultId);
+      if (argDataNodes && resultDataNode) {
+        resultDataNode.type = DataNodeType.Compute;
+        resultDataNode.inputs = [minBy(argDataNodes, n => n.value)?.nodeId];
+        resultDataNode.cinputs = argDataNodes.filter(n => n.nodeId !== resultDataNode.inputs[0]).map(n => n.nodeId);
       }
     }
   };

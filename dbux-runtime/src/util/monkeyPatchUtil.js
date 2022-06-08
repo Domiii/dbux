@@ -2,6 +2,8 @@ import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
 
 import { newLogger } from '@dbux/common/src/log/logger';
+import { peekBCEMatchCallee } from '../data/dataUtil';
+import { addPurpose } from '../builtIns/builtin-util';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('monkeyPatchUtil');
@@ -258,6 +260,20 @@ export function monkeyPatchFunctionHolder(holder, name, handler) {
     return handler(this, args, originalFunction, proxy);
   });
   return proxy;
+}
+
+export function monkeyPatchFunctionHolderPurpose(holder, name, purpose) {
+  return monkeyPatchFunctionHolder(holder, name,
+    // eslint-disable-next-line no-loop-func
+    (arr, args, originalFunction, patchedFunction) => {
+      const bceTrace = peekBCEMatchCallee(patchedFunction);
+      const result = originalFunction.apply(arr, args);
+      if (bceTrace) {
+        addPurpose(bceTrace, purpose);
+      }
+      return result;
+    }
+  );
 }
 
 export function monkeyPatchMethod(Clazz, methodName, handler) {
