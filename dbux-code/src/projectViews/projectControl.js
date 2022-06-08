@@ -6,7 +6,7 @@ import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { initDbuxManager } from '@dbux/projects/src/dbux-analysis-tools/DbuxManager';
 import { showWarningMessage, showInformationMessage, confirm, alert, chooseFolder } from '../codeUtil/codeModals';
-import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
+import { showTextDocument, showTextInNewFile, goToCodeLoc } from '../codeUtil/codeNav';
 import { getResourcePath, getLogsDirectory, asAbsolutePath, execPaths } from '../codeUtil/codePath';
 import { closeAllEditors } from '../codeUtil/editorUtil';
 import TerminalWrapper from '../terminal/TerminalWrapper';
@@ -106,8 +106,13 @@ export function createProjectManager(extensionContext) {
 
   const externals = {
     editor: {
-      async openFile(fpath) {
-        return await showTextDocument(fpath);
+      async openFile(fpath, loc = null) {
+        if (loc) {
+          return await goToCodeLoc(fpath, loc);
+        }
+        else {
+          return await showTextDocument(fpath);
+        }
       },
       async openFolder(fpath) {
         // TODO: use vscode API to add to workspace instead?

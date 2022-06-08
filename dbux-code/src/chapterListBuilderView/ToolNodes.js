@@ -1,7 +1,7 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import fs from 'fs';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import Process from '@dbux/projects/src/util/Process';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -9,53 +9,41 @@ import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
 
+/** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
 const ExportExercises = 4;
 
 class ToolNode extends BaseTreeViewNode {
   /**
+   * @type {ChapterListBuilderViewController}
+   */
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
+  /**
    * @type {ProjectsManager}
    */
   get manager() {
-    return this.treeNodeProvider.controller.manager;
+    return this.controller.manager;
   }
 }
 
 class GenerateListNode extends ToolNode {
   static makeLabel() {
-    return 'Generate List';
-  }
-
-  writeExerciseJs(fileName, exercises) {
-    const content = `module.exports = ${JSON.stringify(exercises, null, 2)}`;
-    fs.writeFileSync(this.manager.getAssetPath('exercises', fileName), content);
-  }
-
-  writeChapterListJs(fileName, exerciseList) {
-    const exercisesByChapterName = new Map();
-    for (const exercise of exerciseList) {
-      const { chapter } = exercise;
-      if (!exercisesByChapterName.has(chapter)) {
-        exercisesByChapterName.set(chapter, []);
-      }
-      exercisesByChapterName.get(chapter).push(exercise);
-    }
-
-    const chapters = Array.from(exercisesByChapterName.entries()).map(([chapterName, exercises], index) => {
-      return {
-        id: index + 1,
-        name: chapterName,
-        exercises: exercises.map(e => e.id),
-      };
-    });
-
-    const content = `module.exports = ${JSON.stringify(chapters, null, 2)}`;
-    fs.writeFileSync(this.manager.getAssetPath('chapterLists', fileName), content);
+    return 'Generate Lists';
   }
 
   async handleClick() {
-    const { project } = this.treeNodeProvider.controller;
+    const { project } = this.controller;
+
+    if (this.controller.exerciseList) {
+      const result = await confirm(`This will discard all DDG data in 'javascript-algorithms-all.js', do you want to continue?`);
+      if (!result) {
+        return;
+      }
+    }
 
     await runTaskWithProgressBar(async (progress) => {
       if (!project.doesProjectFolderExist()) {
@@ -73,7 +61,7 @@ class GenerateListNode extends ToolNode {
       const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory}`, { processOptions });
       const testData = JSON.parse(testDataRaw);
 
-      const exercises = [];
+      const exerciseConfigs = [];
       const addedPattern = new Set();
 
       for (const testResult of testData.testResults) {
@@ -93,39 +81,29 @@ class GenerateListNode extends ToolNode {
             chapter,
             testFilePaths: [pathRelative(project.projectPath, testResult.name)],
           };
-          exercises.push(exerciseConfig);
+          exerciseConfigs.push(exerciseConfig);
         }
       }
-      exercises.sort((a, b) => a.name.localeCompare(b.name));
+      exerciseConfigs.sort((a, b) => a.name.localeCompare(b.name));
 
       progress.report({ message: `Generating exercise file...` });
-      this.writeExerciseJs('javascript-algorithms-all.js', exercises);
+      this.controller.writeExerciseJs(exerciseConfigs);
 
       progress.report({ message: `Loading exercises...` });
-      const exerciseList = this.treeNodeProvider.controller.reloadExerciseList();
+      const exerciseList = this.controller.reloadExerciseList();
 
       progress.report({ message: `Generating chapter list file...` });
-      this.writeChapterListJs('javascript-algorithms-all.js', exerciseList);
+      this.controller.writeChapterListJs(exerciseList);
 
       progress.report({ message: `Loading chapter list...` });
-      const chapters = this.treeNodeProvider.controller.reloadChapterList();
+      const chapters = this.controller.reloadChapterList();
 
-      showInformationMessage(`List generated, found ${exercises.length} exercise(s) in ${chapters.length} chapter(s).`);
+      showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
 
       this.treeNodeProvider.refresh();
     }, { title: 'Generating Chapter List' });
   }
 }
-
-// class ExportApplicationsNode extends ToolNode {
-//   static makeLabel() {
-//     return `Export all exercise applications`;
-//   }
-
-//   async handleClick() {
-
-//   }
-// }
 
 class ExportApplicationsForceNode extends ToolNode {
   static makeLabel() {
@@ -133,7 +111,7 @@ class ExportApplicationsForceNode extends ToolNode {
   }
 
   async handleClick() {
-    const { exerciseList } = this.treeNodeProvider.controller;
+    const { exerciseList } = this.controller;
     if (!exerciseList) {
       showInformationMessage(`Please generate chapter list before exports`);
       return;
@@ -166,7 +144,7 @@ class DeleteExportedApplicationNode extends ToolNode {
   }
 
   async handleClick() {
-    const { exerciseList } = this.treeNodeProvider.controller;
+    const { exerciseList } = this.controller;
     if (!exerciseList) {
       showInformationMessage(`Please generate chapter list before delete`);
       return;

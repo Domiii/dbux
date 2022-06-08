@@ -2205,6 +2205,7 @@ export default {
     return staticContextId;
   },
 
+  /** @param {RuntimeDataProvider} dp */
   getContextStaticContext(dp, contextId) {
     const staticContextId = dp.util.getContextStaticContextId(contextId);
     return dp.collections.staticContexts.getById(staticContextId);
