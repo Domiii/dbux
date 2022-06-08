@@ -3,7 +3,6 @@ import { startDbuxComponents } from './componentLib/ClientComponentManager';
 import _clientRegistry from './graph/_clientRegistry';
 
 import './graph/styles.css';
-import initHackfixes from './hackfixes';
 
 
 /**
@@ -14,7 +13,5 @@ import initHackfixes from './hackfixes';
  */
 window.html2canvas = html2canvas;
 // console.log('html2canvas', html2canvas);
-
-initHackfixes();
 
 window.startDbuxComponents = startDbuxComponents.bind(null, _clientRegistry);

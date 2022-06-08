@@ -138,16 +138,26 @@ export function initUserCommands(extensionContext) {
    * NOTE: this is code for testing → move to test file
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
-    let { testFilePath, contextId, applicationId, watchTraceIds } = await getTestDDGArgs();
+    let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestDDGArgs();
 
-    if (!allApplications.selection.count) {
+    let app = allApplications.getById(applicationUuid);
+    if (!allApplications.selection.containsApplication(app)) {
+      app = null;
+    }
+    if (!app) {
+      // select first app instead → reset
+      contextId = watchTraceIds = null;
+      app = allApplications.selection.getFirst();
+    }
+    if (!app && testFilePath) {
+      // try re-import
       const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
       // const testFileName = 'data-multi1';
       // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
       // await doImportApplication(testFilePath);
 
       // load an application, if none active
-      const confirmMsg = `Current test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to proceed?`;
+      const confirmMsg = `Current DDG test file: "${testFilePath.replace(defaultImportDir, '')}"\nDo you want to import it?`;
       const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
       if (shouldUpdateTestFilePath) {
         const fileDialogOptions = {
@@ -163,25 +173,22 @@ export function initUserCommands(extensionContext) {
         }
         testFilePath = pathNormalizedForce(testFilePath);
 
-        // unset args
-        contextId = 0;
-        watchTraceIds = null;
+        // test file changed → reset
+        contextId = watchTraceIds = null;
       }
 
-      await doImportApplication(testFilePath);
+      app = await doImportApplication(testFilePath);
+    }
+
+    if (!app) {
+      throw new Error('Could not run DDG test: No applications running');
     }
 
     let trace = traceSelection.selected;
-    if (!trace && !watchTraceIds) {
-      // default: get first active application
-      const firstApplication = allApplications.selection.getFirst();
-      if (!firstApplication) {
-        throw new Error('Could not run DDG test: No applications running');
-      }
-
+    if (!watchTraceIds && !contextId) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
-      const dp = firstApplication.dataProvider;
+      const dp = app.dataProvider;
       const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
       if (needsNewContextId) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().
@@ -212,23 +219,20 @@ export function initUserCommands(extensionContext) {
       // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
     }
 
-    if (trace || watchTraceIds) {
-      contextId = trace.contextId;
-
+    if (contextId || watchTraceIds) {
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
       await getOrOpenTraceEditor(trace);
 
       // clear all previous DDGs
-      const app = allApplications.getById(trace.applicationId);
       const dp = app.dataProvider;
       dp.ddgs.clear();
       disposeDDGWebviews();
 
       // show webview
       await showDDGViewForArgs({
+        applicationUuid: app.applicationUuid,
         watchTraceIds,
-        applicationId: applicationId || app.applicationId,
-        contextId: trace?.contextId
+        contextId
       });
 
       // select DDG Debug node

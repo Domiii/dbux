@@ -1,13 +1,14 @@
 import * as t from '@babel/types';
 import template from '@babel/template';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeInputs } from './buildUtil';
+import { makeInputs, UndefinedNode, ZeroNode } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
 import { buildTraceExpressionNoInput } from './misc';
 import { postInstrument } from '../instrumentMisc';
 import { findConstructorMethod, findSuperCallPath } from '../../visitors/classUtil';
+import { astNodeToString } from '../../helpers/pathHelpers';
 
 // ###########################################################################
 // util
@@ -376,7 +377,7 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
     computed
   } = classProperty;
 
-  const {
+  let {
     data: {
       objectTid,
       objectTraceCfg,
@@ -396,6 +397,16 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
     );
   }
 
+  // TODO: valueNode and tid must not be undefined, or they will be ignored (bad babel behavior)
+  if (!valueNode) {
+    // prop might not have a value
+    valueNode = UndefinedNode;
+  }
+  if (!propTid) {
+    // prop might not be computed
+    propTid = ZeroNode;
+  }
+
   // build `value`
   valueNode = writePropertyTemplate({
     trace: traceWriteME,
@@ -413,6 +424,9 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
   resultNode.computed = computed;
   resultNode.key = keyNode;
   resultNode.value = valueNode;
+
+  console.log(`writeClassProperty, ${astNodeToString(resultNode)}`);
+
   return resultNode;
 }
 

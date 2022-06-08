@@ -6,7 +6,7 @@ import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
-import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { exportApplicationToFile, importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import ChapterNode from '../projectViews/practiceView/ChapterNode';
 import ExerciseNode from '../projectViews/practiceView/ExerciseNode';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
@@ -58,7 +58,7 @@ class DDGNode extends BaseTreeViewNode {
           if (newFilePath !== fullContextFilePath) {
             throw new Error(`Ran test, but context is not in original file anymore. Test data probably outdated.`);
           }
-          applicationUuid = this.applicationUuid = allApplications.getFirst().applicationUuid;
+          applicationUuid = this.applicationUuid = allApplications.selection.getFirst().applicationUuid;
         }
         else {
           return;
@@ -92,14 +92,19 @@ class DDGExerciseNode extends ExerciseNode {
       await this.treeNodeProvider.manager.switchAndTestBug(exercise);
 
       progress.report({ message: `Parsing application` });
-      const app = allApplications.getFirst();
+      const app = allApplications.selection.getFirst();
       const ddgs = findDDGContextIdInApp(app, exercise);
       exercise.ddgs = ddgs;
 
-      progress.report({ message: `Storing results...` });
+      progress.report({ message: `Storing results and exporting application...` });
       const config = this.treeNodeProvider.controller.exerciseConfigsByName.get(exercise.name);
       config.ddgs = ddgs;
+
+      // write exercise file
       this.treeNodeProvider.controller.writeExerciseJs();
+
+      // export application
+      await exportApplicationToFile(app, getCurrentResearch().getAppZipFilePath(app));
 
       showInformationMessage(`Found ${ddgs.length} ddg(s).`);
       this.treeNodeProvider.refresh();

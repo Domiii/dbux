@@ -193,7 +193,7 @@ export default class DotBuilder {
     }
     else if (isControlGroupTimelineNode(node.type)) {
       ddgQueries.isVisible(ddg, node);
-      console.log(`Control group: ${node}, show=${show}, summary=${ddgQueries.getNodeSummaryMode(ddg, node)}`);
+      // console.log(`Control group: ${node}, show=${show}, summary=${ddgQueries.getNodeSummaryMode(ddg, node)}`);
       // NOTE: this is to render Watched node inside of hidden groups
       this.nodesByIds(node.children);
     }
