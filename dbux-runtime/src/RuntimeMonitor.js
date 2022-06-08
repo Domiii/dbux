@@ -34,7 +34,8 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Runtim
 // const Verbose = 2;
 // const Verbose = 1;
 const Verbose = 0;
-const VerbosePatterns = 1;
+// const VerbosePatterns = 1;
+const VerbosePatterns = 0;
 
 const verboseDebug = (...args) => Verbose && debug(...args);
 
