@@ -22,6 +22,9 @@ export class CodeApplication extends Application {
   }
 
   getDefaultApplicationExportPath(zip) {
+    if (this.importFilePath && this.importFilePath.endsWith('.zip') === zip) {
+      return this.importFilePath;
+    }
     const applicationName = this.getSafeFileName();
     const projectName = this.projectName && pathSafe(this.projectName) || '';
     let exportPath = pathJoin(getDefaultExportDirectory(), projectName, `${applicationName || '(unknown)'}_data.json`);

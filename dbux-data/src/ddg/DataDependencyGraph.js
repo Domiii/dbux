@@ -328,11 +328,15 @@ export default class DataDependencyGraph extends BaseDDG {
         // Ref Write
         lastModifyNodesByRefId.set(refId, node.dataNodeId);
       }
-      else if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
-        // Variable Write
-        if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
-          // store variable writes, if variable was declared before summarizingNode
-          varModifyDataNodes.set(varDeclarationTid, node.timelineId);
+      else {
+        if (ddgQueries.checkConnected(this, node)) {
+          if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
+            // Variable Write
+            if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
+              // store variable writes, if variable was declared before summarizingNode
+              varModifyDataNodes.set(varDeclarationTid, node.timelineId);
+            }
+          }
         }
       }
     }
@@ -502,6 +506,11 @@ export default class DataDependencyGraph extends BaseDDG {
     if (needsSummaryData) {
       // build node summary (if not already built)
       this.#buildNodeSummary(timelineId);
+
+      if (!ddgQueries.doesNodeHaveSummary(this, node)) {
+        // straight up ignore for now
+        return;
+      }
     }
 
     // DFS recursion

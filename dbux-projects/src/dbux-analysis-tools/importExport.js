@@ -55,7 +55,7 @@ export async function importApplicationFromFile(fpath) {
 
   const { serializedDpData, ...appData } = JSON.parse(serialized);
 
-  const app = await importApplication(appData, [serializedDpData]);
+  const app = await importApplication(fpath, appData, [serializedDpData]);
 
   return app;
 }
@@ -102,7 +102,7 @@ export function extractApplicationData(application) {
 
 const applicationEntryPointPathByHash = new Map();
 
-export async function importApplication(appData, allDpData = EmptyArray) {
+export async function importApplication(importFilePath, appData, allDpData = EmptyArray) {
   const { isBuiltInProject, isBuiltInSample, relativeEntryPointPath, filePathMD5, ...other } = appData;
   let rootPath;
   if (isBuiltInSample) {
@@ -126,6 +126,8 @@ export async function importApplication(appData, allDpData = EmptyArray) {
   const app = allApplications.addApplication({
     entryPointPath, ...other
   });
+
+  app.importFilePath = importFilePath;
 
   for (const dpData of allDpData) {
     await app.dataProvider.deserializeJson(dpData);

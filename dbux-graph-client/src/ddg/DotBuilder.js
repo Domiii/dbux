@@ -10,6 +10,15 @@ const { log, debug, warn, error: logError } = newLogger('DotBuilder');
 
 const Verbose = 1;
 
+/**
+ * @see https://stackoverflow.com/a/18750001
+ */
+function dotEncode(s) {
+  return (s + '').replace(/[\u00A0-\u9999<>&]/g, function (c) {
+    return '&#' + c.charCodeAt(0) + ';';
+  });
+}
+
 // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
 //    → (see: https://stackoverflow.com/a/56759634)
 const Colors = {
@@ -71,7 +80,7 @@ export default class DotBuilder {
 
   makeLabel(text) {
     // TODO: proper dot label encoding (it is probably not JSON)
-    return `label=${JSON.stringify(text)}`;
+    return `label="${dotEncode(text)}"`;
   }
 
   nodeIdAttr(timelineId) {
@@ -191,12 +200,12 @@ export default class DotBuilder {
     // const mode = ddgQueries.getNodeSummaryMode(ddg, node);
     // const modeEl = makeSummaryLabel(ddg, mode);
     // ${modeEl}
-    this.command(`label=<${label || '()'}>`);
+    this.command(`label=<${dotEncode(label) || '()'}>`);
     this.subgraphAttrs();
   }
 
   controlGroup(node) {
-    const { timelineId, label } = node;
+    const { timelineId } = node;
 
     this.fragment(`subgraph cluster_group_${timelineId} {`);
     this.indentLevel += 1;
@@ -286,7 +295,7 @@ export default class DotBuilder {
   edge(edge) {
     const from = this.makeNodeId(this.getNode(edge.from));
     const to = this.makeNodeId(this.getNode(edge.to));
-    const debugInfo = Verbose && ` [label=${edge.edgeId}]` || '';
+    const debugInfo = Verbose && ` [${this.makeLabel(edge.edgeId)}]` || '';
     this.command(`${from} -> ${to}${debugInfo}`);
   }
 
@@ -325,8 +334,8 @@ export default class DotBuilder {
     const l = `label=<
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
   <TR>
-    <TD BORDER="1" SIDES="R">${label}</TD>
-    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${value}</FONT></TD>
+    <TD BORDER="1" SIDES="R">${dotEncode(label)}</TD>
+    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${dotEncode(value)}</FONT></TD>
   </TR>
 </TABLE>
 >`;
@@ -372,7 +381,7 @@ export default class DotBuilder {
     this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
-    ${hasLabel ? `<TD ROWSPAN="2">${label}</TD>` : ''}
+    ${hasLabel ? `<TD ROWSPAN="2">${dotEncode(label)}</TD>` : ''}
     ${childrenCells}
   </TR>
 </TABLE>

@@ -9,8 +9,8 @@ import DDGNodeSummary from './DDGNodeSummary';
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
 const DDGConfig = {
-  // connectedOnly: true
-  connectedOnly: false
+  connectedOnly: true
+  // connectedOnly: false
 };
 
 export class RenderState {
@@ -133,13 +133,29 @@ const ddgQueries = {
   },
 
   /**
+   * Check node connected-ness against connected setting.
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  checkConnected(ddg, node) {
+    return !DDGConfig.connectedOnly || ddgQueries.isNodeConnected(ddg, node);
+  },
+
+  /**
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
+    
     return node.watched || (
-      isShownMode(summaryMode) && (!DDGConfig.connectedOnly || ddgQueries.isNodeConnected(ddg, node))
+      isShownMode(summaryMode) &&
+      this.checkConnected(ddg, node) &&
+
+      // hide empty summary nodes
+      // NOTE: we check for `doesNodeHaveSummary` in a few other places as well
+      (!this.isNodeSummarizedMode(ddg, node) || this.doesNodeHaveSummary(ddg, node))
     );
   },
 

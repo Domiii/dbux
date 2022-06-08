@@ -271,7 +271,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     if (
       ddgQueries.isNodeSummarizable(node) &&
-      (!ddgQueries.isNodeSummarized(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
+
+      // TODO: this check should now be taken care of by isVisible (not necessary anymore)
+      (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
     ) {
       // hackfix: since DOT is very limited, we have to add custom rendering logic here
       const labelEl = this.getSummarizableNodeLabelEl(node, nodeEl);

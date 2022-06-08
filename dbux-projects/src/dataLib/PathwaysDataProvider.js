@@ -128,7 +128,7 @@ class ApplicationCollection extends PathwaysCollection {
       const fileString = fs.readFileSync(appFilePath, 'utf8');
       const [header, ...lines] = fileString.split(/\r?\n/);
       const allDpData = lines.filter(l => !!l).map(line => JSON.parse(line));
-      app = await importApplication(appData, allDpData);
+      app = await importApplication(appFilePath, appData, allDpData);
     }
     catch (err) {
       if (err.code === 'ENOENT') {
