@@ -126,9 +126,9 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   isNodeConnected(ddg, node) {
-    // NOTE: collapsed group nodes don't have `connected` set
+    // NOTE: group nodes generally don't have edges
     return node.connected || (
-      isControlGroupTimelineNode(node.type) && ddg.outEdgesByTimelineId[node.timelineId]
+      isControlGroupTimelineNode(node.type)
     );
   },
 
