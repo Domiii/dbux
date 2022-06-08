@@ -319,6 +319,9 @@ export default class BaseDDG {
    * @param {DDGTimelineNode} newNode 
    */
   addNode(newNode) {
+    // if (newNode.dataNodeId && this.timelineBuilder.shouldIgnoreDataNode(newNode.dataNodeId)) {
+    //   throw new Error(`added ignored node: ${JSON.stringify(newNode)}`);
+    // }
     newNode.timelineId = this.timelineNodes.length;
     newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
@@ -469,7 +472,7 @@ export default class BaseDDG {
             //      → because they cannot have a unique `accessId`!!
             //      → meaning that their root ValueRef's dataNode is accessed instead of `original`.
             // throw new Error('NYI: nested initial reference types are currently not supported');
-            return;
+            continue;
           }
           else {
             // NOTE: this happens with commonly used globals (such as console.log)
@@ -477,7 +480,7 @@ export default class BaseDDG {
             // PROBLEM: this value does not have a unique `dataNode` (but is addressable)
             // TODO: might need some addressing method using its parent (just like `varAccess`)
             // throw new Error('NYI: nested initial primitive value');
-            return;
+            continue;
           }
         }
         else {

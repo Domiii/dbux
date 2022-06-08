@@ -4,6 +4,7 @@
 
 // import * as d3selection from 'd3-selection';
 import { transition as d3transition } from 'd3-transition';
+// import { select as d3select } from 'd3-select';
 import * as d3Graphviz from 'd3-graphviz';
 import isPlainObject from 'lodash/isPlainObject';
 
@@ -79,8 +80,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   setupEl() {
-    this.initGraphImplementation();
-
     // delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
     //   const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
     //   if (timelineId) {
@@ -138,6 +137,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   rebuildGraph() {
     const isNew = this.initGraphImplementation();
+    // console.log('new', isNew, this.ddg.settings.anim);
 
     this.buildGraph(isNew);
   }
@@ -159,24 +159,40 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     if (isNew) {
       this.graphviz
         .on('end', () => {
-          // NOTE: add transition only after first render
-          this.graphviz.transition(() => { // transition
-            // return d3selection.transition()
-            return d3transition()
-              .duration(800);
-          });
+          try {
+            if (this.ddg.settings.anim) {
+              // NOTE: add transition only after first render
+              this.graphviz.transition(() => { // transition
+                // TODO: add a way to remove animation
+                // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+                // if (!this.ddg.settings.anim) {
+                // }
+                return d3transition()
+                  .duration(800);
+              });
+            }
 
-          // add node and edge decorations to the rendered DOM
-          this.decorateAfterRender();
+            // add node and edge decorations to the rendered DOM
+            this.decorateAfterRender();
+          }
+          catch (err) {
+            // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
+            this.logger.error(`after render event handler FAILED -`, err);
+          }
         });
     }
   }
 
   initGraphImplementation() {
     // NOTE: use `this.el`'s id
-    const isNew = !!this.graphviz;
-    this.graphviz = this.graphviz || d3Graphviz.graphviz('#ddg-timeline', GraphVizCfg);
-    return isNew;
+    const shouldBuildNew = !this.graphviz;
+    if (shouldBuildNew) {
+      this.graphviz = d3Graphviz.graphviz('#ddg-timeline', { ...GraphVizCfg });
+    }
+    else {
+      // nothing to do for now
+    }
+    return shouldBuildNew;
   }
 
   /**
@@ -203,7 +219,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   async setGraphSetting(setting, val) {
-    const newSettings = { 
+    const newSettings = {
       ...this.ddg.settings,
       [setting]: val
     };
@@ -240,41 +256,35 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   // rendering finished
   decorateAfterRender = async () => {
-    try {
-      // hackfix: sort so clusters dont obstruct other elements
-      Array.from(this.el.querySelectorAll('.graph > g'))
-        .sort((a, b) => {
-          const aBack = a.classList.contains('cluster');
-          const bBack = b.classList.contains('cluster');
-          return bBack - aBack;
-          // return TODO;
-          // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
-          // return a.id?.localeCompare(b.id || '');
-        })
-        .forEach(item => item.parentNode.appendChild(item));
+    // hackfix: sort so clusters dont obstruct other elements
+    Array.from(this.el.querySelectorAll('.graph > g'))
+      .sort((a, b) => {
+        const aBack = a.classList.contains('cluster');
+        const bBack = b.classList.contains('cluster');
+        return bBack - aBack;
+        // return TODO;
+        // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
+        // return a.id?.localeCompare(b.id || '');
+      })
+      .forEach(item => item.parentNode.appendChild(item));
 
-      // decorate all nodes
-      const nodeEls = Array.from(this.el.querySelectorAll('.node'));
-      const clusterEls = Array.from(this.el.querySelectorAll('.cluster'));
-      // const clusterEls = Array.from(this.el.querySelectorAll('.cluster')).map(el => ({
-      //   el: el.querySelector('text') // grab the label for clusters
-      // }));
-      const allEls = [...nodeEls, ...clusterEls];
-      for (const el of allEls) {
-        const { id: timelineId } = el;
-        const node = this.renderState.timelineNodes[timelineId];
-        if (node) {
-          this.decorateNode(node, el);
-        }
+    // decorate all nodes
+    const nodeEls = Array.from(this.el.querySelectorAll('.node'));
+    const clusterEls = Array.from(this.el.querySelectorAll('.cluster'));
+    // const clusterEls = Array.from(this.el.querySelectorAll('.cluster')).map(el => ({
+    //   el: el.querySelector('text') // grab the label for clusters
+    // }));
+    const allEls = [...nodeEls, ...clusterEls];
+    for (const el of allEls) {
+      const { id: timelineId } = el;
+      const node = this.renderState.timelineNodes[timelineId];
+      if (node) {
+        this.decorateNode(node, el);
       }
+    }
 
-      const summaryButtons = this.el.querySelectorAll('.summary-button');
-      updateElDecorations(summaryButtons);
-    }
-    catch (err) {
-      // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
-      this.logger.error(`decorateAfterRender FAILED: `, err);
-    }
+    const summaryButtons = this.el.querySelectorAll('.summary-button');
+    updateElDecorations(summaryButtons);
   }
 
   /**
@@ -329,7 +339,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       });
 
       // add click handler
-      this.addNodeEventListener(node, interactionEl, 'click', async (evt) => {
+      this.addNodeEventListener(node, interactionEl, 'mousedown', async (evt) => {
         if (node.dataNodeId) {
           await this.remote.selectNode(node.timelineId);
         }

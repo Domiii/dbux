@@ -23,19 +23,27 @@ svg.jtk-connector path {
 }
 
 
+.timeline-jsplumb-container {
+  position: relative;
+}
+
 .timeline-ref-node>.timeline-node {
   position: unset;
 } */
 
+/** ###########################################################################
+ * root and other big things
+ * ############################################################################*/
+
+.root-cont {
+  height: auto;
+}
 
 
 /** ###########################################################################
  * components
  * ############################################################################*/
 
-.timeline-jsplumb-container {
-  position: relative;
-}
 
 .timeline-view {
   height: calc(100vh - 30px);

@@ -133,7 +133,8 @@ function addSummaryModeListener(btnEl, doc, timelineId, mode) {
 //   }
 // };
 const settingBtnLabelHtml = {
-  connectedOnly: 'con'
+  connectedOnly: 'con',
+  extraVertical: '↕'
 };
 
 /**

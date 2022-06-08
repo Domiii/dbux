@@ -148,7 +148,7 @@ export function initUserCommands(extensionContext) {
       app = null;
     }
     if (!app) {
-      if (!testFilePath) {
+      if (allApplications.selection.getFirst()) {
         // select first app instead → reset
         contextId = watchTraceIds = null;
         app = allApplications.selection.getFirst();
@@ -161,7 +161,7 @@ export function initUserCommands(extensionContext) {
         // await doImportApplication(testFilePath);
 
         // load an application, if none active
-        const confirmMsg = `Current DDG test file: "${testFilePath.replace(defaultImportDir, '')}"\nDo you want to import it?`;
+        const confirmMsg = `Current DDG test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to import it?`;
         const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
         if (shouldUpdateTestFilePath) {
           const fileDialogOptions = {

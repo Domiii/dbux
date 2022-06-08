@@ -1,3 +1,4 @@
+import isEmpty from 'lodash/isEmpty';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
@@ -29,6 +30,9 @@ const Colors = {
 
   edgeText: 'gray',
   line: 'white',
+  nodeOutlineDefault: 'white',
+  watchedNodeOutline: 'green',
+  edge: 'white',
   groupBorder: 'gray',
 
   groupLabel: 'yellow',
@@ -87,6 +91,32 @@ export default class DotBuilder {
     return `id=${timelineId}`;
   }
 
+  nodeAttrs(timelineId) {
+    return [
+      this.nodeIdAttr(timelineId),
+      this.nodeOutlineColorAttr(timelineId)
+    ]
+      .filter(Boolean)
+      .join(',');
+  }
+
+  nodeOutlineColor(timelineId) {
+    const node = this.ddg.timelineNodes[timelineId];
+    if (node.watched) {
+      return `${Colors.watchedNodeOutline}`;
+    }
+    return null;
+  }
+
+
+  nodeOutlineColorAttr(timelineId) {
+    const node = this.ddg.timelineNodes[timelineId];
+    if (node.watched) {
+      return `color="${Colors.watchedNodeOutline}"`;
+    }
+    return '';  // ignore → already taken care of
+  }
+
   /** ###########################################################################
    * indent, lines + fragments
    * ##########################################################################*/
@@ -101,7 +131,8 @@ export default class DotBuilder {
   }
 
   compileFragments() {
-    return this.fragments.join('\n');
+    // const extra = this.buildPullDownStructure().join('\n');
+    return /* extra + '\n' + */ this.fragments.join('\n');
   }
 
   fragment = (s) => {
@@ -110,6 +141,9 @@ export default class DotBuilder {
   }
 
   command = (s) => {
+    if (!s) {
+      return;
+    }
     this.fragment(s + ';');
   }
 
@@ -142,9 +176,9 @@ export default class DotBuilder {
     this.indentLevel += 1;
 
     // global settings
-    this.command(`node[color="${Colors.line}", fontcolor="${Colors.text}"]`);
+    this.command(`node[color="${Colors.nodeOutlineDefault}", fontcolor="${Colors.text}"]`);
     // `node [fontsize=9]`,
-    this.command(`edge[arrowsize=0.5, arrowhead="open", color="${Colors.line}", fontcolor="${Colors.edgeText}"]`);
+    this.command(`edge[arrowsize=0.5, arrowhead="open", color="${Colors.edge}", fontcolor="${Colors.edgeText}"]`);
     this.command(`labeljust=l`); // graph/cluster label left justified
     this.subgraphAttrs();
 
@@ -160,6 +194,9 @@ export default class DotBuilder {
       if (!edge) continue;
       this.edge(edge);
     }
+
+    // extra stuff
+    this.buildPullDownStructure();
 
     this.indentLevel -= 1;
 
@@ -266,7 +303,11 @@ export default class DotBuilder {
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    const color = ddgQueries.isNestingSnapshot(ddg, node) ? 'gray' : 'transparent';
+    const color = !ddgQueries.isNestingSnapshot(ddg, node) ?
+      'transparent' : // no outline
+      node.watched ?
+        Colors.watchedNodeOutline :
+        'gray';
     this.command(`color="${color}"`);
     this.command(`fontcolor="${Colors.groupLabel}"`);
     this.command(this.nodeIdAttr(timelineId));
@@ -285,9 +326,10 @@ export default class DotBuilder {
     }
     else {
       // simple label
-      const attrs = [this.nodeIdAttr(node.timelineId), `fontcolor="${Colors.value}"`, this.makeLabel(node.label)].join(',');
+      const attrs = [this.nodeAttrs(node.timelineId), `fontcolor="${Colors.value}"`, this.makeLabel(node.label)].join(',');
       this.command(`${this.makeNodeId(node)} [${attrs}]`);
     }
+    this.addNodeToPullDownStructure(node);
   }
 
   /**
@@ -348,7 +390,7 @@ export default class DotBuilder {
   </TR>
 </TABLE>
 >`;
-    const attrs = [this.nodeIdAttr(node.timelineId), `shape=record`, l].join(',');
+    const attrs = [this.nodeAttrs(node.timelineId), `shape=record`, l].join(',');
     this.command(`${timelineId} [${attrs}]`);
   }
 
@@ -378,16 +420,23 @@ export default class DotBuilder {
    */
   snapshotTable(node) {
     const { ddg, ddg: { timelineNodes } } = this;
-    // this.command(`node [shape=record]`);
-    this.command(`node [shape=plaintext]`);
 
     const { timelineId, label, parentNodeId, children } = node;
     const hasLabel = !parentNodeId && label !== undefined;
     const childEntries = Object.entries(children);
-    const childrenCells = childEntries
-      .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
-      .join('');
-    this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
+    const hasChildren = !!childEntries.length;
+    if (!hasChildren) {
+      // render empty snapshot as ref data node
+      this.nodeRecord(node);
+    }
+    else {
+      // render snapshot
+      // this.command(`node [shape=record]`);
+      this.command(`node [shape=plaintext]`);
+      const childrenCells = childEntries
+        .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
+        .join('');
+      this.command(`${timelineId} [${this.nodeIdAttr(timelineId)},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
     ${hasLabel ? `<TD ROWSPAN="2">${dotEncode(label)}</TD>` : ''}
@@ -395,20 +444,29 @@ export default class DotBuilder {
   </TR>
 </TABLE>
 >]`);
+      // add child snapshots separately
+      for (const [prop, childId] of childEntries) {
+        const child = timelineNodes[childId];
+        if (ddgQueries.isSnapshot(ddg, child)) {
+          if (isEmpty(child.children)) {
+            // don't add empty snapshots separately
+            continue;
+          }
 
-    for (const [prop, childId] of childEntries) {
-      const child = timelineNodes[childId];
-      if (ddgQueries.isSnapshot(ddg, child)) {
-        // add child snapshot
-        this.snapshotTable(child);
+          // add child snapshot
+          this.snapshotTable(child);
 
-        // add edge
-        this.snapshotEdge(child);
+          // add edge
+          this.snapshotEdge(child);
+        }
+        else if (child.repeatedTimelineId) {
+          const repeatedNode = timelineNodes[child.repeatedTimelineId];
+          this.snapshotEdgeFromTo(this.makeNodeId(child), this.makeNodeId(repeatedNode));
+        }
       }
-      else if (child.repeatedTimelineId) {
-        const repeatedNode = timelineNodes[child.repeatedTimelineId];
-        this.snapshotEdgeFromTo(this.makeNodeId(child), this.makeNodeId(repeatedNode));
-      }
+
+      // add snapshot root
+      // this.addNodeToPullDownStructure(node);
     }
   }
 
@@ -426,4 +484,64 @@ export default class DotBuilder {
       </TABLE>
     </TD>`;
   }
+
+  /** ###########################################################################
+   * add a "pull-down" effect, using virtual (hidden) nodes
+   * ##########################################################################*/
+
+  pullNodes = [];
+
+  addNodeToPullDownStructure(node) {
+    if (!this.ddg.settings.extraVertical) {
+      return;
+    }
+    if (!node.parentNodeId) {
+      // ignore in-snapshot nodes
+      this.pullNodes.push(node.timelineId);
+
+      // place pull node and rank command in same subgraph (else `rank=same` breaks subgraphs)
+      this.command(makePullId(node.timelineId) + invisAttrs());
+      this.command(`{rank=same; ${node.timelineId}, ${makePullId(node.timelineId)}}`);
+    }
+  }
+
+  /**
+   * Idea:
+   * s1 -> s2 -> s3;
+   * 1 -> s1 -> 2 -> s2 -> 3 -> s3;
+   * 
+   * Idea2:
+   * s1 -> s2 -> s3;
+   * {rank=same; s1, 1};
+   * {rank=same; s2, 2};
+   * {rank=same; s3, 3};
+   */
+  buildPullDownStructure() {
+    if (!this.pullNodes.length) {
+      return;
+    }
+
+    this.command(
+      this.pullNodes
+        .map(id => makePullId(id))
+        .join(' -> ') + invisAttrs()
+      // this.pullNodes
+      //   .map(id => `{rank=same; ${id}, ${makePullId(id)}}`)
+      // this.pullNodes
+      //   .flatMap(id => [id, makePullId(id)])
+      //   .join(' -> ')
+    );
+  }
+}
+
+function invisAttr() {
+  return 'style=invis';
+}
+
+function invisAttrs() {
+  return '[style=invis]';
+}
+
+function makePullId(id) {
+  return 's' + id;
 }
