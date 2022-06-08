@@ -1229,12 +1229,12 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueString(dp, nodeId, toTraceId) {
+  getDataNodeValueString(dp, nodeId, toTraceId = null) {
     return dp.util._getDataNodeValueString(nodeId, toTraceId, false);
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueStringShort(dp, nodeId, toTraceId) {
+  getDataNodeValueStringShort(dp, nodeId, toTraceId = null) {
     return dp.util._getDataNodeValueString(nodeId, toTraceId, true);
   },
 

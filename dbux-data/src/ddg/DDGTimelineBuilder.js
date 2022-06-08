@@ -181,6 +181,18 @@ export default class DDGTimelineBuilder {
    * skip + ignore
    * ##########################################################################*/
 
+  getIgnoreAndSkipInfo(dataNode) {
+    const ignore = this.#shouldIgnoreDataNode(dataNode.nodeId);
+    const skippedBy = this.#getSkippedByDataNode(dataNode);
+    if (!ignore && !skippedBy) {
+      return null;
+    }
+    return {
+      ignore,
+      skippedBy
+    };
+  }
+
   #processSkipAndIgnore(dataNode, isDecision) {
     // TODO: allow for decision skips as well
     if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)) {
@@ -189,7 +201,7 @@ export default class DDGTimelineBuilder {
         Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
         return false;
       }
-      const skippedBy = this.#skipDataNode(dataNode);
+      const skippedBy = this.#getSkippedByDataNode(dataNode);
       if (skippedBy) {
         // → This node SHOULD be skipped and CAN be skipped.
         // → register skip node
@@ -239,7 +251,7 @@ export default class DDGTimelineBuilder {
    * @param {DataNode} dataNode
    * @return {DDGTimelineNode}
    */
-  #skipDataNode(dataNode) {
+  #getSkippedByDataNode(dataNode) {
     if (!this.#shouldSkipDataNode(dataNode.nodeId)) {
       return null;
     }

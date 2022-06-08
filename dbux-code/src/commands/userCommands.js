@@ -184,11 +184,13 @@ export function initUserCommands(extensionContext) {
       throw new Error('Could not run DDG test: No applications running');
     }
 
-    let trace = traceSelection.selected;
+    let trace;
     if (!watchTraceIds && !contextId) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
       const dp = app.dataProvider;
+      trace = traceSelection.selected;
+      contextId = trace.contextId;
       const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
       if (needsNewContextId) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().
@@ -221,7 +223,7 @@ export function initUserCommands(extensionContext) {
 
     if (contextId || watchTraceIds) {
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
-      await getOrOpenTraceEditor(trace);
+      trace && await getOrOpenTraceEditor(trace);
 
       // clear all previous DDGs
       const dp = app.dataProvider;

@@ -35,6 +35,14 @@ export class DDGTimelineNode {
   hasSummarizableWrites = false;
 
   /**
+   * Whether this is an "og" node (i.e. created during original graph construction),
+   * that is part of the base timeline,
+   * or whether it was added later (usually due to summarization).
+   * @type {boolean}
+   */
+  og;
+
+  /**
    * @param {DDGTimelineNodeTypeValues} type
    */
   constructor(type) {

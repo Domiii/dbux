@@ -201,9 +201,12 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     }
   }
 
-  const renderChildrenInline = !isFunction(children) && (!children || isEmpty(children));
   let collapsibleState;
-  if (!renderChildrenInline) {
+  const renderChildrenInline = !isFunction(children) && (!children || isEmpty(children));
+  if (itemProps && 'collapsibleState' in itemProps) {
+    collapsibleState = itemProps.collapsibleState;
+  }
+  else if (!renderChildrenInline) {
     collapsibleState = TreeItemCollapsibleState.Collapsed;
   }
   else {

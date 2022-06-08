@@ -136,10 +136,6 @@ export default class BaseDDG {
     return this._timelineNodes;
   }
 
-  getTimelineNode(timelineId) {
-    return this._timelineNodes[timelineId];
-  }
-
 
   getRenderData() {
     const {
@@ -160,6 +156,23 @@ export default class BaseDDG {
     return this.timelineNodes[RootTimelineId];
   }
 
+  /** ###########################################################################
+   * public queries
+   * ##########################################################################*/
+
+  getTimelineNode(timelineId) {
+    return this._timelineNodes[timelineId];
+  }
+
+  /**
+   * NOTE: this can be ambiguous...
+   */
+  getTimelineNodeOfDataNode(dataNodeId) {
+    const dataNode = this.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
+    if () {
+
+    }
+  }
 
   /** ###########################################################################
    * {@link DataDependencyGraph#build}
@@ -188,6 +201,7 @@ export default class BaseDDG {
     this._bounds = new DDGBounds(this, watchTraceIds);
     this._timelineNodes = [null];
 
+    this.building = true;
     this.resetBuild();
 
     /** ########################################
@@ -243,7 +257,7 @@ export default class BaseDDG {
       }
     }
     finally {
-      this.timelineBuilder = null; // done
+      this.building = false; // done
     }
   }
 
@@ -305,6 +319,7 @@ export default class BaseDDG {
    */
   addNode(newNode) {
     newNode.timelineId = this.timelineNodes.length;
+    newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
   }
 
@@ -342,7 +357,7 @@ export default class BaseDDG {
       newNode.refId = dataNode.refId;
     }
 
-    if (this.timelineBuilder) {
+    if (this.building) {
       // hackfix: we only need these during initial build
       this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
     }
@@ -482,7 +497,7 @@ export default class BaseDDG {
           newChild = this.addValueDataNode(lastModDataNode);
           this.#onSnapshotNodeCreated(newChild, parentSnapshot);
           newChild.parentNodeId = parentSnapshot.timelineId;
-          this.timelineBuilder?.onNewSnapshotValueNode(newChild);
+          this.building && this.timelineBuilder.onNewSnapshotValueNode(newChild);
         }
       }
       if (!newChild.timelineId || !newChild.dataNodeId || !this.dp.util.getDataNode(newChild.dataNodeId)) {
@@ -659,7 +674,7 @@ export default class BaseDDG {
     newNode.parentNodeId = parentSnapshot?.timelineId;
     newNode.startDataNodeId = parentSnapshot?.startDataNodeId || newNode.dataNodeId;
 
-    if (this.timelineBuilder) {
+    if (this.building) {
       // hackfix: we only need these during initial build
       this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
     }

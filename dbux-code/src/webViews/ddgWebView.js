@@ -13,8 +13,12 @@ import { setTestDDGArgs } from '../testUtil';
 const defaultColumn = ViewColumn.Two;
 
 export default class DataDependencyGraphWebView extends RichWebView {
-  constructor(mainComponentInitialState, mainComponentHostOnlyState) {
+  /**
+   * @param {DataDependencyGraph} ddg 
+   */
+  constructor(ddg, mainComponentInitialState, mainComponentHostOnlyState) {
     super(DDGHost, 'dbux-data-graph', defaultColumn, mainComponentInitialState, mainComponentHostOnlyState);
+    this.ddg = ddg;
   }
 
   getIcon() {
@@ -152,8 +156,12 @@ async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
 }
 
 async function initDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
-  const dDGWebView = new DataDependencyGraphWebView(ddgDocumentInitialState, hostOnlyState);
+  const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState);
   await dDGWebView.init();
   activeWebviews.set(ddg, dDGWebView);
   return dDGWebView;
+}
+
+export function getActiveDDGWebview() {
+  return Array.from(activeWebviews.values()).find(w => w.isActive);
 }

@@ -8,15 +8,12 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
-import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
+import { makeNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodes, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -196,146 +193,6 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             nodeSummaries
           } = ddg.getRenderData();
 
-          /**
-           * @param {DDGTimelineNode} node 
-           */
-          function makeTreeNode(node) {
-            if (!node) {
-              return makeTreeItem('(null)'); // DDG build has a bug
-            }
-            const { children: childrenIds = EmptyArray } = node;
-            const children = new childrenIds.constructor();
-            Object.entries(childrenIds).forEach(([key, childId]) => {
-              const childNode = timelineNodes[childId];
-              children[key] = makeTreeNode(childNode);
-            });
-            return renderNode(node, children);
-          }
-
-          function makeNodeDescription(node) {
-            const { timelineId, constructor, watched } = node;
-            const summaryMode = summaryModes[timelineId];
-            // eslint-disable-next-line no-nested-ternary
-            const summaryModeLabel = watched ?
-              'Watched' :
-              summaryMode ?
-                DDGSummaryMode.nameFrom(summaryMode) :
-                '';
-            return `${timelineId} [${constructor.name}] ${summaryModeLabel}`;
-          }
-
-          function makeNodeLabel(timelineId) {
-            const node = timelineNodes[timelineId];
-            return node.label || `${node.constructor.name}`;
-          }
-
-          function renderDataNode(dataNodeId) {
-            const dataNode = dp.util.getDataNode(dataNodeId);
-            return makeTreeItem(
-              'dataNode',
-              dataNode,
-              {
-                description: `${dataNodeId}, refId=${dataNode.refId}, value=${dataNode.value}`
-              }
-            );
-          }
-
-          /**
-           * @param {DDGTimelineNode} node 
-           */
-          function renderNode(node, children = node, moreProps = EmptyObject, labelPrefix = '') {
-            const label = makeNodeLabel(node.timelineId);
-            if (children === node) {
-              children = { ...node };
-              if (node.dataNodeId) {
-                children.dataNode = renderDataNode(node.dataNodeId);
-                delete children.dataNodeId;
-              }
-            }
-            return makeTreeItem(labelPrefix + label, children, {
-              description: makeNodeDescription(node),
-              handleClick() {
-                let { dataNodeId = null, traceId } = node;
-
-                if (!traceId && dataNodeId) {
-                  ({ traceId } = dp.collections.dataNodes.getById(dataNodeId));
-                }
-                if (traceId) {
-                  const trace = dp.collections.traces.getById(traceId);
-                  traceSelection.selectTrace(trace, null, dataNodeId);
-                }
-              },
-              ...moreProps
-            });
-          }
-
-          // function renderDataTimelineNodes(nodeIds) {
-          //   return {
-          //     children: nodeIds.map((timelineId) => {
-          //       const node = timelineNodes[timelineId];
-          //       const { label, ...entry } = node;
-          //       delete entry.timelineId;
-          //       return makeTreeItem(label, entry, {
-          //         description: makeNodeDescription(node),
-          //         handleClick() {
-          //           const { dp } = ddg;
-          //           const { traceId } = dp.collections.dataNodes.getById(node.dataNodeId);
-          //           const trace = dp.collections.traces.getById(traceId);
-          //           traceSelection.selectTrace(trace, null, node.dataNodeId);
-          //         }
-          //       });
-          //     }),
-          //     props: {
-          //       description: `(${nodeIds.length})`
-          //     }
-          //   };
-          // }
-
-          function renderEdges(edges, nodeLabel = null, nodeDescription = null) {
-            return {
-              label: nodeLabel,
-              children() {
-                return edges.map((edge) => {
-                  let { from, to, ...entry } = edge;
-                  const fromNode = timelineNodes[from];
-                  const toNode = timelineNodes[to];
-                  const label = `${fromNode?.label} -> ${toNode?.label}`;
-                  const children = makeTreeItems(
-                    renderNode(fromNode, fromNode, {}, 'from: '),
-                    renderNode(toNode, toNode, {}, 'to: '),
-                    ...objectToTreeItems(entry)
-                  );
-                  return makeTreeItem(label, children, {
-                    description: `${edge.edgeId} (${edge.from} → ${edge.to})`,
-                    handleClick() {
-                      // select `from` node
-                      const { dp } = ddg;
-                      const fromDataNodeId = fromNode.dataNodeId;
-                      const { traceId } = dp.collections.dataNodes.getById(fromDataNodeId);
-                      const trace = dp.collections.traces.getById(traceId);
-                      traceSelection.selectTrace(trace, null, fromDataNodeId);
-                    }
-                  });
-                });
-              },
-              props: {
-                description: nodeDescription || `(${edges.length})`
-              }
-            };
-          }
-
-          function renderNodes(nodes) {
-            return {
-              children: nodes.map((node) => {
-                // const { timelineId, label: nodeLabel } = node;
-                // delete entry.timelineId;
-                return renderNode(node, node);
-              }),
-              props: {
-                description: `(${nodes.length})`
-              }
-            };
-          }
 
           /** ###########################################################################
            * make DDG entries
@@ -345,26 +202,26 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
             [
               function Complete_Tree() {
                 const root = timelineNodes[1];
-                return makeTreeNode(root);
+                return renderNodeTree(ddg, root);
               },
 
 
               function Visible_Nodes() {
                 const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-                return renderNodes(visibleNodes);
+                return renderDDGNodes(ddg, visibleNodes);
               },
               function Visible_Edges() {
                 const actualEdges = allEdges.filter(Boolean);
-                return renderEdges(actualEdges);
+                return renderEdges(ddg, actualEdges);
               },
 
               function All_Nodes() {
                 const nodes = timelineNodes.filter(Boolean);
-                return renderNodes(nodes);
+                return renderDDGNodes(ddg, nodes);
               },
               function All_Edges() {
                 const actualEdges = og.edges.filter(Boolean);
-                return renderEdges(actualEdges);
+                return renderEdges(ddg, actualEdges);
               },
               function All_In_Edges() {
                 return {
@@ -374,7 +231,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                         const edges = edgeIds.map(id => og.edges[id]);
                         // NOTE: tree item input does not interpret { children } objects unless input is function
                         return makeTreeItem(() =>
-                          renderEdges(edges, makeNodeLabel(nodeId), makeNodeDescription(timelineNodes[nodeId]))
+                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeNodeDescription(ddg, timelineNodes[nodeId]))
                         );
                       });
                   }
@@ -387,7 +244,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                       .map(([nodeId, edgeIds]) => {
                         const edges = edgeIds.map(id => og.edges[id]);
                         return makeTreeItem(() =>
-                          renderEdges(edges, makeNodeLabel(nodeId), makeNodeDescription(timelineNodes[nodeId]))
+                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeNodeDescription(ddg, timelineNodes[nodeId]))
                         );
                       });
                   }
@@ -396,26 +253,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
               function Node_Summaries() {
                 return {
                   children() {
-                    return Object.entries(nodeSummaries).map(([timelineId, summary]) => {
-                      const {
-                        summaryRoots,
-                        snapshotsByRefId
-                      } = summary;
-                      const node = timelineNodes[timelineId];
-                      return makeTreeItem(node.label,
-                        {
-                          node: renderNode(node),
-                          roots: summaryRoots.map(rootId => {
-                            const root = timelineNodes[rootId];
-                            return makeTreeNode(root);
-                          }),
-                          snapshotsByRefId
-                        },
-                        {
-                          // description: `${summaryModeLabel}`
-                        }
-                      );
-                    });
+                    return renderDDGSummaries(ddg, nodeSummaries);
                   },
                   props: {
                     description: `(${size(nodeSummaries)})`

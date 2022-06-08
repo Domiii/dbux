@@ -17,13 +17,9 @@ import ValueTDSimpleNode from './ValueTDSimpleNode';
 export const DetailNodeClasses = [
   ValueTDRefNode,
   ValueTDSimpleNode,
-  // TrackObjectTDNode,
   ExecutionsTDNode,
-  // DataNodeTDNode,
-  // NearbyValuesTDNode,
-  // StaticContextTDNode,
-  // InfoTDNode,
   AsyncTDNode,
+  DDGTDNode,
   DebugTDNode,
   
   ...makeResearchNodes()

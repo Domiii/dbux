@@ -18,6 +18,9 @@ export function initWebviewWrapper(extensionContext) {
 }
 
 export default class WebviewWrapper {
+  /**
+   * @type {import('vscode').WebviewPanel}
+   */
   panel;
   resourceRoot;
 
@@ -29,6 +32,10 @@ export default class WebviewWrapper {
     this.resourceRoot = getResourcePath();
 
     this.logger = newLogger(`${title} WebviewWrapper`);
+  }
+
+  get isActive() {
+    return this.panel?.active || false;
   }
 
   getIcon() {
