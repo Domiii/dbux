@@ -5,6 +5,7 @@
 // import * as d3selection from 'd3-selection';
 import { transition as d3transition } from 'd3-transition';
 import * as d3Graphviz from 'd3-graphviz';
+import isPlainObject from 'lodash/isPlainObject';
 
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
@@ -12,7 +13,7 @@ import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement } from '../util/domUtil';
-import { decorateSummaryModeButtons, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
 
@@ -195,7 +196,18 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   async setGraphSettings(settings) {
+    if (!isPlainObject(settings)) {
+      throw new Error(`invalid settings must be object: ${settings}`);
+    }
     await this.remote.updateGraph({ settings });
+  }
+
+  async setGraphSetting(setting, val) {
+    const newSettings = { 
+      ...this.ddg.settings,
+      [setting]: val
+    };
+    await this.remote.updateGraph({ settings: newSettings });
   }
 
   /** ###########################################################################
@@ -257,7 +269,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       }
 
       const summaryButtons = this.el.querySelectorAll('.summary-button');
-      decorateSummaryModeButtons(summaryButtons);
+      updateElDecorations(summaryButtons);
     }
     catch (err) {
       // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message

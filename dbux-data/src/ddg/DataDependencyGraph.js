@@ -130,7 +130,23 @@ export default class DataDependencyGraph extends BaseDDG {
       // original node data
       og: {
         timelineNodes,
-      },
+      }
+    } = this;
+
+    return {
+      timelineNodes,
+    
+      ...this.getChangingData()
+    };
+  }
+
+  /**
+   * This data changes over time and is sent back to client
+   * on every update.
+   */
+  getChangingData() {
+    const {
+      settings,
 
       // summary data
       summaryModes,
@@ -143,32 +159,9 @@ export default class DataDependencyGraph extends BaseDDG {
     } = this;
 
     return {
-      timelineNodes,
-
+      settings,
       summaryModes,
       nodeSummaries,
-      edges,
-      outEdgesByTimelineId,
-      inEdgesByTimelineId
-    };
-  }
-
-  /**
-   * This data changes over time and is sent back to client
-   * on every update.
-   */
-  getChangingData() {
-    const {
-      settings,
-      summaryModes,
-      edges,
-      outEdgesByTimelineId,
-      inEdgesByTimelineId
-    } = this;
-
-    return {
-      settings,
-      summaryModes,
       edges,
       outEdgesByTimelineId,
       inEdgesByTimelineId

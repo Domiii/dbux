@@ -4,17 +4,12 @@ import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryM
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses, makeBootstrapBtnGroupSeparatorEl } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, DefaultToolbarBtnClass, makeSettingsButtons } from './ddgDomUtil';
 
 let documentClickHandler;
 
 /** @typedef { import("./DDGDocument").default } DDGDocument */
 
-const settingsRenderers = {
-  connectedOnly(toolbar, settings, value) {
-    return 
-  }
-};
 
 class Toolbar extends ClientComponentEndpoint {
   summaryRootButtons;
@@ -28,36 +23,29 @@ class Toolbar extends ClientComponentEndpoint {
             ⚙
           </button>
      */
+    // <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
+    //   🔁
+    // </button>
     const el = compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
-            Rebuild 🔁
-          </button>
-          <button title="Toggle value mode" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">
-            val
-          </button>
-
-          
+        <div data-el="buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
           ${BootstrapBtnGroupSeparatorHtml}
-
         </div>
       </nav>
     `);
 
-    // add settings buttons
-    for (const setting in this.doc.state.settings) {
-      // TODO: render initially and re-decorate on update
-    }
-
-    // add root control buttons
     const btns = el.querySelector('.btn-group');
-    const btnClass = 'toolbar-btn btn btn-info';
+
+    // add settings buttons
+    btns.appendChild(makeSettingsButtons(this.doc).el);
+    btns.appendChild(makeBootstrapBtnGroupSeparatorEl());
+
+    
+    // add root control buttons
     const {
       el: summaryRootButtonDom,
       els: summaryRootButtons
-    } = makeSummaryButtons(this.doc, RootTimelineId, btnClass, RootSummaryModes, true);
-    btns.appendChild(makeBootstrapBtnGroupSeparatorEl());
+    } = makeSummaryButtons(this.doc, RootTimelineId, DefaultToolbarBtnClass, RootSummaryModes, true);
     btns.appendChild(summaryRootButtonDom);
     this.summaryRootButtons = summaryRootButtons;
 
@@ -91,8 +79,10 @@ class Toolbar extends ClientComponentEndpoint {
     // decorateClasses(this.els.connectedOnlyModeBtn, {
     //   active: connectedOnlyMode
     // });
-    
-    decorateSummaryModeButtons(this.summaryRootButtons);
+
+    // update all buttons
+    // updateElDecorations(this.summaryRootButtons);
+    updateElDecorations(this.els.buttons.querySelectorAll('.btn'));
   }
 
   renderModes() {
@@ -107,14 +97,14 @@ class Toolbar extends ClientComponentEndpoint {
 
 
   on = {
-    rebuildBtn: {
-      async click(evt) {
-        evt.preventDefault();
-        this.doc.timeline.rebuildGraph();
-      },
+    // rebuildBtn: {
+    //   async click(evt) {
+    //     evt.preventDefault();
+    //     this.doc.timeline.rebuildGraph();
+    //   },
 
-      focus(evt) { evt.target.blur(); }
-    },
+    //   focus(evt) { evt.target.blur(); }
+    // },
 
     // connectedOnlyModeBtn: {
     //   async click(evt) {

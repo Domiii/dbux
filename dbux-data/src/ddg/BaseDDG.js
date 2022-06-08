@@ -487,6 +487,10 @@ export default class BaseDDG {
         }
       }
       else {
+        if (this.timelineBuilder.shouldIgnoreDataNode(lastModDataNode.nodeId)) {
+          // ignore
+          continue;
+        }
         // apply lastMod
         // if (this.#canBeRefSnapshot(lastModDataNode)) {
         if (lastModDataNode.refId) {
@@ -501,13 +505,12 @@ export default class BaseDDG {
           this.building && this.timelineBuilder.onNewSnapshotValueNode(newChild);
         }
       }
-      if (!newChild.timelineId || !newChild.dataNodeId || !this.dp.util.getDataNode(newChild.dataNodeId)) {
-        // sanity check
-        throw new Error(`Invalid snapshot child: ${JSON.stringify(newChild)}\n  (in ${JSON.stringify(parentSnapshot)})`);
-      }
-      else {
-        parentSnapshot.children[prop] = newChild.timelineId;
-      }
+
+      // if (!newChild.timelineId || !newChild.dataNodeId || !this.dp.util.getDataNode(newChild.dataNodeId)) {
+      //   // sanity check
+      //   throw new Error(`Invalid snapshot child: ${JSON.stringify(newChild)}\n  (in ${JSON.stringify(parentSnapshot)})`);
+      // }
+      parentSnapshot.children[prop] = newChild.timelineId;
     }
   }
 

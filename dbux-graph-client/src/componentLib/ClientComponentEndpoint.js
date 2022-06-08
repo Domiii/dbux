@@ -24,6 +24,9 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     super();
   }
 
+  /**
+   * @type {Object.<string, Element>}
+   */
   get els() {
     return this.dom?.els;
   }

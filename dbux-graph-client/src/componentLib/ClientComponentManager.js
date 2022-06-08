@@ -124,6 +124,7 @@ export default ClientComponentManager;
 // ###########################################################################
 
 onLogError(_handleError);
+window.addEventListener('uncaughtexception', _handleError);
 
 function _handleError(...args) {
   if (!ClientComponentManager.instance?.app?.isInitialized) {

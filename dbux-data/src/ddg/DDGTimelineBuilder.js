@@ -9,6 +9,7 @@ import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNo
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
 import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
@@ -182,7 +183,7 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   getIgnoreAndSkipInfo(dataNode) {
-    const ignore = this.#shouldIgnoreDataNode(dataNode.nodeId);
+    const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
     const skippedBy = this.#getSkippedByDataNode(dataNode);
     if (!ignore && !skippedBy) {
       return null;
@@ -196,7 +197,7 @@ export default class DDGTimelineBuilder {
   #processSkipAndIgnore(dataNode, isDecision) {
     // TODO: allow for decision skips as well
     if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)) {
-      if (this.#shouldIgnoreDataNode(dataNode.nodeId)) {
+      if (this.shouldIgnoreDataNode(dataNode.nodeId)) {
         // ignore entirely
         Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
         return false;
@@ -213,7 +214,7 @@ export default class DDGTimelineBuilder {
     return true;
   }
 
-  #shouldIgnoreDataNode(dataNodeId) {
+  shouldIgnoreDataNode(dataNodeId) {
     const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
     if (trace) {
       const { traceId } = trace;
@@ -221,8 +222,15 @@ export default class DDGTimelineBuilder {
       const traceType = this.dp.util.getTraceType(traceId);
       if (TraceType.is.Declaration(traceType) && !dataNode.inputs) {
         // ignore declaration-only nodes
-        // → connect to first write instead
+        // → connect to writes only
         return true;
+      }
+      if (dataNode.refId) {
+        const valRef = this.dp.collections.values.getById(dataNode.refId);
+        if (ValueTypeCategory.is.Function(valRef?.category)) {
+          // ignore functions for now (JSA has plenty of cluttering callback movement)
+          return true;
+        }
       }
     }
     return false;
