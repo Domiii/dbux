@@ -16,21 +16,24 @@ export function renderNodeTree(ddg, node) {
   const children = new childrenIds.constructor();
   Object.entries(childrenIds).forEach(([key, childId]) => {
     const childNode = timelineNodes[childId];
-    children[key] = renderNodeTree(childNode);
+    children[key] = renderNodeTree(ddg, childNode);
   });
-  return renderDDGNode(node, children);
+  return renderDDGNode(ddg, node, children);
 }
 
-export function makeNodeDescription(ddg, node) {
+export function makeDDGNodeDescription(ddg, node) {
   const { summaryModes } = ddg;
-  const { timelineId, constructor, watched } = node;
+  const { timelineId, constructor, watched, og } = node;
   const summaryMode = summaryModes[timelineId];
   // eslint-disable-next-line no-nested-ternary
-  const summaryModeLabel = watched ?
-    'Watched' :
-    summaryMode ?
-      DDGSummaryMode.nameFrom(summaryMode) :
-      '';
+  const summaryModeLabel =
+    watched ?
+      'Watched' :
+      summaryMode ?
+        DDGSummaryMode.nameFrom(summaryMode) :
+        og ?
+          '(unknown)' :
+          'Summary Node';
   return `${timelineId} [${constructor.name}] ${summaryModeLabel}`;
 }
 
@@ -61,16 +64,19 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
   if ('label' in moreProps) {
     delete moreProps.label;
   }
-  const label = labelOverride || makeDDGNodeLabel(node.timelineId);
+  const label = labelOverride || makeDDGNodeLabel(ddg, node.timelineId);
   if (children === node) {
     children = { ...node };
     if (node.dataNodeId) {
-      children.dataNode = renderDataNode(node.dataNodeId);
+      children.dataNode = renderDataNode(ddg, node.dataNodeId);
       delete children.dataNodeId;
     }
   }
+
+  // TODO: add value string (see DotBuilder.makeNodeValueString)
+
   return makeTreeItem(labelPrefix + label, children, {
-    description: makeNodeDescription(node),
+    description: makeDDGNodeDescription(ddg, node),
     handleClick() {
       // select
       let { dataNodeId = null, traceId } = node;
@@ -119,8 +125,8 @@ export function renderEdges(ddg, edges, nodeLabel = null, nodeDescription = null
         const toNode = timelineNodes[to];
         const label = `${fromNode?.label} -> ${toNode?.label}`;
         const children = makeTreeItems(
-          renderDDGNode(fromNode, fromNode, {}, 'from: '),
-          renderDDGNode(toNode, toNode, {}, 'to: '),
+          renderDDGNode(ddg, fromNode, fromNode, {}, 'from: '),
+          renderDDGNode(ddg, toNode, toNode, {}, 'to: '),
           ...objectToTreeItems(entry)
         );
         return makeTreeItem(label, children, {
@@ -141,12 +147,12 @@ export function renderEdges(ddg, edges, nodeLabel = null, nodeDescription = null
   };
 }
 
-export function renderDDGNodes(nodes) {
+export function renderDDGNodes(ddg, nodes) {
   return {
     children: nodes.map((node) => {
       // const { timelineId, label: nodeLabel } = node;
       // delete entry.timelineId;
-      return renderDDGNode(node, node);
+      return renderDDGNode(ddg, node, node);
     }),
     props: {
       description: `(${nodes.length})`
@@ -167,10 +173,10 @@ export function renderDDGSummaries(ddg, summaries) {
     const node = timelineNodes[timelineId];
     return makeTreeItem(node.label,
       {
-        node: renderDDGNode(node),
+        node: renderDDGNode(ddg, node),
         roots: summaryRoots.map(rootId => {
           const root = timelineNodes[rootId];
-          return renderNodeTree(root);
+          return renderNodeTree(ddg, root);
         }),
         snapshotsByRefId
       },

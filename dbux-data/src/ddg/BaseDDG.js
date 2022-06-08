@@ -165,13 +165,14 @@ export default class BaseDDG {
   }
 
   /**
-   * NOTE: this can be ambiguous...
+   * 
    */
-  getTimelineNodeOfDataNode(dataNodeId) {
-    const dataNode = this.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
-    if () {
-
-    }
+  getTimelineNodesOfDataNode(dataNodeId) {
+    // const dataNode = this.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
+    // if (dataNode) {
+    //   return dataNode;
+    // }
+    return this.timelineNodes.filter(node => node?.dataNodeId === dataNodeId);
   }
 
   /** ###########################################################################

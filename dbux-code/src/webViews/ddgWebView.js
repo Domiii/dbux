@@ -163,5 +163,5 @@ async function initDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
 }
 
 export function getActiveDDGWebview() {
-  return Array.from(activeWebviews.values()).find(w => w.isActive);
+  return Array.from(activeWebviews.values()).find(w => w.isVisible);
 }

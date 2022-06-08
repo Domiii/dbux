@@ -49,12 +49,14 @@ const ZipDefault = true;
 async function doImportApplication(filePath) {
   allApplications.selection.clear();
 
+  let app;
   await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
     progress.report({ message: `importing from "${path.basename(filePath)}"...` });
     await sleep(20);
-    await importApplicationFromFile(filePath);
+    app = await importApplicationFromFile(filePath);
     await sleep(20);
   });
+  return app;
 }
 
 
@@ -142,42 +144,45 @@ export function initUserCommands(extensionContext) {
 
     let app = allApplications.getById(applicationUuid);
     if (!allApplications.selection.containsApplication(app)) {
+      // app is there but not active
       app = null;
     }
     if (!app) {
-      // select first app instead → reset
-      contextId = watchTraceIds = null;
-      app = allApplications.selection.getFirst();
-    }
-    if (!app && testFilePath) {
-      // try re-import
-      const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
-      // const testFileName = 'data-multi1';
-      // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
-      // await doImportApplication(testFilePath);
-
-      // load an application, if none active
-      const confirmMsg = `Current DDG test file: "${testFilePath.replace(defaultImportDir, '')}"\nDo you want to import it?`;
-      const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
-      if (shouldUpdateTestFilePath) {
-        const fileDialogOptions = {
-          title: 'Select a new test file to read',
-          folder: getDefaultExportDirectory(),
-          filters: {
-            'Dbux Exported Application Data': ['json.zip']
-          },
-        };
-        testFilePath = await chooseFile(fileDialogOptions);
-        if (!testFilePath) {
-          throw new Error(`DDG Test Cancelled - No test file selected`);
-        }
-        testFilePath = pathNormalizedForce(testFilePath);
-
-        // test file changed → reset
+      if (!testFilePath) {
+        // select first app instead → reset
         contextId = watchTraceIds = null;
+        app = allApplications.selection.getFirst();
       }
+      else {
+        // try re-import
+        const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
+        // const testFileName = 'data-multi1';
+        // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
+        // await doImportApplication(testFilePath);
 
-      app = await doImportApplication(testFilePath);
+        // load an application, if none active
+        const confirmMsg = `Current DDG test file: "${testFilePath.replace(defaultImportDir, '')}"\nDo you want to import it?`;
+        const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
+        if (shouldUpdateTestFilePath) {
+          const fileDialogOptions = {
+            title: 'Select a new test file to read',
+            folder: getDefaultExportDirectory(),
+            filters: {
+              'Dbux Exported Application Data': ['json.zip']
+            },
+          };
+          testFilePath = await chooseFile(fileDialogOptions);
+          if (!testFilePath) {
+            throw new Error(`DDG Test Cancelled - No test file selected`);
+          }
+          testFilePath = pathNormalizedForce(testFilePath);
+
+          // test file changed → reset
+          contextId = watchTraceIds = null;
+        }
+
+        app = await doImportApplication(testFilePath);
+      }
     }
 
     if (!app) {
@@ -190,7 +195,7 @@ export function initUserCommands(extensionContext) {
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
       const dp = app.dataProvider;
       trace = traceSelection.selected;
-      contextId = trace.contextId;
+      contextId = trace?.contextId;
       const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
       if (needsNewContextId) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().

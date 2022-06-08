@@ -28,7 +28,7 @@ export default class TraceDetailNode extends BaseTreeViewNode {
   }
 
   get dataNodes() {
-    return this.dp.indexes.dataNodes.byTrace.getById(this.traceId);
+    return this.dp.indexes.dataNodes.byTrace.get(this.traceId);
   }
 
   get app() {

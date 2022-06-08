@@ -1,3 +1,4 @@
+import isFunction from 'lodash/isFunction';
 import { TreeItemCollapsibleState, EventEmitter, window, TreeView } from 'vscode';
 import SyncPromise from '@dbux/common/src/util/SyncPromise';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -274,8 +275,8 @@ export default class BaseTreeViewNodeProvider {
   /**
    * @param {BaseTreeViewNode} node 
    */
-  buildChildren(node) {
-    node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
+  async buildChildren(node) {
+    node.children = node.buildChildren && await node.buildChildren() || await node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;
   }
@@ -316,6 +317,9 @@ export default class BaseTreeViewNodeProvider {
 
     // assign ids
     children?.forEach((child) => {
+      if (isFunction(child)) {
+        throw new Error(`TreeNode should not be (but is) a function. Maybe you forgot to call makeTreeItem(s)? - ${child.toString()}`);
+      }
       // generate id (based on node type and position in tree)
       const lastIdx = childIndexes.get(child.constructor) || 0;
       const index = lastIdx + 1;
@@ -412,7 +416,7 @@ export default class BaseTreeViewNodeProvider {
       if (node) {
         this.handleBeforeChildren(node);
         if (this._canNodeProduceChildren(node)) {
-          return node.children = this.buildChildren(node);
+          return node.children = await this.buildChildren(node);
         }
         if (node.children) {
           return node.children;

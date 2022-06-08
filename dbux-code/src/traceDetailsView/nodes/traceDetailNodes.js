@@ -1,4 +1,5 @@
 import AsyncTDNode from './AsyncTDNodes';
+import DDGTDNode from './DDGTDNode';
 import { DebugTDNode } from './DebugTDNode';
 import ExecutionsTDNode from './ExecutionsTDNodes';
 import { makeResearchNodes } from './research';

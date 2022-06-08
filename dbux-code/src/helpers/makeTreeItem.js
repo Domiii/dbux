@@ -134,6 +134,16 @@ export function makeTreeItemNoChildren(labelOrArrOrItem, itemProps) {
   return item;
 }
 
+function checkTreeItem(arg, ...otherArgs) {
+  if (arg instanceof TreeItem) {
+    if (otherArgs.some(Boolean)) {
+      throw new Error(`makeTreeItem confusion: don't call makeTreeItem on the same thing multiple times with different arguments.`);
+    }
+    return true;
+  }
+  return false;
+}
+
 /**
  * TODO: Replace this with `makeTreeViewItem`, rename this to `makeTreeItemSimple`.
  */
@@ -150,10 +160,17 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
   // }
 
   if (isFunction(labelOrArrOrItem)) {
+    // TODO: function or not should not lead to two different ways of interpreting the data...
+    //  → its because functions were originally used to only handle nested TreeItems... its messy...
     label = (labelOrArrOrItem.name || '')
       .replace(/[_]/g, ' ')    // replace _ with spaces (looks prettier)
       .replace(/^bound /, ''); // functions created with `.bind()` are prefixed with "bound "
     labelOrArrOrItem = labelOrArrOrItem();
+    
+    if (checkTreeItem(labelOrArrOrItem, childrenRaw, itemProps)) {
+      return labelOrArrOrItem;
+    }
+
     ({
       children,
       props: itemProps
@@ -178,6 +195,9 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     }
     else {
       label = labelOrArrOrItem;
+    }
+    if (checkTreeItem(label, childrenRaw, itemProps)) {
+      return label;
     }
 
     if (Array.isArray(childrenRaw)) {
@@ -213,19 +233,14 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     collapsibleState = TreeItemCollapsibleState.None;
   }
 
-  if (label instanceof TreeItem) {
-    item = label;
-  }
-  else {
-    label = ('' + label); // coerce to string (else it won't show up)
+  label = ('' + label); // coerce to string (else it won't show up)
 
-    if (renderChildrenInline && !isString(labelOrArrOrItem)) {
-      if (children !== undefined) {
-        label = keyValueLabel(label, children);
-      }
+  if (renderChildrenInline && !isString(labelOrArrOrItem)) {
+    if (children !== undefined) {
+      label = keyValueLabel(label, children);
     }
-    item = new TreeItem(label, collapsibleState);
   }
+  item = new TreeItem(label, collapsibleState);
 
   if (!renderChildrenInline) {
     if (isFunction(children)) {
@@ -252,5 +267,9 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
  * 
  */
 export function makeTreeItems(...configs) {
+  if (Array.isArray(configs[0]) && configs.length === 1) {
+    // eslint-disable-next-line prefer-destructuring
+    configs = configs[0];
+  }
   return configs.map(cfg => makeTreeItem(cfg));
 }

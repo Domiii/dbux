@@ -1,11 +1,11 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import sleep from '@dbux/common/src/util/sleep';
-import makeTreeItem from '../../helpers/makeTreeItem';
+import traceSelection from '@dbux/data/src/traceSelection';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
 import { renderDataNode, renderDDGNode } from '../../treeViewsShared/ddgTreeViewUtil';
 import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
-import traceSelection from '@dbux/data/src/traceSelection';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 
 /** ###########################################################################
@@ -30,7 +30,7 @@ export default class DDGTDNode extends TraceDetailNode {
   // }
 
   // eslint-disable-next-line camelcase
-  TimelineNode = () => {
+  TimelineNodes = () => {
     const { dp, dataNodes, ddg } = this;
 
     const dataNode = traceSelection.nodeId ?
@@ -63,8 +63,25 @@ export default class DDGTDNode extends TraceDetailNode {
 
     // TODO: also get control group by decision etc.
 
-    const timelineNode = ddg.getTimelineNodeOfDataNode(dataNode.nodeId);
-    return renderDDGNode(ddg, timelineNode);
+    const timelineNodes = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
+    if (!timelineNodes?.length) {
+      return makeTreeItem('(this DataNode has no TimelineNode)');
+    }
+    if (timelineNodes.length === 1) {
+      return renderDDGNode(
+        ddg, timelineNodes[0], timelineNodes[0],
+        { collapsibleState: TreeItemCollapsibleState.Expanded }
+      );
+    }
+
+    return makeTreeItem(
+      'Timeline Nodes',
+      timelineNodes.map(timelineNode => renderDDGNode(ddg, timelineNode)),
+      {
+        description: `${timelineNodes.length}`,
+        collapsibleState: TreeItemCollapsibleState.Expanded
+      }
+    );
   }
 
   DataNodes = () => {
@@ -75,7 +92,7 @@ export default class DDGTDNode extends TraceDetailNode {
     return makeTreeItem(
       'DataNodes',
       () => dataNodes.map(n => {
-        return renderDataNode(ddg, n);
+        return renderDataNode(ddg, n.nodeId);
       }),
       {
         collapsibleState: TreeItemCollapsibleState.Expanded,
@@ -91,18 +108,16 @@ export default class DDGTDNode extends TraceDetailNode {
       ];
     }
     if (this.ddg.dp !== this.dp) {
+      setTimeout(() => this.treeNodeProvider.refresh());
       return [
         makeTreeItem('(no DDG active)')
       ];
-      await sleep(0);
-      setTimeout(() => this.treeNodeProvider.refresh());
-      await sleep(50);
     }
 
-    return [
-      this.TimelineNode,
+    return makeTreeItems(
+      this.TimelineNodes,
       this.DataNodes
-    ];
+    );
   }
 
   handleClick() {

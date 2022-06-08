@@ -13,7 +13,7 @@ import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
-import { makeNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodes, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
+import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodes, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -231,7 +231,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                         const edges = edgeIds.map(id => og.edges[id]);
                         // NOTE: tree item input does not interpret { children } objects unless input is function
                         return makeTreeItem(() =>
-                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeNodeDescription(ddg, timelineNodes[nodeId]))
+                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]))
                         );
                       });
                   }
@@ -244,7 +244,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                       .map(([nodeId, edgeIds]) => {
                         const edges = edgeIds.map(id => og.edges[id]);
                         return makeTreeItem(() =>
-                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeNodeDescription(ddg, timelineNodes[nodeId]))
+                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]))
                         );
                       });
                   }

@@ -34,8 +34,8 @@ export default class WebviewWrapper {
     this.logger = newLogger(`${title} WebviewWrapper`);
   }
 
-  get isActive() {
-    return this.panel?.active || false;
+  get isVisible() {
+    return this.panel?.visible || false;
   }
 
   getIcon() {
