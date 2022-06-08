@@ -521,6 +521,98 @@ module.exports = [
     "chapter": "BubbleSort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([\"\"])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationId": 1
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"a\"])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationId": 1
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationId": 1
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 19,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationId": 1
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
+        "contextId": 37,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationId": 1
+      }
     ]
   },
   {
@@ -1386,6 +1478,26 @@ module.exports = [
     "patch": "hanoiTower0",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
+        "contextId": 18,
+        "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40,
+            "index": 1624
+          },
+          "end": {
+            "line": 88,
+            "column": 1,
+            "index": 2284
+          }
+        },
+        "applicationId": 1
+      }
     ]
   },
   {
@@ -1406,6 +1518,26 @@ module.exports = [
     "patch": "hanoiTower0",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback})",
+        "contextId": 9,
+        "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40,
+            "index": 1624
+          },
+          "end": {
+            "line": 88,
+            "column": 1,
+            "index": 2284
+          }
+        },
+        "applicationId": 1
+      }
     ]
   },
   {
