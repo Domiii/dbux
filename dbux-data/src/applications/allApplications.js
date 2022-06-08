@@ -1,6 +1,8 @@
 import NanoEvents from 'nanoevents';
 import isString from 'lodash/isString';
+import size from 'lodash/size';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { crypto } from '@dbux/common/src/util/universalLib';
 
 import Application from './Application';
 import ApplicationSelection from './ApplicationSelection';
@@ -38,7 +40,7 @@ export class AllApplications {
   /**
    * @type {Application[]}
    */
-  _all = [null];
+  _all = {};
   /**
    * @type {Map.<string, Application>}
    */
@@ -61,6 +63,10 @@ export class AllApplications {
     return this._all[applicationIdOrUuid];
   }
 
+  getFirst() {
+    return Object.values(this._all)[0];
+  }
+
   /**
    * @param {number | string | Application} applicationOrIdOrEntryPointPath 
    * @return {Application}
@@ -81,7 +87,7 @@ export class AllApplications {
   }
 
   getAll() {
-    return this._all.filter(app => !!app);
+    return Object.values(this._all);
   }
 
   /**
@@ -127,6 +133,9 @@ export class AllApplications {
       ...other
     } = initialData;
 
+    // TODO: add proper uuid once electron supports it.
+    uuid ||= Math.random().toString(); // crypto.randomUUID();
+
     // create application
     applicationId = applicationId || (lastApplicationId + 1);
     lastApplicationId = Math.max(applicationId, lastApplicationId);
@@ -137,6 +146,7 @@ export class AllApplications {
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
     this._activeApplicationsByPath.set(entryPointPath, application);
     this._all[applicationId] = application;
+    this._all[uuid] = application;
 
     // optional init
     application.init?.();
@@ -160,7 +170,7 @@ export class AllApplications {
       // add new application to set of selected applications
       this.applicationSelection.addApplication(application);
     }
-    
+
 
     return application;
   }
@@ -176,8 +186,10 @@ export class AllApplications {
     this.selection.removeApplication(application);
 
     // remove
-    const { applicationid, entryPointPath } = application;
-    this._all[applicationid] = null;
+    const { applicationId, uuid, entryPointPath } = application;
+    delete this._all[applicationId];
+    delete this._all[uuid];
+
     if (this.getActiveApplicationByEntryPoint(entryPointPath) === application) {
       this._activeApplicationsByPath.delete(entryPointPath);
     }
@@ -187,12 +199,12 @@ export class AllApplications {
   }
 
   clear() {
-    this._all = [null];
+    this._all = {};
     this._activeApplicationsByPath = new Map();
-    
+
     this.applicationSelection.clear();
     lastApplicationId = 0;
-    
+
     this._emitter.emit('clear');
   }
 
@@ -209,7 +221,7 @@ export class AllApplications {
   }
 
   get length() {
-    return this._all.length - 1;
+    return size(this._all) / 2; // hackfix: because we store by id and uuid
   }
 
   // ###########################################################################

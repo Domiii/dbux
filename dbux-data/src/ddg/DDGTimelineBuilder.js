@@ -443,7 +443,10 @@ export default class DDGTimelineBuilder {
         this.logger.trace(`BranchSyntaxNodeCreators does not exist for syntax=${syntax} at trace="${dp.util.makeStaticTraceInfo(staticTrace.staticTraceId)}"`);
       }
       else {
-        this.#addAndPushGroup(new ControlGroupCtor(controlStatementId), traceId);
+        const group = new ControlGroupCtor(controlStatementId);
+        // update label on pop
+        group.label = this.#makeGroupLabel(group);
+        this.#addAndPushGroup(group, traceId);
       }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
@@ -464,6 +467,7 @@ export default class DDGTimelineBuilder {
         if (!this.#checkCurrentControlGroup(staticTrace, trace)) {
           return;
         }
+        // update label on pop
         currentGroup.label = this.#makeGroupLabel(currentGroup);
       }
       this.#popGroup();

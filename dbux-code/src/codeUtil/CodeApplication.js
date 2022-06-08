@@ -21,7 +21,7 @@ export class CodeApplication extends Application {
     projectManager._handleNewApplication(this);
   }
 
-  getDefaultApplicationExportPath(zip) {
+  getDefaultApplicationExportPath(zip = true) {
     if (this.importFilePath && this.importFilePath.endsWith('.zip') === zip) {
       return this.importFilePath;
     }

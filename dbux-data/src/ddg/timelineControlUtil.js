@@ -59,7 +59,8 @@ export const controlGroupLabelMaker = {
     let label;
     if (!lastDecisionId) {
       // something went wrong
-      label = '(ERR: no decision)';
+      // label = '(ERR: no decision)';
+      label = 'if';
     }
     else {
       const decisionNode = ddg.timelineNodes[lastDecisionId];

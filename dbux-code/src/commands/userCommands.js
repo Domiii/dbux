@@ -21,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { disposeDDGWebviews, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
+import { disposeDDGWebviews, showDDGViewForArgs, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -39,11 +39,12 @@ import { runFile } from './runCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { getOrOpenTraceEditor } from '../codeUtil/codeNav';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
+import { getTestDDGArgs } from '../testUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
 
-const TestDDGKeyName = 'dbux.command.testDDG.params';
+const ZipDefault = true;
 
 async function doImportApplication(filePath) {
   allApplications.selection.clear();
@@ -56,7 +57,6 @@ async function doImportApplication(filePath) {
   });
 }
 
-const ZipDefault = true;
 
 export function initUserCommands(extensionContext) {
   // ###########################################################################
@@ -138,7 +138,7 @@ export function initUserCommands(extensionContext) {
    * NOTE: this is code for testing → move to test file
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
-    let { testFilePath, contextId } = mementoGet(TestDDGKeyName, EmptyObject);
+    let { testFilePath, contextId, applicationId, watchTraceIds } = await getTestDDGArgs();
 
     if (!allApplications.selection.count) {
       const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
@@ -163,17 +163,16 @@ export function initUserCommands(extensionContext) {
         }
         testFilePath = pathNormalizedForce(testFilePath);
 
-        // unset contextId
+        // unset args
         contextId = 0;
-
-        await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+        watchTraceIds = null;
       }
 
       await doImportApplication(testFilePath);
     }
 
     let trace = traceSelection.selected;
-    if (!trace) {
+    if (!trace && !watchTraceIds) {
       // default: get first active application
       const firstApplication = allApplications.selection.getFirst();
       if (!firstApplication) {
@@ -213,7 +212,7 @@ export function initUserCommands(extensionContext) {
       // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
     }
 
-    if (trace) {
+    if (trace || watchTraceIds) {
       contextId = trace.contextId;
 
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
@@ -226,11 +225,11 @@ export function initUserCommands(extensionContext) {
       disposeDDGWebviews();
 
       // show webview
-      await showDDGViewForContextOfSelectedTrace();
-
-      // this worked! Hooray! → update memento (and hope that app is already exported)
-      testFilePath = app.getDefaultApplicationExportPath(ZipDefault);
-      await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+      await showDDGViewForArgs({
+        watchTraceIds,
+        applicationId: applicationId || app.applicationId,
+        contextId: trace?.contextId
+      });
 
       // select DDG Debug node
       const ddg = dp.ddgs.graphs[0];

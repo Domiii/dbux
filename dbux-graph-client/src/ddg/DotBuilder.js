@@ -176,17 +176,25 @@ export default class DotBuilder {
 
   node(node, force = false) {
     const { ddg } = this;
-    if (ddgQueries.isNodeSummarized(ddg, node)) {
-      this.nodeSummary(node);
+    const show = force || ddgQueries.isVisible(ddg, node);
+    if (show) {
+      if (ddgQueries.isNodeSummarized(ddg, node)) {
+        this.nodeSummary(node);
+      }
+      else if (ddgQueries.isExpandedGroupNode(ddg, node)) {
+        this.controlGroup(node);
+      }
+      else if (ddgQueries.isSnapshot(ddg, node)) {
+        this.refSnapshotRoot(node);
+      }
+      else {
+        this.valueNode(node);
+      }
     }
-    else if (ddgQueries.isExpandedGroupNode(ddg, node)) {
-      this.controlGroup(node);
-    }
-    else if (ddgQueries.isSnapshot(ddg, node)) {
-      this.refSnapshotRoot(node);
-    }
-    else if (force || ddgQueries.isVisible(ddg, node)) {
-      this.valueNode(node);
+    else if (isControlGroupTimelineNode(node.type)) {
+      console.log(`Control group: ${node}, show=${show}, summary=${ddgQueries.getNodeSummaryMode(ddg, node)}`);
+      // NOTE: this is to render Watched node inside of hidden groups
+      this.nodesByIds(node.children);
     }
   }
 

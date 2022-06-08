@@ -419,19 +419,18 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
       <div class="node-overlay"></div>
     `);
+    hoverEl.appendChild(nodeBtns);
     this.registerDeco(hoverEl);
     const x = rect.left;
     const y = rect.top - NodeMenuHeight - NodeMenuYOffset;
     hoverEl.style.left = `${x}px`;
     hoverEl.style.top = `${y}px`;
-    // NOTE: mouseover + mouseout are not very reliable events for this
-    // this.currentHoverEl.addEventListener('mouseout', () => {
-    //   this._removeNodePopup();
-    // });
+
+    // NOTE: mouseover + mouseout are not going to work when sharing "hover area" between multiple elements, so we use mousemove instead
+    const hoverTargets = new Set([hoverEl, nodeEl]);
     let moveTimer;
     document.addEventListener('mousemove', documentMouseMoveHandler = (e) => {
-      // debounce
-      if (moveTimer) { return; }
+      if (moveTimer) { return; }  // debounce
       moveTimer = setTimeout(() => {
         // const el = document.elementFromPoint(e.clientX, e.clientY); // NOTE: this does NOT return the top element
         moveTimer = null;
@@ -439,7 +438,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
          * @see https://stackoverflow.com/a/15263171
          */
         const hoverStack = Array.from(document.querySelectorAll(":hover"));
-        if (!hoverStack.includes(nodeEl) && !hoverStack.includes(hoverEl)) {
+        if (!hoverStack.some(el => hoverTargets.has(el))) {
           // console.log('popout', hoverStack);
           this._removeNodePopup(hoverEl);
         }
@@ -448,7 +447,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     // this.el.appendChild(this.currentHoverEl);
     // nodeEl.appendChild(hoverEl);
-    hoverEl.appendChild(nodeBtns);
     this.el.appendChild(hoverEl);
   }
 }

@@ -7,6 +7,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
 import RichWebView from './RichWebView';
+import { setTestDDGArgs } from '../testUtil';
 
 
 const defaultColumn = ViewColumn.Two;
@@ -92,8 +93,18 @@ export async function showDDGViewForContextOfSelectedTrace() {
 }
 
 export async function showDDGViewForArgs(ddgArgs) {
-  const { applicationId } = ddgArgs;
-  const dp = allApplications.getById(applicationId).dataProvider;
+  let { applicationUuid, applicationId } = ddgArgs;
+  if (!applicationUuid) {
+    if (!applicationId) {
+      throw new Error(`no application given`);
+    }
+    applicationUuid = allApplications.getById(applicationId)?.uuid;
+  }
+  const app = allApplications.getById(applicationUuid);
+  if (!app) {
+    throw new Error(`applicationId not found`);
+  }
+  const dp = app.dataProvider;
   const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
 
   let initialState;
@@ -107,6 +118,12 @@ export async function showDDGViewForArgs(ddgArgs) {
     initialState = makeGraphState(ddg);
     hostOnlyState = { ddg };
   }
+
+  // this worked! Hooray! → update memento (and hope that app is already exported)
+  const testFilePath = app.getDefaultApplicationExportPath();
+  testFilePath && await setTestDDGArgs({ testFilePath, ...ddgArgs, applicationUuid });
+
+
   return await showDDGView(ddg, initialState, hostOnlyState);
 }
 

@@ -19,6 +19,8 @@ export default class Application {
    * @readonly
    */
   applicationId;
+  uuid;
+
   /**
    * @type {string}
    * @readonly
@@ -72,6 +74,10 @@ export default class Application {
     this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
     this.createdAt = this.updatedAt = createdAt || Date.now();
+  }
+
+  get applicationUuid() {
+    return this.uuid;
   }
 
   get isExperiment() {

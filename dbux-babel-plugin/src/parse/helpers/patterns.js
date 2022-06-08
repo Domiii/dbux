@@ -21,7 +21,8 @@ const { log, debug, warn, error: logError } = newLogger('Pattern Instrumentation
 /** @typedef { import("@dbux/common/src/types/StaticTrace").default } StaticTrace */
 /** @typedef { import("../BaseNode").default } BaseNode */
 
-const Verbose = 1;
+// const Verbose = 1;
+const Verbose = 0;
 
 export class PatternBuildConfig {
   /**

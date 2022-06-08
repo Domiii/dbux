@@ -36,25 +36,36 @@ class DDGNode extends BaseTreeViewNode {
   }
 
   async handleClick() {
-    const { applicationId, contextId, filePath, loc } = this;
-    const app = allApplications.getById(applicationId);
+    let { applicationUuid, contextId, fullContextFilePath, loc } = this;
+    const app = allApplications.getById(applicationUuid);
     if (!app) {
       const appFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: this.exercise.id });
       if (fs.existsSync(appFilePath)) {
         await importApplicationFromFile(appFilePath);
       }
       else {
-        const result = await confirm(`No application file found, do you want to run the exercise?`);
+        const result = await confirm(`No application file found. Do you want to run the exercise?`);
         if (result) {
           await this.treeNodeProvider.manager.switchAndTestBug(this.exercise);
+
+          // hackfix: stupid sanity checks, then update applicationUuid
+          // TODO: better, more reliable checks
+          if (allApplications.getAllActiveCount() !== 1) {
+            throw new Error(`Ran test, but found more than one application`);
+          }
+          const newFilePath = app.dataProvider.util.getContextFilePath(contextId);
+          if (newFilePath !== fullContextFilePath) {
+            throw new Error(`Ran test, but context is not in original file anymore. Test data probably outdated.`);
+          }
+          applicationUuid = this.applicationUuid = allApplications.getFirst().applicationUuid;
         }
         else {
           return;
         }
       }
     }
-    await showDDGViewForArgs({ applicationId, contextId });
-    await goToCodeLoc(pathResolve(this.exercise.project.projectPath, filePath), loc);
+    await showDDGViewForArgs({ applicationUuid, contextId });
+    await goToCodeLoc(fullContextFilePath, loc);
   }
 }
 
@@ -80,7 +91,7 @@ class DDGExerciseNode extends ExerciseNode {
       await this.treeNodeProvider.manager.switchAndTestBug(exercise);
 
       progress.report({ message: `Parsing application` });
-      const app = allApplications.getById(1);
+      const app = allApplications.getFirst();
       const ddgs = findDDGContextIdInApp(app, exercise);
       exercise.ddgs = ddgs;
 
@@ -195,7 +206,7 @@ function findDDGContextIdInApp(app, exercise) {
   const contexts = staticContexts.flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray);
   return contexts.map(context => {
     const { contextId } = context;
-    const { applicationId } = app;
+    const { applicationUuid } = app;
     const functionName = makeContextLabel(context, app);
     const callerTrace = dp.util.getCallerTraceOfContext(contextId);
     if (!callerTrace) {
@@ -203,16 +214,18 @@ function findDDGContextIdInApp(app, exercise) {
     }
 
     const params = dp.util.getCallArgValueStrings(callerTrace.callId);
-    const filePath = pathRelative(project.projectPath, dp.util.getContextFilePath(contextId));
+    const fullContextFilePath = dp.util.getContextFilePath(contextId);
+    const filePath = pathRelative(project.projectPath, fullContextFilePath);
     const staticContext = dp.util.getContextStaticContext(contextId);
     const { loc } = staticContext;
 
     return {
       ddgTitle: `${functionName}(${params.join(', ')})`,
       contextId,
+      fullContextFilePath,
       filePath,
       loc,
-      applicationId,
+      applicationUuid,
     };
   }).filter(x => !!x);
 }

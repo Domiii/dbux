@@ -249,19 +249,10 @@ module.exports = [
     "chapter": "BubbleSort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
-  },
-  {
-    "name": "BubbleSort should sort array",
-    "label": "BubbleSort should sort array",
-    "testNamePattern": "BubbleSort should sort array",
-    "chapter": "BubbleSort",
-    "testFilePaths": [
-      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
     ],
     "ddgs": [
       {
-        "ddgTitle": "BubbleSort.sort([])",
+        "ddgTitle": "BubbleSort.sort([\"bb\",\"aa\",\"c\"])",
         "contextId": 12,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
@@ -276,64 +267,10 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "eb494e59-a5fa-4454-b4a0-abd4ad85fff0"
       },
       {
-        "ddgTitle": "BubbleSort.sort([1])",
-        "contextId": 13,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 37,
-            "column": 3,
-            "index": 1063
-          }
-        },
-        "applicationId": 1
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([1,2])",
-        "contextId": 14,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 37,
-            "column": 3,
-            "index": 1063
-          }
-        },
-        "applicationId": 1
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([2,1])",
-        "contextId": 19,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 37,
-            "column": 3,
-            "index": 1063
-          }
-        },
-        "applicationId": 1
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"a\",\"bbbb\",\"ccc\"])",
         "contextId": 24,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
@@ -348,11 +285,118 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "eb494e59-a5fa-4454-b4a0-abd4ad85fff0"
+      }
+    ]
+  },
+  {
+    "name": "BubbleSort should sort array",
+    "label": "BubbleSort should sort array",
+    "testNamePattern": "BubbleSort should sort array",
+    "chapter": "BubbleSort",
+    "testFilePaths": [
+      "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([])",
+        "contextId": 12,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationUuid": "0.9236360420134113"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1])",
+        "contextId": 13,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationUuid": "0.9236360420134113"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,2])",
+        "contextId": 14,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationUuid": "0.9236360420134113"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([2,1])",
+        "contextId": 19,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationUuid": "0.9236360420134113"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 24,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063
+          }
+        },
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
         "contextId": 148,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -366,11 +410,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
         "contextId": 207,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -384,11 +429,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
         "contextId": 797,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -402,11 +448,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
         "contextId": 1337,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -420,11 +467,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"\"])",
         "contextId": 1401,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -438,11 +486,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"a\"])",
         "contextId": 1402,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -456,11 +505,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
         "contextId": 1403,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -474,11 +524,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
         "contextId": 1408,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -492,11 +543,12 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
         "contextId": 1426,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -510,7 +562,7 @@ module.exports = [
             "index": 1063
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.9236360420134113"
       }
     ]
   },
@@ -539,6 +591,44 @@ module.exports = [
     "chapter": "BubbleSort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 36,
+              "character": 3
+            }
+          ]
+        },
+        "applicationId": 1
+      }
     ]
   },
   {
