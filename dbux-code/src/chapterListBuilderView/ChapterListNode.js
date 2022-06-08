@@ -15,6 +15,7 @@ import { goToCodeLoc } from '../codeUtil/codeNav';
 import { showDDGViewForArgs } from '../webViews/ddgWebView';
 import { getCurrentResearch } from '../research/Research';
 
+/** @typedef {import('@dbux/projects/src/projectLib/Chapter').default} Chapter */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
 
@@ -109,6 +110,24 @@ class DDGChapterNode extends ChapterNode {
   }
 }
 
+class DDGChapterGroupNode extends BaseTreeViewNode {
+  static makeLabel(entry, parent, moreProp) {
+    return moreProp.keyword;
+  }
+
+  canHaveChildren() {
+    return true;
+  }
+
+  init() {
+    this.description = `(${this.entry.length})`;
+  }
+
+  buildChildren() {
+    return this.entry.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this));
+  }
+}
+
 export default class ChapterListNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Chapters';
@@ -118,8 +137,38 @@ export default class ChapterListNode extends BaseTreeViewNode {
     return TreeItemCollapsibleState.Expanded;
   }
 
+  /**
+   * @type {Chapter[]}
+   */
+  get chapters() {
+    return this.entry;
+  }
+
   buildChildren() {
-    return this.entry.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this));
+    const Keywords = ['Sort', 'Search'];
+    const chapters = Object.fromEntries(Keywords.map(keyword => [keyword, []]));
+    const otherChapters = [];
+    for (const chapter of this.chapters) {
+      let matchedKeyword;
+      for (const keyword of Keywords) {
+        if (chapter.name.toLowerCase().includes(keyword.toLowerCase())) {
+          matchedKeyword = keyword;
+          break;
+        }
+      }
+      if (matchedKeyword) {
+        chapters[matchedKeyword].push(chapter);
+      }
+      else {
+        otherChapters.push(chapter);
+      }
+    }
+
+    return [
+      ...Keywords.map(keyword => this.treeNodeProvider.buildNode(DDGChapterGroupNode, chapters[keyword], this, { keyword })),
+      this.treeNodeProvider.buildNode(DDGChapterGroupNode, otherChapters, this, { keyword: 'Others' }),
+      // otherChapters.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this)),
+    ];
   }
 }
 
