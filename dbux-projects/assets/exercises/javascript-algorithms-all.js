@@ -1579,15 +1579,23 @@ module.exports = [
           "start": {
             "line": 62,
             "column": 40,
-            "index": 1624
+            "index": 1624,
+            "_pos": {
+              "line": 61,
+              "character": 40
+            }
           },
           "end": {
             "line": 88,
             "column": 1,
-            "index": 2284
+            "index": 2284,
+            "_pos": {
+              "line": 87,
+              "character": 1
+            }
           }
         },
-        "applicationUuid": "0.48800260481006363"
+        "applicationUuid": "0.5414476279619551"
       }
     ]
   },
@@ -1599,6 +1607,27 @@ module.exports = [
     "patch": "hanoiTower0",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback})",
+        "contextId": 9,
+        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40,
+            "index": 1624
+          },
+          "end": {
+            "line": 88,
+            "column": 1,
+            "index": 2284
+          }
+        },
+        "applicationUuid": "0.5821852578177644"
+      }
     ]
   },
   {

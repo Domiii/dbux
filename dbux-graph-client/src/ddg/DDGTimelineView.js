@@ -160,17 +160,17 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.graphviz
         .on('end', () => {
           try {
-            if (this.ddg.settings.anim) {
-              // NOTE: add transition only after first render
-              this.graphviz.transition(() => { // transition
-                // TODO: add a way to remove animation
-                // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
-                // if (!this.ddg.settings.anim) {
-                // }
-                return d3transition()
-                  .duration(800);
-              });
-            }
+            // if (this.ddg.settings.anim) {
+            // NOTE: add transition only after first render
+            this.graphviz.transition(() => { // transition
+              // TODO: add a way to remove animation
+              // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+              // if (!this.ddg.settings.anim) {
+              // }
+              return d3transition()
+                .duration(800);
+            });
+            // }
 
             // add node and edge decorations to the rendered DOM
             this.decorateAfterRender();
@@ -339,7 +339,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       });
 
       // add click handler
-      this.addNodeEventListener(node, interactionEl, 'mousedown', async (evt) => {
+      this.addNodeEventListener(node, interactionEl, 'click', async (evt) => {
         if (node.dataNodeId) {
           await this.remote.selectNode(node.timelineId);
         }

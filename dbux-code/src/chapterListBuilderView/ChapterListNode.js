@@ -37,8 +37,9 @@ class DDGNode extends BaseTreeViewNode {
   }
 
   async handleClick() {
-    let { applicationUuid, contextId, fullContextFilePath, loc } = this;
+    let { applicationUuid, contextId, filePath, loc } = this;
     const app = allApplications.getById(applicationUuid);
+    const fullContextFilePath = pathResolve(this.exercise.project.projectPath, filePath);
     if (!app) {
       const appFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: this.exercise.id });
       if (fs.existsSync(appFilePath)) {
@@ -248,7 +249,7 @@ function findDDGContextIdInApp(app, exercise) {
     return {
       ddgTitle: `${functionName}(${params.join(', ')})`,
       contextId,
-      fullContextFilePath,
+      // fullContextFilePath,
       filePath,
       loc,
       applicationUuid,
