@@ -14,6 +14,10 @@ export default class ChapterListBuilderNodeProvider extends BaseTreeViewNodeProv
     this.controller = treeViewController;
   }
 
+  get manager() {
+    return this.controller.manager;
+  }
+
   buildRoots() {
     const roots = [];
 

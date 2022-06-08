@@ -76,8 +76,11 @@ export default class ExerciseNode extends BaseTreeViewNode {
     return false;
   }
 
-  handleClick() {
-
+  async handleClick() {
+    const result = await this.exercise.openInEditor();
+    if (!result) {
+      await showInformationMessage(`No entry file found for this exercise.`);
+    }
   }
 
   async showWebsite() {

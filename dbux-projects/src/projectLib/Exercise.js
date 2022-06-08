@@ -57,7 +57,7 @@ export default class Exercise extends ExerciseConfig {
     }
   }
 
-  async openInEditor() {
+  async openInEditor(loc) {
     // open file (if any)
     let targetFile = this.mainEntryPoint || this.testFilePaths;
     if (Array.isArray(targetFile)) {
@@ -66,7 +66,7 @@ export default class Exercise extends ExerciseConfig {
     if (targetFile) {
       const fpath = pathResolve(this.project.projectPath, targetFile);
       try {
-        await this.manager.externals.editor.openFile(fpath);
+        await this.manager.externals.editor.openFile(fpath, loc);
       }
       catch (err) {
         this.project.logger.error(`Cannot open file for bug ${this.id}:`, err);
