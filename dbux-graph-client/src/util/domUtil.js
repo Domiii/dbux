@@ -251,3 +251,7 @@ export function addElementEventListeners(el, cfg, thisArg = null, elName = null)
  * @see https://stackoverflow.com/a/66065413
  */
 export const BootstrapBtnGroupSeparatorHtml = `<button type="button" class="btn btn-secondary mr-0 ml-0 pr-0 pl-0" disabled></button>`;
+
+export function makeBootstrapBtnGroupSeparatorEl() {
+  return compileHtmlElement(BootstrapBtnGroupSeparatorHtml);
+}

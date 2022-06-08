@@ -8,6 +8,7 @@ import ddgQueries from './ddgQueries';
 import DDGEdgeType from './DDGEdgeType';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
+import DDGSettings from './DDGSettings';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -115,6 +116,11 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   nodeSummaries = {};
 
+  /**
+   * @type {DDGSettings}
+   */
+  settings = new DDGSettings();
+
   constructor(dp, graphId) {
     super(dp, graphId);
   }
@@ -148,10 +154,12 @@ export default class DataDependencyGraph extends BaseDDG {
   }
 
   /**
-   * The data that changes over time.
+   * This data changes over time and is sent back to client
+   * on every update.
    */
   getChangingData() {
     const {
+      settings,
       summaryModes,
       edges,
       outEdgesByTimelineId,
@@ -159,6 +167,7 @@ export default class DataDependencyGraph extends BaseDDG {
     } = this;
 
     return {
+      settings,
       summaryModes,
       edges,
       outEdgesByTimelineId,
@@ -182,6 +191,10 @@ export default class DataDependencyGraph extends BaseDDG {
     return this.og.timelineNodes;
   }
 
+  get timelineBuilder() {
+    return this.og.timelineBuilder;
+  }
+
   get isBuilding() {
     return BuildStage.is.Building(this.buildStage);
   }
@@ -194,8 +207,18 @@ export default class DataDependencyGraph extends BaseDDG {
    * public control methods
    *  #########################################################################*/
 
-  setMergeComputes(on) {
-    // TODO
+  /**
+   * @param {DDGSettings} settings 
+   */
+  updateSettings(settings) {
+    for (const name in settings) {
+      if (!(name in this.settings)) {
+        throw new Error(`invalid graph setting: ${name} (${JSON.stringify(settings)})`);
+      }
+    }
+    this.settings = settings;
+
+    this.#buildSummarizedGraph();
   }
 
   setSummaryMode(timelineId, mode) {
@@ -203,7 +226,7 @@ export default class DataDependencyGraph extends BaseDDG {
     this.#applyMode(timelineId, mode);
 
     // refresh the summarized graph
-    this.#applySummarization();
+    this.#buildSummarizedGraph();
   }
 
   /**
@@ -237,7 +260,7 @@ export default class DataDependencyGraph extends BaseDDG {
     this.buildStage = BuildStage.Summarizing;
     try {
       this.#initSummaryConfig();
-      this.#applySummarization();
+      this.#buildSummarizedGraph();
     }
     finally {
       this.buildStage = BuildStage.None;
@@ -470,7 +493,7 @@ export default class DataDependencyGraph extends BaseDDG {
    *  summarize algo
    * ##########################################################################*/
 
-  #applySummarization() {
+  #buildSummarizedGraph() {
     const { og: { root } } = this;
 
     this.resetBuild();

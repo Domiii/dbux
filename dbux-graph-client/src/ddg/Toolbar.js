@@ -2,13 +2,19 @@
 
 import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
-import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses } from '../util/domUtil';
+import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses, makeBootstrapBtnGroupSeparatorEl } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
 
 let documentClickHandler;
 
 /** @typedef { import("./DDGDocument").default } DDGDocument */
+
+const settingsRenderers = {
+  connectedOnly(toolbar, settings, value) {
+    return 
+  }
+};
 
 class Toolbar extends ClientComponentEndpoint {
   summaryRootButtons;
@@ -39,6 +45,11 @@ class Toolbar extends ClientComponentEndpoint {
       </nav>
     `);
 
+    // add settings buttons
+    for (const setting in this.doc.state.settings) {
+      // TODO: render initially and re-decorate on update
+    }
+
     // add root control buttons
     const btns = el.querySelector('.btn-group');
     const btnClass = 'toolbar-btn btn btn-info';
@@ -46,8 +57,8 @@ class Toolbar extends ClientComponentEndpoint {
       el: summaryRootButtonDom,
       els: summaryRootButtons
     } = makeSummaryButtons(this.doc, RootTimelineId, btnClass, RootSummaryModes, true);
+    btns.appendChild(makeBootstrapBtnGroupSeparatorEl());
     btns.appendChild(summaryRootButtonDom);
-
     this.summaryRootButtons = summaryRootButtons;
 
     return el;

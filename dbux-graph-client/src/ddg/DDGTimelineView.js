@@ -10,7 +10,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { compileHtmlElement } from '../util/domUtil';
 import { decorateSummaryModeButtons, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -190,8 +190,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * timeline controls
    *  #########################################################################*/
 
-  async setSummaryMode(timelineId, mode) {
-    await this.remote.setSummaryMode(timelineId, mode);
+  async setSummaryMode(timelineId, summaryMode) {
+    await this.remote.updateGraph({ timelineId, summaryMode });
+  }
+
+  async setGraphSettings(settings) {
+    await this.remote.updateGraph({ settings });
   }
 
   /** ###########################################################################
@@ -342,6 +346,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   makeNodeDebugOverlay(node) {
     const { ddg } = this;
     const o = { ...node };
+
+    // fix rendered string
+    o.type = DDGTimelineNodeType.nameFrom(o.type);
     o.children = JSON.stringify(o.children); // simplify children
     o.summaryMode = DDGSummaryMode.nameFrom(ddg.summaryModes[node.timelineId]);
     if (ddgQueries.isNodeSummarizable(node)) {

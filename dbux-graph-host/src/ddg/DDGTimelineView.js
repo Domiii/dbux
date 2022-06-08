@@ -109,15 +109,24 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       }
     },
 
-    setSummaryMode(timelineId, mode) {
+    async updateGraph(cfg) {
+      const {
+        timelineId,
+        summaryMode,
+        settings
+      } = cfg;
       const { ddg } = this;
 
       const origTimelineNodesLength = ddg.timelineNodes.length;
       const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
 
-
-      // update graph
-      ddg.setSummaryMode(timelineId, mode);
+      if (settings) {
+        ddg.updateSettings(settings);
+      }
+      if (summaryMode) {
+        // update graph
+        ddg.setSummaryMode(timelineId, summaryMode);
+      }
 
 
       // state delta: new nodes

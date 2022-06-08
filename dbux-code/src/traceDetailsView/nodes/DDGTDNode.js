@@ -40,10 +40,7 @@ export default class DDGTDNode extends TraceDetailNode {
       return makeTreeItem('(no TimelineNode)');
     }
 
-    // TODO: also render edges
-
     const ignoreAndSkippedBy = ddg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
-
     if (ignoreAndSkippedBy) {
       const { ignore, skippedBy } = ignoreAndSkippedBy;
       if (ignore) {
@@ -61,6 +58,7 @@ export default class DDGTDNode extends TraceDetailNode {
       }
     }
 
+    // TODO: also render edges
     // TODO: also get control group by decision etc.
 
     const timelineNodes = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);

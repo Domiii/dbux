@@ -4,14 +4,10 @@ import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
+import DDGSettings from './DDGSettings';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
-
-const DDGConfig = {
-  connectedOnly: true
-  // connectedOnly: false
-};
 
 export class RenderState {
   /**
@@ -48,6 +44,11 @@ export class RenderState {
    * @type {Object.<number, DDGNodeSummary>}
    */
   nodeSummaries;
+
+  /**
+   * @type {DDGSettings}
+   */
+  settings;
 }
 
 /** ###########################################################################
@@ -139,7 +140,7 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   checkConnected(ddg, node) {
-    return !DDGConfig.connectedOnly || ddgQueries.isNodeConnected(ddg, node);
+    return !ddg.settings.connectedOnly || ddgQueries.isNodeConnected(ddg, node);
   },
 
   /**
