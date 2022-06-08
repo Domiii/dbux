@@ -1383,6 +1383,7 @@ module.exports = [
     "label": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
     "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
     "chapter": "hanoiTower",
+    "patch": "hanoiTower0",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
     ]
@@ -1392,6 +1393,7 @@ module.exports = [
     "label": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
     "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
     "chapter": "hanoiTower",
+    "patch": "hanoiTower0",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
     ]
@@ -1401,6 +1403,7 @@ module.exports = [
     "label": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
     "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
     "chapter": "hanoiTower",
+    "patch": "hanoiTower0",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
     ]

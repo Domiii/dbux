@@ -13,6 +13,9 @@ import { getCurrentResearch } from '../research/Research';
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
 const ExportExercises = 4;
+const CustomPatchByChapter = {
+  hanoiTower: 'hanoiTower0',
+};
 
 class ToolNode extends BaseTreeViewNode {
   /**
@@ -58,7 +61,12 @@ class GenerateListNode extends ToolNode {
         cwd: project.projectPath,
       };
       const testDirectory = 'src/algorithms';
-      const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory}`, { processOptions });
+      /**
+       * NOTE: set `testNamePattern` to an unused name to skip running all tests
+       * @see https://stackoverflow.com/a/69099439/11309695
+       */ 
+      const UnusedTestPattern = 'zzzzz';
+      const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
       const testData = JSON.parse(testDataRaw);
 
       const exerciseConfigs = [];
@@ -79,6 +87,7 @@ class GenerateListNode extends ToolNode {
             label: fullName,
             testNamePattern: fullName,
             chapter,
+            patch: CustomPatchByChapter[chapter],
             testFilePaths: [pathRelative(project.projectPath, testResult.name)],
           };
           exerciseConfigs.push(exerciseConfig);
