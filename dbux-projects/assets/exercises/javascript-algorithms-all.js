@@ -1844,29 +1844,21 @@ module.exports = [
     "ddgs": [
       {
         "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
-        "contextId": 18,
+        "contextId": 24,
         "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
         "loc": {
           "start": {
             "line": 62,
             "column": 40,
-            "index": 1624,
-            "_pos": {
-              "line": 61,
-              "character": 40
-            }
+            "index": 1624
           },
           "end": {
-            "line": 88,
+            "line": 84,
             "column": 1,
-            "index": 2284,
-            "_pos": {
-              "line": 87,
-              "character": 1
-            }
+            "index": 2121
           }
         },
-        "applicationUuid": "0.6153465046958158"
+        "applicationUuid": "0.16791208772880362"
       }
     ]
   },
@@ -1881,8 +1873,8 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback})",
-        "contextId": 9,
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
+        "contextId": 27,
         "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
         "loc": {
           "start": {
@@ -1895,11 +1887,11 @@ module.exports = [
             }
           },
           "end": {
-            "line": 88,
+            "line": 84,
             "column": 1,
-            "index": 2284,
+            "index": 2121,
             "_pos": {
-              "line": 87,
+              "line": 83,
               "character": 1
             }
           },
@@ -1909,12 +1901,12 @@ module.exports = [
               "character": 40
             },
             {
-              "line": 87,
+              "line": 83,
               "character": 1
             }
           ]
         },
-        "applicationUuid": "0.7338300791100618"
+        "applicationUuid": "0.3048994876570188"
       }
     ]
   },

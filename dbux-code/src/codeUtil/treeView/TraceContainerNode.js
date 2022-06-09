@@ -12,7 +12,7 @@ import TraceNode from './TraceNode';
 
 export class GroupNode extends BaseTreeViewNode {
   static labelSuffix = '';
-  static TraceNodeClass = TraceNode;
+  // static TraceNodeClass = TraceNode;
 
   /**
    * @abstract
@@ -68,6 +68,10 @@ export class GroupNode extends BaseTreeViewNode {
     return treeNodeProvider.buildNode(this, null, rootNode, groupNodeData);
   }
 
+  get rootNode() {
+    return this.parent;
+  }
+
   get defaultCollapsibleState() {
     return TreeItemCollapsibleState.Expanded;
   }
@@ -104,9 +108,9 @@ export class GroupNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const { TraceNodeClass } = this.constructor;
+    const { TraceNodeClass } = this.rootNode.constructor;
     return this.childTraces.map(trace => {
-      return this.treeNodeProvider.buildNode(TraceNodeClass, trace, this);
+      return this.treeNodeProvider.buildNode(TraceNodeClass || TraceNode, trace, this);
     });
   }
 }
@@ -121,7 +125,7 @@ export class UngroupedNode extends GroupNode {
   }
 
   static build(rootNode, trace) {
-    return rootNode.treeNodeProvider.buildNode(this.TraceNodeClass, trace, rootNode);
+    return rootNode.treeNodeProvider.buildNode(rootNode.constructor.TraceNodeClass || TraceNode, trace, rootNode);
   }
 }
 
