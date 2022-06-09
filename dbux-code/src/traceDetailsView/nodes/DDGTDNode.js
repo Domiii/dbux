@@ -106,11 +106,10 @@ export default class DDGTDNode extends TraceDetailNode {
       ];
     }
     if (this.ddg.dp !== this.dp) {
-      // TODO: dp comes from selectedTrace, while ddg is the active webview
-      // setTimeout(() => this.treeNodeProvider.refresh());
-      // return [
-      //   makeTreeItem('(no DDG active)')
-      // ];
+      // → dp comes from selectedTrace, while ddg is the active webview
+      return [
+        makeTreeItem('(this DDG is not the active DDG)')
+      ];
     }
 
     return makeTreeItems(
