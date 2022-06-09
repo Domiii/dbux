@@ -123,7 +123,7 @@ export default class DataNodeCollection extends Collection {
    * resolve DataNode data
    * ##########################################################################*/
 
-  postIndexProcessed(dataNodes) {
+  postIndexRaw(dataNodes) {
     this.errorWrapMethod('resolveDataNodeType', dataNodes);
     this.errorWrapMethod('resolveDataIds', dataNodes);
     // this.errorWrapMethod('resolveDataNodeSyntax', dataNodes);
@@ -161,13 +161,12 @@ export default class DataNodeCollection extends Collection {
    */
   resolveDataIds(dataNodes) {
     for (const dataNode of dataNodes) {
+      this.resolveDataNodeSyntax(dataNode);
+
       dataNode.accessId = this.getAccessId(dataNode);
       dataNode.valueId = this.lookupValueId(dataNode);
       this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
       this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
-
-      // NOTE: we need syntax look-up to be in order with accessId (due to the "last of accessId" lookup)
-      this.resolveDataNodeSyntax(dataNode);
     }
   }
 
@@ -199,12 +198,16 @@ export default class DataNodeCollection extends Collection {
       if (isComputation) {
         if (operator === '||=' && dataNode.inputs?.length) {
           // nothing to do (it already has the correct input)
+          // hackfix (this should be fine, since it should not be processed before this stage)
+          staticTrace.dataNode.isNew = false;
         }
         else if (dataNode.accessId) {
           // → this is re-assignment (rather than assignment)
 
           // get the last dataNode of same accessId (before this one)
-          const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
+          // const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
+          // const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getSecondButLast(dataNode.accessId);
+          const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getLast(dataNode.accessId);
           if (readSelfNode) {
             dataNode.inputs.unshift(readSelfNode.nodeId);
           }
@@ -429,10 +432,6 @@ export default class DataNodeCollection extends Collection {
       }
     }
     return null;
-  }
-
-  getSecondButLastDataNodeByAccessId(accessId) {
-    return this.dp.indexes.dataNodes.byAccessId.getSecondButLast(accessId);
   }
 
   _reportInvalidId(idx, faultyEntry, recoverable) {

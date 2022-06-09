@@ -310,6 +310,22 @@ export default class BaseDDG {
         this.#setConnectedDFS(childNode);
       }
     }
+    this.#setConnectedUp(node);
+  }
+
+  /**
+   * If a child of a snapshot is connected, connect the entire snapshots and keep going from there.
+   */
+  #setConnectedUp(node) {
+    if (node.parentNodeId) {
+      const parent = this.timelineNodes[node.parentNodeId];
+      if (parent.connected) {
+        // stop propagation
+        return;
+      }
+      this.#setConnectedDFS(parent);
+      this.#setConnectedUp(parent);
+    }
   }
 
   /** ###########################################################################
@@ -387,8 +403,11 @@ export default class BaseDDG {
     const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
 
     // variable name
-    let label = '';
-    if (dataNode.traceId) {
+    let label = ''; if (isTraceReturn(ownStaticTrace.type)) {
+      // return label
+      label = 'ret';
+    }
+    else if (dataNode.traceId) {
       // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
       label = ownStaticTrace.dataNode?.label;
     }
@@ -396,18 +415,12 @@ export default class BaseDDG {
     if (!label) {
       label = dataNode?.label;
     }
-
     if (!label) {
-      const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
+      const varName = dp.util.getRefVarName(dataNodeId);
       if (!isNewValue && varName) {
         label = varName;
       }
-      else if (isTraceReturn(ownStaticTrace.type)) {
-        // return label
-        label = 'ret';
-      }
     }
-
     if (!label) {
       if (dp.util.isTraceOwnDataNode(dataNodeId)) {
         // default trace label
@@ -510,7 +523,7 @@ export default class BaseDDG {
           newChild = this.addValueDataNode(lastModDataNode);
           this.#onSnapshotNodeCreated(newChild, parentSnapshot);
         }
-        
+
         const skippedBy = this.timelineBuilder.getSkippedByDataNode(lastModDataNode);
         if (!alreadyHadNode && skippedBy) {
           // Snapshot picks up a skipped node. Make sure to add edge to its skippedBy.
@@ -654,7 +667,7 @@ export default class BaseDDG {
     const snapshot = new RefSnapshotTimelineNode(ownTraceId, ownDataNode.nodeId, refId);
     this.#addRefSnapshotNode(snapshot, snapshotsByRefId);
     this.#onSnapshotNodeCreated(snapshot, parentSnapshot);
-    snapshot.label = dp.util.getRefVarName(refId) || this.makeDataNodeLabel(ownDataNode);
+    snapshot.label = this.makeDataNodeLabel(ownDataNode);
 
 
     /**

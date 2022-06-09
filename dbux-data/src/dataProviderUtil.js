@@ -782,16 +782,6 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeDeclarationVarName(dp, dataNodeId) {
-    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
-    if (declarationTid) {
-      const staticTrace = dp.util.getStaticTrace(declarationTid);
-      return staticTrace.data?.name || staticTrace.displayName;
-    }
-    return null;
-  },
-
-  /** @param {RuntimeDataProvider} dp */
   isDataNodeTrackableValue(dp, nodeId) {
     const valueRef = dp.util.getDataNodeValueRef(nodeId);
     return valueRef && isObjectCategory(valueRef.category) || false;
@@ -1314,6 +1304,16 @@ export default {
         // 3. return name of variable
         return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
       }
+    }
+    return null;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getDataNodeDeclarationVarName(dp, dataNodeId) {
+    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
+    if (declarationTid) {
+      const staticTrace = dp.util.getStaticTrace(declarationTid);
+      return staticTrace.data?.name || staticTrace.displayName;
     }
     return null;
   },
