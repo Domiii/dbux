@@ -61,10 +61,11 @@ export default class Application {
   updatedAt;
 
   /**
-   * This is set upon importing an application from file.
+   * This is set upon importing or exporting an application from/to file.
+   * NOTE: This is not always available.
    * @type {string?}
    */
-  importFilePath;
+  filePath;
 
   constructor(applicationId, entryPointPath, createdAt, allApplications, uuid = uuidv4()) {
     this.uuid = uuid;

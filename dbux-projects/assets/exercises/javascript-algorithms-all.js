@@ -114,6 +114,278 @@ module.exports = [
     "chapter": "bfRainTerraces",
     "testFilePaths": [
       "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfRainTerraces([1])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,0])",
+        "contextId": 6,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0])",
+        "contextId": 8,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,0])",
+        "contextId": 9,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,0,1,0])",
+        "contextId": 10,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,2,0,0,1,0])",
+        "contextId": 11,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([2,0,2])",
+        "contextId": 12,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([2,0,5])",
+        "contextId": 13,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([3,0,0,2,0,4])",
+        "contextId": 14,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "contextId": 15,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,1,1,1,1])",
+        "contextId": 16,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,2,3,4,5])",
+        "contextId": 17,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
+        "contextId": 18,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
+        "contextId": 19,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.25959222773818635"
+      }
     ]
   },
   {
@@ -1616,7 +1888,7 @@ module.exports = [
             "index": 2284
           }
         },
-        "applicationUuid": "0.33616440678738857"
+        "applicationUuid": "0.20376206630678118"
       }
     ]
   },

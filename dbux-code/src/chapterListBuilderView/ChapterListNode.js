@@ -20,6 +20,12 @@ import { getCurrentResearch } from '../research/Research';
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
 
+
+
+/** ###########################################################################
+ * {@link DDGNode}
+ *  #########################################################################*/
+
 class DDGNode extends BaseTreeViewNode {
   static makeLabel(entry, parent, moreProp) {
     return moreProp.ddgTitle;
@@ -71,6 +77,11 @@ class DDGNode extends BaseTreeViewNode {
   }
 }
 
+
+/** ###########################################################################
+ * {@link DDGExerciseNode}
+ *  #########################################################################*/
+
 class DDGExerciseNode extends ExerciseNode {
   get contextValue() {
     return 'dbuxChapterListBuilderView.DDGExerciseNode';
@@ -105,7 +116,8 @@ class DDGExerciseNode extends ExerciseNode {
       this.treeNodeProvider.controller.writeExerciseJs();
 
       // export application
-      await exportApplicationToFile(app, getCurrentResearch().getAppZipFilePath(app));
+      const fpath = getCurrentResearch().getAppZipFilePath(app);
+      await exportApplicationToFile(app, fpath);
 
       showInformationMessage(`Found ${ddgs.length} ddg(s).`);
       this.treeNodeProvider.refresh();
@@ -122,11 +134,19 @@ class DDGExerciseNode extends ExerciseNode {
   }
 }
 
+/** ###########################################################################
+ * {@link DDGChapterNode}
+ *  #########################################################################*/
+
 class DDGChapterNode extends ChapterNode {
   get ExerciseNodeClass() {
     return DDGExerciseNode;
   }
 }
+
+/** ###########################################################################
+ * {@link DDGChapterGroupNode}
+ *  #########################################################################*/
 
 class DDGChapterGroupNode extends BaseTreeViewNode {
   static makeLabel(entry, parent, moreProp) {
