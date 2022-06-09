@@ -1,12 +1,13 @@
 import difference from 'lodash/difference';
 import omit from 'lodash/omit';
+import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
 import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
+import PatternAstNodeType, { isGroupPattern } from '@dbux/common/src/types/constants/PatternAstNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
@@ -26,7 +27,6 @@ import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
 import { _slicedToArray } from './util/builtinUtil';
-import { isFunction } from 'lodash';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -1317,33 +1317,56 @@ export default class RuntimeMonitor {
     return valueCollection._readProperty(obj, prop);
   }
 
+  _tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result) {
+    const childValue = this._getPatternProp(childValues, childNode.prop);
+    // eslint-disable-next-line max-len
+    VerbosePatterns && debug(
+      `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
+      `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
+      `value=${childValue} (${typeof childValue})`
+    );
+    const varAccess = {
+      objectNodeId: readDataNodeId,
+      prop: childNode.prop
+    };
+    // const inputs = [parentReadDataNodeId];
+    const childReadDataNodeId = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess).nodeId;
+    try {
+      this._tracePatternHandlers[childNode.type](
+        nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
+      );
+    }
+    catch (err) {
+      throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
+    }
+  }
+
   _tracePatternRecurse = (nodes, node, childValues, value, rvalTid, readDataNodeId, result) => {
     const { children } = node;
+
+    // NOTE: we do two passes, to make sure, `DataNode`s of consecutive `nodeId`s don't jump between traces
+
+    // TODO: need to do two completely independent passes: 
+    //    1. build the result/Read-DataNode tree
+    //    2. traverse the tree
+
+    // 1. Groups (all reads)
     for (const iChild of children) {
       const childNode = nodes[iChild];
-      const childValue = this._getPatternProp(childValues, childNode.prop);
-      // eslint-disable-next-line max-len
-      VerbosePatterns && debug(
-        `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
-        `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
-        `value=${childValue} (${typeof childValue})`
-      );
-      const varAccess = {
-        objectNodeId: readDataNodeId,
-        prop: childNode.prop
-      };
-      // const inputs = [parentReadDataNodeId];
-      const childReadDataNodeId = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess).nodeId;
-      try {
-        this._tracePatternHandlers[childNode.type](
-          nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
-        );
-      }
-      catch (err) {
-        throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
+      if (isGroupPattern(childNode.type)) {
+        this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
       }
     }
-    VerbosePatterns && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}:`, result);
+
+    // 2. Values (reads + writes)
+    for (const iChild of children) {
+      const childNode = nodes[iChild];
+      if (!isGroupPattern(childNode.type)) {
+        this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
+      }
+    }
+
+    VerbosePatterns > 1 && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}:`, result);
     return result;
   }
 

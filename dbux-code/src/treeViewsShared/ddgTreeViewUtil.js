@@ -1,3 +1,4 @@
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
@@ -51,7 +52,7 @@ export function renderDataNode(ddg, dataNodeId) {
     dp.util.getDataNodeValueStringShort(dataNodeId),
     dataNode,
     {
-      description: `${dataNodeId}, refId=${dataNode.refId}, value=${dataNode.value}`
+      description: `${dataNodeId} ${DataNodeType.nameFrom(dataNode.type)}, refId=${dataNode.refId}, value=${dataNode.value}`
     }
   );
 }
