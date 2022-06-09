@@ -2,6 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 // eslint-disable-next-line no-unused-vars
 import Application from '@dbux/data/src/applications/Application';
+import { showWarningMessage } from '../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import SocketClient from './SocketClient';
 
@@ -77,6 +78,14 @@ export default class RuntimeClient extends SocketClient {
         progress.report({ message: 'Processing incoming runtime data...' });
         this.application.addData(data);
       }, { cancellable: false, title: `Application "${this.application.getPreferredName()}": ` });
+
+      // hackfix: deal with unsupported stuff
+      const dp = this.application.dataProvider;
+      const { warnTraces } = dp.collections.traces;
+      if (warnTraces.length) {
+        showWarningMessage(`WARNING: ${warnTraces.length} unsupported traces detected`);
+        warn(`  ${warnTraces.map(traceId => dp.util.makeTraceInfo(traceId)).join('\n  ')}`);
+      }
     }
     catch (err) {
       logError(`WARNING: Error encountered while adding data. Analysis results might be incorrect.`, err);

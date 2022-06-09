@@ -1,5 +1,8 @@
+import isString from 'lodash/isString';
+import isNumber from 'lodash/isNumber';
 import isFunction from 'lodash/isFunction';
 import * as t from "@babel/types";
+import { Node as AstNode } from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 /** @typedef {import('../../definitions/TraceCfg').InputTrace} InputTrace  */
@@ -62,4 +65,25 @@ export function generateDeclaredIdentifier(path) {
   });
   return id;
   // return calleePath.node.name || 'func';
+}
+
+export function buildConstObjectProperties(data) {
+  return Object.entries(data)
+    .map(([key, value]) => {
+      let valueAst;
+      // if (value instanceof AstNode) { // does not have a JS-available type
+      //   valueAst = value;
+      // }
+      if (isString(value)) {
+        valueAst = t.stringLiteral(value);
+      }
+      else if (isNumber(value)) {
+        valueAst = t.numericLiteral(value);
+      }
+      else {
+        // throw new Error(`cannot convert type to ObjectProperty AST: ${key}: ${value} (${typeof value})`);
+        valueAst = value;
+      }
+      return t.objectProperty(t.stringLiteral(key), valueAst);
+    });
 }

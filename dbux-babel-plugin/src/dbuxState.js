@@ -157,7 +157,10 @@ export default function injectDbuxState(programPath, programState) {
         // traceAwaitResult: makeProgramId('aw3')
 
         // patterns
-        tracePattern: makeProgramId('tp')
+        tracePattern: makeProgramId('tp'),
+
+        // purpose
+        addPurpose: makeProgramId('apu')
       }
     },
 

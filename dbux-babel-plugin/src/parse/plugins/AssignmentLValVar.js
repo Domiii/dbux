@@ -43,6 +43,9 @@ export default class AssignmentLValVar extends BasePlugin {
     const traceData = {
       staticTraceData: {
         syntax,
+        data: {
+          operator: node.path.node.operator
+        },
         dataNode: {
           isNew
         }

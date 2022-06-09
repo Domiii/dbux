@@ -11,13 +11,20 @@ const { log, debug, warn, error: logError } = newLogger('DotBuilder');
 
 const Verbose = 1;
 
+const converter = document.createElement("p");
+
 /**
  * @see https://stackoverflow.com/a/18750001
  */
 function dotEncode(s) {
-  return (s + '').replace(/[\u00A0-\u9999<>&]/g, function (c) {
+  return (s + '').replace(/[\u00A0-\u9999<>&|{}()[]/g, function (c) {
     return '&#' + c.charCodeAt(0) + ';';
   });
+  // /**
+  //  * @see https://stackoverflow.com/a/29482788
+  //  */
+  // converter.textContent = s;
+  // return converter.innerHTML;
 }
 
 // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)

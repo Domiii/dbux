@@ -513,6 +513,17 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.tracePattern(this.getProgramId(), rval, tid, rvalTid, treeNodes);
   };
 
+  /** ###########################################################################
+   * purpose
+   *  #########################################################################*/
+  
+  addPurpose = (value, tid, purpose, arg) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+    return this._runtimeMonitor.addPurpose(this.getProgramId(), value, tid, purpose, arg);
+  };
+
   // /** ###########################################################################
   //  * loops
   //  * ##########################################################################*/

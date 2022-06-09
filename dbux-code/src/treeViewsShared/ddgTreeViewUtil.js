@@ -5,6 +5,7 @@ import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItems, objectToTreeItems } from '../helpers/makeTreeItem';
+import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
 
 /**
  * @param {DDGTimelineNode} node 
@@ -44,26 +45,6 @@ export function makeDDGNodeLabel(ddg, timelineId) {
   return node.label || `${node.constructor.name}`;
 }
 
-export function makeDataNodeLabel(ddg, dataNodeId) {
-  return ddg.dp.util.getDataNodeValueStringShort(dataNodeId);
-}
-
-export function makeDataNodeDescription(ddg, dataNodeId) {
-  const dataNode = ddg.dp.util.getDataNode(dataNodeId);
-  return `${dataNodeId} ${DataNodeType.nameFrom(dataNode.type)} (ref=${dataNode.refId}, v=${dataNode.value})`;
-}
-
-export function renderDataNode(ddg, dataNodeId, children = ddg.dp.util.getDataNode(dataNodeId)) {
-  return makeTreeItem(
-    // 'dataNode',
-    makeDataNodeLabel(ddg, dataNodeId),
-    children,
-    {
-      description: makeDataNodeDescription(ddg, dataNodeId)
-    }
-  );
-}
-
 /**
  * @param {DataDependencyGraph} ddg
  * @param {DDGTimelineNode} node 
@@ -79,9 +60,11 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
     // some default customized rendering
     children = { ...node };
     if (node.dataNodeId) {
-      children.dataNode = renderDataNode(ddg, node.dataNodeId);
+      children.dataNode = renderDataNode(dp, node.dataNodeId, 'DataNode');
       delete children.dataNodeId;
     }
+
+    // TODO: add edgees
     const out = ddg.outEdgesByTimelineId[node.timelineId];
   }
 
@@ -91,14 +74,7 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
     description: makeDDGNodeDescription(ddg, node),
     handleClick() {
       // select
-      let { dataNodeId = null, traceId } = node;
-      if (!traceId && dataNodeId) {
-        ({ traceId } = dp.collections.dataNodes.getById(dataNodeId));
-      }
-      if (traceId) {
-        const trace = dp.collections.traces.getById(traceId);
-        traceSelection.selectTrace(trace, null, dataNodeId);
-      }
+      selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
     },
     ...moreProps
   });

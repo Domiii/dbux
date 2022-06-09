@@ -447,6 +447,26 @@ class ValueCollection extends Collection {
 
   /**
    * [access-guard]
+   */
+  _readIsPropertyInObject(obj, key) {
+    try {
+      this._startAccess(obj);
+      return key in obj;
+    }
+    catch (err) {
+      // this._onAccessError(obj, this._readErrorsByType);
+      const msg = `Dbux failed to check if object property "${key}" exists in "${typeof obj}":`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      // return `(${msg})`;
+      return false;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  /**
+   * [access-guard]
    * Read a property of an object to copy + track it.
    * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
    */
@@ -457,7 +477,7 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      const msg = `Dbux failed to read object property "${key}" of "${Object.getPrototypeOf(obj)}":`;
+      const msg = `Dbux failed to read object property "${key}" of "${typeof obj}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
       return `(${msg})`;
     }

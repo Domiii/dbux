@@ -27,6 +27,7 @@ import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
 import { _slicedToArray } from './util/builtinUtil';
+import { addPurpose } from './builtIns/builtin-util';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -1317,30 +1318,6 @@ export default class RuntimeMonitor {
     return valueCollection._readProperty(obj, prop);
   }
 
-  _tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result) {
-    const childValue = this._getPatternProp(childValues, childNode.prop);
-    // eslint-disable-next-line max-len
-    VerbosePatterns && debug(
-      `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
-      `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
-      `value=${childValue} (${typeof childValue})`
-    );
-    const varAccess = {
-      objectNodeId: readDataNodeId,
-      prop: childNode.prop
-    };
-    // const inputs = [parentReadDataNodeId];
-    const childReadDataNodeId = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess).nodeId;
-    try {
-      this._tracePatternHandlers[childNode.type](
-        nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
-      );
-    }
-    catch (err) {
-      throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
-    }
-  }
-
   _tracePatternRecurse = (nodes, node, childValues, value, rvalTid, readDataNodeId, result) => {
     const { children } = node;
 
@@ -1349,25 +1326,72 @@ export default class RuntimeMonitor {
     // TODO: need to do two completely independent passes: 
     //    1. build the result/Read-DataNode tree
     //    2. traverse the tree
+    
 
-    // 1. Groups (all reads)
     for (const iChild of children) {
       const childNode = nodes[iChild];
-      if (isGroupPattern(childNode.type)) {
-        this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
-      }
+      this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
     }
-
-    // 2. Values (reads + writes)
-    for (const iChild of children) {
-      const childNode = nodes[iChild];
-      if (!isGroupPattern(childNode.type)) {
-        this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
-      }
-    }
+    // // 1. Groups (all reads)
+    // for (const iChild of children) {
+    //   const childNode = nodes[iChild];
+    //   if (isGroupPattern(childNode.type)) {
+    //     this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
+    //   }
+    // }
+    // // 2. Values (reads + writes)
+    // for (const iChild of children) {
+    //   const childNode = nodes[iChild];
+    //   if (!isGroupPattern(childNode.type)) {
+    //     this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
+    //   }
+    // }
 
     VerbosePatterns > 1 && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}:`, result);
     return result;
+  }
+
+  _tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result) {
+    const { type, prop } = childNode;
+
+    const childValue = this._getPatternProp(childValues, prop);
+    // eslint-disable-next-line max-len
+    VerbosePatterns && debug(
+      `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
+      `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
+      `value=${childValue} (${typeof childValue})`
+    );
+
+    let varAccess;
+    let inputs;
+    // if (defaultValueTid) {// NOTE: we cannot get access to `defaultValueTid`
+    //   // input from default value
+    //   inputs = [traceCollection.getOwnDataNodeIdByTraceId(defaultValueTid)];
+    // }
+    // else {
+    // read from rval
+    varAccess = {
+      objectNodeId: readDataNodeId,
+      prop: prop
+    };
+    // }
+    // const inputs = [parentReadDataNodeId];
+    const childReadDataNodeId = dataNodeCollection.createDataNode(
+      childValue, rvalTid, DataNodeType.Read, varAccess, inputs
+    ).nodeId;
+
+    if (childValue === undefined && !valueCollection._readIsPropertyInObject(childValues, prop)) {
+      result = null;
+    }
+
+    try {
+      this._tracePatternHandlers[type](
+        nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
+      );
+    }
+    catch (err) {
+      throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
+    }
   }
 
   _tracePatternHandlers = {
@@ -1397,13 +1421,19 @@ export default class RuntimeMonitor {
       // TODO: declarationTid might be 0, because in non-strict mode, we might assign to non-declared vars.
       //    → We need to fix `getOwnDeclarationNode` for this
       // declarationTid ||= tid;
-      parentResult[node.prop] = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
+      const res = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
+      if (parentResult) {
+        parentResult[node.prop] = res;
+      }
     },
     [PatternAstNodeType.ME]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
       const { tid, objectTid, propValue, propTid } = node;
       const inputs = [readDataNodeId];
       const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
-      parentResult[node.prop] = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
+      const res = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
+      if (parentResult) {
+        parentResult[node.prop] = res;
+      }
     },
 
 
@@ -1459,6 +1489,28 @@ export default class RuntimeMonitor {
       }
     }
   };
+
+  /** ###########################################################################
+   * purpose
+   *  #########################################################################*/
+
+  addPurpose(programId, value, tid, purpose, arg) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    const trace = traceCollection.getById(tid);
+    if (!trace) {
+      throw new Error(`addPurpose failed - trace does not exist (tid="${tid}")`);
+    }
+
+    // [edit-after-send]
+    addPurpose(trace, {
+      type: purpose,
+      arg
+    });
+
+    return value;
+  }
 
   // // ###########################################################################
   // // Loops (unfinished)

@@ -1,6 +1,6 @@
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
-import { isDataLinkPurpose } from '@dbux/common/src/types/constants/TracePurpose';
+import { isDataLinkPurpose, isWarnPurpose } from '@dbux/common/src/types/constants/TracePurpose';
 import TraceType, { isTraceFunctionExit, isTracePop, isTraceReturn, isTraceReturnOrBranchPop, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
 import Trace from '@dbux/common/src/types/Trace';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -14,6 +14,7 @@ import Collection from '../Collection';
 export default class TraceCollection extends Collection {
   lastContextId = -1;
   lastCodeChunkId = 0;
+  warnTraces = [];
 
   constructor(dp) {
     super('traces', dp);
@@ -154,23 +155,34 @@ export default class TraceCollection extends Collection {
     for (const trace of traces) {
       if (SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType)) {
         // 1. Array HOFs
-        // TODO: fix specialDynamicType vs. purpose. Just stick with one?
+        // TODO: remove specialDynamicType and use purpose instead
         this.dp.collections.executionContexts.resolveBuiltInHOFParamDataNodes(trace);
       }
       if (trace.purposes) {
         // 2. Purpose-based DataNode linkage
         for (const purpose of trace.purposes) {
+          if (isWarnPurpose(purpose.type)) {
+            this.warnTraces.push(trace.traceId);
+          }
           this.dp.collections.dataNodes.resolveDataNodeLinks(trace, purpose);
         }
       }
-
       const { dp } = this;
+      // const staticTrace = dp.util.getStaticTrace(trace.traceId);
+      // if (staticTrace.purposes) {
+      //   // 2b. Purpose-based DataNode linkage
+      //   for (const purpose of staticTrace.purposes) {
+      //     this.dp.collections.dataNodes.resolveDataNodeLinks(trace, purpose);
+      //   }
+      // }
+
       const traceType = dp.util.getTraceType(trace.traceId);
       if (TraceType.is.BeforeCallExpression(traceType)) {
-        // 3. BCE has "own" DataNode (caused by monkey patching, specifically by `createBCEOwnDataNode`)
         const callId = trace.traceId;
         const bceDataNode = dp.util.getOwnDataNodeOfTrace(callId);
         if (bceDataNode) {
+          // TODO: use purpose instead
+          // 3. BCE has "own" DataNode (caused by monkey patching, specifically by `createBCEOwnDataNode`)
           if (trace.resultId) {
             const resultDataNode = dp.util.getOwnDataNodeOfTrace(trace.resultId);
             if (resultDataNode && !resultDataNode.inputs?.length) {

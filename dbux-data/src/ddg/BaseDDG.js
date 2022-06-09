@@ -21,6 +21,7 @@ import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNo
 import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
+import DDGEdgeType from './DDGEdgeType';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -490,10 +491,14 @@ export default class BaseDDG {
         }
       }
       else {
+        // handle skip and ignore
         if (this.timelineBuilder.shouldIgnoreDataNode(lastModDataNode.nodeId)) {
           // ignore
           continue;
         }
+
+        const alreadyHadNode = !!this.getFirstDataTimelineNodeByDataNodeId(lastModDataNode.nodeId);
+
         // apply lastMod
         // if (this.#canBeRefSnapshot(lastModDataNode)) {
         if (lastModDataNode.refId) {
@@ -504,7 +509,12 @@ export default class BaseDDG {
           // primitive
           newChild = this.addValueDataNode(lastModDataNode);
           this.#onSnapshotNodeCreated(newChild, parentSnapshot);
-          newChild.parentNodeId = parentSnapshot.timelineId;
+        }
+        
+        const skippedBy = this.timelineBuilder.getSkippedByDataNode(lastModDataNode);
+        if (!alreadyHadNode && skippedBy) {
+          // Snapshot picks up a skipped node. Make sure to add edge to its skippedBy.
+          this.building && this.addSnapshotEdge(skippedBy, newChild);
         }
       }
 
@@ -722,6 +732,15 @@ export default class BaseDDG {
     );
   }
 
+  addSnapshotEdge(fromNode, toNode) {
+    // TODO: consider if this should be done during build and/or summarization?
+    // if (fromNode.dataNodeId !== newNode.dataNodeId) {
+    // TODO: determine correct DDGEdgeType
+    const edgeType = DDGEdgeType.Data;
+    const edgeState = { nByType: { [edgeType]: 1 } };
+    this.addEdge(edgeType, fromNode.timelineId, toNode.timelineId, edgeState);
+    // }
+  }
 
   /**
    * @param {DataTimelineNode} fromNode 

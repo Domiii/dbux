@@ -39,12 +39,12 @@ export default class DDGTimelineBuilder {
   skippedNodesByDataNodeId = [];
 
   /**
-   * The last write of given var (declarationTid)
+   * The last write of given accessId
    * or the first node that accessed the var (within bounds).
    * 
    * @type {Object.<number, DataTimelineNode>}
    */
-  lastTimelineVarSnapshotNodeByDeclarationTid = {};
+  lastTimelineVarNodeByAccessId = {};
 
 
   /** ########################################
@@ -78,8 +78,8 @@ export default class DDGTimelineBuilder {
     return last(this.stack);
   }
 
-  getLastVarSnapshotNode(declarationTid) {
-    return this.lastTimelineVarSnapshotNodeByDeclarationTid[declarationTid];
+  getLastTimelineNodeByAccessId(accessId) {
+    return this.lastTimelineVarNodeByAccessId[accessId];
   }
 
   getDataTimelineInputNode(dataNodeId) {
@@ -164,12 +164,7 @@ export default class DDGTimelineBuilder {
     if (
       fromNode
     ) {
-      // if (fromNode.dataNodeId !== newNode.dataNodeId) {
-      // TODO: determine correct DDGEdgeType
-      const edgeType = DDGEdgeType.Data;
-      const edgeState = { nByType: { [edgeType]: 1 } };
-      this.ddg.addEdge(edgeType, fromNode.timelineId, newNode.timelineId, edgeState);
-      // }
+      this.ddg.addSnapshotEdge(fromNode, newNode);
     }
   }
 
@@ -179,7 +174,7 @@ export default class DDGTimelineBuilder {
 
   getIgnoreAndSkipInfo(dataNode) {
     const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
-    const skippedBy = this.#getSkippedByDataNode(dataNode);
+    const skippedBy = this.getSkippedByDataNode(dataNode);
     if (!ignore && !skippedBy) {
       return null;
     }
@@ -197,7 +192,7 @@ export default class DDGTimelineBuilder {
         Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
         return false;
       }
-      const skippedBy = this.#getSkippedByDataNode(dataNode);
+      const skippedBy = this.getSkippedByDataNode(dataNode);
       if (skippedBy) {
         // → This node SHOULD be skipped and CAN be skipped.
         // → register skip node
@@ -231,7 +226,7 @@ export default class DDGTimelineBuilder {
     return false;
   }
 
-  #shouldSkipDataNode(dataNodeId) {
+  shouldSkipDataNode(dataNodeId) {
     const { dp } = this;
 
     // NOTE: this logic is not ideal. Single-input Compute nodes will not show, but multi-input Compute nodes will.
@@ -254,8 +249,8 @@ export default class DDGTimelineBuilder {
    * @param {DataNode} dataNode
    * @return {DDGTimelineNode}
    */
-  #getSkippedByDataNode(dataNode) {
-    if (!this.#shouldSkipDataNode(dataNode.nodeId)) {
+  getSkippedByDataNode(dataNode) {
+    if (!this.shouldSkipDataNode(dataNode.nodeId)) {
       return null;
     }
 
@@ -268,36 +263,15 @@ export default class DDGTimelineBuilder {
      * @type {DataNode}
      */
     let prev = null;
-    if (dataNode.varAccess?.declarationTid) {
-      prev = this.getLastVarSnapshotNode(dataNode.varAccess.declarationTid);
-      // if (!prev && dataNode is not declarationTid) {
-      //   TODO: handle external nodes
-      // }
+    // → look-up input
+    if (dataNode.valueFromId) {
+      prev =
+        this.skippedNodesByDataNodeId[dataNode.valueFromId] ||
+        this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNode.valueFromId);
     }
-    else if (dataNode.refId) {
-      // TODO: look up by varAccess
-
-      // const prevSnapshotNode = this.getLastRefSnapshotNode(dataNode.refId);
-      // prev = prevSnapshotNode?.refNode;
-    }
-    else {
-      // there is no previous guy for this guy
-      // return null;
-    }
-
     if (!prev) {
-      // → look-up input
-      if (dataNode.valueFromId) {
-        // TODO: we currently don't have valueFromId for refs
-        //      → keep track of all ref occurrences, instead of only the last?
-
-        prev =
-          this.skippedNodesByDataNodeId[dataNode.valueFromId] ||
-          this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNode.valueFromId);
-
-        // if (!prev) {
-        //   // TODO: handle external nodes
-        // }
+      if (dataNode.accessId) {
+        prev = this.getLastTimelineNodeByAccessId(dataNode.accessId);
       }
     }
     // if (!prev) {
@@ -311,24 +285,9 @@ export default class DDGTimelineBuilder {
    */
   #addSnapshotOrDataNode(dataNode) {
     let newNode;
-    // const { dp } = this;
-
-    // create node based on DDGTimelineNodeType
-    // if() {
-    //   TODO: add DecisionTimelineNode
-    // }
-    // else 
-    const refId = this.#getRefIdForSnapshot(dataNode);
-    if (refId) {
-      // TODO: handle assignment patterns (→ can have multiple write targets)
-      // const refNodeId = dataNode.varAccess?.objectNodeId;
-      // ref type access → add Snapshot
-      // if (dataNodesOfTrace?.some(n => n.varAccess?.objectNodeId !== refNodeId)) {
-      //   // sanity checks
-      //   this.logger.trace(`NYI: trace has multiple dataNodes accessing different objectNodeIds - "${dp.util.makeTraceInfo(dataNode.traceId)}"`);
-      // }
+    if (this.#shouldCreateSnapshot(dataNode)) {
       const snapshotsByRefId = new Map();
-      newNode = this.ddg.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
+      newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, null);
     }
     else {
       // this is not a watched ref
@@ -340,12 +299,12 @@ export default class DDGTimelineBuilder {
       newNode = this.ddg.addValueDataNode(dataNode);
     }
 
-    if (dataNode.varAccess?.declarationTid && (
+    if (dataNode.accessId && (
       isDataNodeModifyType(dataNode.type) ||
-      !this.lastTimelineVarSnapshotNodeByDeclarationTid[dataNode.varAccess.declarationTid]
+      !this.lastTimelineVarNodeByAccessId[dataNode.accessId]
     )) {
       // register node by var
-      this.lastTimelineVarSnapshotNodeByDeclarationTid[dataNode.varAccess.declarationTid] = newNode;
+      this.lastTimelineVarNodeByAccessId[dataNode.accessId] = newNode;
     }
 
     // add to parent
@@ -367,28 +326,13 @@ export default class DDGTimelineBuilder {
    * ##########################################################################*/
 
   /**
-   * NOTE: we only create snapshots for watched or summarized entries.
+   * NOTE: we always want to generate snapshots, to actually grab all meaningful writes.
+   * If we want to render less snapshots, that should be done by summarization.
+   * 
    * @param {DataNode} dataNode 
    */
-  #getRefIdForSnapshot(dataNode) {
-    let refId;
-    const dataNodeId = dataNode.nodeId;
-    if (
-      (
-        (
-          (refId = dataNode.refId) &&
-          this.ddg.watchSet.isWatchedDataNode(dataNodeId)
-        ) /* ||
-        (
-          (refId = dataNode.varAccess?.objectNodeId)
-        ) */
-      ) /* &&
-      // NOTE: render as "Primitive" instead if ValueRef does not have children
-      (this.dp.collections.values.getById(refId))?.children */
-    ) {
-      return refId;
-    }
-    return 0;
+  #shouldCreateSnapshot(dataNode) {
+    return !!dataNode.refId;
   }
 
   /** ###########################################################################
@@ -519,7 +463,7 @@ export default class DDGTimelineBuilder {
     }
   }
 
-  #addInputNode(inputDataNodeId, inputNodes) {
+  #addInputNodeEdge(inputDataNodeId, inputNodes) {
     const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
 
     if (inputNode) {
@@ -569,12 +513,12 @@ export default class DDGTimelineBuilder {
     }
 
     if (dataNode.valueFromId) {
-      this.#addInputNode(dataNode.valueFromId, inputNodes);
+      this.#addInputNodeEdge(dataNode.valueFromId, inputNodes);
     }
 
     if (dataNode.inputs) {
       for (const inputDataNodeId of dataNode.inputs) {
-        this.#addInputNode(inputDataNodeId, inputNodes);
+        this.#addInputNodeEdge(inputDataNodeId, inputNodes);
       }
     }
 

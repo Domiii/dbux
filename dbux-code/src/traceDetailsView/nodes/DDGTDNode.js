@@ -1,11 +1,10 @@
 import { TreeItemCollapsibleState } from 'vscode';
-import sleep from '@dbux/common/src/util/sleep';
-import traceSelection from '@dbux/data/src/traceSelection';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
-import { renderDataNode, renderDDGNode } from '../../treeViewsShared/ddgTreeViewUtil';
+import { renderDDGNode } from '../../treeViewsShared/ddgTreeViewUtil';
 import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
+import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
 
 
 /** ###########################################################################
@@ -90,7 +89,7 @@ export default class DDGTDNode extends TraceDetailNode {
           'Timeline Nodes': this.renderTimelineNodes(dataNode),
           ...dataNode
         };
-        return renderDataNode(ddg, dataNode.nodeId, children);
+        return renderDataNode(ddg.dp, dataNode.nodeId, children);
       }),
       {
         collapsibleState: TreeItemCollapsibleState.Expanded,

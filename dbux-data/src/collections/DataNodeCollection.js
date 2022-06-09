@@ -92,6 +92,21 @@ export default class DataNodeCollection extends Collection {
         resultDataNode.inputs = [minBy(argDataNodes, n => n.value)?.nodeId];
         resultDataNode.cinputs = argDataNodes.filter(n => n.nodeId !== resultDataNode.inputs[0]).map(n => n.nodeId);
       }
+    },
+
+    /**
+     * WARNING: This still won't work since we just cannot have traces and DataNodes out of order.
+     * Given `arg` trace should have `trace` as input.
+     */
+    [TracePurpose.ReverseInput]: (trace, purpose) => {
+      const { dp } = this;
+      const { arg: targetTraceId } = purpose;
+
+      const inputDataNode = dp.util.getDataNodeOfTrace(trace.traceId);
+      const targetDataNode = dp.util.getDataNodeOfTrace(targetTraceId);
+      if (inputDataNode && targetDataNode) {
+        targetDataNode.inputs = [inputDataNode.nodeId];
+      }
     }
   };
 
@@ -165,6 +180,7 @@ export default class DataNodeCollection extends Collection {
 
   /** ###########################################################################
    * syntax interpreter
+   * future-work: consider moving all of this to `Purpose` as well
    * ##########################################################################*/
 
   syntaxUtil = {
@@ -179,13 +195,19 @@ export default class DataNodeCollection extends Collection {
      */
     addReadSelfNodeIdToInput: (dataNode, staticTrace) => {
       const isComputation = staticTrace.dataNode.isNew;
-      if (isComputation && dataNode.accessId) {
-        // → this is re-assignment (rather than assignment)
+      const operator = staticTrace.data?.operator;
+      if (isComputation) {
+        if (operator === '||=' && dataNode.inputs?.length) {
+          // nothing to do (it already has the correct input)
+        }
+        else if (dataNode.accessId) {
+          // → this is re-assignment (rather than assignment)
 
-        // get the last dataNode of same accessId (before this one)
-        const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
-        if (readSelfNode) {
-          dataNode.inputs.unshift(readSelfNode.nodeId);
+          // get the last dataNode of same accessId (before this one)
+          const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
+          if (readSelfNode) {
+            dataNode.inputs.unshift(readSelfNode.nodeId);
+          }
         }
       }
     }
