@@ -147,7 +147,7 @@ function makeFailureState(failureReason) {
 }
 
 async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
-  // TODO: select correct window, based on initial state
+  // future-work: select correct window, based on initial state
   const dDGWebView = await initDDGView(ddg, ddgDocumentInitialState, hostOnlyState);
   await dDGWebView.show();
   // TODO: add new action type
