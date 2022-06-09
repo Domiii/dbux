@@ -1573,29 +1573,20 @@ module.exports = [
       {
         "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
         "contextId": 18,
-        "fullContextFilePath": "C:/Users/domin/code/dbux/dbux_projects/javascript-algorithms/src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
         "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
         "loc": {
           "start": {
             "line": 62,
             "column": 40,
-            "index": 1624,
-            "_pos": {
-              "line": 61,
-              "character": 40
-            }
+            "index": 1624
           },
           "end": {
             "line": 88,
             "column": 1,
-            "index": 2284,
-            "_pos": {
-              "line": 87,
-              "character": 1
-            }
+            "index": 2284
           }
         },
-        "applicationUuid": "0.5414476279619551"
+        "applicationUuid": "0.5635074496898085"
       }
     ]
   },

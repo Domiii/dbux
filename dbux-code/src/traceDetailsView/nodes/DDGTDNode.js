@@ -30,15 +30,8 @@ export default class DDGTDNode extends TraceDetailNode {
   // }
 
   // eslint-disable-next-line camelcase
-  TimelineNodes = () => {
-    const { dp, dataNodes, ddg } = this;
-
-    const dataNode = traceSelection.nodeId ?
-      dp.util.getDataNode(traceSelection.nodeId) :
-      dp.util.getOwnDataNodeOfTrace(this.traceId);
-    if (!dataNode) {
-      return makeTreeItem('(no TimelineNode)');
-    }
+  renderTimelineNodes = (dataNode) => {
+    const { dp, ddg } = this;
 
     const ignoreAndSkippedBy = ddg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
     if (ignoreAndSkippedBy) {
@@ -61,22 +54,25 @@ export default class DDGTDNode extends TraceDetailNode {
     // TODO: also render edges
     // TODO: also get control group by decision etc.
 
-    const timelineNodes = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
-    if (!timelineNodes?.length) {
-      return makeTreeItem('(this DataNode has no TimelineNode)');
-    }
-    if (timelineNodes.length === 1) {
-      return renderDDGNode(
-        ddg, timelineNodes[0], timelineNodes[0],
-        { collapsibleState: TreeItemCollapsibleState.Expanded }
+    const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
+    if (!timelineNodesOfDataNode?.length) {
+      return makeTreeItem(
+        '(DataNode has no TimelineNode)'
       );
     }
 
+    // if (timelineNodes.length === 1) {
+    //   return renderDDGNode(
+    //     ddg, timelineNodes[0], timelineNodes[0],
+    //     { collapsibleState: TreeItemCollapsibleState.Expanded }
+    //   );
+    // }
+
     return makeTreeItem(
       'Timeline Nodes',
-      timelineNodes.map(timelineNode => renderDDGNode(ddg, timelineNode)),
+      timelineNodesOfDataNode.map(timelineNode => renderDDGNode(ddg, timelineNode)),
       {
-        description: `${timelineNodes.length}`,
+        description: `${timelineNodesOfDataNode.length}`,
         collapsibleState: TreeItemCollapsibleState.Expanded
       }
     );
@@ -89,8 +85,12 @@ export default class DDGTDNode extends TraceDetailNode {
     }
     return makeTreeItem(
       'DataNodes',
-      () => dataNodes.map(n => {
-        return renderDataNode(ddg, n.nodeId);
+      () => dataNodes.map(dataNode => {
+        const children = {
+          'Timeline Nodes': this.renderTimelineNodes(dataNode),
+          ...dataNode
+        };
+        return renderDataNode(ddg, dataNode.nodeId, children);
       }),
       {
         collapsibleState: TreeItemCollapsibleState.Expanded,
@@ -114,7 +114,7 @@ export default class DDGTDNode extends TraceDetailNode {
     }
 
     return makeTreeItems(
-      this.TimelineNodes,
+      // this.TimelineNodes,
       this.DataNodes
     );
   }

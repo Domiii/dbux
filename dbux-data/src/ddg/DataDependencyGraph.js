@@ -68,11 +68,6 @@ class SummaryState {
   currentCollapsedAncestor = null;
 
   addEdge(from, to, type) {
-    if (from.watched && to.watched && ddgQueries.isSnapshot(this, from) && ddgQueries.isSnapshot(this, to)) {
-      // hackfix: don't connect watched snapshots
-      //    (NOTE: this can be confusing when a watched object is returned as-is without writes, but improves readability)
-      return;
-    }
     const { visibleEdges } = this;
     let edgeTargets = visibleEdges.get(from.timelineId);
     if (!edgeTargets) {

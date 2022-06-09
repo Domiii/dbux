@@ -505,7 +505,6 @@ export default class BaseDDG {
           newChild = this.addValueDataNode(lastModDataNode);
           this.#onSnapshotNodeCreated(newChild, parentSnapshot);
           newChild.parentNodeId = parentSnapshot.timelineId;
-          this.building && this.timelineBuilder.onNewSnapshotValueNode(newChild);
         }
       }
 
@@ -685,6 +684,8 @@ export default class BaseDDG {
       // hackfix: we only need these during initial build
       this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
     }
+
+    this.building && this.timelineBuilder.onNewSnapshotNode(newNode);
   }
 
   /** ###########################################################################
@@ -710,6 +711,17 @@ export default class BaseDDG {
     edges.push(edge.edgeId);
   }
 
+  shouldAddEdge(fromNodeId, toNodeId) {
+    const fromNode = this.timelineNodes[fromNodeId];
+    const toNode = this.timelineNodes[toNodeId];
+    // TODO: prevent unwantend root-level edges (only if there was a write of the root itself, not its children)
+    return (
+      // only link nodes of two snapshots of the same thing if there was a write in between
+      !fromNode.startDataNodeId ||
+      toNode.dataNodeId > fromNode.startDataNodeId
+    );
+  }
+
 
   /**
    * @param {DataTimelineNode} fromNode 
@@ -717,6 +729,9 @@ export default class BaseDDG {
    * @param {EdgeState} edgeState
    */
   addEdge(type, fromTimelineId, toTimelineId, edgeState) {
+    if (!this.shouldAddEdge(fromTimelineId, toTimelineId)) {
+      return;
+    }
     const newEdge = new DDGEdge(type, this.edges.length, fromTimelineId, toTimelineId, edgeState);
     this.edges.push(newEdge);
 

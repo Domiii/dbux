@@ -44,15 +44,22 @@ export function makeDDGNodeLabel(ddg, timelineId) {
   return node.label || `${node.constructor.name}`;
 }
 
-export function renderDataNode(ddg, dataNodeId) {
-  const { dp } = ddg;
-  const dataNode = dp.util.getDataNode(dataNodeId);
+export function makeDataNodeLabel(ddg, dataNodeId) {
+  return ddg.dp.util.getDataNodeValueStringShort(dataNodeId);
+}
+
+export function makeDataNodeDescription(ddg, dataNodeId) {
+  const dataNode = ddg.dp.util.getDataNode(dataNodeId);
+  return `${dataNodeId} ${DataNodeType.nameFrom(dataNode.type)} (ref=${dataNode.refId}, v=${dataNode.value})`;
+}
+
+export function renderDataNode(ddg, dataNodeId, children = ddg.dp.util.getDataNode(dataNodeId)) {
   return makeTreeItem(
     // 'dataNode',
-    dp.util.getDataNodeValueStringShort(dataNodeId),
-    dataNode,
+    makeDataNodeLabel(ddg, dataNodeId),
+    children,
     {
-      description: `${dataNodeId} ${DataNodeType.nameFrom(dataNode.type)}, refId=${dataNode.refId}, value=${dataNode.value}`
+      description: makeDataNodeDescription(ddg, dataNodeId)
     }
   );
 }

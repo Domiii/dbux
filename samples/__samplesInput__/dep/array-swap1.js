@@ -11,3 +11,4 @@ function main(a) {
 }
 
 console.log(main([[1, 2], [3, 4]]));
+// console.log(main([1, 2]));

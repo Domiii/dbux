@@ -159,15 +159,10 @@ export default class DDGTimelineBuilder {
    * hackfix: add edges, but only during build, not during summarization
    * @param {DataTimelineNode} newNode 
    */
-  onNewSnapshotValueNode(newNode) {
+  onNewSnapshotNode(newNode) {
     const fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
     if (
-      fromNode &&
-      (
-        // only link nodes of two snapshots of the same thing if there was a write in between
-        !fromNode.startDataNodeId ||
-        newNode.dataNodeId > fromNode.startDataNodeId
-      )
+      fromNode
     ) {
       // if (fromNode.dataNodeId !== newNode.dataNodeId) {
       // TODO: determine correct DDGEdgeType

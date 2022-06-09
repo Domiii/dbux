@@ -312,7 +312,7 @@ export default class DataNodeCollection extends Collection {
         //    It is important we do this after (1), since 
         //        looking up by `accessId` won't work on a new Write node.
         if (accessId) {
-          const lastNode = this.getLastDataNodeByAccessId(accessId);
+          const lastNode = this.getLastDataNodeByAccessId(nodeId, accessId);
           if (lastNode) {
             dataNode.valueFromId = lastNode.nodeId;
             return lastNode.valueId;
@@ -350,7 +350,7 @@ export default class DataNodeCollection extends Collection {
         //    It is important we do this after (1), since 
         //        looking up by `accessId` won't work on a new Write node.
         if (accessId) {
-          const lastNode = this.getLastDataNodeByAccessId(accessId);
+          const lastNode = this.getLastDataNodeByAccessId(nodeId, accessId);
           if (lastNode) {
             dataNode.valueFromId = lastNode.nodeId;
             dataNode.refId ||= lastNode.refId; // also set refId
@@ -393,8 +393,20 @@ export default class DataNodeCollection extends Collection {
    *      since we are resolving the index during this phase.
    * @return {DataNode}
    */
-  getLastDataNodeByAccessId(accessId) {
-    return this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
+  getLastDataNodeByAccessId(nodeId, accessId) {
+    const ownNode = this.getById(nodeId);
+    const nodes = this.dp.indexes.dataNodes.byAccessId.get(accessId);
+    if (!nodes) {
+      return null;
+    }
+
+    for (let i = nodes.length - 1; i >= 0; --i) {
+      const node = nodes[i];
+      if (node.traceId <= ownNode.traceId) {
+        return node;
+      }
+    }
+    return null;
   }
 
   getSecondButLastDataNodeByAccessId(accessId) {
