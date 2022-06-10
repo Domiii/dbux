@@ -239,7 +239,6 @@ export default class BaseDDG {
 
         if (this.watchSet.isWatchedDataNode(node.dataNodeId)) {
           this.#setWatchedDFS(node);
-          this.watchSet.addWatchedNode(node);
         }
         node.nInputs = nIncomingEdges;
         node.nOutputs = nOutgoingEdges;
@@ -257,6 +256,16 @@ export default class BaseDDG {
           this.#setConnectedDFS(node);
         }
       }
+
+      // /** ########################################
+      //  * phase 4: connect watched snapshots to its inputs.
+      //  * NOTE: this deals especially with the "output"-type watched snapshots.
+      //  *    They share nodes with other snapshots, that need extra linkage.
+      //  *  ######################################*/
+
+      // for (const watched of this.watchSet.watchedNodes) {
+      //   this.#addMissingWatchedEdgesDFS(watched);
+      // }
     }
     finally {
       this.building = false; // done
@@ -268,10 +277,8 @@ export default class BaseDDG {
    * @param {DataTimelineNode} node 
    */
   #setWatchedDFS(node) {
-    if (!node) {
-      throw new Error(`no node given`);
-    }
     node.watched = true;
+    this.watchSet.addWatchedNode(node);
 
     // hackfix: set children of watched snapshots to watched
     if (node.children) {
@@ -745,8 +752,11 @@ export default class BaseDDG {
       !fromNode.startDataNodeId ||
       toNode.dataNodeId > fromNode.startDataNodeId ||
 
-      // the final watched snapshot is forced, and often shares descendants with previous snapshots who actually contain the write
-      (toNode.watched && !fromNode.watched)
+      // hackfix: the final watched snapshot is forced, and often shares descendants with previous snapshots who actually contain the write
+      (
+        this.watchSet.isWatchedDataNode(toNode.startDataNodeId || toNode.dataNodeId) &&
+        !this.watchSet.isWatchedDataNode(fromNode.startDataNodeId || fromNode.dataNodeId)
+      )
     );
   }
 

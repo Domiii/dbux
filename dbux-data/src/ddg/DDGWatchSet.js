@@ -40,6 +40,7 @@ export default class DDGWatchSet {
    */
   watchSnapshotsByRef = new Map();
 
+  watchedNodes = new Set();
   lastDataNodeByWatchedRefs = new Map();
 
   /**
@@ -148,6 +149,7 @@ export default class DDGWatchSet {
    * @param {RefSnapshotTimelineNode} node 
    */
   addWatchedNode(node) {
+    this.watchedNodes.add(node);
     if (node instanceof RefSnapshotTimelineNode) {
       const { refId/* , dataNodeId */, startDataNodeId } = node;
       this.watchSnapshotsByRef.set(refId, node);
