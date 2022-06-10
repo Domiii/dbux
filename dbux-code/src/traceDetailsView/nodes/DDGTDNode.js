@@ -32,15 +32,16 @@ export default class DDGTDNode extends TraceDetailNode {
   renderTimelineNodes = (dataNode) => {
     const { dp, ddg } = this;
 
+    let ignoreSkipNode;
     const ignoreAndSkippedBy = ddg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
     if (ignoreAndSkippedBy) {
       const { ignore, skippedBy } = ignoreAndSkippedBy;
       if (ignore) {
-        return makeTreeItem('(this node is ignored)');
+        ignoreSkipNode = makeTreeItem('(this node is ignored)');
       }
       if (skippedBy) {
         const children = skippedBy;
-        return renderDDGNode(
+        ignoreSkipNode = renderDDGNode(
           ddg,
           skippedBy,
           children,
@@ -51,7 +52,7 @@ export default class DDGTDNode extends TraceDetailNode {
     }
     const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
     if (!timelineNodesOfDataNode?.length) {
-      return makeTreeItem(
+      return ignoreSkipNode || makeTreeItem(
         '(DataNode has no TimelineNode)'
       );
     }
@@ -62,10 +63,14 @@ export default class DDGTDNode extends TraceDetailNode {
     //     { collapsibleState: TreeItemCollapsibleState.Expanded }
     //   );
     // }
-
-    return timelineNodesOfDataNode.map(
+    
+    const res = timelineNodesOfDataNode.map(
       timelineNode => renderDDGNode(ddg, timelineNode)
     );
+    if (ignoreSkipNode) {
+      res.unshift(ignoreSkipNode);
+    }
+    return res;
   }
 
   TimelineNodes() {

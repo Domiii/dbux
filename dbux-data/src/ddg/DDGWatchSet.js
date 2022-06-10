@@ -100,7 +100,7 @@ export default class DDGWatchSet {
     return this.ddg.bounds;
   }
 
-  isWatchedSetDataNode(dataNodeId) {
+  #isWatchedSetDataNode(dataNodeId) {
     const dataNode = this.dp.util.getDataNode(dataNodeId);
     return this.watchTraceIdSet.has(dataNode.traceId);
   }
@@ -114,7 +114,7 @@ export default class DDGWatchSet {
    */
   isWatchedDataNode(dataNodeId) {
     const dataNode = this.dp.util.getDataNode(dataNodeId);
-    return this.isWatchedSetDataNode(dataNodeId) ||
+    return this.#isWatchedSetDataNode(dataNodeId) ||
       (
         DataNodeType.is.Write(dataNode.type) &&
         this.isWatchedAccessDataNode(dataNodeId)
@@ -139,7 +139,7 @@ export default class DDGWatchSet {
       return true;
     }
 
-    // TODO: watched refs
+    // TODO: watched refs (→ use accessId instead)
 
     return false;
   }

@@ -701,6 +701,8 @@ export default class BaseDDG {
   #onSnapshotNodeCreated(newNode, parentSnapshot) {
     // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
     newNode.parentNodeId = parentSnapshot?.timelineId;
+    // TODO: startDataNodeId is wrong. This way, parent can be smaller than children (but should never be).
+    //    → e.g. in ObjectExpression
     newNode.startDataNodeId = parentSnapshot?.startDataNodeId || newNode.dataNodeId;
 
     if (this.building) {
@@ -741,7 +743,10 @@ export default class BaseDDG {
     return (
       // only link nodes of two snapshots of the same thing if there was a write in between
       !fromNode.startDataNodeId ||
-      toNode.dataNodeId > fromNode.startDataNodeId
+      toNode.dataNodeId > fromNode.startDataNodeId ||
+
+      // the final watched snapshot is forced, and often shares descendants with previous snapshots who actually contain the write
+      (toNode.watched && !fromNode.watched)
     );
   }
 

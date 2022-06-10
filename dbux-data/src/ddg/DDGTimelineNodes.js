@@ -160,7 +160,7 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
   children;
 
   /**
-   * We use `startDataNodeId` to determine modifications.
+   * We use `startDataNodeId` as a "starting point" of a snapshot and all its descendants.
    */
   startDataNodeId;
 

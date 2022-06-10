@@ -232,6 +232,10 @@ export default class DDGTimelineBuilder {
     // NOTE: this logic is not ideal. Single-input Compute nodes will not show, but multi-input Compute nodes will.
     // future-work: proper, dedicated Compute merge logic (maybe in summarizer tho)
 
+    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+      return false;
+    }
+
     if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
       const dataNode = dp.util.getDataNode(dataNodeId);
