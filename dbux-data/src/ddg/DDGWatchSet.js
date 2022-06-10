@@ -152,7 +152,7 @@ export default class DDGWatchSet {
       const { refId/* , dataNodeId */, startDataNodeId } = node;
       this.watchSnapshotsByRef.set(refId, node);
 
-      // NOTE: this is similar to `this.lastDataNodeByWatchedRefs`, but with a watched constraint
+      // NOTE: this is similar to ``, but with a watched constraint
       const lastDataNodeId = startDataNodeId;
       this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
     }

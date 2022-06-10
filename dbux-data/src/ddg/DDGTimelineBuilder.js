@@ -544,12 +544,12 @@ export default class DDGTimelineBuilder {
     const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     const valueRefId = dataNode.refId;
     const varDeclarationTid = dataNode.varAccess?.declarationTid;
-    if (accessedRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.startDataNodeId || dataNode.nodeId;
-    }
-    if (valueRefId) {
-      this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = newNode.startDataNodeId || dataNode.nodeId;
-    }
+    // if (accessedRefId) {
+    //   this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.startDataNodeId || dataNode.nodeId;
+    // }
+    // if (valueRefId) {
+    //   this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = newNode.startDataNodeId || dataNode.nodeId;
+    // }
     newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 
     // update group

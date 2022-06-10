@@ -130,7 +130,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
     return {
       timelineNodes,
-    
+
       ...this.getChangingData()
     };
   }
@@ -291,7 +291,6 @@ export default class DataDependencyGraph extends BaseDDG {
      */
     const snapshotsByRefId = new Map();
     for (const [refId, dataNodeId] of lastModifyNodesByRefId) {
-      // const lastDataNodeIdOfRef = this.og._lastAccessDataNodeIdByRefId[refId];
       const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
       if (lastDataNodeIdOfRef <= lastNestedDataNodeId) {
         // skip: this ref is only used internally (or before) this node. It is not accessed AFTER this node.
@@ -338,10 +337,7 @@ export default class DataDependencyGraph extends BaseDDG {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
 
-    // TODO: only get connected snapshots and vars
-    // TODO: fix `connected` to trickle up the tree for snapshots
-
-    if (node.dataNodeId) {
+    if (node.dataNodeId && ddgQueries.checkConnected(this, node)) {
       const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
       let varDeclarationTid;
       if (refId) {
@@ -349,13 +345,11 @@ export default class DataDependencyGraph extends BaseDDG {
         lastModifyNodesByRefId.set(refId, node.dataNodeId);
       }
       else {
-        if (ddgQueries.checkConnected(this, node)) {
-          if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
-            // Variable Write
-            if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
-              // store variable writes, if variable was declared before summarizingNode
-              varModifyDataNodes.set(varDeclarationTid, node.timelineId);
-            }
+        if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
+          // Variable Write
+          if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
+            // store variable writes, if variable was declared before summarizingNode
+            varModifyDataNodes.set(varDeclarationTid, node.timelineId);
           }
         }
       }
