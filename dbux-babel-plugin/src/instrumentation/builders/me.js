@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import template from '@babel/template';
 import { buildTraceCall, bindExpressionTemplate } from './templateUtil';
-import { getTraceCall, makeInputs, ZeroNode } from './buildUtil';
+import { getTraceCall, makeInputs, NullNode, ZeroNode } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
@@ -19,20 +19,20 @@ import { buildTraceExpression } from './misc';
 const buildtraceExpressionMEDefault = bindExpressionTemplate(
   '%%tme%%(%%object%%, %%property%%, %%value%%, %%tid%%, %%objectTid%%)',
   function buildtraceExpressionMEDefault(/* meNode, */ state, traceCfg) {
-    const meNode = getInstrumentTargetAstNode(state, traceCfg);
+    const meAstNode = getInstrumentTargetAstNode(state, traceCfg);
     const trace = getTraceCall(state, traceCfg, 'traceExpressionME');
     const tid = buildTraceId(state, traceCfg);
 
     const {
-      object: objectNode,
-      property: propertyNode,
+      object: objectAstNode,
+      property: propertyAstNode,
       computed
-    } = meNode;
+    } = meAstNode;
 
     const {
       data: {
         objectTid,
-        isObjectTracedAlready,
+        dontTraceObject,
         objectVar,
         propertyVar, // NOTE: this is `undefined`, if `!computed`
         optional
@@ -40,10 +40,13 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
     } = traceCfg;
 
     // build object
-    const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
+
+    const o = dontTraceObject ?
+      (objectVar || NullNode) :
+      buildMEObject(meAstNode, traceCfg);
 
     // build propertyValue
-    let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
+    let propValue = convertNonComputedPropToStringLiteral(propertyAstNode, computed);
     if (computed) {
       propValue = t.assignmentExpression('=',
         propertyVar,
@@ -53,8 +56,8 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
 
     // build actual MemberExpression
     const newMemberExpression = (optional ? t.optionalMemberExpression : t.memberExpression)(
-      objectVar,
-      propertyVar || propertyNode,
+      objectVar || objectAstNode,
+      propertyVar || propertyAstNode,
       computed,
       optional
     );
@@ -114,21 +117,23 @@ export const buildTraceWriteME = buildTraceCall(
     } = assignmentExpression;
 
     const {
-      property: propertyNode
+      object: objectAstNode
     } = meAstNode;
 
     const {
       data: {
         objectTid,
         propTid,
-        isObjectTracedAlready,
+        dontTraceObject,
         propertyVar, // NOTE: this is `undefined`, if `!computed`
         objectVar
       }
     } = traceCfg;
 
     // build object
-    const o = isObjectTracedAlready ? objectVar : buildMEObject(meAstNode, traceCfg);
+    const o = dontTraceObject ?
+      (objectVar || NullNode) :
+      buildMEObject(meAstNode, traceCfg);
 
     // build propValue
     let propValue = buildMEProp(meAstNode, traceCfg);
@@ -290,6 +295,7 @@ export function getMEpropVal(meAstNode, traceCfg) {
  */
 export function buildMELval(meAstNode, traceCfg) {
   const {
+    object: objectAstNode,
     property: propertyAstNode,
     computed
   } = meAstNode;
@@ -301,10 +307,11 @@ export function buildMELval(meAstNode, traceCfg) {
     }
   } = traceCfg;
 
+  const obj = objectVar || objectAstNode;
   const prop = propertyVar || propertyAstNode;
 
   return t.memberExpression(
-    objectVar,
+    obj,
     prop,
     computed,
     false

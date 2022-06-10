@@ -572,6 +572,10 @@ class ValueCollection extends Collection {
     ];
   }
 
+  #specialValue(x) {
+    return x; // future-work: improve
+  }
+
   _serializeNonTrackable(value, category) {
     // category = value || this.determineValueTypeCategory(value);
 
@@ -598,7 +602,7 @@ class ValueCollection extends Collection {
            * NOTE: JSON + msgpack both don't support bigint
            * @see https://github.com/Domiii/dbux/issues/533
            */
-          serialized = value + 'n';
+          serialized = this.#specialValue(value + 'n');
         }
         else if (t === 'symbol') {
           /**
@@ -606,7 +610,13 @@ class ValueCollection extends Collection {
            * NOTE: msgpack (notepack) does not support symbols
            * @see https://github.com/darrachequesne/notepack/issues
            */
-          serialized = value.toString();
+          serialized = this.#specialValue(value.toString());
+        }
+        else if (t === Infinity) {
+          return this.#specialValue('Inf');
+        }
+        else if (Number.isNaN(t)) {
+          return this.#specialValue('NaN');
         }
         else {
           serialized = value;

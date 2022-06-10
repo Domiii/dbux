@@ -77,7 +77,7 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
     children.children = renderDDGNodes(ddg, nodeChildren, 'Children');
 
     if (node.dataNodeId) {
-      children.dataNode = renderDataNode(dp, node.dataNodeId, node, 'DataNode');
+      children.dataNode = renderDataNode(dp, node.dataNodeId, null, 'DataNode');
       delete children.dataNodeId;
     }
 

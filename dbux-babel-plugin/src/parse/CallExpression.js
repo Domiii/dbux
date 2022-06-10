@@ -36,9 +36,10 @@ function isNotCalleeTraceableNodeME(calleePath) {
  * Check for traceability of potential special functions. 
  */
 function isNotCalleeTraceableNode(calleeNode) {
-  if (calleeNode.path.isMemberExpression()) {
-    return isNotCalleeTraceableNodeME(calleeNode.path);
-  }
+  // NOTE: this does not seem to be a problem
+  // if (calleeNode.path.isMemberExpression()) {
+  //   return isNotCalleeTraceableNodeME(calleeNode.path);
+  // }
   const { specialType } = calleeNode;
   return specialType && isNotCalleeTraceableType(specialType);
 }

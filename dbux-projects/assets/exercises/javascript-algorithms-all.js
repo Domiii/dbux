@@ -1398,20 +1398,11 @@ module.exports = [
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
-    ]
-  },
-  {
-    "name": "dijkstra should find minimum paths to all vertices for undirected graph",
-    "label": "dijkstra should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "dijkstra should find minimum paths to all vertices for undirected graph",
-    "chapter": "dijkstra",
-    "testFilePaths": [
-      "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
     ],
     "ddgs": [
       {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 285,
+        "contextId": 182,
         "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
         "loc": {
           "start": {
@@ -1425,7 +1416,36 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.7387246969423451"
+        "applicationUuid": "0.7801724826127072"
+      }
+    ]
+  },
+  {
+    "name": "dijkstra should find minimum paths to all vertices for undirected graph",
+    "label": "dijkstra should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "dijkstra should find minimum paths to all vertices for undirected graph",
+    "chapter": "dijkstra",
+    "testFilePaths": [
+      "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 99,
+        "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 53,
+            "index": 577
+          },
+          "end": {
+            "line": 80,
+            "column": 1,
+            "index": 3052
+          }
+        },
+        "applicationUuid": "0.3919765916065652"
       }
     ]
   },

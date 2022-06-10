@@ -5,6 +5,7 @@ import { renderDDGNode } from '../../treeViewsShared/ddgTreeViewUtil';
 import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
+import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 
 
 /** ###########################################################################
@@ -29,7 +30,7 @@ export default class DDGTDNode extends TraceDetailNode {
   // }
 
   // eslint-disable-next-line camelcase
-  renderTimelineNodes = (dataNode) => {
+  renderTimelineNodes = (dataNode, predicate) => {
     const { dp, ddg } = this;
 
     let ignoreSkipNode;
@@ -50,7 +51,7 @@ export default class DDGTDNode extends TraceDetailNode {
         );
       }
     }
-    const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
+    const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId, predicate);
     if (!timelineNodesOfDataNode?.length) {
       return ignoreSkipNode || makeTreeItem(
         '(DataNode has no TimelineNode)'
@@ -73,24 +74,20 @@ export default class DDGTDNode extends TraceDetailNode {
     return res;
   }
 
-  TimelineNodes() {
+  // eslint-disable-next-line camelcase
+  Visible_TimelineNodes() {
     const { ddg, dataNodes } = this;
-    const timelineNodes = dataNodes?.flatMap(dataNode => {
-      // const children = {
-      //   'Timeline Nodes': this.renderTimelineNodes(dataNode),
-      //   ...dataNode
-      // };
-      // return renderDataNode(ddg.dp, dataNode.nodeId, children);
-      return this.renderTimelineNodes(dataNode);
+    const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
+      return this.renderTimelineNodes(dataNode, node => ddgQueries.isVisible(ddg, node));
     });
-    if (!timelineNodes?.length) {
-      return makeTreeItem('(no TimelineNodes)');
+    if (!visibleTimelineNodes?.length) {
+      return makeTreeItem('(no visible TimelineNodes)');
     }
     return {
-      children: timelineNodes,
+      children: visibleTimelineNodes,
       props: {
         collapsibleState: TreeItemCollapsibleState.Expanded,
-        description: `(${timelineNodes?.length || 0})`
+        description: `(${visibleTimelineNodes?.length || 0})`
       }
     };
   }
@@ -126,7 +123,7 @@ export default class DDGTDNode extends TraceDetailNode {
     }
 
     return makeTreeItems(
-      this.TimelineNodes.bind(this),
+      this.Visible_TimelineNodes.bind(this),
       this.DataNodes.bind(this)
     );
   }

@@ -71,7 +71,7 @@ export default class ExecutionContextCollection extends Collection {
   postIndexRaw(entries) {
     this.errorWrapMethod('setParamInputs', entries);
     // this.errorWrapMethod('setAsyncPromiseIds', entries);
-    this.errorWrapMethod('setCallExpressionResultInputs', entries);
+    this.errorWrapMethod('setCallExpressionReturnedInputs', entries);
   }
 
   /**
@@ -156,7 +156,7 @@ export default class ExecutionContextCollection extends Collection {
    * Set CallExpression result trace `inputs` to:
    * 1. `[returnNodeId]` if context was recorded
    */
-  setCallExpressionResultInputs(contexts) {
+  setCallExpressionReturnedInputs(contexts) {
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {
       const returnTrace = util.getReturnTraceOfContext(contextId);

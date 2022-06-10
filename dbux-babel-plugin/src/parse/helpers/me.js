@@ -25,10 +25,14 @@ export function makeMETraceData(parseNode, objectVar = null) {
   const objectTraceCfg = objectNode.addDefaultTrace();
   let objectTid = objectTraceCfg?.tidIdentifier;
   if (!objectTid) {
-    parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+    // NOTE: this can happen in case of `super.f()` etc.
+    // parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     objectTid = ZeroNode;
+    objectVar = null;
   }
-  objectVar = objectVar || Traces.generateDeclaredUidIdentifier('o');
+  else {
+    objectVar = objectVar || Traces.generateDeclaredUidIdentifier('o');
+  }
 
   // prepare property
   let propertyVar;

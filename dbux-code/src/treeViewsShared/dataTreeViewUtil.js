@@ -28,9 +28,12 @@ export function makeDataNodeDescription(dp, dataNodeId) {
  */
 export function renderDataNode(
   dp, dataNodeId,
-  children = dp.util.getDataNode(dataNodeId),
+  children,
   label = makeDataNodeLabel(dp, dataNodeId)
 ) {
+  if (!children) {
+    children = dp.util.getDataNode(dataNodeId);
+  }
   // render inputs and make them clickable
   if (children?.inputs) {
     children = { ...children };

@@ -168,12 +168,13 @@ export default class BaseDDG {
   /**
    * 
    */
-  getTimelineNodesOfDataNode(dataNodeId) {
+  getTimelineNodesOfDataNode(dataNodeId, predicate = null) {
     // const dataNode = this.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
     // if (dataNode) {
     //   return dataNode;
     // }
-    return this.timelineNodes.filter(node => node?.dataNodeId === dataNodeId);
+    return this.timelineNodes
+      .filter(node => node?.dataNodeId === dataNodeId && (!predicate || predicate(node)));
   }
 
   /** ###########################################################################
@@ -311,7 +312,6 @@ export default class BaseDDG {
       }
     }
     else if (node.children) {
-      // TODO: other types of children (decisions, ref etc.)
       for (const child of Object.values(node.children)) {
         const childNode = this.timelineNodes[child];
         this.#setConnectedDFS(childNode);
@@ -321,7 +321,7 @@ export default class BaseDDG {
   }
 
   /**
-   * If a child of a snapshot is connected, connect the entire snapshots and keep going from there.
+   * If a child of a snapshot is connected, connect all ancestors
    */
   #setConnectedUp(node) {
     if (node.parentNodeId) {
@@ -330,7 +330,7 @@ export default class BaseDDG {
         // stop propagation
         return;
       }
-      this.#setConnectedDFS(parent);
+      // this.#setConnectedDFS(parent); // enable this to flood the entire snapshot root
       this.#setConnectedUp(parent);
     }
   }
@@ -770,32 +770,6 @@ export default class BaseDDG {
     }
     edges.push(edge.edgeId);
   }
-
-  shouldAddEdge(fromNodeId, toNodeId) {
-    const fromNode = this.timelineNodes[fromNodeId];
-    const toNode = this.timelineNodes[toNodeId];
-
-    if (fromNode.watched && toNode.watched &&
-      fromNode.startDataNodeId && !fromNode.parentNodeId &&
-      toNode.startDataNodeId && !toNode.parentNodeId) {
-      // don't add edges between watched snapshot ROOTS
-      return false;
-    }
-
-    // TODO: prevent unwantend root-level edges (only if there was a write of the root itself, not its children)
-    return (
-      // only link nodes of two snapshots of the same thing if there was a write in between
-      !fromNode.startDataNodeId ||
-      toNode.dataNodeId > fromNode.startDataNodeId ||
-
-      // hackfix: the final watched snapshot is forced, and often shares descendants with previous snapshots who actually contain the write
-      (
-        this.watchSet.isWatchedDataNode(toNode.startDataNodeId || toNode.dataNodeId) &&
-        !this.watchSet.isWatchedDataNode(fromNode.startDataNodeId || fromNode.dataNodeId)
-      )
-    );
-  }
-
   /**
    * NOTE: these are very rough heuristics for edge colorization
    */
@@ -820,6 +794,49 @@ export default class BaseDDG {
     return this.getEdgeTypeDataNode(fromNode.dataNodeId, toNode.dataNodeId);
   }
 
+  shouldAddEdge(fromNode, toNode) {
+    const fromWatched = this.watchSet.isWatchedDataNode(toNode.startDataNodeId || toNode.dataNodeId);
+    const toWatched = this.watchSet.isWatchedDataNode(fromNode.startDataNodeId || fromNode.dataNodeId);
+    if (fromWatched && toWatched &&
+      fromNode.startDataNodeId && !fromNode.parentNodeId &&
+      toNode.startDataNodeId && !toNode.parentNodeId) {
+      // don't add edges between watched snapshot ROOTS
+      return false;
+    }
+
+    return (
+      // only link nodes of two snapshots of the same thing if there was a write in between
+      !fromNode.startDataNodeId ||
+      toNode.dataNodeId > fromNode.startDataNodeId ||
+
+      // hackfix: the final watched snapshot is forced, 
+      //    and often shares descendants with previous snapshots who actually contain the Write.
+      (
+        fromWatched && !toWatched
+      )
+    );
+  }
+  /**
+   * @param {DataTimelineNode} fromNode 
+   * @param {DataTimelineNode} toNode 
+   * @param {EdgeState} edgeState
+   */
+  addEdge(type, fromTimelineId, toTimelineId, edgeState) {
+    const fromNode = this.timelineNodes[fromTimelineId];
+    const toNode = this.timelineNodes[toTimelineId];
+    if (!this.shouldAddEdge(fromNode, toNode)) {
+      return;
+    }
+    // if (fromNode.dataNodeId === toNode.dataNodeId) {
+    //   this.logger.error(`addEdge problem: ${fromNode.label} → ${toNode.label} (fromNode.dataNodeId === toNode.dataNodeId)`);
+    // }
+    const newEdge = new DDGEdge(type, this.edges.length, fromTimelineId, toTimelineId, edgeState);
+    this.edges.push(newEdge);
+
+    this.#addEdgeToDict(this.outEdgesByTimelineId, fromTimelineId, newEdge);
+    this.#addEdgeToDict(this.inEdgesByTimelineId, toTimelineId, newEdge);
+  }
+
   /**
    * This is a normal data edge that was added during snapshot construction to one of the
    * snapstho children.
@@ -831,19 +848,4 @@ export default class BaseDDG {
     // }
   }
 
-  /**
-   * @param {DataTimelineNode} fromNode 
-   * @param {DataTimelineNode} toNode 
-   * @param {EdgeState} edgeState
-   */
-  addEdge(type, fromTimelineId, toTimelineId, edgeState) {
-    if (!this.shouldAddEdge(fromTimelineId, toTimelineId)) {
-      return;
-    }
-    const newEdge = new DDGEdge(type, this.edges.length, fromTimelineId, toTimelineId, edgeState);
-    this.edges.push(newEdge);
-
-    this.#addEdgeToDict(this.outEdgesByTimelineId, fromTimelineId, newEdge);
-    this.#addEdgeToDict(this.inEdgesByTimelineId, toTimelineId, newEdge);
-  }
 }

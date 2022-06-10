@@ -302,7 +302,6 @@ export default function patchArray() {
     "find",
     "findIndex",
     "lastIndexOf",
-    "pop",
     "reverse",
     "unshift",
     "sort",

@@ -4,8 +4,8 @@ import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode, is
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { makeSummaryLabel } from './ddgDomUtil';
 import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
+import { makeSummaryLabel } from './ddgDomUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -255,6 +255,7 @@ export default class DotBuilder {
       else {
         this.valueNode(node);
       }
+      this.addNodeToPullDownStructure(node);
     }
     else if (isControlGroupTimelineNode(node.type)) {
       ddgQueries.isVisible(ddg, node);
@@ -363,7 +364,6 @@ export default class DotBuilder {
       ].join(',');
       this.command(`${this.makeNodeId(node)} [${attrs}]`);
     }
-    this.addNodeToPullDownStructure(node);
   }
 
   valueNode(node, colorOverride) {
@@ -380,7 +380,6 @@ export default class DotBuilder {
       ].join(',');
       this.command(`${this.makeNodeId(node)} [${attrs}]`);
     }
-    this.addNodeToPullDownStructure(node);
   }
 
   /**
@@ -499,9 +498,9 @@ export default class DotBuilder {
         .map(([prop, childId]) => {
           const child = timelineNodes[childId];
           if (ddgQueries.isDeleteNode(this.ddg, child)) {
-            return this.makeTablePropDeleteCell(childId, prop);
+            return this.makeSnapshotDeleteCell(childId, prop);
           }
-          return this.makeTablePropValueCell(childId, prop);
+          return this.makeSnapshotCell(childId, prop);
         })
         .join('');
       this.command(`${timelineId} [${attrs},label=<
@@ -516,8 +515,11 @@ export default class DotBuilder {
       for (const [prop, childId] of childEntries) {
         const child = timelineNodes[childId];
         if (ddgQueries.isSnapshot(ddg, child)) {
-          if (isEmpty(child.children)) {
-            // don't add empty snapshots separately
+          if (isEmpty(child.children) ||
+            !child.connected ||
+            !Object.values(child.children).some(c => timelineNodes[c].connected)
+          ) {
+            // don't add empty snapshots or those that are not connected or don't have any connected children
             continue;
           }
 
@@ -543,14 +545,16 @@ export default class DotBuilder {
    * Build a row of "column" cells containing tables.
    * We do this, so every node's column has a singular addressable PORT.
    */
-  makeTablePropValueCell(timelineId, prop) {
+  makeSnapshotCell(timelineId, prop) {
     const { timelineNodes } = this.renderState;
     const node = timelineNodes[timelineId];
+    // hide not-connected snapshot children
+    const label = node.connected ? this.makeNodeValueString(node) : '📦';
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
 <FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.value}">${this.makeNodeValueString(node)}</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.value}">${label}</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }
@@ -559,7 +563,7 @@ export default class DotBuilder {
    * Build a row of "column" cells containing tables.
    * We do this, so every node's column has a singular addressable PORT.
    */
-  makeTablePropDeleteCell(timelineId, prop) {
+  makeSnapshotDeleteCell(timelineId, prop) {
     const { timelineNodes } = this.renderState;
     const node = timelineNodes[timelineId];
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
@@ -581,43 +585,57 @@ export default class DotBuilder {
     if (!this.ddg.settings.extraVertical) {
       return;
     }
-    if (!node.parentNodeId) {
-      // ignore in-snapshot nodes
-      this.pullNodes.push(node.timelineId);
-
-      // place pull node and rank command in same subgraph (else `rank=same` breaks subgraphs)
-      this.command(makePullId(node.timelineId) + invisAttrs());
-      this.command(`{rank=same; ${node.timelineId}, ${makePullId(node.timelineId)}}`);
+    if (!isControlGroupTimelineNode(node.type)) {
+      this.pullNodes.push(node);
     }
   }
 
   /**
-   * Idea:
-   * s1 -> s2 -> s3;
-   * 1 -> s1 -> 2 -> s2 -> 3 -> s3;
-   * 
-   * Idea2:
-   * s1 -> s2 -> s3;
-   * {rank=same; s1, 1};
-   * {rank=same; s2, 2};
-   * {rank=same; s3, 3};
+   * Idea: simply add invisible edges between all data-like nodes.
+   * NOTE: Edges have a vertical "pull down" effect.
    */
   buildPullDownStructure() {
     if (!this.pullNodes.length) {
       return;
     }
 
-    this.command(
-      this.pullNodes
-        .map(id => makePullId(id))
-        .join(' -> ') + invisAttrs()
-      // this.pullNodes
-      //   .map(id => `{rank=same; ${id}, ${makePullId(id)}}`)
-      // this.pullNodes
-      //   .flatMap(id => [id, makePullId(id)])
-      //   .join(' -> ')
-    );
+    const vertices = this.pullNodes.map(n => n.timelineId);
+    this.command(vertices.join(' -> ')/*  + invisAttrs() */);
+    // this.command(vertices.join(' -> ') + ' [color=blue]');
   }
+
+  // /**
+  //  * Old idea:
+  //  * s1 -> s2 -> s3;
+  //  * 1 -> s1 -> 2 -> s2 -> 3 -> s3;
+  //  * 
+  //  * Idea2:
+  //  * s1 -> s2 -> s3;
+  //  * {rank=same; s1, 1};
+  //  * {rank=same; s2, 2};
+  //  * {rank=same; s3, 3};
+  //  */
+  // buildPullDownStructure() {
+  //   if (!this.pullNodes.length) {
+  //     return;
+  //   }
+  // // ignore in-snapshot nodes
+  // this.pullNodes.push(node.timelineId);
+
+  // // place pull node and rank command in same subgraph (else `rank=same` breaks subgraphs)
+  // this.command(makePullId(node.timelineId) + invisAttrs());
+  // this.command(`{rank=same; ${node.timelineId}, ${makePullId(node.timelineId)}}`);
+  //   this.command(
+  //     this.pullNodes
+  //       .map(id => makePullId(id))
+  //       .join(' -> ') + invisAttrs()
+  //     // this.pullNodes
+  //     //   .map(id => `{rank=same; ${id}, ${makePullId(id)}}`)
+  //     // this.pullNodes
+  //     //   .flatMap(id => [id, makePullId(id)])
+  //     //   .join(' -> ')
+  //   );
+  // }
 }
 
 function invisAttr() {
