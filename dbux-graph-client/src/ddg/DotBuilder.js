@@ -477,10 +477,11 @@ export default class DotBuilder {
           // add edge
           this.snapshotEdge(child);
         }
-        else if (child.repeatedTimelineId) {
-          const repeatedNode = timelineNodes[child.repeatedTimelineId];
-          this.snapshotEdgeFromTo(this.makeNodeId(child), this.makeNodeId(repeatedNode));
-        }
+        // // NOTE: remove repeatedNode edges for performance reasons
+        // else if (child.repeatedTimelineId) {
+        //   const repeatedNode = timelineNodes[child.repeatedTimelineId];
+        //   this.snapshotEdgeFromTo(this.makeNodeId(child), this.makeNodeId(repeatedNode));
+        // }
       }
 
       // add snapshot root

@@ -337,6 +337,10 @@ export default class DataDependencyGraph extends BaseDDG {
   #collectNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyDataNodes) {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
+
+    // TODO: only get connected snapshots and vars
+    // TODO: fix `connected` to trickle up the tree for snapshots
+
     if (node.dataNodeId) {
       const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
       let varDeclarationTid;

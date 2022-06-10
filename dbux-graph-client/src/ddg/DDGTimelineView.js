@@ -8,6 +8,7 @@ import { transition as d3transition } from 'd3-transition';
 import * as d3Graphviz from 'd3-graphviz';
 import isPlainObject from 'lodash/isPlainObject';
 
+import { PrettyTimer } from '@dbux/common/src/util/timeUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
@@ -142,6 +143,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     this.buildGraph(isNew);
   }
 
+  startRenderTimer() {
+    if (!this.renderTimer) {
+      this.renderTimer = new PrettyTimer();
+    }
+  }
+
   buildGraph(isNew) {
     const { root } = this;
 
@@ -157,20 +164,23 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       .renderDot(graphString);
 
     if (isNew) {
+      this.renderTimer = new PrettyTimer();
       this.graphviz
         .on('end', () => {
+          this.renderTimer?.print(null, 'Graph Render');
+          this.renderTimer = null;
           try {
-            // if (this.ddg.settings.anim) {
-            // NOTE: add transition only after first render
-            this.graphviz.transition(() => { // transition
-              // TODO: add a way to remove animation
-              // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
-              // if (!this.ddg.settings.anim) {
-              // }
-              return d3transition()
-                .duration(800);
-            });
-            // }
+            // // if (this.ddg.settings.anim) {
+            // // NOTE: add transition only after first render
+            // this.graphviz.transition(() => { // transition
+            //   // TODO: add a way to remove animation
+            //   // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+            //   // if (!this.ddg.settings.anim) {
+            //   // }
+            //   return d3transition()
+            //     .duration(800);
+            // });
+            // // }
 
             // add node and edge decorations to the rendered DOM
             this.decorateAfterRender();
@@ -477,5 +487,21 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // this.el.appendChild(this.currentHoverEl);
     // nodeEl.appendChild(hoverEl);
     this.el.appendChild(hoverEl);
+  }
+
+  /** ###########################################################################
+   * screenshot util
+   *  #########################################################################*/
+
+  async getScreenshots() {
+    // TODO: iterate through the "screenshot modes" and take a screen of each.
+    //    Then return it all to host.
+  }
+
+  async getScreenshot() {
+    // TODO
+    // * take screenshot in current mode
+    // * export to svg (and/or png? if necessary?)
+    // * add background to top: <rect width="100%" height="100%" fill="#444"/>
   }
 }

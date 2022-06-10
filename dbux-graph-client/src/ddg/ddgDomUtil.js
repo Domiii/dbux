@@ -119,6 +119,7 @@ function addSummaryModeListener(btnEl, doc, timelineId, mode) {
      */
     // eslint-disable-next-line prefer-destructuring
     const timeline = doc.timeline;
+    timeline.startRenderTimer();
     timeline.setSummaryMode(timelineId, mode);
   });
 }
@@ -146,6 +147,7 @@ function addSettingsModeListener(doc, btnEl, setting) {
     //   → toggle bool
     const timeline = getTimelineOfDoc(doc);
     const newVal = !timeline.ddg.settings[setting];
+    timeline.startRenderTimer();
     timeline.setGraphSetting(setting, newVal);
   });
 }
@@ -208,10 +210,11 @@ export function makeSettingsButtons(doc) {
  * shared util
  * ##########################################################################*/
 
+
+/**
+ * @return {DDGTimelineView}
+ */
 function getTimelineOfDoc(doc) {
-  /**
-   * @type {DDGTimelineView}
-   */
   const { timeline } = doc;
   return timeline;
 }
