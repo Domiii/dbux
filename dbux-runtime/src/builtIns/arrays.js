@@ -144,15 +144,16 @@ export default function patchArray() {
       const { traceId: callId } = bceTrace;
       const arrNodeId = getNodeIdFromRef(ref);
 
-      // delete first
-      const shiftVarAccess = {
+      // first element gets returned
+      const readVarAccess = {
         objectNodeId: arrNodeId,
         prop: 0
       };
-      dataNodeCollection.createBCEOwnDataNode(undefined, callId, DataNodeType.Delete, shiftVarAccess);
+      dataNodeCollection.createBCEOwnDataNode(arr[0], callId, DataNodeType.Read, readVarAccess);
 
       // move up all other elements
-      for (let i = 1; i < arr.length; ++i) {
+      let i;
+      for (i = 1; i < arr.length; ++i) {
         const varAccessRead = {
           objectNodeId: arrNodeId,
           prop: i
@@ -165,6 +166,13 @@ export default function patchArray() {
         };
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
+
+      // last element gets deleted (logically speaking)
+      const deleteVarAccess = {
+        objectNodeId: arrNodeId,
+        prop: i - 1
+      };
+      dataNodeCollection.createDataNode(undefined, callId, DataNodeType.Delete, deleteVarAccess);
 
       return originalFunction.apply(arr, args);
     }
@@ -197,7 +205,7 @@ export default function patchArray() {
 
       start = !isNaN(start) ? wrapIndex(start, arr) : 0;
       end = !isNaN(end) ? wrapIndex(end, arr) : arr.length;
-      
+
 
       // record all DataNodes of copy operation
       for (let i = start; i < end; ++i) {

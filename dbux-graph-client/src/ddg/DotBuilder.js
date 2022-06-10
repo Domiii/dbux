@@ -525,9 +525,9 @@ export default class DotBuilder {
     const node = timelineNodes[timelineId];
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
-        <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
+        <TR><TD BORDER="1" COLOR="transparent">\
 <FONT COLOR="${Colors.snapshotDeleteProp}"><S>${prop}</S></FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.value}">-</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.snapshotDeleteProp}">&nbsp;</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }
