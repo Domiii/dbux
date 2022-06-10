@@ -513,7 +513,6 @@ export default class DataDependencyGraph extends BaseDDG {
     const { timelineId, dataNodeId, children } = node;
 
     let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
-    const isCollapsed = !currentCollapsedAncestor && ddgQueries.isCollapsed(this, node);
     const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarizedMode(this, node);
     let targetNode = currentCollapsedAncestor || node;
     let isSummarized = ddgQueries.isNodeSummarized(this, targetNode);
@@ -523,16 +522,19 @@ export default class DataDependencyGraph extends BaseDDG {
       // build node summary (if not already built)
       this.#buildNodeSummary(timelineId);
 
-      if (!ddgQueries.doesNodeHaveSummary(this, node)) {
-        // straight up ignore for now
-        return;
-      }
+      // if (!ddgQueries.doesNodeHaveSummary(this, node)) {
+      //   // straight up ignore for now
+      //   return;
+      // }
     }
 
     // DFS recursion
     if (children) {
-      // node has children
+      const isCollapsed = !currentCollapsedAncestor && 
+        ddgQueries.isCollapsed(this, node) && 
+        ddgQueries.doesNodeHaveSummary(this, node);
       if (isCollapsed) {
+        // node is collapsed and has summary data (if not, just hide children)
         summaryState.currentCollapsedAncestor = node;
       }
       for (const childId of Object.values(children)) {
@@ -549,7 +551,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (isSummarized) {
       if (
         // summarized nodes without own `dataNodeId` (such as groups) are simply hidden
-        !node.dataNodeId ||
+        !targetNode.dataNodeId ||
         // summarization is empty → hide it (for now)
         !ddgQueries.doesNodeHaveSummary(this, targetNode)
       ) {
@@ -596,6 +598,9 @@ export default class DataDependencyGraph extends BaseDDG {
       // node is hidden
       // → multicast all outgoing edges to all incoming edges
       // → to that end, add all `from`s to this node's `reroutes`
+      /**
+       * @type {DDGTimelineNode[]}
+       */
       let reroutes = [];
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
@@ -608,7 +613,8 @@ export default class DataDependencyGraph extends BaseDDG {
           }
         }
       }
-      if (reroutes) {
+      console.log(`SUMM at ${timelineId}, reroutes:\n  ${reroutes.map(n => `${n.timelineId} (${n.label})`).join('  \n')}`);
+      if (reroutes.length) {
         nodeRouteMap.set(timelineId, reroutes);
       }
     }
