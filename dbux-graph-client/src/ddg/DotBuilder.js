@@ -470,6 +470,11 @@ export default class DotBuilder {
    * snapshotTable
    *  #########################################################################*/
 
+  shouldSummarizeSnapshotChild(node) {
+    const { ddg } = this;
+    return ddgQueries.isSnapshot(ddg, node) && !node.connected;
+  }
+
   /**
    * Produce snapshot table with prop and value for each entry.
    * @param {DDGTimelineNode} node
@@ -517,7 +522,8 @@ export default class DotBuilder {
         if (ddgQueries.isSnapshot(ddg, child)) {
           if (isEmpty(child.children) ||
             !child.connected ||
-            !Object.values(child.children).some(c => timelineNodes[c].connected)
+            Object.values(child.children)
+              .every(c => this.shouldSummarizeSnapshotChild(timelineNodes[c]))
           ) {
             // don't add empty snapshots or those that are not connected or don't have any connected children
             continue;
@@ -549,7 +555,9 @@ export default class DotBuilder {
     const { timelineNodes } = this.renderState;
     const node = timelineNodes[timelineId];
     // hide not-connected snapshot children
-    const label = node.connected ? this.makeNodeValueString(node) : '📦';
+    const label = this.shouldSummarizeSnapshotChild(node) ?
+      '📦' :
+      this.makeNodeValueString(node);
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
@@ -600,7 +608,7 @@ export default class DotBuilder {
     }
 
     const vertices = this.pullNodes.map(n => n.timelineId);
-    this.command(vertices.join(' -> ')/*  + invisAttrs() */);
+    this.command(vertices.join(' -> ') + invisAttrs());
     // this.command(vertices.join(' -> ') + ' [color=blue]');
   }
 
