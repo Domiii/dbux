@@ -1,19 +1,19 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
-import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 
 
 // ###########################################################################
 // utility
 // ###########################################################################
 
-function getNodeIdFromRef(ref) {
+function getDataNodeIdFromRef(ref) {
   const { nodeId } = ref;
   return nodeId;
 }
@@ -57,7 +57,7 @@ export default function patchArray() {
 
       const inputNodeIds = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
 
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
       let idx = arr.length;
       for (let i = 0; i < argTids.length; ++i) {
@@ -114,7 +114,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
       // delete and return last
       const i = arr.length - 1;
@@ -142,7 +142,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
       // first element gets returned
       const readVarAccess = {
@@ -194,7 +194,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
       // let BCE hold DataNode of newArray
       // DataNodeType.Create
@@ -259,7 +259,7 @@ export default function patchArray() {
           bceTrace.data = bceTrace.data || {};
           bceTrace.data.specialDynamicType = SpecialDynamicTraceType.ArrayHofCall;
 
-          const arrNodeId = getNodeIdFromRef(ref);
+          const arrNodeId = getDataNodeIdFromRef(ref);
 
           // record all DataNodes of copy operation
           for (let i = 0; i < arr.length; ++i) {

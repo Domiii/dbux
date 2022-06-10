@@ -229,6 +229,7 @@ export const buildTraceDeleteME = buildTraceCall(
 export function buildMEObject(meAstNode, traceCfg) {
   const {
     data: {
+      dontTraceObject,
       objectVar
     }
   } = traceCfg;
@@ -237,8 +238,7 @@ export function buildMEObject(meAstNode, traceCfg) {
     object: objectAstNode,
   } = meAstNode;
 
-  if (objectAstNode.type === 'Super') {
-    // hackfix: super
+  if (dontTraceObject) {
     return objectVar || NullNode;
   }
 

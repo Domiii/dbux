@@ -89,8 +89,9 @@ const DefaultDataSnapshotMods = {
    * @param {string} prop
    */
   writePrimitive(dp, snapshot, modifyNode, prop) {
-    const inputNodeId = modifyNode.inputs[0];
-    const inputNode = dp.collections.dataNodes.getById(inputNodeId);
+    // TODO: possibly keep following valueFrom
+    const inputNodeId = modifyNode.valueFromId;
+    const inputNode = !inputNodeId ? modifyNode : dp.collections.dataNodes.getById(inputNodeId);
     snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, null, inputNode.value);
   },
 
@@ -1250,8 +1251,8 @@ const dataProviderUtil = {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getValueRefValueStringShort(dp, refId, toNodeId, shorten) {
-    const snapshot = dp.util.constructVersionedValueSnapshot(refId, toNodeId);
+  getValueRefValueStringShort(dp, refId, toTraceId, shorten = true) {
+    const snapshot = dp.util.constructVersionedValueSnapshot(refId, toTraceId);
     const valueRef = dp.collections.values.getById(refId);
 
     let valueString;

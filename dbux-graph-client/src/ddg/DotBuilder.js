@@ -5,6 +5,7 @@ import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
+import UniqueRefId from '@dbux/common/src/types/constants/UniqueRefId';
 import { makeSummaryLabel } from './ddgDomUtil';
 
 // eslint-disable-next-line no-unused-vars
@@ -12,7 +13,10 @@ const { log, debug, warn, error: logError } = newLogger('DotBuilder');
 
 const Verbose = 1;
 
-const converter = document.createElement("p");
+
+/** ###########################################################################
+ * Util
+ * ##########################################################################*/
 
 /**
  * @see https://stackoverflow.com/a/18750001
@@ -27,6 +31,17 @@ function dotEncode(s) {
   // converter.textContent = s;
   // return converter.innerHTML;
 }
+
+function fixProp(prop) {
+  if (prop.includes(UniqueRefId)) {
+    return '{}';
+  }
+  return prop;
+}
+
+/** ###########################################################################
+ * Colors
+ * ##########################################################################*/
 
 // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
 //    → (see: https://stackoverflow.com/a/56759634)
@@ -59,6 +74,7 @@ const Colors = {
 };
 
 
+
 export default class DotBuilder {
   _indentLevel;
   fragments = [];
@@ -67,6 +83,10 @@ export default class DotBuilder {
     this.doc = doc;
     this.renderState = renderState;
   }
+
+  /** ###########################################################################
+   * getters + generators
+   * ##########################################################################*/
 
   get ddg() {
     return this.renderState;
@@ -502,6 +522,7 @@ export default class DotBuilder {
       const childrenCells = childEntries
         .map(([prop, childId]) => {
           const child = timelineNodes[childId];
+          prop = fixProp(prop);
           if (ddgQueries.isDeleteNode(this.ddg, child)) {
             return this.makeSnapshotDeleteCell(childId, prop);
           }
@@ -572,8 +593,8 @@ export default class DotBuilder {
    * We do this, so every node's column has a singular addressable PORT.
    */
   makeSnapshotDeleteCell(timelineId, prop) {
-    const { timelineNodes } = this.renderState;
-    const node = timelineNodes[timelineId];
+    // const { timelineNodes } = this.renderState;
+    // const node = timelineNodes[timelineId];
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" COLOR="transparent">\

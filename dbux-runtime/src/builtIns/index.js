@@ -5,7 +5,7 @@ import patchEventTarget from './EventTarget';
 import patchFunction from './functions';
 import patchObject from './objects';
 import patchSet from './Set';
-import patchMap from './Map';
+import patchMap from './MapSet';
 import patchMath from './Math';
 
 /** @typedef { import("../RuntimeMonitor").default } RuntimeMonitor */

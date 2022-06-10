@@ -613,7 +613,7 @@ export default class DataDependencyGraph extends BaseDDG {
           }
         }
       }
-      console.log(`SUMM at ${timelineId}, reroutes:\n  ${reroutes.map(n => `${n.timelineId} (${n.label})`).join('  \n')}`);
+      // console.log(`SUMM at ${timelineId}, reroutes:\n  ${reroutes.map(n => `${n.timelineId} (${n.label})`).join('  \n')}`);
       if (reroutes.length) {
         nodeRouteMap.set(timelineId, reroutes);
       }
