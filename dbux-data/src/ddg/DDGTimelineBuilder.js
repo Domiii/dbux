@@ -290,13 +290,16 @@ export default class DDGTimelineBuilder {
   }
 
   /**
-   * 
+   * @param {DataNode} dataNode
    */
   #addSnapshotOrDataNode(dataNode) {
     let newNode;
     if (this.#shouldCreateSnapshot(dataNode)) {
       const snapshotsByRefId = new Map();
       newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, null);
+    }
+    else if (DataNodeType.is.Delete(dataNode.type)) {
+      newNode = this.ddg.addDeleteEntryNode(dataNode, dataNode.varAccess?.prop || '');
     }
     else {
       // this is not a watched ref
@@ -483,8 +486,7 @@ export default class DDGTimelineBuilder {
       else {
         // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
       }
-      // TODO: geet correct edgeType
-      const edgeType = DDGEdgeType.Data;
+      const edgeType = this.ddg.getEdgeType(inputNode);
       edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
     }
     else {

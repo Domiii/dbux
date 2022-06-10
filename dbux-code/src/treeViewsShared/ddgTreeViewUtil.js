@@ -82,17 +82,19 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
     }
 
     // add edges
-    children.EdgesIn = renderEdgeIds(ddg, ddg.inEdgesByTimelineId[node.timelineId], 'EdgesIn');
-    children.EdgesOut = renderEdgeIds(ddg, ddg.outEdgesByTimelineId[node.timelineId], 'EdgesOut');
-    children.og = makeTreeItem(() => ({
-      label: 'Og',
-      children() {
-        return [
-          renderOgEdgeIds(ddg, ddg.og.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
-          renderOgEdgeIds(ddg, ddg.og.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
-        ];
-      }
-    }));
+    children.Edges = makeTreeItems(
+      renderEdgeIds(ddg, ddg.inEdgesByTimelineId[node.timelineId], 'EdgesIn'),
+      renderEdgeIds(ddg, ddg.outEdgesByTimelineId[node.timelineId], 'EdgesOut'),
+      makeTreeItem(() => ({
+        label: 'Og',
+        children() {
+          return [
+            renderOgEdgeIds(ddg, ddg.og.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
+            renderOgEdgeIds(ddg, ddg.og.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
+          ];
+        }
+      }))
+    );
 
     // TODO: also get control group by decision etc.
     // TODO: add *correct* value string (see DotBuilder.makeNodeValueString)

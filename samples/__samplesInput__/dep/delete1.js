@@ -1,7 +1,7 @@
 
 function main(a) {
-  a[4] = a[1];
-  delete a[4];
+  // a[4] = a[1];
+  delete a[3];
   return a;
 }
 

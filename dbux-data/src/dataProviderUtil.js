@@ -1318,6 +1318,15 @@ const dataProviderUtil = {
     return null;
   },
 
+  /** @param {RuntimeDataProvider} dp */
+  getDataNodeAccessedRefVarName(dp, dataNodeId) {
+    const refId = dp.util.getDataNodeAccessedRefId(dataNodeId);
+    if (refId) {
+      return dp.util.getRefVarName(refId);
+    }
+    return null;
+  },
+
   /** ###########################################################################
    * more data associations
    * ##########################################################################*/

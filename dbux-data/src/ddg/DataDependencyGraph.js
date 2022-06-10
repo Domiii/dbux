@@ -493,8 +493,7 @@ export default class DataDependencyGraph extends BaseDDG {
     // add all edges
     for (const [from, toMap] of summaryState.visibleEdges) {
       for (const [to, edgeState] of toMap) {
-        // TODO: edgeType
-        const edgeType = DDGEdgeType.Data;
+        const edgeType = this.getEdgeType(this.timelineNodes[from]);
         this.addEdge(edgeType, from, to, edgeState);
       }
     }

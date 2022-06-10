@@ -10,14 +10,14 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeHaveData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
-import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, SnapshotEntryDeletedTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
@@ -301,7 +301,7 @@ export default class BaseDDG {
 
     node.connected = true;
 
-    if (doesTimelineNodeHaveData(node.type)) {
+    if (doesTimelineNodeCarryData(node.type)) {
       const fromEdges = this.inEdgesByTimelineId[node.timelineId] || EmptyArray;
       for (const edgeId of fromEdges) {
         const edge = this.edges[edgeId];
@@ -391,9 +391,10 @@ export default class BaseDDG {
     }
   }
 
-  addSnapshotEntryDeletedNode(dataNode, prop) {
-    const label = prop;
-    const newNode = new SnapshotEntryDeletedTimelineNode(dataNode.nodeId, label);
+  addDeleteEntryNode(dataNode, prop) {
+    const varName = this.dp.util.getDataNodeAccessedRefVarName(dataNode.nodeId);
+    const label = `${varName || '?'}[${prop}]`;
+    const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, label);
 
     this.addDataNode(newNode);
 
@@ -533,7 +534,7 @@ export default class BaseDDG {
           // });
 
           // delete
-          newChild = this.addSnapshotEntryDeletedNode(lastModDataNode);
+          newChild = this.addDeleteEntryNode(lastModDataNode);
           this.#onSnapshotNodeCreated(newChild, parentSnapshot);
         }
         else {
@@ -773,6 +774,14 @@ export default class BaseDDG {
   shouldAddEdge(fromNodeId, toNodeId) {
     const fromNode = this.timelineNodes[fromNodeId];
     const toNode = this.timelineNodes[toNodeId];
+
+    if (fromNode.watched && toNode.watched &&
+      fromNode.startDataNodeId && !fromNode.parentNodeId &&
+      toNode.startDataNodeId && !toNode.parentNodeId) {
+      // don't add edges between watched snapshot ROOTS
+      return false;
+    }
+
     // TODO: prevent unwantend root-level edges (only if there was a write of the root itself, not its children)
     return (
       // only link nodes of two snapshots of the same thing if there was a write in between
@@ -787,15 +796,24 @@ export default class BaseDDG {
     );
   }
 
+  getEdgeType(fromNode) {
+    // TODO: determine correct DDGEdgeType
+    let edgeType;
+    if (ddgQueries.isDeleteNode(this, fromNode)) {
+      edgeType = DDGEdgeType.Delete;
+    }
+    else {
+      edgeType = DDGEdgeType.Data;
+    }
+    return edgeType;
+  }
+
   /**
    * This is a normal data edge that was added during snapshot construction to one of the
    * snapstho children.
    */
   addSnapshotEdge(fromNode, toNode) {
-    // TODO: consider if this should be done during build and/or summarization?
-    // if (fromNode.dataNodeId !== newNode.dataNodeId) {
-    // TODO: determine correct DDGEdgeType
-    const edgeType = DDGEdgeType.Data;
+    const edgeType = this.getEdgeType(fromNode);
     const edgeState = { nByType: { [edgeType]: 1 } };
     this.addEdge(edgeType, fromNode.timelineId, toNode.timelineId, edgeState);
     // }

@@ -5,6 +5,7 @@ import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { makeSummaryLabel } from './ddgDomUtil';
+import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -50,7 +51,9 @@ const Colors = {
   groupLabel: 'yellow',
   snapshotSeparator: 'gray',
   snapshotProp: 'gray',
-  snapshotDeleteProp: 'red',
+
+  deleteValue: 'red',
+  deleteEdge: 'red',
 
   value: 'lightblue',
 };
@@ -98,6 +101,14 @@ export default class DotBuilder {
   makeLabel(text) {
     // TODO: proper dot label encoding (it is probably not JSON)
     return `label="${dotEncode(text)}"`;
+  }
+
+  /**
+   * NOTE: this is pseudo (not real) HTML
+   * @see https://graphviz.org/doc/info/shapes.html#html
+   */
+  makeLabelHtml(html) {
+    return `label=<${html}>`;
   }
 
   nodeIdAttr(timelineId) {
@@ -238,10 +249,9 @@ export default class DotBuilder {
       else if (ddgQueries.isSnapshot(ddg, node)) {
         this.refSnapshotRoot(node);
       }
-      // NOTE: delete nodes should never be independent nodes, but rather, are part of snapshots
-      // else if (ddgQueries.isDeleteNode(ddg, node)) {
-      //   this.deleteNode(node);
-      // }
+      else if (ddgQueries.isDeleteNode(ddg, node)) {
+        this.deleteNode(node);
+      }
       else {
         this.valueNode(node);
       }
@@ -338,14 +348,36 @@ export default class DotBuilder {
     this.fragment(`}`);
   }
 
-  valueNode(node) {
+  deleteNode(node) {
+    if (!node.varAccess) {
+      // this should never happen
+      this.valueNode(node, 'red');
+    }
+    if (node.varAccess) {
+      // simple label
+      const attrs = [
+        this.nodeAttrs(node.timelineId),
+        `color="${Colors.deleteValue}"`,
+        `fontcolor="${Colors.deleteValue}"`,
+        this.makeLabelHtml(`<S>${dotEncode(node.label)}</S>`)
+      ].join(',');
+      this.command(`${this.makeNodeId(node)} [${attrs}]`);
+    }
+    this.addNodeToPullDownStructure(node);
+  }
+
+  valueNode(node, colorOverride) {
     if (node.varAccess || node.value !== node.label) { // hackfix heuristic
       // record
       this.nodeRecord(node);
     }
     else {
       // simple label
-      const attrs = [this.nodeAttrs(node.timelineId), `fontcolor="${Colors.value}"`, this.makeLabel(node.label)].join(',');
+      const attrs = [
+        this.nodeAttrs(node.timelineId),
+        `fontcolor="${colorOverride || Colors.value}"`,
+        this.makeLabel(node.label)
+      ].join(',');
       this.command(`${this.makeNodeId(node)} [${attrs}]`);
     }
     this.addNodeToPullDownStructure(node);
@@ -365,8 +397,15 @@ export default class DotBuilder {
   edge(edge) {
     const from = this.makeNodeId(this.getNode(edge.from));
     const to = this.makeNodeId(this.getNode(edge.to));
-    const debugInfo = Verbose && ` [${this.makeLabel(edge.edgeId)}]` || '';
-    this.command(`${from} -> ${to}${debugInfo}`);
+    const colorOverride = edge.type === DDGEdgeType.Delete ? `color=${Colors.deleteEdge}` : '';
+    const debugAttrs = Verbose && `${this.makeLabel(edge.edgeId)}` || '';
+    const attrs = [
+      colorOverride,
+      debugAttrs
+    ]
+      .filter(Boolean)
+      .join(',');
+    this.command(`${from} -> ${to} [${attrs}]`);
   }
 
   /** ###########################################################################
@@ -526,8 +565,8 @@ export default class DotBuilder {
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" COLOR="transparent">\
-<FONT COLOR="${Colors.snapshotDeleteProp}"><S>${prop}</S></FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.snapshotDeleteProp}">&nbsp;</FONT></TD></TR>
+<FONT COLOR="${Colors.deleteValue}"><S>${prop}</S></FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.deleteValue}">&nbsp;</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }

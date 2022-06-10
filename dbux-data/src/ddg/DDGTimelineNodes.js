@@ -144,9 +144,9 @@ export class RefTimelineNode extends DDGTimelineNode {
 }
 
 
-export class SnapshotEntryDeletedTimelineNode extends DataTimelineNode {
+export class DeleteEntryTimelineNode extends DataTimelineNode {
   constructor(dataNodeId, label) {
-    super(DDGTimelineNodeType.SnapshotEntryDeleted);
+    super(DDGTimelineNodeType.DeleteEntry);
 
     this.dataNodeId = dataNodeId;
     this.label = label;

@@ -186,7 +186,7 @@ const ddgQueries = {
   },
 
   isDeleteNode(ddg, node) {
-    return node.type === DDGTimelineNodeType.SnapshotEntryDeleted;
+    return node.type === DDGTimelineNodeType.DeleteEntry;
   },
 
   /**
