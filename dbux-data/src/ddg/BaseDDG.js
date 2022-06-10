@@ -796,10 +796,18 @@ export default class BaseDDG {
     );
   }
 
-  getEdgeType(fromNode) {
+  /**
+   * NOTE: these are very rough heuristics for edge colorization
+   */
+  getEdgeTypeDataNode(fromDataNodeId, toDataNodeId) {
     // TODO: determine correct DDGEdgeType
     let edgeType;
-    if (ddgQueries.isDeleteNode(this, fromNode)) {
+    const fromDataNode = this.dp.util.getDataNode(fromDataNodeId);
+    const toDataNode = this.dp.util.getDataNode(toDataNodeId);
+    if (
+      DataNodeType.is.Delete(fromDataNode.type) ||
+      DataNodeType.is.Delete(toDataNode.type)
+    ) {
       edgeType = DDGEdgeType.Delete;
     }
     else {
@@ -808,12 +816,16 @@ export default class BaseDDG {
     return edgeType;
   }
 
+  getEdgeType(fromNode, toNode) {
+    return this.getEdgeTypeDataNode(fromNode.dataNodeId, toNode.dataNodeId);
+  }
+
   /**
    * This is a normal data edge that was added during snapshot construction to one of the
    * snapstho children.
    */
   addSnapshotEdge(fromNode, toNode) {
-    const edgeType = this.getEdgeType(fromNode);
+    const edgeType = this.getEdgeType(fromNode, toNode);
     const edgeState = { nByType: { [edgeType]: 1 } };
     this.addEdge(edgeType, fromNode.timelineId, toNode.timelineId, edgeState);
     // }

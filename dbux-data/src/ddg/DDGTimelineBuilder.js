@@ -475,7 +475,7 @@ export default class DDGTimelineBuilder {
     }
   }
 
-  #addInputNodeEdge(inputDataNodeId, inputNodes) {
+  #addInputNodeEdge(toDataNodeId, inputDataNodeId, inputNodes) {
     const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
 
     if (inputNode) {
@@ -486,7 +486,7 @@ export default class DDGTimelineBuilder {
       else {
         // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
       }
-      const edgeType = this.ddg.getEdgeType(inputNode);
+      const edgeType = this.ddg.getEdgeTypeDataNode(inputNode.dataNodeId, toDataNodeId);
       edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
     }
     else {
@@ -524,12 +524,12 @@ export default class DDGTimelineBuilder {
     }
 
     if (dataNode.valueFromId) {
-      this.#addInputNodeEdge(dataNode.valueFromId, inputNodes);
+      this.#addInputNodeEdge(dataNode.nodeId, dataNode.valueFromId, inputNodes);
     }
 
     if (dataNode.inputs) {
       for (const inputDataNodeId of dataNode.inputs) {
-        this.#addInputNodeEdge(inputDataNodeId, inputNodes);
+        this.#addInputNodeEdge(dataNode.nodeId, inputDataNodeId, inputNodes);
       }
     }
 
