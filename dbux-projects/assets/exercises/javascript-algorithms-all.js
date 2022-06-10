@@ -1880,33 +1880,15 @@ module.exports = [
           "start": {
             "line": 62,
             "column": 40,
-            "index": 1624,
-            "_pos": {
-              "line": 61,
-              "character": 40
-            }
+            "index": 1624
           },
           "end": {
-            "line": 84,
+            "line": 83,
             "column": 1,
-            "index": 2121,
-            "_pos": {
-              "line": 83,
-              "character": 1
-            }
-          },
-          "_range": [
-            {
-              "line": 61,
-              "character": 40
-            },
-            {
-              "line": 83,
-              "character": 1
-            }
-          ]
+            "index": 2119
+          }
         },
-        "applicationUuid": "0.3048994876570188"
+        "applicationUuid": "0.17047591952750052"
       }
     ]
   },

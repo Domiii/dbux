@@ -29,7 +29,12 @@ function dotEncode(s) {
 
 // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
 //    → (see: https://stackoverflow.com/a/56759634)
+/**
+ * NOTE: colors have RGBA support (e.g. `bg`)
+ */
 const Colors = {
+  bg: '#0000001A',
+
   /**
    * Default text
    */
@@ -46,7 +51,7 @@ const Colors = {
   snapshotSeparator: 'gray',
   snapshotProp: 'gray',
 
-  value: 'lightblue'
+  value: 'lightblue',
 };
 
 
@@ -183,6 +188,7 @@ export default class DotBuilder {
     this.indentLevel += 1;
 
     // global settings
+    this.command(`bgcolor="${Colors.bg}"`);
     this.command(`node[color="${Colors.nodeOutlineDefault}", fontcolor="${Colors.text}"]`);
     // `node [fontsize=9]`,
     this.command(`edge[arrowsize=0.5, arrowhead="open", color="${Colors.edge}", fontcolor="${Colors.edgeText}"]`);

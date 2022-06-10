@@ -118,7 +118,7 @@ svg.jtk-connector path {
   /* fill: transparent; */  /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
   /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
   /* fill: #222;  */
-  fill: rgba(0,0,0, 0.1);
+  /* fill: rgba(0,0,0, 0.1); */
 }
 
 /** ###########################################################################

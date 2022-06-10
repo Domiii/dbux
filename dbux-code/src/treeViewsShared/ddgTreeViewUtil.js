@@ -88,8 +88,8 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
       label: 'Og',
       children() {
         return [
-          renderOgEdgeIds(ddg, ddg.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
-          renderOgEdgeIds(ddg, ddg.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
+          renderOgEdgeIds(ddg, ddg.og.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
+          renderOgEdgeIds(ddg, ddg.og.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
         ];
       }
     }));

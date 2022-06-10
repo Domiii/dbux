@@ -489,6 +489,9 @@ export default class DataDependencyGraph extends BaseDDG {
     const summaryState = new SummaryState();
     this.#summarizeDFS(root, summaryState);
 
+    // // NOTE: store SummaryState for debugging purposes
+    // this.graphSummaryState = summaryState;
+
     // add all edges
     for (const [from, toMap] of summaryState.visibleEdges) {
       for (const [to, edgeState] of toMap) {
