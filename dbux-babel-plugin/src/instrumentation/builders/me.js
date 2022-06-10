@@ -32,7 +32,6 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
     const {
       data: {
         objectTid,
-        dontTraceObject,
         objectVar,
         propertyVar, // NOTE: this is `undefined`, if `!computed`
         optional
@@ -41,9 +40,7 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
 
     // build object
 
-    const o = dontTraceObject ?
-      (objectVar || NullNode) :
-      buildMEObject(meAstNode, traceCfg);
+    const o = buildMEObject(meAstNode, traceCfg);
 
     // build propertyValue
     let propValue = convertNonComputedPropToStringLiteral(propertyAstNode, computed);
@@ -54,9 +51,16 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
       );
     }
 
+    let newO = objectVar || objectAstNode;
+    if (objectAstNode.type === 'Super') {
+      // hackfix: super
+      // don't replace `super` in `super.f()` (but do trace `this` instead of `super`)
+      newO = objectAstNode;
+    }
+
     // build actual MemberExpression
     const newMemberExpression = (optional ? t.optionalMemberExpression : t.memberExpression)(
-      objectVar || objectAstNode,
+      newO,
       propertyVar || propertyAstNode,
       computed,
       optional
@@ -117,23 +121,14 @@ export const buildTraceWriteME = buildTraceCall(
     } = assignmentExpression;
 
     const {
-      object: objectAstNode
-    } = meAstNode;
-
-    const {
       data: {
         objectTid,
-        propTid,
-        dontTraceObject,
-        propertyVar, // NOTE: this is `undefined`, if `!computed`
-        objectVar
+        propTid
       }
     } = traceCfg;
 
     // build object
-    const o = dontTraceObject ?
-      (objectVar || NullNode) :
-      buildMEObject(meAstNode, traceCfg);
+    const o = buildMEObject(meAstNode, traceCfg);
 
     // build propValue
     let propValue = buildMEProp(meAstNode, traceCfg);
@@ -233,15 +228,22 @@ export const buildTraceDeleteME = buildTraceCall(
  */
 export function buildMEObject(meAstNode, traceCfg) {
   const {
-    object: objectNode,
-  } = meAstNode;
-
-  const {
     data: {
       objectVar
     }
   } = traceCfg;
-  return t.assignmentExpression('=', objectVar, objectNode);
+
+  const {
+    object: objectAstNode,
+  } = meAstNode;
+
+  if (objectAstNode.type === 'Super') {
+    // hackfix: super
+    return objectVar || NullNode;
+  }
+
+
+  return t.assignmentExpression('=', objectVar, objectAstNode);
 }
 
 /**

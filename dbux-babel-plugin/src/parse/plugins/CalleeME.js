@@ -32,23 +32,20 @@ export default class CalleeME extends BasePlugin {
 
     // const [objectPath/* , propertyPath */] = calleeNode.getChildPaths();
 
-    // we want to store
-    
-
-
     // NOTE: o.#x is valid, if inside of o's class
     const objectVar = Traces.generateDeclaredUidIdentifier('o');
 
-
-    // NOTE: for the final CallExpression, the callee is split -
-    //  1. store object (`o`) in variable `_o` and use in both:
-    //        callee node (as `objectVar`) and call node (as `objectVar`).
-    //  2. store `calleeAstNode` (`o[prop]`) in callee trace.
-    traceCfg.data.objectVar = objectVar;
 
     // NOTE:
     //  1. instrument (replace) the new calleeAstNode, not the original
     //  2. input should point to original object
     traceCfg.data.calleeTrace = calleeNode.addRValTrace(false, objectVar);
+
+    // NOTE: for the final CallExpression, the callee is split -
+    //  1. store object (`o`) in variable `_o` and use in both:
+    //        callee node (as `objectVar`) and call node (as `objectVar`).
+    //  2. store `calleeAstNode` (`o[prop]`) in callee trace.
+    // NOTE2: We get the actual objectVar from ME trace, because there is more logic involved.
+    traceCfg.data.objectVar = traceCfg.data.calleeTrace.data.objectVar;
   }
 }

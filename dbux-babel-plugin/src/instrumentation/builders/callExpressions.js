@@ -9,6 +9,8 @@ import { makeInputs, NullNode, ZeroNode } from './buildUtil';
 import { buildTraceId } from './traceId';
 import { buildSpreadableArgArrayNoSpread, buildGetI } from './arrays';
 import { buildTraceExpressionNoInput } from './misc';
+import { buildMEObject } from './me';
+import { pathToStringAnnotated } from '../../helpers/pathHelpers';
 
 
 // // eslint-disable-next-line no-unused-vars
@@ -211,7 +213,7 @@ const callTemplatesME = {
 `)
 };
 
-function buildCallNodeME(path, objectVar, calleeVar, args) {
+function buildCallNodeME(path, mePath, traceCfg, calleeVar, args) {
   const { type } = path.node;
   const callTemplate = callTemplatesME[type]();
 
@@ -221,8 +223,27 @@ function buildCallNodeME(path, objectVar, calleeVar, args) {
   };
 
   if (type !== 'NewExpression') {
+    const {
+      data: {
+        objectVar
+      }
+    } = traceCfg;
+
     // NOTE: `NewExpression` does not have `o` (no need to trace separately)
-    templateArgs.o = objectVar;
+    let objectMENode = objectVar;
+    if (!objectMENode) {
+      // NOTE: this is handled in helpers/me.js
+      // // hackfix: trace `this` if the object is `super`
+      // // const objectAstNode = meAstNode.object;
+      // const objectPath = mePath.get('object');
+      // if (objectPath.isSuper()) {
+      //   objectMENode = ThisNode;
+      // }
+      // else {
+      throw new Error(`Untraced object in CallExpressionME: ${pathToStringAnnotated(traceCfg.path, true)}`);
+      // }
+    }
+    templateArgs.o = objectMENode;
   }
 
   let astNode = callTemplate(templateArgs);
@@ -388,23 +409,18 @@ export function buildTraceCallME(state, traceCfg) {
       bceTrace,
       calleeNode,
       calleeVar,
-      objectVar,
       // objectPath,
       calleeTrace
     }
   } = traceCfg;
 
   let calleeAstNode;
-  if (calleeTrace) {
-    // NOTE: callee was built (but not replaced) by MemberExpression
-    ({ resultNode: calleeAstNode } = calleeTrace);
-  }
-  else {
-    // 
-  }
+
+  // NOTE: callee was built (but not replaced) by MemberExpression
+  ({ resultNode: calleeAstNode } = calleeTrace);
 
   const calleePath = path.get('callee');
-  const objectPath = calleePath.get('object');
+  const meAstNode = calleePath.node;
 
   const argPaths = path.get('arguments');
   const argsVar = generateVar(scope, 'args');
@@ -413,14 +429,14 @@ export function buildTraceCallME(state, traceCfg) {
   // const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
   // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
-  traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, buildCallArgs(state, argsVar, argNodes));
+  traceCfg.meta.targetNode = buildCallNodeME(path, calleePath, traceCfg, calleeVar, buildCallArgs(state, argsVar, argNodes));
   // debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
   const expressions = [];
 
   expressions.push(
     // (i) object assignment - `o = ...`
-    t.assignmentExpression('=', objectVar, objectPath.node),
+    buildMEObject(meAstNode, calleeTrace),
 
     // (ii) callee assignment - `f = ...`
     t.assignmentExpression('=', calleeVar, calleeAstNode),

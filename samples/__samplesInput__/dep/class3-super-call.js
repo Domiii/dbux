@@ -1,22 +1,23 @@
 class A {
-  constructor(x) {
+  x = 100;
+  constructor() {
     // this.x = x;
   }
 
-  f(x) {
-    return x + 33;
+  g(y) {
+    return this.x + y;
   }
 }
 
 class B extends A {
   g(y) {
-    return /* this.val = */ super.f(y);
+    return /* this.val = */ super.g(y);
     // return this.val * 2;
   }
 }
 
 function main(x) {
-  const b = new B(1);
+  const b = new B();
   const c = b.g(x);
   // const b = a.x;
   // a.y = b + 3;
@@ -24,5 +25,5 @@ function main(x) {
   return c;
 }
 
-main(5);
+console.log(main(5));
 

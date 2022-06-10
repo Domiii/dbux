@@ -14,7 +14,7 @@ import { astNodeToString } from '../../helpers/pathHelpers';
 // util
 // ###########################################################################
 
-const thisNode = t.thisExpression();
+const ThisNode = t.thisExpression();
 
 function buildMethodsArray(state, methodOwner, methods) {
   return t.arrayExpression(methods.map(({ trace }) => {
@@ -228,9 +228,9 @@ function buildTraceInstanceExpression(state, instanceTraceCfg) {
   const { ids: { aliases: { traceInstance } } } = state;
 
   return t.callExpression(traceInstance, [
-    thisNode,
+    ThisNode,
     buildTraceId(state, instanceTraceCfg),
-    buildPrivateMethodArray(state, thisNode, privateMethods)
+    buildPrivateMethodArray(state, ThisNode, privateMethods)
   ]);
 }
 
