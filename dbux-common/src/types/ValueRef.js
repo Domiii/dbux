@@ -36,4 +36,9 @@ export default class ValueRef extends RefSnapshot {
    * NOTE: when stored in DataProvider, `serialized` is deleted and replaced with `value` or `children`
    */
   serialized;
+
+  /**
+   * @type {boolean}
+   */
+  monkey;
 }

@@ -183,112 +183,114 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
     let ddgNode;
     if (allDDGs.length) {
       ddgNode = {
-        children: allDDGs.map((ddg) => {
-          const { graphId, og } = ddg;
-          const { dp } = ddg;
-          const {
-            timelineNodes,
-            edges: allEdges,
-            summaryModes,
-            nodeSummaries
-          } = ddg.getRenderData();
+        children() {
+          return allDDGs.map((ddg) => {
+            const { graphId, og } = ddg;
+            const { dp } = ddg;
+            const {
+              timelineNodes,
+              edges: allEdges,
+              summaryModes,
+              nodeSummaries
+            } = ddg.getRenderData();
 
 
-          /** ###########################################################################
-           * make DDG entries
-           * ##########################################################################*/
+            /** ###########################################################################
+             * make DDG entries
+             * ##########################################################################*/
 
-          return makeTreeItem(
-            graphId,
-            [
-              function Complete_Tree() {
-                const root = timelineNodes[1];
-                return renderNodeTree(ddg, root);
-              },
+            return makeTreeItem(
+              graphId,
+              [
+                function Complete_Tree() {
+                  const root = timelineNodes[1];
+                  return renderNodeTree(ddg, root);
+                },
 
-              function Visible_Nodes() {
-                const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-                return renderDDGNodes(ddg, visibleNodes, 'Visible Nodes');
-              },
-              function Visible_Edges() {
-                const actualEdges = allEdges.filter(Boolean);
-                return renderEdges(ddg, actualEdges, 'Visible Edges');
-              },
+                function Visible_Nodes() {
+                  const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
+                  return renderDDGNodes(ddg, visibleNodes, 'Visible Nodes');
+                },
+                function Visible_Edges() {
+                  const actualEdges = allEdges.filter(Boolean);
+                  return renderEdges(ddg, actualEdges, 'Visible Edges');
+                },
 
-              function All_Nodes() {
-                const nodes = timelineNodes.filter(Boolean);
-                return renderDDGNodes(ddg, nodes, 'All Nodes');
-              },
-              function All_Edges() {
-                const actualEdges = og.edges.filter(Boolean);
-                return renderEdges(ddg, actualEdges, 'All Edges');
-              },
-              function All_In_Edges() {
-                return {
-                  children() {
-                    return Object.entries(og.inEdgesByTimelineId)
-                      .map(([nodeId, edgeIds]) => {
-                        const edges = edgeIds.map(id => og.edges[id]);
-                        return renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]));
-                      });
-                  },
-                  props: {
-                    description: `(${size(og.inEdgesByTimelineId)})`
-                  }
-                };
-              },
-              function All_Out_Edges() {
-                return {
-                  children() {
-                    return Object.entries(og.outEdgesByTimelineId)
-                      .map(([nodeId, edgeIds]) => {
-                        const edges = edgeIds.map(id => og.edges[id]);
-                        return renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]));
-                      });
-                  },
-                  props: {
-                    description: `(${size(og.outEdgesByTimelineId)})`
-                  }
-                };
-              },
-              function Node_Summaries() {
-                return {
-                  children() {
-                    return renderDDGSummaries(ddg, nodeSummaries);
-                  },
-                  props: {
-                    description: `(${size(nodeSummaries)})`
-                  }
-                };
-              },
-              function Dot() {
-                return {
-                  props: {
-                    async handleClick() {
-                      let dot = await getDDGDot(ddg);
-                      if (!dot) {
-                        try {
-                          this.treeNodeProvider.refresh();
+                function All_Nodes() {
+                  const nodes = timelineNodes.filter(Boolean);
+                  return renderDDGNodes(ddg, nodes, 'All Nodes');
+                },
+                function All_Edges() {
+                  const actualEdges = og.edges.filter(Boolean);
+                  return renderEdges(ddg, actualEdges, 'All Edges');
+                },
+                function All_In_Edges() {
+                  return {
+                    children() {
+                      return Object.entries(og.inEdgesByTimelineId)
+                        .map(([nodeId, edgeIds]) => {
+                          const edges = edgeIds.map(id => og.edges[id]);
+                          return renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]));
+                        });
+                    },
+                    props: {
+                      description: `(${size(og.inEdgesByTimelineId)})`
+                    }
+                  };
+                },
+                function All_Out_Edges() {
+                  return {
+                    children() {
+                      return Object.entries(og.outEdgesByTimelineId)
+                        .map(([nodeId, edgeIds]) => {
+                          const edges = edgeIds.map(id => og.edges[id]);
+                          return renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]));
+                        });
+                    },
+                    props: {
+                      description: `(${size(og.outEdgesByTimelineId)})`
+                    }
+                  };
+                },
+                function Node_Summaries() {
+                  return {
+                    children() {
+                      return renderDDGSummaries(ddg, nodeSummaries);
+                    },
+                    props: {
+                      description: `(${size(nodeSummaries)})`
+                    }
+                  };
+                },
+                function Dot() {
+                  return {
+                    props: {
+                      async handleClick() {
+                        let dot = await getDDGDot(ddg);
+                        if (!dot) {
+                          try {
+                            this.treeNodeProvider.refresh();
+                          }
+                          catch (err) {
+                            // ignore err
+                          }
+                          dot = await getDDGDot();
                         }
-                        catch (err) {
-                          // ignore err
+                        if (dot) {
+                          await renderStringInNewEditor('dot', dot);
                         }
-                        dot = await getDDGDot();
-                      }
-                      if (dot) {
-                        await renderStringInNewEditor('dot', dot);
                       }
                     }
-                  }
-                  // children() {
-                  // }
-                };
-              }
-            ],
-            {
-              ddg
-            });
-        }),
+                    // children() {
+                    // }
+                  };
+                }
+              ],
+              {
+                ddg
+              });
+          });
+        }
       };
     }
     else {

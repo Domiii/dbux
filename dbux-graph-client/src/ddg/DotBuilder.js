@@ -50,6 +50,7 @@ const Colors = {
   groupLabel: 'yellow',
   snapshotSeparator: 'gray',
   snapshotProp: 'gray',
+  snapshotDeleteProp: 'red',
 
   value: 'lightblue',
 };
@@ -237,6 +238,10 @@ export default class DotBuilder {
       else if (ddgQueries.isSnapshot(ddg, node)) {
         this.refSnapshotRoot(node);
       }
+      // NOTE: delete nodes should never be independent nodes, but rather, are part of snapshots
+      // else if (ddgQueries.isDeleteNode(ddg, node)) {
+      //   this.deleteNode(node);
+      // }
       else {
         this.valueNode(node);
       }
@@ -452,7 +457,13 @@ export default class DotBuilder {
         attrs += `color=${colorOverride}`;
       }
       const childrenCells = childEntries
-        .map(([prop, childId]) => this.makeTablePropValueCell(childId, prop))
+        .map(([prop, childId]) => {
+          const child = timelineNodes[childId];
+          if (ddgQueries.isDeleteNode(this.ddg, child)) {
+            return this.makeTablePropDeleteCell(childId, prop);
+          }
+          return this.makeTablePropValueCell(childId, prop);
+        })
         .join('');
       this.command(`${timelineId} [${attrs},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
@@ -498,8 +509,25 @@ export default class DotBuilder {
     const node = timelineNodes[timelineId];
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
-        <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}"><FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
+        <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
+<FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
         <TR><TD><FONT COLOR="${Colors.value}">${this.makeNodeValueString(node)}</FONT></TD></TR>
+      </TABLE>
+    </TD>`;
+  }
+
+  /**
+   * Build a row of "column" cells containing tables.
+   * We do this, so every node's column has a singular addressable PORT.
+   */
+  makeTablePropDeleteCell(timelineId, prop) {
+    const { timelineNodes } = this.renderState;
+    const node = timelineNodes[timelineId];
+    return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
+      <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
+<FONT COLOR="${Colors.snapshotDeleteProp}"><S>${prop}</S></FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.value}">-</FONT></TD></TR>
       </TABLE>
     </TD>`;
   }

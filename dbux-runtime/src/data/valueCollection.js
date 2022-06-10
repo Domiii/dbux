@@ -635,6 +635,14 @@ class ValueCollection extends Collection {
     }
   }
 
+  registerMonkey(valueRef, value) {
+    if (this.getOriginalFunction(value) || this.getPatchedFunctionOrSelf(value) !== value) {
+      // [edit-after-send]
+      // console.log('monkey', valueRef.refId, value, this.getOriginalFunction(value), this.getPatchedFunctionOrSelf(value) !== value);
+      valueRef.monkey = true;
+    }
+  }
+
   /** ###########################################################################
    * {@link #_serialize}
    * ##########################################################################*/
@@ -706,6 +714,9 @@ class ValueCollection extends Collection {
 
     switch (category) {
       case ValueTypeCategory.Function: {
+        // special handling for monkey-patched functions
+        this.registerMonkey(valueRef, value);
+
         // TODO: look up staticContext information by function for `name` instead?
         // TODO: functions can have custom properties too
         serialized = {};
@@ -753,6 +764,7 @@ class ValueCollection extends Collection {
 
           // special handling for promise
           this.registerPromiseValue(valueRef, value);
+
 
           if (!props) {
             // error

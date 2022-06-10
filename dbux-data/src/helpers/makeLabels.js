@@ -209,7 +209,7 @@ export function makeTraceLocLabel(trace) {
  * @param {Application} app 
  * @return {string}
  */
-export function makeContextLabelPlain(staticContextId, app) {
+export function makeStaticContextLabel(staticContextId, app) {
   const dp = app.dataProvider;
   const staticContext = dp.collections.staticContexts.getById(staticContextId);
   return `${staticContext.displayName}`;
@@ -249,14 +249,14 @@ export function makeContextLabel(context, app) {
           virtualLabel = '(gen start)';
         }
       }
-      return `${makeContextLabelPlain(realStaticContextId, app)} | ${virtualLabel}`;
+      return `${makeStaticContextLabel(realStaticContextId, app)} | ${virtualLabel}`;
     }
     else {
       // bug: could not find any of the context's traces
     }
   }
 
-  return makeContextLabelPlain(realStaticContextId, app);
+  return makeStaticContextLabel(realStaticContextId, app);
 }
 
 const ContextCallerLabelByEventUpdateType = {

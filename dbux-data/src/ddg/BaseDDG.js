@@ -17,7 +17,7 @@ import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
-import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, SnapshotEntryDeletedTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
@@ -391,6 +391,15 @@ export default class BaseDDG {
     }
   }
 
+  addSnapshotEntryDeletedNode(dataNode, prop) {
+    const label = prop;
+    const newNode = new SnapshotEntryDeletedTimelineNode(dataNode.nodeId, label);
+
+    this.addDataNode(newNode);
+
+    return newNode;
+  }
+
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
     return this._firstTimelineDataOrSnapshotNodeByDataNodeId[dataNodeId];
   }
@@ -517,24 +526,36 @@ export default class BaseDDG {
           continue;
         }
 
-        const alreadyHadNode = !!this.getFirstDataTimelineNodeByDataNodeId(lastModDataNode.nodeId);
+        if (DataNodeType.is.Delete(lastModDataNode.type)) {
+          // parentSnapshot.deleted.push({
+          //   prop,
+          //   dataNodeId: lastModDataNode
+          // });
 
-        // apply lastMod
-        // if (this.#canBeRefSnapshot(lastModDataNode)) {
-        if (lastModDataNode.refId) {
-          // nested ref (→ the child's written value is a ref)
-          newChild = this.addNewRefSnapshot(lastModDataNode, lastModDataNode.refId, snapshotsByRefId, parentSnapshot);
-        }
-        else {
-          // primitive
-          newChild = this.addValueDataNode(lastModDataNode);
+          // delete
+          newChild = this.addSnapshotEntryDeletedNode(lastModDataNode);
           this.#onSnapshotNodeCreated(newChild, parentSnapshot);
         }
+        else {
+          const alreadyHadNode = !!this.getFirstDataTimelineNodeByDataNodeId(lastModDataNode.nodeId);
 
-        const skippedBy = this.timelineBuilder.getSkippedByDataNode(lastModDataNode);
-        if (!alreadyHadNode && skippedBy) {
-          // Snapshot picks up a skipped node. Make sure to add edge to its skippedBy.
-          this.building && this.addSnapshotEdge(skippedBy, newChild);
+          // apply lastMod
+          // if (this.#canBeRefSnapshot(lastModDataNode)) {
+          if (lastModDataNode.refId) {
+            // nested ref (→ the child's written value is a ref)
+            newChild = this.addNewRefSnapshot(lastModDataNode, lastModDataNode.refId, snapshotsByRefId, parentSnapshot);
+          }
+          else {
+            // primitive
+            newChild = this.addValueDataNode(lastModDataNode);
+            this.#onSnapshotNodeCreated(newChild, parentSnapshot);
+          }
+
+          const skippedBy = this.timelineBuilder.getSkippedByDataNode(lastModDataNode);
+          if (!alreadyHadNode && skippedBy) {
+            // Snapshot picked up a skipped node. Make sure to add edge to its skippedBy.
+            this.building && this.addSnapshotEdge(skippedBy, newChild);
+          }
         }
       }
 
@@ -705,6 +726,12 @@ export default class BaseDDG {
     return snapshot;
   }
 
+  /**
+   * This is called on any snapshot or snapshot child node.
+   * 
+   * @param {*} newNode 
+   * @param {*} parentSnapshot 
+   */
   #onSnapshotNodeCreated(newNode, parentSnapshot) {
     // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
     newNode.parentNodeId = parentSnapshot?.timelineId;
@@ -760,6 +787,10 @@ export default class BaseDDG {
     );
   }
 
+  /**
+   * This is a normal data edge that was added during snapshot construction to one of the
+   * snapstho children.
+   */
   addSnapshotEdge(fromNode, toNode) {
     // TODO: consider if this should be done during build and/or summarization?
     // if (fromNode.dataNodeId !== newNode.dataNodeId) {

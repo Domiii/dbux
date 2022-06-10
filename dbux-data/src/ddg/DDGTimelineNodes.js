@@ -144,6 +144,20 @@ export class RefTimelineNode extends DDGTimelineNode {
 }
 
 
+export class SnapshotEntryDeletedTimelineNode extends DataTimelineNode {
+  constructor(dataNodeId, label) {
+    super(DDGTimelineNodeType.SnapshotEntryDeleted);
+
+    this.dataNodeId = dataNodeId;
+    this.label = label;
+  }
+}
+
+// export class SnapshotEntryDeleteInfo {
+//   prop;
+//   dataNodeId;
+// }
+
 export class RefSnapshotTimelineNode extends RefTimelineNode {
   /**
    * @type {string}
@@ -163,6 +177,11 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
    * We use `startDataNodeId` as a "starting point" of a snapshot and all its descendants.
    */
   startDataNodeId;
+
+  // /**
+  //  * @type {SnapshotEntryDeleteInfo[]}
+  //  */
+  // deleted = [];
 
   /**
    * @param {number} dataNodeId 

@@ -4,7 +4,7 @@
 
 import { getCommonAncestorPath } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeContextLabelPlain, makeStaticContextLocLabel } from '@dbux/data/src/helpers/makeLabels';
+import { makeStaticContextLabel, makeStaticContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import path from 'path';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
@@ -27,6 +27,10 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
     return `Global Stats`;
   }
 
+  init() {
+    this.description = `(${allApplications.selection.count} applications)`;
+  }
+
   registerActiveEvents() {
     return allApplications.selection.data.collectGlobalStats((dp) =>
       dp.queryImpl.packages.subscribe()
@@ -45,7 +49,7 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
       const stats = Object.values(byStaticContext);
       stats.forEach(s => {
         s.dp = dp;
-        s.label = makeContextLabelPlain(s.staticContextId, app);
+        s.label = makeStaticContextLabel(s.staticContextId, app);
         s.locLabel = makeStaticContextLocLabel(applicationId, s.staticContextId);
       });
       return stats;
@@ -55,7 +59,7 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
     allStaticContextStats.sort((a, b) => b.nTraces - a.nTraces);
 
     return {
-      children: allStaticContextStats.map(({ staticContextId, label, locLabel, nTraces, dp }) => {
+      children: () => allStaticContextStats.map(({ staticContextId, label, locLabel, nTraces, dp }) => {
         return makeTreeItem(
           `${nTraces}`,
           null,
@@ -137,7 +141,7 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
     });
 
     return {
-      children: allPackageStats
+      children: () => allPackageStats
         .map(({ dp, pkg, /* dp, */ programs, nTraces }) => {
           const programNodes = programs.map(({ programId, path: programPath, nTraces: programNTraces }) => {
             return makeTreeItem(
@@ -171,10 +175,83 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
     // eslint-disable-next-line no-extra-bind
   }.bind(this);
 
+
+  // eslint-disable-next-line camelcase
+  Function_Stats = () => ({
+    label: 'Function Stats',
+    children: () => {
+      const tracedFunctions = allApplications.selection.data.collectGlobalStats((dp, app) => {
+        const tracesByStaticContext = {};
+        dp.util.getTraceCountsByStaticContext(tracesByStaticContext);
+        return Object.entries(tracesByStaticContext)
+          .filter(([, s]) => !!s.nTraces) // only get actually ran staticContexts
+          .map(([staticContextId]) => {
+            staticContextId = parseInt(staticContextId, 10);
+            const staticContext = dp.collections.staticContexts.getById(staticContextId);
+            if (!staticContext) {
+              return makeTreeItem(`invalid (${staticContext})`);
+            }
+            return makeTreeItem(
+              staticContext.displayName,
+              // makeStaticContextLabel(staticContext, app),
+              null,
+              {
+                handleClick() {
+                  const trace = dp.util.getFirstTraceOfStaticContext(staticContext.staticContextId);
+                  traceSelection.selectTrace(trace);
+                }
+                // description: ``
+              }
+            );
+          });
+      });
+
+      let monkeyCount = 0;
+      const untracedFunctions = allApplications.selection.data.collectGlobalStats((dp, app) => {
+        return Object.entries(dp.util.getAllUntracedFunctionCallsByRefId())
+          .map(([refId, bceTraces]) => {
+            const bceTrace = bceTraces[0];
+            const callee = dp.util.getCalleeTrace(bceTrace.traceId);
+            refId = parseInt(refId, 10);
+            const monkey = !!dp.collections.values.getById(refId)?.monkey;
+            monkeyCount += monkey;
+            return makeTreeItem(
+              makeTraceLabel(callee),
+              null,
+              {
+                handleClick() {
+                  traceSelection.selectTrace(bceTrace);
+                },
+                description: `${monkey ? '🐵' : ''}`
+              }
+            );
+          });
+      });
+
+      return [
+        makeTreeItem(
+          'Recorded',
+          tracedFunctions,
+          {
+            description: `(${tracedFunctions.length})`
+          }
+        ),
+        makeTreeItem(
+          'Not Recorded',
+          untracedFunctions,
+          {
+            description: `(${untracedFunctions.length}, ${monkeyCount} x 🐵, ${untracedFunctions.length - monkeyCount} x 🙈))`
+          }
+        ),
+      ];
+    }
+  });
+
   nodes() {
     return [
       this.Traces_by_Function,
       this.Traces_by_Package,
+      this.Function_Stats
     ];
   }
 

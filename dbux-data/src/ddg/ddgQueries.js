@@ -185,6 +185,10 @@ const ddgQueries = {
     return node.type === DDGTimelineNodeType.RefSnapshot;
   },
 
+  isDeleteNode(ddg, node) {
+    return node.type === DDGTimelineNodeType.SnapshotEntryDeleted;
+  },
+
   /**
    * Whether given node is a snapshot that has at least one nested snapshot.
    * 

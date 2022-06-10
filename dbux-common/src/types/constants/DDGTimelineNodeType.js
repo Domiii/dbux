@@ -8,6 +8,7 @@ const ddgTimelineNodeTypeObj = {
 
   RefSnapshot: 3,
   RepeatedRef: 4,
+  SnapshotEntryDeleted: 4,
 
   // decision (Data node for control decisions)
   Decision: 8,

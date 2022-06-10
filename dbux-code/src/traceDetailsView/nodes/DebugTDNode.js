@@ -160,7 +160,7 @@ export class DebugTDNode extends TraceDetailNode {
     // const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `resultDataNodes: []`;
     // // const valueTraceDataNodeCount = valueTraceDataNodes?.length || 0;
 
-    const allDataNodes = dataNodes.map(n => renderDataNode(dp, n.nodeId));
+    const allDataNodes = dataNodes?.map(n => renderDataNode(dp, n.nodeId)) || EmptyArray;
 
 
     /** ###########################################################################
@@ -183,13 +183,13 @@ export class DebugTDNode extends TraceDetailNode {
       );
     }
     else if (refId) {
-      valueNode = [
+      valueNode = makeTreeItem(
         'valueRef:',
         valueRef,
         {
           description: `refId=${refId}`
         }
-      ];
+      );
     }
     else {
       valueNode = makeTreeItemNoChildren(

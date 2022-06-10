@@ -97,11 +97,33 @@ export default function patchArray() {
         }
       }
 
-      // [edit-after-send]
-      bceTrace.data = bceTrace.data || {};
-      bceTrace.data.monkey = {
-        wireInputs: true
+      return originalFunction.apply(arr, args);
+    }
+  );
+
+  // ###########################################################################
+  // pop
+  // ###########################################################################
+
+  monkeyPatchMethod(Array, 'pop',
+    (arr, args, originalFunction, patchedFunction) => {
+      const ref = valueCollection.getRefByValue(arr);
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
+
+      const { traceId: callId } = bceTrace;
+      const arrNodeId = getNodeIdFromRef(ref);
+
+      // delete and return last
+      const i = arr.length - 1;
+      const varAccess = {
+        objectNodeId: arrNodeId,
+        prop: i
       };
+      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.Read, varAccess);
+      dataNodeCollection.createDataNode(undefined, callId, DataNodeType.Delete, varAccess);
 
       return originalFunction.apply(arr, args);
     }
@@ -143,12 +165,6 @@ export default function patchArray() {
         };
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
-
-      // [edit-after-send]
-      bceTrace.data = bceTrace.data || {};
-      bceTrace.data.monkey = {
-        wireInputs: true
-      };
 
       return originalFunction.apply(arr, args);
     }

@@ -2,6 +2,7 @@ import last from 'lodash/last';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 // eslint-disable-next-line max-len
@@ -9,7 +10,6 @@ import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNo
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
 import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
-import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */

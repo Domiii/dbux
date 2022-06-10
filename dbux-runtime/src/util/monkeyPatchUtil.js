@@ -71,6 +71,14 @@ export function registerMonkeyPatchedFunction(originalFunction, patchedFunction)
     // hackfix: we sometimes set native functions to be itself to prevent auto patching
     //    (because for some reason, native functions cannot be WeakMap keys)
     originalFunctionsByProxy.set(proxy, originalFunction);
+
+    // NOTE: we add "monkey" information in `ValueCollection`
+    // // hackfix: let remote know that this is monkey'ed
+    // // [edit-after-send]
+    // console.log('monkeyPatch', originalFunction.name, !!valueCollection._getRefByValueUnwrapped(originalFunction));
+    // valueCollection._getRefByValueUnwrapped(originalFunction) &&
+    //   (valueCollection._getRefByValueUnwrapped(originalFunction).monkey = true);
+
     // }
     return proxy;
   }

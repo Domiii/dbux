@@ -1220,7 +1220,7 @@ export default class RuntimeMonitor {
         // not spread
         const varAccess = {
           objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
-          prop: i
+          prop: idx
         };
         dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
         ++idx;
