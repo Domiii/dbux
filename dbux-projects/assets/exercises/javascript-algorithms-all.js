@@ -1844,7 +1844,7 @@ module.exports = [
     "ddgs": [
       {
         "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
-        "contextId": 24,
+        "contextId": 18,
         "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
         "loc": {
           "start": {
@@ -1853,12 +1853,12 @@ module.exports = [
             "index": 1624
           },
           "end": {
-            "line": 84,
+            "line": 88,
             "column": 1,
-            "index": 2121
+            "index": 2284
           }
         },
-        "applicationUuid": "0.16791208772880362"
+        "applicationUuid": "0.5606770260435237"
       }
     ]
   },

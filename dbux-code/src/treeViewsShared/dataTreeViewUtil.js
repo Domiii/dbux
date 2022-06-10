@@ -31,6 +31,7 @@ export function renderDataNode(
   children = dp.util.getDataNode(dataNodeId),
   label = makeDataNodeLabel(dp, dataNodeId)
 ) {
+  // render inputs and make them clickable
   if (children?.inputs) {
     children = { ...children };
     children.inputs = children.inputs.map(nodeId => {

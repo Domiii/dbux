@@ -1,10 +1,11 @@
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import size from 'lodash/size';
+import isNumber from 'lodash/isNumber';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import traceSelection from '@dbux/data/src/traceSelection';
-import makeTreeItem, { makeTreeItems, objectToTreeItems } from '../helpers/makeTreeItem';
+import makeTreeItem, { makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
 
 /**
@@ -24,9 +25,20 @@ export function renderNodeTree(ddg, node) {
   return renderDDGNode(ddg, node, children);
 }
 
+function nodeTypeLabel(node) {
+  return node.constructor.name.replace('TimelineNode', '');
+}
+
+/** ###########################################################################
+ * nodes
+ *  #########################################################################*/
+
 export function makeDDGNodeDescription(ddg, node) {
   const { summaryModes } = ddg;
-  const { timelineId, constructor, watched, og } = node;
+  const { timelineId, dataNodeId, connected, constructor, watched, og } = node;
+
+  const con = connected ? '🔗' : ' ';
+  const dataInfo = dataNodeId ? ` (n${dataNodeId})` : '';
   const summaryMode = summaryModes[timelineId];
   // eslint-disable-next-line no-nested-ternary
   const summaryModeLabel =
@@ -37,12 +49,12 @@ export function makeDDGNodeDescription(ddg, node) {
         og ?
           '(unknown)' :
           'Summary Node';
-  return `${timelineId} [${constructor.name}] ${summaryModeLabel}`;
+  return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryModeLabel}`;
 }
 
 export function makeDDGNodeLabel(ddg, timelineId) {
   const node = ddg.timelineNodes[timelineId];
-  return node.label || `${node.constructor.name}`;
+  return node.label || `${nodeTypeLabel(node)}`;
 }
 
 /**
@@ -56,29 +68,81 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
     delete moreProps.label;
   }
   const label = labelOverride || makeDDGNodeLabel(ddg, node.timelineId);
+
   if (children === node) {
-    // some default customized rendering
+    // better rendering of things
     children = { ...node };
+
+    const nodeChildren = children.children || EmptyArray;
+    children.children = renderDDGNodes(ddg, nodeChildren, 'Children');
+
     if (node.dataNodeId) {
-      children.dataNode = renderDataNode(dp, node.dataNodeId, 'DataNode');
+      children.dataNode = renderDataNode(dp, node.dataNodeId, node, 'DataNode');
       delete children.dataNodeId;
     }
 
-    // TODO: add edgees
-    const out = ddg.outEdgesByTimelineId[node.timelineId];
+    // add edges
+    children.EdgesIn = renderEdgeIds(ddg, ddg.inEdgesByTimelineId[node.timelineId], 'EdgesIn');
+    children.EdgesOut = renderEdgeIds(ddg, ddg.outEdgesByTimelineId[node.timelineId], 'EdgesOut');
+    children.og = makeTreeItem(() => ({
+      label: 'Og',
+      children() {
+        return [
+          renderOgEdgeIds(ddg, ddg.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
+          renderOgEdgeIds(ddg, ddg.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
+        ];
+      }
+    }));
+
+    // TODO: also get control group by decision etc.
+    // TODO: add *correct* value string (see DotBuilder.makeNodeValueString)
   }
 
-  // TODO: add value string (see DotBuilder.makeNodeValueString)
-
-  return makeTreeItem(labelPrefix + label, children, {
-    description: makeDDGNodeDescription(ddg, node),
-    handleClick() {
-      // select
-      selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
-    },
-    ...moreProps
-  });
+  return makeTreeItem(
+    labelPrefix + label,
+    children,
+    {
+      description: makeDDGNodeDescription(ddg, node),
+      handleClick() {
+        // select
+        selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
+      },
+      ...moreProps
+    }
+  );
 }
+
+export function renderDDGNodes(ddg, nodesOrIds, label) {
+  return makeTreeItem(() => ({
+    label,
+    children() {
+      const children = new nodesOrIds.constructor();
+      Object.entries(nodesOrIds).forEach(([key, childOrChildId]) => {
+        let child;
+        if (isNumber(childOrChildId)) {
+          child = ddg.timelineNodes[childOrChildId];
+        }
+        else {
+          child = childOrChildId;
+        }
+        children[key] = renderDDGNode(ddg, child);
+      });
+      return makeTreeChildren(children);
+      // return Object.values(nodes).map((node) => {
+      //   // const { timelineId, label: nodeLabel } = node;
+      //   // delete entry.timelineId;
+      //   return renderDDGNode(ddg, node, node);
+      // });
+    },
+    props: {
+      description: `(${size(nodesOrIds)})`
+    }
+  }));
+}
+
+/** ###########################################################################
+ * edges
+ *  #########################################################################*/
 
 // function renderDataTimelineNodes(nodeIds) {
 //   return {
@@ -102,26 +166,42 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
 //   };
 // }
 
-export function renderEdgeIds(ddg, edgeIds) {
-  // TODO
+/**
+ * @param {DataDependencyGraph} ddg
+ */
+export function renderEdgeIds(ddg, edgeIds, label) {
+  return renderEdges(ddg, edgeIds?.map(edgeId => ddg.edges[edgeId]), label);
 }
 
-export function renderEdges(ddg, edges, nodeLabel = null, nodeDescription = null) {
+/**
+ * @param {DataDependencyGraph} ddg
+ */
+export function renderOgEdgeIds(ddg, edgeIds, label) {
+  return renderEdges(ddg, edgeIds?.map(edgeId => ddg.og.edges[edgeId]), label);
+}
+
+/**
+ * @param {DataDependencyGraph} ddg
+ */
+export function renderEdges(ddg, edges, label = null, nodeDescription = null) {
   const { timelineNodes, dp } = ddg;
-  return {
-    label: nodeLabel,
+  return makeTreeItem(() => ({
+    label,
     children() {
+      if (!edges) {
+        return [makeTreeItem('(no edges)')];
+      }
       return edges.map((edge) => {
         let { from, to, ...entry } = edge;
         const fromNode = timelineNodes[from];
         const toNode = timelineNodes[to];
-        const label = `${fromNode?.label} -> ${toNode?.label}`;
+        const edgeLabel = `${fromNode?.label} -> ${toNode?.label}`;
         const children = makeTreeItems(
           renderDDGNode(ddg, fromNode, fromNode, {}, 'from: '),
           renderDDGNode(ddg, toNode, toNode, {}, 'to: '),
           ...objectToTreeItems(entry)
         );
-        return makeTreeItem(label, children, {
+        return makeTreeItem(edgeLabel, children, {
           description: `${edge.edgeId} (${edge.from} → ${edge.to})`,
           handleClick() {
             // select `from` node
@@ -134,23 +214,14 @@ export function renderEdges(ddg, edges, nodeLabel = null, nodeDescription = null
       });
     },
     props: {
-      description: nodeDescription || `(${edges.length})`
+      description: nodeDescription || `(${edges?.length || 0})`
     }
-  };
+  }));
 }
 
-export function renderDDGNodes(ddg, nodes) {
-  return {
-    children: nodes.map((node) => {
-      // const { timelineId, label: nodeLabel } = node;
-      // delete entry.timelineId;
-      return renderDDGNode(ddg, node, node);
-    }),
-    props: {
-      description: `(${nodes.length})`
-    }
-  };
-}
+/** ###########################################################################
+ * summaries
+ *  #########################################################################*/
 
 /**
  * @param {DDGNodeSummary} summaries 

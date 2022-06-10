@@ -198,30 +198,30 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
            * make DDG entries
            * ##########################################################################*/
 
-          return makeTreeItem(graphId,
+          return makeTreeItem(
+            graphId,
             [
               function Complete_Tree() {
                 const root = timelineNodes[1];
                 return renderNodeTree(ddg, root);
               },
 
-
               function Visible_Nodes() {
                 const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-                return renderDDGNodes(ddg, visibleNodes);
+                return renderDDGNodes(ddg, visibleNodes, 'Visible Nodes');
               },
               function Visible_Edges() {
                 const actualEdges = allEdges.filter(Boolean);
-                return renderEdges(ddg, actualEdges);
+                return renderEdges(ddg, actualEdges, 'Visible Edges');
               },
 
               function All_Nodes() {
                 const nodes = timelineNodes.filter(Boolean);
-                return renderDDGNodes(ddg, nodes);
+                return renderDDGNodes(ddg, nodes, 'All Nodes');
               },
               function All_Edges() {
                 const actualEdges = og.edges.filter(Boolean);
-                return renderEdges(ddg, actualEdges);
+                return renderEdges(ddg, actualEdges, 'All Edges');
               },
               function All_In_Edges() {
                 return {
@@ -229,11 +229,11 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                     return Object.entries(og.inEdgesByTimelineId)
                       .map(([nodeId, edgeIds]) => {
                         const edges = edgeIds.map(id => og.edges[id]);
-                        // NOTE: tree item input does not interpret { children } objects unless input is function
-                        return makeTreeItem(() =>
-                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]))
-                        );
+                        return renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]));
                       });
+                  },
+                  props: {
+                    description: `(${size(og.inEdgesByTimelineId)})`
                   }
                 };
               },
@@ -243,10 +243,11 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
                     return Object.entries(og.outEdgesByTimelineId)
                       .map(([nodeId, edgeIds]) => {
                         const edges = edgeIds.map(id => og.edges[id]);
-                        return makeTreeItem(() =>
-                          renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]))
-                        );
+                        return renderEdges(ddg, edges, makeDDGNodeLabel(ddg, nodeId), makeDDGNodeDescription(ddg, timelineNodes[nodeId]));
                       });
+                  },
+                  props: {
+                    description: `(${size(og.outEdgesByTimelineId)})`
                   }
                 };
               },

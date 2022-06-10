@@ -49,10 +49,6 @@ export default class DDGTDNode extends TraceDetailNode {
         );
       }
     }
-
-    // TODO: also render edges
-    // TODO: also get control group by decision etc.
-
     const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
     if (!timelineNodesOfDataNode?.length) {
       return makeTreeItem(
@@ -67,35 +63,48 @@ export default class DDGTDNode extends TraceDetailNode {
     //   );
     // }
 
-    return makeTreeItem(
-      'Timeline Nodes',
-      timelineNodesOfDataNode.map(timelineNode => renderDDGNode(ddg, timelineNode)),
-      {
-        description: `${timelineNodesOfDataNode.length}`,
-        collapsibleState: TreeItemCollapsibleState.Expanded
-      }
+    return timelineNodesOfDataNode.map(
+      timelineNode => renderDDGNode(ddg, timelineNode)
     );
   }
 
-  DataNodes = () => {
+  TimelineNodes() {
+    const { ddg, dataNodes } = this;
+    const timelineNodes = dataNodes?.flatMap(dataNode => {
+      // const children = {
+      //   'Timeline Nodes': this.renderTimelineNodes(dataNode),
+      //   ...dataNode
+      // };
+      // return renderDataNode(ddg.dp, dataNode.nodeId, children);
+      return this.renderTimelineNodes(dataNode);
+    });
+    if (!timelineNodes?.length) {
+      return makeTreeItem('(no TimelineNodes)');
+    }
+    return {
+      children: timelineNodes,
+      props: {
+        collapsibleState: TreeItemCollapsibleState.Expanded,
+        description: `(${timelineNodes?.length || 0})`
+      }
+    };
+  }
+
+  DataNodes() {
     const { ddg, dataNodes } = this;
     if (!dataNodes?.length) {
       return makeTreeItem('(no DataNodes)');
     }
-    return makeTreeItem(
-      'DataNodes',
-      () => dataNodes.map(dataNode => {
-        const children = {
-          'Timeline Nodes': this.renderTimelineNodes(dataNode),
-          ...dataNode
-        };
-        return renderDataNode(ddg.dp, dataNode.nodeId, children);
+
+    return {
+      children: () => dataNodes.flatMap(dataNode => {
+        return renderDataNode(ddg.dp, dataNode.nodeId);
       }),
-      {
+      props: {
         collapsibleState: TreeItemCollapsibleState.Expanded,
         description: `(${dataNodes?.length || 0})`
       }
-    );
+    };
   }
 
   async buildChildren() {
@@ -112,8 +121,8 @@ export default class DDGTDNode extends TraceDetailNode {
     }
 
     return makeTreeItems(
-      // this.TimelineNodes,
-      this.DataNodes
+      this.TimelineNodes.bind(this),
+      this.DataNodes.bind(this)
     );
   }
 
