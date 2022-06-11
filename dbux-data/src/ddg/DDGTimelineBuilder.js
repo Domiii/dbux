@@ -166,8 +166,11 @@ export default class DDGTimelineBuilder {
       // newNode is the first node of dataNodeId
       let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
       while (dataNode.valueFromId &&
-        !this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNode.valueFromId) && 
-        dataNode.valueFromId > newNode.startDataNodeId) {
+        (
+          !this.getDataTimelineInputNode(dataNode.valueFromId) ||
+          dataNode.valueFromId > newNode.startDataNodeId
+        )
+      ) {
         // keep looking, as long as we find nodes that come after startDataNodeId (part of this snapshot)
         dataNode = this.dp.util.getDataNode(dataNode.valueFromId);
       }
@@ -272,9 +275,8 @@ export default class DDGTimelineBuilder {
     if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
 
-      // NOTE: let's not screw things up with single-input computations etc.
-      // return !isDataNodeModifyType(dataNode.type) ||
-      return DataNodeType.is.Read(dataNode.type) ||
+      return !isDataNodeModifyType(dataNode.type) ||
+        // return DataNodeType.is.Read(dataNode.type) ||
         !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
     }
     return false;

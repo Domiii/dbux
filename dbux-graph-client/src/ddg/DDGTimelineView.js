@@ -58,7 +58,7 @@ function getElLeftOffset(el) {
 }
 
 const GraphVizCfg = {
-  useWorker: false
+  useWorker: true
 };
 
 const RenderCfg = {

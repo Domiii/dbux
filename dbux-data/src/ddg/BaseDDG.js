@@ -27,7 +27,7 @@ import DDGEdgeType from './DDGEdgeType';
 /** @typedef { Map.<number, number> } SnapshotMap */
 
 // const VerboseAccess = 2;
-const VerboseAccess = 0;
+const VerboseAccess = 2;
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
