@@ -4,8 +4,8 @@ import ThemeMode from './ThemeMode';
 /**
  * Generate a unique value between 0 and 359, for any `i`
  */
-function getUniqueAngle(i) {
-  let color = 0;
+export function getStructuredRandomAngle(i, start = 0) {
+  let color = start;
   let base = 180;
   while (i !== 0) {
     color += (i % 2) * base;
@@ -18,11 +18,11 @@ function getUniqueAngle(i) {
 /**
  * Generate pseudo-random color. Attempts to maximize distance between neighboring input seeds.
  * 
- * @param {number} staticContextId input seed
+ * @param {number} i input seed
  */
-export function makeStaticContextColor(themeMode, staticContextId, { bland = false, highContractMode = false } = EmptyObject) {
-  const hue = getUniqueAngle(staticContextId);
-  let saturation = bland ? 5 : 35;
+export function makeStructuredRandomColor(themeMode, i, { start = 0, sat, bland = false, highContractMode = false } = EmptyObject) {
+  const hue = getStructuredRandomAngle(i, start);
+  let saturation = sat || (bland ? 5 : 35);
   let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
 
   if (highContractMode) {

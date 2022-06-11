@@ -39,11 +39,9 @@ svg.jtk-connector path {
   height: auto;
 }
 
-
 /** ###########################################################################
  * components
  * ############################################################################*/
-
 
 .timeline-view {
   height: calc(100vh - 30px);
@@ -97,7 +95,6 @@ svg.jtk-connector path {
   background-color: black;
 }
 
-
 .node-overlay {
   position: absolute;
   /* background-color: rgba(0,0,0,0.2); */
@@ -114,28 +111,42 @@ svg.jtk-connector path {
   fill: #222 !important;
 }
 
-.timeline-view g polygon,ellipse {
-  /* fill: transparent; */  /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
+.timeline-view g polygon,
+ellipse {
+  /* fill: transparent; */ /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
   /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
   /* fill: #222;  */
   /* fill: rgba(0,0,0, 0.1); */
 }
 
 /** ###########################################################################
- * highlight nodes
+ * highlight
  * ############################################################################*/
 
-.node:hover polygon,.node:hover ellipse {
+/* .edge.highlight {
+} */
+
+.fadeout-5 {
+  opacity: 0;
+  animation: fadeout 5s;
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.node:hover polygon,
+.node:hover ellipse {
   fill: orangered;
   cursor: pointer;
 }
-
-/** ###########################################################################
- * highlight cluster label
- * ############################################################################*/
 
 .cluster > text:hover {
   fill: yellow;
   cursor: pointer;
 }
-

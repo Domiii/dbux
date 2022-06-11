@@ -6,8 +6,8 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
 import UniqueRefId from '@dbux/common/src/types/constants/UniqueRefId';
-import { makeSummaryLabel } from './ddgDomUtil';
 import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
+import { makeSummaryLabel } from './ddgDomUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -41,7 +41,7 @@ function fixProp(prop) {
 }
 
 /** ###########################################################################
- * Colors
+ * Colors + Cfg
  * ##########################################################################*/
 
 // future-work: use theme colors via CSS vars (to make it prettier + also support light theme)
@@ -61,7 +61,7 @@ const Colors = {
   line: 'white',
   nodeOutlineDefault: 'white',
   watchedNodeOutline: 'green',
-  edge: 'white',
+  edge: '#AAAAAA',
   groupBorder: 'gray',
 
   groupLabel: 'yellow',
@@ -72,6 +72,14 @@ const Colors = {
   deleteEdge: 'red',
 
   value: 'lightblue',
+};
+
+const RenderConfig = {
+  /**
+   * Applies this weight to the invisible edges for `extraVertical` mode.
+   * @see https://graphviz.org/docs/attrs/weight/
+   */
+  extraVerticalWeight: 1
 };
 
 
@@ -160,6 +168,10 @@ export default class DotBuilder {
       return `color="${Colors.watchedNodeOutline}"`;
     }
     return '';  // ignore → already taken care of
+  }
+
+  makeAttrs(...attrs) {
+    return `[${attrs.filter(Boolean).join(',')}]`;
   }
 
   /** ###########################################################################
@@ -410,6 +422,10 @@ export default class DotBuilder {
     this.snapshotEdgeFromTo(this.makeNodeId(node), node.timelineId);
   }
 
+  edgeAttrs(edgeId) {
+    return `id=e${edgeId}`;
+  }
+
   snapshotEdgeFromTo(from, to) {
     this.command(`${from} -> ${to} [arrowhead="odot", color="gray"]`);
   }
@@ -419,28 +435,49 @@ export default class DotBuilder {
     const to = this.makeNodeId(this.getNode(edge.to));
     const colorOverride = edge.type === DDGEdgeType.Delete ? `color=${Colors.deleteEdge}` : '';
     const debugAttrs = Verbose && `${this.makeLabel(edge.edgeId)}` || '';
-    const attrs = [
+    const attrs = this.makeAttrs(
       colorOverride,
-      debugAttrs
-    ]
-      .filter(Boolean)
-      .join(',');
-    this.command(`${from} -> ${to} [${attrs}]`);
+      debugAttrs,
+      this.edgeAttrs(edge.edgeId)
+    );
+    this.command(`${from} -> ${to} ${attrs}`);
   }
 
   /** ###########################################################################
    * values, records, tables, structs
    *  #########################################################################*/
 
+  makeRefValueString(node) {
+    if (!node.children) {
+      return '📦';
+    }
+
+    let s = Object.values(node.children)
+      .map(childId => {
+        const child = this.ddg.timelineNodes[childId];
+        if (child.value !== undefined) {
+          return child.value;
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .join(', ');
+
+    s = Array.isArray(node.children) ? `[${s}]` : `{${s}}`;
+    return truncateStringDefault(s);
+    // return this.makeNodeValueString(node);
+  }
+
   makeNodeValueString(node) {
     if (ddgQueries.isSnapshot(this.ddg, node)) {
-      return Array.isArray(node.children) ? '[]' : '{}';
+      return this.makeRefValueString(node);
     }
     if (node.value !== undefined) {
       return JSON.stringify(node.value);
     }
     if (isRepeatedRefTimelineNode(node.type)) {
-      return node.label;
+      const linkNode = this.ddg.timelineNodes[node.repeatedTimelineId];
+      return this.makeRefValueString(linkNode) + node.label;
     }
     if (node.refId) {
       return '📦';  // ref value node but without snapshot
@@ -630,7 +667,7 @@ export default class DotBuilder {
     }
 
     const vertices = this.pullNodes.map(n => n.timelineId);
-    this.command(vertices.join(' -> ') + invisAttrs());
+    this.command(vertices.join(' -> ') + this.makeAttrs(invisAttr(), `weight=${RenderConfig.extraVerticalWeight}`));
     // this.command(vertices.join(' -> ') + ' [color=blue]');
   }
 

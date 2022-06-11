@@ -1,5 +1,5 @@
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
-import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
+import { makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
@@ -82,7 +82,7 @@ class ContextNode extends HostComponentEndpoint {
     }
 
     const realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
-    this.state.backgroundStyle = makeStaticContextColor(themeMode, realStaticContextid, {
+    this.state.backgroundStyle = makeStructuredRandomColor(themeMode, realStaticContextid, {
       bland: !!packageName,
       screenshotMode
     });

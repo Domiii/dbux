@@ -3,7 +3,7 @@ import ActionGroupType from '@dbux/data/src/pathways/ActionGroupType';
 import StepType from '@dbux/data/src/pathways/StepType';
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
+import { makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('renderSettings');
@@ -104,5 +104,5 @@ export function getIconByStep(stepType) {
 
 export function makeStepBackground(step, themeMode) {
   const { staticContextId } = step;
-  return staticContextId ? makeStaticContextColor(themeMode, staticContextId) : '';
+  return staticContextId ? makeStructuredRandomColor(themeMode, staticContextId) : '';
 }

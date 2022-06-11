@@ -14,6 +14,7 @@ import { RootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import { getStructuredRandomAngle, makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 import { compileHtmlElement } from '../util/domUtil';
 import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -60,13 +61,148 @@ const GraphVizCfg = {
   useWorker: false
 };
 
+const RenderCfg = {
+  // NOTE: also sync with css class
+  edgeHighlightDelay: 5000,
+  highlightColorCfg: {
+    sat: 100
+  }
+};
+
+/** ###########################################################################
+ * NodeHoverState
+ *  #########################################################################*/
+
+class NodeHoverState {
+  node;
+  hoverEl;
+  /**
+   * @type {DDGTimelineView}
+   */
+  timeline;
+
+  /**
+   * @type {Element[]}
+   */
+  edgeEls;
+  /**
+   * @type {Element[]}
+   */
+  fakeEdgeEls;
+
+  constructor(timeline, node, hoverEl) {
+    this.timeline = timeline;
+    this.node = node;
+    this.hoverEl = hoverEl;
+
+    this.startHoverState();
+  }
+
+  startHoverState() {
+    this.#startHighlight();
+  }
+
+  stopHoverState() {
+    this.hoverEl.remove();
+    this.#stopHighlight();
+  }
+
+  /** ###########################################################################
+   * edge highlighting
+   *  #########################################################################*/
+
+  #getAllEdges(timelineId) {
+    const {
+      timeline: {
+        ddg: {
+          inEdgesByTimelineId,
+          outEdgesByTimelineId
+        }
+      }
+    } = this;
+
+    const allEdgeIds = [
+      ...inEdgesByTimelineId[timelineId] || EmptyArray,
+      ...outEdgesByTimelineId[timelineId] || EmptyArray,
+    ];
+    return allEdgeIds;
+  }
+
+  #makeColors(n) {
+    const {
+      themeMode
+    } = this.timeline.context;
+
+    const colors = [];
+    for (let i = 0; i < n; ++i) {
+      colors.push(makeStructuredRandomColor(themeMode, i, {
+        sat: 100,
+        // make sure, every node gets custom treatment
+        start: getStructuredRandomAngle(this.node.timelineId)
+      }));
+    }
+    return colors;
+  }
+
+  #startHighlight() {
+    const {
+      node: {
+        timelineId,
+        children
+      }
+    } = this;
+
+    const allEdgeIds = [
+      timelineId,
+      ...Object.values(children)
+    ]
+      .filter(Boolean)
+      .flatMap(id => this.#getAllEdges(id));
+
+    /* allEdgeIds.map(edgeId => edges[edgeId]) */
+    this.edgeEls = allEdgeIds.map(edgeId => this.timeline.el.querySelector(`#e${edgeId}`));
+    const colors = this.#makeColors(this.edgeEls.length);
+    this.fakeEdgeEls = this.edgeEls
+      .map((edgeEl, i) => {
+        /**
+         * @type {Element}
+         */
+        const fakeEl = edgeEl.cloneNode();
+        fakeEl.innerHTML = edgeEl.innerHTML; // NOTE: cloneNode is shallow
+        fakeEl.setAttribute('id', ''); // unset id
+        const col = colors[i];
+        fakeEl.querySelectorAll('path,polygon').forEach(el => {
+          el.setAttribute('stroke', col);
+          el.setAttribute('stroke-width', 5);
+        });
+        // edgeEl.parentElement.insertBefore(fakeEl, edgeEl.nextSibling);
+        edgeEl.parentElement.appendChild(fakeEl); // move to end, so its on top
+        return fakeEl;
+      });
+  }
+
+  #stopHighlight() {
+    // play fade out animation
+    this.fakeEdgeEls.forEach((el) => {
+      el.classList.add('fadeout-5');
+      setTimeout(
+        () => {
+          el.remove(); // delete fake el afterward
+        },
+        RenderCfg.edgeHighlightDelay);
+    });
+  }
+}
+
+/** ###########################################################################
+ * {@link DDGTimelineView}
+ *  #########################################################################*/
+
 export default class DDGTimelineView extends ClientComponentEndpoint {
   /**
-   * @type {Element}
+   * @type {NodeHoverState}
    */
-  currentHoverEl;
-
-  currentHoverNode;
+  currentHoverState;
 
   get doc() {
     return this.context.doc;
@@ -262,6 +398,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   clearDeco() {
     const els = Array.from(this.el.querySelectorAll('.deco'));
     els.forEach(el => el.remove());
+    this._stopHoverAction();
   }
 
   // rendering finished
@@ -335,13 +472,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // add overlays
       let debugOverlay;
       this.addNodeEventListener(node, interactionEl, 'mouseover', (evt) => {
-        // create overlay lazily
+        // show debug overlay
         if (!debugOverlay) {
           // console.debug(`Hover node:`, evt.target);
           this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
           // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
         }
-        this.maybeShowNodePopupEl(node, nodeEl, interactionEl);
+
+        // show popup menu and more
+        this.startNodeHoverAction(node, nodeEl, interactionEl);
       });
       this.addNodeEventListener(node, interactionEl, 'mouseout', () => {
         debugOverlay?.remove();
@@ -375,6 +514,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // }
   }
 
+  /** ###########################################################################
+   * overlays
+   *  #########################################################################*/
+
   makeNodeDebugOverlay(node) {
     const { ddg } = this;
     const o = { ...node };
@@ -396,18 +539,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
 
-  _removeNodePopup(hoverEl) {
-    if (this.currentHoverEl !== hoverEl) { // race condition check
-      return;
-    }
-    this.currentHoverEl?.remove();
-    this.currentHoverEl = null;
-    this.currentHoverNode = null;
-
-    if (documentMouseMoveHandler) {
-      document.removeEventListener('mousemove', documentMouseMoveHandler);
-    }
-  }
 
   /**
    * @param {DDGTimelineNode} node 
@@ -429,17 +560,30 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     return el;
   }
 
+
+  /** ###########################################################################
+   * hover action management
+   *  #########################################################################*/
+
+  _stopHoverAction() {
+    this.currentHoverState?.stopHoverState();
+    this.currentHoverState = null;
+
+    if (documentMouseMoveHandler) {
+      document.removeEventListener('mousemove', documentMouseMoveHandler);
+    }
+  }
+
   /**
    * @param {DDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
-  maybeShowNodePopupEl(node, nodeEl) {
-    if (node === this.currentHoverNode) {
+  startNodeHoverAction(node, nodeEl) {
+    if (this.currentHoverState?.node === node) {
       return;
     }
 
-    // console.log('popUP');
-    this._removeNodePopup(this.currentHoverEl);
+    this._stopHoverAction();
 
     const rect = nodeEl.getBoundingClientRect();
     /**
@@ -455,7 +599,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // const h = NodeMenuHeight;
     // <div class="node-overlay">
     const nodeBtns = this.makeNodeButtons(node);
-    const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
+    const hoverEl = compileHtmlElement(/*html*/`
       <div class="node-overlay"></div>
     `);
     hoverEl.appendChild(nodeBtns);
@@ -479,14 +623,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         const hoverStack = Array.from(document.querySelectorAll(":hover"));
         if (!hoverStack.some(el => hoverTargets.has(el))) {
           // console.log('popout', hoverStack);
-          this._removeNodePopup(hoverEl);
+          this._stopHoverAction();
         }
       }, 80);
     });
 
-    // this.el.appendChild(this.currentHoverEl);
-    // nodeEl.appendChild(hoverEl);
     this.el.appendChild(hoverEl);
+
+    // start
+    this.currentHoverState = new NodeHoverState(this, node, hoverEl);
   }
 
   /** ###########################################################################

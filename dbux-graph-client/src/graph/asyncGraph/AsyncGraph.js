@@ -1,7 +1,7 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
-import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
+import { makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
 import AsyncNodeData from '@dbux/graph-common/src/graph/types/AsyncNodeData';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
@@ -149,7 +149,7 @@ class AsyncGraph extends GraphBase {
     const highContractMode = screenshotMode;
     // const moduleLabel = packageName ? `${packageName} | ` : '';
 
-    const backgroundColor = makeStaticContextColor(themeMode, realStaticContextid, { bland: !!packageName, highContractMode });
+    const backgroundColor = makeStructuredRandomColor(themeMode, realStaticContextid, { bland: !!packageName, highContractMode });
 
     let leftLabel = '', errorLabel = '', statsRawEl = '';
     let shortLabel, fullLabel = displayName;
