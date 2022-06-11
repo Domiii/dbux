@@ -6,7 +6,7 @@
 // import DDGTimeline from './DDGTimeline';
 import last from 'lodash/last';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
@@ -349,6 +349,32 @@ export default class BaseDDG {
     newNode.timelineId = this.timelineNodes.length;
     newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
+
+    if (newNode.dataNodeId && this.building) {
+      // hackfix: during build, update accessId map
+      const dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
+      const accessIdMap = this.timelineBuilder.lastTimelineVarNodeByAccessId;
+      if (
+        dataNode.accessId && (
+          !accessIdMap[dataNode.accessId] ||
+          (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
+        )
+      ) {
+        // register node by var
+        if (dataNode.refId === 100) {
+          this.logger.debug(
+            `register accessId for v100: n${dataNode.nodeId},`, JSON.stringify(dataNode)
+          );
+        }
+        accessIdMap[dataNode.accessId] = newNode;
+      }
+    }
+
+    if (this.dp.util.getDataNode(newNode.dataNodeId)?.refId === 100) {
+      this.logger.debug(
+        `addNode for v100: n${newNode.dataNodeId} (${newNode.timelineId})`
+      );
+    }
   }
 
   /**
@@ -647,6 +673,15 @@ export default class BaseDDG {
 
     if (!refId) {
       throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
+    }
+
+    // handle skip and ignore first
+    if (this.timelineBuilder.shouldIgnoreDataNode(ownDataNode.nodeId)) {
+      this.logger.warn(`Adding snapshot for ignored DataNode n${ownDataNode.nodeId} at "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
+    }
+    const skippedBy = this.timelineBuilder.getSkippedByDataNode(ownDataNode);
+    if (skippedBy) {
+      ownDataNode = dp.util.getDataNode(skippedBy.dataNodeId);
     }
 
     // handle circular refs (or otherwise repeated refs in set)

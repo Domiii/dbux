@@ -175,7 +175,14 @@ export default class DDGTimelineBuilder {
   getIgnoreAndSkipInfo(dataNode) {
     const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
     const skippedBy = this.getSkippedByDataNode(dataNode);
-    if (!ignore && !skippedBy) {
+    if (!ignore &&
+      (!skippedBy ||
+        // it might seem as "skipped by itself" 
+        //    because shouldSkip is true but originally, 
+        //    there was no node to skip to → ignore
+        skippedBy.dataNodeId === dataNode.nodeId
+      )
+    ) {
       return null;
     }
     return {
@@ -309,14 +316,6 @@ export default class DDGTimelineBuilder {
       //   this.logger.trace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       // }
       newNode = this.ddg.addValueDataNode(dataNode);
-    }
-
-    if (dataNode.accessId && (
-      isDataNodeModifyType(dataNode.type) ||
-      !this.lastTimelineVarNodeByAccessId[dataNode.accessId]
-    )) {
-      // register node by var
-      this.lastTimelineVarNodeByAccessId[dataNode.accessId] = newNode;
     }
 
     // add to parent
@@ -517,6 +516,15 @@ export default class DDGTimelineBuilder {
      * @type {Map.<DataTimelineNode, { n: number }>}
      */
     const inputNodes = new Map();
+
+
+    if (dataNode.refId === 100) {
+      this.logger.debug(
+        `adding VertexA node: n${dataNode.nodeId},`,
+        `s=${this.shouldSkipDataNode(dataNode.nodeId)}, skipped=${this.getSkippedByDataNode(dataNode)?.nodeId || '(null)'},`,
+        `input=${this.getDataTimelineInputNode(dataNode.nodeId)?.nodeId || '(null)'}`
+      );
+    }
 
     // ignore + skip logic
     if (!this.#processSkipAndIgnore(dataNode, isDecision)) {
