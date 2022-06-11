@@ -26,7 +26,8 @@ import DDGEdgeType from './DDGEdgeType';
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-const VerboseAccess = 2;
+// const VerboseAccess = 2;
+const VerboseAccess = 0;
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
@@ -363,7 +364,7 @@ export default class BaseDDG {
           (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
         )
       ) {
-        this.logger.debug(`Register accessId n${dataNode.nodeId}, accessId=${dataNode.accessId}, timelineId=${newNode.timelineId}`);
+        VerboseAccess && this.logger.debug(`Register accessId n${dataNode.nodeId}, accessId=${dataNode.accessId}, timelineId=${newNode.timelineId}`);
         // register node by accessId
         accessIdMap[dataNode.accessId] = newNode;
       }

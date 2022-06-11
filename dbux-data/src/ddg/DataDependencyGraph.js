@@ -13,6 +13,9 @@ import DDGSettings from './DDGSettings';
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
+// const VerboseSumm = 2;
+const VerboseSumm = 0;
+
 /** ###########################################################################
  * default config
  * ##########################################################################*/
@@ -573,9 +576,11 @@ export default class DataDependencyGraph extends BaseDDG {
     // add/merge incoming edges
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
+    VerboseSumm && this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+
     if (isVisible) {
       // node is (1) shown, (2) collapsed into `currentCollapsedAncestor` or (3) summarized
-      nodeRouteMap.set(timelineId, [targetNode]);
+      nodeRouteMap.set(timelineId, new Set([targetNode]));
 
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
@@ -584,11 +589,8 @@ export default class DataDependencyGraph extends BaseDDG {
         if (allFrom) {
           for (const from of allFrom) {
             if (from !== targetNode) {
-              // TODO: deal w/ duplicate edges
-              if (!targetNode) {
-                throw new Error(`no targetNode`);
-              }
               summaryState.addEdge(from, targetNode, type);
+              VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
             }
           }
         }
@@ -613,10 +615,13 @@ export default class DataDependencyGraph extends BaseDDG {
           }
         }
       }
-      this.VerboseAccess && console.debug(`SUMM at ${timelineId}, reroutes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join('  \n')}`);
-      if (reroutes.length) {
+      if (reroutes.size) {
         nodeRouteMap.set(timelineId, reroutes);
       }
+      // eslint-disable-next-line max-len
+      VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
+        .map(([timelineId, reroutes]) =>
+          `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);
     }
   }
 
