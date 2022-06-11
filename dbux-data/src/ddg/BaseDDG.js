@@ -417,10 +417,10 @@ export default class BaseDDG {
     const { staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
     const isTraceOwnDataNode = traceNodeId === dataNodeId;
     const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
-    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
 
     // variable name
-    let label = ''; if (isTraceReturn(ownStaticTrace.type)) {
+    let label = '';
+    if (isTraceReturn(ownStaticTrace.type)) {
       // return label
       label = 'ret';
     }
@@ -433,19 +433,20 @@ export default class BaseDDG {
       label = dataNode?.label;
     }
     if (!label) {
-      const varName = dp.util.getRefVarName(dataNodeId);
+      const varName = dataNode.refId && dp.util.getRefVarName(dataNode.refId);
+      const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
       if (!isNewValue && varName) {
         label = varName;
       }
     }
     if (!label) {
-      if (dp.util.isTraceOwnDataNode(dataNodeId)) {
+      if (isTraceOwnDataNode) {
         // default trace label
         const trace = dp.util.getTrace(dataNode.traceId);
         label = makeTraceLabel(trace);
       }
       else {
-        // TODO: ME
+        // TODO: ME?
       }
     }
     // else {

@@ -7,6 +7,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
 import UniqueRefId from '@dbux/common/src/types/constants/UniqueRefId';
 import { makeSummaryLabel } from './ddgDomUtil';
+import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -119,7 +120,7 @@ export default class DotBuilder {
   }
 
   makeLabel(text) {
-    // TODO: proper dot label encoding (it is probably not JSON)
+    text = truncateStringDefault(text + '');
     return `label="${dotEncode(text)}"`;
   }
 

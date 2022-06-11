@@ -6,6 +6,7 @@ import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 
 /** ###########################################################################
@@ -30,9 +31,7 @@ export default class DDGTDNode extends TraceDetailNode {
   // }
 
   // eslint-disable-next-line camelcase
-  renderTimelineNodes = (dataNode, predicate) => {
-    const { dp, ddg } = this;
-
+  renderTimelineNodes = (ddg, dataNode, predicate) => {
     let ignoreSkipNode;
     const ignoreAndSkippedBy = ddg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
     if (ignoreAndSkippedBy) {
@@ -53,9 +52,7 @@ export default class DDGTDNode extends TraceDetailNode {
     }
     const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId, predicate);
     if (!timelineNodesOfDataNode?.length) {
-      return ignoreSkipNode || makeTreeItem(
-        '(DataNode has no TimelineNode)'
-      );
+      return ignoreSkipNode || EmptyArray;
     }
 
     // if (timelineNodes.length === 1) {
@@ -78,10 +75,28 @@ export default class DDGTDNode extends TraceDetailNode {
   Visible_TimelineNodes() {
     const { ddg, dataNodes } = this;
     const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
-      return this.renderTimelineNodes(dataNode, node => ddgQueries.isVisible(ddg, node));
+      return this.renderTimelineNodes(ddg, dataNode, node => ddgQueries.isVisible(ddg, node));
     });
     if (!visibleTimelineNodes?.length) {
       return makeTreeItem('(no visible TimelineNodes)');
+    }
+    return {
+      children: visibleTimelineNodes,
+      props: {
+        collapsibleState: TreeItemCollapsibleState.Expanded,
+        description: `(${visibleTimelineNodes?.length || 0})`
+      }
+    };
+  }
+
+  // eslint-disable-next-line camelcase
+  Og_TimelineNodes() {
+    const { ddg, dataNodes } = this;
+    const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
+      return this.renderTimelineNodes(ddg, dataNode);
+    });
+    if (!visibleTimelineNodes?.length) {
+      return makeTreeItem('(no TimelineNodes at all)');
     }
     return {
       children: visibleTimelineNodes,
@@ -124,6 +139,7 @@ export default class DDGTDNode extends TraceDetailNode {
 
     return makeTreeItems(
       this.Visible_TimelineNodes.bind(this),
+      this.Og_TimelineNodes.bind(this),
       this.DataNodes.bind(this)
     );
   }

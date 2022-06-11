@@ -131,7 +131,7 @@ function patchDelete(holder) {
   );
 }
 
-export default function patchMap() {
+export default function patchMapAndSet() {
   patchGet(Map);
   patchMapSet(Map);
   patchDelete(Map);

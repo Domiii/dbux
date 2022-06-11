@@ -349,8 +349,14 @@ export default class DataNodeCollection extends Collection {
         // }
         // refs have some magic up their sleeves
         const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
-        // TODO: get last node before this one instead, to have DDG link up correctly
-        return firstRefNode.nodeId;
+
+        // get last node before this one instead, to have DDG link up correctly
+        const { valueId } = firstRefNode;
+        const lastNodeByRef = this.getLastDataNodeByValueId(nodeId, valueId);
+        if (lastNodeByRef) {
+          dataNode.valueFromId = lastNodeByRef.nodeId;
+        }
+        return valueId || nodeId;
       }
       else {
         // 1. check for "pass-along"
@@ -383,15 +389,15 @@ export default class DataNodeCollection extends Collection {
           }
         }
 
-        // 3. special value passing semantics (currently non-existing?)
-        const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
-        if (specialObjectType) {
-          const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
-          if (valueId) {
-            // NOTE: this will currently never happen
-            return valueId;
-          }
-        }
+        // // 3. special value passing semantics (currently non-existing?)
+        // const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
+        // if (specialObjectType) {
+        //   const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
+        //   if (valueId) {
+        //     // NOTE: this will currently never happen
+        //     return valueId;
+        //   }
+        // }
       }
 
       // eslint-disable-next-line max-len
@@ -421,6 +427,28 @@ export default class DataNodeCollection extends Collection {
   getLastDataNodeByAccessId(nodeId, accessId) {
     const ownNode = this.getById(nodeId);
     const nodes = this.dp.indexes.dataNodes.byAccessId.get(accessId);
+    if (!nodes) {
+      return null;
+    }
+
+    for (let i = nodes.length - 1; i >= 0; --i) {
+      const node = nodes[i];
+      if (node.traceId <= ownNode.traceId) {
+        return node;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * NOTE: When we run this in the `postIndex` phase, 
+   *      last in `byValueId` index is actually "the last before the currently processed node"
+   *      since we are resolving the index during this phase.
+   * @return {DataNode}
+   */
+  getLastDataNodeByValueId(nodeId, valueId) {
+    const ownNode = this.getById(nodeId);
+    const nodes = this.dp.indexes.dataNodes.byValueId.get(valueId);
     if (!nodes) {
       return null;
     }
