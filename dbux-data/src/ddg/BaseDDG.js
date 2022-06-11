@@ -360,20 +360,9 @@ export default class BaseDDG {
           (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
         )
       ) {
-        // register node by var
-        if (dataNode.refId === 100) {
-          this.logger.debug(
-            `register accessId for v100: n${dataNode.nodeId},`, JSON.stringify(dataNode)
-          );
-        }
+        // register node by accessId
         accessIdMap[dataNode.accessId] = newNode;
       }
-    }
-
-    if (this.dp.util.getDataNode(newNode.dataNodeId)?.refId === 100) {
-      this.logger.debug(
-        `addNode for v100: n${newNode.dataNodeId} (${newNode.timelineId})`
-      );
     }
   }
 

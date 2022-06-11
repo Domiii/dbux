@@ -517,15 +517,6 @@ export default class DDGTimelineBuilder {
      */
     const inputNodes = new Map();
 
-
-    if (dataNode.refId === 100) {
-      this.logger.debug(
-        `adding VertexA node: n${dataNode.nodeId},`,
-        `s=${this.shouldSkipDataNode(dataNode.nodeId)}, skipped=${this.getSkippedByDataNode(dataNode)?.nodeId || '(null)'},`,
-        `input=${this.getDataTimelineInputNode(dataNode.nodeId)?.nodeId || '(null)'}`
-      );
-    }
-
     // ignore + skip logic
     if (!this.#processSkipAndIgnore(dataNode, isDecision)) {
       return null;
