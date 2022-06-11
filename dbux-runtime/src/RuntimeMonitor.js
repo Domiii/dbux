@@ -1195,6 +1195,8 @@ export default class RuntimeMonitor {
     for (let i = 0; i < argTids.length; i++) {
       const argTid = argTids[i];
       const spreadLen = spreadLengths[i];
+      // const targetTid = argTid;
+      const targetTid = arrTid;
 
       if (!argTid) {
         // empty (omitted) array element (e.g.: [1, , 2])
@@ -1207,12 +1209,12 @@ export default class RuntimeMonitor {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(argTid),
             prop: j
           };
-          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
+          const readNode = dataNodeCollection.createDataNode(value[idx], targetTid, DataNodeType.Read, readAccess);
           const writeAccess = {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
             prop: idx
           };
-          dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
+          dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, writeAccess);
           ++idx;
         }
       }

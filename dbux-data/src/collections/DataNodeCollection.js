@@ -313,37 +313,6 @@ export default class DataNodeCollection extends Collection {
 
     if (!isNewValue) {
       if (dataNode.refId) {
-        // TODO: integrate with the logic below
-        // TODO: deal with implicitly created ref type objects having a single nodeId for all children
-        //      e.g. `JSON.parse('{...}')`
-
-        // 1. check for "pass-along"
-        if (
-          dataNode.inputs?.length === 1
-        ) {
-          // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
-          const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
-          if (!inputDataNode) {
-            // sanity check
-            const traceInfo = this.dp.util.makeTraceInfo(traceId);
-            this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
-            return nodeId;
-          }
-
-          dataNode.valueFromId = inputDataNode.nodeId;
-          return inputDataNode.valueId;
-        }
-        // 2. if it is not a pass-along, look up accessId.
-        //    It is important we do this after (1), since 
-        //        looking up by `accessId` won't work on a new Write node.
-        if (accessId) {
-          const lastNode = this.getLastDataNodeByAccessId(nodeId, accessId);
-          if (lastNode) {
-            dataNode.valueFromId = lastNode.nodeId;
-            return lastNode.valueId;
-          }
-        }
-
         // if (nodeId !== firstRefNode.nodeId) {
         //   dataNode.valueFromId = firstRefNode.nodeId;
         // }
@@ -352,10 +321,33 @@ export default class DataNodeCollection extends Collection {
 
         // get last node before this one instead, to have DDG link up correctly
         const { valueId } = firstRefNode;
-        const lastNodeByRef = this.getLastDataNodeByValueId(nodeId, valueId);
+        const lastNodeByRef = valueId && this.getLastDataNodeByValueId(nodeId, valueId);
         if (lastNodeByRef) {
           dataNode.valueFromId = lastNodeByRef.nodeId;
         }
+
+        // debugging
+        // 1. check for "pass-along"
+        let prev;
+        if (
+          dataNode.inputs?.length === 1
+        ) {
+          // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
+          prev = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+        }
+        // 2. if it is not a pass-along, look up accessId.
+        else if (accessId && DataNodeType.is.Read(dataNode.type)) {
+          prev = this.getLastDataNodeByAccessId(nodeId, accessId);
+        }
+        if (valueId && prev && prev.valueId !== valueId) {
+          if (prev.refId !== dataNode.refId) {
+            this.logger.error(`invalid DataNodeCollection.accessId logic for v${dataNode.refId}: ${JSON.stringify(prev)}`);
+          }
+          else {
+            // this.logger.warn(`invalid DataNodeCollection.accessId logic for v${dataNode.refId}: ${JSON.stringify(prev)}`);
+          }
+        }
+
         return valueId || nodeId;
       }
       else {
@@ -378,9 +370,7 @@ export default class DataNodeCollection extends Collection {
         }
 
         // 2. if it is not a pass-along, look up accessId.
-        //    It is important we do this after (1), since 
-        //        looking up by `accessId` won't work on a new Write node.
-        if (accessId) {
+        if (accessId && DataNodeType.is.Read(dataNode.type)) {
           const lastNode = this.getLastDataNodeByAccessId(nodeId, accessId);
           if (lastNode) {
             dataNode.valueFromId = lastNode.nodeId;

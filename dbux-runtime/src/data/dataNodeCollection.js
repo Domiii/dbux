@@ -49,6 +49,9 @@ export class DataNodeCollection extends Collection {
   createBCEOwnDataNode(value, callId, type, varAccess = null, inputs = null, meta = null) {
     return this.createOwnDataNode(value, callId, type, varAccess, inputs, meta);
   }
+  createBCEDataNode(value, callId, type, varAccess = null, inputs = null, meta = null) {
+    return this.createDataNode(value, callId, type, varAccess, inputs, meta);
+  }
 
   /**
    * @param {DataNodeMeta} meta 

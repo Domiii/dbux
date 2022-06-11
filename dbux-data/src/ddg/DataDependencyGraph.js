@@ -530,8 +530,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
     // DFS recursion
     if (children) {
-      const isCollapsed = !currentCollapsedAncestor && 
-        ddgQueries.isCollapsed(this, node) && 
+      const isCollapsed = !currentCollapsedAncestor &&
+        ddgQueries.isCollapsed(this, node) &&
         ddgQueries.doesNodeHaveSummary(this, node);
       if (isCollapsed) {
         // node is collapsed and has summary data (if not, just hide children)
@@ -599,9 +599,9 @@ export default class DataDependencyGraph extends BaseDDG {
       // → multicast all outgoing edges to all incoming edges
       // → to that end, add all `from`s to this node's `reroutes`
       /**
-       * @type {DDGTimelineNode[]}
+       * @type {Set.<DDGTimelineNode>}
        */
-      let reroutes = [];
+      let reroutes = new Set();
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
         const { from: fromOg, type } = edge;
@@ -609,11 +609,11 @@ export default class DataDependencyGraph extends BaseDDG {
         const allFrom = nodeRouteMap.get(fromOg);
         if (allFrom) {
           for (const from of allFrom) {
-            reroutes.push(from);
+            reroutes.add(from);
           }
         }
       }
-      // console.log(`SUMM at ${timelineId}, reroutes:\n  ${reroutes.map(n => `${n.timelineId} (${n.label})`).join('  \n')}`);
+      this.VerboseAccess && console.debug(`SUMM at ${timelineId}, reroutes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join('  \n')}`);
       if (reroutes.length) {
         nodeRouteMap.set(timelineId, reroutes);
       }

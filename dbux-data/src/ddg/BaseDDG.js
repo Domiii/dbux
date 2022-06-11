@@ -17,7 +17,7 @@ import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
-import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
@@ -26,7 +26,7 @@ import DDGEdgeType from './DDGEdgeType';
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-const Verbose = 2;
+const VerboseAccess = 2;
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
@@ -70,6 +70,8 @@ export default class BaseDDG {
    * @type {Obejct.<number, DataTimelineNode>}
    */
   _firstTimelineDataOrSnapshotNodeByDataNodeId;
+
+  VerboseAccess = VerboseAccess;
 
   /** ########################################
    * render data
@@ -326,10 +328,11 @@ export default class BaseDDG {
   #setConnectedUp(node) {
     if (node.parentNodeId) {
       const parent = this.timelineNodes[node.parentNodeId];
-      if (parent.connected) {
-        // stop propagation
-        return;
-      }
+      parent.connected = true;
+      // if (parent.connected) { // NOTE: don't stop, because if a middle guy is connected, it should still go to the top
+      //   // stop propagation
+      //   return;
+      // }
       // this.#setConnectedDFS(parent); // enable this to flood the entire snapshot root
       this.#setConnectedUp(parent);
     }
@@ -360,6 +363,7 @@ export default class BaseDDG {
           (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
         )
       ) {
+        this.logger.debug(`Register accessId n${dataNode.nodeId}, accessId=${dataNode.accessId}, timelineId=${newNode.timelineId}`);
         // register node by accessId
         accessIdMap[dataNode.accessId] = newNode;
       }

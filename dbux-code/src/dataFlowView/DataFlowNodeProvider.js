@@ -106,7 +106,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     if (firstNode && dataNodes?.[0]?.nodeId !== firstNode.nodeId) {
       // manually add first trace
       // see https://github.com/Domiii/dbux/issues/702
-      dataNodes.unshift(firstNode);
+      dataNodes = [firstNode, ...dataNodes]; // NOTE: don't modify the original array
     }
 
     return dataNodes?.map((node) => {

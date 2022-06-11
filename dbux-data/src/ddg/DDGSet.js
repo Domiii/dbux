@@ -56,7 +56,14 @@ export default class DDGSet {
           return null;
         }
 
-        for (const trace of [...paramTraces, returnArgumentTrace]) {
+        // take input of ReturnArgument instead (to avoid some really nasty small issues)
+        const returnNode = this.dp.util.getDataNode(returnArgumentTrace.nodeId);
+        const returnInputTrace = this.dp.util.getDataNode(returnNode.inputs?.[0]);
+        if (!returnInputTrace) {
+          return null;
+        }
+
+        for (const trace of [...paramTraces, returnInputTrace]) {
           if (trace) {
             // const dataNode = this.dp.util.getDataNodeOfTrace(trace.traceId);
             // if (dataNode) {

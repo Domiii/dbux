@@ -79,7 +79,7 @@ const RenderConfig = {
    * Applies this weight to the invisible edges for `extraVertical` mode.
    * @see https://graphviz.org/docs/attrs/weight/
    */
-  extraVerticalWeight: 1
+  extraVerticalWeight: 2
 };
 
 
@@ -127,9 +127,13 @@ export default class DotBuilder {
     return node.timelineId;
   }
 
-  makeLabel(text) {
+  wrapText(text) {
     text = truncateStringDefault(text + '');
-    return `label="${dotEncode(text)}"`;
+    return dotEncode(text);
+  }
+
+  makeLabel(text) {
+    return `label="${this.wrapText(text)}"`;
   }
 
   /**
@@ -308,7 +312,7 @@ export default class DotBuilder {
     // const mode = ddgQueries.getNodeSummaryMode(ddg, node);
     // const modeEl = makeSummaryLabel(ddg, mode);
     // ${modeEl}
-    this.command(`label="${dotEncode(label) || '()'}"`);
+    this.command(`label="${this.wrapText(label) || '()'}"`);
     this.subgraphAttrs();
   }
 
@@ -393,7 +397,7 @@ export default class DotBuilder {
         this.nodeAttrs(node.timelineId),
         `color="${Colors.deleteValue}"`,
         `fontcolor="${Colors.deleteValue}"`,
-        this.makeLabelHtml(`<S>${dotEncode(node.label)}</S>`)
+        this.makeLabelHtml(`<S>${this.wrapText(node.label)}</S>`)
       ].join(',');
       this.command(`${this.makeNodeId(node)} [${attrs}]`);
     }
@@ -464,7 +468,7 @@ export default class DotBuilder {
       .join(', ');
 
     s = Array.isArray(node.children) ? `[${s}]` : `{${s}}`;
-    return truncateStringDefault(s);
+    return this.wrapText(s);
     // return this.makeNodeValueString(node);
   }
 
@@ -500,8 +504,8 @@ export default class DotBuilder {
     const l = `label=<
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
   <TR>
-    <TD BORDER="1" SIDES="R">${dotEncode(label)}</TD>
-    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${dotEncode(value)}</FONT></TD>
+    <TD BORDER="1" SIDES="R">${this.wrapText(label)}</TD>
+    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${this.wrapText(value)}</FONT></TD>
   </TR>
 </TABLE>
 >`;
@@ -570,7 +574,7 @@ export default class DotBuilder {
       this.command(`${timelineId} [${attrs},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
-    ${hasLabel ? `<TD ROWSPAN="2">${dotEncode(label)}</TD>` : ''}
+    ${hasLabel ? `<TD ROWSPAN="2">${this.wrapText(label)}</TD>` : ''}
     ${childrenCells}
   </TR>
 </TABLE>

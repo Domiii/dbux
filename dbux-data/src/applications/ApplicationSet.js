@@ -9,6 +9,9 @@ import ApplicationSetData from './ApplicationSetData';
 export default class ApplicationSet {
   _unsubscribeCallbacks = [];
   _applicationIds = new Set();
+  /**
+   * @type {Application[]}
+   */
   _applications = [];
 
   _emitter = new NanoEvents();

@@ -67,7 +67,7 @@ function patchMapSet(holder) {
         prop: key
       };
       const inputs = getOrCreateRealArgumentDataNodeIds(bceTrace, args).slice(1);
-      dataNodeCollection.createBCEOwnDataNode(args[1], callId, DataNodeType.Write, varAccess, inputs);
+      dataNodeCollection.createBCEDataNode(args[1], callId, DataNodeType.Write, varAccess, inputs);
 
       return originalFunction.apply(arr, args);
     }
@@ -96,7 +96,7 @@ function patchSetAdd(holder) {
         prop: key
       };
       const inputs = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
-      dataNodeCollection.createBCEOwnDataNode(args[0], callId, DataNodeType.Write, varAccess, inputs);
+      dataNodeCollection.createBCEDataNode(args[0], callId, DataNodeType.Write, varAccess, inputs);
 
       return originalFunction.apply(arr, args);
     }
@@ -124,7 +124,7 @@ function patchDelete(holder) {
         objectNodeId,
         prop: key
       };
-      dataNodeCollection.createBCEOwnDataNode(undefined, callId, DataNodeType.Delete, varAccess);
+      dataNodeCollection.createBCEDataNode(undefined, callId, DataNodeType.Delete, varAccess);
 
       return originalFunction.apply(arr, args);
     }

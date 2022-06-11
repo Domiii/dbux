@@ -10,6 +10,7 @@ import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 import { getCurrentResearch } from '../research/Research';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import sleep from '@dbux/common/src/util/sleep';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -100,10 +101,20 @@ export default class ChapterListBuilderViewController {
   }
 
   async runAndExportDDGApplication(exercise, progress) {
+    progress.report({ message: `Running exercises...` });
+    await this.treeNodeProvider.manager.switchAndTestBug(exercise);
+
+    const app = allApplications.selection.getFirst();
+
+    while (app.dataProvider.indexes.dataNodes.byAccessId.getAll().length < 1) {
+      // hackfix race condition prevention: make sure, data has been stored before exporting
+      await sleep(20);
+    }
+
+    progress.report({ message: `Parsing application` });
     if (allApplications.selection.count !== 1) {
       this.treeNodeProvider.warn(`Ran test, but found more than one application (selecting first).`);
     }
-    const app = allApplications.selection.getFirst();
     const ddgs = findDDGContextIdInApp(app, exercise);
     exercise.ddgs = ddgs;
 

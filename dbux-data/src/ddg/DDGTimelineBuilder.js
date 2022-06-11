@@ -156,15 +156,34 @@ export default class DDGTimelineBuilder {
   }
 
   /**
+   * This is called on any snapshot or snapshot child node.
    * hackfix: add edges, but only during build, not during summarization
    * @param {DataTimelineNode} newNode 
    */
   onNewSnapshotNode(newNode) {
-    const fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
-    if (
-      fromNode
-    ) {
-      this.ddg.addSnapshotEdge(fromNode, newNode);
+    let fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
+    if (fromNode === newNode) {
+      // newNode is the first node of dataNodeId
+      let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
+      while (dataNode.valueFromId &&
+        !this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNode.valueFromId) && 
+        dataNode.valueFromId > newNode.startDataNodeId) {
+        // keep looking, as long as we find nodes that come after startDataNodeId (part of this snapshot)
+        dataNode = this.dp.util.getDataNode(dataNode.valueFromId);
+      }
+      const edgeInfos = this.#gatherDataNodeEdges(dataNode);
+      this.#addEdgeSet(newNode, edgeInfos);
+      this.ddg.VerboseAccess &&
+        this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${Array.from(edgeInfos.keys()).map(n => n.timelineId).join(',')}`);
+    }
+    else {
+      this.ddg.VerboseAccess &&
+        this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${fromNode?.timelineId}`);
+      if (
+        fromNode
+      ) {
+        this.ddg.addSnapshotEdge(fromNode, newNode);
+      }
     }
   }
 
@@ -252,7 +271,10 @@ export default class DDGTimelineBuilder {
 
     if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
-      return !isDataNodeModifyType(dataNode.type) || // Read or Compute
+
+      // NOTE: let's not screw things up with single-input computations etc.
+      // return !isDataNodeModifyType(dataNode.type) ||
+      return DataNodeType.is.Read(dataNode.type) ||
         !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
     }
     return false;
@@ -281,14 +303,15 @@ export default class DDGTimelineBuilder {
     let prev = null;
     // → look-up input
     if (dataNode.valueFromId) {
-      prev =
-        this.skippedNodesByDataNodeId[dataNode.valueFromId] ||
-        this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNode.valueFromId);
+      prev = this.getDataTimelineInputNode(dataNode.valueFromId);
     }
     if (!prev) {
       if (dataNode.accessId) {
         prev = this.getLastTimelineNodeByAccessId(dataNode.accessId);
       }
+    }
+    if (prev && this.ddg.VerboseAccess) {
+      this.ddg.logger.debug(`Skip: n${dataNode.nodeId} by ${prev.timelineId} (n${prev.dataNodeId}), accessId=${dataNode.accessId}`);
     }
     // if (!prev) {
     //   this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(dataNode.nodeId)}"`);
@@ -515,22 +538,14 @@ export default class DDGTimelineBuilder {
      * NOTE also that in JS, Sets retain order.
      * @type {Map.<DataTimelineNode, { n: number }>}
      */
-    const inputNodes = new Map();
+    const edgeInfos = new Map();
 
     // ignore + skip logic
     if (!this.#processSkipAndIgnore(dataNode, isDecision)) {
       return null;
     }
 
-    if (dataNode.valueFromId) {
-      this.#addInputNodeEdge(dataNode.nodeId, dataNode.valueFromId, inputNodes);
-    }
-
-    if (dataNode.inputs) {
-      for (const inputDataNodeId of dataNode.inputs) {
-        this.#addInputNodeEdge(dataNode.nodeId, inputDataNodeId, inputNodes);
-      }
-    }
+    this.#gatherDataNodeEdges(dataNode, edgeInfos);
 
     let newNode;
     if (isDecision) {
@@ -552,7 +567,6 @@ export default class DDGTimelineBuilder {
 
     // bookkeeping for summaries
     const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
-    const valueRefId = dataNode.refId;
     const varDeclarationTid = dataNode.varAccess?.declarationTid;
     // if (accessedRefId) {
     //   this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.startDataNodeId || dataNode.nodeId;
@@ -566,13 +580,37 @@ export default class DDGTimelineBuilder {
     const currentGroup = this.peekStack();
     currentGroup.hasSummarizableWrites ||= newNode.hasSummarizableWrites;
 
+    // if (dataNode.refId === ?) {
+    //   this.logger.debug(`Adding v${dataNode.refId} ${JSON.stringify(newNode)} - ${inputNodes.size} edges: `, Array.from(inputNodes.keys()).map(n => n.timelineId).join(', '));
+    // }
+
     // add edges
     // if (isDataTimelineNode(newNode.type)) { // TODO: this will not be necessary once we fix `refNode`s
-    for (const [inputNode, edgeProps] of inputNodes) {
-      this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, newNode.timelineId, edgeProps);
-    }
+    this.#addEdgeSet(newNode, edgeInfos);
     // }
     return newNode;
+  }
+
+  /** ###########################################################################
+   * edges
+   * ##########################################################################*/
+
+  #gatherDataNodeEdges(dataNode, edgeInfos = new Map()) {
+    if (dataNode.valueFromId) {
+      this.#addInputNodeEdge(dataNode.nodeId, dataNode.valueFromId, edgeInfos);
+    }
+    if (dataNode.inputs) {
+      for (const inputDataNodeId of dataNode.inputs) {
+        this.#addInputNodeEdge(dataNode.nodeId, inputDataNodeId, edgeInfos);
+      }
+    }
+    return edgeInfos;
+  }
+
+  #addEdgeSet(toNode, edgeInfos) {
+    for (const [inputNode, edgeProps] of edgeInfos) {
+      this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, toNode.timelineId, edgeProps);
+    }
   }
 
   /** ###########################################################################

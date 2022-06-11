@@ -50,8 +50,6 @@ class DDGNode extends BaseTreeViewNode {
       else {
         const result = await confirm(`No application file found. Do you want to run the exercise?`);
         if (result) {
-          await this.treeNodeProvider.manager.switchAndTestBug(this.exercise);
-
           // get new application
           application = await this.treeNodeProvider.controller.runAndExportDDGApplication(this.exercise);
 
@@ -94,10 +92,6 @@ class DDGExerciseNode extends ExerciseNode {
     allApplications.clear();
 
     await runTaskWithProgressBar(async (progress) => {
-      progress.report({ message: `Running exercises...` });
-      await this.treeNodeProvider.manager.switchAndTestBug(exercise);
-
-      progress.report({ message: `Parsing application` });
       await this.treeNodeProvider.controller.runAndExportDDGApplication(exercise, progress);
     }, { title: `Run DDG` });
   }

@@ -128,22 +128,6 @@ class NodeHoverState {
     return allEdgeIds;
   }
 
-  #makeColors(n) {
-    const {
-      themeMode
-    } = this.timeline.context;
-
-    const colors = [];
-    for (let i = 0; i < n; ++i) {
-      colors.push(makeStructuredRandomColor(themeMode, i, {
-        sat: 100,
-        // make sure, every node gets custom treatment
-        start: getStructuredRandomAngle(this.node.timelineId)
-      }));
-    }
-    return colors;
-  }
-
   #startHighlight() {
     const {
       node: {
@@ -151,6 +135,9 @@ class NodeHoverState {
         children
       }
     } = this;
+    const {
+      themeMode
+    } = this.timeline.context;
 
     const allEdgeIds = [
       timelineId,
@@ -161,7 +148,6 @@ class NodeHoverState {
 
     /* allEdgeIds.map(edgeId => edges[edgeId]) */
     this.edgeEls = allEdgeIds.map(edgeId => this.timeline.el.querySelector(`#e${edgeId}`));
-    const colors = this.#makeColors(this.edgeEls.length);
     this.fakeEdgeEls = this.edgeEls
       .map((edgeEl, i) => {
         /**
@@ -170,7 +156,10 @@ class NodeHoverState {
         const fakeEl = edgeEl.cloneNode();
         fakeEl.innerHTML = edgeEl.innerHTML; // NOTE: cloneNode is shallow
         fakeEl.setAttribute('id', ''); // unset id
-        const col = colors[i];
+        this.timeline.registerDeco(fakeEl);
+        
+        const edgeId = allEdgeIds[i];
+        const col = makeStructuredRandomColor(themeMode, edgeId % 50, { sat: 100, start: Math.round(edgeId / 50) * 30 });
         fakeEl.querySelectorAll('path,polygon').forEach(el => {
           el.setAttribute('stroke', col);
           el.setAttribute('stroke-width', 5);
@@ -305,6 +294,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         .on('end', () => {
           this.renderTimer?.print(null, 'Graph Render');
           this.renderTimer = null;
+          this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
           try {
             // if (this.ddg.settings.anim) {
             // NOTE: add transition only after first render
@@ -396,9 +386,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   clearDeco() {
+    this._stopHoverAction();
+    
     const els = Array.from(this.el.querySelectorAll('.deco'));
     els.forEach(el => el.remove());
-    this._stopHoverAction();
   }
 
   // rendering finished
