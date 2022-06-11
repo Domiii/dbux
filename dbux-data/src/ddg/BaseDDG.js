@@ -26,8 +26,8 @@ import DDGEdgeType from './DDGEdgeType';
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
+const VerboseAccess = 0;
 // const VerboseAccess = 2;
-const VerboseAccess = 2;
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.

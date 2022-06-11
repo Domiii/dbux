@@ -468,8 +468,7 @@ export default class DotBuilder {
       .join(', ');
 
     s = Array.isArray(node.children) ? `[${s}]` : `{${s}}`;
-    return this.wrapText(s);
-    // return this.makeNodeValueString(node);
+    return s;
   }
 
   makeNodeValueString(node) {
