@@ -198,43 +198,8 @@ export default class DDGTimelineBuilder {
    * skip + ignore
    * ##########################################################################*/
 
-  getIgnoreAndSkipInfo(dataNode) {
-    const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
-    const skippedBy = this.getSkippedByDataNode(dataNode);
-    if (!ignore &&
-      (!skippedBy ||
-        // it might seem as "skipped by itself" 
-        //    because shouldSkip is true but originally, 
-        //    there was no node to skip to → ignore
-        skippedBy.dataNodeId === dataNode.nodeId
-      )
-    ) {
-      return null;
-    }
-    return {
-      ignore,
-      skippedBy
-    };
-  }
-
-  #processSkipAndIgnore(dataNode, isDecision) {
-    // TODO: allow for decision skips as well
-    if (!isDecision && !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)) {
-      if (this.shouldIgnoreDataNode(dataNode.nodeId)) {
-        // ignore entirely
-        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
-        return false;
-      }
-      const skippedBy = this.getSkippedByDataNode(dataNode);
-      if (skippedBy) {
-        // → This node SHOULD be skipped and CAN be skipped.
-        // → register skip node
-        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
-        this.skippedNodesByDataNodeId[dataNode.nodeId] = skippedBy;
-        return false;
-      }
-    }
-    return true;
+  #canSkipOrIgnore(dataNode) {
+    return !this.#getIsDecision(dataNode) && !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId);
   }
 
   shouldIgnoreDataNode(dataNodeId) {
@@ -286,6 +251,50 @@ export default class DDGTimelineBuilder {
     return false;
   }
 
+  getIgnoreAndSkipInfo(dataNode) {
+    if (!this.#canSkipOrIgnore(dataNode)) {
+      return null;
+    }
+
+    const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
+    const skippedBy = this.getSkippedByNode(dataNode);
+    if (!ignore &&
+      (!skippedBy ||
+        // it might seem as "skipped by itself" 
+        //    because shouldSkip is true but originally, 
+        //    there was no node to skip to → ignore
+        skippedBy.dataNodeId === dataNode.nodeId
+      )
+    ) {
+      return null;
+    }
+    return {
+      ignore,
+      skippedBy
+    };
+  }
+
+  #processSkipAndIgnore(dataNode) {
+    // TODO: allow for decision skips as well?
+    if (this.#canSkipOrIgnore(dataNode)) {
+      if (this.shouldIgnoreDataNode(dataNode.nodeId)) {
+        // ignore entirely
+        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
+        return false;
+      }
+      const skippedBy = this.getSkippedByNode(dataNode);
+      if (skippedBy) {
+        // → This node SHOULD be skipped and CAN be skipped.
+        // → register skip node
+        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
+        this.skippedNodesByDataNodeId[dataNode.nodeId] = skippedBy;
+        return false;
+      }
+    }
+    return true;
+  }
+
+
   /**
    * Check if given `dataNode` should be skipped.
    * If so, find and return the last {@link DDGTimelineNode} of same `inputDataNode`'s `accessId`.
@@ -293,7 +302,7 @@ export default class DDGTimelineBuilder {
    * @param {DataNode} dataNode
    * @return {DDGTimelineNode}
    */
-  getSkippedByDataNode(dataNode) {
+  getSkippedByNode(dataNode) {
     if (!this.shouldSkipDataNode(dataNode.nodeId)) {
       return null;
     }
@@ -514,7 +523,7 @@ export default class DDGTimelineBuilder {
       else {
         // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
       }
-      const edgeType = this.ddg.getEdgeTypeDataNode(inputNode.dataNodeId, toDataNodeId);
+      const edgeType = this.ddg.getEdgeTypeOfDataNode(inputNode.dataNodeId, toDataNodeId);
       edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
     }
     else {
@@ -523,35 +532,40 @@ export default class DDGTimelineBuilder {
     }
   }
 
+  #getIsDecision(dataNode) {
+    const trace = this.dp.util.getTrace(dataNode.traceId);
+    return this.dp.util.isTraceControlDecision(trace.traceId);
+  }
+
   #addDataNodeToTimeline(dataNode, trace) {
-    const { dp } = this;
+    const { dp, ddg } = this;
 
     if (!dataNode) {
       // this.logger.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
       return null;
     }
-
-
-    const isDecision = dp.util.isTraceControlDecision(trace.traceId);
     // Verbose && this.debug(`Adding Trace: t#${trace.traceId}, n#${dataNode.nodeId}, s#${trace.staticTraceId}, ${isDecision}`);
 
-    // if (DataNodeType.is.Write(ownDataNode.type) && isDecision) {
-    //   // future-work: add two nodes in this case
-    // }
+    // check for potential duplicates
+    if (
+      ddg.doesDataNodeHaveTimelineNode(dataNode.nodeId) &&
+      !ddg.shouldAllowDuplicateNode(dataNode.nodeId)
+    ) {
+      return null;
+    }
+
+    // ignore + skip logic
+    if (!this.#processSkipAndIgnore(dataNode)) {
+      return null;
+    }
 
     /**
      * This is to avoid duplicate edges.
      * NOTE also that in JS, Sets retain order.
      * @type {Map.<DataTimelineNode, { n: number }>}
      */
-    const edgeInfos = new Map();
-
-    // ignore + skip logic
-    if (!this.#processSkipAndIgnore(dataNode, isDecision)) {
-      return null;
-    }
-
-    this.#gatherDataNodeEdges(dataNode, edgeInfos);
+    const edgeInfos = this.#gatherDataNodeEdges(dataNode);
+    const isDecision = this.#getIsDecision(dataNode);
 
     let newNode;
     if (isDecision) {

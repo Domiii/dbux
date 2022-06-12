@@ -2,7 +2,7 @@
 /** @typedef {import('./BaseDDG').default} DataDependencyGraph */
 
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import { RefSnapshotTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, RefSnapshotTimelineNode } from './DDGTimelineNodes';
 
 /**
  * 
@@ -41,6 +41,7 @@ export default class DDGWatchSet {
   watchSnapshotsByRef = new Map();
 
   watchedNodes = new Set();
+  addedWatchedDataNodeIds = new Set();
   lastDataNodeByWatchedRefs = new Map();
 
   /**
@@ -125,12 +126,21 @@ export default class DDGWatchSet {
    * @return {boolean}
    */
   isWatchedDataNode(dataNodeId) {
-    const dataNode = this.dp.util.getDataNode(dataNodeId);
     return this.#isWatchedSetDataNode(dataNodeId) ||
-      (
-        DataNodeType.is.Write(dataNode.type) &&
-        this.isWatchedAccessDataNode(dataNodeId)
-      );
+      this.isAddedAndWatchedDataNode(dataNodeId);
+    // (
+    //   // TODO: do we need this?
+    //   DataNodeType.is.Write(dataNode.type) &&
+    //   this.isWatchedAccessDataNode(dataNodeId)
+    // );
+  }
+
+  /**
+   * Whether given `dataNodeId` is watched, and already has at least one Node
+   * registered with it.
+   */
+  isAddedAndWatchedDataNode(dataNodeId) {
+    return this.addedWatchedDataNodeIds.has(dataNodeId);
   }
 
   /**
@@ -157,17 +167,23 @@ export default class DDGWatchSet {
   }
 
   /**
-   * @param {RefSnapshotTimelineNode} node 
+   * @param {DDGTimelineNode} node 
    */
-  addWatchedNode(node) {
-    this.watchedNodes.add(node);
-    if (node instanceof RefSnapshotTimelineNode) {
-      const { refId/* , dataNodeId */, rootDataNodeId } = node;
-      this.watchSnapshotsByRef.set(refId, node);
-
-      // NOTE: this is similar to ``, but with a watched constraint
-      const lastDataNodeId = rootDataNodeId;
-      this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
+  maybeAddWatchedNode(node) {
+    if (
+      node.dataNodeId &&
+      this.isWatchedDataNode(node.dataNodeId) ||
+      (node.rootDataNodeId && this.isWatchedDataNode(node.rootDataNodeId))
+    ) {
+      node.watched = true;
+      this.addedWatchedDataNodeIds.add(node.dataNodeId);
+      this.watchedNodes.add(node);
+      if (node instanceof RefSnapshotTimelineNode) {
+        const { refId/* , dataNodeId */, rootDataNodeId } = node;
+        this.watchSnapshotsByRef.set(refId, node);
+        const lastDataNodeId = rootDataNodeId;
+        this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
+      }
     }
   }
 

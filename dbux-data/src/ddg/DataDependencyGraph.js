@@ -313,7 +313,7 @@ export default class DataDependencyGraph extends BaseDDG {
     // add var nodes
     const varNodesByDeclarationTid = new Map();
     for (const [declarationTid, varNodeTimelineId] of varModifyDataNodes) {
-      const varNode = this.deepCloneNode(varNodeTimelineId);
+      const varNode = this.cloneNode(varNodeTimelineId);
       // override label to be the var name (if possible), since its more representative
       varNode.label = dp.util.getDataNodeDeclarationVarName(varNode.dataNodeId) || varNode.label;
       varNodesByDeclarationTid.set(declarationTid, varNode.timelineId);
