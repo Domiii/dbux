@@ -1188,7 +1188,7 @@ export default class RuntimeMonitor {
     }
 
     // DataNodeType.Create
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Compute, null, null, ShallowValueRefMeta);
+    const ownDataNode = dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Compute, null, null, ShallowValueRefMeta);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -1211,7 +1211,7 @@ export default class RuntimeMonitor {
           };
           const readNode = dataNodeCollection.createDataNode(value[idx], targetTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
+            objectNodeId: ownDataNode.nodeId,
             prop: idx
           };
           dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, writeAccess);
@@ -1221,10 +1221,10 @@ export default class RuntimeMonitor {
       else {
         // not spread
         const varAccess = {
-          objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
+          objectNodeId: ownDataNode.nodeId,
           prop: idx
         };
-        dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(targetTid, argTid, varAccess);
         ++idx;
       }
     }
@@ -1249,6 +1249,8 @@ export default class RuntimeMonitor {
         warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
         continue;
       }
+      // const targetTid = propTid;
+      const targetTid = objectTid;
 
       if (argConfigs[i].isSpread) {
         // [spread]
@@ -1259,12 +1261,12 @@ export default class RuntimeMonitor {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(propTid),
             prop: key
           };
-          const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);
+          const readNode = dataNodeCollection.createDataNode(value[key], targetTid, DataNodeType.Read, readAccess);
           const writeAccess = {
             objectNodeId,
             prop: key
           };
-          dataNodeCollection.createWriteNodeFromReadNode(propTid, readNode, writeAccess);
+          dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, writeAccess);
         }
       }
       else {
@@ -1274,7 +1276,7 @@ export default class RuntimeMonitor {
           objectNodeId,
           prop: key
         };
-        dataNodeCollection.createWriteNodeFromTrace(objectTid, propTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(targetTid, propTid, varAccess);
       }
     }
 

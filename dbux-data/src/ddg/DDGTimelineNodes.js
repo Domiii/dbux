@@ -23,7 +23,8 @@ export class DDGTimelineNode {
   label;
 
   /**
-   * `timelineId` of this node's parent node (or 0/undefined if its a root/it does not apply).
+   * Only for nodes in a snapshot tree: `timelineId` of this node's parent node.
+   * (does not apply to groups. Use `groupId` instead.)
    * @type {number}
    */
   parentNodeId;
@@ -41,6 +42,8 @@ export class DDGTimelineNode {
    * @type {boolean}
    */
   og;
+
+  groupId;
 
   /**
    * @param {DDGTimelineNodeTypeValues} type

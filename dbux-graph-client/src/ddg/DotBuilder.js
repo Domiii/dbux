@@ -312,7 +312,7 @@ export default class DotBuilder {
     // const mode = ddgQueries.getNodeSummaryMode(ddg, node);
     // const modeEl = makeSummaryLabel(ddg, mode);
     // ${modeEl}
-    this.command(`label="${this.wrapText(label) || '()'}"`);
+    this.label(label || '()');
     this.subgraphAttrs();
   }
 
@@ -452,6 +452,11 @@ export default class DotBuilder {
    *  #########################################################################*/
 
   makeRefValueString(node) {
+    if (node.repeatedTimelineId) {
+      // render original instead
+      node = this.ddg.timelineNodes[node.repeatedTimelineId];
+    }
+
     if (!node.children) {
       return '📦';
     }
@@ -472,20 +477,24 @@ export default class DotBuilder {
   }
 
   makeNodeValueString(node) {
+    let s;
     if (ddgQueries.isSnapshot(this.ddg, node)) {
-      return this.makeRefValueString(node);
+      s = this.makeRefValueString(node);
     }
-    if (node.value !== undefined) {
-      return JSON.stringify(node.value);
+    else if (node.value !== undefined) {
+      s = JSON.stringify(node.value);
     }
-    if (isRepeatedRefTimelineNode(node.type)) {
+    else if (isRepeatedRefTimelineNode(node.type)) {
       const linkNode = this.ddg.timelineNodes[node.repeatedTimelineId];
-      return this.makeRefValueString(linkNode) + node.label;
+      s = this.makeRefValueString(linkNode) + node.label;
     }
-    if (node.refId) {
-      return '📦';  // ref value node but without snapshot
+    else if (node.refId) {
+      s = '📦';  // ref value node but without snapshot
     }
-    return node.label || '?';
+    else {
+      s = node.label || '?';
+    }
+    return this.wrapText(s);
   }
 
   // makeRecordEntry(timelineId, label) {
@@ -504,7 +513,7 @@ export default class DotBuilder {
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
   <TR>
     <TD BORDER="1" SIDES="R">${this.wrapText(label)}</TD>
-    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${this.wrapText(value)}</FONT></TD>
+    <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${value}</FONT></TD>
   </TR>
 </TABLE>
 >`;
@@ -554,8 +563,6 @@ export default class DotBuilder {
     }
     else {
       // render snapshot
-      // this.command(`node [shape=record]`);
-      this.command(`node [shape=plaintext]`);
       let attrs = this.nodeIdAttr(timelineId);
       if (colorOverride) {
         attrs += `color=${colorOverride}`;
@@ -570,7 +577,8 @@ export default class DotBuilder {
           return this.makeSnapshotCell(childId, prop);
         })
         .join('');
-      this.command(`${timelineId} [${attrs},label=<
+      // shape=record
+      this.command(`${timelineId} [${attrs},shape=plaintext,label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
     ${hasLabel ? `<TD ROWSPAN="2">${this.wrapText(label)}</TD>` : ''}
@@ -623,7 +631,7 @@ export default class DotBuilder {
     return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
-<FONT COLOR="${Colors.snapshotProp}">${prop}</FONT></TD></TR>
+<FONT COLOR="${Colors.snapshotProp}">${this.wrapText(prop)}</FONT></TD></TR>
         <TR><TD><FONT COLOR="${Colors.value}">${label}</FONT></TD></TR>
       </TABLE>
     </TD>`;

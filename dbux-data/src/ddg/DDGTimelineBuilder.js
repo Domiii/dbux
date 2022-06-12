@@ -366,8 +366,9 @@ export default class DDGTimelineBuilder {
    * @param {DDGTimelineNode} newNode 
    */
   #addNodeToGroup(newNode) {
-    const parent = this.peekStack();
-    parent.children.push(newNode.timelineId);
+    const group = this.peekStack();
+    newNode.groupId = group.timelineId;
+    group.children.push(newNode.timelineId);
   }
 
   /** ###########################################################################

@@ -169,21 +169,40 @@ export default class DDGWatchSet {
   /**
    * @param {DDGTimelineNode} node 
    */
+  maybeAddWatchedSnapshotNode(node) {
+    if (
+      node.dataNodeId && (
+        this.isWatchedDataNode(node.dataNodeId) ||
+        (node.rootDataNodeId && this.isWatchedDataNode(node.rootDataNodeId))
+      )
+    ) {
+      this.#addWatchedNode(node);
+    }
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   */
   maybeAddWatchedNode(node) {
     if (
-      node.dataNodeId &&
-      this.isWatchedDataNode(node.dataNodeId) ||
-      (node.rootDataNodeId && this.isWatchedDataNode(node.rootDataNodeId))
+      node.dataNodeId && this.isWatchedDataNode(node.dataNodeId)
     ) {
-      node.watched = true;
-      this.addedWatchedDataNodeIds.add(node.dataNodeId);
-      this.watchedNodes.add(node);
-      if (node instanceof RefSnapshotTimelineNode) {
-        const { refId/* , dataNodeId */, rootDataNodeId } = node;
-        this.watchSnapshotsByRef.set(refId, node);
-        const lastDataNodeId = rootDataNodeId;
-        this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
-      }
+      this.#addWatchedNode(node);
+    }
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   */
+  #addWatchedNode(node) {
+    node.watched = true;
+    this.addedWatchedDataNodeIds.add(node.dataNodeId);
+    this.watchedNodes.add(node);
+    if (node instanceof RefSnapshotTimelineNode) {
+      const { refId/* , dataNodeId */, rootDataNodeId } = node;
+      this.watchSnapshotsByRef.set(refId, node);
+      const lastDataNodeId = rootDataNodeId;
+      this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
     }
   }
 

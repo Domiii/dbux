@@ -51,8 +51,10 @@ export default class DDGTDNode extends TraceDetailNode {
         );
       }
     }
-    const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId)
-      ?.filter(predicate);
+    let timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
+    if (timelineNodesOfDataNode && predicate) {
+      timelineNodesOfDataNode = timelineNodesOfDataNode.filter(predicate);
+    }
     if (!timelineNodesOfDataNode?.length) {
       return ignoreSkipNode || EmptyArray;
     }

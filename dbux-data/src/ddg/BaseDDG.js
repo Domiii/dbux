@@ -6,6 +6,7 @@
 // import DDGTimeline from './DDGTimeline';
 import first from 'lodash/first';
 import last from 'lodash/last';
+import pull from 'lodash/pull';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
@@ -142,6 +143,10 @@ export default class BaseDDG {
     return this._timelineNodes;
   }
 
+  get timelineNodesByDataNodeId() {
+    return this._timelineNodesByDataNodeId;
+  }
+
 
   getRenderData() {
     const {
@@ -180,7 +185,7 @@ export default class BaseDDG {
   getTimelineNodesOfDataNode(dataNodeId) {
     // return this.timelineNodes
     //   .filter(node => node?.dataNodeId === dataNodeId && (!predicate || predicate(node)));
-    return this._timelineNodesByDataNodeId[dataNodeId];
+    return this.timelineNodesByDataNodeId[dataNodeId];
   }
 
   /** ###########################################################################
@@ -327,10 +332,10 @@ export default class BaseDDG {
     newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
 
-    // watched
-    this.watchSet.maybeAddWatchedNode(node);
-
     if (newNode.dataNodeId && this.building) {
+      // register with `WatchSet`
+      this.watchSet.maybeAddWatchedNode(newNode);
+
       // hackfix: during build, update accessId map
       const dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
       const accessIdMap = this.timelineBuilder.lastTimelineVarNodeByAccessId;
@@ -387,7 +392,7 @@ export default class BaseDDG {
       if (!byDataNode) {
         this._timelineNodesByDataNodeId[newNode.dataNodeId] = byDataNode = [];
       }
-      byDataNode.add(newNode);
+      byDataNode.push(newNode);
     }
   }
 
@@ -524,6 +529,9 @@ export default class BaseDDG {
         if (isOriginalValueRef) {
           // original is ValueRef
           newChild = this.#buildSnapshotChildFromValueRef(original);
+          if (!newChild) {
+            continue; // hackfix: ignore for now
+          }
         }
         else {
           // original is timelineId
@@ -541,9 +549,22 @@ export default class BaseDDG {
         // 2. handle skip, and try to "adopt" existing node
         const skippedBy = this.timelineBuilder.getSkippedByNode(dataNode);
         const existingNodeOfDataNode = this.getLastDataTimelineNodeByDataNodeId(dataNode.nodeId);
-        newChild = skippedBy || existingNodeOfDataNode;
-        if (newChild && this.#isIndependentRootNode(newChild, parentSnapshot)) {
-          // adopt existing node
+        if (this.building && (
+          (newChild = skippedBy || existingNodeOfDataNode) &&
+          this.#isIndependentRootNode(newChild, parentSnapshot)
+        )) {
+          // adopt existing node (build mode only)
+          // remove from previous group
+          const group = this.timelineNodes[newChild.groupId];
+
+          if (group) {
+            // hackfix: bruteforce delete
+            // Warning: this is currently the only place that makes our graph building super-linear in performance.
+            pull(group.children, newChild.timelineId);
+            newChild.groupId = 0;
+          }
+
+          // update references
           this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
         }
         else {
@@ -710,31 +731,34 @@ export default class BaseDDG {
    * 
    * @param {DDGTimelineNode} newNode 
    * @param {SnapshotMap?} snapshotsByRefId
-   * @param {*} parentSnapshot 
+   * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
   #onSnapshotNodeCreated(newNode, snapshotsByRefId, parentSnapshot) {
-    // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
+    const { dp } = this;
     newNode.parentNodeId = parentSnapshot?.timelineId;
-    // TODO: rootDataNodeId is wrong. This way, parent can be smaller than children (but should never be).
-    //    → e.g. in ObjectExpression
-    newNode.rootDataNodeId = parentSnapshot?.rootDataNodeId || newNode.dataNodeId;
+    newNode.rootDataNodeId = parentSnapshot?.rootDataNodeId ||
+      dp.util.getLastDataNodeIdOfTrace(newNode.traceId);
 
     // update snapshot set
     snapshotsByRefId?.set(newNode.refId, newNode.timelineId);
 
+
     if (this.building) {
+      // register with `WatchSet`
+      this.watchSet.maybeAddWatchedSnapshotNode(newNode);
+
       // we only add these during initial build
       let byDataNode = this._timelineNodesByDataNodeId[newNode.dataNodeId];
       if (!byDataNode) {
         this._timelineNodesByDataNodeId[newNode.dataNodeId] = byDataNode = [];
       }
-      if (last(byDataNode) !== newNode) {
-        // hackfix: we might have already added them
-        byDataNode.add(newNode);
+      if (last(byDataNode) !== newNode) { // hackfix check: we might have already added them
+        byDataNode.push(newNode);
       }
-    }
 
-    this.building && this.timelineBuilder.addNestedSnapshotEdges(newNode);
+      // add nested edges
+      this.timelineBuilder.addNestedSnapshotEdges(newNode);
+    }
   }
 
   /** ###########################################################################
@@ -832,7 +856,11 @@ export default class BaseDDG {
    * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
   #shouldBuildDeepSnapshot(parentSnapshot, childDataNodeId) {
-    // only go deep if:
+    // console.debug('deep', childDataNodeId,
+    //   'W', this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId),
+    //   'R', this.watchSet.isReturnDataNode(parentSnapshot.rootDataNodeId),
+    //   'A', this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)
+    // );
     return (
       this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
         this.watchSet.isReturnDataNode(parentSnapshot.rootDataNodeId) ||  // "return trace" snapshot

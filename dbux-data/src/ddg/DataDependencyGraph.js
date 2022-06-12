@@ -184,6 +184,10 @@ export default class DataDependencyGraph extends BaseDDG {
     return this.og.timelineNodes;
   }
 
+  get timelineNodesByDataNodeId() {
+    return this.og.timelineNodesByDataNodeId;
+  }
+
   get timelineBuilder() {
     return this.og.timelineBuilder;
   }
