@@ -549,10 +549,10 @@ export default class BaseDDG {
         // 2. handle skip, and try to "adopt" existing node
         const skippedBy = this.timelineBuilder.getSkippedByNode(dataNode);
         const existingNodeOfDataNode = this.getLastDataTimelineNodeByDataNodeId(dataNode.nodeId);
-        if (this.building && (
+        if (this.building &&
           (newChild = skippedBy || existingNodeOfDataNode) &&
-          this.#isIndependentRootNode(newChild, parentSnapshot)
-        )) {
+          this.#canTimelineNodeBeAdoptedBySnapshot(newChild, parentSnapshot)
+        ) {
           // adopt existing node (build mode only)
           // remove from previous group
           const group = this.timelineNodes[newChild.groupId];
@@ -848,7 +848,7 @@ export default class BaseDDG {
   }
 
   /**
-   * Whether given snapshot should always be added.
+   * Whether given snapshot should add deep nodes.
    * Called to check whether
    *  (1) a new node should be added, even though it has been added already or
    *  (2) go deep on new ref node.
@@ -856,11 +856,7 @@ export default class BaseDDG {
    * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
   #shouldBuildDeepSnapshot(parentSnapshot, childDataNodeId) {
-    // console.debug('deep', childDataNodeId,
-    //   'W', this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId),
-    //   'R', this.watchSet.isReturnDataNode(parentSnapshot.rootDataNodeId),
-    //   'A', this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)
-    // );
+    // this.logger.debug('deep', parentSnapshot.timelineId, childDataNodeId, this.doesDataNodeHaveOutgoingEdge(childDataNodeId));
     return (
       this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
         this.watchSet.isReturnDataNode(parentSnapshot.rootDataNodeId) ||  // "return trace" snapshot
@@ -869,7 +865,22 @@ export default class BaseDDG {
     );
   }
 
-  shouldAllowDuplicateNode(dataNodeId) {
+  #canTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
+    return (
+      // don't adopt watched nodes (unless new parent is also watched)
+      (!node.watched || this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId)) &&
+      // don't adopt children of other snapshots
+      this.#isIndependentRootNode(node, parentSnapshot) &&
+      // don't adopt nodes that already have outgoing dependencies on timeline
+      !this.outEdgesByTimelineId[node.timelineId]?.length
+    );
+  }
+
+  /**
+   * In case given DataNode already has a TimelineNode,
+   * determine whether it needs a duplicate.
+   */
+  shouldDuplicateNode(dataNodeId) {
     return (
       this.watchSet.isWatchedDataNode(dataNodeId) && (        // watched
         this.watchSet.isReturnDataNode(dataNodeId) ||         // "return trace"
@@ -877,6 +888,11 @@ export default class BaseDDG {
       )
     );
   }
+
+  // doesDataNodeHaveOutgoingEdge(dataNodeId) {
+  //   const timelineNodes = this.getTimelineNodesOfDataNode(dataNodeId);
+  //   return timelineNodes?.some(n => this.outEdgesByTimelineId[n.timelineId]?.length) || false;
+  // }
 
   /**
    * NOTE: these are very rough heuristics for edge colorization

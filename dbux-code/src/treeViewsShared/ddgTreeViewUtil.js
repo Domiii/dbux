@@ -61,7 +61,7 @@ export function makeDDGNodeLabel(ddg, timelineId) {
  * @param {DataDependencyGraph} ddg
  * @param {DDGTimelineNode} node 
  */
-export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObject, labelPrefix = '') {
+export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObject, labelPrefix = '') {
   const { dp } = ddg;
   const labelOverride = moreProps.label;
   if ('label' in moreProps) {
@@ -69,12 +69,18 @@ export function renderDDGNode(ddg, node, children = node, moreProps = EmptyObjec
   }
   const label = labelOverride || makeDDGNodeLabel(ddg, node.timelineId);
 
+  if (!children) {
+    children = node;
+  }
   if (children === node) {
     // better rendering of things
     children = { ...node };
 
     const nodeChildren = children.children || EmptyArray;
     children.children = renderDDGNodes(ddg, nodeChildren, 'Children');
+    if (children.parentNodeId) {
+      children.parentNodeId = renderDDGNode(ddg, ddg.timelineNodes[children.parentNodeId], null, EmptyObject, 'Parent: ');
+    }
 
     if (node.dataNodeId) {
       children.dataNode = renderDataNode(dp, node.dataNodeId, null, 'DataNode');

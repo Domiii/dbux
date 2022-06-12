@@ -1,4 +1,5 @@
 import last from 'lodash/last';
+import groupBy from 'lodash/groupBy';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
@@ -162,36 +163,39 @@ export default class DDGTimelineBuilder {
    */
   addNestedSnapshotEdges(newNode) {
     if (!newNode.parentNodeId) {
-      // skip in case of root nodes
+      // skip in case of root nodes. Already handled in builder.
       return;
     }
-    let fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
-    if (fromNode === newNode) {
-      // newNode is the first node of dataNodeId
-      let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
-      while (dataNode.valueFromId &&
-        (
-          !this.getDataTimelineInputNode(dataNode.valueFromId) ||
-          dataNode.valueFromId > newNode.rootDataNodeId
-        )
-      ) {
-        // keep looking, as long as we find nodes that come after rootDataNodeId (part of this snapshot)
-        dataNode = this.dp.util.getDataNode(dataNode.valueFromId);
-      }
-      const edgeInfos = this.#gatherDataNodeEdges(dataNode);
-      this.#addEdgeSet(newNode, edgeInfos);
-      this.ddg.VerboseAccess &&
-        this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${Array.from(edgeInfos.keys()).map(n => n.timelineId).join(',')}`);
-    }
-    else {
-      this.ddg.VerboseAccess &&
-        this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${fromNode?.timelineId}`);
-      if (
-        fromNode
-      ) {
-        this.ddg.addSnapshotEdge(fromNode, newNode);
-      }
-    }
+    let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
+    const edgeInfos = this.#gatherDataNodeEdges(dataNode);
+    this.#addEdgeSet(newNode, edgeInfos);
+    // let fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
+    // if (fromNode === newNode) {
+    //   // newNode is the first node of dataNodeId
+    //   let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
+    //   while (dataNode.valueFromId &&
+    //     (
+    //       !this.getDataTimelineInputNode(dataNode.valueFromId) ||
+    //       dataNode.valueFromId > newNode.rootDataNodeId
+    //     )
+    //   ) {
+    //     // keep looking, as long as we find nodes that come after rootDataNodeId (part of this snapshot)
+    //     dataNode = this.dp.util.getDataNode(dataNode.valueFromId);
+    //   }
+    //   const edgeInfos = this.#gatherDataNodeEdges(dataNode);
+    //   this.#addEdgeSet(newNode, edgeInfos);
+    //   this.ddg.VerboseAccess &&
+    //     this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${Array.from(edgeInfos.keys()).map(n => n.timelineId).join(',')}`);
+    // }
+    // else {
+    //   this.ddg.VerboseAccess &&
+    //     this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${fromNode?.timelineId}`);
+    //   if (
+    //     fromNode
+    //   ) {
+    //     this.ddg.addSnapshotEdge(fromNode, newNode);
+    //   }
+    // }
   }
 
   /** ###########################################################################
@@ -501,13 +505,18 @@ export default class DDGTimelineBuilder {
     // const dataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
 
     if (dataNodes?.length) {
-      let newNode = this.#addDataNodeToTimeline(dataNodes[0], trace);
-      if (newNode && isSnapshotTimelineNode(newNode.type)) {
-        // TODO: also add all DataNodes that do not belong to given snapshot
-      }
-      else {
-        for (let i = 1; i < dataNodes.length; ++i) {
-          /* newNode = */ this.#addDataNodeToTimeline(dataNodes[i], trace);
+      /**
+       * Take all DataNodes, then group and sort them by `accessId`.
+       * This is to deal with `{Object,Array}Expression` (and maybe other traces) where
+       * one trace accesses multiple objects, and thus creates multiple snapshots.
+       * The built snapshots are created greedily and might depend on one another, so
+       * the earlier snapshots need to go first.
+       */
+      const byAccessId = Object.entries(groupBy(dataNodes, 'accessId'));
+      byAccessId.sort((b, a) => b - a);
+      for (const [, accessNodes] of byAccessId) {
+        for (let i = 0; i < accessNodes.length; ++i) {
+        /* newNode = */ this.#addDataNodeToTimeline(accessNodes[i], trace);
         }
       }
     }
@@ -550,7 +559,7 @@ export default class DDGTimelineBuilder {
     // check for potential duplicates
     if (
       ddg.doesDataNodeHaveTimelineNode(dataNode.nodeId) &&
-      !ddg.shouldAllowDuplicateNode(dataNode.nodeId)
+      !ddg.shouldDuplicateNode(dataNode.nodeId)
     ) {
       return null;
     }

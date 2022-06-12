@@ -119,7 +119,7 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   settings = new DDGSettings();
 
-  // debugRefId = 105;
+  // valueId = 105;
 
   constructor(dp, graphId) {
     super(dp, graphId);
@@ -584,10 +584,10 @@ export default class DataDependencyGraph extends BaseDDG {
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
     const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
-    if (this.debugRefId && dataNode?.refId === this.debugRefId &&
+    if (VerboseSumm && (!this.valueId || dataNode?.valueId === this.valueId) &&
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
-      VerboseSumm && this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+      this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
     }
 
     if (isVisible) {
@@ -602,8 +602,8 @@ export default class DataDependencyGraph extends BaseDDG {
           for (const from of allFrom) {
             if (from !== targetNode) {
               summaryState.addEdge(from, targetNode, type);
-              if (this.debugRefId && dataNode?.refId === this.debugRefId) {
-                VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
+              if (VerboseSumm && (!this.valueId || dataNode?.valueId === this.valueId)) {
+                this.logger.debug(`SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
               }
             }
           }
@@ -633,8 +633,8 @@ export default class DataDependencyGraph extends BaseDDG {
         nodeRouteMap.set(timelineId, reroutes);
       }
       // eslint-disable-next-line max-len
-      if (this.debugRefId && dataNode?.refId === this.debugRefId && reroutes.size) {
-        VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
+      if (VerboseSumm && (!this.valueId || dataNode?.valueId === this.valueId)) {
+        reroutes.size && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
         // VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
         //   .map(([timelineId, reroutes]) =>
         //     `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);
