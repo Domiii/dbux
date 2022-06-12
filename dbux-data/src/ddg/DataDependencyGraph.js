@@ -9,6 +9,7 @@ import DDGEdgeType from './DDGEdgeType';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -347,7 +348,10 @@ export default class DataDependencyGraph extends BaseDDG {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
 
-    if (node.dataNodeId && ddgQueries.checkConnected(this, node)) {
+    if (
+      node.dataNodeId &&
+      ddgQueries.checkNodeVisibilitySettings(this, node)
+    ) {
       const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
       let varDeclarationTid;
       if (refId) {
@@ -521,6 +525,7 @@ export default class DataDependencyGraph extends BaseDDG {
       currentCollapsedAncestor
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
+
 
     let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
     const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarizedMode(this, node);

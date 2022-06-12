@@ -5,6 +5,7 @@ import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './D
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
 import DDGSettings from './DDGSettings';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
@@ -144,6 +145,29 @@ const ddgQueries = {
   },
 
   /**
+   * Check node param status against param setting.
+   * 
+   * @param {DDGTimelineNode} node
+   */
+  checkParams(ddg, node) {
+    return ddg.settings.params || !TraceType.is.Param(node.traceType);
+  },
+
+  /**
+   * Check settings against node status.
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  checkNodeVisibilitySettings(ddg, node) {
+    return node.watched || (
+      ddgQueries.checkConnected(ddg, node) &&
+      ddgQueries.checkParams(ddg, node)
+    );
+  },
+
+
+  /**
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
@@ -152,7 +176,7 @@ const ddgQueries = {
     
     return node.watched || (
       isShownMode(summaryMode) &&
-      this.checkConnected(ddg, node) &&
+      this.checkNodeVisibilitySettings(ddg, node) &&
 
       // hide empty summary nodes
       // NOTE: we check for `doesNodeHaveSummary` in a few other places as well

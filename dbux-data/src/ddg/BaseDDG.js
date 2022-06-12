@@ -336,8 +336,12 @@ export default class BaseDDG {
       // register with `WatchSet`
       this.watchSet.maybeAddWatchedNode(newNode);
 
-      // hackfix: during build, update accessId map
+      // get some extra data we can use
       const dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
+      newNode.traceType = this.dp.util.getTraceType(dataNode.traceId);
+
+
+      // during build, update accessId map
       const accessIdMap = this.timelineBuilder.lastTimelineVarNodeByAccessId;
       if (
         dataNode.accessId && (

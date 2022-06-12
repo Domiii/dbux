@@ -45,6 +45,9 @@ export class DDGTimelineNode {
 
   groupId;
 
+  // some other data that we can make use of
+  traceType;
+
   /**
    * @param {DDGTimelineNodeTypeValues} type
    */

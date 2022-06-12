@@ -135,7 +135,8 @@ function addSummaryModeListener(btnEl, doc, timelineId, mode) {
 // };
 const settingBtnLabelHtml = {
   connectedOnly: 'con',
-  extraVertical: '↕'
+  extraVertical: '↕',
+  params: 'param'
 };
 
 /**
