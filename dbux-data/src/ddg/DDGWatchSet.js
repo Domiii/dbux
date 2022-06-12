@@ -48,13 +48,16 @@ export default class DDGWatchSet {
    * @param {DataDependencyGraph} ddg 
    * @param {DataNode[]} inputNodes NOTE: input set is actually a set of trees of DataNodes
    */
-  constructor(ddg, watchTraceIds) {
+  constructor(ddg, watched) {
     this.ddg = ddg;
 
     const { dp } = this;
 
+    const { watchTraceIds, returnTraceId } = watched;
     this.watchTraceIdSet = new Set(watchTraceIds);
     this.watchTraceIds = Array.from(this.watchTraceIdSet);
+    this.returnTraceId = returnTraceId;
+    this.returnDataNodeId = dp.util.getDataNodeIdOfTrace(returnTraceId);
 
     // get all watched declarationTids
     this.staticTraceIdSet = new Set(
@@ -107,6 +110,14 @@ export default class DDGWatchSet {
   }
 
   /**
+   * Special purpose trace.
+   * If given, it allows for some prettier rendering.
+   */
+  isReturnDataNode(dataNodeId) {
+    return this.returnDataNodeId === dataNodeId;
+  }
+
+  /**
    * Whether given dataNode is:
    *   (i) a read of watched set 
    *   (ii) or write to a watched variable or reference.
@@ -151,11 +162,11 @@ export default class DDGWatchSet {
   addWatchedNode(node) {
     this.watchedNodes.add(node);
     if (node instanceof RefSnapshotTimelineNode) {
-      const { refId/* , dataNodeId */, startDataNodeId } = node;
+      const { refId/* , dataNodeId */, rootDataNodeId } = node;
       this.watchSnapshotsByRef.set(refId, node);
 
       // NOTE: this is similar to ``, but with a watched constraint
-      const lastDataNodeId = startDataNodeId;
+      const lastDataNodeId = rootDataNodeId;
       this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
     }
   }

@@ -4,6 +4,7 @@
 
 
 // import DDGTimeline from './DDGTimeline';
+import first from 'lodash/first';
 import last from 'lodash/last';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
@@ -17,6 +18,7 @@ import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
+// eslint-disable-next-line max-len
 import { DDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode } from './DDGTimelineNodes';
 import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
@@ -68,9 +70,9 @@ export default class BaseDDG {
   _lastAccessDataNodeIdByRefId;
 
   /**
-   * @type {Obejct.<number, DataTimelineNode>}
+   * @type {Object.<number, DataTimelineNode[]>}
    */
-  _firstTimelineDataOrSnapshotNodeByDataNodeId;
+  _timelineNodesByDataNodeId;
 
   VerboseAccess = VerboseAccess;
 
@@ -171,13 +173,10 @@ export default class BaseDDG {
   /**
    * 
    */
-  getTimelineNodesOfDataNode(dataNodeId, predicate = null) {
-    // const dataNode = this.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
-    // if (dataNode) {
-    //   return dataNode;
-    // }
-    return this.timelineNodes
-      .filter(node => node?.dataNodeId === dataNodeId && (!predicate || predicate(node)));
+  getTimelineNodesOfDataNode(dataNodeId) {
+    // return this.timelineNodes
+    //   .filter(node => node?.dataNodeId === dataNodeId && (!predicate || predicate(node)));
+    return this._timelineNodesByDataNodeId[dataNodeId];
   }
 
   /** ###########################################################################
@@ -187,7 +186,7 @@ export default class BaseDDG {
   resetBuild() {
     this._refSnapshotsByDataNodeId = [];
     this._lastAccessDataNodeIdByRefId = [];
-    this._firstTimelineDataOrSnapshotNodeByDataNodeId = [];
+    this._timelineNodesByDataNodeId = {};
 
     this.resetEdges();
   }
@@ -201,10 +200,10 @@ export default class BaseDDG {
   /**
    * @param {number[]} watchTraceIds 
    */
-  build(watchTraceIds) {
+  build(watched) {
     // this.selectedSet = inputNodes;
-    this._watchSet = new DDGWatchSet(this, watchTraceIds);
-    this._bounds = new DDGBounds(this, watchTraceIds);
+    this._watchSet = new DDGWatchSet(this, watched);
+    this._bounds = new DDGBounds(this);
     this._timelineNodes = [null];
 
     this.building = true;
@@ -406,8 +405,14 @@ export default class BaseDDG {
     }
 
     if (this.building) {
-      // hackfix: we only need these during initial build
-      this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
+      // we only add these during initial build
+      let byDataNode = this._timelineNodesByDataNodeId[newNode.dataNodeId];
+      if (!byDataNode) {
+        this._timelineNodesByDataNodeId[newNode.dataNodeId] = byDataNode = [];
+      }
+      if (last(byDataNode) !== newNode) {
+        byDataNode.add(newNode);
+      }
     }
   }
 
@@ -422,7 +427,11 @@ export default class BaseDDG {
   }
 
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
-    return this._firstTimelineDataOrSnapshotNodeByDataNodeId[dataNodeId];
+    return first(this._timelineNodesByDataNodeId[dataNodeId] || EmptyArray);
+  }
+
+  getLastDataTimelineNodeByDataNodeId(dataNodeId) {
+    return last(this._timelineNodesByDataNodeId[dataNodeId] || EmptyArray);
   }
 
   /** ###########################################################################
@@ -440,7 +449,7 @@ export default class BaseDDG {
 
     // variable name
     let label = '';
-    if (isTraceReturn(ownStaticTrace.type)) {
+    if (this.watchSet.isReturnDataNode(dataNodeId)) {
       // return label
       label = 'ret';
     }
@@ -479,6 +488,16 @@ export default class BaseDDG {
   /** ###########################################################################
    * snapshots
    *  #########################################################################*/
+
+  /**
+   * Whether given snapshot should be built shallow (or recursively create the entire snapshot tree)
+   * 
+   * @param {RefSnapshotTimelineNode} snapshot 
+   */
+  #shouldBuildShallowSnapshot(snapshot) {
+    // hackfix heuristic: only go deep if we are in the "return" snapshot
+    return !this.watchSet.isReturnDataNode(snapshot.rootDataNodeId);
+  }
 
   /**
    * 
@@ -562,13 +581,12 @@ export default class BaseDDG {
           const alreadyHadNode = !!this.getFirstDataTimelineNodeByDataNodeId(lastModDataNode.nodeId);
 
           // apply lastMod
-          // if (this.#canBeRefSnapshot(lastModDataNode)) {
-          if (lastModDataNode.refId) {
-            // nested ref (→ the child's written value is a ref)
+          if (lastModDataNode.refId && !this.#shouldBuildShallowSnapshot(parentSnapshot)) {
+            // → go deep on ref
             newChild = this.addNewRefSnapshot(lastModDataNode, lastModDataNode.refId, snapshotsByRefId, parentSnapshot);
           }
           else {
-            // primitive
+            // shallow
             newChild = this.addValueDataNode(lastModDataNode);
             this.#onSnapshotNodeCreated(newChild, parentSnapshot);
           }
@@ -637,18 +655,18 @@ export default class BaseDDG {
    */
   #addRefSnapshotNode(snapshot, snapshotsByRefId) {
     this.addNode(snapshot);
+    // TODO: fix this
     snapshotsByRefId?.set(snapshot.refId, snapshot.timelineId);
   }
 
   /**
-   * Check whether `refId` exists in `snapshotsByRefId` as an independent root.
-   * To that end:
-   * 1. It must exist as a root and
-   * 2. Its parent is not a descendant of that root
+   * Check if given node...
+   * 1. Is its own root (does not have a parent snapshot)
+   * 2. and given `parentSnapshot` is not descendant of that root (checks recursively)
    */
-  #isSnapshotIndependentRoot(snapshot, parentSnapshot) {
-    const isRoot = !snapshot.parentNodeId;
-    if (isRoot && !ddgQueries.isSnapshotDescendant(this, snapshot, parentSnapshot)) {
+  #isIndependentRootNode(potentialRoot, targetNode) {
+    const isRoot = !potentialRoot.parentNodeId;
+    if (isRoot && !ddgQueries.isSnapshotDescendant(this, potentialRoot, targetNode)) {
       return true;
     }
     return false;
@@ -669,11 +687,23 @@ export default class BaseDDG {
       throw new Error(`missing refId in dataNode: ${JSON.stringify(ownDataNode, null, 2)}`);
     }
 
-    // handle skip and ignore first
+    // 1. handle ignore
     if (this.timelineBuilder.shouldIgnoreDataNode(ownDataNode.nodeId)) {
       this.logger.warn(`Adding snapshot for ignored DataNode n${ownDataNode.nodeId} at "${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
     }
+    // 2. handle skip + 2b. already existing nodes of DataNode
     const skippedBy = this.timelineBuilder.getSkippedByDataNode(ownDataNode);
+
+    const isNested = !!parentSnapshot;
+    if (isNested) {
+      // This is a nested snapshot.
+      // → Check whether we can "steal" and simply add an existing node instead.
+      const potentialTargetNode = skippedBy || this.getLastDataTimelineNodeByDataNodeId(ownDataNode.nodeId);
+      if (potentialTargetNode && this.#isIndependentRootNode(potentialTargetNode, parentSnapshot)) {
+        return potentialTargetNode;
+      }
+    }
+
     if (skippedBy) {
       ownDataNode = dp.util.getDataNode(skippedBy.dataNodeId);
     }
@@ -682,8 +712,8 @@ export default class BaseDDG {
     const snapshotId = snapshotsByRefId.get(refId);
     const snapshotOfRef = this.timelineNodes[snapshotId];
     if (snapshotOfRef) {
-      // this ref already has a snapshot in set
-      if (snapshotsByRefId.size > 1 && this.#isSnapshotIndependentRoot(snapshotOfRef, parentSnapshot)) {
+      // this ref already has a snapshot in set (used during summarization)
+      if (snapshotsByRefId.size > 1 && this.#isIndependentRootNode(snapshotOfRef, parentSnapshot)) {
         // NOTE: no need to check, if there is only one root
         // → independent root: we can freely move node from root position to this parent instead
         return snapshotOfRef;
@@ -698,26 +728,9 @@ export default class BaseDDG {
 
     // get modifications on nested refs first
     const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
-    const startDataNode = parentSnapshot?.startDataNodeId && dp.util.getDataNode(parentSnapshot.startDataNodeId);
-    const toTraceId = startDataNode?.traceId || ownDataNode.traceId;
+    const rootDataNode = parentSnapshot?.rootDataNodeId && dp.util.getDataNode(parentSnapshot.rootDataNodeId);
+    const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
     const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
-
-    // future-work: consider first getting the tree of all effective modificationDataNodes.
-    //    → at each level, the actual `dataNodeId` would correspond to the max of the entire tree.
-    // // determine actual dataNodeId (effective time of snapshot)
-    // const realDataNodeId = modificationDataNodes?.length ? 
-    //   last(modificationDataNodes).nodeId :
-    //   ownDataNode.nodeId;
-
-    // NOTE: we are not taking an early out here, since we don't know about deeper modifications (yet)
-    // // existing
-    // const existingSnapshot = this._refSnapshotsByDataNodeId[realDataNodeId];
-    // if (existingSnapshot) {
-    //   // clone existing snapshot
-    //   const snapshot = this.deepCloneNode(existingSnapshot.timelineId, snapshotsByRefId);
-    //   this.#onSnapshotCreated(snapshot, parentSnapshot);
-    //   return snapshot;
-    // }
 
     /**
      * Create new
@@ -728,7 +741,6 @@ export default class BaseDDG {
     this.#onSnapshotNodeCreated(snapshot, parentSnapshot);
     snapshot.label = this.makeDataNodeLabel(ownDataNode);
 
-
     /**
      * → build new snapshot, starting from initially recorded valueRef state.
      * NOTE: this is loosely based on {@link dp.util.constructVersionedValueSnapshot}.
@@ -736,20 +748,6 @@ export default class BaseDDG {
     const valueRef = this.dp.collections.values.getById(refId);
     // Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
     this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true, snapshotsByRefId);
-
-    // TODO: add refNode edge!
-
-    // }
-    // else {
-    //   /**
-    //    * → deep clone previous snapshot.
-    //    */
-    //   const fromTraceId = previousSnapshot.traceId;
-    //   const toTraceId = ownDataNode.traceId;
-    //   const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
-    //   // const modificationDataNodes = dataNodesOfTrace;
-    //   this.#addSnapshotChildren(snapshot, previousSnapshot.children, modificationDataNodes, false);
-    // }
 
     // snapshot.hasRefWriteNodes = true;
     this._refSnapshotsByDataNodeId[snapshot.dataNodeId] = snapshot;
@@ -766,16 +764,22 @@ export default class BaseDDG {
   #onSnapshotNodeCreated(newNode, parentSnapshot) {
     // console.debug(`onSnapshotCreated ${parentSnapshot?.timelineId}:${snapshot.timelineId}`);
     newNode.parentNodeId = parentSnapshot?.timelineId;
-    // TODO: startDataNodeId is wrong. This way, parent can be smaller than children (but should never be).
+    // TODO: rootDataNodeId is wrong. This way, parent can be smaller than children (but should never be).
     //    → e.g. in ObjectExpression
-    newNode.startDataNodeId = parentSnapshot?.startDataNodeId || newNode.dataNodeId;
+    newNode.rootDataNodeId = parentSnapshot?.rootDataNodeId || newNode.dataNodeId;
 
     if (this.building) {
-      // hackfix: we only need these during initial build
-      this._firstTimelineDataOrSnapshotNodeByDataNodeId[newNode.dataNodeId] ||= newNode;
+      // we only add these during initial build
+      let byDataNode = this._timelineNodesByDataNodeId[newNode.dataNodeId];
+      if (!byDataNode) {
+        this._timelineNodesByDataNodeId[newNode.dataNodeId] = byDataNode = [];
+      }
+      if (last(byDataNode) !== newNode) {
+        byDataNode.add(newNode);
+      }
     }
 
-    this.building && this.timelineBuilder.onNewSnapshotNode(newNode);
+    this.building && this.timelineBuilder.addNestedSnapshotEdges(newNode);
   }
 
   /** ###########################################################################
@@ -825,19 +829,19 @@ export default class BaseDDG {
   }
 
   shouldAddEdge(fromNode, toNode) {
-    const fromWatched = this.watchSet.isWatchedDataNode(toNode.startDataNodeId || toNode.dataNodeId);
-    const toWatched = this.watchSet.isWatchedDataNode(fromNode.startDataNodeId || fromNode.dataNodeId);
+    const fromWatched = this.watchSet.isWatchedDataNode(toNode.rootDataNodeId || toNode.dataNodeId);
+    const toWatched = this.watchSet.isWatchedDataNode(fromNode.rootDataNodeId || fromNode.dataNodeId);
     if (fromWatched && toWatched &&
-      fromNode.startDataNodeId && !fromNode.parentNodeId &&
-      toNode.startDataNodeId && !toNode.parentNodeId) {
+      fromNode.rootDataNodeId && !fromNode.parentNodeId &&
+      toNode.rootDataNodeId && !toNode.parentNodeId) {
       // don't add edges between watched snapshot ROOTS
       return false;
     }
 
     return (
       // only link nodes of two snapshots of the same thing if there was a write in between
-      !fromNode.startDataNodeId ||
-      toNode.dataNodeId > fromNode.startDataNodeId ||
+      !fromNode.rootDataNodeId ||
+      toNode.dataNodeId > fromNode.rootDataNodeId ||
 
       // hackfix: the final watched snapshot is forced, 
       //    and often shares descendants with previous snapshots who actually contain the Write.

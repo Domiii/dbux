@@ -160,7 +160,11 @@ export default class DDGTimelineBuilder {
    * hackfix: add edges, but only during build, not during summarization
    * @param {DataTimelineNode} newNode 
    */
-  onNewSnapshotNode(newNode) {
+  addNestedSnapshotEdges(newNode) {
+    if (!newNode.parentNodeId) {
+      // skip in case of root nodes
+      return;
+    }
     let fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
     if (fromNode === newNode) {
       // newNode is the first node of dataNodeId
@@ -168,10 +172,10 @@ export default class DDGTimelineBuilder {
       while (dataNode.valueFromId &&
         (
           !this.getDataTimelineInputNode(dataNode.valueFromId) ||
-          dataNode.valueFromId > newNode.startDataNodeId
+          dataNode.valueFromId > newNode.rootDataNodeId
         )
       ) {
-        // keep looking, as long as we find nodes that come after startDataNodeId (part of this snapshot)
+        // keep looking, as long as we find nodes that come after rootDataNodeId (part of this snapshot)
         dataNode = this.dp.util.getDataNode(dataNode.valueFromId);
       }
       const edgeInfos = this.#gatherDataNodeEdges(dataNode);
@@ -412,7 +416,7 @@ export default class DDGTimelineBuilder {
   }
 
   #makeGroupLabel(group) {
-    return controlGroupLabelMaker[group.type]?.(this.ddg, group) || '';
+    return controlGroupLabelMaker[group.type]?.(this.ddg, group) || DDGTimelineNodeType.nameFrom(group.type);
   }
 
   /**
@@ -571,10 +575,10 @@ export default class DDGTimelineBuilder {
     const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     const varDeclarationTid = dataNode.varAccess?.declarationTid;
     // if (accessedRefId) {
-    //   this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.startDataNodeId || dataNode.nodeId;
+    //   this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.rootDataNodeId || dataNode.nodeId;
     // }
     // if (valueRefId) {
-    //   this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = newNode.startDataNodeId || dataNode.nodeId;
+    //   this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = newNode.rootDataNodeId || dataNode.nodeId;
     // }
     newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 

@@ -78,7 +78,8 @@ export function renderTraceDecorations(editor, fpath) {
 
     if (!config?.editorDecorationType) {
       if (decorations && config !== false) {
-        warn(`found decoName "${decoName}" for trace that is not configured (suggestion: set to false to avoid displaying it)`);
+        // futer-work: fix this later
+        // warn(`found decoName "${decoName}" for trace that is not configured (suggestion: set to false to avoid displaying it)`);
       }
       continue;
     }

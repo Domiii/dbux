@@ -100,16 +100,25 @@ export default class ChapterListBuilderViewController {
     this.treeNodeProvider.initDefaultClickCommand(context);
   }
 
+  /**
+   * @param {Exercise} exercise 
+   */
   async runAndExportDDGApplication(exercise, progress) {
     progress.report({ message: `Running exercises...` });
     await this.treeNodeProvider.manager.switchAndTestBug(exercise);
 
     const app = allApplications.selection.getFirst();
 
+    if (!app) {
+      throw new Error(`Run failed. No application found.`);
+    }
+
     while (app.dataProvider.indexes.dataNodes.byAccessId.getAll().length < 1) {
       // hackfix race condition prevention: make sure, data has been stored before exporting
       await sleep(20);
     }
+
+    // future-work: make sure, this is the right application (add some isApplicationOfExercise function)
 
     progress.report({ message: `Parsing application` });
     if (allApplications.selection.count !== 1) {

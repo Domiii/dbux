@@ -19,6 +19,7 @@ import { compileHtmlElement } from '../util/domUtil';
 import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
@@ -141,7 +142,7 @@ class NodeHoverState {
 
     const allEdgeIds = [
       timelineId,
-      ...Object.values(children)
+      ...Object.values(children || EmptyObject)
     ]
       .filter(Boolean)
       .flatMap(id => this.#getAllEdges(id));

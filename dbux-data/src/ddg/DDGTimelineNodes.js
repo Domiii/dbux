@@ -94,7 +94,7 @@ export class DataTimelineNode extends DDGTimelineNode {
   /**
    * NOTE: only set for in-snapshot nodes.
    */
-  startDataNodeId;
+  rootDataNodeId;
   value;
   connected = false;
 
@@ -174,9 +174,9 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
   children;
 
   /**
-   * We use `startDataNodeId` as a "starting point" of a snapshot and all its descendants.
+   * We use `rootDataNodeId` as a "starting point" of a snapshot and all its descendants.
    */
-  startDataNodeId;
+  rootDataNodeId;
 
   // /**
   //  * @type {SnapshotEntryDeleteInfo[]}

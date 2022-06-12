@@ -44,7 +44,7 @@ export default class DDGSet {
    * @returns {DataDependencyGraph}
    */
   getOrCreateDDG(ddgArgs) {
-    let { applicationId, contextId, watchTraceIds } = ddgArgs;
+    let { applicationId, contextId, watchTraceIds, returnTraceId } = ddgArgs;
     const graphId = this.makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
       if (!watchTraceIds) {
@@ -71,16 +71,17 @@ export default class DDGSet {
             // }
           }
         }
+        returnTraceId = returnInputTrace.traceId;
       }
 
-      this.newDataDependencyGraph(graphId, watchTraceIds);
+      this.newDataDependencyGraph(graphId, { watchTraceIds, returnTraceId });
     }
     return this.graphsById.get(graphId);
   }
 
-  newDataDependencyGraph(graphId, watchTraceIds) {
+  newDataDependencyGraph(graphId, watched) {
     const graph = new DataDependencyGraph(this.dp, graphId);
-    graph.build(watchTraceIds);
+    graph.build(watched);
     this._add(graphId, graph);
     return graph;
   }

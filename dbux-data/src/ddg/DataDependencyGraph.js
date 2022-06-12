@@ -119,6 +119,8 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   settings = new DDGSettings();
 
+  // debugRefId = 105;
+
   constructor(dp, graphId) {
     super(dp, graphId);
   }
@@ -236,13 +238,13 @@ export default class DataDependencyGraph extends BaseDDG {
   /**
    * @param {number[]} watchTraceIds 
    */
-  build(watchTraceIds) {
+  build(watched) {
     if (!this.og) {
       this.og = new BaseDDG(this.dp, this.graphId);
     }
     this.buildStage = BuildStage.Building;
     try {
-      this.og.build(watchTraceIds);
+      this.og.build(watched);
     }
     finally {
       this.buildStage = BuildStage.None;
@@ -274,7 +276,7 @@ export default class DataDependencyGraph extends BaseDDG {
   }
 
   /**
-   * @param {number} timelineId
+   * @param {number} timelineId Summary group node
    */
   #buildNodeSummarySnapshotsAndVars(timelineId) {
     const { dp } = this;
@@ -284,23 +286,24 @@ export default class DataDependencyGraph extends BaseDDG {
       return this.nodeSummaries[timelineId];
     }
 
-    const lastModifyNodesByRefId = new Map();
-    const varModifyDataNodes = new Map();
+    const lastModifyNodesByRefId = new Map();   // summary ref set
+    const varModifyDataNodes = new Map();       // summary var set
     const lastNestedDataNodeId = this.#collectNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyDataNodes);
+    const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
+      .filter(([refId]) => {
+        // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
+        const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
+        return lastDataNodeIdOfRef > lastNestedDataNodeId;
+      });
 
     // add ref snapshots
     /**
      * @type {SnapshotMap}
      */
     const snapshotsByRefId = new Map();
-    for (const [refId, dataNodeId] of lastModifyNodesByRefId) {
-      const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
-      if (lastDataNodeIdOfRef <= lastNestedDataNodeId) {
-        // skip: this ref is only used internally (or before) this node. It is not accessed AFTER this node.
-        continue;
-      }
+    for (const [refId, dataNodeId] of summaryRefEntries) {
       if (snapshotsByRefId.has(refId)) {
-        // skip: this ref was already added as a descendant of a previous ref
+        // skip if this ref was already added as a descendant of a previous ref
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
@@ -576,7 +579,12 @@ export default class DataDependencyGraph extends BaseDDG {
     // add/merge incoming edges
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
-    VerboseSumm && this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+    const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
+    if (this.debugRefId && dataNode?.refId === this.debugRefId &&
+      (isVisible || isSummarized || incomingEdges?.length)) {
+      // eslint-disable-next-line max-len
+      VerboseSumm && this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+    }
 
     if (isVisible) {
       // node is (1) shown, (2) collapsed into `currentCollapsedAncestor` or (3) summarized
@@ -590,7 +598,9 @@ export default class DataDependencyGraph extends BaseDDG {
           for (const from of allFrom) {
             if (from !== targetNode) {
               summaryState.addEdge(from, targetNode, type);
-              VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
+              if (this.debugRefId && dataNode?.refId === this.debugRefId) {
+                VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
+              }
             }
           }
         }
@@ -619,9 +629,12 @@ export default class DataDependencyGraph extends BaseDDG {
         nodeRouteMap.set(timelineId, reroutes);
       }
       // eslint-disable-next-line max-len
-      VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
-        .map(([timelineId, reroutes]) =>
-          `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);
+      if (this.debugRefId && dataNode?.refId === this.debugRefId && reroutes.size) {
+        VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
+        // VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
+        //   .map(([timelineId, reroutes]) =>
+        //     `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);
+      }
     }
   }
 

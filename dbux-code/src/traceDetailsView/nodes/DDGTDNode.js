@@ -31,7 +31,8 @@ export default class DDGTDNode extends TraceDetailNode {
   // }
 
   // eslint-disable-next-line camelcase
-  renderTimelineNodes = (ddg, dataNode, predicate) => {
+  renderTimelineNodes = (dataNode, predicate) => {
+    const { ddg } = this;
     let ignoreSkipNode;
     const ignoreAndSkippedBy = ddg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
     if (ignoreAndSkippedBy) {
@@ -50,7 +51,8 @@ export default class DDGTDNode extends TraceDetailNode {
         );
       }
     }
-    const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId, predicate);
+    const timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId)
+      ?.filter(predicate);
     if (!timelineNodesOfDataNode?.length) {
       return ignoreSkipNode || EmptyArray;
     }
@@ -75,7 +77,7 @@ export default class DDGTDNode extends TraceDetailNode {
   Visible_TimelineNodes() {
     const { ddg, dataNodes } = this;
     const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
-      return this.renderTimelineNodes(ddg, dataNode, node => ddgQueries.isVisible(ddg, node));
+      return this.renderTimelineNodes(dataNode, node => ddgQueries.isVisible(ddg, node));
     });
     if (!visibleTimelineNodes?.length) {
       return makeTreeItem('(no visible TimelineNodes)');
@@ -93,7 +95,7 @@ export default class DDGTDNode extends TraceDetailNode {
   Og_TimelineNodes() {
     const { ddg, dataNodes } = this;
     const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
-      return this.renderTimelineNodes(ddg, dataNode);
+      return this.renderTimelineNodes(dataNode);
     });
     if (!visibleTimelineNodes?.length) {
       return makeTreeItem('(no TimelineNodes at all)');

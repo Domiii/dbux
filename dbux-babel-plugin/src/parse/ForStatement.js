@@ -38,13 +38,13 @@ export default class ForStatement extends BaseNode {
 
     const testTrace = testNode?.traceCfg;
 
-    BranchStatement.insertPushTrace();
+    BranchStatement.insertPushTraceInFront();
     if (testTrace) {
       BranchStatement.setDecisionTrace(testTrace);
     }
     else {
       BranchStatement.insertDecisionTraceBeforeBody();
     }
-    BranchStatement.insertPopTrace();
+    BranchStatement.insertPopTraceBehind();
   }
 }
