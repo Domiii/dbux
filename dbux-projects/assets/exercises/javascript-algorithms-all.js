@@ -172,6 +172,44 @@ module.exports = [
     "chapter": "bellmanFord",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 179,
+        "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 56,
+            "index": 172,
+            "_pos": {
+              "line": 5,
+              "character": 56
+            }
+          },
+          "end": {
+            "line": 45,
+            "column": 1,
+            "index": 1581,
+            "_pos": {
+              "line": 44,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 5,
+              "character": 56
+            },
+            {
+              "line": 44,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.43420059241557185"
+      }
     ]
   },
   {
@@ -210,6 +248,298 @@ module.exports = [
     "chapter": "bfMaximumSubarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfMaximumSubarray([])",
+        "contextId": 5,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0])",
+        "contextId": 6,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 7,
+              "character": 54
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1,2])",
+        "contextId": 8,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,-1,2])",
+        "contextId": 9,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
+        "contextId": 10,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 7,
+              "character": 54
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
+        "contextId": 11,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 7,
+              "character": 54
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      }
     ]
   },
   {
@@ -237,7 +567,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([1,0])",
@@ -255,7 +585,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1])",
@@ -273,7 +603,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0])",
@@ -291,7 +621,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,0])",
@@ -309,7 +639,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,0,1,0])",
@@ -327,7 +657,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,2,0,0,1,0])",
@@ -345,7 +675,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([2,0,2])",
@@ -363,7 +693,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([2,0,5])",
@@ -381,7 +711,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([3,0,0,2,0,4])",
@@ -399,7 +729,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
@@ -417,7 +747,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([1,1,1,1,1])",
@@ -435,7 +765,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([1,2,3,4,5])",
@@ -453,7 +783,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
@@ -471,7 +801,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       },
       {
         "ddgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
@@ -489,7 +819,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.9446192687901327"
+        "applicationUuid": "0.3002678645648813"
       }
     ]
   },

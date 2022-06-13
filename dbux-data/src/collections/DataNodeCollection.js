@@ -161,10 +161,15 @@ export default class DataNodeCollection extends Collection {
    */
   resolveDataIds(dataNodes) {
     for (const dataNode of dataNodes) {
+      // `accessId`
+      dataNode.accessId = this.getAccessId(dataNode);
+
+      // hackfix: this depends on accessId
       this.resolveDataNodeSyntax(dataNode);
 
-      dataNode.accessId = this.getAccessId(dataNode);
+      // `valueId`
       dataNode.valueId = this.lookupValueId(dataNode);
+
       this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
       this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
     }
@@ -196,20 +201,22 @@ export default class DataNodeCollection extends Collection {
       const isComputation = staticTrace.dataNode.isNew;
       const operator = staticTrace.data?.operator;
       if (isComputation) {
-        if (operator === '||=' && dataNode.inputs?.length) {
-          // nothing to do (it already has the correct input)
+        if ((operator === '||=' || operator === '&&=') && dataNode.inputs?.length) {
+          // NOTE: these two only have the one input that was recorded, and they don't create a new value
           // hackfix (this should be fine, since it should not be processed before this stage)
           staticTrace.dataNode.isNew = false;
         }
-        else if (dataNode.accessId) {
-          // → this is re-assignment (rather than assignment)
-
-          // get the last dataNode of same accessId (before this one)
-          // const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
-          // const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getSecondButLast(dataNode.accessId);
-          const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getLast(dataNode.accessId);
-          if (readSelfNode) {
-            dataNode.inputs.unshift(readSelfNode.nodeId);
+        else {
+          dataNode.type = DataNodeType.ComputeWrite; // hackfix
+          if (dataNode.accessId) {
+            // +=, -= etc.
+            // → get the last dataNode of same accessId (before this one) and add it as an input
+            // const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
+            // const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getSecondButLast(dataNode.accessId);
+            const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getLast(dataNode.accessId);
+            if (readSelfNode) {
+              dataNode.inputs.unshift(readSelfNode.nodeId);
+            }
           }
         }
       }

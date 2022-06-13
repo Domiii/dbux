@@ -130,7 +130,7 @@ export default class DDGWatchSet {
       this.isAddedAndWatchedDataNode(dataNodeId);
     // (
     //   // TODO: do we need this?
-    //   DataNodeType.is.Write(dataNode.type) &&
+    //   isDataNodeWrite(dataNode.type) &&
     //   this.isWatchedAccessDataNode(dataNodeId)
     // );
   }

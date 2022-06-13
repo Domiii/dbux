@@ -18,7 +18,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import { renderPath } from '@dbux/common-node/src/util/pathUtil';
 import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
-import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
@@ -1075,7 +1075,7 @@ const dataProviderUtil = {
    */
   applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods) {
     for (const modifyNode of modifyDataNodes) {
-      if (modifyNode.type === DataNodeType.Write) {
+      if (isDataNodeWrite(modifyNode.type)) {
         // apply write
         const { prop } = modifyNode.varAccess;
         if (modifyNode.refId) {

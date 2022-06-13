@@ -944,12 +944,15 @@ export default class RuntimeMonitor {
   // UpdateExpression
   // ###########################################################################
 
+  /**
+   * This is `i++` etc.
+   */
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
     // const trace = traceCollection.getById(tid);
 
     // add write node
     const inputs = [traceCollection.getOwnDataNodeIdByTraceId(readTid)];
-    const writeNode = dataNodeCollection.createOwnDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
+    const writeNode = dataNodeCollection.createOwnDataNode(updateValue, tid, DataNodeType.ComputeWrite, varAccess, inputs);
 
     if (updateValue !== returnValue) {
       // add separate expression value node

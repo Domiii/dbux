@@ -74,6 +74,12 @@ export class GroupTimelineNode extends DDGTimelineNode {
    * @type {Array.<number>}
    */
   children = [];
+  
+  /**
+   * {@link DecisionTimelineNode#TimelineId} of this branch's decision nodes.
+   * @type {number[]}
+   */
+  decisions = [];
 }
 
 /**
@@ -254,17 +260,10 @@ export class ContextTimelineNode extends GroupTimelineNode {
 export class BranchTimelineNode extends GroupTimelineNode {
   controlStatementId;
 
-  /**
-   * {@link DecisionTimelineNode#TimelineId} of this branch's decision nodes.
-   * @type {number[]}
-   */
-  decisions;
-
   constructor(type, controlStatementId) {
     super(type);
     this.controlStatementId = controlStatementId;
     this.children = [];
-    this.decisions = [];
   }
 }
 

@@ -2,7 +2,7 @@ import last from 'lodash/last';
 import groupBy from 'lodash/groupBy';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
-import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
@@ -152,8 +152,8 @@ export default class DDGTimelineBuilder {
         // non-loop branch
       }
       // TODO: fix decisions
-      // currentGroup.decisions.push(decisionNode.timelineId);
-      this.#addNodeToGroup(decisionNode);
+      currentGroup.decisions.push(decisionNode.timelineId);
+      // this.#addNodeToGroup(decisionNode);
     }
     return decisionNode;
   }
@@ -615,7 +615,7 @@ export default class DDGTimelineBuilder {
       //      2. or Write children are skipped and then not nested
       // don't skip watched nodes
       //  → unless its a ref child (will be picked up by RefSnapshot anyway)
-      return !!dataNode.varAccess?.objectNodeId && !DataNodeType.is.Write(dataNode.type);
+      return !!dataNode.varAccess?.objectNodeId && !isDataNodeWrite(dataNode.type);
     }
 
     if (DataNodeType.is.Delete(dataNode.type)) {
