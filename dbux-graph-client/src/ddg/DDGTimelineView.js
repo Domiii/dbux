@@ -20,6 +20,7 @@ import { compileHtmlElement } from '../util/domUtil';
 import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled, makeSummaryLabelEl } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
+import sleep from '@dbux/common/src/util/sleep';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
@@ -237,8 +238,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   createEl() {
-    return compileHtmlElement(/*html*/`<div id="ddg-timeline" data-el="graph" class="timeline-view">
+    return compileHtmlElement(/*html*/`<div id="ddg-timeline" class="timeline-view">
       <div data-el="status"></div>
+      <div data-el="graphcont">
+      </div>
       <!-- <div data-el="view" class="timeline-view timeline-sigma-container"></div> -->
       <!-- <div data-el="view" class="timeline-view timeline-jsplumb-container"></div> -->
     </div>`);
@@ -300,8 +303,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * d3-graphviz implementation
    *  #########################################################################*/
 
-  rebuildGraph() {
-    const isNew = this.initGraphImplementation();
+  async rebuildGraph() {
+    const isNew = await this.initGraphImplementation();
     // console.log('new', isNew, this.ddg.settings.anim);
 
     this.buildGraph(isNew);
@@ -322,7 +325,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     this.clearDeco();  // remove all non-graph elements from graph to avoid errors
 
-    const graphString = this.buildDot();
+    const graphString = this.graphString = this.buildDot();
     // const graphString = 'digraph { a -> b }';
     this.graphviz
       .renderDot(graphString);
@@ -331,21 +334,22 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.renderTimer = new PrettyTimer();
       this.graphviz
         .on('end', () => {
-          this.renderTimer?.print(null, 'Graph Render');
+          // TODO: 
+          this.renderTimer?.print(null, `Graph Render (dot size = ${(this.graphString?.length / 1000).toFixed(2)})`);
           this.renderTimer = null;
           this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
           try {
-            // if (this.ddg.settings.anim) {
-            // NOTE: add transition only after first render
-            this.graphviz.transition(() => { // transition
-              // TODO: add a way to remove animation
-              // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
-              // if (!this.ddg.settings.anim) {
-              // }
-              return d3transition()
-                .duration(800);
-            });
-            // }
+            // // if (this.ddg.settings.anim) {
+            // // NOTE: add transition only after first render
+            // this.graphviz.transition(() => { // transition
+            //   // TODO: add a way to remove animation
+            //   // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+            //   // if (!this.ddg.settings.anim) {
+            //   // }
+            //   return d3transition()
+            //     .duration(800);
+            // });
+            // // }
 
             // add node and edge decorations to the rendered DOM
             this.decorateAfterRender();
@@ -358,11 +362,22 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
   }
 
-  initGraphImplementation() {
+  async initGraphImplementation() {
     // NOTE: use `this.el`'s id
-    const shouldBuildNew = !this.graphviz;
+    // const shouldBuildNew = !this.graphviz;
+    const shouldBuildNew = true;
     if (shouldBuildNew) {
-      this.graphviz = d3Graphviz.graphviz('#ddg-timeline', { ...GraphVizCfg });
+      /**
+       * `d3-graphviz` performance bug hackfix
+       * @see https://github.com/magjac/d3-graphviz/issues/232
+       */
+      if (this.graphEl) {
+        this.graphEl.remove();
+      }
+      const graphEl = this.graphEl = compileHtmlElement('<div id="timeline-graph"></div>');
+      this.els.graphcont.appendChild(graphEl);
+      this.graphviz = d3Graphviz.graphviz(graphEl, { ...GraphVizCfg });
+      console.debug('re-initializing graph');
     }
     else {
       // nothing to do for now
