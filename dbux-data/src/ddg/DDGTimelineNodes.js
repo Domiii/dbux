@@ -117,6 +117,8 @@ export class DataTimelineNode extends DDGTimelineNode {
 }
 
 export class ValueTimelineNode extends DataTimelineNode {
+  prop;
+
   constructor(dataNodeId, label) {
     super(DDGTimelineNodeType.Value);
 

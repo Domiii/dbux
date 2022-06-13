@@ -554,10 +554,15 @@ export default class DDGTimelineBuilder {
    * put them into one snapshot.
    */
   #shouldCreatePartialSnapshot(dataNode) {
-    // don't create partial snapshots for watched nodes (for now)
-    // → since this would lead to duplicated nodes
-    return !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId) &&
-      !!dataNode.varAccess?.objectNodeId;
+    return (
+      // ref access
+      !!dataNode.varAccess?.objectNodeId &&
+      // ignore trace owning nodes (since that causes some trouble)
+      !this.dp.util.isTraceOwnDataNode(dataNode.nodeId) &&
+      // don't create partial snapshots for watched nodes (for now)
+      //    (→ since this would lead to duplicated nodes)
+      !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)
+    );
   }
 
   /** ###########################################################################

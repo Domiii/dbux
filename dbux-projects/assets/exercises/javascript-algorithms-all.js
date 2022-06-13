@@ -2090,112 +2090,378 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "HeapSort.sort([3,4,2,4,2])",
+        "ddgTitle": "HeapSort.sort([])",
         "contextId": 14,
         "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
         "loc": {
           "start": {
             "line": 5,
             "column": 22,
-            "index": 161
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
           },
           "end": {
             "line": 29,
             "column": 3,
-            "index": 875
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.09901440327789657"
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1])",
+        "contextId": 18,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,2])",
+        "contextId": 31,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([2,1])",
+        "contextId": 62,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 100,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 4,
+              "character": 22
+            },
+            {
+              "line": 28,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 600,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 1860,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 3610,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 5084,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
       },
       {
         "ddgTitle": "HeapSort.sort([\"\"])",
-        "contextId": 188,
+        "contextId": 5814,
         "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
         "loc": {
           "start": {
             "line": 5,
             "column": 22,
-            "index": 161
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
           },
           "end": {
             "line": 29,
             "column": 3,
-            "index": 875
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.09901440327789657"
+        "applicationUuid": "0.41635339682367234"
       },
       {
         "ddgTitle": "HeapSort.sort([\"a\"])",
-        "contextId": 201,
+        "contextId": 5827,
         "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
         "loc": {
           "start": {
             "line": 5,
             "column": 22,
-            "index": 161
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
           },
           "end": {
             "line": 29,
             "column": 3,
-            "index": 875
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.09901440327789657"
+        "applicationUuid": "0.41635339682367234"
       },
       {
         "ddgTitle": "HeapSort.sort([\"aa\",\"a\"])",
-        "contextId": 214,
+        "contextId": 5840,
         "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
         "loc": {
           "start": {
             "line": 5,
             "column": 22,
-            "index": 161
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
           },
           "end": {
             "line": 29,
             "column": 3,
-            "index": 875
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.09901440327789657"
+        "applicationUuid": "0.41635339682367234"
       },
       {
         "ddgTitle": "HeapSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
-        "contextId": 252,
+        "contextId": 5878,
         "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
         "loc": {
           "start": {
             "line": 5,
             "column": 22,
-            "index": 161
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
           },
           "end": {
             "line": 29,
             "column": 3,
-            "index": 875
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.09901440327789657"
+        "applicationUuid": "0.41635339682367234"
       },
       {
         "ddgTitle": "HeapSort.sort([\"aa\",\"aa\"])",
-        "contextId": 360,
+        "contextId": 5986,
         "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
         "loc": {
           "start": {
             "line": 5,
             "column": 22,
-            "index": 161
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
           },
           "end": {
             "line": 29,
             "column": 3,
-            "index": 875
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.09901440327789657"
+        "applicationUuid": "0.41635339682367234"
       }
     ]
   },
@@ -2953,6 +3219,260 @@ module.exports = [
     "chapter": "MergeSort",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "MergeSort.sort([])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1,2])",
+        "contextId": 16,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([2,1])",
+        "contextId": 27,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 40,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 215,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 472,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 857,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 1270,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"\"])",
+        "contextId": 1612,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"a\"])",
+        "contextId": 1614,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"aa\",\"a\"])",
+        "contextId": 1616,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 1629,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"aa\",\"aa\"])",
+        "contextId": 1666,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      }
     ]
   },
   {

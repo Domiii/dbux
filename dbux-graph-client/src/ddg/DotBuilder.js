@@ -23,7 +23,7 @@ const Verbose = 1;
  * @see https://stackoverflow.com/a/18750001
  */
 function dotEncode(s) {
-  return (s + '').replace(/[\u00A0-\u9999<>&|{}()[]/g, function (c) {
+  return (s + '').replace(/[\u00A0-\u9999<>&|{}()[\]]/g, function (c) {
     return '&#' + c.charCodeAt(0) + ';';
   });
   // /**
@@ -123,6 +123,10 @@ export default class DotBuilder {
     if (node.parentNodeId) {
       // NOTE: this is required for RefSnapshot structure nodes to be addressable
       return `${node.parentNodeId}:${node.timelineId}`;
+    }
+    if (this.isPropRecordNode(node)) {
+      // access the actual node via timelineId + prop
+      return `${node.timelineId}:${node.varAccess.prop}`;
     }
     return node.timelineId;
   }
@@ -370,7 +374,7 @@ export default class DotBuilder {
     this.indentLevel += 1;
     const isNesting = ddgQueries.isNestingSnapshot(ddg, node);
     const color = !isNesting ?
-      'transparent' : // no outline
+      'transparent' : // only root has outer border
       node.watched ?
         Colors.watchedNodeOutline :
         'gray';
@@ -403,7 +407,7 @@ export default class DotBuilder {
   }
 
   valueNode(node, colorOverride) {
-    if (node.varAccess || node.value !== node.label) { // hackfix heuristic
+    if (this.isNodeRecordNode(node)) {
       // record
       this.nodeRecord(node);
     }
@@ -500,24 +504,53 @@ export default class DotBuilder {
   //   return `<${timelineId}> ${label}`;
   // }
 
-  nodeRecord(node) {
-    let { timelineId, label } = node;
-    const value = this.makeNodeValueString(node);
-    // TODO: use table instead, so we can have key + val rows
+  /**
+   * @param {DDGTimelineNode} node
+   */
+  isNodeRecordNode(node) {
+    return ddgQueries.isSnapshot(this.ddg, node) ?
+      isEmpty(node.children) :
+      (!!node.varAccess || node.value !== node.label); // hackfix heuristic;
+  }
 
-    // 5 [label="arr|<6> arr|<7> 0|<8> 1"];
-    // const valueItem = this.makeRecordEntry(timelineId, value);
-    // const l = this.makeLabel(`${label}|${valueItem}}`);
-    const l = `label=<
+  /**
+   * This is a hackfix to deal with node adding "itself" as a child record.
+   */
+  isPropRecordNode(node) {
+    return this.isNodeRecordNode(node) && node.varAccess?.prop !== undefined;
+  }
+
+  nodeRecord(node) {
+    const { timelineId, label, varAccess } = node;
+    const prop = varAccess?.prop;
+    const value = this.makeNodeValueString(node);
+
+    let l, attrs = [
+      this.nodeAttrs(node.timelineId)
+    ];
+    if (this.isPropRecordNode(node)) {
+      attrs.push(`shape=plaintext`);
+      // record with prop + value
+      // → has no ID itself. Child cell has ID instead.
+      l = `<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+  <TR>
+    <TD ROWSPAN="2">${this.wrapText(label || ' ')}</TD>
+    ${this.makePropValueCell(timelineId, prop, prop)}
+  </TR>
+</TABLE>`;
+    }
+    else {
+      attrs.push(`shape=record`); // this adds an outline to the table
+      l = `
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
   <TR>
     <TD BORDER="1" SIDES="R">${this.wrapText(label)}</TD>
     <TD ID="${timelineId}" TITLE="${timelineId}"><FONT COLOR="${Colors.value}">${value}</FONT></TD>
   </TR>
-</TABLE>
->`;
-    const attrs = [this.nodeAttrs(node.timelineId), `shape=record`, l].join(',');
-    this.command(`${timelineId} [${attrs}]`);
+</TABLE>`;
+    }
+    attrs.push(this.makeLabelHtml(l));
+    this.command(`${timelineId} ${this.makeAttrs(...attrs)}`);
   }
 
   // /**
@@ -555,8 +588,7 @@ export default class DotBuilder {
     const { timelineId, label, parentNodeId, children } = node;
     const hasLabel = !parentNodeId && label !== undefined;
     const childEntries = Object.entries(children);
-    const hasChildren = !!childEntries.length;
-    if (!hasChildren) {
+    if (this.isNodeRecordNode(node)) {
       // render empty snapshot as ref data node
       this.nodeRecord(node);
     }
@@ -564,7 +596,7 @@ export default class DotBuilder {
       // render snapshot
       let attrs = this.nodeIdAttr(timelineId);
       if (colorOverride) {
-        attrs += `color=${colorOverride}`;
+        attrs += `,color=${colorOverride}`;
       }
       const childrenCells = childEntries
         .map(([prop, childId]) => {
@@ -573,10 +605,9 @@ export default class DotBuilder {
           if (ddgQueries.isDeleteNode(this.ddg, child)) {
             return this.makeSnapshotDeleteCell(childId, prop);
           }
-          return this.makeSnapshotCell(childId, prop);
+          return this.makePropValueCell(childId, prop);
         })
         .join('');
-      // shape=record
       this.command(`${timelineId} [${attrs},shape=plaintext,label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
@@ -620,14 +651,14 @@ export default class DotBuilder {
    * Build a row of "column" cells containing tables.
    * We do this, so every node's column has a singular addressable PORT.
    */
-  makeSnapshotCell(timelineId, prop) {
+  makePropValueCell(timelineId, prop, id = timelineId) {
     const { timelineNodes } = this.renderState;
     const node = timelineNodes[timelineId];
     // hide not-connected snapshot children
     const label = this.shouldSummarizeSnapshotChild(node) ?
       '📦' :
       this.makeNodeValueString(node);
-    return `<TD ID="${timelineId}" TITLE="${timelineId}" ROWSPAN="2" PORT="${timelineId}">
+    return `<TD TITLE="${id}" ROWSPAN="2" PORT="${id}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\
 <FONT COLOR="${Colors.snapshotProp}">${this.wrapText(prop)}</FONT></TD></TR>
