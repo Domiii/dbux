@@ -608,9 +608,13 @@ export default class DDGTimelineBuilder {
     const dataNode = dp.util.getDataNode(dataNodeId);
 
     if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+      // [evil] this heuristic is a constant pain point
+      //   → problem w/ `return [a, b]` etc:
+      //      1. either the reads will get their own nodes here
+      //      2. or Write children are skipped and then not nested
       // don't skip watched nodes
       //  → unless its a ref child (will be picked up by RefSnapshot anyway)
-      return !!dataNode.varAccess?.objectNodeId;
+      return !!dataNode.varAccess?.objectNodeId && !DataNodeType.is.Write(dataNode.type);
     }
 
     if (DataNodeType.is.Delete(dataNode.type)) {

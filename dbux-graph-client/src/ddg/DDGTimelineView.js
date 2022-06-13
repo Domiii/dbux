@@ -69,7 +69,8 @@ const RenderCfg = {
   highlightColorCfg: {
     sat: 100
   },
-  forceReinitGraphviz: false
+  // forceReinitGraphviz: false,
+  forceReinitGraphviz: true
 };
 
 /** ###########################################################################
