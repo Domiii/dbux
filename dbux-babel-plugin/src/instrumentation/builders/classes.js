@@ -8,7 +8,7 @@ import { buildTraceId } from './traceId';
 import { buildTraceExpressionNoInput } from './misc';
 import { postInstrument } from '../instrumentMisc';
 import { findConstructorMethod, findSuperCallPath } from '../../visitors/classUtil';
-import { astNodeToString } from '../../helpers/pathHelpers';
+import { astNodeToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 
 // ###########################################################################
 // util
@@ -280,10 +280,16 @@ function unshiftCtorBody(classPath, astNode) {
     superCallPath.insertAfter(astNode);
   }
   else {
-    // place behind pushImmediate
-    // constructorPath.get('body').unshiftContainer('body', astNode);
     const first = constructorPath.get('body.body.0'); // second body is that of `BlockStatement`
-    first.insertAfter(astNode);
+    if (!first) {
+      // → class did not have a ctor. But we added one.
+      // console.warn(`[Dbux] [class.ctor] no pushImmediate found in ctor: ${pathToStringAnnotated(constructorPath, true)}`);
+      constructorPath.get('body').unshiftContainer('body', astNode);
+    }
+    else {
+      // place node behind pushImmediate
+      first.insertAfter(astNode);
+    }
   }
 }
 
