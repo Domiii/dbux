@@ -150,8 +150,10 @@ export default class DDGTimelineBuilder {
       }
       else {
         // non-loop branch
-        currentGroup.decisions.push(decisionNode.timelineId);
       }
+      // TODO: fix decisions
+      // currentGroup.decisions.push(decisionNode.timelineId);
+      this.#addNodeToGroup(decisionNode);
     }
     return decisionNode;
   }
@@ -619,7 +621,8 @@ export default class DDGTimelineBuilder {
     if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
 
-      return !isDataNodeModifyType(dataNode.type);
+      return DataNodeType.is.Read(dataNode.type);
+      // return !isDataNodeModifyType(dataNode.type);
       // return DataNodeType.is.Read(dataNode.type) ||
       // !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
     }

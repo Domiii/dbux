@@ -83,6 +83,9 @@ const RenderConfig = {
 };
 
 
+function trunc(s) {
+  return truncateStringDefault(s, { length: 30 });
+}
 
 export default class DotBuilder {
   _indentLevel;
@@ -132,7 +135,7 @@ export default class DotBuilder {
   }
 
   wrapText(text) {
-    text = truncateStringDefault(text + '');
+    text = trunc(text + '');
     return dotEncode(text);
   }
 

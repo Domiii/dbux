@@ -68,7 +68,8 @@ const RenderCfg = {
   edgeHighlightDelay: 5000,
   highlightColorCfg: {
     sat: 100
-  }
+  },
+  forceReinitGraphviz: false
 };
 
 /** ###########################################################################
@@ -340,15 +341,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
           this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
           try {
             // // if (this.ddg.settings.anim) {
-            // // NOTE: add transition only after first render
-            // this.graphviz.transition(() => { // transition
-            //   // TODO: add a way to remove animation
-            //   // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
-            //   // if (!this.ddg.settings.anim) {
-            //   // }
-            //   return d3transition()
-            //     .duration(800);
-            // });
+            // NOTE: add transition only after first render
+            this.graphviz.transition(() => { // transition
+              // TODO: add a way to remove animation
+              // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+              // if (!this.ddg.settings.anim) {
+              // }
+              return d3transition()
+                .duration(800);
+            });
             // // }
 
             // add node and edge decorations to the rendered DOM
@@ -364,20 +365,25 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   async initGraphImplementation() {
     // NOTE: use `this.el`'s id
-    // const shouldBuildNew = !this.graphviz;
-    const shouldBuildNew = true;
+    const shouldBuildNew = RenderCfg.forceReinitGraphviz || !this.graphviz;
     if (shouldBuildNew) {
-      /**
-       * `d3-graphviz` performance bug hackfix
-       * @see https://github.com/magjac/d3-graphviz/issues/232
-       */
-      if (this.graphEl) {
-        this.graphEl.remove();
+      if (RenderCfg.forceReinitGraphviz) {
+        /**
+         * `d3-graphviz` performance bug hackfix
+         * @see https://github.com/magjac/d3-graphviz/issues/232
+         */
+        if (this.graphEl) {
+          this.graphEl.remove();
+          this.graphEl = null;
+        }
       }
-      const graphEl = this.graphEl = compileHtmlElement('<div id="timeline-graph"></div>');
-      this.els.graphcont.appendChild(graphEl);
-      this.graphviz = d3Graphviz.graphviz(graphEl, { ...GraphVizCfg });
-      console.debug('re-initializing graph');
+
+      if (!this.graphEl) {
+        this.graphEl = compileHtmlElement('<div id="timeline-graph"></div>');
+        this.els.graphcont.appendChild(this.graphEl);
+      }
+      this.graphviz = d3Graphviz.graphviz(this.graphEl, { ...GraphVizCfg });
+      console.debug(`re-initializing graph${RenderCfg.forceReinitGraphviz ? ' (force)' : ''}`);
     }
     else {
       // nothing to do for now

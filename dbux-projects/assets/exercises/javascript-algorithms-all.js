@@ -6,7 +6,8 @@ module.exports = [
     "chapter": "accumulatorBestTimeToBuySellStocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
-    ]
+    ],
+    "ddgs": []
   },
   {
     "name": "articulationPoints should find articulation points in graph",
@@ -42,6 +43,70 @@ module.exports = [
     "chapter": "articulationPoints",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 113,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633,
+            "_pos": {
+              "line": 21,
+              "character": 50
+            }
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241,
+            "_pos": {
+              "line": 112,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 21,
+              "character": 50
+            },
+            {
+              "line": 112,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.7256527011726159"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 362,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633,
+            "_pos": {
+              "line": 21,
+              "character": 50
+            }
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241,
+            "_pos": {
+              "line": 112,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.7256527011726159"
+      }
     ]
   },
   {
@@ -78,6 +143,26 @@ module.exports = [
     "chapter": "backtrackingJumpGame",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "backtrackingJumpGame([2,3,1,1,4], 0, [])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 84,
+            "index": 653
+          },
+          "end": {
+            "line": 48,
+            "column": 1,
+            "index": 1725
+          }
+        },
+        "applicationUuid": "0.025901516664092794"
+      }
     ]
   },
   {
@@ -4211,6 +4296,44 @@ module.exports = [
     "chapter": "squareMatrixRotation",
     "testFilePaths": [
       "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "squareMatrixRotation([[],[]])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 61,
+            "index": 125,
+            "_pos": {
+              "line": 4,
+              "character": 61
+            }
+          },
+          "end": {
+            "line": 37,
+            "column": 1,
+            "index": 1118,
+            "_pos": {
+              "line": 36,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 4,
+              "character": 61
+            },
+            {
+              "line": 36,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.1537822004530367"
+      }
     ]
   },
   {
