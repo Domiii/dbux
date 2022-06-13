@@ -423,9 +423,16 @@ export default class BaseDDG {
    * labels
    * ##########################################################################*/
 
-  makeSnapshotLabel(dataNode, partialChildren) {
-    // TODO
-    return this.makeDataNodeLabel(dataNode);
+  makeSnapshotLabel(refDataNode, partialChildren) {
+    if (partialChildren) {
+      // partial snapshots represent a trace → use that for the label
+      const trace = this.dp.util.getTrace(partialChildren[0].traceId);
+      const label = makeTraceLabel(trace);
+      if (label) {
+        return label;
+      }
+    }
+    return this.makeDataNodeLabel(refDataNode);
   }
 
   makeDataNodeLabel(dataNode) {
@@ -450,7 +457,7 @@ export default class BaseDDG {
         label = varName;
       }
     }
-    
+
     if (!label) {
       // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
       label = ownStaticTrace.dataNode?.label;
@@ -732,7 +739,7 @@ export default class BaseDDG {
     const originalChildren = partialChildren ? EmptyObject : valueRef.children;
     // Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
     this.#addSnapshotChildren(
-      snapshot, 
+      snapshot,
       originalChildren,
       modificationDataNodes, true, snapshotsByRefId, !!partialChildren);
 
