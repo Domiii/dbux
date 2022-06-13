@@ -608,6 +608,7 @@ export default class DDGTimelineBuilder {
     const dataNode = dp.util.getDataNode(dataNodeId);
 
     if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+      // [watch-skip heuristic]
       // [evil] this heuristic is a constant pain point
       //   → problem w/ `return [a, b]` etc:
       //      1. either the reads will get their own nodes here
