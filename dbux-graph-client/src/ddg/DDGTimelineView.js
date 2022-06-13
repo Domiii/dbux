@@ -15,11 +15,11 @@ import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { getStructuredRandomAngle, makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { compileHtmlElement } from '../util/domUtil';
-import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled, makeSummaryLabelEl } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
@@ -69,6 +69,42 @@ const RenderCfg = {
     sat: 100
   }
 };
+
+/** ###########################################################################
+ * util
+ * ##########################################################################*/
+// /**
+//   * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+//   * 
+//   * @param {String} text The text to be rendered.
+//   * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+//   * 
+//   * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+//   */
+// function getTextWidth(text, font) {
+//   // re-use canvas object for better performance
+//   const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+//   const context = canvas.getContext("2d");
+//   context.font = font;
+//   const metrics = context.measureText(text);
+//   return metrics.width;
+// }
+
+// function getTextWidthEl(el) {
+//   return getTextWidth(el.textContent, getCanvasFontSize(el));
+// }
+
+// function getCssStyle(element, prop) {
+//   return window.getComputedStyle(element, null).getPropertyValue(prop);
+// }
+
+// function getCanvasFontSize(el = document.body) {
+//   const fontWeight = getCssStyle(el, 'font-weight') || 'normal';
+//   const fontSize = getCssStyle(el, 'font-size') || '16px';
+//   const fontFamily = getCssStyle(el, 'font-family') || 'Times New Roman';
+
+//   return `${fontWeight} ${fontSize} ${fontFamily}`;
+// }
 
 /** ###########################################################################
  * NodeHoverState
@@ -148,7 +184,9 @@ class NodeHoverState {
       .flatMap(id => this.#getAllEdges(id));
 
     /* allEdgeIds.map(edgeId => edges[edgeId]) */
-    this.edgeEls = allEdgeIds.map(edgeId => this.timeline.el.querySelector(`#e${edgeId}`));
+    this.edgeEls = allEdgeIds
+      .map(edgeId => this.timeline.el.querySelector(`#e${edgeId}`))
+      .filter(Boolean); // NOTE: some edges might be gone or invisible... or is it a race condition?
     this.fakeEdgeEls = this.edgeEls
       .map((edgeEl, i) => {
         /**
@@ -158,7 +196,7 @@ class NodeHoverState {
         fakeEl.innerHTML = edgeEl.innerHTML; // NOTE: cloneNode is shallow
         fakeEl.setAttribute('id', ''); // unset id
         this.timeline.registerDeco(fakeEl);
-        
+
         const edgeId = allEdgeIds[i];
         const col = makeStructuredRandomColor(themeMode, edgeId % 50, { sat: 100, start: Math.round(edgeId / 50) * 30 });
         fakeEl.querySelectorAll('path,polygon').forEach(el => {
@@ -388,7 +426,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   clearDeco() {
     this._stopHoverAction();
-    
+
     const els = Array.from(this.el.querySelectorAll('.deco'));
     els.forEach(el => el.remove());
   }
@@ -443,17 +481,34 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // hackfix: since DOT is very limited, we have to add custom rendering logic here
       const labelEl = this.getSummarizableNodeLabelEl(node, nodeEl);
       const mode = ddgQueries.getNodeSummaryMode(ddg, node);
-      const xOffset = 12;// hackfix: move both off to the right a bit
+
+      const xOffset = 14;// hackfix: move label out of the way (off to the right by this much)
       const yOffset = 10;
-      const sepX = 12; // separate them by this much
-      const x = parseFloat(labelEl.getAttribute('x'));
+      // const rect = labelEl.getBoundingClientRect();
+      // const x = rect.left - xOffset;// parseFloat(labelEl.getAttribute('x'));
+      // const y = rect.top - yOffset;
+      // const modeEl = compileHtmlElement(`<div class="overlay">${makeSummaryLabel(this.ddg, mode)}</div>`);
+      // modeEl.style.left = `${x}px`;
+      // modeEl.style.top = `${y}px`;
+      // this.registerDeco(modeEl);
+      // nodeEl.appendChild(modeEl);
+      // // labelEl.setAttribute('x', x + xOffset);
+      // this.el.appendChild(modeEl);
+      // console.log('label x,y', x, y, modeEl);
+
+      // NOTE: we need to add an SVG element, since the svg elements get transformed by d3-zoom
+      // the bbox etc. values are seemingly very buggy: https://stackoverflow.com/questions/70463171/getboundingclientrect-returns-inaccurate-values-for-complex-svgs-in-chrome
+      // Problem: x and y are the center, and we cannot get accurate width of element
+      // const rect = labelEl.getBBox();
+      const w = labelEl.textLength.baseVal.value; // magic!
+      const cx = parseFloat(labelEl.getAttribute('x'));
+      const x = cx - w / 2;
       const y = parseFloat(labelEl.getAttribute('y')) - yOffset;
-      const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x - sepX + xOffset, y);
+      const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x, y);
       this.registerDeco(modeEl);
-      nodeEl.appendChild(modeEl);
-      labelEl.setAttribute('x', x + xOffset);
-      // labelEl.innerHTML = '&nbsp;&nbsp;&nbsp;' + labelEl.innerHTML;
-      // console.log('label x,y', x, y);
+      labelEl.setAttribute('x', cx + xOffset); // move el to the right
+      // labelEl.innerHTML = labelEl.innerHTML;
+      nodeEl.parentElement.appendChild(modeEl);
 
       // future-work: add a bigger popup area, to make things better clickable
       // popupTriggerEl = compileHtmlElement(/*html*/`<`);
@@ -576,8 +631,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
 
     this._stopHoverAction();
-
-    const rect = nodeEl.getBoundingClientRect();
     /**
      * NOTE: `y` is more annoying to get right.
      * @see https://stackoverflow.com/questions/28966678/getboundingclientrect-returning-wrong-results
@@ -589,13 +642,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // const y = 0 - NodeMenuHeight;
     // const w = rect.width;
     // const h = NodeMenuHeight;
-    // <div class="node-overlay">
+    // <div class="overlay">
     const nodeBtns = this.makeNodeButtons(node);
     const hoverEl = compileHtmlElement(/*html*/`
-      <div class="node-overlay"></div>
+      <div class="overlay"></div>
     `);
     hoverEl.appendChild(nodeBtns);
     this.registerDeco(hoverEl);
+
+    const rect = nodeEl.getBoundingClientRect();
     const x = rect.left;
     const y = rect.top - NodeMenuHeight - NodeMenuYOffset;
     hoverEl.style.left = `${x}px`;

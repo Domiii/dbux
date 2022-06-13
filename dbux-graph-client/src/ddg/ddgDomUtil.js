@@ -22,6 +22,11 @@ const summaryBtnLabelHtml = {
 };
 
 
+export function makeSummaryLabelEl(docState, mode) {
+  return compileHtmlElement(makeSummaryLabel(docState, mode));
+}
+
+
 export function makeSummaryLabel(docState, mode) {
   const { summaryIconUris } = docState;
   if (!summaryIconUris[mode]) {
@@ -33,7 +38,7 @@ export function makeSummaryLabel(docState, mode) {
 export function makeSummaryLabelSvgCompiled(docState, mode, x, y) {
   const { summaryIconUris } = docState;
   if (!summaryIconUris[mode]) {
-    return compileHtmlElement(`<text>summaryIconHtml[mode]</text>`);
+    return compileHtmlElement(`<text>${summaryBtnLabelHtml[mode]}</text>`);
   }
 
   /**
