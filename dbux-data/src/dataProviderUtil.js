@@ -616,6 +616,8 @@ const dataProviderUtil = {
   },
 
   /** 
+   * WARNING: we probably need to rename things.
+   * Usually, we probably want to use `dp.indexes.dataNodes.byTrace.get(traceId)` instead of this.
    * 
    * @param {RuntimeDataProvider} dp
    * @return {DataNode[]?}
@@ -831,11 +833,18 @@ const dataProviderUtil = {
    * @param {RuntimeDataProvider} dp
    */
   getDataNodeAccessedRefId(dp, nodeId) {
+    return dp.util.getDataNodeAccessedRef(nodeId)?.refId || 0;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getDataNodeAccessedRef(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     const objectNodeId = dataNode.varAccess?.objectNodeId;
     if (objectNodeId) {
       const objectDataNode = dp.collections.dataNodes.getById(objectNodeId);
-      return objectDataNode.refId;
+      return objectDataNode;
     }
     return 0;
   },

@@ -692,6 +692,10 @@ class ValueCollection extends Collection {
       // also see: DataNodeCollection#createBCEDataNode
       valueRef.nodeId = valueRef.nodeId || nodeId;
 
+      // [edit-after-send-unused]
+      // hackfix: use this internally to get us the last accessed DataNode.
+      valueRef._lastNodeId = nodeId;
+
       return valueRef;
     }
 

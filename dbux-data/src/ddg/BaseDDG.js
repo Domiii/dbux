@@ -25,6 +25,7 @@ import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -422,6 +423,11 @@ export default class BaseDDG {
    * labels
    * ##########################################################################*/
 
+  makeSnapshotLabel(dataNode, partialChildren) {
+    // TODO
+    return this.makeDataNodeLabel(dataNode);
+  }
+
   makeDataNodeLabel(dataNode) {
     const { dp } = this;
     const { nodeId: dataNodeId, traceId } = dataNode;
@@ -437,20 +443,20 @@ export default class BaseDDG {
       // return label
       label = 'ret';
     }
-    else if (dataNode.traceId) {
-      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
-      label = ownStaticTrace.dataNode?.label;
-    }
-
-    if (!label) {
-      label = dataNode?.label;
-    }
-    if (!label) {
-      const varName = dataNode.refId && dp.util.getRefVarName(dataNode.refId);
+    else if (dataNode.refId) {
+      const varName = dp.util.getRefVarName(dataNode.refId);
       const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
       if (!isNewValue && varName) {
         label = varName;
       }
+    }
+    
+    if (!label) {
+      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
+      label = ownStaticTrace.dataNode?.label;
+    }
+    if (!label) {
+      label = dataNode?.label;
     }
     if (!label) {
       if (isTraceOwnDataNode) {
@@ -501,7 +507,7 @@ export default class BaseDDG {
    * @param {DataNode[]} modificationDataNodes 
    * @param {boolean} isOriginalValueRef We call this function in two different flavors: with ValueRef.children or with TimelineNode.children
    */
-  #addSnapshotChildren(parentSnapshot, originalChildren, modificationDataNodes, isOriginalValueRef, snapshotsByRefId) {
+  #addSnapshotChildren(parentSnapshot, originalChildren, modificationDataNodes, isOriginalValueRef, snapshotsByRefId, shallowOnly = false) {
     /**
      * @type {Object.<string, DataNode>}
      */
@@ -579,7 +585,7 @@ export default class BaseDDG {
             this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
           }
           else {
-            if (dataNode.refId && this.#shouldBuildDeepSnapshot(parentSnapshot, dataNode.nodeId)) {
+            if (!shallowOnly && dataNode.refId && this.#shouldBuildDeepSnapshot(parentSnapshot, dataNode.nodeId)) {
               // → go deep on ref
               newChild = this.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, parentSnapshot);
             }
@@ -670,10 +676,11 @@ export default class BaseDDG {
    * @param {number} refId The refId of the snapshot. For roots, this is `getDataNodeAccessedRefId`, while for children and certain watched roots, it is {@link DataNode.refId}.
    * @param {SnapshotMap?} snapshotsByRefId If provided, it helps keep track of all snapshots of a set.
    * @param {RefSnapshotTimelineNode?} parentSnapshot
+   * @param {DDGTimelineNode[]?} partialChildren Optional: partial children of the snapshot to be rendered.
    * 
    * @return {RefSnapshotTimelineNode}
    */
-  addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, parentSnapshot) {
+  addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, parentSnapshot, partialChildren = null) {
     const { dp } = this;
 
     if (!refId) {
@@ -707,22 +714,27 @@ export default class BaseDDG {
     const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
     const rootDataNode = parentSnapshot?.rootDataNodeId && dp.util.getDataNode(parentSnapshot.rootDataNodeId);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
-    const modificationDataNodes = dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
 
     // create snapshot
     const ownTraceId = ownDataNode.traceId; /*TODO: are we really using traceId?*/
     const snapshot = new RefSnapshotTimelineNode(ownTraceId, ownDataNode.nodeId, refId);
     this.addNode(snapshot, snapshotsByRefId);
     this.#onSnapshotNodeCreated(snapshot, snapshotsByRefId, parentSnapshot);
-    snapshot.label = this.makeDataNodeLabel(ownDataNode);
+    snapshot.label = this.makeSnapshotLabel(ownDataNode, partialChildren);
+    snapshot.isPartial = !!partialChildren;
 
     /**
      * → build new snapshot, starting from initially recorded valueRef state.
      * NOTE: this is loosely based on {@link dp.util.constructVersionedValueSnapshot}.
      */
     const valueRef = this.dp.collections.values.getById(refId);
+    const modificationDataNodes = partialChildren || dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
+    const originalChildren = partialChildren ? EmptyObject : valueRef.children;
     // Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
-    this.#addSnapshotChildren(snapshot, valueRef.children, modificationDataNodes, true, snapshotsByRefId);
+    this.#addSnapshotChildren(
+      snapshot, 
+      originalChildren,
+      modificationDataNodes, true, snapshotsByRefId, !!partialChildren);
 
     // snapshot.hasRefWriteNodes = true;
     this._refSnapshotsByDataNodeId[snapshot.dataNodeId] = snapshot;

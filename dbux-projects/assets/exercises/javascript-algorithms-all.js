@@ -578,12 +578,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -596,12 +604,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -614,12 +630,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -632,12 +656,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -650,13 +682,31 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
-          }
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 36,
+              "character": 3
+            }
+          ]
         },
         "applicationUuid": "0.7765133755559084"
       },
@@ -668,12 +718,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -686,12 +744,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -704,12 +770,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -722,12 +796,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -740,12 +822,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -758,12 +848,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -776,12 +874,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -794,13 +900,31 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
-          }
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 36,
+              "character": 3
+            }
+          ]
         },
         "applicationUuid": "0.7765133755559084"
       },
@@ -812,12 +936,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 37,
             "column": 3,
-            "index": 1063
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.7765133755559084"
@@ -1955,6 +2087,116 @@ module.exports = [
     "chapter": "HeapSort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([3,4,2,4,2])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875
+          }
+        },
+        "applicationUuid": "0.09901440327789657"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"\"])",
+        "contextId": 188,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875
+          }
+        },
+        "applicationUuid": "0.09901440327789657"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"a\"])",
+        "contextId": 201,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875
+          }
+        },
+        "applicationUuid": "0.09901440327789657"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"a\"])",
+        "contextId": 214,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875
+          }
+        },
+        "applicationUuid": "0.09901440327789657"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 252,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875
+          }
+        },
+        "applicationUuid": "0.09901440327789657"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"aa\"])",
+        "contextId": 360,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875
+          }
+        },
+        "applicationUuid": "0.09901440327789657"
+      }
     ]
   },
   {

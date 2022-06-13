@@ -199,151 +199,24 @@ export default class DDGTimelineBuilder {
   }
 
   /** ###########################################################################
-   * skip + ignore
+   * add
    * ##########################################################################*/
-
-  #canSkipOrIgnore(dataNode) {
-    return !this.#getIsDecision(dataNode) && !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId);
-  }
-
-  shouldIgnoreDataNode(dataNodeId) {
-    const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
-    if (trace) {
-      const { traceId } = trace;
-      const dataNode = this.dp.util.getDataNode(dataNodeId);
-      const traceType = this.dp.util.getTraceType(traceId);
-      if (TraceType.is.Declaration(traceType) && !dataNode.inputs) {
-        // ignore declaration-only nodes
-        // → connect to writes only
-        return true;
-      }
-      if (dataNode.refId) {
-        const valRef = this.dp.collections.values.getById(dataNode.refId);
-        if (ValueTypeCategory.is.Function(valRef?.category)) {
-          // ignore functions for now (JSA has plenty of cluttering callback movement)
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  shouldSkipDataNode(dataNodeId) {
-    const { dp } = this;
-
-    // NOTE: this logic is not ideal. Single-input Compute nodes will not show, but multi-input Compute nodes will.
-    // future-work: proper, dedicated Compute merge logic (maybe in summarizer tho)
-    const dataNode = dp.util.getDataNode(dataNodeId);
-
-    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
-      // don't skip watched nodes
-      return false;
-    }
-
-    if (DataNodeType.is.Delete(dataNode.type)) {
-      // don't skip deletes
-      return false;
-    }
-
-    if (dp.util.isDataNodePassAlong(dataNodeId)) {
-      // skip all "pass along" nodes
-
-      return !isDataNodeModifyType(dataNode.type) ||
-        // return DataNodeType.is.Read(dataNode.type) ||
-        !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
-    }
-    return false;
-  }
-
-  getIgnoreAndSkipInfo(dataNode) {
-    if (!this.#canSkipOrIgnore(dataNode)) {
-      return null;
-    }
-
-    const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
-    const skippedBy = this.getSkippedByNode(dataNode);
-    if (!ignore &&
-      (!skippedBy ||
-        // it might seem as "skipped by itself" 
-        //    because shouldSkip is true but originally, 
-        //    there was no node to skip to → ignore
-        skippedBy.dataNodeId === dataNode.nodeId
-      )
-    ) {
-      return null;
-    }
-    return {
-      ignore,
-      skippedBy
-    };
-  }
-
-  #processSkipAndIgnore(dataNode) {
-    // TODO: allow for decision skips as well?
-    if (this.#canSkipOrIgnore(dataNode)) {
-      if (this.shouldIgnoreDataNode(dataNode.nodeId)) {
-        // ignore entirely
-        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
-        return false;
-      }
-      const skippedBy = this.getSkippedByNode(dataNode);
-      if (skippedBy) {
-        // → This node SHOULD be skipped and CAN be skipped.
-        // → register skip node
-        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
-        this.skippedNodesByDataNodeId[dataNode.nodeId] = skippedBy;
-        return false;
-      }
-    }
-    return true;
-  }
-
-
-  /**
-   * Check if given `dataNode` should be skipped.
-   * If so, find and return the last {@link DDGTimelineNode} of same `inputDataNode`'s `accessId`.
-   * 
-   * @param {DataNode} dataNode
-   * @return {DDGTimelineNode}
-   */
-  getSkippedByNode(dataNode) {
-    if (!this.shouldSkipDataNode(dataNode.nodeId)) {
-      return null;
-    }
-
-    // TODO: a previous TimelineNode exists, but only if not skipped
-    //    → look up previous TimelineNode → if found: return it!
-    //    → else take a step on the underlying DFG instead, then lookup TimelineNode of that → if found: return it!
-    //    → then repeat
-
-    /**
-     * @type {DataNode}
-     */
-    let prev = null;
-    // → look-up input
-    if (dataNode.valueFromId) {
-      prev = this.getDataTimelineInputNode(dataNode.valueFromId);
-    }
-    if (!prev) {
-      if (dataNode.accessId) {
-        prev = this.getLastTimelineNodeByAccessId(dataNode.accessId);
-      }
-    }
-    if (prev && this.ddg.VerboseAccess) {
-      this.ddg.logger.debug(`Skip: n${dataNode.nodeId} by ${prev.timelineId} (n${prev.dataNodeId}), accessId=${dataNode.accessId}`);
-    }
-    // if (!prev) {
-    //   this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(dataNode.nodeId)}"`);
-    // }
-    return prev;
-  }
 
   /**
    * @param {DataNode} dataNode
    */
   #addSnapshotOrDataNode(dataNode) {
     let newNode;
-    if (this.#shouldCreateSnapshot(dataNode)) {
+    if (this.#shouldCreatePartialSnapshot(dataNode)) {
+      const { objectNodeId } = dataNode.varAccess;
+      const dataNodes = this.dp.indexes.dataNodes.byTrace.get(dataNode.traceId);
+      const partialChildren = dataNodes.filter(n => n.varAccess?.objectNodeId === objectNodeId);
+      const refDataNode = this.dp.util.getDataNodeAccessedRef(dataNode.nodeId);
+
+      const snapshotsByRefId = new Map();
+      newNode = this.ddg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotsByRefId, null, partialChildren);
+    }
+    else if (this.#shouldCreateSnapshot(dataNode)) {
       const snapshotsByRefId = new Map();
       newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, null);
     }
@@ -373,20 +246,6 @@ export default class DDGTimelineBuilder {
     const group = this.peekStack();
     newNode.groupId = group.timelineId;
     group.children.push(newNode.timelineId);
-  }
-
-  /** ###########################################################################
-   * snapshots
-   * ##########################################################################*/
-
-  /**
-   * NOTE: we always want to generate snapshots, to actually grab all meaningful writes.
-   * If we want to render less snapshots, that should be done by summarization.
-   * 
-   * @param {DataNode} dataNode 
-   */
-  #shouldCreateSnapshot(dataNode) {
-    return !!dataNode.refId;
   }
 
   /** ###########################################################################
@@ -673,5 +532,175 @@ export default class DDGTimelineBuilder {
 
   debug(...args) {
     this.logger.debug(`${'  '.repeat(this.stack.length - 1).substring(1)}`, ...args);
+  }
+
+
+  /** ###########################################################################
+   * Heuristics
+   * ##########################################################################*/
+
+  /**
+   * NOTE: we always want to generate snapshots, to actually grab all meaningful writes.
+   * If we want to render less snapshots, that should be done by summarization.
+   * 
+   * @param {DataNode} dataNode 
+   */
+  #shouldCreateSnapshot(dataNode) {
+    return !!dataNode.refId;
+  }
+
+  /**
+   * If DataNode accesses an object, grab all DataNodes acessing the same object of same trace and
+   * put them into one snapshot.
+   */
+  #shouldCreatePartialSnapshot(dataNode) {
+    // don't create partial snapshots for watched nodes (for now)
+    // → since this would lead to duplicated nodes
+    return !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId) &&
+      !!dataNode.varAccess?.objectNodeId;
+  }
+
+  /** ###########################################################################
+   * skip + ignore (also heuristics)
+   * ##########################################################################*/
+
+  #canSkipOrIgnore(dataNode) {
+    return !this.#getIsDecision(dataNode);
+  }
+
+  shouldIgnoreDataNode(dataNodeId) {
+    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+      return false;
+    }
+    const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
+    if (trace) {
+      const { traceId } = trace;
+      const dataNode = this.dp.util.getDataNode(dataNodeId);
+      const traceType = this.dp.util.getTraceType(traceId);
+      if (TraceType.is.Declaration(traceType) && !dataNode.inputs) {
+        // ignore declaration-only nodes
+        // → connect to writes only
+        return true;
+      }
+      if (dataNode.refId) {
+        const valRef = this.dp.collections.values.getById(dataNode.refId);
+        if (ValueTypeCategory.is.Function(valRef?.category)) {
+          // ignore functions for now (JSA has plenty of cluttering callback movement)
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  shouldSkipDataNode(dataNodeId) {
+    const { dp } = this;
+
+    // NOTE: this logic is not ideal. Single-input Compute nodes will not show, but multi-input Compute nodes will.
+    // future-work: proper, dedicated Compute merge logic (maybe in summarizer tho)
+    const dataNode = dp.util.getDataNode(dataNodeId);
+
+    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+      // don't skip watched nodes
+      //  → unless its a ref child (will be picked up by RefSnapshot anyway)
+      return !!dataNode.varAccess?.objectNodeId;
+    }
+
+    if (DataNodeType.is.Delete(dataNode.type)) {
+      // don't skip deletes
+      return false;
+    }
+
+    if (dp.util.isDataNodePassAlong(dataNodeId)) {
+      // skip all "pass along" nodes
+
+      return !isDataNodeModifyType(dataNode.type);
+      // return DataNodeType.is.Read(dataNode.type) ||
+      // !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
+    }
+    return false;
+  }
+
+  getIgnoreAndSkipInfo(dataNode) {
+    if (!this.#canSkipOrIgnore(dataNode)) {
+      return null;
+    }
+
+    const ignore = this.shouldIgnoreDataNode(dataNode.nodeId);
+    const skippedBy = this.getSkippedByNode(dataNode);
+    if (!ignore &&
+      (!skippedBy ||
+        // it might seem as "skipped by itself" 
+        //    because shouldSkip is true but originally, 
+        //    there was no node to skip to → ignore
+        skippedBy.dataNodeId === dataNode.nodeId
+      )
+    ) {
+      return null;
+    }
+    return {
+      ignore,
+      skippedBy
+    };
+  }
+
+  #processSkipAndIgnore(dataNode) {
+    // TODO: allow for decision skips as well?
+    if (this.#canSkipOrIgnore(dataNode)) {
+      if (this.shouldIgnoreDataNode(dataNode.nodeId)) {
+        // ignore entirely
+        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
+        return false;
+      }
+      const skippedBy = this.getSkippedByNode(dataNode);
+      if (skippedBy) {
+        // → This node SHOULD be skipped and CAN be skipped.
+        // → register skip node
+        // Any outgoing edge should be connected to `skippedBy` instead of `ownDataNode`.
+        this.skippedNodesByDataNodeId[dataNode.nodeId] = skippedBy;
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+  /**
+   * Check if given `dataNode` should be skipped.
+   * If so, find and return the last {@link DDGTimelineNode} of same `inputDataNode`'s `accessId`.
+   * 
+   * @param {DataNode} dataNode
+   * @return {DDGTimelineNode}
+   */
+  getSkippedByNode(dataNode) {
+    if (!this.shouldSkipDataNode(dataNode.nodeId)) {
+      return null;
+    }
+
+    // TODO: a previous TimelineNode exists, but only if not skipped
+    //    → look up previous TimelineNode → if found: return it!
+    //    → else take a step on the underlying DFG instead, then lookup TimelineNode of that → if found: return it!
+    //    → then repeat
+
+    /**
+     * @type {DataNode}
+     */
+    let prev = null;
+    // → look-up input
+    if (dataNode.valueFromId) {
+      prev = this.getDataTimelineInputNode(dataNode.valueFromId);
+    }
+    if (!prev) {
+      if (dataNode.accessId) {
+        prev = this.getLastTimelineNodeByAccessId(dataNode.accessId);
+      }
+    }
+    if (prev && this.ddg.VerboseAccess) {
+      this.ddg.logger.debug(`Skip: n${dataNode.nodeId} by ${prev.timelineId} (n${prev.dataNodeId}), accessId=${dataNode.accessId}`);
+    }
+    // if (!prev) {
+    //   this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(dataNode.nodeId)}"`);
+    // }
+    return prev;
   }
 }

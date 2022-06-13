@@ -14,8 +14,8 @@ import { addPurpose } from './builtin-util';
 // ###########################################################################
 
 function getDataNodeIdFromRef(ref) {
-  const { nodeId } = ref;
-  return nodeId;
+  const { nodeId, _lastNodeId } = ref;
+  return _lastNodeId || nodeId;
 }
 
 function wrapIndex(i, arr) {

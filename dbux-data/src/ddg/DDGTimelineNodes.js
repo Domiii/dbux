@@ -184,10 +184,10 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
    */
   rootDataNodeId;
 
-  // /**
-  //  * @type {SnapshotEntryDeleteInfo[]}
-  //  */
-  // deleted = [];
+  /**
+   * Whether this is only a partial snapshot
+   */
+  isPartial = false;
 
   /**
    * @param {number} dataNodeId 
