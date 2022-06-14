@@ -356,6 +356,45 @@ export default class DDGTimelineBuilder {
    * {@link DDGTimelineBuilder#addTraceToTimeline}
    * ##########################################################################*/
 
+
+
+  /** ###########################################################################
+   * util
+   * ##########################################################################*/
+
+  /**
+   * Take all DataNodes, then group and sort them by `objectNodeId`.
+   * This is to deal with `{Object,Array}Expression` (and maybe other traces) where
+   * one trace accesses multiple objects, and thus creates multiple snapshots.
+   * The built snapshots are created greedily and might depend on one another, so
+   * we need to assure the correct order.
+   * @param {DataNode[]} dataNodes
+   */
+  #sortDataNodeGroups(dataNodes) {
+    const byObjectNodeId = Object.entries(groupBy(dataNodes, n => n.varAccess?.objectNodeId || 0));
+
+    /**
+     * Order of DataNode groups:
+     * 1. all Reads
+     * 2. Compute, i.e. new object (Creates the snapshot. This is a hackfix: actual order of execution puts this first.)
+     * 3. all Writes (Writes might already have been consumed by (2) (if (2) exists) and thus might be "skipped")
+     */
+    // NOTE: Ascending order → Bigger number goes down.
+    const ordering = {
+      [DataNodeType.Read]: 1,
+      [DataNodeType.Compute]: 2,
+      [DataNodeType.ComputeWrite]: 2,
+      [DataNodeType.Write]: 3
+    };
+    byObjectNodeId.sort((a, b) => {
+      // hackfix: assume that first of group maps to first of other group
+      const oa = ordering[a[1][0].type] || 0;
+      const ob = ordering[b[1][0].type] || 0;
+      return oa - ob;
+    });
+    return byObjectNodeId;
+  }
+
   /**
    * NOTE: a trace might induce multiple {@link DDGTimelineNode} in these circumstances:
    *   1. if a DataNode reads or writes an object prop, we add the complete snapshot with all its children
@@ -370,17 +409,11 @@ export default class DDGTimelineBuilder {
     // const dataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
 
     if (dataNodes?.length) {
-      /**
-       * Take all DataNodes, then group and sort them by `accessId`.
-       * This is to deal with `{Object,Array}Expression` (and maybe other traces) where
-       * one trace accesses multiple objects, and thus creates multiple snapshots.
-       * The built snapshots are created greedily and might depend on one another, so
-       * the earlier snapshots need to go first.
-       */
-      const byAccessId = Object.entries(groupBy(dataNodes, n => n.accessId || 0));
-      byAccessId.sort((b, a) => b - a);
-      // dataNodes.length > 1 && console.log('byAccessId', byAccessId.map(a => a.join(',')).join('; '));
-      for (const [, accessNodes] of byAccessId) {
+      const byObjectNodeId = this.#sortDataNodeGroups(dataNodes);
+      dataNodes.length > 1 && console.debug('byObjectNodeId', 
+        byObjectNodeId.map(entry => `${entry[0]} => ${entry[1].map(n => n.nodeId).join(',')}`).join('; ')
+      );
+      for (const [, accessNodes] of byObjectNodeId) {
         for (let i = 0; i < accessNodes.length; ++i) {
         /* newNode = */ this.#addDataNodeToTimeline(accessNodes[i], trace);
         }

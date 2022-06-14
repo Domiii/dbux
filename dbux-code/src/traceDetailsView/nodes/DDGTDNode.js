@@ -47,7 +47,7 @@ export default class DDGTDNode extends TraceDetailNode {
           skippedBy,
           children,
           EmptyObject,
-          'Skipped By: '
+          `n${dataNode.nodeId} Skipped By: `
         );
       }
     }

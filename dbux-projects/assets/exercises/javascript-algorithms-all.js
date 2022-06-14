@@ -208,7 +208,7 @@ module.exports = [
             }
           ]
         },
-        "applicationUuid": "0.43420059241557185"
+        "applicationUuid": "0.3304538335353029"
       }
     ]
   },
@@ -585,7 +585,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([1,0])",
@@ -603,7 +603,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1])",
@@ -621,7 +621,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0])",
@@ -639,7 +639,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,0])",
@@ -657,7 +657,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,0,1,0])",
@@ -675,7 +675,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,2,0,0,1,0])",
@@ -693,7 +693,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([2,0,2])",
@@ -711,7 +711,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([2,0,5])",
@@ -729,7 +729,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([3,0,0,2,0,4])",
@@ -747,7 +747,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
@@ -765,7 +765,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([1,1,1,1,1])",
@@ -783,7 +783,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([1,2,3,4,5])",
@@ -801,7 +801,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
@@ -819,7 +819,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       },
       {
         "ddgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
@@ -837,7 +837,7 @@ module.exports = [
             "index": 1211
           }
         },
-        "applicationUuid": "0.3002678645648813"
+        "applicationUuid": "0.8964768214790226"
       }
     ]
   },
@@ -2002,7 +2002,7 @@ module.exports = [
     "ddgs": [
       {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 47,
+        "contextId": 77,
         "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
         "loc": {
           "start": {
@@ -2016,7 +2016,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.8413186571976343"
+        "applicationUuid": "0.5731065385125214"
       }
     ]
   },

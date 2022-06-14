@@ -457,7 +457,7 @@ export default class DotBuilder {
    * values, records, tables, structs
    *  #########################################################################*/
 
-  makeRefValueString(node) {
+  makeNestedRefValueString(node) {
     if (node.repeatedTimelineId) {
       // render original instead
       node = this.ddg.timelineNodes[node.repeatedTimelineId];
@@ -485,14 +485,14 @@ export default class DotBuilder {
   makeNodeValueString(node) {
     let s;
     if (ddgQueries.isSnapshot(this.ddg, node)) {
-      s = this.makeRefValueString(node);
+      s = this.makeNestedRefValueString(node);
     }
     else if (node.value !== undefined) {
       s = JSON.stringify(node.value);
     }
     else if (isRepeatedRefTimelineNode(node.type)) {
       const linkNode = this.ddg.timelineNodes[node.repeatedTimelineId];
-      s = this.makeRefValueString(linkNode) + node.label;
+      s = this.makeNestedRefValueString(linkNode) + node.label;
     }
     else if (node.refId) {
       s = '📦';  // ref value node but without snapshot
