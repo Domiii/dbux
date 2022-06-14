@@ -681,7 +681,7 @@ const dataProviderUtil = {
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   *  E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
+   *  E.g.: we want to treat the value of a `BCE` the same as its `CER`.
    * @param {RuntimeDataProvider} dp 
   */
   getValueTrace(dp, traceId) {

@@ -283,7 +283,7 @@ export function getFunctionDefinitionTraceOfValue(value) {
  */
 export function getFunctionDefinitionTraceOfTrace(trace) {
   if (trace.resultId) {
-    // CRE -> get BCE
+    // CER -> get BCE
     trace = traceCollection.getById(trace.resultId);
   }
   while (trace) {

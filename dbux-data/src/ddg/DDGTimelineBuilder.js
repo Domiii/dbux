@@ -613,8 +613,11 @@ export default class DDGTimelineBuilder {
       //   → problem w/ `return [a, b]` etc:
       //      1. either the reads will get their own nodes here
       //      2. or Write children are skipped and then not nested
-      // don't skip watched nodes
-      //  → unless its a ref child (will be picked up by RefSnapshot anyway)
+      //   → Consider moving the DataNodes from BCE to CER
+
+      // Don't skip watched nodes...
+      //  ...unless its a ref child read.
+      //  → Watched read children might get skipped otherwise.
       return !!dataNode.varAccess?.objectNodeId && !isDataNodeWrite(dataNode.type);
     }
 

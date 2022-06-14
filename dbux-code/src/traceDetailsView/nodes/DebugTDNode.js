@@ -141,7 +141,7 @@ export class DebugTDNode extends TraceDetailNode {
 
     const dataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
 
-    // NOTE: only used for BCE -> CRE extra look-up
+    // NOTE: only used for BCE -> CER extra look-up
     const valueTraceDataNodes = valueTraceId && dp.util.getDataNodesOfTrace(valueTraceId) || null;
 
     let dataNode;
