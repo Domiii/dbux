@@ -14,8 +14,8 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-// const VerboseSumm = 2;
-const VerboseSumm = 0;
+const VerboseSumm = 2;
+// const VerboseSumm = 0;
 
 /** ###########################################################################
  * default config
@@ -120,7 +120,7 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   settings = new DDGSettings();
 
-  debugValueId = 1717;
+  debugValueId;
 
   constructor(dp, graphId) {
     super(dp, graphId);
@@ -216,6 +216,8 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     this.settings = settings;
 
+    // build graph again
+    // TODO: not all settings need a re-build
     this.#buildSummarizedGraph();
   }
 
@@ -530,7 +532,7 @@ export default class DataDependencyGraph extends BaseDDG {
     let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
     const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarizedMode(this, node);
     let targetNode = currentCollapsedAncestor || node;
-    let isSummarized = ddgQueries.isNodeSummarized(this, targetNode);
+    let isSummarized = !!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node);
 
     // prep
     if (needsSummaryData) {
@@ -566,7 +568,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (isSummarized) {
       if (
         // summarized nodes without own `dataNodeId` (such as groups) are simply hidden
-        !targetNode.dataNodeId ||
+        !dataNodeId ||
         // summarization is empty → hide it (for now)
         !ddgQueries.doesNodeHaveSummary(this, targetNode)
       ) {
@@ -654,12 +656,12 @@ export default class DataDependencyGraph extends BaseDDG {
    * @return {DDGTimelineNode}
    */
   #lookupSummaryNode(dataNode, nodeSummary) {
-    const refId = this.dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
+    const accessedRefId = this.dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     let varTid;
-    if (refId) {
+    if (accessedRefId) {
       // node is summarized by snapshot child node
       const { prop } = dataNode.varAccess;
-      const snapshotId = nodeSummary.snapshotsByRefId.get(refId);
+      const snapshotId = nodeSummary.snapshotsByRefId.get(accessedRefId);
       if (snapshotId) {
         const snapshot = this.timelineNodes[snapshotId];
         const childId = snapshot.children[prop];

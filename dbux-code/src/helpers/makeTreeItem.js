@@ -4,6 +4,8 @@ import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
+import isPlainObject from 'lodash/isPlainObject';
+import size from 'lodash/size';
 
 import { getPrettyFunctionName } from '@dbux/common/src/util/functionUtil';
 
@@ -66,6 +68,9 @@ export function makeNestedNode(key, value) {
   if (isObject(value)) { // implies isPlainObject, isArray, isFunction
     const newItem = makeTreeItem(key, value);
     newItem.description = value.constructor?.name || '';
+    if (Array.isArray(value) || isPlainObject(value)) {
+      newItem.description += ` (${size(value)})`;
+    }
     return newItem;
   }
 

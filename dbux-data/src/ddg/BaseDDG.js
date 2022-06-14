@@ -181,7 +181,8 @@ export default class BaseDDG {
   }
 
   /**
-   * 
+   * Warning: does NOT include summarized nodes (i.e. !{@link DDGTimelineNode#og})
+   * @return {DDGTimelineNode[]?}
    */
   getTimelineNodesOfDataNode(dataNodeId) {
     // return this.timelineNodes
@@ -882,7 +883,8 @@ export default class BaseDDG {
       // hackfix: the final watched snapshot is forced, 
       //    and often shares descendants with previous snapshots who actually contain the Write.
       (
-        fromWatched !== toWatched
+        !fromNode.og ||
+          fromWatched !== toWatched
       )
     );
   }

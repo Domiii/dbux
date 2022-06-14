@@ -1,7 +1,7 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
-import { renderDDGNode } from '../../treeViewsShared/ddgTreeViewUtil';
+import { renderDDGNode, renderDDGNodesItem, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
 import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
@@ -65,7 +65,7 @@ export default class DDGTDNode extends TraceDetailNode {
     //     { collapsibleState: TreeItemCollapsibleState.Expanded }
     //   );
     // }
-    
+
     const res = timelineNodesOfDataNode.map(
       timelineNode => renderDDGNode(ddg, timelineNode)
     );
@@ -94,19 +94,42 @@ export default class DDGTDNode extends TraceDetailNode {
   }
 
   // eslint-disable-next-line camelcase
-  Og_TimelineNodes() {
+  Summaries() {
     const { ddg, dataNodes } = this;
-    const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
+    const summaryTimelineNodes = dataNodes?.flatMap(dataNode => {
+      return ddg.timelineNodes.filter(n => n && n.dataNodeId === dataNode.nodeId && !n.og);
+    });
+    let summaryNodes = Array.from(
+      new Set([
+        // // own summaries
+        // ...timelineNodes?.flatMap(n => ddg.nodeSummaries[n.timelineId]),
+
+        // sumamry nodes that represent this node
+        ...(summaryTimelineNodes || EmptyArray)
+      ])
+    ).filter(Boolean);
+
+    if (!summaryNodes.length) {
+      return makeTreeItem('(no summaries)');
+    }
+
+    return renderDDGNodesItem(ddg, summaryNodes, 'Summaries');
+  }
+
+  // eslint-disable-next-line camelcase
+  All_TimelineNodes() {
+    const { ddg, dataNodes } = this;
+    const timelineNodes = dataNodes?.flatMap(dataNode => {
       return this.renderTimelineNodes(dataNode);
     });
-    if (!visibleTimelineNodes?.length) {
+    if (!timelineNodes?.length) {
       return makeTreeItem('(no TimelineNodes at all)');
     }
     return {
-      children: visibleTimelineNodes,
+      children: timelineNodes,
       props: {
         collapsibleState: TreeItemCollapsibleState.Expanded,
-        description: `(${visibleTimelineNodes?.length || 0})`
+        description: `(${timelineNodes?.length || 0})`
       }
     };
   }
@@ -143,7 +166,8 @@ export default class DDGTDNode extends TraceDetailNode {
 
     return makeTreeItems(
       this.Visible_TimelineNodes.bind(this),
-      this.Og_TimelineNodes.bind(this),
+      this.Summaries.bind(this),
+      this.All_TimelineNodes.bind(this),
       this.DataNodes.bind(this)
     );
   }

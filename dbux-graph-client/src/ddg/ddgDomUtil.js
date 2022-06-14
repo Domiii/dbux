@@ -139,9 +139,14 @@ function addSummaryModeListener(btnEl, doc, timelineId, mode) {
 //   }
 // };
 const settingBtnLabelHtml = {
-  connectedOnly: 'con',
+  connectedOnly: '🔗',
   extraVertical: '↕',
   params: 'param'
+};
+
+const settingBtnTitles = {
+  connectedOnly: 'Whether to show only connected nodes',
+  params: 'Whether to show parameter nodes'
 };
 
 /**
@@ -189,7 +194,7 @@ export function makeSettingsButtons(doc) {
   const els = allSettingNames.map(setting => {
     const label = makeSettingBtnLabel(doc.state, setting);
     const btnEl = compileHtmlElement(
-    /*html*/`<button title="${setting}" class="${btnClass}">
+    /*html*/`<button title="${settingBtnTitles[setting] || setting}" class="${btnClass}">
         ${label}
     </button>`);
     addSettingsModeListener(doc, btnEl, setting);

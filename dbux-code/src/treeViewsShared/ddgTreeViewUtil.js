@@ -48,7 +48,7 @@ export function makeDDGNodeDescription(ddg, node) {
         DDGSummaryMode.nameFrom(summaryMode) :
         og ?
           '(unknown)' :
-          'Summary Node';
+          'SummaryNode';
   return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryModeLabel}`;
 }
 
@@ -77,7 +77,7 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
     children = { ...node };
 
     const nodeChildren = children.children || EmptyArray;
-    children.children = renderDDGNodes(ddg, nodeChildren, 'Children');
+    children.children = renderDDGNodesItem(ddg, nodeChildren, 'Children');
     if (children.parentNodeId) {
       children.parentNodeId = renderDDGNode(ddg, ddg.timelineNodes[children.parentNodeId], null, EmptyObject, 'Parent: ');
     }
@@ -120,7 +120,7 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
   );
 }
 
-export function renderDDGNodes(ddg, nodesOrIds, label) {
+export function renderDDGNodesItem(ddg, nodesOrIds, label) {
   return makeTreeItem(() => ({
     label,
     children() {

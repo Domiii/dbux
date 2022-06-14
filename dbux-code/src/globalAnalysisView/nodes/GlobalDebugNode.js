@@ -13,7 +13,7 @@ import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodes, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
+import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -209,7 +209,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
 
                 function Visible_Nodes() {
                   const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-                  return renderDDGNodes(ddg, visibleNodes, 'Visible Nodes');
+                  return renderDDGNodesItem(ddg, visibleNodes, 'Visible Nodes');
                 },
                 function Visible_Edges() {
                   const actualEdges = allEdges.filter(Boolean);
@@ -218,7 +218,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
 
                 function All_Nodes() {
                   const nodes = timelineNodes.filter(Boolean);
-                  return renderDDGNodes(ddg, nodes, 'All Nodes');
+                  return renderDDGNodesItem(ddg, nodes, 'All Nodes');
                 },
                 function All_Edges() {
                   const actualEdges = og.edges.filter(Boolean);
