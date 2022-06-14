@@ -161,7 +161,6 @@ const ddgQueries = {
    */
   checkNodeVisibilitySettings(ddg, node) {
     return node.watched ||  // don't hide watched nodes
-      node.parentNodeId ||  // don't hide snapshot children
       (
         ddgQueries.checkConnected(ddg, node) &&
         ddgQueries.checkParams(ddg, node)

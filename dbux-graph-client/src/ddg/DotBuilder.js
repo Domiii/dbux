@@ -575,7 +575,7 @@ export default class DotBuilder {
    * snapshotTable
    *  #########################################################################*/
 
-  shouldSummarizeSnapshotChild(node) {
+  isDisconnectedSnapshot(node) {
     const { ddg } = this;
     return ddgQueries.isSnapshot(ddg, node) && !node.connected;
   }
@@ -623,12 +623,15 @@ export default class DotBuilder {
       for (const [prop, childId] of childEntries) {
         const child = timelineNodes[childId];
         if (ddgQueries.isSnapshot(ddg, child)) {
-          if (isEmpty(child.children) ||
+          if (
+            // not empty
+            isEmpty(child.children) ||
+            // connected
             !child.connected ||
+            // has at least one child that is connected
             Object.values(child.children)
-              .every(c => this.shouldSummarizeSnapshotChild(timelineNodes[c]))
+              .every(c => this.isDisconnectedSnapshot(timelineNodes[c]))
           ) {
-            // don't add empty snapshots or those that are not connected or don't have any connected children
             continue;
           }
 
@@ -658,9 +661,7 @@ export default class DotBuilder {
     const { timelineNodes } = this.renderState;
     const node = timelineNodes[timelineId];
     // hide not-connected snapshot children
-    const label = this.shouldSummarizeSnapshotChild(node) ?
-      '📦' :
-      this.makeNodeValueString(node);
+    const label = this.makeNodeValueString(node);
     return `<TD TITLE="${id}" ROWSPAN="2" PORT="${id}">
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" SIDES="B" COLOR="${Colors.snapshotSeparator}">\

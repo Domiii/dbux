@@ -227,159 +227,6 @@ export default class DataDependencyGraph extends BaseDDG {
     this.#buildSummarizedGraph();
   }
 
-  /**
-   * During initial build, not all details of every node are prepared.
-   * When investigating a node's details, this function needs to run first.
-   */
-  #buildNodeSummary(timelineId) {
-    return this.#buildNodeSummarySnapshotsAndVars(timelineId);
-  }
-
-
-  /** ###########################################################################
-   * build
-   * ##########################################################################*/
-
-  /**
-   * @param {number[]} watchTraceIds 
-   */
-  build(watched) {
-    if (!this.og) {
-      this.og = new BaseDDG(this.dp, this.graphId);
-    }
-    this.buildStage = BuildStage.Building;
-    try {
-      this.og.build(watched);
-    }
-    finally {
-      this.buildStage = BuildStage.None;
-    }
-
-    this.buildStage = BuildStage.Summarizing;
-    try {
-      this.#initSummaryConfig();
-      this.#buildSummarizedGraph();
-    }
-    finally {
-      this.buildStage = BuildStage.None;
-    }
-  }
-
-  /** ###########################################################################
-   * more reset + init stuff
-   * ##########################################################################*/
-
-  resetBuild() {
-    this.resetEdges(); // only reset (set) edges
-  }
-
-  #initSummaryConfig() {
-    this.summaryModes = {};
-
-    // update node modes
-    this.#applyMode(RootTimelineId, RootDefaultSummaryMode);
-  }
-
-  /**
-   * @param {number} timelineId Summary group node
-   */
-  #buildNodeSummarySnapshotsAndVars(timelineId) {
-    const { dp } = this;
-    const node = this.timelineNodes[timelineId];
-    if (!node.hasSummarizableWrites || this.nodeSummaries[timelineId]) {
-      // already built or nothing to build
-      return this.nodeSummaries[timelineId];
-    }
-
-    const lastModifyNodesByRefId = new Map();   // summary ref set
-    const varModifyDataNodes = new Map();       // summary var set
-    const lastNestedDataNodeId = this.#collectNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyDataNodes);
-    const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
-      .filter(([refId]) => {
-        // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
-        const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
-        return lastDataNodeIdOfRef > lastNestedDataNodeId;
-      });
-
-    // add ref snapshots
-    /**
-     * @type {SnapshotMap}
-     */
-    const snapshotsByRefId = new Map();
-    for (const [refId, dataNodeId] of summaryRefEntries) {
-      if (snapshotsByRefId.has(refId)) {
-        // skip if this ref was already added as a descendant of a previous ref
-        continue;
-      }
-      const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
-    }
-
-    // add var nodes
-    const varNodesByDeclarationTid = new Map();
-    for (const [declarationTid, varNodeTimelineId] of varModifyDataNodes) {
-      const varNode = this.cloneNode(varNodeTimelineId);
-      // override label to be the var name (if possible), since its more representative
-      varNode.label = dp.util.getDataNodeDeclarationVarName(varNode.dataNodeId) || varNode.label;
-      varNodesByDeclarationTid.set(declarationTid, varNode.timelineId);
-    }
-
-    const summaryRoots = (
-      // ref roots
-      Array.from(snapshotsByRefId.values())
-        .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
-        .concat(
-          // var roots
-          Array.from(varNodesByDeclarationTid.values())
-        ));
-
-    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots);
-  }
-
-  /**
-   * Finds all nested modified `refId`s nested in the given node and its descendants.
-   * 
-   * @param {DDGTimelineNode} summarizingNode
-   * @param {DDGTimelineNode} node
-   * @param {Map.<number, number>} lastModifyNodesByRefId
-   * @return {number} The `lastDataNodeId` of the entire node.
-   */
-  #collectNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyDataNodes) {
-    const { dp } = this;
-    let lastDataNodeId = node.dataNodeId;
-
-    if (
-      node.dataNodeId &&
-      ddgQueries.checkNodeVisibilitySettings(this, node)
-    ) {
-      const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
-      let varDeclarationTid;
-      if (refId) {
-        // Ref Write
-        lastModifyNodesByRefId.set(refId, node.dataNodeId);
-      }
-      else {
-        if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
-          // Variable Write
-          if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
-            // store variable writes, if variable was declared before summarizingNode
-            varModifyDataNodes.set(varDeclarationTid, node.timelineId);
-          }
-        }
-      }
-    }
-    if (node.children) {
-      for (const childId of Object.values(node.children)) {
-        const childNode = this.timelineNodes[childId];
-        const lastChildDataNodeId = this.#collectNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyDataNodes);
-        if (lastChildDataNodeId) {
-          lastDataNodeId = lastChildDataNodeId;
-        }
-      }
-    }
-    return lastDataNodeId;
-  }
-
 
   /** ###########################################################################
    * summarization propagation
@@ -489,6 +336,163 @@ export default class DataDependencyGraph extends BaseDDG {
     }
   }
 
+
+  /** ###########################################################################
+   * build
+   * ##########################################################################*/
+
+  /**
+   * @param {number[]} watchTraceIds 
+   */
+  build(watched) {
+    if (!this.og) {
+      this.og = new BaseDDG(this.dp, this.graphId);
+    }
+    this.buildStage = BuildStage.Building;
+    try {
+      this.og.build(watched);
+    }
+    finally {
+      this.buildStage = BuildStage.None;
+    }
+
+    this.buildStage = BuildStage.Summarizing;
+    try {
+      this.#initSummaryConfig();
+      this.#buildSummarizedGraph();
+    }
+    finally {
+      this.buildStage = BuildStage.None;
+    }
+  }
+
+  /**
+   * During initial build, not all details of every node are prepared.
+   * When investigating a node's details, this function needs to run first.
+   */
+  #buildNodeSummary(timelineId) {
+    return this.#buildNodeSummarySnapshotsAndVars(timelineId);
+  }
+
+  /** ###########################################################################
+   * more reset + init stuff
+   * ##########################################################################*/
+
+  resetBuild() {
+    this.resetEdges(); // only reset (set) edges
+  }
+
+  #initSummaryConfig() {
+    this.summaryModes = {};
+
+    // update node modes
+    this.#applyMode(RootTimelineId, RootDefaultSummaryMode);
+  }
+
+  /**
+   * @param {number} timelineId Summary group node
+   */
+  #buildNodeSummarySnapshotsAndVars(timelineId) {
+    const { dp } = this;
+    const node = this.timelineNodes[timelineId];
+    if (!node.hasSummarizableWrites || this.nodeSummaries[timelineId]) {
+      // already built or nothing to build
+      return this.nodeSummaries[timelineId];
+    }
+
+    const lastModifyNodesByRefId = new Map();   // summary ref set
+    const varModifyDataNodes = new Map();       // summary var set
+    const lastNestedDataNodeId = this.#collectNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyDataNodes);
+    const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
+      .filter(([refId]) => {
+        // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
+        const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
+        return lastDataNodeIdOfRef > lastNestedDataNodeId;
+      });
+
+    // add ref snapshots
+    /**
+     * @type {SnapshotMap}
+     */
+    const snapshotsByRefId = new Map();
+    for (const [refId, dataNodeId] of summaryRefEntries) {
+      if (snapshotsByRefId.has(refId)) {
+        // skip if this ref was already added as a descendant of a previous ref
+        continue;
+      }
+      const dataNode = dp.collections.dataNodes.getById(dataNodeId);
+      const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
+
+      // override label to be the var name (if possible), since its more representative
+      newNode.label = dp.util.getDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
+    }
+
+    // add var nodes
+    const varNodesByDeclarationTid = new Map();
+    for (const [declarationTid, varNodeTimelineId] of varModifyDataNodes) {
+      const newNode = this.cloneNode(varNodeTimelineId);
+
+      // override label to be the var name (if possible), since its more representative
+      newNode.label = dp.util.getDataNodeDeclarationVarName(newNode.dataNodeId) || newNode.label;
+      varNodesByDeclarationTid.set(declarationTid, newNode.timelineId);
+    }
+
+    const summaryRoots = (
+      // ref roots
+      Array.from(snapshotsByRefId.values())
+        .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
+        .concat(
+          // var roots
+          Array.from(varNodesByDeclarationTid.values())
+        ));
+
+    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots);
+  }
+
+  /**
+   * Finds all nested modified `refId`s nested in the given node and its descendants.
+   * 
+   * @param {DDGTimelineNode} summarizingNode
+   * @param {DDGTimelineNode} node
+   * @param {Map.<number, number>} lastModifyNodesByRefId
+   * @return {number} The `lastDataNodeId` of the entire node.
+   */
+  #collectNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyDataNodes) {
+    const { dp } = this;
+    let lastDataNodeId = node.dataNodeId;
+
+    if (
+      node.dataNodeId &&
+      ddgQueries.checkNodeVisibilitySettings(this, node)
+    ) {
+      const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
+      let varDeclarationTid;
+      if (refId) {
+        // Ref Write
+        lastModifyNodesByRefId.set(refId, node.dataNodeId);
+      }
+      else {
+        if ((varDeclarationTid = dp.util.getDataNodeModifyingVarDeclarationTid(node.dataNodeId))) {
+          // Variable Write
+          if (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid) {
+            // store variable writes, if variable was declared before summarizingNode
+            varModifyDataNodes.set(varDeclarationTid, node.timelineId);
+          }
+        }
+      }
+    }
+    if (node.children) {
+      for (const childId of Object.values(node.children)) {
+        const childNode = this.timelineNodes[childId];
+        const lastChildDataNodeId = this.#collectNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyDataNodes);
+        if (lastChildDataNodeId) {
+          lastDataNodeId = lastChildDataNodeId;
+        }
+      }
+    }
+    return lastDataNodeId;
+  }
+
   /** ###########################################################################
    *  summarize algo
    * ##########################################################################*/
@@ -526,6 +530,9 @@ export default class DataDependencyGraph extends BaseDDG {
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
 
+
+    // TODO: deal with invisible snapshot children?
+    // node.parentNodeId ||  // don't hide snapshot children
 
     let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
     const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarizedMode(this, node);
