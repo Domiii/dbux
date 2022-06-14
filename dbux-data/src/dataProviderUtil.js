@@ -766,6 +766,11 @@ const dataProviderUtil = {
   },
 
   /** @param {RuntimeDataProvider} dp */
+  getDataNodeType(dp, dataNodeId) {
+    return dp.util.getDataNode(dataNodeId).type;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
   getPrimitiveDataNodes(dp) {
     return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
   },

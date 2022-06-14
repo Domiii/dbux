@@ -7,6 +7,7 @@
 import first from 'lodash/first';
 import last from 'lodash/last';
 import pull from 'lodash/pull';
+import findLast from 'lodash/findLast';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
@@ -14,6 +15,7 @@ import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
@@ -24,7 +26,6 @@ import { RootTimelineId } from './constants';
 import ddgQueries from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -414,8 +415,15 @@ export default class BaseDDG {
     return first(this._timelineNodesByDataNodeId[dataNodeId] || EmptyArray);
   }
 
-  getLastDataTimelineNodeByDataNodeId(dataNodeId) {
-    return last(this._timelineNodesByDataNodeId[dataNodeId] || EmptyArray);
+  getLastDataTimelineNodeByDataNodeId(dataNodeId, exclude = null) {
+    const arr = this._timelineNodesByDataNodeId[dataNodeId] || EmptyArray;
+    if (!exclude) {
+      return last(arr);
+    }
+    return findLast(
+      arr,
+      (n) => n !== exclude
+    );
   }
 
   /** ###########################################################################
@@ -846,6 +854,16 @@ export default class BaseDDG {
    * heuristics
    * ##########################################################################*/
 
+  /**
+   * Whether given snapshot should add deep nodes (or keep it shallow).
+   * 
+   * Called to check whether
+   *  (1) a new node should be added, even though it has been added already or
+   *  (2) go deep on new ref node.
+   * 
+   * @param {DDGTimelineNode} toNode
+   * @param {DDGTimelineNode} fromNode
+   */
   shouldAddEdge(fromNode, toNode) {
     const fromWatched = this.watchSet.isWatchedDataNode(toNode.rootDataNodeId || toNode.dataNodeId);
     const toWatched = this.watchSet.isWatchedDataNode(fromNode.rootDataNodeId || fromNode.dataNodeId);
@@ -864,13 +882,14 @@ export default class BaseDDG {
       // hackfix: the final watched snapshot is forced, 
       //    and often shares descendants with previous snapshots who actually contain the Write.
       (
-        fromWatched && !toWatched
+        fromWatched !== toWatched
       )
     );
   }
 
   /**
-   * Whether given snapshot should add deep nodes.
+   * Whether given snapshot should add deep nodes (or keep it shallow).
+   * 
    * Called to check whether
    *  (1) a new node should be added, even though it has been added already or
    *  (2) go deep on new ref node.
@@ -887,12 +906,17 @@ export default class BaseDDG {
     );
   }
 
+  /**
+   * @param {DDGTimelineNode} node 
+   */
   #canTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
     return (
       // don't adopt watched nodes (unless new parent is also watched)
       (!node.watched || this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId)) &&
       // don't adopt children of other snapshots
       this.#isIndependentRootNode(node, parentSnapshot) &&
+      // don't adopt mods for now
+      !isDataNodeModifyType(this.dp.util.getDataNode(node.dataNodeId).type) &&
       // don't adopt nodes that already have outgoing dependencies on timeline
       !this.outEdgesByTimelineId[node.timelineId]?.length
     );

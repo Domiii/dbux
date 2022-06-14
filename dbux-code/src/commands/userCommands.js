@@ -21,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { disposeDDGWebviews, showDDGViewForArgs, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
+import { disposeDDGWebviews, getActiveDDGWebview, showDDGViewForArgs, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -309,7 +309,7 @@ export function initUserCommands(extensionContext) {
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    let traceId;
+    let traceId, dataNodeId;
     if (userInput.startsWith('c')) {
       // by contextId
       const contextId = parseInt(userInput.substring(1), 10);
@@ -336,13 +336,29 @@ export function initUserCommands(extensionContext) {
     }
     else if (userInput.startsWith('n')) {
       // by DataNode.nodeId
-      const nodeId = parseInt(userInput.substring(1), 10);
-      traceId = dp.util.getDataNode(nodeId)?.traceId;
+      dataNodeId = parseInt(userInput.substring(1), 10);
+      traceId = dp.util.getDataNode(dataNodeId)?.traceId;
     }
     else if (userInput.startsWith('v')) {
       // by valueRef.refId
       const refId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getFirstTraceByRefId(refId)?.traceId;
+    }
+    else if (userInput.startsWith('tl')) {
+      // timeline
+      const ddgView = getActiveDDGWebview();
+      if (!ddgView) {
+        await showErrorMessage(`DDG is not active.`);
+        return;
+      }
+      if (ddgView.ddg.dp.application !== application) {
+        await showErrorMessage(`Active DDG is not that of current application.`);
+        return;
+      }
+      const timelineId = parseInt(userInput.substring(1), 10);
+      const timelineNode = ddgView.ddg.timelineNodes[timelineId];
+      const dataNode = dp.util.getDataNode(dataNodeId = timelineNode.dataNodeId);
+      traceId = dataNode.traceId;
     }
     else {
       // by trace
@@ -364,7 +380,7 @@ export function initUserCommands(extensionContext) {
       await showErrorMessage(`Can't find trace of traceId=${traceId} (applicationId=${applicationId})`);
     }
     else {
-      traceSelection.selectTrace(trace);
+      traceSelection.selectTrace(trace, 'user.selectTraceById', dataNodeId);
       emitSelectTraceAction(trace, UserActionType.SelectTraceById, { userInput });
     }
   }

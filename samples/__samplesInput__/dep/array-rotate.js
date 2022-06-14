@@ -9,7 +9,7 @@ function main(a, delta) {
   }
   for (let i = a.length - 1; i > 0; --i) {
     // console.log((i + delta) % a.length, i);
-    a[(i + delta) % a.length] = a[i];
+    a[(i + delta) % a.length] = a[i] * 3;
   }
   a[delta] = tmp;
   return a;

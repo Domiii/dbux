@@ -16,6 +16,7 @@ import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineCont
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
+/** @typedef {Map.<DataTimelineNode, { n: number }>} EdgeInfos */
 
 // const Verbose = 1;
 const Verbose = 0;
@@ -169,7 +170,7 @@ export default class DDGTimelineBuilder {
       return;
     }
     let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
-    const edgeInfos = this.#gatherDataNodeEdges(dataNode);
+    const edgeInfos = this.#gatherDataNodeEdges(dataNode, newNode);
     this.#addEdgeSet(newNode, edgeInfos);
     // let fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
     // if (fromNode === newNode) {
@@ -383,24 +384,28 @@ export default class DDGTimelineBuilder {
     }
   }
 
-  #addInputNodeEdge(toDataNodeId, inputDataNodeId, inputNodes) {
-    const inputNode = this.getDataTimelineInputNode(inputDataNodeId);
+  #gatherInputNodeEdge(toDataNodeId, inputDataNodeId, fromNodes) {
+    const fromNode = this.getDataTimelineInputNode(inputDataNodeId);
 
-    if (inputNode) {
-      let edgeProps = inputNodes.get(inputNode);
-      if (!edgeProps) {
-        inputNodes.set(inputNode, edgeProps = { nByType: {} });
-      }
-      else {
-        // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
-      }
-      const edgeType = this.ddg.getEdgeTypeOfDataNode(inputNode.dataNodeId, toDataNodeId);
-      edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
+    if (fromNode) {
+      this.#gatherNodeEdge(toDataNodeId, fromNode, fromNodes);
     }
     else {
       // inputDataNodeId is ignored or external (are there other reasons?)
       // this.#shouldIgnoreDataNode(ownDataNode.nodeId)
     }
+  }
+
+  #gatherNodeEdge(toDataNodeId, fromNode, edgeInfos) {
+    let edgeProps = edgeInfos.get(fromNode);
+    if (!edgeProps) {
+      edgeInfos.set(fromNode, edgeProps = { nByType: {} });
+    }
+    else {
+      // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
+    }
+    const edgeType = this.ddg.getEdgeTypeOfDataNode(fromNode.dataNodeId, toDataNodeId);
+    edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
   }
 
   #getIsDecision(dataNode) {
@@ -433,9 +438,9 @@ export default class DDGTimelineBuilder {
     /**
      * This is to avoid duplicate edges.
      * NOTE also that in JS, Sets retain order.
-     * @type {Map.<DataTimelineNode, { n: number }>}
+     * @type {EdgeInfos}
      */
-    const edgeInfos = this.#gatherDataNodeEdges(dataNode);
+    const edgeInfos = this.#gatherDataNodeEdges(dataNode, null);
     const isDecision = this.#getIsDecision(dataNode);
 
     let newNode;
@@ -486,18 +491,35 @@ export default class DDGTimelineBuilder {
    * edges
    * ##########################################################################*/
 
-  #gatherDataNodeEdges(dataNode, edgeInfos = new Map()) {
-    if (dataNode.valueFromId) {
-      this.#addInputNodeEdge(dataNode.nodeId, dataNode.valueFromId, edgeInfos);
+  /**
+   * @param {DataNode} dataNode 
+   * @param {DDGTimelineNode} newNode The node we are gathering for (if it already exists).
+   * @param {EdgeInfos} edgeInfos 
+   */
+  #gatherDataNodeEdges(dataNode, newNode, edgeInfos = new Map()) {
+    const prev = this.ddg.getLastDataTimelineNodeByDataNodeId(dataNode.nodeId, newNode);
+    if (prev && isDataNodeModifyType(this.dp.util.getDataNodeType(prev.dataNodeId))) {
+      // node was already added, and it was a modification → connect to that
+      this.#gatherNodeEdge(dataNode.nodeId, prev, edgeInfos);
     }
-    if (dataNode.inputs) {
-      for (const inputDataNodeId of dataNode.inputs) {
-        this.#addInputNodeEdge(dataNode.nodeId, inputDataNodeId, edgeInfos);
+    else {
+      // → connect to inputs instead
+      if (dataNode.valueFromId) {
+        this.#gatherInputNodeEdge(dataNode.nodeId, dataNode.valueFromId, edgeInfos);
+      }
+      if (dataNode.inputs) {
+        for (const inputDataNodeId of dataNode.inputs) {
+          this.#gatherInputNodeEdge(dataNode.nodeId, inputDataNodeId, edgeInfos);
+        }
       }
     }
     return edgeInfos;
   }
 
+  /**
+   * @param {DDGTimelineNode} dataNode 
+   * @param {EdgeInfos} edgeInfos 
+   */
   #addEdgeSet(toNode, edgeInfos) {
     for (const [inputNode, edgeProps] of edgeInfos) {
       this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, toNode.timelineId, edgeProps);
