@@ -410,9 +410,9 @@ export default class DDGTimelineBuilder {
 
     if (dataNodes?.length) {
       const byObjectNodeId = this.#sortDataNodeGroups(dataNodes);
-      dataNodes.length > 1 && console.debug('byObjectNodeId', 
-        byObjectNodeId.map(entry => `${entry[0]} => ${entry[1].map(n => n.nodeId).join(',')}`).join('; ')
-      );
+      // dataNodes.length > 1 && console.debug('byObjectNodeId', 
+      //   byObjectNodeId.map(entry => `${entry[0]} => ${entry[1].map(n => n.nodeId).join(',')}`).join('; ')
+      // );
       for (const [, accessNodes] of byObjectNodeId) {
         for (let i = 0; i < accessNodes.length; ++i) {
         /* newNode = */ this.#addDataNodeToTimeline(accessNodes[i], trace);
