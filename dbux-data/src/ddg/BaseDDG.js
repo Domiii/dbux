@@ -334,6 +334,10 @@ export default class BaseDDG {
     newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
 
+    if (newNode.dataNodeId === 1137) {
+      console.log('debug');
+    }
+
     if (newNode.dataNodeId && this.building) {
       // register with `WatchSet`
       this.watchSet.maybeAddWatchedNode(newNode);
@@ -897,7 +901,7 @@ export default class BaseDDG {
     const dataNode = this.dp.util.getDataNode(childDataNodeId);
     return (
       this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
-        this.watchSet.isReturnDataNode(parentSnapshot.rootDataNodeId) ||  // "return trace" snapshot
+        this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return trace"
         !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
       ) ||
       // this DataNode is actually being accessed (possibly by DataNodes that will be added later)

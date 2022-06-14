@@ -115,6 +115,7 @@ export default class DDGWatchSet {
    * If given, it allows for some prettier rendering.
    */
   isReturnDataNode(dataNodeId) {
+    // return this.returnTraceId === this.ddg.dp.util.getDataNode(dataNodeId).traceId;
     return this.returnDataNodeId === dataNodeId;
   }
 

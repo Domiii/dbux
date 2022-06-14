@@ -377,8 +377,9 @@ export default class DDGTimelineBuilder {
        * The built snapshots are created greedily and might depend on one another, so
        * the earlier snapshots need to go first.
        */
-      const byAccessId = Object.entries(groupBy(dataNodes, 'accessId'));
+      const byAccessId = Object.entries(groupBy(dataNodes, n => n.accessId || 0));
       byAccessId.sort((b, a) => b - a);
+      // dataNodes.length > 1 && console.log('byAccessId', byAccessId.map(a => a.join(',')).join('; '));
       for (const [, accessNodes] of byAccessId) {
         for (let i = 0; i < accessNodes.length; ++i) {
         /* newNode = */ this.#addDataNodeToTimeline(accessNodes[i], trace);
