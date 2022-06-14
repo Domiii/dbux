@@ -898,14 +898,19 @@ export default class BaseDDG {
    */
   shouldBuildDeepSnapshotChild(parentSnapshot, childDataNodeId) {
     // this.logger.debug('deep', parentSnapshot.timelineId, childDataNodeId, this.doesDataNodeHaveOutgoingEdge(childDataNodeId));
-    const dataNode = this.dp.util.getDataNode(childDataNodeId);
+    const childDataNode = this.dp.util.getDataNode(childDataNodeId);
+    let lastAccessNode;
     return (
       this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
         this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return trace"
         !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
       ) ||
-      // this DataNode is actually being accessed (possibly by DataNodes that will be added later)
-      (dataNode.refId && this.dp.indexes.dataNodes.byObjectNodeId.get(dataNode.nodeId)?.length)
+      (
+        // this DataNode is a ref that will be accessed later
+        childDataNode.refId && 
+        (lastAccessNode = this.dp.indexes.dataNodes.byObjectNodeId.getLast(childDataNode.nodeId)) &&
+        lastAccessNode.nodeId > childDataNodeId
+      )
     );
   }
 
