@@ -907,7 +907,7 @@ export default class BaseDDG {
       ) ||
       (
         // this DataNode is a ref that will be accessed later
-        childDataNode.refId && 
+        childDataNode.refId &&
         (lastAccessNode = this.dp.indexes.dataNodes.byObjectNodeId.getLast(childDataNode.nodeId)) &&
         lastAccessNode.nodeId > childDataNodeId
       )
@@ -915,7 +915,11 @@ export default class BaseDDG {
   }
 
   shouldBuildDeepSnapshotRoot(dataNode) {
+    if (!dataNode.refId) {
+      return false;
+    }
     const dataNodeId = dataNode.nodeId;
+    let lastAccessNode;
     return (
       // watched
       (
@@ -924,8 +928,10 @@ export default class BaseDDG {
           !this.watchSet.isAddedAndWatchedDataNode(dataNodeId)  // new node not already watched
         )
       ) ||
-      // this DataNode is actually being accessed (possibly by DataNodes that will be added later)
-      (dataNode.refId && this.dp.indexes.dataNodes.byObjectNodeId.get(dataNodeId)?.length)
+      // this DataNode is a ref that will be accessed later
+      dataNode.refId &&
+      (lastAccessNode = this.dp.indexes.dataNodes.byObjectNodeId.getLast(dataNode.nodeId)) &&
+      lastAccessNode.nodeId > dataNode.nodeId
     );
   }
 

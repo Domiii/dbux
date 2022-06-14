@@ -557,7 +557,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       });
 
       // add click handler
-      this.addNodeEventListener(node, interactionEl, 'click', async (evt) => {
+      // NOTE: we use `mousedown` since `click` regularly gets cancelled by d3-zoom,
+      //      b/c it pans ever so slightly every single time the mouse is clicked
+      this.addNodeEventListener(node, interactionEl, 'mousedown', async (evt) => {
         if (node.dataNodeId) {
           await this.remote.selectNode(node.timelineId);
         }
