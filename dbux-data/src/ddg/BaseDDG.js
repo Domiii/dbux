@@ -576,7 +576,7 @@ export default class BaseDDG {
         const existingNodeOfDataNode = this.getLastDataTimelineNodeByDataNodeId(dataNode.nodeId);
         if (this.building &&
           (newChild = skippedBy || existingNodeOfDataNode) &&
-          this.#canTimelineNodeBeAdoptedBySnapshot(newChild, parentSnapshot)
+          this.#shouldTimelineNodeBeAdoptedBySnapshot(newChild, parentSnapshot)
         ) {
           // adopt existing node (build mode only)
           // remove from previous group
@@ -600,7 +600,7 @@ export default class BaseDDG {
             this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
           }
           else {
-            if (!shallowOnly && dataNode.refId && this.#shouldBuildDeepSnapshot(parentSnapshot, dataNode.nodeId)) {
+            if (!shallowOnly && dataNode.refId && this.shouldBuildDeepSnapshotChild(parentSnapshot, dataNode.nodeId)) {
               // → go deep on ref
               newChild = this.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, parentSnapshot);
             }
@@ -856,12 +856,6 @@ export default class BaseDDG {
    * ##########################################################################*/
 
   /**
-   * Whether given snapshot should add deep nodes (or keep it shallow).
-   * 
-   * Called to check whether
-   *  (1) a new node should be added, even though it has been added already or
-   *  (2) go deep on new ref node.
-   * 
    * @param {DDGTimelineNode} toNode
    * @param {DDGTimelineNode} fromNode
    */
@@ -884,7 +878,7 @@ export default class BaseDDG {
       //    and often shares descendants with previous snapshots who actually contain the Write.
       (
         !fromNode.og ||
-          fromWatched !== toWatched
+        fromWatched !== toWatched
       )
     );
   }
@@ -898,20 +892,38 @@ export default class BaseDDG {
    * 
    * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
-  #shouldBuildDeepSnapshot(parentSnapshot, childDataNodeId) {
+  shouldBuildDeepSnapshotChild(parentSnapshot, childDataNodeId) {
     // this.logger.debug('deep', parentSnapshot.timelineId, childDataNodeId, this.doesDataNodeHaveOutgoingEdge(childDataNodeId));
+    const dataNode = this.dp.util.getDataNode(childDataNodeId);
     return (
       this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
         this.watchSet.isReturnDataNode(parentSnapshot.rootDataNodeId) ||  // "return trace" snapshot
         !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
-      )
+      ) ||
+      // this DataNode is actually being accessed (possibly by DataNodes that will be added later)
+      (dataNode.refId && this.dp.indexes.dataNodes.byObjectNodeId.get(dataNode.nodeId)?.length)
+    );
+  }
+
+  shouldBuildDeepSnapshotRoot(dataNode) {
+    const dataNodeId = dataNode.nodeId;
+    return (
+      // watched
+      (
+        this.watchSet.isWatchedDataNode(dataNodeId) && (        // watched snapshot
+          this.watchSet.isReturnDataNode(dataNodeId) ||         // "return trace" snapshot
+          !this.watchSet.isAddedAndWatchedDataNode(dataNodeId)  // new node not already watched
+        )
+      ) ||
+      // this DataNode is actually being accessed (possibly by DataNodes that will be added later)
+      (dataNode.refId && this.dp.indexes.dataNodes.byObjectNodeId.get(dataNodeId)?.length)
     );
   }
 
   /**
    * @param {DDGTimelineNode} node 
    */
-  #canTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
+  #shouldTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
     return (
       // don't adopt watched nodes (unless new parent is also watched)
       (!node.watched || this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId)) &&

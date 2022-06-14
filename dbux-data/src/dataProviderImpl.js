@@ -42,6 +42,7 @@ import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
+import DataNodesByObjectNodeIdIndex from './impl/indexes/DataNodesByObjectNodeIdIndex';
 import PrimitiveDataNodesIndex from './impl/indexes/PrimitiveDataNodesIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
 import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
@@ -121,6 +122,7 @@ export function newDataProvider(application) {
   dp.addIndex(new DataNodesByValueIdIndex());
   dp.addIndex(new DataNodesByRefIdIndex());
   dp.addIndex(new DataNodesByObjectRefIdIndex());
+  dp.addIndex(new DataNodesByObjectNodeIdIndex());
   dp.addIndex(new PrimitiveDataNodesIndex());
   dp.addIndex(new ValueRefByErrorIndex());
   dp.addIndex(new ValueRefByNodeIndex());

@@ -212,16 +212,17 @@ export default class DDGTimelineBuilder {
    */
   #addSnapshotOrDataNode(dataNode) {
     let newNode;
-    if (this.#shouldCreatePartialSnapshot(dataNode)) {
+
+    if (this.#shouldBuildPartialSnapshot(dataNode)) {
       const { objectNodeId } = dataNode.varAccess;
       const dataNodes = this.dp.indexes.dataNodes.byTrace.get(dataNode.traceId);
       const partialChildren = dataNodes.filter(n => n.varAccess?.objectNodeId === objectNodeId);
-      const refDataNode = this.dp.util.getDataNodeAccessedRef(dataNode.nodeId);
+      const refDataNode = this.dp.util.getDataNodeAccessedObjectNode(dataNode.nodeId);
 
       const snapshotsByRefId = new Map();
       newNode = this.ddg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotsByRefId, null, partialChildren);
     }
-    else if (this.#shouldCreateSnapshot(dataNode)) {
+    else if (this.#shouldBuildRootSnapshot(dataNode)) {
       const snapshotsByRefId = new Map();
       newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, null);
     }
@@ -565,30 +566,30 @@ export default class DDGTimelineBuilder {
    * Heuristics
    * ##########################################################################*/
 
-  /**
-   * NOTE: we always want to generate snapshots, to actually grab all meaningful writes.
-   * If we want to render less snapshots, that should be done by summarization.
-   * 
-   * @param {DataNode} dataNode 
-   */
-  #shouldCreateSnapshot(dataNode) {
-    return !!dataNode.refId;
-  }
 
   /**
    * If DataNode accesses an object, grab all DataNodes acessing the same object of same trace and
    * put them into one snapshot.
    */
-  #shouldCreatePartialSnapshot(dataNode) {
+  #shouldBuildPartialSnapshot(dataNode) {
     return (
       // ref access
       !!dataNode.varAccess?.objectNodeId &&
       // ignore trace owning nodes (since that causes some trouble)
       !this.dp.util.isTraceOwnDataNode(dataNode.nodeId) &&
-      // don't create partial snapshots for watched nodes (for now)
+      // don't create partial snapshots for watched nodes.
       //    (→ since this would lead to duplicated nodes)
+      //    → create full/deep snapshots instead
       !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)
     );
+  }
+
+  /**
+   * 
+   * @param {DataNode} dataNode 
+   */
+  #shouldBuildRootSnapshot(dataNode) {
+    return this.ddg.shouldBuildDeepSnapshotRoot(dataNode);
   }
 
   /** ###########################################################################

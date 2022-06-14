@@ -838,13 +838,13 @@ const dataProviderUtil = {
    * @param {RuntimeDataProvider} dp
    */
   getDataNodeAccessedRefId(dp, nodeId) {
-    return dp.util.getDataNodeAccessedRef(nodeId)?.refId || 0;
+    return dp.util.getDataNodeAccessedObjectNode(nodeId)?.refId || 0;
   },
 
   /**
    * @param {RuntimeDataProvider} dp
    */
-  getDataNodeAccessedRef(dp, nodeId) {
+  getDataNodeAccessedObjectNode(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     const objectNodeId = dataNode.varAccess?.objectNodeId;
     if (objectNodeId) {
