@@ -13,7 +13,6 @@ import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DDGWatchSet from './DDGWatchSet';
 import DDGBounds from './DDGBounds';

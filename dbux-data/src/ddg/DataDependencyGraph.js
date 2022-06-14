@@ -543,10 +543,6 @@ export default class DataDependencyGraph extends BaseDDG {
       // }
     }
 
-    if (dataNodeId === 1737) {
-      console.log('debug');
-    }
-
     // DFS recursion
     if (children) {
       const isCollapsed = !currentCollapsedAncestor &&

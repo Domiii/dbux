@@ -160,10 +160,12 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   checkNodeVisibilitySettings(ddg, node) {
-    return node.watched || (
-      ddgQueries.checkConnected(ddg, node) &&
-      ddgQueries.checkParams(ddg, node)
-    );
+    return node.watched ||  // don't hide watched nodes
+      node.parentNodeId ||  // don't hide snapshot children
+      (
+        ddgQueries.checkConnected(ddg, node) &&
+        ddgQueries.checkParams(ddg, node)
+      );
   },
 
 
@@ -173,7 +175,7 @@ const ddgQueries = {
    */
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    
+
     return node.watched || (
       isShownMode(summaryMode) &&
       this.checkNodeVisibilitySettings(ddg, node) &&
@@ -220,7 +222,7 @@ const ddgQueries = {
    * @param {DDGSnapshotNode} node 
    */
   isNestingSnapshot(ddg, node) {
-    return ddgQueries.isSnapshot(ddg, node) && 
+    return ddgQueries.isSnapshot(ddg, node) &&
       Object.values(node.children).some(childId => ddgQueries.isSnapshot(ddg, ddg.timelineNodes[childId]));
   },
 
