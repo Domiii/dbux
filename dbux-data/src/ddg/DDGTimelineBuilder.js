@@ -349,7 +349,7 @@ export default class DDGTimelineBuilder {
     /**
      * Order of DataNode groups:
      * 1. all Reads
-     * 2. Compute, i.e. new object (Creates the snapshot. This is a hackfix: actual order of execution puts this first.)
+     * 2. Compute, i.e. new object (Creates the snapshot. This is a hackfix: actual order of execution puts the object first.)
      * 3. all Writes (Writes might already have been consumed by (2) (if (2) exists) and thus might be "skipped")
      */
     // NOTE: Ascending order → Bigger number goes down.
@@ -382,6 +382,7 @@ export default class DDGTimelineBuilder {
     // const dataNode = trace.nodeId && dp.collections.dataNodes.getById(trace.nodeId);
 
     if (dataNodes?.length) {
+      // [trace-datanode grouping heuristic]
       const byObjectNodeId = this.#sortDataNodeGroups(dataNodes);
       // dataNodes.length > 1 && console.debug('byObjectNodeId', 
       //   byObjectNodeId.map(entry => `${entry[0]} => ${entry[1].map(n => n.nodeId).join(',')}`).join('; ')
@@ -473,7 +474,7 @@ export default class DDGTimelineBuilder {
     // bookkeeping for summaries
     const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     const varDeclarationTid = dataNode.varAccess?.declarationTid;
-    
+
     newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 
     // update group
