@@ -242,7 +242,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`<div id="ddg-timeline" class="timeline-view">
       <div data-el="status"></div>
-      <div data-el="graphcont">
+      <div data-el="graphcont" class="graph-cont">
       </div>
       <!-- <div data-el="view" class="timeline-view timeline-sigma-container"></div> -->
       <!-- <div data-el="view" class="timeline-view timeline-jsplumb-container"></div> -->

@@ -121,7 +121,10 @@ export default class DDGTimelineBuilder {
 
     const label = this.ddg.makeDataNodeLabel(dataNode);
     const decisionNode = new DecisionTimelineNode(dataNode.nodeId, label);
-    this.ddg.addDataNode(decisionNode);
+    decisionNode.timelineId = 'fakeTimelineId';
+    // TODO: fix decisions
+    //    NOTE: we don't add them, so they don't affect data flow
+    // this.ddg.addDataNode(decisionNode);
 
     if (isLoopIterationTimelineNode(currentGroup.type)) {
       // continued iteration of loop
@@ -158,7 +161,8 @@ export default class DDGTimelineBuilder {
       currentGroup.decisions.push(decisionNode.timelineId);
       // this.#addNodeToGroup(decisionNode);
     }
-    return decisionNode;
+    return null;
+    // return decisionNode;
   }
 
   /**

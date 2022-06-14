@@ -1058,6 +1058,26 @@ module.exports = [
     "chapter": "bitsDiff",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitsDiff.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitsDiff(0, 1)",
+        "contextId": 6,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.4597341131278494"
+      }
     ]
   },
   {

@@ -444,7 +444,8 @@ export default class DotBuilder {
     const from = this.makeNodeId(this.getNode(edge.from));
     const to = this.makeNodeId(this.getNode(edge.to));
     const colorOverride = edge.type === DDGEdgeType.Delete ? `color=${Colors.deleteEdge}` : '';
-    const debugAttrs = Verbose && `${this.makeLabel(edge.edgeId)}` || '';
+    // const debugAttrs = Verbose && `${this.makeLabel(edge.edgeId)}` || '';
+    const debugAttrs = '';
     const attrs = this.makeAttrs(
       colorOverride,
       debugAttrs,

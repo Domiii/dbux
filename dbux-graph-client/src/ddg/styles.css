@@ -35,17 +35,44 @@ svg.jtk-connector path {
  * root and other big things
  * ############################################################################*/
 
-.root-cont {
-  height: auto;
+#root {
+  height: 100vh;
 }
+
+.root-cont {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.timeline-view {
+  flex-grow: 1;
+}
+
+/* .timeline-view {
+  /* height: calc(100vh - 30px); 
+} */
+
+.graph-cont {
+  height: 100%;
+}
+
+#timeline-graph {
+  height: 100%;
+}
+
+/* The actual graphviz graph */
+#timeline-graph > svg {
+  min-width: 100%;
+  min-height: 100%;
+}
+
 
 /** ###########################################################################
  * components
  * ############################################################################*/
-
-.timeline-view {
-  /* height: calc(100vh - 30px); */
-}
 
 .timeline-group {
   pointer-events: none;
