@@ -137,6 +137,7 @@ export default class DDGTimelineBuilder {
       ) {
         // push next iteration
         const iterationNode = new IterationNode(decisionNode.timelineId, this.#getCurrentGroupIterationCount());
+        iterationNode.label = currentGroup.label + '#' + iterationNode.i;
         this.#addAndPushGroup(iterationNode, trace.traceId);
       }
     }
@@ -147,6 +148,7 @@ export default class DDGTimelineBuilder {
       if (isLoopTimelineNode(currentGroup.type)) {
         // push first iteration of loop
         const iterationNode = new IterationNode(decisionNode.timelineId, this.#getCurrentGroupIterationCount());
+        iterationNode.label = currentGroup.label + '#' + iterationNode.i;
         this.#addAndPushGroup(iterationNode, trace.traceId);
       }
       else {

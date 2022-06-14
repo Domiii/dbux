@@ -5,17 +5,15 @@ import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import ddgQueries from './ddgQueries';
-import DDGEdgeType from './DDGEdgeType';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-const VerboseSumm = 2;
-// const VerboseSumm = 0;
+// const VerboseSumm = 2;
+const VerboseSumm = 0;
 
 /** ###########################################################################
  * default config

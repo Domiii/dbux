@@ -223,21 +223,39 @@ module.exports = [
     "ddgs": [
       {
         "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 44,
+        "contextId": 282,
         "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
         "loc": {
           "start": {
             "line": 6,
             "column": 56,
-            "index": 172
+            "index": 172,
+            "_pos": {
+              "line": 5,
+              "character": 56
+            }
           },
           "end": {
             "line": 45,
             "column": 1,
-            "index": 1581
-          }
+            "index": 1581,
+            "_pos": {
+              "line": 44,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 5,
+              "character": 56
+            },
+            {
+              "line": 44,
+              "character": 1
+            }
+          ]
         },
-        "applicationUuid": "0.2161589966932187"
+        "applicationUuid": "0.6729512559825301"
       }
     ]
   },
@@ -1984,7 +2002,7 @@ module.exports = [
     "ddgs": [
       {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 99,
+        "contextId": 47,
         "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
         "loc": {
           "start": {
@@ -1998,7 +2016,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.9438083670205253"
+        "applicationUuid": "0.8413186571976343"
       }
     ]
   },

@@ -355,8 +355,12 @@ export function initUserCommands(extensionContext) {
         await showErrorMessage(`Active DDG is not that of current application.`);
         return;
       }
-      const timelineId = parseInt(userInput.substring(1), 10);
+      const timelineId = parseInt(userInput.substring(2), 10);
       const timelineNode = ddgView.ddg.timelineNodes[timelineId];
+      if (!timelineNode) {
+        await showErrorMessage(`Active DDG does not have timelineId=${timelineId}.`);
+        return;
+      }
       const dataNode = dp.util.getDataNode(dataNodeId = timelineNode.dataNodeId);
       traceId = dataNode.traceId;
     }

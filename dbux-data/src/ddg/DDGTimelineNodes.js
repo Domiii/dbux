@@ -303,7 +303,6 @@ export class IterationNode extends GroupTimelineNode {
     super(DDGTimelineNodeType.Iteration);
     this.decision = decisionTimelineId;
     this.i = i;
-    this.label = i + '';
   }
 }
 
