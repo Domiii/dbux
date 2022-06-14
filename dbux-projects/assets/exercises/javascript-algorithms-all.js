@@ -848,6 +848,34 @@ module.exports = [
     "chapter": "bfTravellingSalesman",
     "testFilePaths": [
       "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfTravellingSalesman({vertices,edges,isDirected})",
+        "contextId": 63,
+        "filePath": "src/algorithms/graph/travelling-salesman/bfTravellingSalesman.js",
+        "loc": {
+          "start": {
+            "line": 69,
+            "column": 52,
+            "index": 2047,
+            "_pos": {
+              "line": 68,
+              "character": 52
+            }
+          },
+          "end": {
+            "line": 104,
+            "column": 1,
+            "index": 3439,
+            "_pos": {
+              "line": 103,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9855434081755214"
+      }
     ]
   },
   {
@@ -875,6 +903,152 @@ module.exports = [
     "chapter": "bitLength",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitLength.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitLength(0)",
+        "contextId": 5,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(1)",
+        "contextId": 6,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(1)",
+        "contextId": 7,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(5)",
+        "contextId": 8,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(5)",
+        "contextId": 9,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(21)",
+        "contextId": 10,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(245)",
+        "contextId": 11,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(245)",
+        "contextId": 12,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      }
     ]
   },
   {
@@ -956,6 +1130,26 @@ module.exports = [
     "chapter": "btPowerSet",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "btPowerSet([1,2])",
+        "contextId": 5,
+        "filePath": "src/algorithms/sets/power-set/btPowerSet.js",
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 48,
+            "index": 1726
+          },
+          "end": {
+            "line": 41,
+            "column": 1,
+            "index": 1787
+          }
+        },
+        "applicationUuid": "0.6130181404703885"
+      }
     ]
   },
   {

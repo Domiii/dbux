@@ -107,20 +107,20 @@ class DDGExerciseNode extends ExerciseNode {
 }
 
 /** ###########################################################################
- * {@link DDGChapterNode}
+ * {@link ExerciseChapterNode}
  *  #########################################################################*/
 
-class DDGChapterNode extends ChapterNode {
+class ExerciseChapterNode extends ChapterNode {
   get ExerciseNodeClass() {
     return DDGExerciseNode;
   }
 }
 
 /** ###########################################################################
- * {@link DDGChapterGroupNode}
+ * {@link ExerciseChapterGroupNode}
  *  #########################################################################*/
 
-class DDGChapterGroupNode extends BaseTreeViewNode {
+class ExerciseChapterGroupNode extends BaseTreeViewNode {
   static makeLabel(entry, parent, moreProp) {
     return moreProp.keyword;
   }
@@ -134,7 +134,7 @@ class DDGChapterGroupNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    return this.entry.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this));
+    return this.entry.map(chapter => this.treeNodeProvider.buildNode(ExerciseChapterNode, chapter, this));
   }
 }
 
@@ -175,8 +175,8 @@ export default class ChapterListNode extends BaseTreeViewNode {
     }
 
     return [
-      ...Keywords.map(keyword => this.treeNodeProvider.buildNode(DDGChapterGroupNode, chapters[keyword], this, { keyword })),
-      this.treeNodeProvider.buildNode(DDGChapterGroupNode, otherChapters, this, { keyword: 'Others' }),
+      ...Keywords.map(keyword => this.treeNodeProvider.buildNode(ExerciseChapterGroupNode, chapters[keyword], this, { keyword })),
+      this.treeNodeProvider.buildNode(ExerciseChapterGroupNode, otherChapters, this, { keyword: 'Others' }),
       // otherChapters.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this)),
     ];
   }

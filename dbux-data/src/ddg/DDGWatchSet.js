@@ -105,7 +105,7 @@ export default class DDGWatchSet {
     return this.ddg.bounds;
   }
 
-  #isWatchedSetDataNode(dataNodeId) {
+  #isDataNodeTraceWatched(dataNodeId) {
     const dataNode = this.dp.util.getDataNode(dataNodeId);
     return this.watchTraceIdSet.has(dataNode.traceId);
   }
@@ -127,7 +127,7 @@ export default class DDGWatchSet {
    * @return {boolean}
    */
   isWatchedDataNode(dataNodeId) {
-    return this.#isWatchedSetDataNode(dataNodeId) ||
+    return this.#isDataNodeTraceWatched(dataNodeId) ||
       this.isAddedAndWatchedDataNode(dataNodeId);
     // (
     //   // TODO: do we need this?
@@ -171,6 +171,7 @@ export default class DDGWatchSet {
    * @param {DDGTimelineNode} node 
    */
   maybeAddWatchedSnapshotNode(node) {
+    // TODO: rootTimelineId
     if (
       node.dataNodeId && (
         this.isWatchedDataNode(node.dataNodeId) ||
@@ -202,6 +203,7 @@ export default class DDGWatchSet {
     if (node instanceof RefSnapshotTimelineNode) {
       const { refId/* , dataNodeId */, rootDataNodeId } = node;
       this.watchSnapshotsByRef.set(refId, node);
+      // TODO: rootTimelineId
       const lastDataNodeId = rootDataNodeId;
       this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
     }

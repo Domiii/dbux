@@ -406,6 +406,7 @@ export default class DataDependencyGraph extends BaseDDG {
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
+        // TODO: rootTimelineId
         const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });

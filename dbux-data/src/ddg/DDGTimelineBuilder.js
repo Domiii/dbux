@@ -174,33 +174,6 @@ export default class DDGTimelineBuilder {
     let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
     const edgeInfos = this.#gatherDataNodeEdges(dataNode, newNode);
     this.#addEdgeSet(newNode, edgeInfos);
-    // let fromNode = this.getDataTimelineInputNode(newNode.dataNodeId);
-    // if (fromNode === newNode) {
-    //   // newNode is the first node of dataNodeId
-    //   let dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
-    //   while (dataNode.valueFromId &&
-    //     (
-    //       !this.getDataTimelineInputNode(dataNode.valueFromId) ||
-    //       dataNode.valueFromId > newNode.rootDataNodeId
-    //     )
-    //   ) {
-    //     // keep looking, as long as we find nodes that come after rootDataNodeId (part of this snapshot)
-    //     dataNode = this.dp.util.getDataNode(dataNode.valueFromId);
-    //   }
-    //   const edgeInfos = this.#gatherDataNodeEdges(dataNode);
-    //   this.#addEdgeSet(newNode, edgeInfos);
-    //   this.ddg.VerboseAccess &&
-    //     this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${Array.from(edgeInfos.keys()).map(n => n.timelineId).join(',')}`);
-    // }
-    // else {
-    //   this.ddg.VerboseAccess &&
-    //     this.ddg.logger.debug(`NewSnapshotNode ${newNode.timelineId} (n${newNode.dataNodeId}) - from: ${fromNode?.timelineId}`);
-    //   if (
-    //     fromNode
-    //   ) {
-    //     this.ddg.addSnapshotEdge(fromNode, newNode);
-    //   }
-    // }
   }
 
   /** ###########################################################################
@@ -497,16 +470,10 @@ export default class DDGTimelineBuilder {
       newNode = this.#addSnapshotOrDataNode(dataNode);
     }
 
-
     // bookkeeping for summaries
     const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     const varDeclarationTid = dataNode.varAccess?.declarationTid;
-    // if (accessedRefId) {
-    //   this.ddg._lastAccessDataNodeIdByRefId[accessedRefId] = newNode.rootDataNodeId || dataNode.nodeId;
-    // }
-    // if (valueRefId) {
-    //   this.ddg._lastAccessDataNodeIdByRefId[valueRefId] = newNode.rootDataNodeId || dataNode.nodeId;
-    // }
+    
     newNode.hasSummarizableWrites = !!accessedRefId || !!varDeclarationTid;
 
     // update group

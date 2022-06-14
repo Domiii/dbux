@@ -294,7 +294,7 @@ export default class BaseDDG {
         this.#setConnectedDFS(fromNode);
       }
     }
-    else if (node.children) {
+    if (node.children) {
       for (const child of Object.values(node.children)) {
         const childNode = this.timelineNodes[child];
         this.#setConnectedDFS(childNode);
@@ -731,6 +731,7 @@ export default class BaseDDG {
 
     // get modifications on nested refs first
     const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
+    // TODO: rootTimelineId
     const rootDataNode = parentSnapshot?.rootDataNodeId && dp.util.getDataNode(parentSnapshot.rootDataNodeId);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
 
@@ -771,6 +772,7 @@ export default class BaseDDG {
   #onSnapshotNodeCreated(newNode, snapshotsByRefId, parentSnapshot) {
     const { dp } = this;
     newNode.parentNodeId = parentSnapshot?.timelineId;
+    // TODO: rootTimelineId
     newNode.rootDataNodeId = parentSnapshot?.rootDataNodeId ||
       dp.util.getLastDataNodeIdOfTrace(newNode.traceId);
 
@@ -864,6 +866,7 @@ export default class BaseDDG {
    * @param {DDGTimelineNode} fromNode
    */
   shouldAddEdge(fromNode, toNode) {
+    // TODO: rootTimelineId
     const fromWatched = this.watchSet.isWatchedDataNode(toNode.rootDataNodeId || toNode.dataNodeId);
     const toWatched = this.watchSet.isWatchedDataNode(fromNode.rootDataNodeId || fromNode.dataNodeId);
     if (fromWatched && toWatched &&
@@ -901,6 +904,7 @@ export default class BaseDDG {
     const childDataNode = this.dp.util.getDataNode(childDataNodeId);
     let lastAccessNode;
     return (
+      // TODO: rootTimelineId
       this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
         this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return trace"
         !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
@@ -941,6 +945,7 @@ export default class BaseDDG {
   #shouldTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
     return (
       // don't adopt watched nodes (unless new parent is also watched)
+      // TODO: rootTimelineId
       (!node.watched || this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId)) &&
       // don't adopt children of other snapshots
       this.#isIndependentRootNode(node, parentSnapshot) &&

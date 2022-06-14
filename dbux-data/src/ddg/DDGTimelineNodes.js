@@ -74,7 +74,7 @@ export class GroupTimelineNode extends DDGTimelineNode {
    * @type {Array.<number>}
    */
   children = [];
-  
+
   /**
    * {@link DecisionTimelineNode#TimelineId} of this branch's decision nodes.
    * @type {number[]}
@@ -106,6 +106,7 @@ export class DataTimelineNode extends DDGTimelineNode {
   /**
    * NOTE: only set for in-snapshot nodes.
    */
+  // TODO: rootTimelineId
   rootDataNodeId;
   value;
   connected = false;
@@ -187,6 +188,7 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
    */
   children;
 
+  // TODO: rootTimelineId
   /**
    * We use `rootDataNodeId` as a "starting point" of a snapshot and all its descendants.
    */
