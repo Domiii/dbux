@@ -185,6 +185,13 @@ export default class DataDependencyGraph extends BaseDDG {
     return this.og.timelineNodes;
   }
 
+  /**
+   * hackfix: remove this once we fixed decisions
+   */
+  get decisionTimelineNodes() {
+    return this.og.decisionNodes;
+  }
+
   get timelineNodesByDataNodeId() {
     return this.og.timelineNodesByDataNodeId;
   }

@@ -114,16 +114,17 @@ export default class DDGTimelineBuilder {
    * @param {Trace} trace
    * @return {DecisionTimelineNode}
    */
-  addDecisionNode(dataNode, trace) {
+  #addDecisionNode(dataNode, trace) {
     const { dp } = this;
     const currentGroup = this.peekStack();
     const staticTrace = dp.collections.staticTraces.getById(trace.staticTraceId);
 
     const label = this.ddg.makeDataNodeLabel(dataNode);
     const decisionNode = new DecisionTimelineNode(dataNode.nodeId, label);
-    decisionNode.timelineId = 'fakeTimelineId';
-    // TODO: fix decisions
-    //    NOTE: we don't add them, so they don't affect data flow
+    // hackfix: need to fix decisions
+    //    NOTE: we don't add them, so they don't affect other data flow
+    decisionNode.timelineId = this.ddg.decisionTimelineNodes.length;
+    this.ddg.decisionTimelineNodes[decisionNode.timelineId] = decisionNode;
     // this.ddg.addDataNode(decisionNode);
 
     if (isLoopIterationTimelineNode(currentGroup.type)) {
@@ -460,7 +461,7 @@ export default class DDGTimelineBuilder {
 
     let newNode;
     if (isDecision) {
-      newNode = this.addDecisionNode(dataNode, trace);
+      newNode = this.#addDecisionNode(dataNode, trace);
       if (!newNode) {
         return null;
       }

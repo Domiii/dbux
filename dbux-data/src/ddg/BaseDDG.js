@@ -87,6 +87,10 @@ export default class BaseDDG {
    * @type {DDGTimelineNode[]}
    */
   _timelineNodes;
+  /**
+   * hackfix: need to fix decisions
+   */
+  _decisionTimelineNodes;
 
   /**
    * @type {DDGEdge[]}
@@ -142,6 +146,13 @@ export default class BaseDDG {
    */
   get timelineNodes() {
     return this._timelineNodes;
+  }
+
+  /**
+   * hackfix: remove this once we fixed decisions
+   */
+  get decisionTimelineNodes() {
+    return this._decisionTimelineNodes;
   }
 
   get timelineNodesByDataNodeId() {
@@ -216,6 +227,7 @@ export default class BaseDDG {
     this._watchSet = new DDGWatchSet(this, watched);
     this._bounds = new DDGBounds(this);
     this._timelineNodes = [null];
+    this._decisionTimelineNodes = [null];
 
     this.building = true;
     this.resetBuild();
@@ -731,7 +743,7 @@ export default class BaseDDG {
 
     // get modifications on nested refs first
     const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
-    const rootDataNode = ddgHostQueries.getRootDataNode(this, parentSnapshot);
+    const rootDataNode = parentSnapshot && ddgHostQueries.getRootDataNode(this, parentSnapshot);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
 
     // create snapshot

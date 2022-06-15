@@ -12,6 +12,8 @@ import {
   DoWhileTimelineNode
 } from './DDGTimelineNodes';
 
+/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
+
 
 /** ###########################################################################
  * 
@@ -63,7 +65,7 @@ export const controlGroupLabelMaker = {
       label = 'if';
     }
     else {
-      const decisionNode = ddg.timelineNodes[lastDecisionId];
+      const decisionNode = ddg.decisionTimelineNodes[lastDecisionId];
       const isLastDecisionTruthy = dp.util.isDataNodeValueTruthy(decisionNode.dataNodeId);
       if (isLastDecisionTruthy) {
         if (ifNode.decisions.length === 1) {

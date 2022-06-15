@@ -178,7 +178,7 @@ export default class DDGWatchSet {
     if (
       node.dataNodeId && (
         this.isWatchedDataNode(node.dataNodeId) ||
-        (node.rootTimelineId && ddgQueries.getRootTimelineNode(node.rootTimelineId).watched)
+        ddgQueries.getRootTimelineNode(this.ddg, node).watched
       )
     ) {
       this.#addWatchedNode(node);
