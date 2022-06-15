@@ -1,6 +1,6 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
-import { RootTimelineId } from './constants';
+import { DDGRootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
@@ -386,7 +386,7 @@ export default class DataDependencyGraph extends BaseDDG {
     this.summaryModes = {};
 
     // update node modes
-    this.#applyMode(RootTimelineId, RootDefaultSummaryMode);
+    this.#applyMode(DDGRootTimelineId, RootDefaultSummaryMode);
   }
 
   /**
@@ -406,7 +406,6 @@ export default class DataDependencyGraph extends BaseDDG {
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
-        // TODO: rootTimelineId
         const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });

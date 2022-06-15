@@ -22,8 +22,8 @@ import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
 // eslint-disable-next-line max-len
 import { DDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode } from './DDGTimelineNodes';
-import { RootTimelineId } from './constants';
-import ddgQueries from './ddgQueries';
+import { DDGRootTimelineId } from './constants';
+import ddgQueries, { ddgHostQueries } from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
 
@@ -165,7 +165,7 @@ export default class BaseDDG {
   }
 
   get root() {
-    return this.timelineNodes[RootTimelineId];
+    return this.timelineNodes[DDGRootTimelineId];
   }
 
   /** ###########################################################################
@@ -731,8 +731,7 @@ export default class BaseDDG {
 
     // get modifications on nested refs first
     const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
-    // TODO: rootTimelineId
-    const rootDataNode = parentSnapshot?.rootDataNodeId && dp.util.getDataNode(parentSnapshot.rootDataNodeId);
+    const rootDataNode = ddgHostQueries.getRootDataNode(this, parentSnapshot);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
 
     // create snapshot
@@ -770,11 +769,8 @@ export default class BaseDDG {
    * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
   #onSnapshotNodeCreated(newNode, snapshotsByRefId, parentSnapshot) {
-    const { dp } = this;
     newNode.parentNodeId = parentSnapshot?.timelineId;
-    // TODO: rootTimelineId
-    newNode.rootDataNodeId = parentSnapshot?.rootDataNodeId ||
-      dp.util.getLastDataNodeIdOfTrace(newNode.traceId);
+    newNode.rootTimelineId = parentSnapshot?.rootTimelineId || newNode.timelineId;
 
     // update snapshot set
     snapshotsByRefId?.set(newNode.refId, newNode.timelineId);
@@ -862,29 +858,36 @@ export default class BaseDDG {
    * ##########################################################################*/
 
   /**
+   * future-work: can we move this logic to be used when gathering edges, and not so much later?
+   * 
    * @param {DDGTimelineNode} toNode
    * @param {DDGTimelineNode} fromNode
    */
   shouldAddEdge(fromNode, toNode) {
-    // TODO: rootTimelineId
-    const fromWatched = this.watchSet.isWatchedDataNode(toNode.rootDataNodeId || toNode.dataNodeId);
-    const toWatched = this.watchSet.isWatchedDataNode(fromNode.rootDataNodeId || fromNode.dataNodeId);
+    const fromWatched = fromNode.watched;
+    const toWatched = toNode.watched;
     if (fromWatched && toWatched &&
-      fromNode.rootDataNodeId && !fromNode.parentNodeId &&
-      toNode.rootDataNodeId && !toNode.parentNodeId) {
+      ddgQueries.isSnapshotRoot(this, fromNode) &&
+      ddgQueries.isSnapshotRoot(this, toNode)
+    ) {
       // don't add edges between watched snapshot ROOTS
       return false;
     }
 
     return (
       // only link nodes of two snapshots of the same thing if there was a write in between
-      !fromNode.rootDataNodeId ||
-      toNode.dataNodeId > fromNode.rootDataNodeId ||
+      !fromNode.rootTimelineId ||
+
+      // TODO: i forgot why we need to check against root, and not just itself
+      toNode.dataNodeId > ddgHostQueries.getLastDataNodeIdInRoot(this, fromNode) ||
+
+      // allways allow edges from summary nodes (?)
+      !fromNode.og ||
 
       // hackfix: the final watched snapshot is forced, 
       //    and often shares descendants with previous snapshots who actually contain the Write.
+      //    → so we want to allow those edges to come in nevertheless.
       (
-        !fromNode.og ||
         fromWatched !== toWatched
       )
     );
@@ -904,9 +907,8 @@ export default class BaseDDG {
     const childDataNode = this.dp.util.getDataNode(childDataNodeId);
     let lastAccessNode;
     return (
-      // TODO: rootTimelineId
-      this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId) && ( // watched snapshot
-        this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return trace"
+      parentSnapshot.watched && (                                         // watched snapshot
+        this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return node"
         !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
       ) ||
       (
@@ -927,8 +929,8 @@ export default class BaseDDG {
     return (
       // watched
       (
-        this.watchSet.isWatchedDataNode(dataNodeId) && (        // watched snapshot
-          this.watchSet.isReturnDataNode(dataNodeId) ||         // "return trace" snapshot
+        this.watchSet.isDataNodeInWatchSet(dataNodeId) && (     // watched snapshot
+          this.watchSet.isReturnDataNode(dataNodeId) ||         // "return node" snapshot
           !this.watchSet.isAddedAndWatchedDataNode(dataNodeId)  // new node not already watched
         )
       ) ||
@@ -945,8 +947,7 @@ export default class BaseDDG {
   #shouldTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
     return (
       // don't adopt watched nodes (unless new parent is also watched)
-      // TODO: rootTimelineId
-      (!node.watched || this.watchSet.isWatchedDataNode(parentSnapshot.rootDataNodeId)) &&
+      (!node.watched || parentSnapshot.watched) &&
       // don't adopt children of other snapshots
       this.#isIndependentRootNode(node, parentSnapshot) &&
       // don't adopt mods for now

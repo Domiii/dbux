@@ -10,7 +10,7 @@ import isPlainObject from 'lodash/isPlainObject';
 
 import { PrettyTimer } from '@dbux/common/src/util/timeUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { RootTimelineId } from '@dbux/data/src/ddg/constants';
+import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
@@ -298,7 +298,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   get root() {
-    return this.renderState.timelineNodes?.[RootTimelineId];
+    return this.renderState.timelineNodes?.[DDGRootTimelineId];
   }
 
   /** ###########################################################################

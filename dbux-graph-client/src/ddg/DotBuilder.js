@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { RootTimelineId } from '@dbux/data/src/ddg/constants';
+import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
@@ -105,7 +105,7 @@ export default class DotBuilder {
   }
 
   get root() {
-    return this.renderState.timelineNodes?.[RootTimelineId];
+    return this.renderState.timelineNodes?.[DDGRootTimelineId];
   }
 
   getNode(timelineId) {

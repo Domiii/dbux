@@ -225,6 +225,22 @@ const ddgQueries = {
       Object.values(node.children).some(childId => ddgQueries.isSnapshot(ddg, ddg.timelineNodes[childId]));
   },
 
+  /** ###########################################################################
+   * "advanced" queries
+   * ##########################################################################*/
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getRootTimelineNode(ddg, node) {
+    return node?.rootTimelineId && ddg.timelineNodes[node.rootTimelineId];
+  },
+
+  /** ###########################################################################
+   * summaries
+   *  #########################################################################*/
+
   /**
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
@@ -296,6 +312,22 @@ const ddgQueries = {
     return summaryNodeIds.map(id => ddg.timelineNodes[id]);
   },
 
+  /** ###########################################################################
+   * Handle summary modes
+   * ##########################################################################*/
+
+  /**
+   * @param {BaseDDG} ddg 
+   */
+  canApplySummaryMode(node, mode) {
+    // const node = ddg.timelineNodes[timelineId];
+    return _canApplySummaryMode[mode](node);
+  },
+
+  /** ###########################################################################
+   * util
+   * ##########################################################################*/
+
   /**
    * NOTE: this excludes ValueNodes nodes inside of summary snapshots.
    * 
@@ -312,6 +344,15 @@ const ddgQueries = {
       }))
       .filter(Boolean)
       .flat();
+  },
+
+  /**
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isSnapshotRoot(ddg, node) {
+    return node.rootTimelineId && !node.parentNodeId;
   },
 
   /**
@@ -333,19 +374,46 @@ const ddgQueries = {
 
     return ddgQueries.isSnapshotDescendant(ddg, outer, parentNode);
   },
+};
 
+/** ###########################################################################
+ * host queries
+ * ##########################################################################*/
 
-  /** ###########################################################################
-   * Handle summary modes
-   * ##########################################################################*/
+/**
+ * Queries that are only supported on the host, due to
+ * dependencies on `dp` etc.
+ */
+export const ddgHostQueries = {
+  /**
+   * @param {DataDependencyGraph} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getRootDataNodeId(ddg, node) {
+    const rootTimelineNode = ddgQueries.getRootTimelineNode(ddg, node);
+    return rootTimelineNode?.dataNodeId || node.dataNodeId;
+  },
 
   /**
-   * @param {BaseDDG} ddg 
+   * @param {DataDependencyGraph} ddg 
+   * @param {DDGTimelineNode} node
    */
-  canApplySummaryMode(node, mode) {
-    // const node = ddg.timelineNodes[timelineId];
-    return _canApplySummaryMode[mode](node);
+  getRootDataNode(ddg, node) {
+    const rootDataNodeId = ddgHostQueries.getRootDataNodeId(ddg, node);
+    return rootDataNodeId && ddg.dp.util.getDataNode(rootDataNodeId);
   },
+
+  /**
+   * NOTE: a snapshot (as of now) cannot have children of a later trace than its root.
+   * 
+   * @param {DataDependencyGraph} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getLastDataNodeIdInRoot(ddg, node) {
+    const rootDataNode = ddgHostQueries.getRootDataNode(ddg, node);
+    const rootTrace = rootDataNode.traceId;
+    return ddg.dp.util.getLastDataNodeIdOfTrace(rootTrace);
+  }
 };
 
 export default ddgQueries;

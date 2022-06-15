@@ -1,7 +1,7 @@
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 
 import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
-import { RootTimelineId } from '@dbux/data/src/ddg/constants';
+import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
 import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses, makeBootstrapBtnGroupSeparatorEl } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { updateElDecorations, makeSummaryButtons, DefaultToolbarBtnClass, makeSettingsButtons } from './ddgDomUtil';
@@ -46,7 +46,7 @@ class Toolbar extends ClientComponentEndpoint {
     const {
       el: summaryRootButtonDom,
       els: summaryRootButtons
-    } = makeSummaryButtons(this.doc, RootTimelineId, DefaultToolbarBtnClass, RootSummaryModes, true);
+    } = makeSummaryButtons(this.doc, DDGRootTimelineId, DefaultToolbarBtnClass, RootSummaryModes, true);
     btns.appendChild(summaryRootButtonDom);
     this.summaryRootButtons = summaryRootButtons;
 

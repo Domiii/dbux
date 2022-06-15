@@ -1,7 +1,7 @@
 // import DDGTimelineNodeType from './DDGTimelineNodeType';
 
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { RootTimelineId } from './constants';
+import { DDGRootTimelineId } from './constants';
 // import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 
 /** @typedef { import("@dbux/common/src/types/constants/DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
@@ -89,7 +89,7 @@ export class GroupTimelineNode extends DDGTimelineNode {
 export class TimelineRoot extends GroupTimelineNode {
   constructor() {
     super(DDGTimelineNodeType.Root);
-    this.timelineId = RootTimelineId;
+    this.timelineId = DDGRootTimelineId;
   }
 }
 
@@ -104,10 +104,9 @@ export class DataTimelineNode extends DDGTimelineNode {
    */
   dataNodeId;
   /**
-   * NOTE: only set for in-snapshot nodes.
+   * `timelineId` of the root `RefSnapshotTimelineNode`.
    */
-  // TODO: rootTimelineId
-  rootDataNodeId;
+  rootTimelineId;
   value;
   connected = false;
 
@@ -135,8 +134,8 @@ export class ValueTimelineNode extends DataTimelineNode {
 }
 
 /**
+ * future-work: this is actually now basically a `DataTimelineNode`. Need to integrate the two.
  * This node represents a ref value at time t = {@link RefTimelineNode#dataNodeId}.
- * NOTE: This is NEITHER DataTimelineNode NOR GroupTimelineNode!
  */
 export class RefTimelineNode extends DDGTimelineNode {
   traceId;
@@ -188,11 +187,10 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
    */
   children;
 
-  // TODO: rootTimelineId
   /**
-   * We use `rootDataNodeId` as a "starting point" of a snapshot and all its descendants.
+   * `timelineId` of the root `RefSnapshotTimelineNode`.
    */
-  rootDataNodeId;
+  rootTimelineId;
 
   /**
    * Whether this is only a partial snapshot
