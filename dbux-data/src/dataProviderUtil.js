@@ -548,14 +548,45 @@ const dataProviderUtil = {
     return dp.util.getTracesOfContextAndType(realContextId, TraceType.ReturnArgument)?.[0] || null;
   },
 
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getReturnArgumentInputDataNodeIdOfContext(dp, contextId) {
+    const returnArgumentTrace = dp.util.getReturnArgumentTraceOfContext(contextId);
+    const returnDataNode = returnArgumentTrace && dp.util.getDataNodeOfTrace(returnArgumentTrace.traceId);
+    return returnDataNode?.inputs?.[0];
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  isReturnArgumentTrace(dp, traceId) {
+    const contextId = dp.util.getTraceContextId(traceId);
+    return dp.util.getReturnArgumentTraceOfContext(contextId)?.traceId === traceId;
+  },
+
+  /**
+   * Returns whether given DataNode represents `x` in `return x;`
+   * 
+   * @param {RuntimeDataProvider} dp
+   */
+  isReturnArgumentInputDataNode(dp, nodeId) {
+    const dataNode = dp.util.getDataNode(nodeId);
+    if (!dp.util.isTraceOwnDataNode(nodeId)) {
+      // ignore nested DataNodes
+      return false;
+    }
+    const contextId = dp.util.getTraceContextId(dataNode.traceId);
+    const returnInputNodeId = dataNode && contextId && dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
+    return returnInputNodeId === nodeId;
+  },
+
   /** ###########################################################################
    * Control traces and staticTraces
    * ##########################################################################*/
 
-  /** @param {RuntimeDataProvider} dp */
-  getStaticTraceControlId(dp, staticTraceId) {
-    TODO
-  },
+  // /** @param {RuntimeDataProvider} dp */
+  // getStaticTraceControlId(dp, staticTraceId) {
+  //   TODO
+  // },
 
   /** @param {RuntimeDataProvider} dp */
   getStaticTraceControlRole(dp, staticTraceId) {
@@ -862,18 +893,6 @@ const dataProviderUtil = {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isDataNodeModifyType(dataNode.type)) {
       return dp.util.getDataNodeAccessedRefId(nodeId) || 0;
-    }
-    return 0;
-  },
-
-  /**
-   * @param {RuntimeDataProvider} dp
-   * @return {DataNode}
-   */
-  getDataNodeModifyingVarDeclarationTid(dp, nodeId) {
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (isDataNodeModifyType(dataNode.type)) {
-      return dataNode?.varAccess?.declarationTid;
     }
     return 0;
   },
@@ -2739,7 +2758,10 @@ const dataProviderUtil = {
     return dp.indexes.traces.byContext.get(contextId);
   },
 
-  /** @param {RuntimeDataProvider} dp */
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @return {Trace[]}
+   */
   getTracesOfContextAndType(dp, contextId, type) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     // NOTE: `Await` contexts don't have traces

@@ -28,6 +28,16 @@ export function isDataNodeModifyType(dataNodeType) {
   return modifyTypes[dataNodeType] || false;
 }
 
+const modifyOrComputeTypes = new Array(DataNodeType.getValueMaxIndex()).map(() => false);
+modifyOrComputeTypes[DataNodeType.Write] = true;
+modifyOrComputeTypes[DataNodeType.Compute] = true;
+modifyOrComputeTypes[DataNodeType.ComputeWrite] = true;
+modifyOrComputeTypes[DataNodeType.Delete] = true;
+
+export function isDataNodeModifyOrComputeType(dataNodeType) {
+  return modifyOrComputeTypes[dataNodeType] || false;
+}
+
 const writeTypes = new Array(DataNodeType.getValueMaxIndex()).map(() => false);
 writeTypes[DataNodeType.Write] = true;
 writeTypes[DataNodeType.ComputeWrite] = true;

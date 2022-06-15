@@ -24,12 +24,12 @@ export default class DDGSet {
     const graphId = this.makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
       const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
-      const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
+      const returnArgumentInputDataNodeId = this.dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
 
       if (!paramTraces.length) {
         return `Selected context (#${contextId}) did not have any (recorded) parameters.`;
       }
-      if (!returnArgumentTrace) {
+      if (!returnArgumentInputDataNodeId) {
         return `Selected context (#${contextId}) did not return anything.`;
       }
     }
@@ -50,20 +50,13 @@ export default class DDGSet {
       if (!watchTraceIds) {
         watchTraceIds = [];
         const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
-        const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
+        const returnArgumentInputDataNodeId = this.dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
 
-        if (!returnArgumentTrace) {
+        if (!returnArgumentInputDataNodeId || !returnArgumentInputDataNodeId) {
           return null;
         }
 
-        // take input of ReturnArgument instead (to avoid some really nasty small issues)
-        const returnNode = this.dp.util.getDataNode(returnArgumentTrace.nodeId);
-        const returnInputTrace = this.dp.util.getDataNode(returnNode.inputs?.[0]);
-        if (!returnInputTrace) {
-          return null;
-        }
-
-        for (const trace of [...paramTraces, returnInputTrace]) {
+        for (const trace of paramTraces) {
           if (trace) {
             // const dataNode = this.dp.util.getDataNodeOfTrace(trace.traceId);
             // if (dataNode) {
@@ -71,7 +64,8 @@ export default class DDGSet {
             // }
           }
         }
-        returnTraceId = returnInputTrace.traceId;
+        returnTraceId = this.dp.util.getTraceOfDataNode(returnArgumentInputDataNodeId).traceId;
+        watchTraceIds.push(returnTraceId);
       }
 
       this.newDataDependencyGraph(graphId, { watchTraceIds, returnTraceId });
