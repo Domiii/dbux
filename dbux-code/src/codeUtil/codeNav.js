@@ -21,7 +21,9 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('codeNa
  */
 export async function goToCodeLoc(fpath, loc) {
   const editor = await showTextDocument(fpath);
-  selectLocInEditor(editor, loc);
+  if (loc) {
+    selectLocInEditor(editor, loc);
+  }
 }
 
 export function selectLocInEditor(editor, loc) {

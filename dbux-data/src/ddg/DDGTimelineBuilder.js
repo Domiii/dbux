@@ -141,7 +141,7 @@ export default class DDGTimelineBuilder {
       ) {
         // push next iteration
         const iterationNode = new IterationNode(decisionNode.timelineId, this.#getCurrentGroupIterationCount());
-        iterationNode.label = currentGroup.label + '#' + iterationNode.i;
+        iterationNode.label = this.peekStack().label + '#' + iterationNode.i;
         this.#addAndPushGroup(iterationNode, trace.traceId);
       }
     }

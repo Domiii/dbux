@@ -488,9 +488,6 @@ export default class DotBuilder {
     if (ddgQueries.isSnapshot(this.ddg, node)) {
       s = this.makeNestedRefValueString(node);
     }
-    else if (node.value !== undefined) {
-      s = JSON.stringify(node.value);
-    }
     else if (isRepeatedRefTimelineNode(node.type)) {
       const linkNode = this.ddg.timelineNodes[node.repeatedTimelineId];
       s = this.makeNestedRefValueString(linkNode) + node.label;
@@ -498,8 +495,12 @@ export default class DotBuilder {
     else if (node.refId) {
       s = '📦';  // ref value node but without snapshot
     }
+    else if (node.value !== undefined) {
+      s = JSON.stringify(node.value);
+    }
     else {
-      s = node.label || '?';
+      // s = node.label || '?';
+      s = node.value + '';
     }
     return this.wrapText(s);
   }

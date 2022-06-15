@@ -104,7 +104,7 @@ export default class ChapterListBuilderViewController {
    * @param {Exercise} exercise 
    */
   async runAndExportDDGApplication(exercise, progress) {
-    progress.report({ message: `Running exercises...` });
+    progress?.report({ message: `Running exercises...` });
     await this.treeNodeProvider.manager.switchAndTestBug(exercise);
 
     const app = allApplications.selection.getFirst();
@@ -120,7 +120,7 @@ export default class ChapterListBuilderViewController {
 
     // future-work: make sure, this is the right application (add some isApplicationOfExercise function)
 
-    progress.report({ message: `Parsing application` });
+    progress?.report({ message: `Parsing application` });
     if (allApplications.selection.count !== 1) {
       this.treeNodeProvider.warn(`Ran test, but found more than one application (selecting first).`);
     }
