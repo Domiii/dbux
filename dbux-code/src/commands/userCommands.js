@@ -141,6 +141,8 @@ export function initUserCommands(extensionContext) {
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
     let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestDDGArgs();
+    watchTraceIds = null;
+    contextId = traceSelection.selected?.contextId;
 
     let app = allApplications.getById(applicationUuid);
     if (!allApplications.selection.containsApplication(app)) {

@@ -4,6 +4,6 @@ import HostWrapper from './HostWrapper';
 
 export default class DDGHost extends HostWrapper {
   constructor() {
-    super('Data Dependency Graph', DDGComponents, DDGDocument);
+    super('Progam Dependency Graph', DDGComponents, DDGDocument);
   }
 }
