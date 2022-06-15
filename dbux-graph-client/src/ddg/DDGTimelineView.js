@@ -69,8 +69,8 @@ const RenderCfg = {
   highlightColorCfg: {
     sat: 100
   },
-  // forceReinitGraphviz: false,
-  forceReinitGraphviz: true
+  forceReinitGraphviz: false,
+  // forceReinitGraphviz: true
 };
 
 /** ###########################################################################
@@ -305,8 +305,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * d3-graphviz implementation
    *  #########################################################################*/
 
-  async rebuildGraph() {
-    const isNew = await this.initGraphImplementation();
+  async rebuildGraph(force = false) {
+    const isNew = await this.initGraphImplementation(force);
     // console.log('new', isNew, this.ddg.settings.anim);
 
     this.buildGraph(isNew);
@@ -333,28 +333,37 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       .renderDot(graphString);
 
     if (isNew) {
+      const ShouldAnim = true;
       this.renderTimer = new PrettyTimer();
       this.graphviz
         .on('end', () => {
-          // TODO: 
           this.renderTimer?.print(null, `Graph Render (dot size = ${(this.graphString?.length / 1000).toFixed(2)})`);
           this.renderTimer = null;
           this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
-          try {
-            // // if (this.ddg.settings.anim) {
-            // NOTE: add transition only after first render
-            this.graphviz.transition(() => { // transition
-              // TODO: add a way to remove animation
-              // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
-              // if (!this.ddg.settings.anim) {
-              // }
-              return d3transition()
-                .duration(800);
-            });
-            // // }
 
-            // add node and edge decorations to the rendered DOM
-            this.decorateAfterRender();
+          try {
+            if (ShouldAnim) {
+              this.graphviz.transition(() => { // transition
+                // TODO: add a way to remove animation
+                // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+                // if (!this.ddg.settings.anim) {
+                // }
+                return d3transition()
+                  .duration(800);
+              }).on('end', () => {
+                try {
+                  // add node and edge decorations to the rendered DOM
+                  this.decorateAfterRender();
+                }
+                catch (err) {
+                  this.logger.error(`after anim event handler FAILED -`, err);
+                }
+              });
+            }
+            else {
+              // add node and edge decorations to the rendered DOM
+              this.decorateAfterRender();
+            }
           }
           catch (err) {
             // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
@@ -364,9 +373,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
   }
 
-  async initGraphImplementation() {
+  async initGraphImplementation(force) {
     // NOTE: use `this.el`'s id
-    const shouldBuildNew = RenderCfg.forceReinitGraphviz || !this.graphviz;
+    const shouldBuildNew = force || RenderCfg.forceReinitGraphviz || !this.graphviz;
     if (shouldBuildNew) {
       if (RenderCfg.forceReinitGraphviz) {
         /**
@@ -458,9 +467,14 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // hackfix: sort so clusters dont obstruct other elements
     Array.from(this.el.querySelectorAll('.graph > g'))
       .sort((a, b) => {
-        const aBack = a.classList.contains('cluster');
-        const bBack = b.classList.contains('cluster');
-        return bBack - aBack;
+        const aCluster = a.classList.contains('cluster');
+        const bCluster = b.classList.contains('cluster');
+        if (aCluster === bCluster) {
+          // sort clusters by id
+          return parseInt(a.id, 10) - parseInt(b.id, 10);
+        }
+        // always put clusters in the back
+        return bCluster - aCluster;
         // return TODO;
         // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
         // return a.id?.localeCompare(b.id || '');
@@ -683,6 +697,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // NOTE: mouseover + mouseout are not going to work when sharing "hover area" between multiple elements, so we use mousemove instead
     const hoverTargets = new Set([hoverEl, nodeEl]);
     let moveTimer;
+    const mouseMoveDelayTolerance = 500;
     document.addEventListener('mousemove', documentMouseMoveHandler = (e) => {
       if (moveTimer) { return; }  // debounce
       moveTimer = setTimeout(() => {
@@ -696,7 +711,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
           // console.log('popout', hoverStack);
           this._stopHoverAction();
         }
-      }, 80);
+      }, mouseMoveDelayTolerance);
     });
 
     this.el.appendChild(hoverEl);

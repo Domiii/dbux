@@ -15,20 +15,12 @@ class Toolbar extends ClientComponentEndpoint {
   summaryRootButtons;
 
   createEl() {
-    /**
-          <button title="Hide subgraphs that are not affected any watched node" data-el="connectedOnlyModeBtn" class="toolbar-btn btn btn-info" href="#">
-            con
-          </button>
-          <button title="Merge computation subgraphs" data-el="mergeComputationsBtn" class="toolbar-btn btn btn-info" href="#">
-            ⚙
-          </button>
-     */
-    // <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
-    //   🔁
-    // </button>
     const el = compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div data-el="buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
+        <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
+          🔁
+        </button>
           ${BootstrapBtnGroupSeparatorHtml}
         </div>
       </nav>
@@ -98,14 +90,14 @@ class Toolbar extends ClientComponentEndpoint {
 
 
   on = {
-    // rebuildBtn: {
-    //   async click(evt) {
-    //     evt.preventDefault();
-    //     this.doc.timeline.rebuildGraph();
-    //   },
+    rebuildBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        this.doc.timeline.rebuildGraph(true);
+      },
 
-    //   focus(evt) { evt.target.blur(); }
-    // },
+      focus(evt) { evt.target.blur(); }
+    },
 
     // connectedOnlyModeBtn: {
     //   async click(evt) {

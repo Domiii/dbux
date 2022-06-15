@@ -272,8 +272,10 @@ export default class DDGTimelineBuilder {
     return DDGTimelineNodeType.nameFrom(group.type);
   }
 
-  #makeGroupLabel(group) {
-    return controlGroupLabelMaker[group.type]?.(this.ddg, group) || DDGTimelineNodeType.nameFrom(group.type);
+  #makeRecursiveGroupLabel(group) {
+    const ownLabel = controlGroupLabelMaker[group.type]?.(this.ddg, group) || DDGTimelineNodeType.nameFrom(group.type);
+    const prevLabel = this.peekStack()?.label;
+    return (prevLabel ? `${prevLabel}#` : '') + ownLabel;
   }
 
   /**
@@ -301,7 +303,7 @@ export default class DDGTimelineBuilder {
       else {
         const group = new ControlGroupCtor(controlStatementId);
         // update label on pop
-        group.label = this.#makeGroupLabel(group);
+        group.label = this.#makeRecursiveGroupLabel(group);
         this.#addAndPushGroup(group, traceId);
       }
     }
@@ -324,7 +326,7 @@ export default class DDGTimelineBuilder {
           return;
         }
         // update label on pop
-        currentGroup.label = this.#makeGroupLabel(currentGroup);
+        currentGroup.label = this.#makeRecursiveGroupLabel(currentGroup);
       }
       this.#popGroup();
     }

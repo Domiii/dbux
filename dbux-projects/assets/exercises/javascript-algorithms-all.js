@@ -1264,22 +1264,40 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "BubbleSort.sort([3,4,3,4,2])",
+        "ddgTitle": "BubbleSort.sort([3,5,3,4,2])",
         "contextId": 12,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 40,
             "column": 3,
-            "index": 1166
-          }
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 39,
+              "character": 3
+            }
+          ]
         },
-        "applicationUuid": "0.47230672409869245"
+        "applicationUuid": "0.5567852789679775"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"\"])",
@@ -1289,15 +1307,23 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 40,
             "column": 3,
-            "index": 1166
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.47230672409869245"
+        "applicationUuid": "0.5567852789679775"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"a\"])",
@@ -1307,15 +1333,23 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 40,
             "column": 3,
-            "index": 1166
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.47230672409869245"
+        "applicationUuid": "0.5567852789679775"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
@@ -1325,15 +1359,23 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 40,
             "column": 3,
-            "index": 1166
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.47230672409869245"
+        "applicationUuid": "0.5567852789679775"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
@@ -1343,15 +1385,23 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 40,
             "column": 3,
-            "index": 1166
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.47230672409869245"
+        "applicationUuid": "0.5567852789679775"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
@@ -1361,15 +1411,23 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 101
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 40,
             "column": 3,
-            "index": 1166
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
           }
         },
-        "applicationUuid": "0.47230672409869245"
+        "applicationUuid": "0.5567852789679775"
       }
     ]
   },
@@ -1789,6 +1847,252 @@ module.exports = [
     "chapter": "CountingSort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,2])",
+        "contextId": 23,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([2,1])",
+        "contextId": 42,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 61,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 8,
+              "character": 79
+            },
+            {
+              "line": 76,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 152,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 333,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 514,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 695,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      }
     ]
   },
   {
@@ -3015,6 +3319,116 @@ module.exports = [
     "chapter": "InsertionSort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([3,5,3,4,2])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"\"])",
+        "contextId": 46,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"a\"])",
+        "contextId": 47,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"a\"])",
+        "contextId": 48,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 53,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"aa\"])",
+        "contextId": 67,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      }
     ]
   },
   {
