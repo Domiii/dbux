@@ -169,7 +169,7 @@ ellipse {
 
 .node:hover polygon,
 .node:hover ellipse {
-  fill: orangered;
+  fill: darkred;
   cursor: pointer;
 }
 

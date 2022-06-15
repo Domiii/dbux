@@ -71,6 +71,7 @@ const RenderCfg = {
   },
   forceReinitGraphviz: false,
   // forceReinitGraphviz: true
+  debugViewEnabled: false
 };
 
 /** ###########################################################################
@@ -343,15 +344,19 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
           try {
             if (ShouldAnim) {
+              console.log('anim1');
+              // NOTE: we only register animations *after* first render
               this.graphviz.transition(() => { // transition
                 // TODO: add a way to remove animation
                 // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
                 // if (!this.ddg.settings.anim) {
                 // }
+                console.log('anim2');
                 return d3transition()
                   .duration(800);
               }).on('end', () => {
                 try {
+                  console.log('anim3');
                   // add node and edge decorations to the rendered DOM
                   this.decorateAfterRender();
                 }
@@ -360,7 +365,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
                 }
               });
             }
-            else {
+            
+            if (!ShouldAnim || isNew) {
               // add node and edge decorations to the rendered DOM
               this.decorateAfterRender();
             }
@@ -556,7 +562,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       let debugOverlay;
       this.addNodeEventListener(node, interactionEl, 'mouseover', (evt) => {
         // show debug overlay
-        if (!debugOverlay) {
+        if (!debugOverlay && RenderCfg.debugViewEnabled) {
           // console.debug(`Hover node:`, evt.target);
           this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
           // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));

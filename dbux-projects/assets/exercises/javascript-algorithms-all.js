@@ -2284,7 +2284,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.8484316998250048"
+        "applicationUuid": "0.17332775991352745"
       }
     ]
   },
@@ -3329,13 +3329,31 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 104
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 34,
             "column": 3,
-            "index": 888
-          }
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 33,
+              "character": 3
+            }
+          ]
         },
         "applicationUuid": "0.8792445767825221"
       },
@@ -3347,12 +3365,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 104
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 34,
             "column": 3,
-            "index": 888
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.8792445767825221"
@@ -3365,12 +3391,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 104
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 34,
             "column": 3,
-            "index": 888
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.8792445767825221"
@@ -3383,12 +3417,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 104
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 34,
             "column": 3,
-            "index": 888
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.8792445767825221"
@@ -3401,12 +3443,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 104
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 34,
             "column": 3,
-            "index": 888
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.8792445767825221"
@@ -3419,12 +3469,20 @@ module.exports = [
           "start": {
             "line": 4,
             "column": 22,
-            "index": 104
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
           },
           "end": {
             "line": 34,
             "column": 3,
-            "index": 888
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
           }
         },
         "applicationUuid": "0.8792445767825221"
