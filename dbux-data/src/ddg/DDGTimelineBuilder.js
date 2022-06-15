@@ -272,9 +272,9 @@ export default class DDGTimelineBuilder {
     return DDGTimelineNodeType.nameFrom(group.type);
   }
 
-  #makeRecursiveGroupLabel(group) {
+  #makeRecursiveGroupLabel(group, prev) {
     const ownLabel = controlGroupLabelMaker[group.type]?.(this.ddg, group) || DDGTimelineNodeType.nameFrom(group.type);
-    const prevLabel = this.peekStack()?.label;
+    const prevLabel = prev?.label;
     return (prevLabel ? `${prevLabel}#` : '') + ownLabel;
   }
 
@@ -303,7 +303,7 @@ export default class DDGTimelineBuilder {
       else {
         const group = new ControlGroupCtor(controlStatementId);
         // update label on pop
-        group.label = this.#makeRecursiveGroupLabel(group);
+        group.label = this.#makeRecursiveGroupLabel(group, this.peekStack());
         this.#addAndPushGroup(group, traceId);
       }
     }
