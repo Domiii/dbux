@@ -9,7 +9,7 @@ const { log, debug, warn, error: logError } = newLogger('throttle');
  * @see https://github.com/Domiii/dbux/blob/master/dbux-common/src/util/scheduling.js
  * @see https://github.com/lodash/lodash/issues/4815
  */
-export function throttle(cb, ms = 300) {
+export function throttle(cb, ms = 100) {
   let p, args;
 
   return (..._args) => {
@@ -26,7 +26,7 @@ export function throttle(cb, ms = 300) {
             resolve(result);
           }
           catch (err) {
-            // logError('Error when executing callback', cb.name?.trim() || '(anonymous callback)', '-', err);
+            logError(`Error i throttled call ${cb.name?.trim() || '(anonymous callback)'} - ${err}`);
             reject(err);
           }
           finally {

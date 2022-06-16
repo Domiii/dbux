@@ -119,11 +119,8 @@ export default class BaseTreeViewNodeProvider {
     try {
       this.rootNodes = this.buildRoots();
       this._decorateNodes(null, this.rootNodes);
-
       this.handleRefresh();
-
-      // NOTE: if we only want to update subtree, pass root of subtree to `fire`
-      this.repaint();
+      this.#invalidate();
 
       this.refreshPromise.startIfNotStarted();
     }
@@ -143,16 +140,20 @@ export default class BaseTreeViewNodeProvider {
   //   this._onDidChangeTreeData.fire();
   // }, 10);
 
-  repaint() {
+  #invalidate() {
     this._onDidChangeTreeData.fire();
   }
+
+  refreshNode = throttle((treeItem) => {
+    this._onDidChangeTreeData.fire(treeItem);
+  }, 50);
 
   /**
    * Refresh iconPath of rootNodes and its children, then repaint the view
    */
   refreshIcon() {
     this._refreshNodesIconPath(this.rootNodes);
-    this.repaint();
+    this.#invalidate();
   }
 
   _refreshNodesIconPath(nodes) {

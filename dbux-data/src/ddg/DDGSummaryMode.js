@@ -1,7 +1,7 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let DDGSummaryModeConfig = {
+let dDGSummaryModeConfig = {
   /**
    * Non-group (plain) nodes only.
    * Show this node.
@@ -48,9 +48,9 @@ let DDGSummaryModeConfig = {
 };
 
 /**
- * @type {(Enum|typeof DDGSummaryModeConfig)}
+ * @type {(Enum|typeof dDGSummaryModeConfig)}
  */
-const DDGSummaryMode = new Enum(DDGSummaryModeConfig);
+const DDGSummaryMode = new Enum(dDGSummaryModeConfig);
 
 /**
  * SummaryModes that are available to root.
@@ -80,6 +80,13 @@ collapsedModes[DDGSummaryMode.Collapse] = true;
 collapsedModes[DDGSummaryMode.CollapseSummary] = true;
 export function isCollapsedMode(mode) {
   return collapsedModes[mode] || false;
+}
+
+const expandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
+expandedModes[DDGSummaryMode.ExpandSelf] = true;
+expandedModes[DDGSummaryMode.ExpandSubgraph] = true;
+export function isExpandedMode(mode) {
+  return expandedModes[mode] || false;
 }
 
 

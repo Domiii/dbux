@@ -11,18 +11,22 @@ import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
 /**
  * @param {DDGTimelineNode} node 
  */
-export function renderNodeTree(ddg, node) {
+export function renderNodeTree(ddg, node, cfg) {
+  const { predicate, propsFactory } = EmptyObject;
   const { timelineNodes } = ddg;
   if (!node) {
-    return makeTreeItem('(null)'); // DDG build has a bug
+    return makeTreeItem('(null)'); // DDG build has a bug?
   }
   const { children: childrenIds = EmptyArray } = node;
   const children = new childrenIds.constructor();
   Object.entries(childrenIds).forEach(([key, childId]) => {
     const childNode = timelineNodes[childId];
-    children[key] = renderNodeTree(ddg, childNode);
+    if (!predicate?.(childNode)) {
+      // add child
+      children[key] = renderNodeTree(ddg, childNode, cfg);
+    }
   });
-  return renderDDGNode(ddg, node, children);
+  return renderDDGNode(ddg, node, children, propsFactory?.(node) || EmptyObject);
 }
 
 function nodeTypeLabel(node) {
@@ -66,6 +70,10 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
   const labelOverride = moreProps.label;
   if ('label' in moreProps) {
     delete moreProps.label;
+  }
+  const { handleClick } = moreProps;
+  if ('handleClick' in moreProps) {
+    delete moreProps.handleClick;
   }
   const label = labelOverride || makeDDGNodeLabel(ddg, node.timelineId);
 
@@ -114,6 +122,7 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
       handleClick() {
         // select
         selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
+        handleClick(node);
       },
       ...moreProps
     }

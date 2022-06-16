@@ -142,7 +142,7 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
     let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestDDGArgs();
     watchTraceIds = null;
-    contextId = traceSelection.selected?.contextId;
+    contextId = traceSelection.selected?.contextId || contextId;
 
     let app = allApplications.getById(applicationUuid);
     if (!allApplications.selection.containsApplication(app)) {
@@ -246,7 +246,7 @@ export function initUserCommands(extensionContext) {
       });
 
       // select DDG Debug node
-      const ddg = dp.ddgs.graphs[0];
+      const ddg = dp.ddgs.ddgs[0];
       if (ddg) {
         await getGlobalAnalysisViewController().revealDDG(ddg);
       }

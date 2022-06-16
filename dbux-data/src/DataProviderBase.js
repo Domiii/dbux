@@ -356,6 +356,10 @@ export default class DataProviderBase {
     }
   }
 
+  /** ###########################################################################
+   * event handling
+   * ##########################################################################*/
+
   /**
    * Called after `postAdd`.
    * That includes add calls from collections that add data manually.
@@ -402,6 +406,10 @@ export default class DataProviderBase {
       }
     });
   }
+
+  /** ###########################################################################
+   * serialization
+   * ##########################################################################*/
 
   serializeCollectionsJson(names) {
     return this.serializeJson(names.map(name => (

@@ -27,6 +27,7 @@ import ddgQueries, { ddgHostQueries } from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
 
+/** @typedef { import("./DDGSet").default } DDGSet */
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
@@ -41,11 +42,6 @@ export default class BaseDDG {
    * @type {string}
    */
   id;
-
-  /**
-   * @type {RuntimeDataProvider}
-   */
-  dp;
 
   /**
    * @type {DDGWatchSet}
@@ -121,17 +117,21 @@ export default class BaseDDG {
 
   /**
    * 
-   * @param {RuntimeDataProvider} dp 
+   * @param {DDGSet} ddgSet
    */
-  constructor(dp, graphId) {
+  constructor(ddgSet, graphId) {
     this.logger = newLogger('DDG');
-    this.dp = dp;
+    this.ddgSet = ddgSet;
     this.graphId = graphId;
   }
 
   /** ###########################################################################
    * getters
    * ##########################################################################*/
+
+  get dp() {
+    return this.ddgSet.dp;
+  }
 
   get watchSet() {
     return this._watchSet;

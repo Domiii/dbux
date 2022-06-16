@@ -1,3 +1,6 @@
+import pull from 'lodash/pull';
+import { throttle } from '@dbux/common/src/util/scheduling';
+import NanoEvents from 'nanoevents';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import DataDependencyGraph from './DataDependencyGraph';
 
@@ -5,7 +8,7 @@ export default class DDGSet {
   /**
    * @type {DataDependencyGraph[]}
    */
-  graphs;
+  ddgs;
 
   /**
    * 
@@ -16,12 +19,20 @@ export default class DDGSet {
     this.clear();
   }
 
-  makeGraphId(...inputs) {
+  getAll() {
+    return this.ddgs;
+  }
+
+  contains(ddg) {
+    return this.ddgs.includes(ddg);
+  }
+
+  #makeGraphId(...inputs) {
     return `DDG (${inputs.join(',')})`;
   }
 
   getCreateDDGFailureReason({ applicationId, contextId }) {
-    const graphId = this.makeGraphId(applicationId, contextId);
+    const graphId = this.#makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
       const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
       const returnArgumentInputDataNodeId = this.dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
@@ -36,16 +47,12 @@ export default class DDGSet {
     return null;
   }
 
-  getAll() {
-    return this.graphs;
-  }
-
   /**
    * @returns {DataDependencyGraph}
    */
   getOrCreateDDG(ddgArgs) {
     let { applicationId, contextId, watchTraceIds, returnTraceId } = ddgArgs;
-    const graphId = this.makeGraphId(applicationId, contextId);
+    const graphId = this.#makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
       if (!watchTraceIds) {
         watchTraceIds = [];
@@ -74,23 +81,76 @@ export default class DDGSet {
   }
 
   newDataDependencyGraph(graphId, watched) {
-    const graph = new DataDependencyGraph(this.dp, graphId);
+    const graph = new DataDependencyGraph(this, graphId);
     graph.build(watched);
-    this._add(graphId, graph);
+    this.#add(graphId, graph);
     return graph;
   }
 
   /**
    * @param {DataDependencyGraph} graph 
    */
-  _add(graphId, graph) {
+  #add(graphId, graph) {
     graph.id = graphId;
     this.graphsById.set(graphId, graph);
-    this.graphs.push(graph);
+    this.ddgs.push(graph);
+
+    this.#notifyChanged();
+  }
+
+  /**
+   * 
+   * @param {DataDependencyGraph} ddg 
+   */
+  remove(ddg) {
+    this.graphsById.delete(ddg.graphId);
+    pull(this.ddgs, ddg);
+
+    this.#notifyChanged();
   }
 
   clear() {
-    this.graphs = [];
+    this.ddgs = [];
     this.graphsById = new Map();
+
+    this.#notifyChanged();
   }
+
+  /** ###########################################################################
+   * events + subscriptions
+   * ######################################################################### */
+
+  #emitter = new NanoEvents();
+
+  /**
+   */
+  onSetChanged(cb) {
+    const unsubscribe = this.#emitter.on('setChanged', cb);
+    return unsubscribe;
+  }
+
+  #notifyChanged() {
+    // this.#unsubscribeAll();
+    this.#emitter.emit('setChanged', this.ddgs);
+  }
+
+  _notifyUpdate = throttle((ddg) => {
+    this.#emitter.emit('graph-update', ddg);
+  });
+
+  onGraphUpdate(cb) {
+    return this.#emitter.on('graph-update', cb);
+  }
+
+  // #unsubscribeCallbacks = [];
+  // subscribe(...unsubscribeCallbacks) {
+  //   this.#unsubscribeCallbacks.push(...unsubscribeCallbacks);
+  // }
+  // /**
+  //  * Stop listening on all events subscribed to with subscribe.
+  //  */
+  // #unsubscribeAll() {
+  //   this.#unsubscribeCallbacks.forEach(unsubscribe => unsubscribe());
+  //   this.#unsubscribeCallbacks = [];
+  // }
 }

@@ -1,5 +1,9 @@
+import NanoEvents from 'nanoevents';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
+import DataNodeType, { isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { DDGRootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
@@ -8,8 +12,6 @@ import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
-import DataNodeType, { isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
-import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -120,10 +122,16 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   settings = new DDGSettings();
 
+  /** ########################################
+   * other
+   * #######################################*/
+
+  _emitter = new NanoEvents();
+
   debugValueId;
 
-  constructor(dp, graphId) {
-    super(dp, graphId);
+  constructor(ddgSet, graphId) {
+    super(ddgSet, graphId);
   }
 
   getRenderData() {
@@ -355,7 +363,7 @@ export default class DataDependencyGraph extends BaseDDG {
    */
   build(watched) {
     if (!this.og) {
-      this.og = new BaseDDG(this.dp, this.graphId);
+      this.og = new BaseDDG(this.ddgSet, this.graphId);
     }
     this.buildStage = BuildStage.Building;
     try {
@@ -538,6 +546,17 @@ export default class DataDependencyGraph extends BaseDDG {
         this.addEdge(edgeType, from, to, edgeState);
       }
     }
+
+    this.#notifyUpdate();
+    this.ddgSet._notifyUpdate(this);
+  }
+
+  #notifyUpdate = throttle(() => {
+    this._emitter.emit('update', this);
+  });
+
+  onUpdate(cb) {
+    return this._emitter.on('update', cb);
   }
 
   /**

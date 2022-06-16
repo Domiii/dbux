@@ -54,11 +54,6 @@ export default class DataDependencyGraphWebView extends RichWebView {
  */
 let activeWebviews = new Map();
 
-export function disposeDDGWebviews() {
-  Array.from(activeWebviews.values()).forEach(w => w.dispose());
-  activeWebviews = new Map();
-}
-
 /**
  * @return {DataDependencyGraphWebView} ddg 
  */
@@ -78,6 +73,10 @@ export async function getDDGDot(ddg) {
   }
   return null;
 }
+
+/** ###########################################################################
+ * show + init
+ * ##########################################################################*/
 
 export async function showDDGViewForContextOfSelectedTrace() {
   let initialState;
@@ -146,22 +145,41 @@ function makeFailureState(failureReason) {
   return { failureReason, timelineNodes: null, edges: null };
 }
 
+/**
+ * @param {DataDependencyGraph} ddg 
+ */
 async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
+  // TODO: we currently don't close window if DDG is gone from set, but this way, it will be out of sync with DDGs treeview
+
   // future-work: select correct window, based on initial state
-  const dDGWebView = await initDDGView(ddg, ddgDocumentInitialState, hostOnlyState);
+  const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState);
+  await dDGWebView.init();
   await dDGWebView.show();
-  // TODO: add new action type
+  // pathways-todo: add new action type
   // emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
+  activeWebviews.set(ddg, dDGWebView);
+  dDGWebView.onDispose(() => {
+    ddg.ddgSet.remove(ddg);
+  });
+  // ddg.ddgSet.onSetChanged(() => {
+  //   if (!ddg.ddgSet.contains(ddg)) {
+  //     // ddg got removed → clean up?
+  //   }
+  // });
   return dDGWebView;
 }
 
-async function initDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
-  const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState);
-  await dDGWebView.init();
-  activeWebviews.set(ddg, dDGWebView);
-  return dDGWebView;
-}
+/** ###########################################################################
+ * public control functions
+ * future-work: make this non-global?
+ * ##########################################################################*/
 
 export function getActiveDDGWebview() {
   return Array.from(activeWebviews.values()).find(w => w.isVisible);
+}
+
+
+export function disposeDDGWebviews() {
+  Array.from(activeWebviews.values()).forEach(w => w.dispose());
+  activeWebviews = new Map();
 }
