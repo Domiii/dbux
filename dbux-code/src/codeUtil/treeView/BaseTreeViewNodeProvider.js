@@ -425,12 +425,6 @@ export default class BaseTreeViewNodeProvider {
     // this.logger.debug(`getChildren ${node?.label || node}`);
     const children = await this._getChildren(node);
     this.refreshPromise.resolve(children);
-
-    // // NOTE: creating new child with different `collapsibleState` does not work
-    // children.forEach(child => {
-    //   this.logger.debug(
-    //     `[TREEITEM DEBUG] ${child.label} getChildren: ${child.collapsibleState === TreeItemCollapsibleState.Expanded}`);
-    // });
     return children;
   }
 

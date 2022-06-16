@@ -520,7 +520,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     let interactionEl = nodeEl;
 
     if (
-      ddgQueries.isNodeSummarizable(node) &&
+      ddgQueries.isNodeSummarizable(ddg, node) &&
 
       // TODO: this check should now be taken care of by isVisible (not necessary anymore)
       (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
@@ -631,7 +631,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     o.type = DDGTimelineNodeType.nameFrom(o.type);
     o.children = JSON.stringify(o.children); // simplify children
     o.summaryMode = DDGSummaryMode.nameFrom(ddg.summaryModes[node.timelineId]);
-    if (ddgQueries.isNodeSummarizable(node)) {
+    if (ddgQueries.isNodeSummarizable(ddg, node)) {
       o.summary = ddg.nodeSummaries[node.timelineId]; // add summary info
     }
 

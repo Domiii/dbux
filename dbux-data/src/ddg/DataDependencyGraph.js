@@ -12,6 +12,7 @@ import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -240,14 +241,22 @@ export default class DataDependencyGraph extends BaseDDG {
    * Convinient little tool
    */
   toggleSummaryMode(timelineId) {
-    const summaryMode = this.summaryModes[timelineId];
+    const { summaryModes } = this;
+    const summaryMode = summaryModes[timelineId];
     if (isExpandedMode(summaryMode)) {
       // collapse
       this.setSummaryMode(timelineId, DDGSummaryMode.CollapseSummary);
     }
     else {
       // expand
+      const summarizableChildren = ddgQueries.getSummarizableChildren(this, timelineId);
       this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSelf);
+      if (summarizableChildren.length === 1 &&
+        !isExpandedMode(summaryModes[summarizableChildren[0].timelineId])
+      ) {
+        // open up single nested expandable child as well
+        this.toggleSummaryMode(summarizableChildren[0].timelineId);
+      }
     }
   }
 
@@ -316,7 +325,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // hide all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplySummaryMode(childNode, DDGSummaryMode.Collapse) ?
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
           DDGSummaryMode.CollapseSummary :
           DDGSummaryMode.Hide;
         this.#applyMode(childId, targetMode);
@@ -329,7 +338,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // collapse all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplySummaryMode(childNode, DDGSummaryMode.Collapse) ?
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
           DDGSummaryMode.CollapseSummary : // temporary hackfix
           DDGSummaryMode.Show;
         this.#applyMode(childId, targetMode);
@@ -342,7 +351,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // expand all children and their children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplySummaryMode(childNode, DDGSummaryMode.Collapse) ?
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
           DDGSummaryMode.ExpandSubgraph :
           DDGSummaryMode.Show;
         this.#applyMode(childId, targetMode);
@@ -362,7 +371,7 @@ export default class DataDependencyGraph extends BaseDDG {
   #applyMode(timelineId, mode) {
     const { og } = this;
     const node = og.timelineNodes[timelineId];
-    if (ddgQueries.canApplySummaryMode(node, mode)) {
+    if (ddgQueries.canApplySummaryMode(this, node, mode)) {
       this.summaryModes[timelineId] = mode;
       this.propagateSummaryMode[mode](timelineId);
     }

@@ -57,19 +57,19 @@ export class RenderState {
  * ##########################################################################*/
 
 const _canApplySummaryMode = {
-  [DDGSummaryMode.Show]: (node) => {
+  [DDGSummaryMode.Show]: (ddg, node) => {
     return (
       !!node.dataNodeId && // ← implies that root is excluded
       !node.watched // cannot change state of watched nodes
     );
   },
-  [DDGSummaryMode.Hide]: (node) => {
+  [DDGSummaryMode.Hide]: (ddg, node) => {
     return (
       !isRoot(node.timelineId) && // cannot hide the root
       !node.watched // cannot change state of watched nodes
     );
   },
-  [DDGSummaryMode.Collapse]: (node) => {
+  [DDGSummaryMode.Collapse]: (ddg, node) => {
     return !isRoot(node.timelineId) &&
       isControlGroupTimelineNode(node.type);
   },
@@ -77,21 +77,21 @@ const _canApplySummaryMode = {
    * 
    * @param {DDGTimelineNode} node 
    */
-  [DDGSummaryMode.CollapseSummary]: (node) => {
+  [DDGSummaryMode.CollapseSummary]: (ddg, node) => {
     // TODO: improve this
     // eslint-disable-next-line no-use-before-define
-    return ddgQueries.isNodeSummarizable(node);
+    return ddgQueries.isNodeSummarizable(ddg, node);
   },
-  [DDGSummaryMode.SummarizeChildren]: (node) => {
+  [DDGSummaryMode.SummarizeChildren]: (ddg, node) => {
     return isControlGroupTimelineNode(node.type);
   },
-  [DDGSummaryMode.ExpandSelf]: (node) => {
+  [DDGSummaryMode.ExpandSelf]: (ddg, node) => {
     return isControlGroupTimelineNode(node.type);
   },
-  [DDGSummaryMode.ExpandSubgraph]: (node) => {
+  [DDGSummaryMode.ExpandSubgraph]: (ddg, node) => {
     return isControlGroupTimelineNode(node.type);
   },
-  [DDGSummaryMode.HideChildren]: (node) => {
+  [DDGSummaryMode.HideChildren]: (ddg, node) => {
     // only applies to root (all other nodes are "collapse"d instead)
     return isRoot(node.timelineId);
   }
@@ -177,11 +177,11 @@ const ddgQueries = {
 
     return node.watched || (
       isShownMode(summaryMode) &&
-      this.checkNodeVisibilitySettings(ddg, node) &&
+      ddgQueries.checkNodeVisibilitySettings(ddg, node) &&
 
       // hide empty summary nodes
       // NOTE: we check for `doesNodeHaveSummary` in a few other places as well
-      (!this.isNodeSummarizedMode(ddg, node) || this.doesNodeHaveSummary(ddg, node))
+      (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
     );
   },
 
@@ -200,6 +200,29 @@ const ddgQueries = {
    */
   isExpandedGroupNode(ddg, node) {
     return isControlGroupTimelineNode(node.type) && !ddgQueries.isCollapsed(ddg, node);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  canNodeExpand(ddg, node) {
+    // ddgQueries.getSummarizableChildren(this, node.timelineId).length
+    return ddgQueries.isNodeSummarizable(ddg, node) && !!ddgQueries.getSummarizableChildren(ddg, node.timelineId).length;
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getSummarizableChildren(ddg, timelineId) {
+    const node = ddg.timelineNodes[timelineId];
+    return Object.values(node.children || EmptyObject)
+      .map(childId => {
+        const child = ddg.timelineNodes[childId];
+        return ddgQueries.isNodeSummarizable(ddg, child) ? child : null;
+      })
+      .filter(Boolean);
   },
 
   /**
@@ -260,6 +283,8 @@ const ddgQueries = {
   },
 
   /**
+   * Whether the summary of this node has already been prepared.
+   * 
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
@@ -268,14 +293,27 @@ const ddgQueries = {
     return nodeSummary?.summaryRoots?.length;
   },
 
+  wasNodeSummarizedBefore(ddg, node) {
+    const nodeSummary = ddg.nodeSummaries[node.timelineId];
+    return !!nodeSummary;
+  },
+
   /**
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
-  isNodeSummarizable(node) {
-    return !isRoot(node.timelineId) &&
+  isNodeSummarizable(ddg, node) {
+    return (
+      !isRoot(node.timelineId) &&
       isControlGroupTimelineNode(node.type) &&
-      node.hasSummarizableWrites;
+      node.hasSummarizableWrites && (
+        // we don't know yet
+        !ddgQueries.wasNodeSummarizedBefore(ddg, node) ||
+
+        // actually check if summarizable
+        ddgQueries.doesNodeHaveSummary(ddg, node)
+      )
+    );
   },
 
   /**
@@ -319,9 +357,9 @@ const ddgQueries = {
   /**
    * @param {BaseDDG} ddg 
    */
-  canApplySummaryMode(node, mode) {
+  canApplySummaryMode(ddg, node, mode) {
     // const node = ddg.timelineNodes[timelineId];
-    return _canApplySummaryMode[mode](node);
+    return _canApplySummaryMode[mode](ddg, node);
   },
 
   /** ###########################################################################

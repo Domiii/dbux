@@ -97,12 +97,16 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
           const root = timelineNodes[1];
           const rootItem = renderNodeTree(ddg, root, {
             predicate: (node) => isControlGroupTimelineNode(node.type),
-            propsFactory: (node) => {
+            propsFactory: (node, children) => {
               const summaryMode = ddg.summaryModes[node.timelineId];
-              const collapsibleState = isExpandedMode(summaryMode) ?
+              const expanded = isExpandedMode(summaryMode) || 
+                Object.values(children).some(c => c.collapsibleState === TreeItemCollapsibleState.Expanded);
+              const cannotExpand = !expanded && !ddgQueries.canNodeExpand(ddg, node);
+              const collapsibleState = (expanded) ?
                 TreeItemCollapsibleState.Expanded :
-                TreeItemCollapsibleState.Collapsed;
-              // console.log(`EXPANDED #${node.timelineId} ${DDGSummaryMode.nameFrom(summaryMode)} ${collapsibleState === TreeItemCollapsibleState.Expanded}`);
+                cannotExpand ?
+                  TreeItemCollapsibleState.None :
+                  TreeItemCollapsibleState.Collapsed;
               return {
                 handleClick: () => {
                   ddg.toggleSummaryMode(node.timelineId);
@@ -112,26 +116,6 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
               };
             }
           });
-
-          // // hackfix
-          // setTimeout(async () => {
-          //   const promises = [];
-          //   const revealDfs = (node) => {
-          //     promises.push(self.treeNodeProvider.treeView.reveal(node, {
-          //       select: false,
-          //       focus: false,
-          //       expand: node.collapsibleState === TreeItemCollapsibleState.Expanded
-          //     }));
-          //     node.children?.forEach(revealDfs);
-          //   };
-          //   try {
-          //     revealDfs(rootItem);
-          //     await Promise.all(promises);
-          //   }
-          //   catch (err) {
-          //     self.treeNodeProvider.logger.error(`Reval hackfix failed: ${err.stack || err}`);
-          //   }
-          // }, 100);
 
           // console.log(`ROOT EXPANDED ${DDGSummaryMode.nameFrom(ddg.summaryModes[1])} ${rootItem.collapsibleState === TreeItemCollapsibleState.Expanded}`);
           return rootItem;

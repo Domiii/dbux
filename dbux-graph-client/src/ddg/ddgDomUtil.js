@@ -97,7 +97,7 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
 export function decorateSummaryButton(btnEl, btnMode, ddg, timelineId) {
   const node = ddg.timelineNodes[timelineId];
   const actualMode = ddg.summaryModes[timelineId];
-  const disabled = !ddgQueries.canApplySummaryMode(node, btnMode);
+  const disabled = !ddgQueries.canApplySummaryMode(ddg, node, btnMode);
   btnEl.disabled = disabled;
   decorateClasses(btnEl, {
     disabled,
