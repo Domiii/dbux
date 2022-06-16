@@ -121,6 +121,10 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       }
     },
 
+    async toggleSummaryMode(cfg) {
+      this.ddg.toggleSummaryMode(cfg.timelineId);
+    },
+
     /**
      * Handle update graph request from client
      */

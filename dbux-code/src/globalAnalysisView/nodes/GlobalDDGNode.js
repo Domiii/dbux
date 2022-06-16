@@ -62,8 +62,8 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
   }
 
   handleClick() {
-    // this.treeNodeProvider.refresh();
-    this.refresh();
+    this.treeNodeProvider.refresh();
+    // this.refresh();
   }
 
   buildChildren() {
@@ -88,32 +88,53 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
       nodeSummaries
     } = ddg.getRenderData();
 
+    const self = this; // hackfix
+
     const ddgItem = makeTreeItem(() => ({
       label: graphId,
       children: () => (makeTreeItems(
         function Group_Tree() {
           const root = timelineNodes[1];
-          return renderNodeTree(ddg, root, {
+          const rootItem = renderNodeTree(ddg, root, {
             predicate: (node) => isControlGroupTimelineNode(node.type),
             propsFactory: (node) => {
               const summaryMode = ddg.summaryModes[node.timelineId];
+              const collapsibleState = isExpandedMode(summaryMode) ?
+                TreeItemCollapsibleState.Expanded :
+                TreeItemCollapsibleState.Collapsed;
+              // console.log(`EXPANDED #${node.timelineId} ${DDGSummaryMode.nameFrom(summaryMode)} ${collapsibleState === TreeItemCollapsibleState.Expanded}`);
               return {
                 handleClick: () => {
-                  if (isExpandedMode(summaryMode)) {
-                    // collapse
-                    ddg.setSummaryMode(node.timelineId, DDGSummaryMode.CollapseSummary);
-                  }
-                  else {
-                    // expand
-                    ddg.setSummaryMode(node.timelineId, DDGSummaryMode.ExpandSelf);
-                  }
+                  ddg.toggleSummaryMode(node.timelineId);
                 },
-                collapsibleState: isExpandedMode(summaryMode) ?
-                  TreeItemCollapsibleState.Expanded :
-                  TreeItemCollapsibleState.Collapsed
+                // collapsibleState: TreeItemCollapsibleState.Expanded
+                collapsibleState
               };
             }
           });
+
+          // // hackfix
+          // setTimeout(async () => {
+          //   const promises = [];
+          //   const revealDfs = (node) => {
+          //     promises.push(self.treeNodeProvider.treeView.reveal(node, {
+          //       select: false,
+          //       focus: false,
+          //       expand: node.collapsibleState === TreeItemCollapsibleState.Expanded
+          //     }));
+          //     node.children?.forEach(revealDfs);
+          //   };
+          //   try {
+          //     revealDfs(rootItem);
+          //     await Promise.all(promises);
+          //   }
+          //   catch (err) {
+          //     self.treeNodeProvider.logger.error(`Reval hackfix failed: ${err.stack || err}`);
+          //   }
+          // }, 100);
+
+          // console.log(`ROOT EXPANDED ${DDGSummaryMode.nameFrom(ddg.summaryModes[1])} ${rootItem.collapsibleState === TreeItemCollapsibleState.Expanded}`);
+          return rootItem;
         },
 
         // function Detailed_Tree() {
@@ -210,7 +231,8 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
         /**
          * Used for reveal magic in `revealDDG`.
          */
-        ddg
+        ddg,
+        collapsibleState: TreeItemCollapsibleState.Expanded
       }
     }));
 

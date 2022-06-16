@@ -7,7 +7,7 @@ import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNod
 import { DDGRootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
-import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
+import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode, isExpandedMode } from './DDGSummaryMode';
 import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
@@ -234,6 +234,21 @@ export default class DataDependencyGraph extends BaseDDG {
     // build graph again
     // TODO: not all settings need a re-build
     this.#buildSummarizedGraph();
+  }
+
+  /**
+   * Convinient little tool
+   */
+  toggleSummaryMode(timelineId) {
+    const summaryMode = this.summaryModes[timelineId];
+    if (isExpandedMode(summaryMode)) {
+      // collapse
+      this.setSummaryMode(timelineId, DDGSummaryMode.CollapseSummary);
+    }
+    else {
+      // expand
+      this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSelf);
+    }
   }
 
   setSummaryMode(timelineId, mode) {

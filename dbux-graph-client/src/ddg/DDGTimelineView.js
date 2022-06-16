@@ -21,6 +21,7 @@ import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryL
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
 import sleep from '@dbux/common/src/util/sleep';
+import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
@@ -419,6 +420,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * timeline controls
    *  #########################################################################*/
 
+  async toggleSummaryMode(timelineId) {
+    await this.remote.toggleSummaryMode({ timelineId });
+  }
+
   async setSummaryMode(timelineId, summaryMode) {
     await this.remote.updateGraph({ timelineId, summaryMode });
   }
@@ -552,6 +557,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // labelEl.innerHTML = labelEl.innerHTML;
       nodeEl.parentElement.appendChild(modeEl);
 
+      // add click handler to label
+      labelEl.addEventListener('mousedown', () => {
+        return this.toggleSummaryMode(node.timelineId);
+      });
+
       // future-work: add a bigger popup area, to make things better clickable
       // popupTriggerEl = compileHtmlElement(/*html*/`<`);
       interactionEl = labelEl;
@@ -587,6 +597,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
   }
 
+  /**
+   * @param {DDGTimelineNode} node 
+   * @param {Element} nodeEl 
+   */
   getSummarizableNodeLabelEl(node, nodeEl) {
     return nodeEl.querySelector('text');
   }

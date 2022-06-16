@@ -85,6 +85,8 @@ export function isCollapsedMode(mode) {
 const expandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 expandedModes[DDGSummaryMode.ExpandSelf] = true;
 expandedModes[DDGSummaryMode.ExpandSubgraph] = true;
+expandedModes[DDGSummaryMode.HideChildren] = true;
+expandedModes[DDGSummaryMode.SummarizeChildren] = true;
 export function isExpandedMode(mode) {
   return expandedModes[mode] || false;
 }

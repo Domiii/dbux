@@ -19,6 +19,7 @@ export function renderNodeTree(ddg, node, cfg) {
   }
   const { children: childrenIds = EmptyArray } = node;
   const children = new childrenIds.constructor();
+  const props = propsFactory?.(node) || EmptyObject;
   Object.entries(childrenIds).forEach(([key, childId]) => {
     const childNode = timelineNodes[childId];
     if (predicate?.(childNode)) {
@@ -26,7 +27,10 @@ export function renderNodeTree(ddg, node, cfg) {
       children[key] = renderNodeTree(ddg, childNode, cfg);
     }
   });
-  return renderDDGNode(ddg, node, children, propsFactory?.(node) || EmptyObject);
+  const nodeItem = renderDDGNode(ddg, node, children, props);
+
+  nodeItem.id = node.label + '#' + Math.random() + ''; // hackfix
+  return nodeItem;
 }
 
 function nodeTypeLabel(node) {

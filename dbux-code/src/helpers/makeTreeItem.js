@@ -246,6 +246,7 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
     }
   }
   item = new TreeItem(label, collapsibleState);
+  item.collapsibleState = collapsibleState;
 
   if (!renderChildrenInline) {
     if (isFunction(children)) {
