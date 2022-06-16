@@ -116,10 +116,10 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
           });
         },
 
-        function Detailed_Tree() {
-          const root = timelineNodes[1];
-          return renderNodeTree(ddg, root);
-        },
+        // function Detailed_Tree() {
+        //   const root = timelineNodes[1];
+        //   return renderNodeTree(ddg, root);
+        // },
 
         function Visible_Nodes() {
           const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);

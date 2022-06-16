@@ -4,7 +4,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItems, objectToTreeItems } from '../helpers/makeTreeItem';
 
 export function selectDataNodeOrTrace(dp, traceId, dataNodeId) {
-  const dataNode = dp.util.getDataNode(dataNodeId);
+  const dataNode = dataNodeId || dp.util.getDataNode(dataNodeId);
   if (!traceId) {
     ({ traceId } = dataNode);
   }

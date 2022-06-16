@@ -12,7 +12,7 @@ import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
  * @param {DDGTimelineNode} node 
  */
 export function renderNodeTree(ddg, node, cfg) {
-  const { predicate, propsFactory } = EmptyObject;
+  const { predicate, propsFactory } = cfg || EmptyObject;
   const { timelineNodes } = ddg;
   if (!node) {
     return makeTreeItem('(null)'); // DDG build has a bug?
@@ -21,7 +21,7 @@ export function renderNodeTree(ddg, node, cfg) {
   const children = new childrenIds.constructor();
   Object.entries(childrenIds).forEach(([key, childId]) => {
     const childNode = timelineNodes[childId];
-    if (!predicate?.(childNode)) {
+    if (predicate?.(childNode)) {
       // add child
       children[key] = renderNodeTree(ddg, childNode, cfg);
     }
@@ -68,10 +68,14 @@ export function makeDDGNodeLabel(ddg, timelineId) {
 export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObject, labelPrefix = '') {
   const { dp } = ddg;
   const labelOverride = moreProps.label;
+  const { handleClick } = moreProps;
+  ({ labelPrefix = labelPrefix } = moreProps);
   if ('label' in moreProps) {
     delete moreProps.label;
   }
-  const { handleClick } = moreProps;
+  if ('labelPrefix' in moreProps) {
+    delete moreProps.labelPrefix;
+  }
   if ('handleClick' in moreProps) {
     delete moreProps.handleClick;
   }
@@ -121,7 +125,9 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
       description: makeDDGNodeDescription(ddg, node),
       handleClick() {
         // select
-        selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
+        if (node.traceId || node.dataNodeId) {
+          selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
+        }
         handleClick(node);
       },
       ...moreProps
