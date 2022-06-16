@@ -1324,11 +1324,26 @@ const dataProviderUtil = {
     return valueString;
   },
 
+  /**
+   * Uses some heuristics to get a good name for a ref that was stored in given node.
+   * @param {RuntimeDataProvider} dp 
+   */
+  guessRefVarName(dp, nodeId) {
+    // 0. get by declarationTid
+    let varName = dp.util.getDataNodeDeclarationVarName(nodeId);
+    if (!varName) {
+      // 1. get original var name
+      const dataNode = dp.util.getDataNode(nodeId);
+      varName = dp.util.getRefOriginalVarName(dataNode.refId);
+    }
+    return varName;
+  },
+
   /** 
    * Uses some heuristics to find the first var a given ref was assigned to.
    * @param {RuntimeDataProvider} dp 
    */
-  getRefVarName(dp, refId) {
+  getRefOriginalVarName(dp, refId) {
     // 1. all dataNodes who held the value of given refId
     const dataNodes = dp.util.getDataNodesByRefId(refId);
     if (dataNodes) {
@@ -1356,7 +1371,7 @@ const dataProviderUtil = {
   getDataNodeAccessedRefVarName(dp, dataNodeId) {
     const refId = dp.util.getDataNodeAccessedRefId(dataNodeId);
     if (refId) {
-      return dp.util.getRefVarName(refId);
+      return dp.util.getRefOriginalVarName(refId);
     }
     return null;
   },

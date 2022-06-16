@@ -475,7 +475,7 @@ export default class BaseDDG {
       label = 'ret';
     }
     else if (dataNode.refId) {
-      const varName = dp.util.getRefVarName(dataNode.refId);
+      const varName = dp.util.guessRefVarName(dataNode.nodeId);
       const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
       if (!isNewValue && varName) {
         label = varName;

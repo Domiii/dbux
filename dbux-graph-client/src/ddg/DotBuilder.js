@@ -339,7 +339,7 @@ export default class DotBuilder {
     else {
       // TODO: this hackfix will not work because often times, the group has children, but the children are not rendered
       // hackfix: we need to render something, or else group is not shown
-      this.command(`${node.timelineId} ${this.nodeAttrs(node)}`);
+      // this.command(`${node.timelineId} ${this.nodeAttrs(node.timelineId)}`);
     }
 
     this.indentLevel -= 1;
