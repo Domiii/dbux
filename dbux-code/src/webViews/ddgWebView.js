@@ -115,6 +115,7 @@ export async function showDDGViewForArgs(ddgArgs) {
   let ddg;
   if (failureReason) {
     initialState = makeFailureState(failureReason);
+    hostOnlyState = { };
   }
   else {
     ddg = dp.ddgs.getOrCreateDDG(ddgArgs);

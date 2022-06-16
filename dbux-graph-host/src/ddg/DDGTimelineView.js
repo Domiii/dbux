@@ -30,11 +30,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   }
 
   init() {
-    this.addDisposable(
-      this.doc.onMergeComputesModeChanged(this.#handleMergeComputesModeChanged)
-    );
-
-    this.addDisposable(this.ddg.onUpdate(this.#handleGraphUpdate));
+    this.ddg && this.addDisposable(this.ddg.onUpdate(this.#handleGraphUpdate));
   }
 
   update() {
@@ -77,10 +73,6 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   //   // reset graph
   //   this.setState({ failureReason, timelineNodes: EmptyArray, edges: EmptyArray });
   // }
-
-  #handleMergeComputesModeChanged = () => {
-    this.ddg?.setMergeComputes(this.mergeComputesMode);
-  };
 
   shared() {
     return {

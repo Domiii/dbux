@@ -52,6 +52,7 @@ export default function CodeBlock({ src, lang, minWidth, className, style, child
     // eslint-disable-next-line import/no-dynamic-require,global-require
     let content = require('!!raw-loader!../../code-samples/' + src);
     if (content.default) {
+      // hackfix: esm conversion, if necessary
       content = content.default;
     }
     children = children || '';

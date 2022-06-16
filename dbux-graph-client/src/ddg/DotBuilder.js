@@ -155,10 +155,11 @@ export default class DotBuilder {
     return `id=${timelineId}`;
   }
 
-  nodeAttrs(timelineId) {
+  nodeAttrs(timelineId, ...moreAttrs) {
     return [
       this.nodeIdAttr(timelineId),
-      this.nodeOutlineColorAttr(timelineId)
+      this.nodeOutlineColorAttr(timelineId),
+      ...moreAttrs
     ]
       .filter(Boolean)
       .join(',');
@@ -283,6 +284,9 @@ export default class DotBuilder {
   node(node, force = false) {
     const { ddg } = this;
     const show = force || ddgQueries.isVisible(ddg, node);
+    if (node.timelineId === 452) {
+      console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, group=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
+    }
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
     }
@@ -329,7 +333,14 @@ export default class DotBuilder {
     this.indentLevel += 1;
     this._groupAttrs(node);
 
-    this.nodesByIds(node.children);
+    if (!isEmpty(node.children)) {
+      this.nodesByIds(node.children);
+    }
+    else {
+      // TODO: this hackfix will not work because often times, the group has children, but the children are not rendered
+      // hackfix: we need to render something, or else group is not shown
+      this.command(`${node.timelineId} ${this.nodeAttrs(node)}`);
+    }
 
     this.indentLevel -= 1;
     this.fragment(`}`);

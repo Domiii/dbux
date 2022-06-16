@@ -245,7 +245,10 @@ export default class DataDependencyGraph extends BaseDDG {
     const summaryMode = summaryModes[timelineId];
     if (isExpandedMode(summaryMode)) {
       // collapse
-      this.setSummaryMode(timelineId, DDGSummaryMode.CollapseSummary);
+      if (!this.setSummaryMode(timelineId, DDGSummaryMode.CollapseSummary)) {
+        // NOTE: cannot collapse: ignore for now
+        // TODO: there is a chance that this node cannot render anything anyway, because it only has disconnected ancestors etc.
+      }
     }
     else {
       // expand
@@ -262,10 +265,14 @@ export default class DataDependencyGraph extends BaseDDG {
 
   setSummaryMode(timelineId, mode) {
     // update node modes
-    this.#applyMode(timelineId, mode);
-
-    // refresh the summarized graph
-    this.#buildSummarizedGraph();
+    if (this.#applyMode(timelineId, mode)) {
+      // refresh the summarized graph
+      this.#buildSummarizedGraph();
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
 
@@ -374,7 +381,9 @@ export default class DataDependencyGraph extends BaseDDG {
     if (ddgQueries.canApplySummaryMode(this, node, mode)) {
       this.summaryModes[timelineId] = mode;
       this.propagateSummaryMode[mode](timelineId);
+      return true;
     }
+    return false;
   }
 
 

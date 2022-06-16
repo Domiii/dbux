@@ -2270,7 +2270,7 @@ module.exports = [
     "ddgs": [
       {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 285,
+        "contextId": 77,
         "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
         "loc": {
           "start": {
@@ -2284,7 +2284,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.17332775991352745"
+        "applicationUuid": "0.4147347820305216"
       }
     ]
   },

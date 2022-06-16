@@ -1,11 +1,11 @@
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
 import DDGSettings from './DDGSettings';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */

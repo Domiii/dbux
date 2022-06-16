@@ -16,12 +16,12 @@ import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { getStructuredRandomAngle, makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import sleep from '@dbux/common/src/util/sleep';
+import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 import { compileHtmlElement } from '../util/domUtil';
 import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled, makeSummaryLabelEl } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
-import sleep from '@dbux/common/src/util/sleep';
-import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
@@ -60,8 +60,20 @@ function getElLeftOffset(el) {
   return b + m;
 }
 
+/**
+ * @see https://github.com/magjac/d3-graphviz#supported-options
+ */
 const GraphVizCfg = {
-  useWorker: true
+  /**
+   * Performance tweaks.
+   * @see https://github.com/magjac/d3-graphviz/issues/232#issuecomment-1156834744
+   * @see https://github.com/magjac/d3-graphviz#performance
+   * @see https://github.com/magjac/d3-graphviz#graphviz_tweenShapes
+   */
+  tweenShapes: false,
+  tweenPaths: false,
+  tweenPrecision: 100,
+  convertEqualSidedPolygons: false
 };
 
 const RenderCfg = {
@@ -71,8 +83,8 @@ const RenderCfg = {
     sat: 100
   },
   forceReinitGraphviz: false,
-  // forceReinitGraphviz: true
-  debugViewEnabled: false
+  // forceReinitGraphviz: true,
+  debugViewEnabled: true
 };
 
 /** ###########################################################################
@@ -303,13 +315,17 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     return this.renderState.timelineNodes?.[DDGRootTimelineId];
   }
 
+  debug(...args) {
+    this.logger.debug(...args);
+  }
+
   /** ###########################################################################
    * d3-graphviz implementation
    *  #########################################################################*/
 
   async rebuildGraph(force = false) {
     const isNew = await this.initGraphImplementation(force);
-    // console.log('new', isNew, this.ddg.settings.anim);
+    // this.debug('new', isNew, this.ddg.settings.anim);
 
     this.buildGraph(isNew);
   }
@@ -329,48 +345,33 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     this.clearDeco();  // remove all non-graph elements from graph to avoid errors
 
-    const graphString = this.graphString = this.buildDot();
-    // const graphString = 'digraph { a -> b }';
-    this.graphviz
-      .renderDot(graphString);
+    this.startRenderTimer();
 
+    const ShouldAnim = true;
     if (isNew) {
-      const ShouldAnim = true;
-      this.renderTimer = new PrettyTimer();
       this.graphviz
+        // NOTE: this `end` event handler is run after anim finished
         .on('end', () => {
-          this.renderTimer?.print(null, `Graph Render (dot size = ${(this.graphString?.length / 1000).toFixed(2)})`);
+          this.debug('render end');
+          this.renderTimer?.print(null, `Graph Render (dot size = ${(this.graphString?.length / 1000).toFixed(2)}k)`);
           this.renderTimer = null;
           this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
 
           try {
-            if (ShouldAnim) {
-              console.log('anim1');
+            if (ShouldAnim && isNew) {
               // NOTE: we only register animations *after* first render
               this.graphviz.transition(() => { // transition
-                // TODO: add a way to remove animation
+                this.debug(`anim start`);
                 // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
                 // if (!this.ddg.settings.anim) {
                 // }
-                console.log('anim2');
                 return d3transition()
                   .duration(800);
-              }).on('end', () => {
-                try {
-                  console.log('anim3');
-                  // add node and edge decorations to the rendered DOM
-                  this.decorateAfterRender();
-                }
-                catch (err) {
-                  this.logger.error(`after anim event handler FAILED -`, err);
-                }
               });
             }
-            
-            if (!ShouldAnim || isNew) {
-              // add node and edge decorations to the rendered DOM
-              this.decorateAfterRender();
-            }
+
+            // add node and edge decorations to the rendered DOM
+            this.decorateAfterRender();
           }
           catch (err) {
             // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
@@ -378,6 +379,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
           }
         });
     }
+
+    // actually render the graph
+    // WARNING: `renderDot` is synchronous
+    const graphString = this.graphString = this.buildDot();
+    this.graphviz.renderDot(graphString);
   }
 
   async initGraphImplementation(force) {
@@ -400,7 +406,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         this.els.graphcont.appendChild(this.graphEl);
       }
       this.graphviz = d3Graphviz.graphviz(this.graphEl, { ...GraphVizCfg });
-      console.debug(`re-initializing graph${RenderCfg.forceReinitGraphviz ? ' (force)' : ''}`);
+      this.debug(`re-initializing graph${RenderCfg.forceReinitGraphviz ? ' (force)' : ''}`);
     }
     else {
       // nothing to do for now
@@ -487,7 +493,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         // always put clusters in the back
         return bCluster - aCluster;
         // return TODO;
-        // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
+        // this.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
         // return a.id?.localeCompare(b.id || '');
       })
       .forEach(item => item.parentNode.appendChild(item));
@@ -541,7 +547,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // nodeEl.appendChild(modeEl);
       // // labelEl.setAttribute('x', x + xOffset);
       // this.el.appendChild(modeEl);
-      // console.log('label x,y', x, y, modeEl);
+      // this.debug('label x,y', x, y, modeEl);
 
       // NOTE: we need to add an SVG element, since the svg elements get transformed by d3-zoom
       // the bbox etc. values are seemingly very buggy: https://stackoverflow.com/questions/70463171/getboundingclientrect-returns-inaccurate-values-for-complex-svgs-in-chrome
@@ -573,7 +579,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.addNodeEventListener(node, interactionEl, 'mouseover', (evt) => {
         // show debug overlay
         if (!debugOverlay && RenderCfg.debugViewEnabled) {
-          // console.debug(`Hover node:`, evt.target);
+          // this.debug(`Hover node:`, evt.target);
           this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
           // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
         }
@@ -728,7 +734,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
          */
         const hoverStack = Array.from(document.querySelectorAll(":hover"));
         if (!hoverStack.some(el => hoverTargets.has(el))) {
-          // console.log('popout', hoverStack);
+          // this.debug('popout', hoverStack);
           this._stopHoverAction();
         }
       }, mouseMoveDelayTolerance);
