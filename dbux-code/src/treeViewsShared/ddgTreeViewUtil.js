@@ -25,7 +25,7 @@ export function renderNodeTree(ddg, node, cfg) {
   const children = new childrenIds.constructor();
   Object.entries(childrenIds).forEach(([key, childId]) => {
     const childNode = timelineNodes[childId];
-    if (predicate?.(childNode)) {
+    if (!predicate || predicate(childNode)) {
       // add child
       children[key] = renderNodeTree(ddg, childNode, cfg);
     }
@@ -33,7 +33,8 @@ export function renderNodeTree(ddg, node, cfg) {
   const props = propsFactory?.(node, children) || EmptyObject;
   const nodeItem = renderDDGNode(ddg, node, children, props);
 
-  nodeItem.id = node.label + '#' + Math.random() + ''; // hackfix
+  // hackfix to allow for customizable `collapsibleState`
+  nodeItem.id = node.label + '#' + Math.random() + '';
   return nodeItem;
 }
 

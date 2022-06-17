@@ -13,7 +13,7 @@ import DataNodeType, { isDataNodeDelete, isDataNodeModifyType } from '@dbux/comm
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData, isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import DDGWatchSet from './DDGWatchSet';
@@ -297,7 +297,7 @@ export default class BaseDDG {
 
     node.connected = true;
 
-    if (doesTimelineNodeCarryData(node.type)) {
+    if (!isControlGroupTimelineNode(node.type)) {
       const fromEdges = this.inEdgesByTimelineId[node.timelineId] || EmptyArray;
       for (const edgeId of fromEdges) {
         const edge = this.edges[edgeId];

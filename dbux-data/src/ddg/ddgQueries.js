@@ -181,7 +181,7 @@ const ddgQueries = {
 
       // hide empty summary nodes
       // NOTE: we check for `doesNodeHaveSummary` in a few other places as well
-      (ddgQueries.isNodeSummarizable(ddg, node))
+      (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
     );
   },
 
