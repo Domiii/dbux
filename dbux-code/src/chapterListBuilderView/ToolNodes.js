@@ -16,6 +16,15 @@ const ExportExercises = 4;
 const CustomPatchByChapter = {
   hanoiTower: 'hanoiTower0',
 };
+/**
+ * NOTE:
+ *  This excludes:
+ *    `src/algorithms/sorting/__test__/Sort.test.js`,
+ *  and includes:
+ *    `src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js`,
+ *    `src/algorithms/math/matrix/__tests__/Matrix.test.js`
+ */
+const ValidFilePattern = /^src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/(.*).js$/;
 
 class ToolNode extends BaseTreeViewNode {
   /**
@@ -56,6 +65,10 @@ class GenerateListNode extends ToolNode {
 
       await this.manager.externals.initRuntimeServer();
 
+      progress.report({ message: 'Disabling dbux-babel-plugin...' });
+      await project.gitResetHard();
+      await project.applyPatch('disable_dbux');
+
       progress.report({ message: 'Parsing tests...' });
       const processOptions = {
         cwd: project.projectPath,
@@ -64,7 +77,7 @@ class GenerateListNode extends ToolNode {
       /**
        * NOTE: set `testNamePattern` to an unused name to skip running all tests
        * @see https://stackoverflow.com/a/69099439/11309695
-       */ 
+       */
       const UnusedTestPattern = 'zzzzz';
       const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
       const testData = JSON.parse(testDataRaw);
@@ -81,14 +94,21 @@ class GenerateListNode extends ToolNode {
           else {
             continue;
           }
-          const chapter = fullName.substring(0, fullName.indexOf(' '));
+          // const chapter = fullName.substring(0, fullName.indexOf(' '));
+          const testFilePath = pathRelative(project.projectPath, testResult.name);
+          const testFileMatchResult = testFilePath.match(ValidFilePattern);
+          if (!testFileMatchResult) {
+            continue;
+          }
+          const [, chapterGroup, chapter] = testFileMatchResult;
           const exerciseConfig = {
             name: fullName,
             label: fullName,
             testNamePattern: fullName,
+            chapterGroup,
             chapter,
             patch: CustomPatchByChapter[chapter],
-            testFilePaths: [pathRelative(project.projectPath, testResult.name)],
+            testFilePaths: [testFilePath],
           };
           exerciseConfigs.push(exerciseConfig);
         }
@@ -106,6 +126,9 @@ class GenerateListNode extends ToolNode {
 
       progress.report({ message: `Loading chapter list...` });
       const chapters = this.controller.reloadChapterList();
+
+      progress.report({ message: 'Recovering project...' });
+      await project.applyPatch('disable_dbux', true);
 
       showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
 

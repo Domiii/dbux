@@ -276,7 +276,7 @@ export default class ProjectsManager {
       // const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
       const chapterRegistry = requireUncached(chapterListFile);
       for (const chapterConfig of chapterRegistry) {
-        const { id, name, exercises: exerciseIdOrNames } = chapterConfig;
+        const { id, name, exercises: exerciseIdOrNames, ...otherCfg } = chapterConfig;
         const exercises = exerciseIdOrNames.map(idOrName => {
           const exercise = this.getExerciseByIdOrName(idOrName);
           if (!exercise) {
@@ -288,7 +288,7 @@ export default class ProjectsManager {
           }
           return exercise;
         }).filter(Boolean);
-        const chapter = new Chapter(this, id, name, exercises);
+        const chapter = new Chapter(this, id, name, exercises, otherCfg);
         chapters.push(chapter);
       }
       return chapters;

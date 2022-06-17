@@ -50,6 +50,7 @@ export default class ChapterListBuilderViewController {
       return {
         id: index + 1,
         name: chapterName,
+        group: exercises[0].chapterGroup,
         exercises: exercises.map(e => e.id),
       };
     });
