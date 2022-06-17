@@ -139,7 +139,7 @@ export function showTextInNewFile(tempFileName, text) {
       editor.edit(editBuilder => {
         editBuilder.replace(editor.selection, text);
 
-        resolve();
+        resolve(editor);
       });
     }).catch(err => {
       reject(err);

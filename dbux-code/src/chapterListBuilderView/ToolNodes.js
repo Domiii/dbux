@@ -1,14 +1,17 @@
-import { TreeItemCollapsibleState } from 'vscode';
+import { commands, TreeItemCollapsibleState, window } from 'vscode';
 import fs from 'fs';
+import { basename, dirname } from 'path';
+import open from 'open';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import Process from '@dbux/projects/src/util/Process';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
+import { showTextInNewFile } from '../codeUtil/codeNav';
 import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
-import { basename } from 'path';
+import { translate } from '../lang';
 
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
@@ -214,6 +217,46 @@ class DeleteExportedApplicationNode extends ToolNode {
   }
 }
 
+class GeneratePatchNode extends ToolNode {
+  static makeLabel() {
+    return `Generate Patch`;
+  }
+
+  async handleClick() {
+    const { project } = this.controller;
+    const patchString = await project.getPatchString();
+    const editor = await showTextInNewFile('diff.diff', patchString);
+    const result = await confirm(`Do you want to save the patch?`, false);
+
+    if (window.activeTextEditor === editor) {
+      await commands.executeCommand('workbench.action.closeActiveEditor');
+    }
+
+    if (!result) {
+      return;
+    }
+
+    const pathFileName = await window.showInputBox({
+      placeHolder: 'unnamed',
+      prompt: 'Patch file name'
+    });
+
+    if (!pathFileName) {
+      return;
+    }
+
+    const filePath = project.getPatchFile(pathFileName);
+    fs.writeFileSync(filePath, patchString);
+
+    const msg = translate('savedSuccessfully', { fileName: filePath });
+    await showInformationMessage(msg, {
+      async 'Show File'() {
+        await open(dirname(filePath));
+      }
+    });
+  }
+}
+
 export default class ToolRootNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Tools';
@@ -227,5 +270,6 @@ export default class ToolRootNode extends BaseTreeViewNode {
     GenerateListNode,
     ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
+    GeneratePatchNode,
   ]
 }
