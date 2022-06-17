@@ -284,9 +284,7 @@ export default class DotBuilder {
   node(node, force = false) {
     const { ddg } = this;
     const show = force || ddgQueries.isVisible(ddg, node);
-    if (node.timelineId === 452) {
-      console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, group=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
-    }
+    console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
     }

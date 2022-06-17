@@ -9,6 +9,8 @@ import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
 import { intersection } from 'lodash';
 
+/** @typedef { import("@dbux/data/src/ddg/DDGTimelineNodes").DDGTimelineNode } DDGTimelineNode */
+
 
 /** ###########################################################################
  * {@link DDGTDNode}
@@ -96,7 +98,8 @@ export default class DDGTDNode extends TraceDetailNode {
 
   // eslint-disable-next-line camelcase
   Summaries() {
-    // const { ddg, dp, dataNodes } = this;
+    const { ddg, dp, dataNodes } = this;
+
     // const tids = Array.from(new Set(
     //   dataNodes
     //     .flatMap(n => [n.varAccess?.declarationTid, n.traceId])
@@ -109,18 +112,34 @@ export default class DDGTDNode extends TraceDetailNode {
     // ));
     // TODO: this would pick up a lot of false positives
 
-    // const summaries = () => {
-    //   // brute-force: search all summaries
-    //   return Object.values(ddg.nodeSummaries || EmptyObject)
-    //     .filter((summary) => {
-    //       return !!intersection(Array.from(summary.nodesByTid.keys()), tids).length ||
-    //         !!intersection(Array.from(getAllRefIdsOfSnapshot(summary.summaryRoots), refIds));
-    //     });
-    // };
-    return makeTreeItem('Summaries: TODO');
+    /**
+     * @type {DDGTimelineNode[]}
+     */
+    const timelineNodes = dataNodes
+      .flatMap(n =>
+        (ddg.getTimelineNodesOfDataNode(n.nodeId) || EmptyArray)
+      );
 
-    // return renderDDGNodesItem(ddg, summaryNodesFn, 'Summaries');
-    // return renderDDGSummaries(ddg, summaries);
+    const summaries = Array.from(new Set(timelineNodes
+      .map(node => ddgQueries.getSummarizedGroupOfNode(ddg, node))
+      .filter(Boolean)
+    ));
+    const description = !dataNodes.length ?
+      '(no DataNodes)' :
+      !timelineNodes.length ?
+        '(no TimelineNodes)' :
+        !timelineNodes.some(n => n.hasSummarizableWrites) ?
+          '(not summarizable)' :
+          !summaries.length ?
+            '(not currently summarized)' :
+            `(${summaries.length})`;
+    return makeTreeItem(() => ({
+      label: 'Summaries',
+      children: () => renderDDGSummaries(ddg, summaries),
+      props: {
+        description
+      }
+    }));
   }
 
   // eslint-disable-next-line camelcase
