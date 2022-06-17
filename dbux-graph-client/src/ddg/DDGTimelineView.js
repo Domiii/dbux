@@ -79,6 +79,7 @@ const GraphVizCfg = {
 const RenderCfg = {
   // NOTE: also sync with css class
   edgeHighlightDelay: 5000,
+  edgeHighlightFadeoutClass: 'fadeout-5',
   highlightColorCfg: {
     sat: 100
   },
@@ -206,22 +207,42 @@ class NodeHoverState {
       .filter(Boolean); // NOTE: some edges might be gone or invisible... or is it a race condition?
     this.fakeEdgeEls = this.edgeEls
       .map((edgeEl, i) => {
+        const edgeId = allEdgeIds[i];
+
         /**
          * @type {Element}
          */
-        const fakeEl = edgeEl.cloneNode();
-        fakeEl.innerHTML = edgeEl.innerHTML; // NOTE: cloneNode is shallow
-        fakeEl.setAttribute('id', ''); // unset id
-        this.timeline.registerDeco(fakeEl);
+        let fakeEl = this.timeline.el.querySelector(`.fake-edge-${edgeId}`);
+        if (fakeEl) {
+          // console.debug('fakeEl already existed');
+          // fake edge already exists → refresh it
+          fakeEl.classList.remove(RenderCfg.edgeHighlightFadeoutClass);
+        }
+        else {
+          // create new fake edge
+          fakeEl = edgeEl.cloneNode();
+          fakeEl.innerHTML = edgeEl.innerHTML; // NOTE: cloneNode is shallow
+          fakeEl.setAttribute('id', ''); // unset id
+          fakeEl.classList.add(`fake-edge`);
+          fakeEl.classList.add(`fake-edge-${edgeId}`);
+          fakeEl.addEventListener('animationend', (e) => {
+            if (e.animationName === 'fadeout') {
+              // console.debug(`Fake edge fadeout: ${edgeId}`, e);
+              fakeEl.remove();
+            }
+          });
 
-        const edgeId = allEdgeIds[i];
-        const col = makeStructuredRandomColor(themeMode, edgeId % 50, { sat: 100, start: Math.round(edgeId / 50) * 30 });
-        fakeEl.querySelectorAll('path,polygon').forEach(el => {
-          el.setAttribute('stroke', col);
-          el.setAttribute('stroke-width', 5);
-        });
-        // edgeEl.parentElement.insertBefore(fakeEl, edgeEl.nextSibling);
-        edgeEl.parentElement.appendChild(fakeEl); // move to end, so its on top
+          this.timeline.registerDeco(fakeEl);
+
+          // update all colors
+          const col = makeStructuredRandomColor(themeMode, edgeId % 50, { sat: 100, start: Math.round(edgeId / 50) * 30 });
+          fakeEl.querySelectorAll('path,polygon').forEach(el => {
+            el.setAttribute('stroke', col);
+            el.setAttribute('stroke-width', 5);
+          });
+          // edgeEl.parentElement.insertBefore(fakeEl, edgeEl.nextSibling);
+          edgeEl.parentElement.appendChild(fakeEl); // move to end, so its on top
+        }
         return fakeEl;
       });
   }
@@ -229,12 +250,12 @@ class NodeHoverState {
   #stopHighlight() {
     // play fade out animation
     this.fakeEdgeEls.forEach((el) => {
-      el.classList.add('fadeout-5');
-      setTimeout(
-        () => {
-          el.remove(); // delete fake el afterward
-        },
-        RenderCfg.edgeHighlightDelay);
+      el.classList.add(RenderCfg.edgeHighlightFadeoutClass);
+      // setTimeout(
+      //   () => {
+      //     el.remove(); // delete fake el afterward
+      //   },
+      //   RenderCfg.edgeHighlightDelay);
     });
   }
 }
@@ -456,6 +477,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   public = {
     buildDot() {
       return this.buildDot();
+    },
+    takeScreenshot() {
+      return this.getScreenshot();
     }
   };
 
@@ -750,15 +774,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * screenshot util
    *  #########################################################################*/
 
-  async getScreenshots() {
-    // TODO: iterate through the "screenshot modes" and take a screen of each.
-    //    Then return it all to host.
-  }
+  // async getScreenshots(screenshotModes) {
+  //   // TODO: iterate through the "screenshot modes" and take a screen of each.
+  //   //    Then return it all to host.
+  // }
 
   async getScreenshot() {
+    this.clearDeco();
     // TODO
     // * take screenshot in current mode
-    // * export to svg (and/or png? if necessary?)
     // * add background to top: <rect width="100%" height="100%" fill="#444"/>
   }
 }

@@ -122,8 +122,7 @@ export default function patchArray() {
         objectNodeId: arrNodeId,
         prop: i
       };
-      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.Read, varAccess);
-      dataNodeCollection.createDataNode(undefined, callId, DataNodeType.Delete, varAccess);
+      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.ReadAndDelete, varAccess);
 
       return originalFunction.apply(arr, args);
     }
@@ -167,7 +166,7 @@ export default function patchArray() {
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
 
-      // last element gets deleted (logically speaking)
+      // last element gets deleted (logically speaking; it actually gets just moved to the left)
       const deleteVarAccess = {
         objectNodeId: arrNodeId,
         prop: i - 1

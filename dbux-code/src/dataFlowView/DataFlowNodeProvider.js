@@ -1,5 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType, { isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeRead, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -95,7 +95,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     if (DataFlowFilterModeType.is.ReadOnly(this.controller.filterMode)) {
-      dataNodes = dataNodes?.filter(node => DataNodeType.is.Read(node.type));
+      dataNodes = dataNodes?.filter(node => isDataNodeRead(node.type));
     }
     else if (DataFlowFilterModeType.is.WriteOnly(this.controller.filterMode)) {
       dataNodes = dataNodes?.filter(node => isDataNodeWrite(node.type));

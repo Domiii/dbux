@@ -18,7 +18,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import { renderPath } from '@dbux/common-node/src/util/pathUtil';
 import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
-import DataNodeType, { isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeDelete, isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
@@ -853,7 +853,6 @@ const dataProviderUtil = {
   isDataNodePassAlong(dp, nodeId) {
     const dataNode = dp.util.getDataNode(nodeId);
     return (
-      // (DataNodeType.is.Read(dataNode.type)) &&
       !!dataNode.valueFromId
     );
   },
@@ -1111,7 +1110,7 @@ const dataProviderUtil = {
           snapshotMods.writePrimitive(dp, snapshot, modifyNode, prop);
         }
       }
-      else if (modifyNode.type === DataNodeType.Delete) {
+      else if (isDataNodeDelete(modifyNode.type)) {
         // apply delete
         const { prop } = modifyNode.varAccess;
         snapshotMods.deleteProp(dp, snapshot, modifyNode, prop);
@@ -1340,18 +1339,37 @@ const dataProviderUtil = {
   },
 
   /** 
-   * Uses some heuristics to find the first var a given ref was assigned to.
+   * Uses some heuristics to find the last var a given ref was assigned to.
+   * WARNING: [perf-search] This is not O(1). It could potentially look through all of the ref's DataNodes.
+   * 
    * @param {RuntimeDataProvider} dp 
    */
   getRefOriginalVarName(dp, refId) {
+    // TODO: consider variables that are not assigned to a variable
     // 1. all dataNodes who held the value of given refId
     const dataNodes = dp.util.getDataNodesByRefId(refId);
     if (dataNodes) {
       // 2. find first DataNode that represents a variable
-      const varNode = dataNodes.find(n => n.varAccess?.declarationTid);
+      const varNode = findLast(dataNodes, n => {
+        if (!n.varAccess) {
+          return false;
+        }
+        return (
+          // var name (e.g. `x = ...`)
+          n.varAccess.declarationTid ||
+          // string prop (e.g. `this.x = ...`)
+          (n.varAccess.prop && !isNumber(n.varAccess.prop))
+        );
+      });
       if (varNode) {
-        // 3. return name of variable
-        return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
+        if (varNode.varAccess.declarationTid) {
+          // 3. return name of variable
+          return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
+        }
+        else {
+          // 4. return name of prop
+          return varNode.varAccess.prop;
+        }
       }
     }
     return null;
@@ -1418,6 +1436,11 @@ const dataProviderUtil = {
   /** @param {RuntimeDataProvider} dp */
   getFirstDataNodeByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.getFirst(refId);
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getLastDataNodeByRefId(dp, refId) {
+    return dp.indexes.dataNodes.byRefId.getLast(refId);
   },
 
   /** 

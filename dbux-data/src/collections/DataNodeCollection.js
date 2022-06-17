@@ -1,6 +1,6 @@
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeRead } from '@dbux/common/src/types/constants/DataNodeType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
@@ -343,7 +343,7 @@ export default class DataNodeCollection extends Collection {
           prev = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         }
         // 2. if it is not a pass-along, look up accessId.
-        else if (accessId && DataNodeType.is.Read(dataNode.type)) {
+        else if (accessId && isDataNodeRead(dataNode.type)) {
           prev = this.getLastDataNodeByAccessId(nodeId, accessId);
         }
         if (valueId && prev && prev.valueId !== valueId) {
@@ -377,7 +377,7 @@ export default class DataNodeCollection extends Collection {
         }
 
         // 2. if it is not a pass-along, look up accessId.
-        if (accessId && DataNodeType.is.Read(dataNode.type)) {
+        if (accessId && isDataNodeRead(dataNode.type)) {
           const lastNode = this.getLastDataNodeByAccessId(nodeId, accessId);
           if (lastNode) {
             dataNode.valueFromId = lastNode.nodeId;

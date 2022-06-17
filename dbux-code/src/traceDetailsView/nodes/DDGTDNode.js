@@ -1,12 +1,12 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
 import { renderDDGNode, renderDDGNodesItem, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
 import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
-import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 
 /** ###########################################################################

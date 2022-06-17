@@ -253,12 +253,18 @@ export default class DataDependencyGraph extends BaseDDG {
     else {
       // expand
       const summarizableChildren = ddgQueries.getSummarizableChildren(this, timelineId);
-      this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSelf);
-      if (summarizableChildren.length === 1 &&
-        !isExpandedMode(summaryModes[summarizableChildren[0].timelineId])
-      ) {
-        // open up single nested expandable child as well
-        this.toggleSummaryMode(summarizableChildren[0].timelineId);
+      if (!summarizableChildren.length) {
+        // nothing to summarize → expand in full instead
+        this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSubgraph);
+      }
+      else {
+        this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSelf);
+        if (summarizableChildren.length === 1 &&
+          !isExpandedMode(summaryModes[summarizableChildren[0].timelineId])
+        ) {
+          // open up single nested expandable child as well
+          this.toggleSummaryMode(summarizableChildren[0].timelineId);
+        }
       }
     }
   }
@@ -453,7 +459,9 @@ export default class DataDependencyGraph extends BaseDDG {
   #buildNodeSummarySnapshotsAndVars(timelineId) {
     const { dp } = this;
     const node = this.timelineNodes[timelineId];
-    if (!node.hasSummarizableWrites || this.nodeSummaries[timelineId]) {
+    if (!node.hasSummarizableWrites
+      /*  || this.nodeSummaries[timelineId] */ // build again, for dev purposes
+    ) {
       // already built or nothing to build
       return this.nodeSummaries[timelineId];
     }
@@ -464,7 +472,8 @@ export default class DataDependencyGraph extends BaseDDG {
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
-        const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
+        // const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
+        const lastDataNodeIdOfRef = dp.util.getLastDataNodeByRefId(refId)?.nodeId;
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });
 

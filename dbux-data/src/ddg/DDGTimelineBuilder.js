@@ -2,7 +2,7 @@ import last from 'lodash/last';
 import groupBy from 'lodash/groupBy';
 import TraceType, { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
 import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceControlRole';
-import DataNodeType, { isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeDelete, isDataNodeModifyType, isDataNodeRead, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
@@ -208,8 +208,8 @@ export default class DDGTimelineBuilder {
       const snapshotsByRefId = new Map();
       newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, null);
     }
-    else if (DataNodeType.is.Delete(dataNode.type)) {
-      newNode = this.ddg.addDeleteEntryNode(dataNode, dataNode.varAccess?.prop || '');
+    else if (isDataNodeDelete(dataNode.type)) {
+      newNode = this.ddg.addDeleteEntryNode(dataNode);
     }
     else {
       // this is not a watched ref
@@ -408,11 +408,11 @@ export default class DDGTimelineBuilder {
     }
   }
 
-  #gatherInputNodeEdge(toDataNodeId, inputDataNodeId, fromNodes) {
+  #gatherInputNodeEdge(toDataNodeId, inputDataNodeId, edgeInfos) {
     const fromNode = this.getDataTimelineInputNode(inputDataNodeId);
 
     if (fromNode) {
-      this.#gatherNodeEdge(toDataNodeId, fromNode, fromNodes);
+      this.#gatherNodeEdge(toDataNodeId, fromNode, edgeInfos);
     }
     else {
       // inputDataNodeId is ignored or external (are there other reasons?)
@@ -524,6 +524,14 @@ export default class DDGTimelineBuilder {
       // → connect to inputs instead
       if (dataNode.valueFromId) {
         this.#gatherInputNodeEdge(dataNode.nodeId, dataNode.valueFromId, edgeInfos);
+      }
+      else if (dataNode.accessId) {
+        // go by accessId instead
+        //  (it appears that this plays a role only in case of Delete right now?)
+        const fromNode = this.getLastTimelineNodeByAccessId(dataNode.accessId);
+        if (fromNode) {
+          this.#gatherNodeEdge(dataNode.nodeId, fromNode, edgeInfos);
+        }
       }
       if (dataNode.inputs) {
         for (const inputDataNodeId of dataNode.inputs) {
@@ -661,7 +669,7 @@ export default class DDGTimelineBuilder {
       return !!dataNode.varAccess?.objectNodeId && !isDataNodeWrite(dataNode.type);
     }
 
-    if (DataNodeType.is.Delete(dataNode.type)) {
+    if (isDataNodeDelete(dataNode.type)) {
       // don't skip deletes
       return false;
     }
@@ -669,10 +677,7 @@ export default class DDGTimelineBuilder {
     if (dp.util.isDataNodePassAlong(dataNodeId)) {
       // skip all "pass along" nodes
 
-      return DataNodeType.is.Read(dataNode.type);
-      // return !isDataNodeModifyType(dataNode.type);
-      // return DataNodeType.is.Read(dataNode.type) ||
-      // !dp.util.isTraceOwnDataNode(dataNodeId); // nested modify "pass-along" node (e.g. from `x` in `[x,y]` or the writes of a `push` call etc.)
+      return isDataNodeRead(dataNode.type);
     }
     return false;
   }

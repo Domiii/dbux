@@ -9,7 +9,7 @@ import last from 'lodash/last';
 import pull from 'lodash/pull';
 import findLast from 'lodash/findLast';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeDelete, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
@@ -418,10 +418,19 @@ export default class BaseDDG {
     }
   }
 
-  addDeleteEntryNode(dataNode, prop) {
-    const varName = this.dp.util.getDataNodeAccessedRefVarName(dataNode.nodeId);
-    const label = `${varName || '?'}[${prop}]`;
-    const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, label);
+  addDeleteEntryNode(dataNode) {
+    const { varAccess } = dataNode;
+    let deleteLabel;
+    if (!varAccess) {
+      // should not happen
+      deleteLabel = '?';
+    }
+    else {
+      // future-work: this only gives the first name assigned to it, but we might be more interested in "the most recent name" instead
+      const varName = this.dp.util.getDataNodeAccessedRefVarName(dataNode.nodeId);
+      deleteLabel = `${varName || '?'}[${varAccess.prop}]`;
+    }
+    const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, deleteLabel);
 
     this.addDataNode(newNode);
 
@@ -610,7 +619,7 @@ export default class BaseDDG {
         }
         else {
           // create new child
-          if (DataNodeType.is.Delete(dataNode.type)) {
+          if (isDataNodeDelete(dataNode.type)) {
             // delete
             newChild = this.addDeleteEntryNode(dataNode);
             this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
@@ -996,8 +1005,8 @@ export default class BaseDDG {
     const fromDataNode = this.dp.util.getDataNode(fromDataNodeId);
     const toDataNode = this.dp.util.getDataNode(toDataNodeId);
     if (
-      DataNodeType.is.Delete(fromDataNode.type) ||
-      DataNodeType.is.Delete(toDataNode.type)
+      isDataNodeDelete(fromDataNode.type) ||
+      isDataNodeDelete(toDataNode.type)
     ) {
       // TODO: this is not very accurate
       edgeType = DDGEdgeType.Delete;

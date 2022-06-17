@@ -107,15 +107,8 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
     children.Edges = makeTreeItems(
       renderEdgeIds(ddg, ddg.inEdgesByTimelineId[node.timelineId], 'EdgesIn'),
       renderEdgeIds(ddg, ddg.outEdgesByTimelineId[node.timelineId], 'EdgesOut'),
-      makeTreeItem(() => ({
-        label: 'Og',
-        children() {
-          return [
-            renderOgEdgeIds(ddg, ddg.og.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
-            renderOgEdgeIds(ddg, ddg.og.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
-          ];
-        }
-      }))
+      renderOgEdgeIds(ddg, ddg.og.inEdgesByTimelineId[node.timelineId], 'OG Edges In'),
+      renderOgEdgeIds(ddg, ddg.og.outEdgesByTimelineId[node.timelineId], 'OG Edges Out')
     );
 
     // TODO: also get control group by decision etc.
@@ -132,7 +125,7 @@ export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObjec
         if (node.traceId || node.dataNodeId) {
           selectDataNodeOrTrace(dp, node.traceId, node.dataNodeId);
         }
-        handleClick(node);
+        handleClick?.(node);
       },
       ...moreProps
     }

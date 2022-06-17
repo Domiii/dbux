@@ -47,7 +47,7 @@ const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 dataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
 dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
-dataTimelineNodeTypes[DDGTimelineNodeType.Delete] = true;
+dataTimelineNodeTypes[DDGTimelineNodeType.DeleteEntry] = true;
 
 /**
  * 
