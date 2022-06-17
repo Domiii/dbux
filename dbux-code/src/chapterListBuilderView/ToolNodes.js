@@ -236,17 +236,20 @@ class GeneratePatchNode extends ToolNode {
       return;
     }
 
-    const pathFileName = await window.showInputBox({
+    const name = await window.showInputBox({
       placeHolder: 'unnamed',
       prompt: 'Patch file name'
     });
 
-    if (!pathFileName) {
+    if (!name) {
       return;
     }
 
-    const filePath = project.getPatchFile(pathFileName);
+    const filePath = project.getPatchFile(name);
     fs.writeFileSync(filePath, patchString);
+
+    // TODO: add exercise config depends on active application
+    // this.controller.addExerciseConfig({ name, patch: basename(filePath, '.patch') });
 
     const msg = translate('savedSuccessfully', { fileName: filePath });
     await showInformationMessage(msg, {

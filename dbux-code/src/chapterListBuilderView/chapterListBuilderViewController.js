@@ -1,7 +1,8 @@
 import fs from 'fs';
-import { dirname } from 'path';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
@@ -9,8 +10,6 @@ import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 import { getCurrentResearch } from '../research/Research';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import sleep from '@dbux/common/src/util/sleep';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -89,6 +88,11 @@ export default class ChapterListBuilderViewController {
     }
     return null;
   }
+
+  // addExerciseConfig() {
+  //   const configs = this.project.loadExerciseConfigs(ExerciseListName);
+  //   configs.push()
+  // }
 
   init() {
     this.reloadExerciseList();
