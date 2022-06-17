@@ -456,10 +456,28 @@ export default class BaseDDG {
    * labels
    * ##########################################################################*/
 
-  makeSnapshotLabel(refDataNode, partialChildren) {
-    if (partialChildren) {
-      // partial snapshots represent a trace → use that for the label
-      const trace = this.dp.util.getTrace(partialChildren[0].traceId);
+  /**
+   * NOTE: this is a hackfix workaround for partial snapshots,
+   * since their `dataNodeId` is a hackfix that points to the "wrong" thing.
+   * If you change this, also change {@link BaseDDG#makeSnapshotLabel}!
+   */
+  getPartialSnapshotTraceId(node) {
+    const child0Id = node.children[0];
+    if (child0Id) {
+      const child0 = this.timelineNodes[child0Id];
+      const dataNode = this.dp.util.getDataNode(child0.dataNodeId);
+      return dataNode.traceId;
+    }
+    return null;
+  }
+
+  makeSnapshotLabel(refDataNode, partialChildrenDataNodes) {
+    if (partialChildrenDataNodes) {
+      /**
+       * Partial snapshots represent a trace → use that for the label.
+       * If you change this, also change {@link BaseDDG#getPartialSnapshotTraceId}!
+       */
+      const trace = this.dp.util.getTrace(partialChildrenDataNodes[0].traceId);
       const label = makeTraceLabel(trace);
       if (label) {
         return label;
@@ -909,7 +927,8 @@ export default class BaseDDG {
       //    and often shares descendants with previous snapshots who actually contain the Write.
       //    → so we want to allow those edges to come in nevertheless.
       (
-        fromWatched !== toWatched
+        // fromWatched !== toWatched
+        toWatched
       )
     );
   }
