@@ -8,6 +8,7 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
+import { basename } from 'path';
 
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
@@ -83,26 +84,31 @@ class GenerateListNode extends ToolNode {
       const testData = JSON.parse(testDataRaw);
 
       const exerciseConfigs = [];
-      const addedPattern = new Set();
+      const addedExerciseNames = new Set();
 
       for (const testResult of testData.testResults) {
         for (const assertionResult of testResult.assertionResults) {
           const { fullName } = assertionResult;
-          if (!addedPattern.has(fullName)) {
-            addedPattern.add(fullName);
+          /**
+           * NOTE: `PolynomialHash` and `SimplePolynomialHash` shares the same fullName in different test files
+           */
+          const testFilePath = pathRelative(project.projectPath, testResult.name);
+          const baseName = basename(testFilePath);
+          const name = `${fullName}@${baseName}`;
+          if (!addedExerciseNames.has(name)) {
+            addedExerciseNames.add(name);
           }
           else {
             continue;
           }
           // const chapter = fullName.substring(0, fullName.indexOf(' '));
-          const testFilePath = pathRelative(project.projectPath, testResult.name);
           const testFileMatchResult = testFilePath.match(ValidFilePattern);
           if (!testFileMatchResult) {
             continue;
           }
           const [, chapterGroup, chapter] = testFileMatchResult;
           const exerciseConfig = {
-            name: fullName,
+            name,
             label: fullName,
             testNamePattern: fullName,
             chapterGroup,

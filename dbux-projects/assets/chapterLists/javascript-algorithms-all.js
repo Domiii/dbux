@@ -98,9 +98,9 @@ module.exports = [
       "javascript-algorithms#220",
       "javascript-algorithms#221",
       "javascript-algorithms#222",
-      "javascript-algorithms#283",
-      "javascript-algorithms#302",
-      "javascript-algorithms#307"
+      "javascript-algorithms#284",
+      "javascript-algorithms#303",
+      "javascript-algorithms#308"
     ]
   },
   {
@@ -142,7 +142,7 @@ module.exports = [
     "exercises": [
       "javascript-algorithms#27",
       "javascript-algorithms#87",
-      "javascript-algorithms#306"
+      "javascript-algorithms#307"
     ]
   },
   {
@@ -246,7 +246,7 @@ module.exports = [
     "group": "math",
     "exercises": [
       "javascript-algorithms#69",
-      "javascript-algorithms#261"
+      "javascript-algorithms#262"
     ]
   },
   {
@@ -656,7 +656,7 @@ module.exports = [
       "javascript-algorithms#224",
       "javascript-algorithms#225",
       "javascript-algorithms#226",
-      "javascript-algorithms#242"
+      "javascript-algorithms#243"
     ]
   },
   {
@@ -692,7 +692,8 @@ module.exports = [
     "exercises": [
       "javascript-algorithms#233",
       "javascript-algorithms#234",
-      "javascript-algorithms#235"
+      "javascript-algorithms#235",
+      "javascript-algorithms#236"
     ]
   },
   {
@@ -700,9 +701,9 @@ module.exports = [
     "name": "prim",
     "group": "graph",
     "exercises": [
-      "javascript-algorithms#236",
       "javascript-algorithms#237",
-      "javascript-algorithms#238"
+      "javascript-algorithms#238",
+      "javascript-algorithms#239"
     ]
   },
   {
@@ -710,9 +711,9 @@ module.exports = [
     "name": "prime-factors",
     "group": "math",
     "exercises": [
-      "javascript-algorithms#239",
       "javascript-algorithms#240",
-      "javascript-algorithms#241"
+      "javascript-algorithms#241",
+      "javascript-algorithms#242"
     ]
   },
   {
@@ -720,7 +721,6 @@ module.exports = [
     "name": "quick-sort",
     "group": "sorting",
     "exercises": [
-      "javascript-algorithms#243",
       "javascript-algorithms#244",
       "javascript-algorithms#245",
       "javascript-algorithms#246",
@@ -734,7 +734,8 @@ module.exports = [
       "javascript-algorithms#254",
       "javascript-algorithms#255",
       "javascript-algorithms#256",
-      "javascript-algorithms#257"
+      "javascript-algorithms#257",
+      "javascript-algorithms#258"
     ]
   },
   {
@@ -742,9 +743,9 @@ module.exports = [
     "name": "rabin-karp",
     "group": "string",
     "exercises": [
-      "javascript-algorithms#258",
       "javascript-algorithms#259",
-      "javascript-algorithms#260"
+      "javascript-algorithms#260",
+      "javascript-algorithms#261"
     ]
   },
   {
@@ -752,9 +753,9 @@ module.exports = [
     "name": "radix-sort",
     "group": "sorting",
     "exercises": [
-      "javascript-algorithms#262",
       "javascript-algorithms#263",
-      "javascript-algorithms#264"
+      "javascript-algorithms#264",
+      "javascript-algorithms#265"
     ]
   },
   {
@@ -762,10 +763,10 @@ module.exports = [
     "name": "rail-fence-cipher",
     "group": "cryptography",
     "exercises": [
-      "javascript-algorithms#265",
       "javascript-algorithms#266",
       "javascript-algorithms#267",
-      "javascript-algorithms#268"
+      "javascript-algorithms#268",
+      "javascript-algorithms#269"
     ]
   },
   {
@@ -773,10 +774,10 @@ module.exports = [
     "name": "recursive-staircase",
     "group": "uncategorized",
     "exercises": [
-      "javascript-algorithms#269",
       "javascript-algorithms#270",
       "javascript-algorithms#271",
-      "javascript-algorithms#272"
+      "javascript-algorithms#272",
+      "javascript-algorithms#273"
     ]
   },
   {
@@ -784,7 +785,7 @@ module.exports = [
     "name": "regular-expression-matching",
     "group": "string",
     "exercises": [
-      "javascript-algorithms#273"
+      "javascript-algorithms#274"
     ]
   },
   {
@@ -792,7 +793,7 @@ module.exports = [
     "name": "seam-carving",
     "group": "image-processing",
     "exercises": [
-      "javascript-algorithms#274"
+      "javascript-algorithms#275"
     ]
   },
   {
@@ -800,7 +801,7 @@ module.exports = [
     "name": "reverse-traversal",
     "group": "linked-list",
     "exercises": [
-      "javascript-algorithms#275"
+      "javascript-algorithms#276"
     ]
   },
   {
@@ -808,13 +809,13 @@ module.exports = [
     "name": "selection-sort",
     "group": "sorting",
     "exercises": [
-      "javascript-algorithms#276",
       "javascript-algorithms#277",
       "javascript-algorithms#278",
       "javascript-algorithms#279",
       "javascript-algorithms#280",
       "javascript-algorithms#281",
-      "javascript-algorithms#282"
+      "javascript-algorithms#282",
+      "javascript-algorithms#283"
     ]
   },
   {
@@ -822,13 +823,13 @@ module.exports = [
     "name": "shell-sort",
     "group": "sorting",
     "exercises": [
-      "javascript-algorithms#284",
       "javascript-algorithms#285",
       "javascript-algorithms#286",
       "javascript-algorithms#287",
       "javascript-algorithms#288",
       "javascript-algorithms#289",
-      "javascript-algorithms#290"
+      "javascript-algorithms#290",
+      "javascript-algorithms#291"
     ]
   },
   {
@@ -836,7 +837,7 @@ module.exports = [
     "name": "shortest-common-supersequence",
     "group": "sets",
     "exercises": [
-      "javascript-algorithms#291"
+      "javascript-algorithms#292"
     ]
   },
   {
@@ -844,7 +845,7 @@ module.exports = [
     "name": "sieve-of-eratosthenes",
     "group": "math",
     "exercises": [
-      "javascript-algorithms#292"
+      "javascript-algorithms#293"
     ]
   },
   {
@@ -852,10 +853,10 @@ module.exports = [
     "name": "square-matrix-rotation",
     "group": "uncategorized",
     "exercises": [
-      "javascript-algorithms#293",
       "javascript-algorithms#294",
       "javascript-algorithms#295",
-      "javascript-algorithms#296"
+      "javascript-algorithms#296",
+      "javascript-algorithms#297"
     ]
   },
   {
@@ -863,9 +864,9 @@ module.exports = [
     "name": "square-root",
     "group": "math",
     "exercises": [
-      "javascript-algorithms#297",
       "javascript-algorithms#298",
-      "javascript-algorithms#299"
+      "javascript-algorithms#299",
+      "javascript-algorithms#300"
     ]
   },
   {
@@ -873,8 +874,8 @@ module.exports = [
     "name": "strongly-connected-components",
     "group": "graph",
     "exercises": [
-      "javascript-algorithms#300",
-      "javascript-algorithms#301"
+      "javascript-algorithms#301",
+      "javascript-algorithms#302"
     ]
   },
   {
@@ -882,7 +883,7 @@ module.exports = [
     "name": "topological-sorting",
     "group": "graph",
     "exercises": [
-      "javascript-algorithms#303"
+      "javascript-algorithms#304"
     ]
   },
   {
@@ -890,7 +891,7 @@ module.exports = [
     "name": "traversal",
     "group": "linked-list",
     "exercises": [
-      "javascript-algorithms#304"
+      "javascript-algorithms#305"
     ]
   },
   {
@@ -898,7 +899,7 @@ module.exports = [
     "name": "primality-test",
     "group": "math",
     "exercises": [
-      "javascript-algorithms#305"
+      "javascript-algorithms#306"
     ]
   },
   {
@@ -906,10 +907,10 @@ module.exports = [
     "name": "weighted-random",
     "group": "statistics",
     "exercises": [
-      "javascript-algorithms#308",
       "javascript-algorithms#309",
       "javascript-algorithms#310",
-      "javascript-algorithms#311"
+      "javascript-algorithms#311",
+      "javascript-algorithms#312"
     ]
   },
   {
@@ -917,7 +918,7 @@ module.exports = [
     "name": "z-algorithm",
     "group": "string",
     "exercises": [
-      "javascript-algorithms#312"
+      "javascript-algorithms#313"
     ]
   }
 ] 
