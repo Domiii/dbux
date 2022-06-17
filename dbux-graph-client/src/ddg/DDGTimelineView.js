@@ -42,7 +42,8 @@ let documentMouseMoveHandler;
 
 const GroupDefaultSummaryModes = [
   DDGSummaryMode.CollapseSummary,
-  DDGSummaryMode.SummarizeChildren,
+  // DDGSummaryMode.SummarizeChildren,
+  DDGSummaryMode.ExpandSelf,
   DDGSummaryMode.ExpandSubgraph
 ];
 

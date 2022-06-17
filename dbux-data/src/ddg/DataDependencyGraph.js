@@ -4,6 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
 import DataNodeType, { isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { DDGRootTimelineId } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
@@ -12,7 +13,6 @@ import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -114,7 +114,7 @@ export default class DataDependencyGraph extends BaseDDG {
    * Summary data by `timelineId`.
    * NOTE: This is built lazily in `buildNodeSummary`.
    * 
-   * @type {Object.<number, DDGNodeSummary>}
+   * @type {Object.<string, DDGNodeSummary>}
    */
   nodeSummaries = {};
 

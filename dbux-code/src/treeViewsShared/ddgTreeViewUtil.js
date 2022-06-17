@@ -7,6 +7,7 @@ import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
+import { isFunction } from 'lodash';
 
 /**
  * @param {DDGTimelineNode} node 
@@ -136,6 +137,9 @@ export function renderDDGNodesItem(ddg, nodesOrIds, label) {
   return makeTreeItem(() => ({
     label,
     children() {
+      if (isFunction(nodesOrIds)) {
+        nodesOrIds = nodesOrIds();
+      }
       const children = new nodesOrIds.constructor();
       Object.entries(nodesOrIds).forEach(([key, childOrChildId]) => {
         let child;
@@ -155,7 +159,7 @@ export function renderDDGNodesItem(ddg, nodesOrIds, label) {
       // });
     },
     props: {
-      description: `(${size(nodesOrIds)})`
+      description: isFunction(nodesOrIds) ? '' : `(${size(nodesOrIds)})`
     }
   }));
 }

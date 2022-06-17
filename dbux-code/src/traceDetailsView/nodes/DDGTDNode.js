@@ -7,6 +7,7 @@ import { renderDDGNode, renderDDGNodesItem, renderDDGSummaries } from '../../tre
 import { getActiveDDGWebview } from '../../webViews/ddgWebView';
 import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
+import { intersection } from 'lodash';
 
 
 /** ###########################################################################
@@ -95,25 +96,31 @@ export default class DDGTDNode extends TraceDetailNode {
 
   // eslint-disable-next-line camelcase
   Summaries() {
-    const { ddg, dataNodes } = this;
-    const summaryTimelineNodes = dataNodes?.flatMap(dataNode => {
-      return ddg.timelineNodes.filter(n => n && n.dataNodeId === dataNode.nodeId && !n.og);
-    });
-    let summaryNodes = Array.from(
-      new Set([
-        // // own summaries
-        // ...timelineNodes?.flatMap(n => ddg.nodeSummaries[n.timelineId]),
+    // const { ddg, dp, dataNodes } = this;
+    // const tids = Array.from(new Set(
+    //   dataNodes
+    //     .flatMap(n => [n.varAccess?.declarationTid, n.traceId])
+    //     .filter(Boolean)
+    // ));
+    // const refIds = Array.from(new Set(
+    //   dataNodes
+    //     .map(n => dp.util.getDataNodeAccessedRefId(n.nodeId))
+    //     .filter(Boolean)
+    // ));
+    // TODO: this would pick up a lot of false positives
 
-        // sumamry nodes that represent this node
-        ...(summaryTimelineNodes || EmptyArray)
-      ])
-    ).filter(Boolean);
+    // const summaries = () => {
+    //   // brute-force: search all summaries
+    //   return Object.values(ddg.nodeSummaries || EmptyObject)
+    //     .filter((summary) => {
+    //       return !!intersection(Array.from(summary.nodesByTid.keys()), tids).length ||
+    //         !!intersection(Array.from(getAllRefIdsOfSnapshot(summary.summaryRoots), refIds));
+    //     });
+    // };
+    return makeTreeItem('Summaries: TODO');
 
-    if (!summaryNodes.length) {
-      return makeTreeItem('(no summaries)');
-    }
-
-    return renderDDGNodesItem(ddg, summaryNodes, 'Summaries');
+    // return renderDDGNodesItem(ddg, summaryNodesFn, 'Summaries');
+    // return renderDDGSummaries(ddg, summaries);
   }
 
   // eslint-disable-next-line camelcase
