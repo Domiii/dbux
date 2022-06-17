@@ -7,7 +7,8 @@ module.exports = [
     "chapter": "best-time-to-buy-sell-stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
-    ]
+    ],
+    "ddgs": []
   },
   {
     "name": "articulationPoints should find articulation points in graph",
@@ -47,6 +48,70 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 113,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633,
+            "_pos": {
+              "line": 21,
+              "character": 50
+            }
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241,
+            "_pos": {
+              "line": 112,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 21,
+              "character": 50
+            },
+            {
+              "line": 112,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.7256527011726159"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 362,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633,
+            "_pos": {
+              "line": 21,
+              "character": 50
+            }
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241,
+            "_pos": {
+              "line": 112,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.7256527011726159"
+      }
     ]
   },
   {
@@ -87,6 +152,26 @@ module.exports = [
     "chapter": "jump-game",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "backtrackingJumpGame([2,3,1,1,4], 0, [])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 84,
+            "index": 653
+          },
+          "end": {
+            "line": 48,
+            "column": 1,
+            "index": 1725
+          }
+        },
+        "applicationUuid": "0.025901516664092794"
+      }
     ]
   },
   {
@@ -97,6 +182,44 @@ module.exports = [
     "chapter": "bellman-ford",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 179,
+        "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 56,
+            "index": 172,
+            "_pos": {
+              "line": 5,
+              "character": 56
+            }
+          },
+          "end": {
+            "line": 45,
+            "column": 1,
+            "index": 1581,
+            "_pos": {
+              "line": 44,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 5,
+              "character": 56
+            },
+            {
+              "line": 44,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.3304538335353029"
+      }
     ]
   },
   {
@@ -107,6 +230,44 @@ module.exports = [
     "chapter": "bellman-ford",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 282,
+        "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 56,
+            "index": 172,
+            "_pos": {
+              "line": 5,
+              "character": 56
+            }
+          },
+          "end": {
+            "line": 45,
+            "column": 1,
+            "index": 1581,
+            "_pos": {
+              "line": 44,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 5,
+              "character": 56
+            },
+            {
+              "line": 44,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.6729512559825301"
+      }
     ]
   },
   {
@@ -117,6 +278,298 @@ module.exports = [
     "chapter": "maximum-subarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfMaximumSubarray([])",
+        "contextId": 5,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0])",
+        "contextId": 6,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 7,
+              "character": 54
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1,2])",
+        "contextId": 8,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,-1,2])",
+        "contextId": 9,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
+        "contextId": 10,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 7,
+              "character": 54
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
+        "contextId": 11,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 7,
+              "character": 54
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173,
+            "_pos": {
+              "line": 7,
+              "character": 54
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9243068338553013"
+      }
     ]
   },
   {
@@ -127,6 +580,278 @@ module.exports = [
     "chapter": "rain-terraces",
     "testFilePaths": [
       "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfRainTerraces([1])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,0])",
+        "contextId": 6,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0])",
+        "contextId": 8,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,0])",
+        "contextId": 9,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,0,1,0])",
+        "contextId": 10,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,2,0,0,1,0])",
+        "contextId": 11,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([2,0,2])",
+        "contextId": 12,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([2,0,5])",
+        "contextId": 13,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([3,0,0,2,0,4])",
+        "contextId": 14,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "contextId": 15,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,1,1,1,1])",
+        "contextId": 16,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,2,3,4,5])",
+        "contextId": 17,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
+        "contextId": 18,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
+        "contextId": 19,
+        "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 49,
+            "index": 180
+          },
+          "end": {
+            "line": 33,
+            "column": 1,
+            "index": 1211
+          }
+        },
+        "applicationUuid": "0.15144422174393624"
+      }
     ]
   },
   {
@@ -137,6 +862,34 @@ module.exports = [
     "chapter": "travelling-salesman",
     "testFilePaths": [
       "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfTravellingSalesman({vertices,edges,isDirected})",
+        "contextId": 63,
+        "filePath": "src/algorithms/graph/travelling-salesman/bfTravellingSalesman.js",
+        "loc": {
+          "start": {
+            "line": 69,
+            "column": 52,
+            "index": 2047,
+            "_pos": {
+              "line": 68,
+              "character": 52
+            }
+          },
+          "end": {
+            "line": 104,
+            "column": 1,
+            "index": 3439,
+            "_pos": {
+              "line": 103,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.9855434081755214"
+      }
     ]
   },
   {
@@ -167,6 +920,152 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitLength.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitLength(0)",
+        "contextId": 5,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(1)",
+        "contextId": 6,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(1)",
+        "contextId": 7,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(5)",
+        "contextId": 8,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(5)",
+        "contextId": 9,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(21)",
+        "contextId": 10,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(245)",
+        "contextId": 11,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      },
+      {
+        "ddgTitle": "bitLength(245)",
+        "contextId": 12,
+        "filePath": "src/algorithms/math/bits/bitLength.js",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 42,
+            "index": 183
+          },
+          "end": {
+            "line": 15,
+            "column": 1,
+            "index": 308
+          }
+        },
+        "applicationUuid": "0.518764078933196"
+      }
     ]
   },
   {
@@ -177,6 +1076,26 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitsDiff.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitsDiff(0, 1)",
+        "contextId": 6,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.4597341131278494"
+      }
     ]
   },
   {
@@ -257,6 +1176,26 @@ module.exports = [
     "chapter": "power-set",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "btPowerSet([1,2])",
+        "contextId": 5,
+        "filePath": "src/algorithms/sets/power-set/btPowerSet.js",
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 48,
+            "index": 1726
+          },
+          "end": {
+            "line": 41,
+            "column": 1,
+            "index": 1787
+          }
+        },
+        "applicationUuid": "0.6130181404703885"
+      }
     ]
   },
   {
@@ -277,16 +1216,247 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([\"bb\",\"aa\",\"c\"])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.6510243348561218"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"a\",\"bbbb\",\"ccc\"])",
+        "contextId": 24,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 36,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.6510243348561218"
+      }
     ]
   },
   {
     "name": "BubbleSort should sort array",
     "label": "BubbleSort should sort array",
     "testNamePattern": "BubbleSort should sort array",
-    "chapterGroup": "sorting",
-    "chapter": "bubble-sort",
+    "chapter": "BubbleSort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([3,5,3,4,2])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 39,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.5567852789679775"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"\"])",
+        "contextId": 52,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.5567852789679775"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"a\"])",
+        "contextId": 53,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.5567852789679775"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
+        "contextId": 54,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.5567852789679775"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 59,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.5567852789679775"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
+        "contextId": 77,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166,
+            "_pos": {
+              "line": 39,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.5567852789679775"
+      }
     ]
   },
   {
@@ -317,6 +1487,44 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 37,
+            "column": 3,
+            "index": 1063,
+            "_pos": {
+              "line": 36,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 36,
+              "character": 3
+            }
+          ]
+        },
+        "applicationId": 1
+      }
     ]
   },
   {
@@ -607,6 +1815,252 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,2])",
+        "contextId": 23,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([2,1])",
+        "contextId": 42,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 61,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 8,
+              "character": 79
+            },
+            {
+              "line": 76,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 152,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 333,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 514,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 695,
+        "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 79,
+            "index": 291,
+            "_pos": {
+              "line": 8,
+              "character": 79
+            }
+          },
+          "end": {
+            "line": 77,
+            "column": 3,
+            "index": 3043,
+            "_pos": {
+              "line": 76,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.25401242622381615"
+      }
     ]
   },
   {
@@ -785,7 +2239,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationId": 1
+        "applicationUuid": "0.7801724826127072"
       }
     ]
   },
@@ -797,6 +2251,26 @@ module.exports = [
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 115,
+        "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 53,
+            "index": 577
+          },
+          "end": {
+            "line": 80,
+            "column": 1,
+            "index": 3052
+          }
+        },
+        "applicationUuid": "0.6449631430697484"
+      }
     ]
   },
   {
@@ -1277,6 +2751,26 @@ module.exports = [
     "chapter": "hanoi-tower",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
+        "contextId": 18,
+        "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40,
+            "index": 1624
+          },
+          "end": {
+            "line": 88,
+            "column": 1,
+            "index": 2284
+          }
+        },
+        "applicationUuid": "0.5606770260435237"
+      }
     ]
   },
   {
@@ -1287,6 +2781,26 @@ module.exports = [
     "chapter": "hanoi-tower",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
+        "contextId": 18,
+        "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40,
+            "index": 1624
+          },
+          "end": {
+            "line": 88,
+            "column": 1,
+            "index": 2284
+          }
+        },
+        "applicationUuid": "0.9592641517416074"
+      }
     ]
   },
   {
@@ -1297,16 +2811,411 @@ module.exports = [
     "chapter": "hanoi-tower",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback})",
+        "contextId": 9,
+        "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40,
+            "index": 1624
+          },
+          "end": {
+            "line": 88,
+            "column": 1,
+            "index": 2284
+          }
+        },
+        "applicationUuid": "0.7637136088019938"
+      }
     ]
   },
   {
     "name": "HeapSort should sort array",
     "label": "HeapSort should sort array",
     "testNamePattern": "HeapSort should sort array",
-    "chapterGroup": "sorting",
-    "chapter": "heap-sort",
+    "chapter": "HeapSort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1])",
+        "contextId": 18,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,2])",
+        "contextId": 31,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([2,1])",
+        "contextId": 62,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 100,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 4,
+              "character": 22
+            },
+            {
+              "line": 28,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 600,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 1860,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 3610,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 5084,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"\"])",
+        "contextId": 5814,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"a\"])",
+        "contextId": 5827,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"a\"])",
+        "contextId": 5840,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 5878,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"aa\"])",
+        "contextId": 5986,
+        "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 22,
+            "index": 161,
+            "_pos": {
+              "line": 4,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 29,
+            "column": 3,
+            "index": 875,
+            "_pos": {
+              "line": 28,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.41635339682367234"
+      }
     ]
   },
   {
@@ -1457,6 +3366,174 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([3,5,3,4,2])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          },
+          "_range": [
+            {
+              "line": 3,
+              "character": 22
+            },
+            {
+              "line": 33,
+              "character": 3
+            }
+          ]
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"\"])",
+        "contextId": 46,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"a\"])",
+        "contextId": 47,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"a\"])",
+        "contextId": 48,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 53,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"aa\"])",
+        "contextId": 67,
+        "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 104,
+            "_pos": {
+              "line": 3,
+              "character": 22
+            }
+          },
+          "end": {
+            "line": 34,
+            "column": 3,
+            "index": 888,
+            "_pos": {
+              "line": 33,
+              "character": 3
+            }
+          }
+        },
+        "applicationUuid": "0.8792445767825221"
+      }
     ]
   },
   {
@@ -2147,6 +4224,260 @@ module.exports = [
     "chapter": "merge-sort",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "MergeSort.sort([])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1,2])",
+        "contextId": 16,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([2,1])",
+        "contextId": 27,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 40,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 215,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 472,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 857,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 1270,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"\"])",
+        "contextId": 1612,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"a\"])",
+        "contextId": 1614,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"aa\",\"a\"])",
+        "contextId": 1616,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 1629,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      },
+      {
+        "ddgTitle": "MergeSort.sort([\"aa\",\"aa\"])",
+        "contextId": 1666,
+        "filePath": "src/algorithms/sorting/merge-sort/MergeSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 100
+          },
+          "end": {
+            "line": 24,
+            "column": 3,
+            "index": 854
+          }
+        },
+        "applicationUuid": "0.19856939206255197"
+      }
     ]
   },
   {
@@ -2957,6 +5288,44 @@ module.exports = [
     "chapter": "square-matrix-rotation",
     "testFilePaths": [
       "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "squareMatrixRotation([[],[]])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 61,
+            "index": 125,
+            "_pos": {
+              "line": 4,
+              "character": 61
+            }
+          },
+          "end": {
+            "line": 37,
+            "column": 1,
+            "index": 1118,
+            "_pos": {
+              "line": 36,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 4,
+              "character": 61
+            },
+            {
+              "line": 36,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.1537822004530367"
+      }
     ]
   },
   {

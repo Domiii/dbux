@@ -1,12 +1,9 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import fs from 'fs';
-// import { dirname } from 'path';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
-import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
-import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { exportApplicationToFile, importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import ChapterNode from '../projectViews/practiceView/ChapterNode';
 import ExerciseNode from '../projectViews/practiceView/ExerciseNode';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
@@ -19,6 +16,11 @@ import { getCurrentResearch } from '../research/Research';
 /** @typedef {import('@dbux/projects/src/projectLib/Chapter').default} Chapter */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
+
+
+/** ###########################################################################
+ * {@link DDGNode}
+ *  #########################################################################*/
 
 class DDGNode extends BaseTreeViewNode {
   static makeLabel(entry, parent, moreProp) {
@@ -37,27 +39,40 @@ class DDGNode extends BaseTreeViewNode {
   }
 
   async handleClick() {
-    const { applicationId, contextId, filePath, loc } = this;
-    const app = allApplications.getById(applicationId);
-    if (!app) {
+    let { applicationUuid, contextId, filePath, loc } = this;
+    let application = allApplications.getById(applicationUuid);
+    const fullContextFilePath = pathResolve(this.exercise.project.projectPath, filePath);
+    if (!application) {
       const appFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: this.exercise.id });
       if (fs.existsSync(appFilePath)) {
         await importApplicationFromFile(appFilePath);
       }
       else {
-        const result = await confirm(`No application file found, do you want to run the exercise?`);
+        const result = await confirm(`No application file found. Do you want to run the exercise?`);
         if (result) {
-          await this.treeNodeProvider.manager.switchAndTestBug(this.exercise);
+          // get new application
+          application = await this.treeNodeProvider.controller.runAndExportDDGApplication(this.exercise);
+
+          const newFilePath = application.dataProvider.util.getContextFilePath(contextId);
+          if (newFilePath !== fullContextFilePath) {
+            this.treeNodeProvider.logger.error(`Ran test, but context is not in original file anymore. Test data probably outdated.`);
+          }
+          ({ applicationUuid } = application);
         }
         else {
           return;
         }
       }
     }
-    await showDDGViewForArgs({ applicationId, contextId });
-    await goToCodeLoc(pathResolve(this.exercise.project.projectPath, filePath), loc);
+    await showDDGViewForArgs({ applicationUuid, contextId });
+    await goToCodeLoc(fullContextFilePath, loc);
   }
 }
+
+
+/** ###########################################################################
+ * {@link DDGExerciseNode}
+ *  #########################################################################*/
 
 class DDGExerciseNode extends ExerciseNode {
   get contextValue() {
@@ -77,21 +92,7 @@ class DDGExerciseNode extends ExerciseNode {
     allApplications.clear();
 
     await runTaskWithProgressBar(async (progress) => {
-      progress.report({ message: `Running exercises...` });
-      await this.treeNodeProvider.manager.switchAndTestBug(exercise);
-
-      progress.report({ message: `Parsing application` });
-      const app = allApplications.getById(1);
-      const ddgs = findDDGContextIdInApp(app, exercise);
-      exercise.ddgs = ddgs;
-
-      progress.report({ message: `Storing results...` });
-      const config = this.treeNodeProvider.controller.exerciseConfigsByName.get(exercise.name);
-      config.ddgs = ddgs;
-      this.treeNodeProvider.controller.writeExerciseJs();
-
-      showInformationMessage(`Found ${ddgs.length} ddg(s).`);
-      this.treeNodeProvider.refresh();
+      await this.treeNodeProvider.controller.runAndExportDDGApplication(exercise, progress);
     }, { title: `Run DDG` });
   }
 
@@ -105,13 +106,21 @@ class DDGExerciseNode extends ExerciseNode {
   }
 }
 
-class DDGChapterNode extends ChapterNode {
+/** ###########################################################################
+ * {@link ExerciseChapterNode}
+ *  #########################################################################*/
+
+class ExerciseChapterNode extends ChapterNode {
   get ExerciseNodeClass() {
     return DDGExerciseNode;
   }
 }
 
-class DDGChapterGroupNode extends BaseTreeViewNode {
+/** ###########################################################################
+ * {@link ExerciseChapterGroupNode}
+ *  #########################################################################*/
+
+class ExerciseChapterGroupNode extends BaseTreeViewNode {
   static makeLabel(entry, parent, moreProp) {
     return moreProp.keyword;
   }
@@ -125,7 +134,7 @@ class DDGChapterGroupNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    return this.entry.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this));
+    return this.entry.map(chapter => this.treeNodeProvider.buildNode(ExerciseChapterNode, chapter, this));
   }
 }
 
@@ -157,99 +166,6 @@ export default class ChapterListNode extends BaseTreeViewNode {
 
     return Array.from(chaptersByGroup.entries())
       .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([keyword, chapters]) => this.treeNodeProvider.buildNode(DDGChapterGroupNode, chapters, this, { keyword }));
-    // const Keywords = ['Sort', 'Search'];
-    // const chapters = Object.fromEntries(Keywords.map(keyword => [keyword, []]));
-    // const otherChapters = [];
-    // for (const chapter of this.chapters) {
-    //   let matchedKeyword;
-    //   for (const keyword of Keywords) {
-    //     if (chapter.name.toLowerCase().includes(keyword.toLowerCase())) {
-    //       matchedKeyword = keyword;
-    //       break;
-    //     }
-    //   }
-    //   if (matchedKeyword) {
-    //     chapters[matchedKeyword].push(chapter);
-    //   }
-    //   else {
-    //     otherChapters.push(chapter);
-    //   }
-    // }
-
-    // return [
-    //   ...Keywords.map(keyword => this.treeNodeProvider.buildNode(DDGChapterGroupNode, chapters[keyword], this, { keyword })),
-    //   this.treeNodeProvider.buildNode(DDGChapterGroupNode, otherChapters, this, { keyword: 'Others' }),
-    //   // otherChapters.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this)),
-    // ];
+      .map(([keyword, chapters]) => this.treeNodeProvider.buildNode(ExerciseChapterGroupNode, chapters, this, { keyword }));
   }
 }
-
-/** ###########################################################################
- * util
- *  #########################################################################*/
-
-/**
- * @param {CodeApplication} app 
- * @param {Exercise} exercise
- */
-function findDDGContextIdInApp(app, exercise) {
-  const { project } = exercise;
-  const dp = app.dataProvider;
-  // const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
-  const testProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
-    const { filePath } = staticProgramContext;
-    // const fileDir = dirname(filePath);
-    // const readmeFilePath = pathResolve(fileDir, 'README.md');
-    // const testFolderPath = pathResolve(fileDir, '__test__');
-
-    // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
-    const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/(.*).js/;
-    return ValidFilePattern.test(filePath);
-  });
-
-  const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
-  const contexts = staticContexts
-    .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
-    .sort((a, b) => a.contextId - b.contextId);
-  const addedContextIds = new Set();
-  return contexts.map(context => {
-    const { contextId } = context;
-    const { applicationId } = app;
-    const functionName = makeContextLabel(context, app);
-    const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
-    if (!callerTrace) {
-      return null;
-    }
-
-    let { parentContextId } = context;
-    while (parentContextId) {
-      if (addedContextIds.has(parentContextId)) {
-        return null;
-      }
-      ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
-    }
-
-    // const callerProgramPath = dp.util.getTraceFilePath(callerTrace.traceId);
-    // if (callerProgramPath !== testFilePath) {
-    //   return null;
-    // }
-
-    const params = dp.util.getCallArgValueStrings(callerTrace.callId);
-    const filePath = pathRelative(project.projectPath, dp.util.getContextFilePath(contextId));
-    const staticContext = dp.util.getContextStaticContext(contextId);
-    const loc = { ...staticContext.loc };
-    deleteCachedLocRange(loc);
-
-    addedContextIds.add(contextId);
-
-    return {
-      ddgTitle: `${functionName}(${params.join(', ')})`,
-      contextId,
-      filePath,
-      loc,
-      applicationId,
-    };
-  }).filter(x => !!x);
-}
-

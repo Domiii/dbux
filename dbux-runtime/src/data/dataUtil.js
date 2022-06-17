@@ -17,6 +17,9 @@ import valueCollection from './valueCollection';
 // BCE + callees
 // ###########################################################################
 
+function isSameFunction(a, b) {
+  return a && a?.refId === b?.refId;
+}
 
 export function getFunctionStaticContextId(functionRef) {
   const functionNode = functionRef && dataNodeCollection.getById(functionRef.nodeId);
@@ -81,7 +84,7 @@ export function getRealBCECalleeFunctionRef(bceTrace) {
 //   const bceTrace = traceCollection.getLast();
 //   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
 //   const functionRef = getLastFunctionRef();
-//   return calleeRef && calleeRef === functionRef && bceTrace || null;
+//   return isSameFunction(calleeRef, functionRef) && bceTrace || null;
 // }
 
 export function peekBCEMatchCalleeUnchecked(func) {
@@ -101,7 +104,7 @@ export function peekBCEMatchCallee(func) {
   const functionRef = calleeRef && valueCollection.getRefByValue(func);
   // TODO: `functionRef` is referring to the original (because the original was traced)
   //    -> but `calleeRef` refers to the patched function instead
-  return calleeRef && calleeRef === functionRef && bceTrace || null;
+  return isSameFunction(calleeRef, functionRef) && bceTrace || null;
 }
 
 /**
@@ -181,10 +184,10 @@ export function peekBCEContextCheckCallee(callId, lastContextId) {
   // 2. get last executed real context
   // TODO: getLastRealContext is busted
   const context = executionContextCollection.getLastRealContext(lastContextId);
-  const contextFunctionRef = getFunctionRefByContext(context);
+  const functionRef = getFunctionRefByContext(context);
 
   // 3. make sure the two are the same
-  return calleeRef && calleeRef === contextFunctionRef && context || null;
+  return isSameFunction(calleeRef, functionRef) && context || null;
 }
 
 /**
@@ -197,7 +200,7 @@ export function getContextOfFunc(i, func) {
   }
   const context = executionContextCollection.getByIndex(i + 1);
   const contextFunctionRef = context && getFunctionRefByContext(context);
-  return functionRef === contextFunctionRef ? context : null;
+  return isSameFunction(functionRef, contextFunctionRef) ? context : null;
 }
 
 export function isRootContext(contextId) {
@@ -280,7 +283,7 @@ export function getFunctionDefinitionTraceOfValue(value) {
  */
 export function getFunctionDefinitionTraceOfTrace(trace) {
   if (trace.resultId) {
-    // CRE -> get BCE
+    // CER -> get BCE
     trace = traceCollection.getById(trace.resultId);
   }
   while (trace) {

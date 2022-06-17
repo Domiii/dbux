@@ -12,9 +12,9 @@ function getCalleePlugin(node) {
   const [calleePath] = node.getChildPaths();
   // console.warn('getCalleePlugin', isAnyMemberExpression(calleePath), !isNotCalleeTraceableNodeME(calleePath), pathToString(calleePath));
   if (isAnyMemberExpression(calleePath)) {
-    if (!isNotCalleeTraceableNodeME(calleePath)) {
-      return 'CalleeME';
-    }
+    // if (!isNotCalleeTraceableNodeME(calleePath)) {
+    return 'CalleeME';
+    // }
   }
   // if (!pluginName) {
   //   // node.logger.error(`unknown callee type: "${type}" at "${pathToString(calleePath)}"`);
@@ -23,22 +23,24 @@ function getCalleePlugin(node) {
   return null;
 }
 
-/**
- * `super.f()` cannot be traced
- */
-function isNotCalleeTraceableNodeME(calleePath) {
-  const leftMostPath = getLeftMostPathOfME(calleePath);
-  return leftMostPath?.isSuper() || false;
-}
+// /**
+//  *
+//  */
+// // NOTE: this is not a problem. `super.f()` is traceable.
+// function isNotCalleeTraceableNodeME(calleePath) {
+//   const leftMostPath = getLeftMostPathOfME(calleePath);
+//   return leftMostPath?.isSuper() || false;
+// }
 
 
 /**
  * Check for traceability of potential special functions. 
  */
 function isNotCalleeTraceableNode(calleeNode) {
-  if (calleeNode.path.isMemberExpression()) {
-    return isNotCalleeTraceableNodeME(calleeNode.path);
-  }
+  // NOTE: this is not a problem. `super.f()` is traceable.
+  // if (calleeNode.path.isMemberExpression()) {
+  //   return isNotCalleeTraceableNodeME(calleeNode.path);
+  // }
   const { specialType } = calleeNode;
   return specialType && isNotCalleeTraceableType(specialType);
 }

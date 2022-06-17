@@ -1,7 +1,7 @@
 // import DDGTimelineNodeType from './DDGTimelineNodeType';
 
 import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { RootTimelineId } from './constants';
+import { DDGRootTimelineId } from './constants';
 // import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 
 /** @typedef { import("@dbux/common/src/types/constants/DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
@@ -23,7 +23,8 @@ export class DDGTimelineNode {
   label;
 
   /**
-   * `timelineId` of this node's parent node (or 0/undefined if its a root/it does not apply).
+   * Only for nodes in a snapshot tree: `timelineId` of this node's parent node.
+   * (does not apply to groups. Use `groupId` instead.)
    * @type {number}
    */
   parentNodeId;
@@ -33,6 +34,19 @@ export class DDGTimelineNode {
    * This is needed to build `summaryNodes`.
    */
   hasSummarizableWrites = false;
+
+  /**
+   * Whether this is an "og" node (i.e. created during original graph construction),
+   * that is part of the base timeline,
+   * or whether it was added later (usually due to summarization).
+   * @type {boolean}
+   */
+  og;
+
+  groupId;
+
+  // some other data that we can make use of
+  traceType;
 
   /**
    * @param {DDGTimelineNodeTypeValues} type
@@ -60,6 +74,12 @@ export class GroupTimelineNode extends DDGTimelineNode {
    * @type {Array.<number>}
    */
   children = [];
+
+  /**
+   * {@link DecisionTimelineNode#TimelineId} of this branch's decision nodes.
+   * @type {number[]}
+   */
+  decisions = [];
 }
 
 /**
@@ -69,7 +89,7 @@ export class GroupTimelineNode extends DDGTimelineNode {
 export class TimelineRoot extends GroupTimelineNode {
   constructor() {
     super(DDGTimelineNodeType.Root);
-    this.timelineId = RootTimelineId;
+    this.timelineId = DDGRootTimelineId;
   }
 }
 
@@ -84,9 +104,9 @@ export class DataTimelineNode extends DDGTimelineNode {
    */
   dataNodeId;
   /**
-   * NOTE: only set for in-snapshot nodes.
+   * `timelineId` of the root `RefSnapshotTimelineNode`.
    */
-  startDataNodeId;
+  rootTimelineId;
   value;
   connected = false;
 
@@ -103,6 +123,8 @@ export class DataTimelineNode extends DDGTimelineNode {
 }
 
 export class ValueTimelineNode extends DataTimelineNode {
+  prop;
+
   constructor(dataNodeId, label) {
     super(DDGTimelineNodeType.Value);
 
@@ -112,8 +134,8 @@ export class ValueTimelineNode extends DataTimelineNode {
 }
 
 /**
+ * future-work: this is actually now basically a `DataTimelineNode`. Need to integrate the two.
  * This node represents a ref value at time t = {@link RefTimelineNode#dataNodeId}.
- * NOTE: This is NEITHER DataTimelineNode NOR GroupTimelineNode!
  */
 export class RefTimelineNode extends DDGTimelineNode {
   traceId;
@@ -136,6 +158,20 @@ export class RefTimelineNode extends DDGTimelineNode {
 }
 
 
+export class DeleteEntryTimelineNode extends DataTimelineNode {
+  constructor(dataNodeId, label) {
+    super(DDGTimelineNodeType.DeleteEntry);
+
+    this.dataNodeId = dataNodeId;
+    this.label = label;
+  }
+}
+
+// export class SnapshotEntryDeleteInfo {
+//   prop;
+//   dataNodeId;
+// }
+
 export class RefSnapshotTimelineNode extends RefTimelineNode {
   /**
    * @type {string}
@@ -152,9 +188,14 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
   children;
 
   /**
-   * We use `startDataNodeId` to determine modifications.
+   * `timelineId` of the root `RefSnapshotTimelineNode`.
    */
-  startDataNodeId;
+  rootTimelineId;
+
+  /**
+   * Whether this is only a partial snapshot
+   */
+  isPartial = false;
 
   /**
    * @param {number} dataNodeId 
@@ -219,17 +260,10 @@ export class ContextTimelineNode extends GroupTimelineNode {
 export class BranchTimelineNode extends GroupTimelineNode {
   controlStatementId;
 
-  /**
-   * {@link DecisionTimelineNode#TimelineId} of this branch's decision nodes.
-   * @type {number[]}
-   */
-  decisions;
-
   constructor(type, controlStatementId) {
     super(type);
     this.controlStatementId = controlStatementId;
     this.children = [];
-    this.decisions = [];
   }
 }
 
@@ -269,7 +303,6 @@ export class IterationNode extends GroupTimelineNode {
     super(DDGTimelineNodeType.Iteration);
     this.decision = decisionTimelineId;
     this.i = i;
-    this.label = i + '';
   }
 }
 

@@ -12,6 +12,8 @@ import {
   DoWhileTimelineNode
 } from './DDGTimelineNodes';
 
+/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
+
 
 /** ###########################################################################
  * 
@@ -59,10 +61,11 @@ export const controlGroupLabelMaker = {
     let label;
     if (!lastDecisionId) {
       // something went wrong
-      label = '(ERR: no decision)';
+      // label = '(ERR: no decision)';
+      label = 'if';
     }
     else {
-      const decisionNode = ddg.timelineNodes[lastDecisionId];
+      const decisionNode = ddg.decisionTimelineNodes[lastDecisionId];
       const isLastDecisionTruthy = dp.util.isDataNodeValueTruthy(decisionNode.dataNodeId);
       if (isLastDecisionTruthy) {
         if (ifNode.decisions.length === 1) {

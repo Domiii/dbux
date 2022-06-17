@@ -1,3 +1,4 @@
+import isFunction from 'lodash/isFunction';
 import { TreeItemCollapsibleState, EventEmitter, window, TreeView } from 'vscode';
 import SyncPromise from '@dbux/common/src/util/SyncPromise';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -118,11 +119,8 @@ export default class BaseTreeViewNodeProvider {
     try {
       this.rootNodes = this.buildRoots();
       this._decorateNodes(null, this.rootNodes);
-
       this.handleRefresh();
-
-      // NOTE: if we only want to update subtree, pass root of subtree to `fire`
-      this.repaint();
+      this.#invalidate();
 
       this.refreshPromise.startIfNotStarted();
     }
@@ -142,16 +140,20 @@ export default class BaseTreeViewNodeProvider {
   //   this._onDidChangeTreeData.fire();
   // }, 10);
 
-  repaint() {
+  #invalidate() {
     this._onDidChangeTreeData.fire();
   }
+
+  refreshNode = throttle((treeItem) => {
+    this._onDidChangeTreeData.fire(treeItem);
+  }, 50);
 
   /**
    * Refresh iconPath of rootNodes and its children, then repaint the view
    */
   refreshIcon() {
     this._refreshNodesIconPath(this.rootNodes);
-    this.repaint();
+    this.#invalidate();
   }
 
   _refreshNodesIconPath(nodes) {
@@ -180,7 +182,7 @@ export default class BaseTreeViewNodeProvider {
         this.logger.error('invalid node collapsibleState on state change: ', node.collapsibleState, node);
         break;
     }
-    this.idsCollapsibleState.set(node.id, node.collapsibleState);
+    node.id && this.idsCollapsibleState.set(node.id, node.collapsibleState);
 
     // record user action
     const { treeViewName } = this;
@@ -191,7 +193,10 @@ export default class BaseTreeViewNodeProvider {
       clazz: node.constructor.name,
       collapsibleState: node.collapsibleState
     };
-    
+
+    // node.debug && this.logger.debug(
+    //   `[TREEITEM DEBUG] collapsible state changed: ${node.collapsibleState === TreeItemCollapsibleState.Expanded}`);
+
     // trigger event handlers
     evtHandler.call(this, node);
     this.handleNodeCollapsibleStateChanged(node);
@@ -232,7 +237,7 @@ export default class BaseTreeViewNodeProvider {
       clazz: node.constructor.name
     };
 
-    
+
     try {
       await node.handleClick?.();
       const { clickUserActionType } = node;
@@ -274,8 +279,8 @@ export default class BaseTreeViewNodeProvider {
   /**
    * @param {BaseTreeViewNode} node 
    */
-  buildChildren(node) {
-    node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
+  async buildChildren(node) {
+    node.children = node.buildChildren && await node.buildChildren() || await node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;
   }
@@ -316,11 +321,15 @@ export default class BaseTreeViewNodeProvider {
 
     // assign ids
     children?.forEach((child) => {
+      if (isFunction(child)) {
+        throw new Error(`TreeNode should not be (but is) a function. Maybe you forgot to call makeTreeItem(s)? - ${child.toString()}`);
+      }
       // generate id (based on node type and position in tree)
       const lastIdx = childIndexes.get(child.constructor) || 0;
       const index = lastIdx + 1;
       childIndexes.set(child.constructor, index);
-      const id = this.makeNodeId(child.constructor, parent, index);
+
+      const id = child.id || this.makeNodeId(child.constructor, parent, index);
 
       // decorate based on id
       this._decorateNewNode(child, id);
@@ -329,7 +338,14 @@ export default class BaseTreeViewNodeProvider {
 
   _decorateNewNode(node, id) {
     // id
-    node.id = id;
+    if (id) {
+      /**
+       * WARNING: if an `id` is set, VSCode will IGNORE any explicit setting of `collapsibleState` or selection state,
+       * when rendering a second or any following time, no matter if `TreeItem` is newly created or not.
+       * @see https://code.visualstudio.com/api/references/vscode-api#TreeItem → #id
+       */
+      node.id = id;
+    }
 
     // TODO: keep track of all node ids, since VSCode shows an error to the user if we don't do it right (and does not allow us to even log it)
 
@@ -337,8 +353,10 @@ export default class BaseTreeViewNodeProvider {
     node.iconPath = this.makeNodeIconPath(node);
 
     // collapsibleState
-    if ('collapsibleStateOverride' in node) {
-      node.collapsibleState = node.collapsibleStateOverride;
+    // if ('collapsibleStateOverride' in node) {
+    if (node.collapsibleState !== TreeItemCollapsibleState.None || !id) {
+      // just keep it
+      node.collapsibleState = node.collapsibleState;
     }
     else if (node.children?.length || this._canNodeProduceChildren(node)) {
       let collapsibleState = this.idsCollapsibleState.get(id);
@@ -352,6 +370,9 @@ export default class BaseTreeViewNodeProvider {
       // future-work: DON'T OVERRIDE TreeItemCollapsibleState IF THE NODE ALREADY WAS DEFINED WITH THE STATE IT WANTS (*yargs*)
       node.collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.None;
     }
+
+    // node.debug && this.logger.debug(
+    //   `[TREEITEM DEBUG] new node: ${node.collapsibleState === TreeItemCollapsibleState.Expanded}`);
 
     // click handler
     this._setNodeCommand(node);
@@ -412,7 +433,7 @@ export default class BaseTreeViewNodeProvider {
       if (node) {
         this.handleBeforeChildren(node);
         if (this._canNodeProduceChildren(node)) {
-          return node.children = this.buildChildren(node);
+          return node.children = await this.buildChildren(node);
         }
         if (node.children) {
           return node.children;
@@ -425,7 +446,7 @@ export default class BaseTreeViewNodeProvider {
     }
     catch (err) {
       this.logger.error(`${this.constructor.name}.getChildren() failed`, err);
-      debugger;
+      // debugger;
       throw err;
     }
   }

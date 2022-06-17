@@ -1,10 +1,12 @@
-
-
 /** ###########################################################################
- * Common (l + r)val stuff
+ * @file Common (l + r)val stuff
  * ##########################################################################*/
 
+import * as t from '@babel/types';
+import { astNodeToString } from '../../helpers/pathHelpers';
 import { ZeroNode } from '../../helpers/traceUtil';
+
+const ThisNode = t.thisExpression();
 
 /**
  * 
@@ -21,14 +23,34 @@ export function makeMETraceData(parseNode, objectVar = null) {
   // NOTE: the order is `object` → `property`
   //    (test case: var o = {x:1}; (console.log(1), o)[console.log(2), 'x'])
 
+  /**
+   * Whether caller already took care of tracing object.
+   * If not, builder needs to trace object explicitely.
+   * 
+   * Used in `CallExpression`: object assignment (objectVar = o...) is done in `buildTraceCallME`.
+   */
+  const alreadyTracedObject = !!objectVar;
+
   // prepare object
   const objectTraceCfg = objectNode.addDefaultTrace();
   let objectTid = objectTraceCfg?.tidIdentifier;
+  let dontTraceObject = alreadyTracedObject;
   if (!objectTid) {
-    parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     objectTid = ZeroNode;
+
+    if (objectNode.path.isSuper()) {
+      // hackfix: trace `this` instead of `super`
+      objectVar = ThisNode;
+      dontTraceObject = true;
+    }
+    else {
+    // parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+      objectVar = null;
+    }
   }
-  objectVar = objectVar || Traces.generateDeclaredUidIdentifier('o');
+  else {
+    objectVar = objectVar || Traces.generateDeclaredUidIdentifier('o');
+  }
 
   // prepare property
   let propertyVar;
@@ -44,6 +66,7 @@ export function makeMETraceData(parseNode, objectVar = null) {
   }
 
   return {
+    dontTraceObject,
     objectVar,
     objectTid,
     propertyVar,

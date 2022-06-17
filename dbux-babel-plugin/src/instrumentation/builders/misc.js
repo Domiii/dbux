@@ -4,7 +4,7 @@ import NestedError from '@dbux/common/src/NestedError';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { pathToStringAnnotated } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
-import { addMoreTraceCallArgs, getTraceCall, makeInputs } from './buildUtil';
+import { addMoreTraceCallArgs, getTraceCall, makeInputs, NullNode, UndefinedNode } from './buildUtil';
 import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
 import { buildTraceId } from './traceId';
 import { getDeclarationTid } from '../../helpers/traceUtil';
@@ -192,6 +192,32 @@ export const buildTraceWriteVar = buildTraceCall(
 );
 
 
+/** ###########################################################################
+ * purpose
+ *  #########################################################################*/
+
+export const buildAddPurpose = buildTraceCall(
+  '%%trace%%(%%expr%%, %%tid%%, %%purpose%%, %%arg%%)',
+  function buildAddPurpose(state, traceCfg, expr) {
+    const trace = getTraceCall(state, traceCfg, 'addPurpose');
+    const tid = traceCfg.tidIdentifier;
+
+    const {
+      purpose,
+      purposeArg: arg
+    } = traceCfg.data;
+    const purposeAst = t.numericLiteral(purpose);
+
+    return {
+      trace,
+      expr,
+      tid,
+      purpose: purposeAst,
+      arg: arg || NullNode
+    };
+  }
+);
+
 
 /** ###########################################################################
  * {@link doBuild}, {@link buildAll}
@@ -199,7 +225,19 @@ export const buildTraceWriteVar = buildTraceCall(
 
 export function doBuild(state, traceCfg, buildDefault = buildTraceExpression) {
   const build = traceCfg.meta?.build || buildDefault;// getDefaultBuild(traceCfg);
-  const result = build(state, traceCfg);
+  let result = build(state, traceCfg);
+  if (traceCfg.data?.purpose) {
+    result = buildAddPurpose(state, traceCfg, result);
+  }
+  return applyPreconditionToExpression(traceCfg, result);
+}
+
+export function doBuildDefault(state, traceCfg, build, buildDefault = buildTraceExpression) {
+  build ||= buildDefault;
+  let result = build(state, traceCfg);
+  if (traceCfg.data?.purpose) {
+    result = buildAddPurpose(state, traceCfg);
+  }
   return applyPreconditionToExpression(traceCfg, result);
 }
 

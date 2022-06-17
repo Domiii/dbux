@@ -23,23 +23,56 @@ svg.jtk-connector path {
 }
 
 
+.timeline-jsplumb-container {
+  position: relative;
+}
+
 .timeline-ref-node>.timeline-node {
   position: unset;
 } */
 
+/** ###########################################################################
+ * root and other big things
+ * ############################################################################*/
+
+#root {
+  height: 100vh;
+}
+
+.root-cont {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.timeline-view {
+  flex-grow: 1;
+}
+
+/* .timeline-view {
+  /* height: calc(100vh - 30px); 
+} */
+
+.graph-cont {
+  height: 100%;
+}
+
+#timeline-graph {
+  height: 100%;
+}
+
+/* The actual graphviz graph */
+#timeline-graph > svg {
+  min-width: 100%;
+  min-height: 100%;
+}
 
 
 /** ###########################################################################
  * components
  * ############################################################################*/
-
-.timeline-jsplumb-container {
-  position: relative;
-}
-
-.timeline-view {
-  height: calc(100vh - 30px);
-}
 
 .timeline-group {
   pointer-events: none;
@@ -89,8 +122,7 @@ svg.jtk-connector path {
   background-color: black;
 }
 
-
-.node-overlay {
+.overlay {
   position: absolute;
   /* background-color: rgba(0,0,0,0.2); */
   background-color: transparent;
@@ -106,26 +138,42 @@ svg.jtk-connector path {
   fill: #222 !important;
 }
 
-.timeline-view g polygon,ellipse {
-  /* fill: transparent; */  /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
-  fill: #222; /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
+.timeline-view g polygon,
+ellipse {
+  /* fill: transparent; */ /* NOTE: if we set fill to transparent, the element does not receive mouse events anymore */
+  /* hackfix: we cannot seem to find the correct color from the vscode scheme... */
+  /* fill: #222;  */
+  /* fill: rgba(0,0,0, 0.1); */
 }
 
 /** ###########################################################################
- * highlight nodes
+ * highlight
  * ############################################################################*/
 
-.node:hover polygon,.node:hover ellipse {
-  fill: orangered;
+/* .edge.highlight {
+} */
+
+.fadeout-5 {
+  opacity: 0;
+  animation: fadeout 5s;
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.node:hover polygon,
+.node:hover ellipse {
+  fill: darkred;
   cursor: pointer;
 }
-
-/** ###########################################################################
- * highlight cluster label
- * ############################################################################*/
 
 .cluster > text:hover {
   fill: yellow;
   cursor: pointer;
 }
-

@@ -255,13 +255,7 @@ export default class MemberExpression extends BaseNode {
     } = path.node;
 
     const data = makeMETraceData(this, objectVar);
-    /**
-     * Whether caller already took care of tracing object.
-     * If not, builder needs to trace object explicitely.
-     * 
-     * Used in `CallExpression`: object assignment (objectVar = o...) is done in `buildTraceCallME`.
-     */
-    data.isObjectTracedAlready = !!objectVar;
+      
     // NOTE: at build time, the original ME node might have already been replaced
     data.optional = optional;
 

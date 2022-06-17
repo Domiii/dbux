@@ -1,6 +1,6 @@
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeRead } from '@dbux/common/src/types/constants/DataNodeType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
@@ -92,6 +92,21 @@ export default class DataNodeCollection extends Collection {
         resultDataNode.inputs = [minBy(argDataNodes, n => n.value)?.nodeId];
         resultDataNode.cinputs = argDataNodes.filter(n => n.nodeId !== resultDataNode.inputs[0]).map(n => n.nodeId);
       }
+    },
+
+    /**
+     * WARNING: This still won't work since we just cannot have traces and DataNodes out of order.
+     * Given `arg` trace should have `trace` as input.
+     */
+    [TracePurpose.ReverseInput]: (trace, purpose) => {
+      const { dp } = this;
+      const { arg: targetTraceId } = purpose;
+
+      const inputDataNode = dp.util.getDataNodeOfTrace(trace.traceId);
+      const targetDataNode = dp.util.getDataNodeOfTrace(targetTraceId);
+      if (inputDataNode && targetDataNode) {
+        targetDataNode.inputs = [inputDataNode.nodeId];
+      }
     }
   };
 
@@ -108,7 +123,7 @@ export default class DataNodeCollection extends Collection {
    * resolve DataNode data
    * ##########################################################################*/
 
-  postIndexProcessed(dataNodes) {
+  postIndexRaw(dataNodes) {
     this.errorWrapMethod('resolveDataNodeType', dataNodes);
     this.errorWrapMethod('resolveDataIds', dataNodes);
     // this.errorWrapMethod('resolveDataNodeSyntax', dataNodes);
@@ -146,13 +161,17 @@ export default class DataNodeCollection extends Collection {
    */
   resolveDataIds(dataNodes) {
     for (const dataNode of dataNodes) {
+      // `accessId`
       dataNode.accessId = this.getAccessId(dataNode);
+
+      // hackfix: this depends on accessId
+      this.resolveDataNodeSyntax(dataNode);
+
+      // `valueId`
       dataNode.valueId = this.lookupValueId(dataNode);
+
       this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
       this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
-
-      // NOTE: we need syntax look-up to be in order with accessId (due to the "last of accessId" lookup)
-      this.resolveDataNodeSyntax(dataNode);
     }
   }
 
@@ -165,6 +184,7 @@ export default class DataNodeCollection extends Collection {
 
   /** ###########################################################################
    * syntax interpreter
+   * future-work: consider moving all of this to `Purpose` as well
    * ##########################################################################*/
 
   syntaxUtil = {
@@ -179,13 +199,25 @@ export default class DataNodeCollection extends Collection {
      */
     addReadSelfNodeIdToInput: (dataNode, staticTrace) => {
       const isComputation = staticTrace.dataNode.isNew;
-      if (isComputation && dataNode.accessId) {
-        // → this is re-assignment (rather than assignment)
-
-        // get the last dataNode of same accessId (before this one)
-        const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
-        if (readSelfNode) {
-          dataNode.inputs.unshift(readSelfNode.nodeId);
+      const operator = staticTrace.data?.operator;
+      if (isComputation) {
+        if ((operator === '||=' || operator === '&&=') && dataNode.inputs?.length) {
+          // NOTE: these two only have the one input that was recorded, and they don't create a new value
+          // hackfix (this should be fine, since it should not be processed before this stage)
+          staticTrace.dataNode.isNew = false;
+        }
+        else {
+          dataNode.type = DataNodeType.ComputeWrite; // hackfix
+          if (dataNode.accessId) {
+            // +=, -= etc.
+            // → get the last dataNode of same accessId (before this one) and add it as an input
+            // const readSelfNode = this.getSecondButLastDataNodeByAccessId(dataNode.accessId);
+            // const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getSecondButLast(dataNode.accessId);
+            const readSelfNode = this.dp.indexes.dataNodes.byAccessId.getLast(dataNode.accessId);
+            if (readSelfNode) {
+              dataNode.inputs.unshift(readSelfNode.nodeId);
+            }
+          }
         }
       }
     }
@@ -281,53 +313,51 @@ export default class DataNodeCollection extends Collection {
     }
     const { nodeId, traceId, accessId } = dataNode;
 
-    if (dataNode.refId) {
-      // TODO: integrate with the logic below
-      // TODO: deal with implicitly created ref type objects having a single nodeId for all children
-      //      e.g. `JSON.parse('{...}')`
+    const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
+    const isTraceOwnDataNode = traceNodeId === nodeId;
+    const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
+    const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
 
-      // 1. check for "pass-along"
-      if (
-        dataNode.inputs?.length === 1
-      ) {
-        // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
-        const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
-        if (!inputDataNode) {
-          // sanity check
-          const traceInfo = this.dp.util.makeTraceInfo(traceId);
-          this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
-          return nodeId;
+    if (!isNewValue) {
+      if (dataNode.refId) {
+        // if (nodeId !== firstRefNode.nodeId) {
+        //   dataNode.valueFromId = firstRefNode.nodeId;
+        // }
+        // refs have some magic up their sleeves
+        const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+
+        // get last node before this one instead, to have DDG link up correctly
+        const { valueId } = firstRefNode;
+        const lastNodeByRef = valueId && this.getLastDataNodeByValueId(nodeId, valueId);
+        if (lastNodeByRef) {
+          dataNode.valueFromId = lastNodeByRef.nodeId;
         }
 
-        dataNode.valueFromId = inputDataNode.nodeId;
-        return inputDataNode.valueId;
-      }
-      // 2. if it is not a pass-along, look up accessId.
-      //    It is important we do this after (1), since 
-      //        looking up by `accessId` won't work on a new Write node.
-      if (accessId) {
-        const lastNode = this.getLastDataNodeByAccessId(accessId);
-        if (lastNode) {
-          dataNode.valueFromId = lastNode.nodeId;
-          return lastNode.valueId;
+        // debugging
+        // 1. check for "pass-along"
+        let prev;
+        if (
+          dataNode.inputs?.length === 1
+        ) {
+          // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
+          prev = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         }
+        // 2. if it is not a pass-along, look up accessId.
+        else if (accessId && isDataNodeRead(dataNode.type)) {
+          prev = this.getLastDataNodeByAccessId(nodeId, accessId);
+        }
+        if (valueId && prev && prev.valueId !== valueId) {
+          if (prev.refId !== dataNode.refId) {
+            this.logger.error(`invalid DataNodeCollection.accessId logic for n${nodeId} (v${dataNode.refId}): ${JSON.stringify(prev)}`);
+          }
+          else {
+            // this.logger.warn(`invalid DataNodeCollection.accessId logic for v${dataNode.refId}: ${JSON.stringify(prev)}`);
+          }
+        }
+
+        return valueId || nodeId;
       }
-
-      // if (nodeId !== firstRefNode.nodeId) {
-      //   dataNode.valueFromId = firstRefNode.nodeId;
-      // }
-      // refs have some magic up their sleeves
-      const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
-      return firstRefNode.nodeId;
-    }
-    else {
-      const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
-      const isTraceOwnDataNode = traceNodeId === nodeId;
-      const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
-
-      const isNewValue = !!ownStaticTrace?.dataNode?.isNew;
-
-      if (!isNewValue) {
+      else {
         // 1. check for "pass-along"
         if (
           dataNode.inputs?.length === 1
@@ -347,10 +377,8 @@ export default class DataNodeCollection extends Collection {
         }
 
         // 2. if it is not a pass-along, look up accessId.
-        //    It is important we do this after (1), since 
-        //        looking up by `accessId` won't work on a new Write node.
-        if (accessId) {
-          const lastNode = this.getLastDataNodeByAccessId(accessId);
+        if (accessId && isDataNodeRead(dataNode.type)) {
+          const lastNode = this.getLastDataNodeByAccessId(nodeId, accessId);
           if (lastNode) {
             dataNode.valueFromId = lastNode.nodeId;
             dataNode.refId ||= lastNode.refId; // also set refId
@@ -358,22 +386,21 @@ export default class DataNodeCollection extends Collection {
           }
         }
 
-        // 3. special value passing semantics (currently non-existing?)
-        const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
-        if (specialObjectType) {
-          const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
-          if (valueId) {
-            // NOTE: this will currently never happen
-            return valueId;
-          }
-        }
+        // // 3. special value passing semantics (currently non-existing?)
+        // const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
+        // if (specialObjectType) {
+        //   const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
+        //   if (valueId) {
+        //     // NOTE: this will currently never happen
+        //     return valueId;
+        //   }
+        // }
       }
 
       // eslint-disable-next-line max-len
       // this.logger.warn(`[lookupValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
-
-      return nodeId;
     }
+    return nodeId;
   }
 
   /** ###########################################################################
@@ -394,12 +421,42 @@ export default class DataNodeCollection extends Collection {
    *      since we are resolving the index during this phase.
    * @return {DataNode}
    */
-  getLastDataNodeByAccessId(accessId) {
-    return this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
+  getLastDataNodeByAccessId(nodeId, accessId) {
+    const ownNode = this.getById(nodeId);
+    const nodes = this.dp.indexes.dataNodes.byAccessId.get(accessId);
+    if (!nodes) {
+      return null;
+    }
+
+    for (let i = nodes.length - 1; i >= 0; --i) {
+      const node = nodes[i];
+      if (node.traceId <= ownNode.traceId) {
+        return node;
+      }
+    }
+    return null;
   }
 
-  getSecondButLastDataNodeByAccessId(accessId) {
-    return this.dp.indexes.dataNodes.byAccessId.getSecondButLast(accessId);
+  /**
+   * NOTE: When we run this in the `postIndex` phase, 
+   *      last in `byValueId` index is actually "the last before the currently processed node"
+   *      since we are resolving the index during this phase.
+   * @return {DataNode}
+   */
+  getLastDataNodeByValueId(nodeId, valueId) {
+    const ownNode = this.getById(nodeId);
+    const nodes = this.dp.indexes.dataNodes.byValueId.get(valueId);
+    if (!nodes) {
+      return null;
+    }
+
+    for (let i = nodes.length - 1; i >= 0; --i) {
+      const node = nodes[i];
+      if (node.traceId <= ownNode.traceId) {
+        return node;
+      }
+    }
+    return null;
   }
 
   _reportInvalidId(idx, faultyEntry, recoverable) {

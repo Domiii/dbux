@@ -107,7 +107,7 @@ export default class BranchStatement extends BasePlugin {
    * Inserts a new pop trace before the branch node.
    * @param {TraceCfg} trace 
    */
-  insertPushTrace() {
+  insertPushTraceInFront() {
     const {
       node,
       node: {
@@ -139,7 +139,7 @@ export default class BranchStatement extends BasePlugin {
    * Inserts a new pop trace behind the branch node.
    * @param {TraceCfg} trace 
    */
-  insertPopTrace() {
+  insertPopTraceBehind() {
     const {
       node,
       node: {

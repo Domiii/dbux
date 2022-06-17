@@ -18,6 +18,9 @@ export function initWebviewWrapper(extensionContext) {
 }
 
 export default class WebviewWrapper {
+  /**
+   * @type {import('vscode').WebviewPanel}
+   */
   panel;
   resourceRoot;
 
@@ -31,16 +34,16 @@ export default class WebviewWrapper {
     this.logger = newLogger(`${title} WebviewWrapper`);
   }
 
+  get isVisible() {
+    return this.panel?.visible || false;
+  }
+
   getIcon() {
     return null;
   }
 
-  /**
-   * Check if we showed it before, and if so, show it again.
-   * Usually called upon start-up.
-   */
-  async init() {
-    return this.restorePreviousStateAndShow();
+  onDispose(cb) {
+    return this.panel.onDidDispose(cb);
   }
 
   // ###########################################################################
@@ -210,6 +213,14 @@ export default class WebviewWrapper {
   // ###########################################################################
   // shutdown + restart
   // ###########################################################################
+
+  /**
+   * Check if we showed it before, and if so, show it again.
+   * Usually called upon start-up.
+   */
+  async init() {
+    return this.restorePreviousStateAndShow();
+  }
 
   restart = async () => {
     // set HTML content + restart

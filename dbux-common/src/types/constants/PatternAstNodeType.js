@@ -13,4 +13,14 @@ let patternAstNodeTypeObj = {
 };
 const PatternAstNodeType = new Enum(patternAstNodeTypeObj);
 
+
+const groupPatternTypes = new Array(PatternAstNodeType.getValueMaxIndex()).map(() => false);
+groupPatternTypes[PatternAstNodeType.Array] = true;
+groupPatternTypes[PatternAstNodeType.Object] = true;
+// classTypes[TraceType.ClassInstance] = true;
+
+export function isGroupPattern(t) {
+  return groupPatternTypes[t] || false;
+}
+
 export default PatternAstNodeType;

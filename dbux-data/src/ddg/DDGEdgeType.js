@@ -9,7 +9,8 @@ const edgeTypeObj = {
    * Control edge
    */
   Control: 2,
-  Mixed: 3
+  Mixed: 3,
+  Delete: 4
 };
 
 /**

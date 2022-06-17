@@ -116,7 +116,8 @@ module.exports = {
     "dot-location": 0,
     "default-case": 0,
     "object-shorthand": 0,
-    "generator-star-spacing": 0
+    "generator-star-spacing": 0,
+    "no-nested-ternary": 0
   },
 
   settings: {

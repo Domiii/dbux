@@ -19,6 +19,8 @@ export default class Application {
    * @readonly
    */
   applicationId;
+  uuid;
+
   /**
    * @type {string}
    * @readonly
@@ -59,10 +61,11 @@ export default class Application {
   updatedAt;
 
   /**
-   * This is set upon importing an application from file.
+   * This is set upon importing or exporting an application from/to file.
+   * NOTE: This is not always available.
    * @type {string?}
    */
-  importFilePath;
+  filePath;
 
   constructor(applicationId, entryPointPath, createdAt, allApplications, uuid = uuidv4()) {
     this.uuid = uuid;
@@ -72,6 +75,10 @@ export default class Application {
     this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
     this.createdAt = this.updatedAt = createdAt || Date.now();
+  }
+
+  get applicationUuid() {
+    return this.uuid;
   }
 
   get isExperiment() {

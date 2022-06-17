@@ -30,9 +30,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   }
 
   init() {
-    this.addDisposable(
-      this.doc.onMergeComputesModeChanged(this.handleMergeComputesModeChanged)
-    );
+    this.ddg && this.addDisposable(this.ddg.onUpdate(this.#handleGraphUpdate));
   }
 
   update() {
@@ -76,10 +74,6 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   //   this.setState({ failureReason, timelineNodes: EmptyArray, edges: EmptyArray });
   // }
 
-  handleMergeComputesModeChanged = () => {
-    this.ddg?.setMergeComputes(this.mergeComputesMode);
-  };
-
   shared() {
     return {
       context: {
@@ -87,6 +81,16 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       }
     };
   }
+
+
+  #handleGraphUpdate = async (ddg) => {
+    // send update to remote
+    this.doc.setState(ddg.getRenderData());
+  }
+
+  /** ###########################################################################
+   * public
+   * ##########################################################################*/
 
   public = {
     /**
@@ -109,37 +113,53 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       }
     },
 
-    setSummaryMode(timelineId, mode) {
+    async toggleSummaryMode(cfg) {
+      this.ddg.toggleSummaryMode(cfg.timelineId);
+    },
+
+    /**
+     * Handle update graph request from client
+     */
+    async updateGraph(cfg) {
+      const {
+        timelineId,
+        summaryMode,
+        settings
+      } = cfg;
       const { ddg } = this;
 
-      const origTimelineNodesLength = ddg.timelineNodes.length;
-      const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
+      if (settings) {
+        ddg.updateSettings(settings);
+      }
+      if (summaryMode) {
+        // update graph
+        ddg.setSummaryMode(timelineId, summaryMode);
+      }
+
+      // const origTimelineNodesLength = ddg.timelineNodes.length;
+      // const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
 
 
-      // update graph
-      ddg.setSummaryMode(timelineId, mode);
+      // // state delta: new nodes
+      // const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
 
+      // // state delta: added summaries
+      // const newNodeSummaries = ddg.nodeSummaries;
+      // const newSummaryKeys = Object.keys(newNodeSummaries);
+      // const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
+      // const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
 
-      // state delta: new nodes
-      const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
+      //   // state delta: new nodes
 
-      // state delta: added summaries
-      const newNodeSummaries = ddg.nodeSummaries;
-      const newSummaryKeys = Object.keys(newNodeSummaries);
-      const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
-      const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
-
-      // state delta: new nodes
-
-      // call setState
-      this.doc.setState(ddg.getChangingData(), {
-        arrayAdd: {
-          timelineNodes: newNodes
-        },
-        objectMerge: {
-          nodeSummaries: addedSummaries
-        }
-      });
+      //   // call setState
+      //   this.doc.setState(ddg.getChangingData(), {
+      //     arrayAdd: {
+      //       timelineNodes: newNodes
+      //     },
+      //     objectMerge: {
+      //       nodeSummaries: addedSummaries
+      //     }
+      //   });
     }
   }
 }

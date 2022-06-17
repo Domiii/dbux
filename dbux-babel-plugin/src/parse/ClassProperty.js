@@ -54,14 +54,19 @@ export default class ClassProperty extends BaseNode {
     const [keyNode] = this.getChildNodes();
     const [, valuePath] = this.getChildPaths();
 
+    /**
+     * @see makeMETraceData
+     */
+
     const { computed } = path.node;
 
-    let propertyVar;
+    let propertyVar, propTid;
     if (computed) {
       // only assign `propertyVar` if computed
       // NOTE: this can work because private properties do not support dynamic access.
       // see: https://github.com/tc39/proposal-private-fields/issues/94
-      keyNode?.addDefaultTrace();
+      const propTraceCfg = keyNode?.addDefaultTrace();
+      propTid = propTraceCfg?.tidIdentifier;
       propertyVar = Traces.generateDeclaredUidIdentifier('p');
     }
 
@@ -78,7 +83,8 @@ export default class ClassProperty extends BaseNode {
       data: {
         objectTraceCfg,
         objectTid,
-        propertyVar
+        propertyVar,
+        propTid
       },
       meta: {
         build: buildTraceWriteClassProperty,

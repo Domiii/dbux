@@ -1,7 +1,17 @@
 import fs from 'fs';
+import { dirname } from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
+import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
+import { getCurrentResearch } from '../research/Research';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import sleep from '@dbux/common/src/util/sleep';
+
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ChapterListBuilderViewController');
@@ -90,6 +100,122 @@ export default class ChapterListBuilderViewController {
     // click event listener
     this.treeNodeProvider.initDefaultClickCommand(context);
   }
+
+  /**
+   * @param {Exercise} exercise 
+   */
+  async runAndExportDDGApplication(exercise, progress) {
+    progress?.report({ message: `Running exercises...` });
+    await this.treeNodeProvider.manager.switchAndTestBug(exercise);
+
+    const app = allApplications.selection.getFirst();
+
+    if (!app) {
+      throw new Error(`Run failed. No application found.`);
+    }
+
+    while (app.dataProvider.indexes.dataNodes.byAccessId.getAll().length < 1) {
+      // hackfix race condition prevention: make sure, data has been stored before exporting
+      await sleep(20);
+    }
+
+    // future-work: make sure, this is the right application (add some isApplicationOfExercise function)
+
+    progress?.report({ message: `Parsing application` });
+    if (allApplications.selection.count !== 1) {
+      this.treeNodeProvider.warn(`Ran test, but found more than one application (selecting first).`);
+    }
+    const ddgs = findDDGContextIdInApp(app, exercise);
+    exercise.ddgs = ddgs;
+
+    progress?.report({ message: `Storing results and exporting application...` });
+    const config = this.exerciseConfigsByName.get(exercise.name);
+    config.ddgs = ddgs;
+
+    // write exercise file
+    this.writeExerciseJs();
+
+    // export application
+    const fpath = getCurrentResearch().getAppZipFilePath(app);
+    await exportApplicationToFile(app, fpath);
+
+    // showInformationMessage(`Found ${ddgs.length} ddg(s).`);
+    this.treeNodeProvider.refresh();
+
+    return app;
+  }
+}
+
+
+
+/** ###########################################################################
+ * util
+ *  #########################################################################*/
+
+/**
+ * @param {CodeApplication} app 
+ * @param {Exercise} exercise
+ */
+function findDDGContextIdInApp(app, exercise) {
+  const { project } = exercise;
+  const dp = app.dataProvider;
+  // const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
+  const testProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
+    const { filePath } = staticProgramContext;
+    // const fileDir = dirname(filePath);
+    // const readmeFilePath = pathResolve(fileDir, 'README.md');
+    // const testFolderPath = pathResolve(fileDir, '__test__');
+
+    // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
+    const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/(.*).js/;
+    return ValidFilePattern.test(filePath);
+  });
+
+  const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
+  const contexts = staticContexts
+    .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
+    .sort((a, b) => a.contextId - b.contextId);
+  const addedContextIds = new Set();
+  return contexts.map(context => {
+    const { contextId } = context;
+    const { applicationUuid } = app;
+    const functionName = makeContextLabel(context, app);
+    const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+    if (!callerTrace) {
+      return null;
+    }
+
+    let { parentContextId } = context;
+    while (parentContextId) {
+      if (addedContextIds.has(parentContextId)) {
+        return null;
+      }
+      ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
+    }
+
+    // const callerProgramPath = dp.util.getTraceFilePath(callerTrace.traceId);
+    // if (callerProgramPath !== testFilePath) {
+    //   return null;
+    // }
+
+    const params = dp.util.getCallArgValueStrings(callerTrace.callId);
+    const fullContextFilePath = dp.util.getContextFilePath(contextId);
+    const filePath = pathRelative(project.projectPath, fullContextFilePath);
+    const staticContext = dp.util.getContextStaticContext(contextId);
+    const loc = { ...staticContext.loc };
+    deleteCachedLocRange(loc);
+
+    addedContextIds.add(contextId);
+
+    return {
+      ddgTitle: `${functionName}(${params.join(', ')})`,
+      contextId,
+      // fullContextFilePath,
+      filePath,
+      loc,
+      applicationUuid,
+    };
+  }).filter(x => !!x);
 }
 
 // ###########################################################################

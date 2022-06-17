@@ -2,7 +2,8 @@
 /** @typedef {import('./BaseDDG').default} DataDependencyGraph */
 
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import { RefSnapshotTimelineNode } from './DDGTimelineNodes';
+import ddgQueries, { ddgHostQueries } from './ddgQueries';
+import { DDGTimelineNode, RefSnapshotTimelineNode } from './DDGTimelineNodes';
 
 /**
  * 
@@ -35,11 +36,15 @@ export default class DDGWatchSet {
    */
   declarationTids;
 
-  /**
-   * @type {Map.<number, RefSnapshotTimelineNode>}
-   */
-  watchSnapshotsByRef = new Map();
+  watchedNodes = new Set();
+  addedWatchedDataNodeIds = new Set();
 
+  /**
+   * We use this to track "deep writes".
+   * It contains the {@link DataNode#nodeId} of the last DataNode
+   * of the trace of the last snapshot root or {@link DataTimelineNode}
+   * accessing that `refId` in (near) execution order.
+   */
   lastDataNodeByWatchedRefs = new Map();
 
   /**
@@ -47,13 +52,16 @@ export default class DDGWatchSet {
    * @param {DataDependencyGraph} ddg 
    * @param {DataNode[]} inputNodes NOTE: input set is actually a set of trees of DataNodes
    */
-  constructor(ddg, watchTraceIds) {
+  constructor(ddg, watched) {
     this.ddg = ddg;
 
     const { dp } = this;
 
+    const { watchTraceIds, returnTraceId } = watched;
     this.watchTraceIdSet = new Set(watchTraceIds);
     this.watchTraceIds = Array.from(this.watchTraceIdSet);
+    this.returnTraceId = returnTraceId;
+    this.returnDataNodeId = dp.util.getDataNodeIdOfTrace(returnTraceId);
 
     // get all watched declarationTids
     this.staticTraceIdSet = new Set(
@@ -100,9 +108,18 @@ export default class DDGWatchSet {
     return this.ddg.bounds;
   }
 
-  isWatchedSetDataNode(dataNodeId) {
+  isDataNodeInWatchSet(dataNodeId) {
     const dataNode = this.dp.util.getDataNode(dataNodeId);
     return this.watchTraceIdSet.has(dataNode.traceId);
+  }
+
+  /**
+   * Special purpose trace.
+   * If given, it allows for some prettier rendering.
+   */
+  isReturnDataNode(dataNodeId) {
+    // return this.returnTraceId === this.ddg.dp.util.getDataNode(dataNodeId).traceId;
+    return this.returnDataNodeId === dataNodeId;
   }
 
   /**
@@ -113,12 +130,21 @@ export default class DDGWatchSet {
    * @return {boolean}
    */
   isWatchedDataNode(dataNodeId) {
-    const dataNode = this.dp.util.getDataNode(dataNodeId);
-    return this.isWatchedSetDataNode(dataNodeId) ||
-      (
-        DataNodeType.is.Write(dataNode.type) &&
-        this.isWatchedAccessDataNode(dataNodeId)
-      );
+    return this.isDataNodeInWatchSet(dataNodeId) ||
+      this.isAddedAndWatchedDataNode(dataNodeId);
+    // (
+    //   // TODO: do we need this?
+    //   isDataNodeWrite(dataNode.type) &&
+    //   this.isWatchedAccessDataNode(dataNodeId)
+    // );
+  }
+
+  /**
+   * Whether given `dataNodeId` is watched, and already has at least one Node
+   * registered with it.
+   */
+  isAddedAndWatchedDataNode(dataNodeId) {
+    return this.addedWatchedDataNodeIds.has(dataNodeId);
   }
 
   /**
@@ -139,22 +165,47 @@ export default class DDGWatchSet {
       return true;
     }
 
-    // TODO: watched refs
+    // TODO: watched refs (→ use accessId instead)
 
     return false;
   }
 
   /**
-   * @param {RefSnapshotTimelineNode} node 
+   * NOTE: snapshot node is watched if its DataNode is watched or its root is already marked as watched.
+   * @param {DDGTimelineNode} node 
    */
-  addWatchedNode(node) {
-    if (node instanceof RefSnapshotTimelineNode) {
-      const { refId/* , dataNodeId */, startDataNodeId } = node;
-      this.watchSnapshotsByRef.set(refId, node);
+  maybeAddWatchedSnapshotNode(node) {
+    if (
+      node.dataNodeId && (
+        this.isWatchedDataNode(node.dataNodeId) ||
+        ddgQueries.getRootTimelineNode(this.ddg, node).watched
+      )
+    ) {
+      this.#addWatchedNode(node);
+    }
+  }
 
-      // NOTE: this is similar to `this.lastDataNodeByWatchedRefs`, but with a watched constraint
-      const lastDataNodeId = startDataNodeId;
-      this.lastDataNodeByWatchedRefs.set(refId, lastDataNodeId);
+  /**
+   * @param {DDGTimelineNode} node 
+   */
+  maybeAddWatchedNode(node) {
+    if (
+      node.dataNodeId && this.isWatchedDataNode(node.dataNodeId)
+    ) {
+      this.#addWatchedNode(node);
+    }
+  }
+
+  /**
+   * @param {DDGTimelineNode} node 
+   */
+  #addWatchedNode(node) {
+    node.watched = true;
+    this.addedWatchedDataNodeIds.add(node.dataNodeId);
+    this.watchedNodes.add(node);
+    if (node.refId) {
+      const lastDataNodeId = ddgHostQueries.getLastDataNodeIdInRoot(this.ddg, node);
+      this.lastDataNodeByWatchedRefs.set(node.refId, lastDataNodeId);
     }
   }
 

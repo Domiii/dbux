@@ -1,4 +1,5 @@
 import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import BaseNode from './BaseNode';
 import { buildGroupNodeAst, addPatternChildNode, PatternBuildConfig } from './helpers/patterns';
 
@@ -23,13 +24,13 @@ export default class ArrayPattern extends BaseNode {
    * @param {PatternBuildConfig} patternCfg
    * @param {BaseNode} node
    */
-  addPatternNode(patternCfg, prop) {
+  addPatternNode(patternCfg, prop, moreData = EmptyObject) {
     const [elementNodes] = this.getChildNodes();
     const childIndexes = [];
 
     // add own node
     const nodeIndex = patternCfg.addBuilder(
-      buildGroupNodeAst.bind(this, prop, childIndexes, PatternAstNodeType.Array)
+      buildGroupNodeAst.bind(this, childIndexes, PatternAstNodeType.Array, prop, moreData)
     );
 
     // add children (DFS)

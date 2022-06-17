@@ -10,6 +10,7 @@ import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems, makeTreeChildren }
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './TraceDetailNode';
 import { makeObjectArrayNodes } from '../../helpers/treeViewUtil';
+import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -137,9 +138,10 @@ export class DebugTDNode extends TraceDetailNode {
     // ###########################################################################
     // dataNodes
     // ###########################################################################
-    const ownDataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
 
-    // NOTE: only used for BCE -> CRE extra look-up
+    const dataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
+
+    // NOTE: only used for BCE -> CER extra look-up
     const valueTraceDataNodes = valueTraceId && dp.util.getDataNodesOfTrace(valueTraceId) || null;
 
     let dataNode;
@@ -150,52 +152,15 @@ export class DebugTDNode extends TraceDetailNode {
       dataNode = valueTraceDataNodes?.[0];
     }
 
-    let dataNodeIndex = valueTraceDataNodes?.indexOf(dataNode);
-    const isInValueTraceDataNodes = dataNodeIndex >= 0;
-    dataNodeIndex = isInValueTraceDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
+    // let dataNodeIndex = valueTraceDataNodes?.indexOf(dataNode);
+    // const isInValueTraceDataNodes = dataNodeIndex >= 0;
+    // dataNodeIndex = isInValueTraceDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
 
-    const ownDataNodeContainer = isInValueTraceDataNodes ? 'resultDataNodes' : 'ownDataNodes';
-    const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `resultDataNodes: []`;
-    // const valueTraceDataNodeCount = valueTraceDataNodes?.length || 0;
+    // const ownDataNodeContainer = isInValueTraceDataNodes ? 'resultDataNodes' : 'ownDataNodes';
+    // const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `resultDataNodes: []`;
+    // // const valueTraceDataNodeCount = valueTraceDataNodes?.length || 0;
 
-    function renderDataNode(n) {
-      const nodeLabel = `${n.nodeId} [${DataNodeType.nameFrom(n.type)}]`;
-      const renderNode = { ...n };
-      // renderNode.inputs = n.inputs?.map(inputNodeId => {
-      //   return makeTreeItem(nodeLabel, dp.collections.dataNodes.getById(inputNodeId), {
-      //     description: ``,
-      //     handleClick() {
-      //       const { traceId: inputTraceId } = dp.collections.dataNodes.getById(inputNodeId);
-      //       const inputTrace = dp.collections.traces.getById(inputTraceId);
-      //       traceSelection.selectTrace(inputTrace, null, inputNodeId);
-      //     }
-      //   });
-      // });
-      return makeTreeItem(nodeLabel, renderNode, {
-        description: ``,
-        handleClick() {
-          traceSelection.selectTrace(trace, null, n.nodeId);
-        }
-      });
-    }
-
-    const allDataNodes = [];
-    allDataNodes.push(makeTreeItem(
-      `all dataNodes`,
-      (valueTraceDataNodes || (dataNode ? [dataNode] : EmptyArray)).map(renderDataNode)
-    ));
-    !!dataNode && allDataNodes.push([
-      ownDataNodeLabel,
-      [renderDataNode(dataNode)],
-      {
-        description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}`
-      }
-    ]);
-    ownDataNodes && ownDataNodes !== valueTraceDataNodes && allDataNodes.push(makeTreeItem(
-      `ownDataNodes (${ownDataNodes.length})`,
-      ownDataNodes.map(renderDataNode)
-    ));
-
+    const allDataNodes = dataNodes?.map(n => renderDataNode(dp, n.nodeId)) || EmptyArray;
 
 
     /** ###########################################################################
@@ -218,13 +183,13 @@ export class DebugTDNode extends TraceDetailNode {
       );
     }
     else if (refId) {
-      valueNode = [
+      valueNode = makeTreeItem(
         'valueRef:',
         valueRef,
         {
           description: `refId=${refId}`
         }
-      ];
+      );
     }
     else {
       valueNode = makeTreeItemNoChildren(
@@ -246,7 +211,7 @@ export class DebugTDNode extends TraceDetailNode {
 
     let valueRawSnapshotNode;
     if (refId) {
-      const snapshot = dp.util.constructVersionedValueSnapshot(refId, traceNodeId);
+      const snapshot = dp.util.constructVersionedValueSnapshot(refId, traceId);
       valueRawSnapshotNode = makeTreeItem(
         'valueRef Snapshot (raw):',
         snapshot
@@ -335,7 +300,7 @@ export class DebugTDNode extends TraceDetailNode {
             dataNodes: makeTreeItem(
               'dataNodes',
               makeTreeItems(...allDataNodes),
-              { description: allDataNodes.length + ` (${allDataNodes.map(n => n?.nodeId).join(', ')})` }
+              { description: allDataNodes.length }
             ),
             valueRawRefNode,
             valueRawSnapshotNode,

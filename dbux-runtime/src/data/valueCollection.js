@@ -10,7 +10,6 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNode from '@dbux/common/src/types/DataNode';
 import isThenable from '@dbux/common/src/util/isThenable';
-import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
 import getDbuxInstance from '../getDbuxInstance';
@@ -448,6 +447,26 @@ class ValueCollection extends Collection {
 
   /**
    * [access-guard]
+   */
+  _readIsPropertyInObject(obj, key) {
+    try {
+      this._startAccess(obj);
+      return key in obj;
+    }
+    catch (err) {
+      // this._onAccessError(obj, this._readErrorsByType);
+      const msg = `Dbux failed to check if object property "${key}" exists in "${typeof obj}":`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      // return `(${msg})`;
+      return false;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  /**
+   * [access-guard]
    * Read a property of an object to copy + track it.
    * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
    */
@@ -458,7 +477,7 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      const msg = `Dbux failed to read object property "${key}" of "${Object.getPrototypeOf(obj)}":`;
+      const msg = `Dbux failed to read object property "${key}" of "${typeof obj}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
       return `(${msg})`;
     }
@@ -553,6 +572,10 @@ class ValueCollection extends Collection {
     ];
   }
 
+  #specialValue(x) {
+    return x; // future-work: improve
+  }
+
   _serializeNonTrackable(value, category) {
     // category = value || this.determineValueTypeCategory(value);
 
@@ -579,7 +602,7 @@ class ValueCollection extends Collection {
            * NOTE: JSON + msgpack both don't support bigint
            * @see https://github.com/Domiii/dbux/issues/533
            */
-          serialized = value + 'n';
+          serialized = this.#specialValue(value + 'n');
         }
         else if (t === 'symbol') {
           /**
@@ -587,7 +610,13 @@ class ValueCollection extends Collection {
            * NOTE: msgpack (notepack) does not support symbols
            * @see https://github.com/darrachequesne/notepack/issues
            */
-          serialized = value.toString();
+          serialized = this.#specialValue(value.toString());
+        }
+        else if (t === Infinity) {
+          return this.#specialValue('Inf');
+        }
+        else if (Number.isNaN(t)) {
+          return this.#specialValue('NaN');
         }
         else {
           serialized = value;
@@ -613,6 +642,14 @@ class ValueCollection extends Collection {
     valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
     if (valueRef.isThenable) {
       this.maybePatchPromise(value);
+    }
+  }
+
+  registerMonkey(valueRef, value) {
+    if (this.getOriginalFunction(value) || this.getPatchedFunctionOrSelf(value) !== value) {
+      // [edit-after-send]
+      // console.log('monkey', valueRef.refId, value, this.getOriginalFunction(value), this.getPatchedFunctionOrSelf(value) !== value);
+      valueRef.monkey = true;
     }
   }
 
@@ -655,6 +692,10 @@ class ValueCollection extends Collection {
       // also see: DataNodeCollection#createBCEDataNode
       valueRef.nodeId = valueRef.nodeId || nodeId;
 
+      // [edit-after-send-unused]
+      // hackfix: use this internally to get us the last accessed DataNode.
+      valueRef._lastNodeId = nodeId;
+
       return valueRef;
     }
 
@@ -687,6 +728,9 @@ class ValueCollection extends Collection {
 
     switch (category) {
       case ValueTypeCategory.Function: {
+        // special handling for monkey-patched functions
+        this.registerMonkey(valueRef, value);
+
         // TODO: look up staticContext information by function for `name` instead?
         // TODO: functions can have custom properties too
         serialized = {};
@@ -734,6 +778,7 @@ class ValueCollection extends Collection {
 
           // special handling for promise
           this.registerPromiseValue(valueRef, value);
+
 
           if (!props) {
             // error
@@ -801,7 +846,7 @@ const valueCollection = new ValueCollection();
 export function wrapValue(value) {
   if (valueCollection.getIsInstanceOf(value, Function)) {
     // value = getUnpatchedCallbackOrPatchedFunction(value);
-    value = getPatchedFunctionOrSelf(value);
+    value = valueCollection.getPatchedFunctionOrSelf(value);
   }
   return value;
 }
@@ -809,7 +854,7 @@ export function wrapValue(value) {
 export function unwrapValue(value) {
   if (valueCollection.getIsInstanceOf(value, Function)) {
     // TODO: handle callback identity?
-    value = getOriginalFunction(value) || value;
+    value = valueCollection.getOriginalFunction(value) || value;
   }
   return value;
 }

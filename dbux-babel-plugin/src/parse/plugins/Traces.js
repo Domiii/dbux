@@ -252,7 +252,7 @@ export default class Traces extends BasePlugin {
       dataNode: {
         // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valueNode` not given)
         //      Notable exception: `param`.
-        isNew: true
+        // isNew: true
       }
     }, moreTraceData.staticTraceData);
 

@@ -3,14 +3,17 @@ import { NodePath } from '@babel/traverse';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import TraceCfg from '../../definitions/TraceCfg';
-import { buildTraceExpressionNoInput, doBuild } from '../../instrumentation/builders/misc';
+import { buildAddPurpose, buildTraceExpressionNoInput, doBuild, doBuildDefault } from '../../instrumentation/builders/misc';
 import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { getDeclarationTid } from '../../helpers/traceUtil';
 import { pathToStringAnnotated } from '../../helpers/pathHelpers';
 import { makeMETraceData } from './me';
 import { buildMELval, buildMEObject, buildMEProp, getMEpropVal } from '../../instrumentation/builders/me';
 import { makeDeclarationVarStaticTraceData } from '../BindingIdentifier';
+import { buildConstObjectProperties, ZeroNode } from '../../instrumentation/builders/buildUtil';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -21,7 +24,8 @@ const { log, debug, warn, error: logError } = newLogger('Pattern Instrumentation
 /** @typedef { import("@dbux/common/src/types/StaticTrace").default } StaticTrace */
 /** @typedef { import("../BaseNode").default } BaseNode */
 
-const Verbose = 1;
+// const Verbose = 1;
+const Verbose = 0;
 
 export class PatternBuildConfig {
   /**
@@ -78,7 +82,7 @@ export function addPatternTraceCfg(patternCfg, buildFn, traceCfgInput) {
  * @param {BaseNode} node
  * @return {number} Index of node in final `treeNodes` array.
  */
-export function addPatternChildNode(patternCfg, patternProp, node) {
+export function addPatternChildNode(patternCfg, patternProp, node, moreNodeData = EmptyObject) {
   const { path } = node;
 
   Verbose && debug(`addPatternChildNode at ${patternProp}: "${node.debugTag}"`);
@@ -105,7 +109,10 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
         type: traceType,
         ...makeDeclarationVarStaticTraceData(path)
       },
-      data: { patternProp },
+      data: {
+        patternProp,
+        moreNodeData
+      },
       meta: {
         instrument: null, // disable default instrumentation
       }
@@ -116,14 +123,17 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
      * ME
      * ##########################################################################*/
     const meTraceData = makeMETraceData(node);
-    const data = { patternProp, ...meTraceData };
     const traceCfgInput = {
       node,
       path,
       staticTraceData: {
         type: TraceType.PatternWriteME
       },
-      data,
+      data: {
+        patternProp,
+        ...meTraceData,
+        moreNodeData
+      },
       meta: {
         build(state, traceCfg) {
           // replace original with object var instead
@@ -138,10 +148,26 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
   else if (path.isAssignmentPattern()) {
     const [lvalNode, defaultValNode] = node.getChildNodes();
 
+    // const data = {
+    //   defaultValueTid: defaultTraceCfg.tidIdentifier || ZeroNode
+    // };
+
+    // trace lval
     const result = addPatternChildNode(patternCfg, patternProp, lvalNode);
+
+
+    // trace default value as usual
     defaultValNode.addDefaultTrace();
+
+    // NOTE: we cannot get `defaultValueTid` on time because of order of execution
+    //  → hook up inputs in post instead
+    const lvalTid = lvalNode.getTidIdentifier();
+    if (lvalTid) {
+      // defaultValNode.addPurpose(TracePurpose.PatternDefaultValue, lvalTid);
+      defaultValNode.addPurpose(TracePurpose.ReverseInput, lvalTid);
+    }
+
     return result;
-    // throw new Error(`Lval assignment patterns not yet supported, in: "${node.getExistingParent().debugTag}"`);
   }
   else if (path.isRestElement()) {
     // Var or ME
@@ -152,7 +178,7 @@ export function addPatternChildNode(patternCfg, patternProp, node) {
     /** ###########################################################################
      * Array + Object
      * ##########################################################################*/
-    return node.addPatternNode(patternCfg, patternProp);
+    return node.addPatternNode(patternCfg, patternProp, moreNodeData);
   }
   throw new Error(`Unknown lval pattern node found: "${node.debugTag}"`);
 }
@@ -196,25 +222,32 @@ function buildMEPreInitNodes(meNode) {
  * instrument
  * ##########################################################################*/
 
-export function buildGroupNodeAst(prop, childIndexes, patternType) {
+export function buildGroupNodeAst(childIndexes, patternType, prop, moreData) {
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(patternType)),
     t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(prop ? (prop + '') : '')),
     t.objectProperty(t.stringLiteral('children'),
       t.arrayExpression(childIndexes.map(childIndex => t.numericLiteral(childIndex)))
-    )
+    ),
+    ...buildConstObjectProperties(moreData)
   ]);
 }
 
 function buildVarNodeAst(state, traceCfg) {
   const tid = buildTraceId(state, traceCfg);
   const declarationTid = getDeclarationTid(traceCfg);
+  const {
+    patternProp,
+    moreNodeData
+  } = traceCfg.data;
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.Var)),
-    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(traceCfg.data.patternProp + '')),
+    t.objectProperty(t.stringLiteral('prop'), t.stringLiteral(patternProp + '')),
     t.objectProperty(t.stringLiteral('tid'), tid),
 
     t.objectProperty(t.stringLiteral('declarationTid'), declarationTid),
+
+    ...buildConstObjectProperties(moreNodeData)
   ]);
 }
 
@@ -224,7 +257,8 @@ function buildMENodeAst(state, traceCfg) {
     patternProp,
     objectTid,
     propertyVar,
-    propTid
+    propTid,
+    moreNodeData
   } = traceCfg.data;
   return t.objectExpression([
     t.objectProperty(t.stringLiteral('type'), t.numericLiteral(PatternAstNodeType.ME)),
@@ -234,5 +268,7 @@ function buildMENodeAst(state, traceCfg) {
     t.objectProperty(t.stringLiteral('objectTid'), objectTid),
     t.objectProperty(t.stringLiteral('propValue'), getMEpropVal(traceCfg.node, traceCfg, propertyVar)),
     t.objectProperty(t.stringLiteral('propTid'), propTid),
+
+    ...buildConstObjectProperties(moreNodeData)
   ]);
 }

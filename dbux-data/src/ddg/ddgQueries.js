@@ -1,17 +1,14 @@
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { isRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
+import DDGSettings from './DDGSettings';
 
 /** @typedef { import("./BaseDDG").default } BaseDDG */
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
-
-const DDGConfig = {
-  connectedOnly: true
-  // connectedOnly: false
-};
 
 export class RenderState {
   /**
@@ -48,6 +45,11 @@ export class RenderState {
    * @type {Object.<number, DDGNodeSummary>}
    */
   nodeSummaries;
+
+  /**
+   * @type {DDGSettings}
+   */
+  settings;
 }
 
 /** ###########################################################################
@@ -55,19 +57,19 @@ export class RenderState {
  * ##########################################################################*/
 
 const _canApplySummaryMode = {
-  [DDGSummaryMode.Show]: (node) => {
+  [DDGSummaryMode.Show]: (ddg, node) => {
     return (
       !!node.dataNodeId && // ← implies that root is excluded
       !node.watched // cannot change state of watched nodes
     );
   },
-  [DDGSummaryMode.Hide]: (node) => {
+  [DDGSummaryMode.Hide]: (ddg, node) => {
     return (
       !isRoot(node.timelineId) && // cannot hide the root
       !node.watched // cannot change state of watched nodes
     );
   },
-  [DDGSummaryMode.Collapse]: (node) => {
+  [DDGSummaryMode.Collapse]: (ddg, node) => {
     return !isRoot(node.timelineId) &&
       isControlGroupTimelineNode(node.type);
   },
@@ -75,21 +77,21 @@ const _canApplySummaryMode = {
    * 
    * @param {DDGTimelineNode} node 
    */
-  [DDGSummaryMode.CollapseSummary]: (node) => {
+  [DDGSummaryMode.CollapseSummary]: (ddg, node) => {
     // TODO: improve this
     // eslint-disable-next-line no-use-before-define
-    return ddgQueries.isNodeSummarizable(node);
+    return ddgQueries.isNodeSummarizable(ddg, node);
   },
-  [DDGSummaryMode.SummarizeChildren]: (node) => {
+  [DDGSummaryMode.SummarizeChildren]: (ddg, node) => {
     return isControlGroupTimelineNode(node.type);
   },
-  [DDGSummaryMode.ExpandSelf]: (node) => {
+  [DDGSummaryMode.ExpandSelf]: (ddg, node) => {
     return isControlGroupTimelineNode(node.type);
   },
-  [DDGSummaryMode.ExpandSubgraph]: (node) => {
+  [DDGSummaryMode.ExpandSubgraph]: (ddg, node) => {
     return isControlGroupTimelineNode(node.type);
   },
-  [DDGSummaryMode.HideChildren]: (node) => {
+  [DDGSummaryMode.HideChildren]: (ddg, node) => {
     // only applies to root (all other nodes are "collapse"d instead)
     return isRoot(node.timelineId);
   }
@@ -126,9 +128,9 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   isNodeConnected(ddg, node) {
-    // NOTE: collapsed group nodes don't have `connected` set
+    // NOTE: group nodes generally don't have edges
     return node.connected || (
-      isControlGroupTimelineNode(node.type) && ddg.outEdgesByTimelineId[node.timelineId]
+      isControlGroupTimelineNode(node.type)
     );
   },
 
@@ -139,8 +141,32 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   checkConnected(ddg, node) {
-    return !DDGConfig.connectedOnly || ddgQueries.isNodeConnected(ddg, node);
+    return !ddg.settings.connectedOnly || ddgQueries.isNodeConnected(ddg, node);
   },
+
+  /**
+   * Check node param status against param setting.
+   * 
+   * @param {DDGTimelineNode} node
+   */
+  checkParams(ddg, node) {
+    return ddg.settings.params || !TraceType.is.Param(node.traceType);
+  },
+
+  /**
+   * Check settings against node status.
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  checkNodeVisibilitySettings(ddg, node) {
+    return node.watched ||  // don't hide watched nodes
+      (
+        ddgQueries.checkConnected(ddg, node) &&
+        ddgQueries.checkParams(ddg, node)
+      );
+  },
+
 
   /**
    * @param {RenderState} ddg 
@@ -148,14 +174,14 @@ const ddgQueries = {
    */
   isVisible(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    
+
     return node.watched || (
       isShownMode(summaryMode) &&
-      this.checkConnected(ddg, node) &&
+      ddgQueries.checkNodeVisibilitySettings(ddg, node) &&
 
       // hide empty summary nodes
       // NOTE: we check for `doesNodeHaveSummary` in a few other places as well
-      (!this.isNodeSummarizedMode(ddg, node) || this.doesNodeHaveSummary(ddg, node))
+      (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
     );
   },
 
@@ -180,8 +206,35 @@ const ddgQueries = {
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
+  canNodeExpand(ddg, node) {
+    // ddgQueries.getSummarizableChildren(this, node.timelineId).length
+    return ddgQueries.isNodeSummarizable(ddg, node) && !!ddgQueries.getSummarizableChildren(ddg, node.timelineId).length;
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getSummarizableChildren(ddg, timelineId) {
+    const node = ddg.timelineNodes[timelineId];
+    return Object.values(node.children || EmptyObject)
+      .map(childId => {
+        const child = ddg.timelineNodes[childId];
+        return ddgQueries.isNodeSummarizable(ddg, child) ? child : null;
+      })
+      .filter(Boolean);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
   isSnapshot(ddg, node) {
     return node.type === DDGTimelineNodeType.RefSnapshot;
+  },
+
+  isDeleteNode(ddg, node) {
+    return node.type === DDGTimelineNodeType.DeleteEntry;
   },
 
   /**
@@ -191,9 +244,25 @@ const ddgQueries = {
    * @param {DDGSnapshotNode} node 
    */
   isNestingSnapshot(ddg, node) {
-    return ddgQueries.isSnapshot(ddg, node) && 
+    return ddgQueries.isSnapshot(ddg, node) &&
       Object.values(node.children).some(childId => ddgQueries.isSnapshot(ddg, ddg.timelineNodes[childId]));
   },
+
+  /** ###########################################################################
+   * "advanced" queries
+   * ##########################################################################*/
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getRootTimelineNode(ddg, node) {
+    return node?.rootTimelineId && ddg.timelineNodes[node.rootTimelineId];
+  },
+
+  /** ###########################################################################
+   * summaries
+   *  #########################################################################*/
 
   /**
    * @param {RenderState} ddg 
@@ -214,6 +283,8 @@ const ddgQueries = {
   },
 
   /**
+   * Whether the summary of this node has already been prepared.
+   * 
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
@@ -222,14 +293,27 @@ const ddgQueries = {
     return nodeSummary?.summaryRoots?.length;
   },
 
+  wasNodeSummarizedBefore(ddg, node) {
+    const nodeSummary = ddg.nodeSummaries[node.timelineId];
+    return !!nodeSummary;
+  },
+
   /**
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
-  isNodeSummarizable(node) {
-    return !isRoot(node.timelineId) &&
+  isNodeSummarizable(ddg, node) {
+    return (
+      !isRoot(node.timelineId) &&
       isControlGroupTimelineNode(node.type) &&
-      node.hasSummarizableWrites;
+      node.hasSummarizableWrites && (
+        // we don't know yet
+        !ddgQueries.wasNodeSummarizedBefore(ddg, node) ||
+
+        // actually check if summarizable
+        ddgQueries.doesNodeHaveSummary(ddg, node)
+      )
+    );
   },
 
   /**
@@ -266,6 +350,22 @@ const ddgQueries = {
     return summaryNodeIds.map(id => ddg.timelineNodes[id]);
   },
 
+  /** ###########################################################################
+   * Handle summary modes
+   * ##########################################################################*/
+
+  /**
+   * @param {BaseDDG} ddg 
+   */
+  canApplySummaryMode(ddg, node, mode) {
+    // const node = ddg.timelineNodes[timelineId];
+    return _canApplySummaryMode[mode](ddg, node);
+  },
+
+  /** ###########################################################################
+   * util
+   * ##########################################################################*/
+
   /**
    * NOTE: this excludes ValueNodes nodes inside of summary snapshots.
    * 
@@ -282,6 +382,15 @@ const ddgQueries = {
       }))
       .filter(Boolean)
       .flat();
+  },
+
+  /**
+   * 
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  isSnapshotRoot(ddg, node) {
+    return node.rootTimelineId && !node.parentNodeId;
   },
 
   /**
@@ -303,19 +412,46 @@ const ddgQueries = {
 
     return ddgQueries.isSnapshotDescendant(ddg, outer, parentNode);
   },
+};
 
+/** ###########################################################################
+ * host queries
+ * ##########################################################################*/
 
-  /** ###########################################################################
-   * Handle summary modes
-   * ##########################################################################*/
+/**
+ * Queries that are only supported on the host, due to
+ * dependencies on `dp` etc.
+ */
+export const ddgHostQueries = {
+  /**
+   * @param {DataDependencyGraph} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getRootDataNodeId(ddg, node) {
+    const rootTimelineNode = ddgQueries.getRootTimelineNode(ddg, node);
+    return rootTimelineNode?.dataNodeId || node.dataNodeId;
+  },
 
   /**
-   * @param {BaseDDG} ddg 
+   * @param {DataDependencyGraph} ddg 
+   * @param {DDGTimelineNode} node
    */
-  canApplySummaryMode(node, mode) {
-    // const node = ddg.timelineNodes[timelineId];
-    return _canApplySummaryMode[mode](node);
+  getRootDataNode(ddg, node) {
+    const rootDataNodeId = ddgHostQueries.getRootDataNodeId(ddg, node);
+    return rootDataNodeId && ddg.dp.util.getDataNode(rootDataNodeId);
   },
+
+  /**
+   * NOTE: a snapshot (as of now) cannot have children of a later trace than its root.
+   * 
+   * @param {DataDependencyGraph} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  getLastDataNodeIdInRoot(ddg, node) {
+    const rootDataNode = ddgHostQueries.getRootDataNode(ddg, node);
+    const rootTrace = rootDataNode.traceId;
+    return ddg.dp.util.getLastDataNodeIdOfTrace(rootTrace);
+  }
 };
 
 export default ddgQueries;

@@ -91,7 +91,7 @@ export default class BaseNode extends ParseNode {
 
   getDeclarationTidIdentifier() {
     const decl = this.getDeclarationNode();
-    
+
     let id;
     if (decl) {
       if (!decl.getTidIdentifier) {
@@ -161,6 +161,47 @@ export default class BaseNode extends ParseNode {
       throw new NestedError(`addDefaultTrace failed for Node ${this}`, err);
     }
     return this._traceCfg;
+  }
+
+  /**
+   * Update StaticTrace of this Node, after its (default) trace has been added.
+   */
+  updateStaticTrace(upd) {
+    if (!this._traceCfg) {
+      this.warn(`Tried to "updateStaticTrace" before node trace was added (maybe the node is disabled or its syntax not yet supported?): ${this.verboseDebugTag}`);
+      return;
+    }
+    const traceId = this._traceCfg.inProgramStaticTraceId;
+    if (!traceId) {
+      this.warn(`Tried to "updateStaticTrace" but node does not have StaticTrace: ${this.verboseDebugTag}`);
+    }
+    this.state.traces.updateStaticTrace(traceId, upd);
+  }
+
+  /** ###########################################################################
+   * purpose
+   * ##########################################################################*/
+
+  addPurpose(purpose, arg) {
+    if (!this._traceCfg) {
+      this.warn(`Tried to "updateStaticTrace" before node trace was added (maybe the node is disabled or its syntax not yet supported?): ${this.verboseDebugTag}`);
+      return;
+    }
+    this._traceCfg.data ||= {};
+    this._traceCfg.data.purpose = purpose;
+    this._traceCfg.data.purposeArg = arg;
+  }
+
+  addStaticTracePurpose(purpose) {
+    if (!this._traceCfg) {
+      this.warn(`Tried to "updateStaticTrace" before node trace was added (maybe the node is disabled or its syntax not yet supported?): ${this.verboseDebugTag}`);
+      return;
+    }
+    const traceId = this._traceCfg.inProgramStaticTraceId;
+    if (!traceId) {
+      this.warn(`Tried to "updateStaticTrace" but node does not have StaticTrace: ${this.verboseDebugTag}`);
+    }
+    this.state.traces.addPurpose(traceId, purpose);
   }
 
   // ###########################################################################

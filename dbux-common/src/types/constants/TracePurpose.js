@@ -18,7 +18,13 @@ let tracePurposeObj = {
    * Callee of function call should be added as input to own DataNode.
    * Similar assumption to Compute: used on BCE with `createBCEOwnDataNode`.
    */
-  CalleeInput: 20
+  CalleeInput: 20,
+
+  /**
+   * hackfix: This is added to an input trace that is recorded after its target trace (because instrumentation is hard).
+   */
+  ReverseInput: 30,
+  PatternDefaultValue: 31
 };
 
 /**
@@ -27,13 +33,10 @@ let tracePurposeObj = {
 const TracePurpose = new Enum(tracePurposeObj);
 
 
-const dataLinkPurposes = new Array(TracePurpose.getValueMaxIndex()).map(() => false);
-dataLinkPurposes[TracePurpose.Compute] = true;
-dataLinkPurposes[TracePurpose.MathMax] = true;
-dataLinkPurposes[TracePurpose.MathMin] = true;
-dataLinkPurposes[TracePurpose.CalleeInput] = true;
-export function isDataLinkPurpose(purpose) {
-  return dataLinkPurposes[purpose];
+const warnPurposes = new Array(TracePurpose.getValueMaxIndex()).map(() => false);
+warnPurposes[TracePurpose.PatternDefaultValue] = true;
+export function isWarnPurpose(purpose) {
+  return warnPurposes[purpose];
 }
 
 export default TracePurpose;

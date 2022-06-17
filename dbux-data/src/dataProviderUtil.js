@@ -18,7 +18,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import { renderPath } from '@dbux/common-node/src/util/pathUtil';
 import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
-import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeDelete, isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
@@ -89,8 +89,9 @@ const DefaultDataSnapshotMods = {
    * @param {string} prop
    */
   writePrimitive(dp, snapshot, modifyNode, prop) {
-    const inputNodeId = modifyNode.inputs[0];
-    const inputNode = dp.collections.dataNodes.getById(inputNodeId);
+    // TODO: possibly keep following valueFrom (see `BaseDDG#addDataNode`)
+    const inputNodeId = modifyNode.valueFromId;
+    const inputNode = !inputNodeId ? modifyNode : dp.collections.dataNodes.getById(inputNodeId);
     snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, null, inputNode.value);
   },
 
@@ -131,7 +132,7 @@ function truncateStringDefault(s, cfg = TruncateDefaultCfg) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }
 
-export default {
+const dataProviderUtil = {
 
   // ###########################################################################
   // Program utils
@@ -547,14 +548,45 @@ export default {
     return dp.util.getTracesOfContextAndType(realContextId, TraceType.ReturnArgument)?.[0] || null;
   },
 
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getReturnArgumentInputDataNodeIdOfContext(dp, contextId) {
+    const returnArgumentTrace = dp.util.getReturnArgumentTraceOfContext(contextId);
+    const returnDataNode = returnArgumentTrace && dp.util.getDataNodeOfTrace(returnArgumentTrace.traceId);
+    return returnDataNode?.inputs?.[0];
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  isReturnArgumentTrace(dp, traceId) {
+    const contextId = dp.util.getTraceContextId(traceId);
+    return dp.util.getReturnArgumentTraceOfContext(contextId)?.traceId === traceId;
+  },
+
+  /**
+   * Returns whether given DataNode represents `x` in `return x;`
+   * 
+   * @param {RuntimeDataProvider} dp
+   */
+  isReturnArgumentInputDataNode(dp, nodeId) {
+    const dataNode = dp.util.getDataNode(nodeId);
+    if (!dp.util.isTraceOwnDataNode(nodeId)) {
+      // ignore nested DataNodes
+      return false;
+    }
+    const contextId = dp.util.getTraceContextId(dataNode.traceId);
+    const returnInputNodeId = dataNode && contextId && dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
+    return returnInputNodeId === nodeId;
+  },
+
   /** ###########################################################################
    * Control traces and staticTraces
    * ##########################################################################*/
 
-  /** @param {RuntimeDataProvider} dp */
-  getStaticTraceControlId(dp, staticTraceId) {
-    TODO
-  },
+  // /** @param {RuntimeDataProvider} dp */
+  // getStaticTraceControlId(dp, staticTraceId) {
+  //   TODO
+  // },
 
   /** @param {RuntimeDataProvider} dp */
   getStaticTraceControlRole(dp, staticTraceId) {
@@ -615,6 +647,8 @@ export default {
   },
 
   /** 
+   * WARNING: we probably need to rename things.
+   * Usually, we probably want to use `dp.indexes.dataNodes.byTrace.get(traceId)` instead of this.
    * 
    * @param {RuntimeDataProvider} dp
    * @return {DataNode[]?}
@@ -678,7 +712,7 @@ export default {
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   *  E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
+   *  E.g.: we want to treat the value of a `BCE` the same as its `CER`.
    * @param {RuntimeDataProvider} dp 
   */
   getValueTrace(dp, traceId) {
@@ -763,6 +797,11 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
+  getDataNodeType(dp, dataNodeId) {
+    return dp.util.getDataNode(dataNodeId).type;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
   getPrimitiveDataNodes(dp) {
     return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
   },
@@ -779,16 +818,6 @@ export default {
    */
   getDataNodeType(dp, dataNodeId) {
     return dp.collections.dataNodes.getById(dataNodeId).type;
-  },
-
-  /** @param {RuntimeDataProvider} dp */
-  getDataNodeDeclarationVarName(dp, dataNodeId) {
-    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
-    if (declarationTid) {
-      const staticTrace = dp.util.getStaticTrace(declarationTid);
-      return staticTrace.data?.name || staticTrace.displayName;
-    }
-    return null;
   },
 
   /** @param {RuntimeDataProvider} dp */
@@ -824,7 +853,6 @@ export default {
   isDataNodePassAlong(dp, nodeId) {
     const dataNode = dp.util.getDataNode(nodeId);
     return (
-      // (DataNodeType.is.Read(dataNode.type)) &&
       !!dataNode.valueFromId
     );
   },
@@ -840,11 +868,18 @@ export default {
    * @param {RuntimeDataProvider} dp
    */
   getDataNodeAccessedRefId(dp, nodeId) {
+    return dp.util.getDataNodeAccessedObjectNode(nodeId)?.refId || 0;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getDataNodeAccessedObjectNode(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     const objectNodeId = dataNode.varAccess?.objectNodeId;
     if (objectNodeId) {
       const objectDataNode = dp.collections.dataNodes.getById(objectNodeId);
-      return objectDataNode.refId;
+      return objectDataNode;
     }
     return 0;
   },
@@ -857,18 +892,6 @@ export default {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isDataNodeModifyType(dataNode.type)) {
       return dp.util.getDataNodeAccessedRefId(nodeId) || 0;
-    }
-    return 0;
-  },
-
-  /**
-   * @param {RuntimeDataProvider} dp
-   * @return {DataNode}
-   */
-  getDataNodeModifyingVarDeclarationTid(dp, nodeId) {
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (isDataNodeModifyType(dataNode.type)) {
-      return dataNode?.varAccess?.declarationTid;
     }
     return 0;
   },
@@ -937,7 +960,7 @@ export default {
     return finalValue;
   },
 
-  
+
   /** ###########################################################################
    * value snapshots
    * ##########################################################################*/
@@ -1075,7 +1098,7 @@ export default {
    */
   applyDataSnapshotModificationsDataNodes(dp, snapshot, modifyDataNodes, snapshotMods) {
     for (const modifyNode of modifyDataNodes) {
-      if (modifyNode.type === DataNodeType.Write) {
+      if (isDataNodeWrite(modifyNode.type)) {
         // apply write
         const { prop } = modifyNode.varAccess;
         if (modifyNode.refId) {
@@ -1087,7 +1110,7 @@ export default {
           snapshotMods.writePrimitive(dp, snapshot, modifyNode, prop);
         }
       }
-      else if (modifyNode.type === DataNodeType.Delete) {
+      else if (isDataNodeDelete(modifyNode.type)) {
         // apply delete
         const { prop } = modifyNode.varAccess;
         snapshotMods.deleteProp(dp, snapshot, modifyNode, prop);
@@ -1229,12 +1252,12 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueString(dp, nodeId, toTraceId) {
+  getDataNodeValueString(dp, nodeId, toTraceId = null) {
     return dp.util._getDataNodeValueString(nodeId, toTraceId, false);
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeValueStringShort(dp, nodeId, toTraceId) {
+  getDataNodeValueStringShort(dp, nodeId, toTraceId = null) {
     return dp.util._getDataNodeValueString(nodeId, toTraceId, true);
   },
 
@@ -1260,8 +1283,8 @@ export default {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getValueRefValueStringShort(dp, refId, toNodeId, shorten) {
-    const snapshot = dp.util.constructVersionedValueSnapshot(refId, toNodeId);
+  getValueRefValueStringShort(dp, refId, toTraceId, shorten = true) {
+    const snapshot = dp.util.constructVersionedValueSnapshot(refId, toTraceId);
     const valueRef = dp.collections.values.getById(refId);
 
     let valueString;
@@ -1300,20 +1323,73 @@ export default {
     return valueString;
   },
 
-  /** 
-   * Uses some heuristics to find the first var a given ref was assigned to.
+  /**
+   * Uses some heuristics to get a good name for a ref that was stored in given node.
    * @param {RuntimeDataProvider} dp 
    */
-  getRefVarName(dp, refId) {
+  guessRefVarName(dp, nodeId) {
+    // 0. get by declarationTid
+    let varName = dp.util.getDataNodeDeclarationVarName(nodeId);
+    if (!varName) {
+      // 1. get original var name
+      const dataNode = dp.util.getDataNode(nodeId);
+      varName = dp.util.getRefOriginalVarName(dataNode.refId);
+    }
+    return varName;
+  },
+
+  /** 
+   * Uses some heuristics to find the last var a given ref was assigned to.
+   * WARNING: [perf-search] This is not O(1). It could potentially look through all of the ref's DataNodes.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  getRefOriginalVarName(dp, refId) {
+    // TODO: consider variables that are not assigned to a variable
     // 1. all dataNodes who held the value of given refId
     const dataNodes = dp.util.getDataNodesByRefId(refId);
     if (dataNodes) {
       // 2. find first DataNode that represents a variable
-      const varNode = dataNodes.find(n => n.varAccess?.declarationTid);
+      const varNode = findLast(dataNodes, n => {
+        if (!n.varAccess) {
+          return false;
+        }
+        return (
+          // var name (e.g. `x = ...`)
+          n.varAccess.declarationTid ||
+          // string prop (e.g. `this.x = ...`)
+          (n.varAccess.prop && !isNumber(n.varAccess.prop))
+        );
+      });
       if (varNode) {
-        // 3. return name of variable
-        return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
+        if (varNode.varAccess.declarationTid) {
+          // 3. return name of variable
+          return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
+        }
+        else {
+          // 4. return name of prop
+          return varNode.varAccess.prop;
+        }
       }
+    }
+    return null;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getDataNodeDeclarationVarName(dp, dataNodeId) {
+    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
+    if (declarationTid) {
+      const staticTrace = dp.util.getStaticTrace(declarationTid);
+      return staticTrace.data?.name || staticTrace.displayName;
+    }
+    return null;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getDataNodeAccessedRefVarName(dp, dataNodeId) {
+    const refId = dp.util.getDataNodeAccessedRefId(dataNodeId);
+    if (refId) {
+      return dp.util.getRefOriginalVarName(refId);
     }
     return null;
   },
@@ -1360,6 +1436,11 @@ export default {
   /** @param {RuntimeDataProvider} dp */
   getFirstDataNodeByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.getFirst(refId);
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getLastDataNodeByRefId(dp, refId) {
+    return dp.indexes.dataNodes.byRefId.getLast(refId);
   },
 
   /** 
@@ -1773,8 +1854,70 @@ export default {
     return returnTraces[0] || null;
   },
 
+  /** ###########################################################################
+   * callees
+   * ##########################################################################*/
+
   /**
-   * @deprecated Use `getRealCalleeTrace` instead
+   * Accounts for `call`, `apply`, `bind`.
+   * @param {RuntimeDataProvider} dp
+   */
+  getRealCalleeTrace(dp, callId) {
+    const bceTrace = dp.util.getTrace(callId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+
+    let realCalleeTid;
+    const callType = dp.util.getSpecialCallType(callId);
+    switch (callType) {
+      case SpecialCallType.Call:
+      case SpecialCallType.Apply:
+        realCalleeTid = bceTrace.data.calledFunctionTid;
+        break;
+      case SpecialCallType.Bind:
+      default: {
+        // nothing to do here -> handle `Bound` case below
+        break;
+      }
+    }
+
+    // no match -> check for Bound
+    const { calleeTid } = bceTrace.data;
+    const bindTrace = dp.util.getBindCallTrace(calleeTid);
+    if (bindTrace?.data) {
+      realCalleeTid = bindTrace.data.calledFunctionTid;
+    }
+
+    if (!realCalleeTid) {
+      // default
+      realCalleeTid = bceTrace.data.calleeTid;
+    }
+    else {
+      // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
+    }
+
+    return dp.collections.traces.getById(realCalleeTid);
+  },
+
+  /** 
+   * @example `o` in `o.f(x)`
+   * 
+   * @param {RuntimeDataProvider} dp
+   */
+  getCalleeObjectNodeId(dp, callId) {
+    const calleeTrace = dp.util.getRealCalleeTrace(callId);
+    if (calleeTrace) {
+      const calleeDataNode = dp.util.getOwnDataNodeOfTrace(calleeTrace.traceId);
+      const calleeObjectNodeId = calleeDataNode?.varAccess.objectNodeId;
+      return calleeObjectNodeId;
+      // return calleeObjectNodeId && dp.util.getDataNode(calleeObjectNodeId);
+    }
+    return null;
+  },
+
+  /**
+   * @deprecated Use {@link dataProviderUtil#getRealCalleeTrace} instead
    * @param {RuntimeDataProvider} dp
    */
   getCalleeTraceId(dp, callId) {
@@ -1800,6 +1943,10 @@ export default {
     const context = dp.util.getCalledContext(callId);
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
   },
+
+  /** ###########################################################################
+   * more caller and CallExpression stuff
+   * ##########################################################################*/
 
   /**
    * @param {RuntimeDataProvider} dp
@@ -1892,9 +2039,10 @@ export default {
       return null;
     }
 
-    const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
-    const context = dp.collections.executionContexts.getById(contextId);
-    if (context.definitionTid === traceId) {
+    // const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
+    // const context = dp.collections.executionContexts.getById(contextId);
+    // if (context.definitionTid === traceId) { // NOTE: in case of ctor, refId is the same, but trace is different
+    if (functionRef.refId === calleeDataNode.refId) {
       // Accept: definitionTid are matched
       return bceTrace;
     }
@@ -1969,68 +2117,6 @@ export default {
     });
     delete byRefId[0];  // remove those whose `refId` could not be recovered (e.g. due to disabled tracing)
     return byRefId;
-  },
-
-  /** ###########################################################################
-   * callees
-   * ##########################################################################*/
-
-  /**
-   * Accounts for `call`, `apply`, `bind`.
-   * @param {RuntimeDataProvider} dp
-   */
-  getRealCalleeTrace(dp, callId) {
-    const bceTrace = dp.util.getTrace(callId);
-    if (!bceTrace?.data) {
-      return null;
-    }
-
-    let realCalleeTid;
-    const callType = dp.util.getSpecialCallType(callId);
-    switch (callType) {
-      case SpecialCallType.Call:
-      case SpecialCallType.Apply:
-        realCalleeTid = bceTrace.data.calledFunctionTid;
-        break;
-      case SpecialCallType.Bind:
-      default: {
-        // nothing to do here -> handle `Bound` case below
-        break;
-      }
-    }
-
-    // no match -> check for Bound
-    const { calleeTid } = bceTrace.data;
-    const bindTrace = dp.util.getBindCallTrace(calleeTid);
-    if (bindTrace?.data) {
-      realCalleeTid = bindTrace.data.calledFunctionTid;
-    }
-
-    if (!realCalleeTid) {
-      // default
-      realCalleeTid = bceTrace.data.calleeTid;
-    }
-    else {
-      // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
-    }
-
-    return dp.collections.traces.getById(realCalleeTid);
-  },
-
-  /** 
-   * @example `o` in `o.f(x)`
-   * 
-   * @param {RuntimeDataProvider} dp
-   */
-  getCalleeObjectNodeId(dp, callId) {
-    const calleeTrace = dp.util.getRealCalleeTrace(callId);
-    if (calleeTrace) {
-      const calleeDataNode = dp.util.getOwnDataNodeOfTrace(calleeTrace.traceId);
-      const calleeObjectNodeId = calleeDataNode?.varAccess.objectNodeId;
-      return calleeObjectNodeId;
-      // return calleeObjectNodeId && dp.util.getDataNode(calleeObjectNodeId);
-    }
-    return null;
   },
 
   // ###########################################################################
@@ -2710,7 +2796,10 @@ export default {
     return dp.indexes.traces.byContext.get(contextId);
   },
 
-  /** @param {RuntimeDataProvider} dp */
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @return {Trace[]}
+   */
   getTracesOfContextAndType(dp, contextId, type) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     // NOTE: `Await` contexts don't have traces
@@ -4031,3 +4120,5 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
     return parentAsyncNode;
   },
 };
+
+export default dataProviderUtil;

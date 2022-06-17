@@ -8,6 +8,7 @@ const ddgTimelineNodeTypeObj = {
 
   RefSnapshot: 3,
   RepeatedRef: 4,
+  DeleteEntry: 5,
 
   // decision (Data node for control decisions)
   Decision: 8,
@@ -46,6 +47,7 @@ const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
 dataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
 dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
+dataTimelineNodeTypes[DDGTimelineNodeType.DeleteEntry] = true;
 
 /**
  * 
@@ -58,12 +60,13 @@ const hasDataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex(
 hasDataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
 hasDataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
 hasDataTimelineNodeTypes[DDGTimelineNodeType.RefSnapshot] = true;
+hasDataTimelineNodeTypes[DDGTimelineNodeType.DeleteEntry] = true;
 
 /**
  * Applies to `DataTimelineNode`s and snapshot nodes (which contain data).
  * NOTE: Both have `dataNodeId`.
  */
-export function doesTimelineNodeHaveData(timelineNodeType) {
+export function doesTimelineNodeCarryData(timelineNodeType) {
   return hasDataTimelineNodeTypes[timelineNodeType] || false;
 }
 

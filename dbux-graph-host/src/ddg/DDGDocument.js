@@ -91,9 +91,11 @@ export default class DDGDocument extends HostComponentEndpoint {
    *  #########################################################################*/
 
   /**
-   * future-work: move this to a shared location
+   * NOTE: you need to call this first to get the webview to accept icon (and really any) URIs.
+   * 
+   * future-work: move this to a shared location.
    */
-  getIconUri(fileName, modeName = null) {
+  makeSafeIconUri(fileName, modeName = null) {
     if (!fileName) {
       return null;
     }
@@ -111,14 +113,19 @@ export default class DDGDocument extends HostComponentEndpoint {
   makeInitialState(state) {
     const summaryIconUris = {
       // [DDGSummaryMode.Hide]: this.getIconUri('hide.svg'),
-      [DDGSummaryMode.CollapseSummary]: this.getIconUri('minus.svg'),
-      [DDGSummaryMode.SummarizeChildren]: this.getIconUri('stack.svg'),
-      [DDGSummaryMode.ExpandSubgraph]: this.getIconUri('listItem.svg'),
+      [DDGSummaryMode.CollapseSummary]: this.makeSafeIconUri('minus.svg'),
+      [DDGSummaryMode.ExpandSelf]: this.makeSafeIconUri('stack.svg'),
+      [DDGSummaryMode.SummarizeChildren]: this.makeSafeIconUri('stack.svg'),
+      [DDGSummaryMode.ExpandSubgraph]: this.makeSafeIconUri('listItem.svg'),
       // [DDGSummaryMode.HideChildren]: this.getIconUri('hide-children.svg'),
+    };
+    const settingIconUris = {
+      // TODO?
     };
     return {
       themeMode: this.componentManager.externals.getThemeMode(),
       summaryIconUris,
+      settingIconUris,
 
       ...state
     };

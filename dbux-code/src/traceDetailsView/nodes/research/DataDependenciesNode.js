@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeRead, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -40,13 +40,13 @@ export default class DataDependenciesNode extends TraceDetailNode {
           continue;
         }
         const { threadId } = dp.util.getAsyncNode(rootContext.contextId);
-        if (DataNodeType.is.Write(type)) {
+        if (isDataNodeWrite(type)) {
           if (!writtenThreadsByAccessId.get(accessId)) {
             writtenThreadsByAccessId.set(accessId, new Set());
           }
           writtenThreadsByAccessId.get(accessId).add(threadId);
         }
-        else if (DataNodeType.is.Read(type)) {
+        else if (isDataNodeRead(type)) {
           const writtenThreads = writtenThreadsByAccessId.get(accessId) || emptySet;
           if ((writtenThreads.size - writtenThreads.has(threadId)) > 0) {
             globalAccessIds.add(accessId);

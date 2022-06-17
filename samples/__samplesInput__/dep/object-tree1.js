@@ -1,10 +1,11 @@
 function main(root) {
   const {
     left: {
-      children: [a, b] }
+      children: [a, b]
+    },
+    right
   } = root;
-  console.log(a);
-  return [ a, b ];
+  return { a, b, right };
 }
 
 const root = {

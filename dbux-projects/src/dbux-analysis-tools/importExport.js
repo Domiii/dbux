@@ -11,18 +11,18 @@ import { getDbuxManager } from './DbuxManager';
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
 /**
- * @param {string} exportFpath 
+ * @param {string} fpath 
  * @param {Application} application 
  */
-export function exportApplicationToFile(application, exportFpath) {
+export function exportApplicationToFile(application, fpath) {
   // exportFpath = safePath(exportFpath);
-  const isZip = exportFpath.endsWith('.zip');
-  const exportFolder = path.dirname(exportFpath);
+  const isZip = fpath.endsWith('.zip');
+  const exportFolder = path.dirname(fpath);
   if (!fs.existsSync(exportFolder)) {
     fs.mkdirSync(exportFolder, { recursive: true });
   }
 
-  exportFpath = pathResolve(exportFpath);
+  fpath = pathResolve(fpath);
 
   const data = {
     ...extractApplicationData(application),
@@ -31,11 +31,13 @@ export function exportApplicationToFile(application, exportFpath) {
   const serialized = JSON.stringify(data);
 
   if (isZip) {
-    zipDataToFile(exportFpath, serialized);
+    zipDataToFile(fpath, serialized);
   }
   else {
-    fs.writeFileSync(exportFpath, serialized);
+    fs.writeFileSync(fpath, serialized);
   }
+
+  application.filePath = fpath;
 
   return serialized;
 }
@@ -102,7 +104,7 @@ export function extractApplicationData(application) {
 
 const applicationEntryPointPathByHash = new Map();
 
-export async function importApplication(importFilePath, appData, allDpData = EmptyArray) {
+export async function importApplication(fpath, appData, allDpData = EmptyArray) {
   const { isBuiltInProject, isBuiltInSample, relativeEntryPointPath, filePathMD5, ...other } = appData;
   let rootPath;
   if (isBuiltInSample) {
@@ -123,17 +125,17 @@ export async function importApplication(importFilePath, appData, allDpData = Emp
     rootPath = applicationEntryPointPathByHash.get(filePathMD5);
   }
   const entryPointPath = pathJoin(rootPath, relativeEntryPointPath);
-  const app = allApplications.addApplication({
+  const application = allApplications.addApplication({
     entryPointPath, ...other
   });
 
-  app.importFilePath = importFilePath;
+  application.filePath = fpath;
 
   for (const dpData of allDpData) {
-    await app.dataProvider.deserializeJson(dpData);
+    await application.dataProvider.deserializeJson(dpData);
   }
 
-  return app;
+  return application;
 }
 
 /**

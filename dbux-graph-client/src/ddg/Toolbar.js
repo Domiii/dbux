@@ -1,53 +1,45 @@
 // import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
 
 import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
-import { RootTimelineId } from '@dbux/data/src/ddg/constants';
-import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses } from '../util/domUtil';
+import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
+import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses, makeBootstrapBtnGroupSeparatorEl } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { decorateSummaryModeButtons, makeSummaryButtons } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, DefaultToolbarBtnClass, makeSettingsButtons } from './ddgDomUtil';
 
 let documentClickHandler;
 
 /** @typedef { import("./DDGDocument").default } DDGDocument */
 
+
 class Toolbar extends ClientComponentEndpoint {
   summaryRootButtons;
 
   createEl() {
-    /**
-          <button title="Hide subgraphs that are not affected any watched node" data-el="connectedOnlyModeBtn" class="toolbar-btn btn btn-info" href="#">
-            con
-          </button>
-          <button title="Merge computation subgraphs" data-el="mergeComputationsBtn" class="toolbar-btn btn btn-info" href="#">
-            ⚙
-          </button>
-     */
     const el = compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
-            Rebuild 🔁
-          </button>
-          <button title="Toggle value mode" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">
-            val
-          </button>
-
-          
+        <div data-el="buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
+        <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
+          🔁
+        </button>
           ${BootstrapBtnGroupSeparatorHtml}
-
         </div>
       </nav>
     `);
 
-    // add root control buttons
     const btns = el.querySelector('.btn-group');
-    const btnClass = 'toolbar-btn btn btn-info';
+
+    // add settings buttons
+    if (this.doc.state.settings) {
+      btns.appendChild(makeSettingsButtons(this.doc).el);
+      btns.appendChild(makeBootstrapBtnGroupSeparatorEl());
+    }
+
+    // add root control buttons
     const {
       el: summaryRootButtonDom,
       els: summaryRootButtons
-    } = makeSummaryButtons(this.doc, RootTimelineId, btnClass, RootSummaryModes, true);
+    } = makeSummaryButtons(this.doc, DDGRootTimelineId, DefaultToolbarBtnClass, RootSummaryModes, true);
     btns.appendChild(summaryRootButtonDom);
-
     this.summaryRootButtons = summaryRootButtons;
 
     return el;
@@ -80,8 +72,10 @@ class Toolbar extends ClientComponentEndpoint {
     // decorateClasses(this.els.connectedOnlyModeBtn, {
     //   active: connectedOnlyMode
     // });
-    
-    decorateSummaryModeButtons(this.summaryRootButtons);
+
+    // update all buttons
+    // updateElDecorations(this.summaryRootButtons);
+    updateElDecorations(this.els.buttons.querySelectorAll('.btn'));
   }
 
   renderModes() {
@@ -99,7 +93,7 @@ class Toolbar extends ClientComponentEndpoint {
     rebuildBtn: {
       async click(evt) {
         evt.preventDefault();
-        this.doc.timeline.rebuildGraph();
+        this.doc.timeline.rebuildGraph(true);
       },
 
       focus(evt) { evt.target.blur(); }

@@ -3,6 +3,7 @@ import isFunction from 'lodash/isFunction';
 
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee } from '../data/dataUtil';
+import valueCollection from '../data/valueCollection';
 import { addPurpose } from '../builtIns/builtin-util';
 
 // eslint-disable-next-line no-unused-vars
@@ -15,6 +16,12 @@ const functionProxiesByOriginalFunction = new Map();
 const originalFunctionsByProxy = new WeakMap();
 const callbackProxiesByOriginal = new Map();
 const originalCallbacksByProxy = new WeakMap();
+
+/**
+ * hackfix: prevent circular dependency
+ */
+valueCollection.getOriginalFunction = getOriginalFunction;
+valueCollection.getPatchedFunctionOrSelf = getPatchedFunctionOrSelf;
 
 /** ###########################################################################
  * {@link makeProxy}
@@ -64,6 +71,14 @@ export function registerMonkeyPatchedFunction(originalFunction, patchedFunction)
     // hackfix: we sometimes set native functions to be itself to prevent auto patching
     //    (because for some reason, native functions cannot be WeakMap keys)
     originalFunctionsByProxy.set(proxy, originalFunction);
+
+    // NOTE: we add "monkey" information in `ValueCollection`
+    // // hackfix: let remote know that this is monkey'ed
+    // // [edit-after-send]
+    // console.log('monkeyPatch', originalFunction.name, !!valueCollection._getRefByValueUnwrapped(originalFunction));
+    // valueCollection._getRefByValueUnwrapped(originalFunction) &&
+    //   (valueCollection._getRefByValueUnwrapped(originalFunction).monkey = true);
+
     // }
     return proxy;
   }

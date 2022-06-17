@@ -1,12 +1,13 @@
 import difference from 'lodash/difference';
 import omit from 'lodash/omit';
+import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
 import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
+import PatternAstNodeType, { isGroupPattern } from '@dbux/common/src/types/constants/PatternAstNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
@@ -26,7 +27,7 @@ import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
 import { _slicedToArray } from './util/builtinUtil';
-import { isFunction } from 'lodash';
+import { addPurpose } from './builtIns/builtin-util';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -943,12 +944,15 @@ export default class RuntimeMonitor {
   // UpdateExpression
   // ###########################################################################
 
+  /**
+   * This is `i++` etc.
+   */
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
     // const trace = traceCollection.getById(tid);
 
     // add write node
     const inputs = [traceCollection.getOwnDataNodeIdByTraceId(readTid)];
-    const writeNode = dataNodeCollection.createOwnDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
+    const writeNode = dataNodeCollection.createOwnDataNode(updateValue, tid, DataNodeType.ComputeWrite, varAccess, inputs);
 
     if (updateValue !== returnValue) {
       // add separate expression value node
@@ -1187,13 +1191,15 @@ export default class RuntimeMonitor {
     }
 
     // DataNodeType.Create
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Compute, null, null, ShallowValueRefMeta);
+    const ownDataNode = dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Compute, null, null, ShallowValueRefMeta);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
     for (let i = 0; i < argTids.length; i++) {
       const argTid = argTids[i];
       const spreadLen = spreadLengths[i];
+      // const targetTid = argTid;
+      const targetTid = arrTid;
 
       if (!argTid) {
         // empty (omitted) array element (e.g.: [1, , 2])
@@ -1206,22 +1212,22 @@ export default class RuntimeMonitor {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(argTid),
             prop: j
           };
-          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
+          const readNode = dataNodeCollection.createDataNode(value[idx], targetTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
+            objectNodeId: ownDataNode.nodeId,
             prop: idx
           };
-          dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
+          dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, writeAccess);
           ++idx;
         }
       }
       else {
         // not spread
         const varAccess = {
-          objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
-          prop: i
+          objectNodeId: ownDataNode.nodeId,
+          prop: idx
         };
-        dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(targetTid, argTid, varAccess);
         ++idx;
       }
     }
@@ -1246,6 +1252,8 @@ export default class RuntimeMonitor {
         warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
         continue;
       }
+      // const targetTid = propTid;
+      const targetTid = objectTid;
 
       if (argConfigs[i].isSpread) {
         // [spread]
@@ -1256,12 +1264,12 @@ export default class RuntimeMonitor {
             objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(propTid),
             prop: key
           };
-          const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);
+          const readNode = dataNodeCollection.createDataNode(value[key], targetTid, DataNodeType.Read, readAccess);
           const writeAccess = {
             objectNodeId,
             prop: key
           };
-          dataNodeCollection.createWriteNodeFromReadNode(propTid, readNode, writeAccess);
+          dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, writeAccess);
         }
       }
       else {
@@ -1271,7 +1279,7 @@ export default class RuntimeMonitor {
           objectNodeId,
           prop: key
         };
-        dataNodeCollection.createWriteNodeFromTrace(objectTid, propTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(targetTid, propTid, varAccess);
       }
     }
 
@@ -1319,32 +1327,78 @@ export default class RuntimeMonitor {
 
   _tracePatternRecurse = (nodes, node, childValues, value, rvalTid, readDataNodeId, result) => {
     const { children } = node;
+
+    // NOTE: we do two passes, to make sure, `DataNode`s of consecutive `nodeId`s don't jump between traces
+
+    // TODO: need to do two completely independent passes: 
+    //    1. build the result/Read-DataNode tree
+    //    2. traverse the tree
+    
+
     for (const iChild of children) {
       const childNode = nodes[iChild];
-      const childValue = this._getPatternProp(childValues, childNode.prop);
-      // eslint-disable-next-line max-len
-      VerbosePatterns && debug(
-        `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
-        `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
-        `value=${childValue} (${typeof childValue})`
-      );
-      const varAccess = {
-        objectNodeId: readDataNodeId,
-        prop: childNode.prop
-      };
-      // const inputs = [parentReadDataNodeId];
-      const childReadDataNodeId = dataNodeCollection.createDataNode(childValue, rvalTid, DataNodeType.Read, varAccess).nodeId;
-      try {
-        this._tracePatternHandlers[childNode.type](
-          nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
-        );
-      }
-      catch (err) {
-        throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
-      }
+      this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
     }
-    VerbosePatterns && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}:`, result);
+    // // 1. Groups (all reads)
+    // for (const iChild of children) {
+    //   const childNode = nodes[iChild];
+    //   if (isGroupPattern(childNode.type)) {
+    //     this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
+    //   }
+    // }
+    // // 2. Values (reads + writes)
+    // for (const iChild of children) {
+    //   const childNode = nodes[iChild];
+    //   if (!isGroupPattern(childNode.type)) {
+    //     this._tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result);
+    //   }
+    // }
+
+    VerbosePatterns > 1 && debug(`[Pattern] Result ${PatternAstNodeType.nameFrom(node.type)} at ${node.prop}:`, result);
     return result;
+  }
+
+  _tracePatternChild(nodes, childNode, childValues, rvalTid, readDataNodeId, result) {
+    const { type, prop } = childNode;
+
+    const childValue = this._getPatternProp(childValues, prop);
+    // eslint-disable-next-line max-len
+    VerbosePatterns && debug(
+      `[Pattern] ${PatternAstNodeType.nameFrom(childNode.type)}: ` +
+      `${JSON.stringify(omit(childNode, ['type']))}\n  ` +
+      `value=${childValue} (${typeof childValue})`
+    );
+
+    let varAccess;
+    let inputs;
+    // if (defaultValueTid) {// NOTE: we cannot get access to `defaultValueTid`
+    //   // input from default value
+    //   inputs = [traceCollection.getOwnDataNodeIdByTraceId(defaultValueTid)];
+    // }
+    // else {
+    // read from rval
+    varAccess = {
+      objectNodeId: readDataNodeId,
+      prop: prop
+    };
+    // }
+    // const inputs = [parentReadDataNodeId];
+    const childReadDataNodeId = dataNodeCollection.createDataNode(
+      childValue, rvalTid, DataNodeType.Read, varAccess, inputs
+    ).nodeId;
+
+    if (childValue === undefined && !valueCollection._readIsPropertyInObject(childValues, prop)) {
+      result = null;
+    }
+
+    try {
+      this._tracePatternHandlers[type](
+        nodes, childNode, childValue, rvalTid, childReadDataNodeId, result
+      );
+    }
+    catch (err) {
+      throw new NestedError(`tracePatternHandler failed for node: ${JSON.stringify(childNode)}`, err);
+    }
   }
 
   _tracePatternHandlers = {
@@ -1374,13 +1428,19 @@ export default class RuntimeMonitor {
       // TODO: declarationTid might be 0, because in non-strict mode, we might assign to non-declared vars.
       //    → We need to fix `getOwnDeclarationNode` for this
       // declarationTid ||= tid;
-      parentResult[node.prop] = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
+      const res = this.#addWriteVarDataNodes(value, tid, declarationTid, inputs);
+      if (parentResult) {
+        parentResult[node.prop] = res;
+      }
     },
     [PatternAstNodeType.ME]: (nodes, node, value, rvalTid, readDataNodeId, parentResult) => {
       const { tid, objectTid, propValue, propTid } = node;
       const inputs = [readDataNodeId];
       const objectNodeId = traceCollection.getOwnDataNodeIdByTraceId(objectTid);
-      parentResult[node.prop] = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
+      const res = this.#addWriteMEDataNodes(value, objectNodeId, propValue, propTid, tid, inputs);
+      if (parentResult) {
+        parentResult[node.prop] = res;
+      }
     },
 
 
@@ -1436,6 +1496,28 @@ export default class RuntimeMonitor {
       }
     }
   };
+
+  /** ###########################################################################
+   * purpose
+   *  #########################################################################*/
+
+  addPurpose(programId, value, tid, purpose, arg) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    const trace = traceCollection.getById(tid);
+    if (!trace) {
+      throw new Error(`addPurpose failed - trace does not exist (tid="${tid}")`);
+    }
+
+    // [edit-after-send]
+    addPurpose(trace, {
+      type: purpose,
+      arg
+    });
+
+    return value;
+  }
 
   // // ###########################################################################
   // // Loops (unfinished)

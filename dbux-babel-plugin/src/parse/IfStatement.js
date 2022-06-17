@@ -71,7 +71,7 @@ export default class IfStatement extends BaseNode {
       else {
         // root if statement
         BranchStatement.setDecisionAndPushTrace(testTrace);
-        BranchStatement.insertPopTrace();
+        BranchStatement.insertPopTraceBehind();
       }
     }
   }

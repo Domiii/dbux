@@ -12,7 +12,7 @@ export default class DDGNodeSummary {
   /**
    * @type {Map.<number, number>}
    */
-  varNodesByDeclarationTid;
+  nodesByTid;
 
 
   /**
@@ -21,10 +21,10 @@ export default class DDGNodeSummary {
    */
   summaryRoots;
 
-  constructor(timelineId, snapshotsByRefId, varNodesByDeclarationTid, summaryRoots) {
+  constructor(timelineId, snapshotsByRefId, nodesByTid, summaryRoots) {
     this.timelineId = timelineId;
     this.snapshotsByRefId = snapshotsByRefId;
-    this.varNodesByDeclarationTid = varNodesByDeclarationTid;
+    this.nodesByTid = nodesByTid;
     this.summaryRoots = summaryRoots;
   }
 }

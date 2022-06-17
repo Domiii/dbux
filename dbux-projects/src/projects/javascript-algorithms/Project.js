@@ -54,6 +54,7 @@ export default class JavascriptAlgorithmProject extends Project {
     const testCfg = this.getJestCfg(bug, [
       '--setupFilesAfterEnv ./dbuxJestSetup.js',
       '--no-cache', // no cache for now
+      '--test-timeout=1200000',
       '--colors'
     ]);
 

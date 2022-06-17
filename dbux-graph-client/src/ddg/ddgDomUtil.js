@@ -1,4 +1,4 @@
-import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { addElementEventListeners, compileHtmlElement, decorateClasses } from '../util/domUtil';
@@ -8,20 +8,29 @@ import { addElementEventListeners, compileHtmlElement, decorateClasses } from '.
 
 const defaultIconSize = '12px';
 
-const summaryIconHtml = {
-  [DDGSummaryMode.Hide]: '⛒',
-  [DDGSummaryMode.HideChildren]: '⛒',
-  // [DDGSummaryMode.CollapseSummary]: '💢'
-};
+export const DefaultToolbarBtnClass = 'toolbar-btn btn btn-info';
+
 
 /** ###########################################################################
  * Summary Mode
  * ##########################################################################*/
 
+const summaryBtnLabelHtml = {
+  [DDGSummaryMode.Hide]: '⛒',
+  [DDGSummaryMode.HideChildren]: '⛒',
+  // [DDGSummaryMode.CollapseSummary]: '💢'
+};
+
+
+export function makeSummaryLabelEl(docState, mode) {
+  return compileHtmlElement(makeSummaryLabel(docState, mode));
+}
+
+
 export function makeSummaryLabel(docState, mode) {
   const { summaryIconUris } = docState;
   if (!summaryIconUris[mode]) {
-    return summaryIconHtml[mode]; // hackfix
+    return summaryBtnLabelHtml[mode]; // hackfix
   }
   return /*html*/`<img width="${defaultIconSize}" src="${summaryIconUris[mode]}" />`;
 }
@@ -29,7 +38,7 @@ export function makeSummaryLabel(docState, mode) {
 export function makeSummaryLabelSvgCompiled(docState, mode, x, y) {
   const { summaryIconUris } = docState;
   if (!summaryIconUris[mode]) {
-    return compileHtmlElement(`<text>summaryIconHtml[mode]</text>`);
+    return compileHtmlElement(`<text>${summaryBtnLabelHtml[mode]}</text>`);
   }
 
   /**
@@ -88,7 +97,7 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
 export function decorateSummaryButton(btnEl, btnMode, ddg, timelineId) {
   const node = ddg.timelineNodes[timelineId];
   const actualMode = ddg.summaryModes[timelineId];
-  const disabled = !ddgQueries.canApplySummaryMode(node, btnMode);
+  const disabled = !ddgQueries.canApplySummaryMode(ddg, node, btnMode);
   btnEl.disabled = disabled;
   decorateClasses(btnEl, {
     disabled,
@@ -96,8 +105,9 @@ export function decorateSummaryButton(btnEl, btnMode, ddg, timelineId) {
   });
 }
 
-export function decorateSummaryModeButtons(btns) {
-  btns.forEach(btn => btn._updateDeco());
+export function updateElDecorations(els) {
+  // hackfix: just call updateDeco on those that it can be called on
+  els.forEach(el => el?._updateDeco?.());
 }
 
 /** ########################################
@@ -108,16 +118,139 @@ export function decorateSummaryModeButtons(btns) {
  * @param {DDGDocument} doc
  */
 function addSummaryModeListener(btnEl, doc, timelineId, mode) {
+  addDefaultBtnListeners(btnEl, () => {
+    /**
+     * @type {DDGTimelineView}
+     */
+    // eslint-disable-next-line prefer-destructuring
+    const timeline = doc.timeline;
+    timeline.startRenderTimer();
+    timeline.setSummaryMode(timelineId, mode);
+  });
+}
+
+/** ###########################################################################
+ * Graph settings
+ * ##########################################################################*/
+
+// const settingsRenderers = {
+//   connectedOnly(toolbar, settings, value) {
+//     return ;
+//   }
+// };
+const settingBtnLabelHtml = {
+  connectedOnly: '🔗',
+  extraVertical: '↕',
+  params: 'param'
+};
+
+const settingBtnTitles = {
+  connectedOnly: 'Whether to show only connected nodes',
+  params: 'Whether to show parameter nodes'
+};
+
+/**
+ * @param {DDGDocument} doc
+ */
+function addSettingsModeListener(doc, btnEl, setting) {
+  addDefaultBtnListeners(btnEl, () => {
+    // future-work: for now, we can only render bools
+    //   → toggle bool
+    const timeline = getTimelineOfDoc(doc);
+    const newVal = !timeline.ddg.settings[setting];
+    timeline.startRenderTimer();
+    timeline.setGraphSetting(setting, newVal);
+  });
+}
+
+export function makeSettingBtnLabel(docState, setting) {
+  const { settingIconUris } = docState;
+  if (!settingIconUris[setting]) {
+    return settingBtnLabelHtml[setting] || setting; // hackfix
+  }
+  return /*html*/`<img width="${defaultIconSize}" src="${settingIconUris[setting]}" />`;
+}
+
+/**
+ * 
+ */
+export function decorateSettingButton(ddg, btnEl, setting) {
+  const val = getDDGSetting(ddg, setting);
+  decorateClasses(btnEl, {
+    active: !!val
+  });
+}
+
+/**
+ * @param {DDGDocument} doc
+ */
+export function makeSettingsButtons(doc) {
+  const btnClass = DefaultToolbarBtnClass + ' settings-button';
+
+  const ddg = getDDGOfDoc(doc);
+  const allSettingNames = Object.keys(ddg.settings);
+
+  const frag = document.createDocumentFragment();
+  const els = allSettingNames.map(setting => {
+    const label = makeSettingBtnLabel(doc.state, setting);
+    const btnEl = compileHtmlElement(
+    /*html*/`<button title="${settingBtnTitles[setting] || setting}" class="${btnClass}">
+        ${label}
+    </button>`);
+    addSettingsModeListener(doc, btnEl, setting);
+
+    // hackfix
+    btnEl._updateDeco = () => {
+      if (doc.state.summaryModes) {
+        decorateSettingButton(ddg, btnEl, setting);
+      }
+    };
+    btnEl._updateDeco();
+    frag.appendChild(btnEl);
+    return btnEl;
+  });
+
+  return {
+    el: frag,
+    els
+  };
+}
+
+
+/** ###########################################################################
+ * shared util
+ * ##########################################################################*/
+
+
+/**
+ * @return {DDGTimelineView}
+ */
+function getTimelineOfDoc(doc) {
+  const { timeline } = doc;
+  return timeline;
+}
+
+/**
+ * @return {RenderState}
+ */
+function getDDGOfDoc(doc) {
+  // return doc.timeline.ddg;
+  return doc.state;
+}
+
+function getDDGSetting(ddg, setting) {
+  return ddg.settings[setting];
+}
+
+/**
+ * @param {DDGDocument} doc
+ */
+export function addDefaultBtnListeners(btnEl, cb) {
   const eventCfg = {
     async click(evt) {
       evt.stopPropagation();
 
-      /**
-       * @type {DDGTimelineView}
-       */
-      // eslint-disable-next-line prefer-destructuring
-      const timeline = doc.timeline;
-      timeline.setSummaryMode(timelineId, mode);
+      cb(evt);
     },
 
     focus(evt) { evt.target.blur(); }

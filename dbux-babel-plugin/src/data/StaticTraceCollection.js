@@ -159,8 +159,8 @@ export default class StaticTraceCollection extends StaticCollection {
      */
     let staticTrace;
 
-    const { 
-      type, syntax, dataNode, data, 
+    const {
+      type, syntax, dataNode, data,
       controlRole, controlId
     } = staticData;
 
@@ -211,6 +211,17 @@ export default class StaticTraceCollection extends StaticCollection {
   updateStaticTrace(inProgramStaticTraceId, upd) {
     const staticTrace = this.getById(inProgramStaticTraceId);
     Object.assign(staticTrace, upd);
+  }
+
+  addPurpose(inProgramStaticTraceId, purpose) {
+    const staticTrace = this.getById(inProgramStaticTraceId);
+    staticTrace.purposes = staticTrace.purposes || [];
+    if (purpose.constructor === Number) {
+      purpose = {
+        type: purpose
+      };
+    }
+    staticTrace.purposes.push(purpose);
   }
 }
 

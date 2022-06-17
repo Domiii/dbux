@@ -1,3 +1,4 @@
+import isNumber from 'lodash/isNumber';
 import sumBy from 'lodash/sumBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -197,7 +198,14 @@ export default class Collection {
 
   _reportInvalidId(entryId, id, idx, faultyEntry, recoverable) {
     // eslint-disable-next-line max-len
-    this.logger.error(`entry._id (${JSON.stringify(entryId)}) !== id (${JSON.stringify(id)}) (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${JSON.stringify(faultyEntry)}`);
+    if (!isNumber(id)) {
+      this.logger.error(`Could not ${this.constructor.name}.getById: id was not int - ${typeof id}`);
+    }
+    else {
+      // some info to deal with some old issues
+      // eslint-disable-next-line max-len
+      this.logger.error(`Could not ${this.constructor.name}.getById: entry._id (${JSON.stringify(entryId)}) !== id (${JSON.stringify(id)}) (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${JSON.stringify(faultyEntry)}`);
+    }
   }
 
   getCount() {

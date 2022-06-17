@@ -4,15 +4,22 @@
 
 // import * as d3selection from 'd3-selection';
 import { transition as d3transition } from 'd3-transition';
+// import { select as d3select } from 'd3-select';
 import * as d3Graphviz from 'd3-graphviz';
+import isPlainObject from 'lodash/isPlainObject';
 
+import { PrettyTimer } from '@dbux/common/src/util/timeUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { RootTimelineId } from '@dbux/data/src/ddg/constants';
+import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import { getStructuredRandomAngle, makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import sleep from '@dbux/common/src/util/sleep';
+import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 import { compileHtmlElement } from '../util/domUtil';
-import { decorateSummaryModeButtons, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled, makeSummaryLabelEl } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import DotBuilder from './DotBuilder';
 
@@ -35,7 +42,8 @@ let documentMouseMoveHandler;
 
 const GroupDefaultSummaryModes = [
   DDGSummaryMode.CollapseSummary,
-  DDGSummaryMode.SummarizeChildren,
+  // DDGSummaryMode.SummarizeChildren,
+  DDGSummaryMode.ExpandSelf,
   DDGSummaryMode.ExpandSubgraph
 ];
 
@@ -53,33 +61,231 @@ function getElLeftOffset(el) {
   return b + m;
 }
 
+/**
+ * @see https://github.com/magjac/d3-graphviz#supported-options
+ */
 const GraphVizCfg = {
-  useWorker: false
+  /**
+   * Performance tweaks.
+   * @see https://github.com/magjac/d3-graphviz/issues/232#issuecomment-1156834744
+   * @see https://github.com/magjac/d3-graphviz#performance
+   * @see https://github.com/magjac/d3-graphviz#graphviz_tweenShapes
+   */
+  tweenShapes: false,
+  tweenPaths: false,
+  tweenPrecision: 100,
+  convertEqualSidedPolygons: false
 };
+
+const RenderCfg = {
+  // NOTE: also sync with css class
+  edgeHighlightDelay: 5000,
+  edgeHighlightFadeoutClass: 'fadeout-5',
+  highlightColorCfg: {
+    sat: 100
+  },
+  forceReinitGraphviz: false,
+  // forceReinitGraphviz: true,
+  debugViewEnabled: true
+};
+
+/** ###########################################################################
+ * util
+ * ##########################################################################*/
+// /**
+//   * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+//   * 
+//   * @param {String} text The text to be rendered.
+//   * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+//   * 
+//   * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+//   */
+// function getTextWidth(text, font) {
+//   // re-use canvas object for better performance
+//   const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+//   const context = canvas.getContext("2d");
+//   context.font = font;
+//   const metrics = context.measureText(text);
+//   return metrics.width;
+// }
+
+// function getTextWidthEl(el) {
+//   return getTextWidth(el.textContent, getCanvasFontSize(el));
+// }
+
+// function getCssStyle(element, prop) {
+//   return window.getComputedStyle(element, null).getPropertyValue(prop);
+// }
+
+// function getCanvasFontSize(el = document.body) {
+//   const fontWeight = getCssStyle(el, 'font-weight') || 'normal';
+//   const fontSize = getCssStyle(el, 'font-size') || '16px';
+//   const fontFamily = getCssStyle(el, 'font-family') || 'Times New Roman';
+
+//   return `${fontWeight} ${fontSize} ${fontFamily}`;
+// }
+
+/** ###########################################################################
+ * NodeHoverState
+ *  #########################################################################*/
+
+class NodeHoverState {
+  node;
+  hoverEl;
+  /**
+   * @type {DDGTimelineView}
+   */
+  timeline;
+
+  /**
+   * @type {Element[]}
+   */
+  edgeEls;
+  /**
+   * @type {Element[]}
+   */
+  fakeEdgeEls;
+
+  constructor(timeline, node, hoverEl) {
+    this.timeline = timeline;
+    this.node = node;
+    this.hoverEl = hoverEl;
+
+    this.startHoverState();
+  }
+
+  startHoverState() {
+    this.#startHighlight();
+  }
+
+  stopHoverState() {
+    this.hoverEl.remove();
+    this.#stopHighlight();
+  }
+
+  /** ###########################################################################
+   * edge highlighting
+   *  #########################################################################*/
+
+  #getAllEdges(timelineId) {
+    const {
+      timeline: {
+        ddg: {
+          inEdgesByTimelineId,
+          outEdgesByTimelineId
+        }
+      }
+    } = this;
+
+    const allEdgeIds = [
+      ...inEdgesByTimelineId[timelineId] || EmptyArray,
+      ...outEdgesByTimelineId[timelineId] || EmptyArray,
+    ];
+    return allEdgeIds;
+  }
+
+  #startHighlight() {
+    const {
+      node: {
+        timelineId,
+        children
+      }
+    } = this;
+    const {
+      themeMode
+    } = this.timeline.context;
+
+    const allEdgeIds = [
+      timelineId,
+      ...Object.values(children || EmptyObject)
+    ]
+      .filter(Boolean)
+      .flatMap(id => this.#getAllEdges(id));
+
+    /* allEdgeIds.map(edgeId => edges[edgeId]) */
+    this.edgeEls = allEdgeIds
+      .map(edgeId => this.timeline.el.querySelector(`#e${edgeId}`))
+      .filter(Boolean); // NOTE: some edges might be gone or invisible... or is it a race condition?
+    this.fakeEdgeEls = this.edgeEls
+      .map((edgeEl, i) => {
+        const edgeId = allEdgeIds[i];
+
+        /**
+         * @type {Element}
+         */
+        let fakeEl = this.timeline.el.querySelector(`.fake-edge-${edgeId}`);
+        if (fakeEl) {
+          // console.debug('fakeEl already existed');
+          // fake edge already exists → refresh it
+          fakeEl.classList.remove(RenderCfg.edgeHighlightFadeoutClass);
+        }
+        else {
+          // create new fake edge
+          fakeEl = edgeEl.cloneNode();
+          fakeEl.innerHTML = edgeEl.innerHTML; // NOTE: cloneNode is shallow
+          fakeEl.setAttribute('id', ''); // unset id
+          fakeEl.classList.add(`fake-edge`);
+          fakeEl.classList.add(`fake-edge-${edgeId}`);
+          fakeEl.addEventListener('animationend', (e) => {
+            if (e.animationName === 'fadeout') {
+              // console.debug(`Fake edge fadeout: ${edgeId}`, e);
+              fakeEl.remove();
+            }
+          });
+
+          this.timeline.registerDeco(fakeEl);
+
+          // update all colors
+          const col = makeStructuredRandomColor(themeMode, edgeId % 50, { sat: 100, start: Math.round(edgeId / 50) * 30 });
+          fakeEl.querySelectorAll('path,polygon').forEach(el => {
+            el.setAttribute('stroke', col);
+            el.setAttribute('stroke-width', 5);
+          });
+          // edgeEl.parentElement.insertBefore(fakeEl, edgeEl.nextSibling);
+          edgeEl.parentElement.appendChild(fakeEl); // move to end, so its on top
+        }
+        return fakeEl;
+      });
+  }
+
+  #stopHighlight() {
+    // play fade out animation
+    this.fakeEdgeEls.forEach((el) => {
+      el.classList.add(RenderCfg.edgeHighlightFadeoutClass);
+      // setTimeout(
+      //   () => {
+      //     el.remove(); // delete fake el afterward
+      //   },
+      //   RenderCfg.edgeHighlightDelay);
+    });
+  }
+}
+
+/** ###########################################################################
+ * {@link DDGTimelineView}
+ *  #########################################################################*/
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   /**
-   * @type {Element}
+   * @type {NodeHoverState}
    */
-  currentHoverEl;
-
-  currentHoverNode;
+  currentHoverState;
 
   get doc() {
     return this.context.doc;
   }
 
   createEl() {
-    return compileHtmlElement(/*html*/`<div id="ddg-timeline" data-el="graph" class="timeline-view">
+    return compileHtmlElement(/*html*/`<div id="ddg-timeline" class="timeline-view">
       <div data-el="status"></div>
+      <div data-el="graphcont" class="graph-cont">
+      </div>
       <!-- <div data-el="view" class="timeline-view timeline-sigma-container"></div> -->
       <!-- <div data-el="view" class="timeline-view timeline-jsplumb-container"></div> -->
     </div>`);
   }
 
   setupEl() {
-    this.initGraphImplementation();
-
     // delegate(this.el, 'div.timeline-node', 'click', async (nodeEl) => {
     //   const timelineId = parseInt(nodeEl.dataset.timelineId, 10);
     //   if (timelineId) {
@@ -128,17 +334,28 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   get root() {
-    return this.renderState.timelineNodes?.[RootTimelineId];
+    return this.renderState.timelineNodes?.[DDGRootTimelineId];
+  }
+
+  debug(...args) {
+    this.logger.debug(...args);
   }
 
   /** ###########################################################################
    * d3-graphviz implementation
    *  #########################################################################*/
 
-  rebuildGraph() {
-    const isNew = this.initGraphImplementation();
+  async rebuildGraph(force = false) {
+    const isNew = await this.initGraphImplementation(force);
+    // this.debug('new', isNew, this.ddg.settings.anim);
 
     this.buildGraph(isNew);
+  }
+
+  startRenderTimer() {
+    if (!this.renderTimer) {
+      this.renderTimer = new PrettyTimer();
+    }
   }
 
   buildGraph(isNew) {
@@ -150,32 +367,73 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     this.clearDeco();  // remove all non-graph elements from graph to avoid errors
 
-    const graphString = this.buildDot();
-    // const graphString = 'digraph { a -> b }';
-    this.graphviz
-      .renderDot(graphString);
+    this.startRenderTimer();
 
+    const ShouldAnim = true;
     if (isNew) {
       this.graphviz
+        // NOTE: this `end` event handler is run after anim finished
         .on('end', () => {
-          // NOTE: add transition only after first render
-          this.graphviz.transition(() => { // transition
-            // return d3selection.transition()
-            return d3transition()
-              .duration(800);
-          });
+          this.debug('render end');
+          this.renderTimer?.print(null, `Graph Render (dot size = ${(this.graphString?.length / 1000).toFixed(2)}k)`);
+          this.renderTimer = null;
+          this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
 
-          // add node and edge decorations to the rendered DOM
-          this.decorateAfterRender();
+          try {
+            if (ShouldAnim && isNew) {
+              // NOTE: we only register animations *after* first render
+              this.graphviz.transition(() => { // transition
+                this.debug(`anim start`);
+                // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
+                // if (!this.ddg.settings.anim) {
+                // }
+                return d3transition()
+                  .duration(800);
+              });
+            }
+
+            // add node and edge decorations to the rendered DOM
+            this.decorateAfterRender();
+          }
+          catch (err) {
+            // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
+            this.logger.error(`after render event handler FAILED -`, err);
+          }
         });
     }
+
+    // actually render the graph
+    // WARNING: `renderDot` is synchronous
+    const graphString = this.graphString = this.buildDot();
+    this.graphviz.renderDot(graphString);
   }
 
-  initGraphImplementation() {
+  async initGraphImplementation(force) {
     // NOTE: use `this.el`'s id
-    const isNew = !!this.graphviz;
-    this.graphviz = this.graphviz || d3Graphviz.graphviz('#ddg-timeline', GraphVizCfg);
-    return isNew;
+    const shouldBuildNew = force || RenderCfg.forceReinitGraphviz || !this.graphviz;
+    if (shouldBuildNew) {
+      if (RenderCfg.forceReinitGraphviz) {
+        /**
+         * `d3-graphviz` performance bug hackfix
+         * @see https://github.com/magjac/d3-graphviz/issues/232
+         */
+        if (this.graphEl) {
+          this.graphEl.remove();
+          this.graphEl = null;
+        }
+      }
+
+      if (!this.graphEl) {
+        this.graphEl = compileHtmlElement('<div id="timeline-graph"></div>');
+        this.els.graphcont.appendChild(this.graphEl);
+      }
+      this.graphviz = d3Graphviz.graphviz(this.graphEl, { ...GraphVizCfg });
+      this.debug(`re-initializing graph${RenderCfg.forceReinitGraphviz ? ' (force)' : ''}`);
+    }
+    else {
+      // nothing to do for now
+    }
+    return shouldBuildNew;
   }
 
   /**
@@ -190,8 +448,27 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * timeline controls
    *  #########################################################################*/
 
-  async setSummaryMode(timelineId, mode) {
-    await this.remote.setSummaryMode(timelineId, mode);
+  async toggleSummaryMode(timelineId) {
+    await this.remote.toggleSummaryMode({ timelineId });
+  }
+
+  async setSummaryMode(timelineId, summaryMode) {
+    await this.remote.updateGraph({ timelineId, summaryMode });
+  }
+
+  async setGraphSettings(settings) {
+    if (!isPlainObject(settings)) {
+      throw new Error(`invalid settings must be object: ${settings}`);
+    }
+    await this.remote.updateGraph({ settings });
+  }
+
+  async setGraphSetting(setting, val) {
+    const newSettings = {
+      ...this.ddg.settings,
+      [setting]: val
+    };
+    await this.remote.updateGraph({ settings: newSettings });
   }
 
   /** ###########################################################################
@@ -201,6 +478,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   public = {
     buildDot() {
       return this.buildDot();
+    },
+    takeScreenshot() {
+      return this.getScreenshot();
     }
   };
 
@@ -218,47 +498,48 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   clearDeco() {
+    this._stopHoverAction();
+
     const els = Array.from(this.el.querySelectorAll('.deco'));
     els.forEach(el => el.remove());
   }
 
   // rendering finished
   decorateAfterRender = async () => {
-    try {
-      // hackfix: sort so clusters dont obstruct other elements
-      Array.from(this.el.querySelectorAll('.graph > g'))
-        .sort((a, b) => {
-          const aBack = a.classList.contains('cluster');
-          const bBack = b.classList.contains('cluster');
-          return bBack - aBack;
-          // return TODO;
-          // console.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
-          // return a.id?.localeCompare(b.id || '');
-        })
-        .forEach(item => item.parentNode.appendChild(item));
-
-      // decorate all nodes
-      const nodeEls = Array.from(this.el.querySelectorAll('.node'));
-      const clusterEls = Array.from(this.el.querySelectorAll('.cluster'));
-      // const clusterEls = Array.from(this.el.querySelectorAll('.cluster')).map(el => ({
-      //   el: el.querySelector('text') // grab the label for clusters
-      // }));
-      const allEls = [...nodeEls, ...clusterEls];
-      for (const el of allEls) {
-        const { id: timelineId } = el;
-        const node = this.renderState.timelineNodes[timelineId];
-        if (node) {
-          this.decorateNode(node, el);
+    // hackfix: sort so clusters dont obstruct other elements
+    Array.from(this.el.querySelectorAll('.graph > g'))
+      .sort((a, b) => {
+        const aCluster = a.classList.contains('cluster');
+        const bCluster = b.classList.contains('cluster');
+        if (aCluster === bCluster) {
+          // sort clusters by id
+          return parseInt(a.id, 10) - parseInt(b.id, 10);
         }
-      }
+        // always put clusters in the back
+        return bCluster - aCluster;
+        // return TODO;
+        // this.debug(`CMP ${a.id} ${b.id} ${a.id?.localeCompare(b.id || '')}`);
+        // return a.id?.localeCompare(b.id || '');
+      })
+      .forEach(item => item.parentNode.appendChild(item));
 
-      const summaryButtons = this.el.querySelectorAll('.summary-button');
-      decorateSummaryModeButtons(summaryButtons);
+    // decorate all nodes
+    const nodeEls = Array.from(this.el.querySelectorAll('.node'));
+    const clusterEls = Array.from(this.el.querySelectorAll('.cluster'));
+    // const clusterEls = Array.from(this.el.querySelectorAll('.cluster')).map(el => ({
+    //   el: el.querySelector('text') // grab the label for clusters
+    // }));
+    const allEls = [...nodeEls, ...clusterEls];
+    for (const el of allEls) {
+      const { id: timelineId } = el;
+      const node = this.renderState.timelineNodes[timelineId];
+      if (node) {
+        this.decorateNode(node, el);
+      }
     }
-    catch (err) {
-      // NOTE: don't throw, or else the error gets swallowed and we get a meaningless "uncaught in Promise (undefined)" message
-      this.logger.error(`decorateAfterRender FAILED: `, err);
-    }
+
+    const summaryButtons = this.el.querySelectorAll('.summary-button');
+    updateElDecorations(summaryButtons);
   }
 
   /**
@@ -270,7 +551,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     let interactionEl = nodeEl;
 
     if (
-      ddgQueries.isNodeSummarizable(node) &&
+      ddgQueries.isNodeSummarizable(ddg, node) &&
 
       // TODO: this check should now be taken care of by isVisible (not necessary anymore)
       (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
@@ -278,17 +559,39 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // hackfix: since DOT is very limited, we have to add custom rendering logic here
       const labelEl = this.getSummarizableNodeLabelEl(node, nodeEl);
       const mode = ddgQueries.getNodeSummaryMode(ddg, node);
-      const xOffset = 12;// hackfix: move both off to the right a bit
+
+      const xOffset = 14;// hackfix: move label out of the way (off to the right by this much)
       const yOffset = 10;
-      const sepX = 12; // separate them by this much
-      const x = parseFloat(labelEl.getAttribute('x'));
+      // const rect = labelEl.getBoundingClientRect();
+      // const x = rect.left - xOffset;// parseFloat(labelEl.getAttribute('x'));
+      // const y = rect.top - yOffset;
+      // const modeEl = compileHtmlElement(`<div class="overlay">${makeSummaryLabel(this.ddg, mode)}</div>`);
+      // modeEl.style.left = `${x}px`;
+      // modeEl.style.top = `${y}px`;
+      // this.registerDeco(modeEl);
+      // nodeEl.appendChild(modeEl);
+      // // labelEl.setAttribute('x', x + xOffset);
+      // this.el.appendChild(modeEl);
+      // this.debug('label x,y', x, y, modeEl);
+
+      // NOTE: we need to add an SVG element, since the svg elements get transformed by d3-zoom
+      // the bbox etc. values are seemingly very buggy: https://stackoverflow.com/questions/70463171/getboundingclientrect-returns-inaccurate-values-for-complex-svgs-in-chrome
+      // Problem: x and y are the center, and we cannot get accurate width of element
+      // const rect = labelEl.getBBox();
+      const w = labelEl.textLength.baseVal.value; // magic!
+      const cx = parseFloat(labelEl.getAttribute('x'));
+      const x = cx - w / 2;
       const y = parseFloat(labelEl.getAttribute('y')) - yOffset;
-      const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x - sepX + xOffset, y);
+      const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x, y);
       this.registerDeco(modeEl);
-      nodeEl.appendChild(modeEl);
-      labelEl.setAttribute('x', x + xOffset);
-      // labelEl.innerHTML = '&nbsp;&nbsp;&nbsp;' + labelEl.innerHTML;
-      // console.log('label x,y', x, y);
+      labelEl.setAttribute('x', cx + xOffset); // move el to the right
+      // labelEl.innerHTML = labelEl.innerHTML;
+      nodeEl.parentElement.appendChild(modeEl);
+
+      // add click handler to label
+      labelEl.addEventListener('mousedown', () => {
+        return this.toggleSummaryMode(node.timelineId);
+      });
 
       // future-work: add a bigger popup area, to make things better clickable
       // popupTriggerEl = compileHtmlElement(/*html*/`<`);
@@ -299,13 +602,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       // add overlays
       let debugOverlay;
       this.addNodeEventListener(node, interactionEl, 'mouseover', (evt) => {
-        // create overlay lazily
-        if (!debugOverlay) {
-          // console.debug(`Hover node:`, evt.target);
+        // show debug overlay
+        if (!debugOverlay && RenderCfg.debugViewEnabled) {
+          // this.debug(`Hover node:`, evt.target);
           this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
           // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
         }
-        this.maybeShowNodePopupEl(node, nodeEl, interactionEl);
+
+        // show popup menu and more
+        this.startNodeHoverAction(node, nodeEl, interactionEl);
       });
       this.addNodeEventListener(node, interactionEl, 'mouseout', () => {
         debugOverlay?.remove();
@@ -313,7 +618,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       });
 
       // add click handler
-      this.addNodeEventListener(node, interactionEl, 'click', async (evt) => {
+      // NOTE: we use `mousedown` since `click` regularly gets cancelled by d3-zoom,
+      //      b/c it pans ever so slightly every single time the mouse is clicked
+      this.addNodeEventListener(node, interactionEl, 'mousedown', async (evt) => {
         if (node.dataNodeId) {
           await this.remote.selectNode(node.timelineId);
         }
@@ -321,6 +628,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     }
   }
 
+  /**
+   * @param {DDGTimelineNode} node 
+   * @param {Element} nodeEl 
+   */
   getSummarizableNodeLabelEl(node, nodeEl) {
     return nodeEl.querySelector('text');
   }
@@ -339,12 +650,19 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // }
   }
 
+  /** ###########################################################################
+   * overlays
+   *  #########################################################################*/
+
   makeNodeDebugOverlay(node) {
     const { ddg } = this;
     const o = { ...node };
+
+    // fix rendered string
+    o.type = DDGTimelineNodeType.nameFrom(o.type);
     o.children = JSON.stringify(o.children); // simplify children
     o.summaryMode = DDGSummaryMode.nameFrom(ddg.summaryModes[node.timelineId]);
-    if (ddgQueries.isNodeSummarizable(node)) {
+    if (ddgQueries.isNodeSummarizable(ddg, node)) {
       o.summary = ddg.nodeSummaries[node.timelineId]; // add summary info
     }
 
@@ -357,18 +675,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
 
-  _removeNodePopup(hoverEl) {
-    if (this.currentHoverEl !== hoverEl) { // race condition check
-      return;
-    }
-    this.currentHoverEl?.remove();
-    this.currentHoverEl = null;
-    this.currentHoverNode = null;
-
-    if (documentMouseMoveHandler) {
-      document.removeEventListener('mousemove', documentMouseMoveHandler);
-    }
-  }
 
   /**
    * @param {DDGTimelineNode} node 
@@ -390,19 +696,30 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     return el;
   }
 
+
+  /** ###########################################################################
+   * hover action management
+   *  #########################################################################*/
+
+  _stopHoverAction() {
+    this.currentHoverState?.stopHoverState();
+    this.currentHoverState = null;
+
+    if (documentMouseMoveHandler) {
+      document.removeEventListener('mousemove', documentMouseMoveHandler);
+    }
+  }
+
   /**
    * @param {DDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
-  maybeShowNodePopupEl(node, nodeEl) {
-    if (node === this.currentHoverNode) {
+  startNodeHoverAction(node, nodeEl) {
+    if (this.currentHoverState?.node === node) {
       return;
     }
 
-    // console.log('popUP');
-    this._removeNodePopup(this.currentHoverEl);
-
-    const rect = nodeEl.getBoundingClientRect();
+    this._stopHoverAction();
     /**
      * NOTE: `y` is more annoying to get right.
      * @see https://stackoverflow.com/questions/28966678/getboundingclientrect-returning-wrong-results
@@ -414,24 +731,26 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // const y = 0 - NodeMenuHeight;
     // const w = rect.width;
     // const h = NodeMenuHeight;
-    // <div class="node-overlay">
+    // <div class="overlay">
     const nodeBtns = this.makeNodeButtons(node);
-    const hoverEl = this.currentHoverEl = compileHtmlElement(/*html*/`
-      <div class="node-overlay"></div>
+    const hoverEl = compileHtmlElement(/*html*/`
+      <div class="overlay"></div>
     `);
+    hoverEl.appendChild(nodeBtns);
     this.registerDeco(hoverEl);
+
+    const rect = nodeEl.getBoundingClientRect();
     const x = rect.left;
     const y = rect.top - NodeMenuHeight - NodeMenuYOffset;
     hoverEl.style.left = `${x}px`;
     hoverEl.style.top = `${y}px`;
-    // NOTE: mouseover + mouseout are not very reliable events for this
-    // this.currentHoverEl.addEventListener('mouseout', () => {
-    //   this._removeNodePopup();
-    // });
+
+    // NOTE: mouseover + mouseout are not going to work when sharing "hover area" between multiple elements, so we use mousemove instead
+    const hoverTargets = new Set([hoverEl, nodeEl]);
     let moveTimer;
+    const mouseMoveDelayTolerance = 500;
     document.addEventListener('mousemove', documentMouseMoveHandler = (e) => {
-      // debounce
-      if (moveTimer) { return; }
+      if (moveTimer) { return; }  // debounce
       moveTimer = setTimeout(() => {
         // const el = document.elementFromPoint(e.clientX, e.clientY); // NOTE: this does NOT return the top element
         moveTimer = null;
@@ -439,501 +758,32 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
          * @see https://stackoverflow.com/a/15263171
          */
         const hoverStack = Array.from(document.querySelectorAll(":hover"));
-        if (!hoverStack.includes(nodeEl) && !hoverStack.includes(hoverEl)) {
-          // console.log('popout', hoverStack);
-          this._removeNodePopup(hoverEl);
+        if (!hoverStack.some(el => hoverTargets.has(el))) {
+          // this.debug('popout', hoverStack);
+          this._stopHoverAction();
         }
-      }, 80);
+      }, mouseMoveDelayTolerance);
     });
 
-    // this.el.appendChild(this.currentHoverEl);
-    // nodeEl.appendChild(hoverEl);
-    hoverEl.appendChild(nodeBtns);
     this.el.appendChild(hoverEl);
+
+    // start
+    this.currentHoverState = new NodeHoverState(this, node, hoverEl);
+  }
+
+  /** ###########################################################################
+   * screenshot util
+   *  #########################################################################*/
+
+  // async getScreenshots(screenshotModes) {
+  //   // TODO: iterate through the "screenshot modes" and take a screen of each.
+  //   //    Then return it all to host.
+  // }
+
+  async getScreenshot() {
+    this.clearDeco();
+    // TODO
+    // * take screenshot in current mode
+    // * add background to top: <rect width="100%" height="100%" fill="#444"/>
   }
 }
-
-
-/** ###########################################################################
- * util
- *  #########################################################################*/
-
-// function rescalePositions(positions) {
-//   if (!positions || !Object.keys(positions).length) {
-//     return positions;
-//   }
-
-//   const minX = minBy(Object.values(positions), (p) => p.x).x;
-//   const maxX = maxBy(Object.values(positions), (p) => p.x).x;
-//   const minY = minBy(Object.values(positions), (p) => p.y).y;
-//   const maxY = maxBy(Object.values(positions), (p) => p.y).y;
-//   const deltaX = maxX - minX;
-//   const deltaY = maxY - minY;
-//   for (const ddgNodeId of Object.keys(positions)) {
-//     positions[ddgNodeId].x /= deltaX;
-//     positions[ddgNodeId].y /= deltaY;
-//   }
-//   return positions;
-// }
-
-
-/** ###########################################################################
- * old code
- * ##########################################################################*/
-
-// Tree version
-// addTreeNodes(root, nodes, leftBound = XPadding, topBound = YPadding) {
-//   const subtreeLeft = leftBound;
-//   const top = topBound;
-//   let subtreeRight, subtreeBottom = top;
-
-//   const el = this.makeNodeEl(root);
-//   this.el.appendChild(el);
-//   const width = el.offsetWidth;
-//   const height = el.offsetHeight;
-
-//   if (root.children?.length) {
-//     let childLeft = leftBound;
-//     const childTop = top + height + YGap;
-//     // debugger;
-//     for (const childId of root.children) {
-//       const childNode = nodes[childId];
-//       const { displayData: childDisplayData } = this.addTreeNodes(childNode, nodes, childLeft, childTop);
-//       childLeft = childDisplayData.subtreeRight + XGap;
-//       subtreeBottom = Math.max(subtreeBottom, childDisplayData.subtreeBottom);
-//     }
-//     subtreeRight = childLeft - XGap;
-//   }
-//   else {
-//     subtreeRight = subtreeLeft + width;
-//     subtreeBottom = top + height;
-//   }
-
-//   const left = (subtreeLeft + subtreeRight - width) / 2;
-
-//   root.displayData = {
-//     left,
-//     top,
-//     subtreeLeft,
-//     subtreeRight,
-//     subtreeBottom,
-//   };
-
-//   this.addNode(root.timelineId, el, root.displayData);
-
-//   return root;
-// }
-
-// /** ###########################################################################
-//  * jsPlumb implementation
-//  *  #########################################################################*/
-
-// /**
-//  * @param {DDGTimelineNode} node
-//  * @param {DDGTimelineNode[]} allNodes
-//  * @param {*} depth
-//  * @param {*} top
-//  */
-//   addTreeNodes(node, allNodes, depth = 0, top = YPadding) {
-//   const { type, children, label = '' } = node;
-//   let bottom = top + YGroupPadding;
-//   let left = XPadding + Math.floor(Math.random() * 400);
-//   let right;
-
-//   if (!ddgQueries.isVisible(this.renderState, node)) {
-//     return false;
-//   }
-
-//   const isGroupNode = this.isGroupNode(node);
-//   const el = this.makeNodeEl(node, label);
-//   this.el.appendChild(el);
-
-//   if (isGroupNode) {
-//     // TODO: change to `dot` → `subgraph`
-//     if (children?.length) {
-//       for (const childId of Object.values(children)) {
-//         const childNode = allNodes[childId];
-
-//         // TODO: move this logic to applySummarization
-//         if (this.context.doc.state.connectedOnlyMode &&
-//           !isControlGroupTimelineNode(childNode.type) &&
-//           !childNode.connected
-//         ) {
-//           continue;
-//         }
-//         if (this.addTreeNodes(childNode, allNodes, depth + 1, bottom)) {
-//           const { displayData: childDisplayData } = childNode;
-//           bottom = childDisplayData.bottom + YGroupPadding;
-//         }
-//       }
-//     }
-//     bottom += YGroupPadding;
-//     left = depth * 3;
-//     right = depth * 3;
-//   }
-//   else if (type === DDGTimelineNodeType.RefSnapshot) {
-//     if (children?.length) {
-//       for (const propName of Object.keys(children)) {
-//         const childId = children[propName];
-//         const childNode = allNodes[childId];
-//         const childEl = this.makeNodeEl(childNode, propName);
-//         el.appendChild(childEl);
-//       }
-//     }
-//     bottom = top + el.offsetHeight;
-//   }
-//   else {
-//     bottom = top + el.offsetHeight;
-//   }
-
-//   node.displayData = {
-//     top,
-//     bottom,
-//     left,
-//     right,
-//     isGroupNode,
-//   };
-
-//   this.repositionNodeEl(el, node.displayData);
-
-//   return true;
-// }
-
-// initGraphImplementation() {
-//   this.nodeElMap = new Map();
-//   this.jsPlumb = jsPlumbBrowserUI.newInstance({
-//     container: this.el
-//   });
-// }
-
-// rebuildGraph() {
-//   this.jsPlumb.batch(() => {
-//     this.clearGraph();
-//     this.buildGraph();
-//   });
-// }
-
-// makeNodeEl(node, label) {
-//   const { type, timelineId } = node;
-//   let el;
-//   const isGroup = this.isGroupNode(node);
-//   if (isGroup) {
-//     el = compileHtmlElement(/*html*/`< div class="timeline-group" > ${ label }</div > `);
-//   }
-//   else if (type === DDGTimelineNodeType.RefSnapshot) {
-//     el = compileHtmlElement(/*html*/`< div class="timeline-ref-node" > <div class="timeline-node">${label}</div></div > `);
-//   }
-//   else {
-//     el = compileHtmlElement(/*html*/`< div class="timeline-node" > ${ label }</div > `);
-//   }
-
-//   if (isDataTimelineNode(type)) {
-//     // add overlays
-//     let debugOverlay;
-//     el.addEventListener('mouseover', () => {
-//       if (!debugOverlay) {
-//         // create overlay lazily
-//         el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-//       }
-//       this.maybeShowNodePopupEl(node, el);
-//     });
-//   }
-
-//   // addNode
-//   el.dataset.timelineId = timelineId;
-//   this.addNode(timelineId, el, node);
-//   // this.logger.log(`[addNode]`, parent, parent.displayData);
-//   return el;
-// }
-
-// addNode(key, el, node) {
-//   const isGroupNode = this.isGroupNode(node);
-
-//   // else {
-//   //   if (!connected && this.context.doc.state.connectedOnlyMode) {
-//   //     el.classList.add('hidden');
-//   //   }
-//   // }
-
-//   this.nodeElMap.set(key, el);
-//   // this.el.appendChild(el);
-//   if (!isGroupNode) {
-//     this.jsPlumb.manage(el);
-//   }
-// }
-
-// repositionNodeEl(el, displayData) {
-//   const { left, right, top, bottom, isGroupNode } = displayData;
-//   el.style.left = `${ left } px`;
-//   el.style.top = `${ top } px`;
-//   if (isGroupNode) {
-//     el.style.height = `${ bottom - top } px`;
-//     el.style.right = `${ right } px`;
-//   }
-// }
-
-// addEdge(edge) {
-//   // const fromTimelineId = this.renderState.timelineNodes[edge.from];
-//   // const toTimelineId = this.renderState.timelineNodes[edge.to];
-//   const fromTimelineId = edge.from;
-//   const toTimelineId = edge.to;
-//   const source = this.nodeElMap.get(fromTimelineId);
-//   const target = this.nodeElMap.get(toTimelineId);
-//   this.jsPlumb.connect({
-//     source,
-//     target,
-//     /**
-//      * @see https://docs.jsplumbtoolkit.com/community/lib/connectivity#detaching-connections
-//      */
-//     detachable: false,
-//     /**
-//      * @see https://docs.jsplumbtoolkit.com/community/lib/endpoints#endpoint-types
-//      */
-//     endpoints: ['Blank', 'Blank'],
-//     connector: {
-//       /**
-//        * @see https://docs.jsplumbtoolkit.com/community/lib/connectors#bezier-connector
-//        * @see https://docs.jsplumbtoolkit.com/community/apidocs/connector-bezier
-//        */
-//       type: BezierConnector.type,
-//       /**
-//        * hackfix: always provide `options`, or it will bug out.
-//        * @see https://github.com/jsplumb/jsplumb/issues/1129
-//        */
-//       options: {
-//         /**
-//          * default = 150
-//          */
-//         curviness: 20
-//       }
-//     },
-//     overlays: [
-//       {
-//         type: 'PlainArrow',
-//         options: {
-//           location: 1,
-//           width: 4,
-//           length: 4,
-//         }
-//       },
-//     ],
-//     anchor: AnchorLocations.AutoDefault
-//   });
-// }
-
-// clearGraph() {
-//   this.jsPlumb.deleteEveryConnection();
-//   this.el.querySelectorAll('div.timeline-node').forEach(el => el.remove());
-//   this.el.querySelectorAll('div.timeline-group').forEach(el => el.remove());
-//   // for (const el of this.nodeElMap.values()) {
-//   //   this.el.removeChild(el);
-//   // }
-//   this.nodeElMap = new Map();
-// }
-
-/** ###########################################################################
- * Sigma.js implementation
- *  #########################################################################*/
-
-// import minBy from 'lodash/minBy';
-// import maxBy from 'lodash/maxBy';
-// import Graph from 'graphology';
-// import forceLayout from 'graphology-layout-force';
-// import forceAtlas2 from 'graphology-layout-forceatlas2';
-// import { Sigma } from 'sigma';
-// import { animateNodes } from 'sigma/utils/animate';
-// import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
-/**
- * Default render settings for Sigma.js
- * @see https://github.com/jacomyal/sigma.js/blob/main/src/settings.ts#L84
- */
-// const renderSettings = {
-//   labelColor: { color: '#fff' },
-//   labelSize,
-//   edgeLabelSize: labelSize,
-//   labelRenderedSizeThreshold: 0.1 // default = 6
-// };
-
-// const topNodeKey = 'top';
-// const bottomNodeKey = 'bottom';
-
-/** ########################################
- * abstract functions implementation
- *  ######################################*/
-
-// initGraphImplementation() {
-//   this.graph = new Graph();
-//   // this.graph.
-//   this.renderer = new Sigma(this.graph, this.el, renderSettings);
-//   // test
-//   // document.addEventListener('click', this.applyLayout.bind(this));
-// }
-
-// rebuildGraph() {
-//   this.clearGraph();
-//   this.buildGraph();
-// }
-
-// addNode(node) {
-//   const label = node.label || `Node#${ node.ddgNodeId } `;
-//   const pos = this.getNodeInitialPosition(node);
-//   const { x, y } = pos;
-//   /**
-//    * @type {NodeDisplayData}
-//    */
-//   const nodeDisplayData = {
-//     x,
-//     y,
-//     label,
-
-//     size: 5,
-//     color: "blue"
-//   };
-//   return this.addNodeLayout(node.ddgNodeId, nodeDisplayData);
-// }
-
-// addSpecialNodes() {
-//   // add special nodes at the top and bottom
-//   this.addNodeLayout(topNodeKey, {
-//     x: 0,
-//     y: this.getNodeYTop(),
-//     fixed: true,
-
-//     // hidden: true
-//     label: 'top',
-//     size: 5,
-//     color: "green"
-//   });
-//   this.addNodeLayout(bottomNodeKey, {
-//     x: 0,
-//     y: this.getNodeYBottom(),
-//     fixed: true,
-
-//     // hidden: true
-//     label: 'bottom',
-//     size: 5,
-//     color: "red"
-//   });
-// }
-
-// addEdge(edge) {
-//   /**
-//    * `code./ node_modules / graphology / dist / graphology.esm.js: 3691`
-//    */
-//   this.graph.addEdge(edge.from, edge.to);
-// }
-
-// /**
-//  * Insert a raw node into the graph (for layouting + rendering purposes)
-//  * @param {{ x: number, y: number, fixed, hidden, size, color }} nodeDisplayData
-//  */
-// addNodeLayout(key, nodeDisplayData) {
-//   return this.graph.addNode(key, nodeDisplayData);
-// }
-
-// /**
-//  * @return {NodeDisplayData}
-//  */
-// getNodeDisplayData(nodeKey) {
-//   // see graphology → `findRelevantNodeData` (via `attachNodeAttributesMethods`)
-//   return this.graph.getNodeAttribute(nodeKey/* , 'defaultPosition' */);
-// }
-
-// clearGraph() {
-//   this.graph.clear();
-// }
-
-/** ########################################
- * auto layout
- *  ######################################*/
-
-// applyForceLayout() {
-//   // set initial state using FA2
-//   this.applyFA2();
-
-//   // run standard force-directed algorithm here
-//   const layoutSettings = {
-//     maxIterations: 500,
-//     /**
-//      * @see https://graphology.github.io/standard-library/layout-force.html
-//      */
-//     settings: {
-//       gravity: 0.01, // NOTE: if gravity is too large, nodes will move beyond top and bottom
-//       repulsion: 0.1,
-//       attraction: 0.001
-//     }
-//   };
-//   // this.logger.log('layoutSettings', layoutSettings);
-//   const positions = forceLayout(this.graph, layoutSettings);
-//   // const rescaledPositions = rescalePositions(positions);
-//   this.logger.log('[force layout] positions', positions);
-//   animateNodes(this.graph, positions, { duration: AutoLayoutAnimationDuration });
-// }
-
-// applyFA2() {
-//   const sensibleSettings = forceAtlas2.inferSettings(this.graph);
-//   sensibleSettings.gravity = 1;
-//   sensibleSettings.strongGravityMode = false;
-//   this.logger.log('[FA2] sensibleSettings', sensibleSettings);
-//   // const positions = forceAtlas2(this.graph, {
-//   forceAtlas2.assign(this.graph, {
-//     iterations: 200,
-//     settings: sensibleSettings
-//   });
-
-//   // // overwrite with our default `y`
-//   // for (const nodeId of Object.keys(positions)) {
-//   //   // see graphology → `findRelevantNodeData`
-//   //   const { y } = this.graph.getNodeAttribute(nodeId, 'defaultPosition');
-//   //   positions[nodeId].y = y;
-//   // }
-
-//   // const rescaledPositions = rescalePositions(positions);
-//   // this.logger.log('positions', rescaledPositions);
-
-//   // animateNodes(this.graph, positions, { duration: AutoLayoutAnimationDuration });
-// }
-
-// autoLayout = () => {
-//   const { layoutType } = this.context.doc.state;
-//   if (layoutType === LayoutAlgorithmType.ForceLayout) {
-//     this.applyForceLayout();
-//   }
-//   else if (layoutType === LayoutAlgorithmType.ForceAtlas2) {
-//     this.applyFA2();
-//   }
-//   else {
-//     this.logger.error(`Unkown layout algorithm type: ${ layoutType } `);
-//   }
-// }
-
-
-/** ###########################################################################
- * layout computation
- * ##########################################################################*/
-
-// getNodeYTop() {
-//   // return YPadding + (this.renderState.timelineNodes.length + 1) * GraphScale;
-//   return YPadding + 0;
-// }
-
-// getNodeYBottom() {
-//   // return YPadding - this.renderState.timelineNodes.length * GraphScale;
-//   return YPadding + (this.renderState.timelineNodes.length + 1) * GraphScale;
-// }
-
-// getNodeInitialPosition(node) {
-//   /**
-//    * WARNING: auto layout using `ForceAtlas` algorithm fails if all nodes starts with `x = 0 and y = 0`
-//    * @see https://graphology.github.io/standard-library/layout-forceatlas2.html#pre-requisites
-//    */
-//   // const x = node.ddgNodeId / this.renderState.timelineNodes.length;
-//   const x = XPadding + Math.random() * this.renderState.timelineNodes.length * GraphScale;
-
-//   /**
-//    * WARNING: if you change this, also change getNodeY{Top,Bottom}
-//    */
-//   // const y = YPadding + ((-1 * node.ddgNodeId + this.renderState.timelineNodes.length) || 0) * GraphScale;
-//   const y = YPadding + (node.ddgNodeId + 1 || 0) * GraphScale;
-//   return { x, y };
-// }

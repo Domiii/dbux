@@ -1,21 +1,21 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
-import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 
 
 // ###########################################################################
 // utility
 // ###########################################################################
 
-function getNodeIdFromRef(ref) {
-  const { nodeId } = ref;
-  return nodeId;
+function getDataNodeIdFromRef(ref) {
+  const { nodeId, _lastNodeId } = ref;
+  return _lastNodeId || nodeId;
 }
 
 function wrapIndex(i, arr) {
@@ -57,7 +57,7 @@ export default function patchArray() {
 
       const inputNodeIds = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
 
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
       let idx = arr.length;
       for (let i = 0; i < argTids.length; ++i) {
@@ -97,11 +97,32 @@ export default function patchArray() {
         }
       }
 
-      // [edit-after-send]
-      bceTrace.data = bceTrace.data || {};
-      bceTrace.data.monkey = {
-        wireInputs: true
+      return originalFunction.apply(arr, args);
+    }
+  );
+
+  // ###########################################################################
+  // pop
+  // ###########################################################################
+
+  monkeyPatchMethod(Array, 'pop',
+    (arr, args, originalFunction, patchedFunction) => {
+      const ref = valueCollection.getRefByValue(arr);
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
+
+      const { traceId: callId } = bceTrace;
+      const arrNodeId = getDataNodeIdFromRef(ref);
+
+      // delete and return last
+      const i = arr.length - 1;
+      const varAccess = {
+        objectNodeId: arrNodeId,
+        prop: i
       };
+      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.ReadAndDelete, varAccess);
 
       return originalFunction.apply(arr, args);
     }
@@ -120,17 +141,18 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
-      // delete first
-      const shiftVarAccess = {
+      // first element gets returned
+      const readVarAccess = {
         objectNodeId: arrNodeId,
         prop: 0
       };
-      dataNodeCollection.createBCEOwnDataNode(undefined, callId, DataNodeType.Delete, shiftVarAccess);
+      dataNodeCollection.createBCEOwnDataNode(arr[0], callId, DataNodeType.Read, readVarAccess);
 
       // move up all other elements
-      for (let i = 1; i < arr.length; ++i) {
+      let i;
+      for (i = 1; i < arr.length; ++i) {
         const varAccessRead = {
           objectNodeId: arrNodeId,
           prop: i
@@ -144,11 +166,12 @@ export default function patchArray() {
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
 
-      // [edit-after-send]
-      bceTrace.data = bceTrace.data || {};
-      bceTrace.data.monkey = {
-        wireInputs: true
+      // last element gets deleted (logically speaking; it actually gets just moved to the left)
+      const deleteVarAccess = {
+        objectNodeId: arrNodeId,
+        prop: i - 1
       };
+      dataNodeCollection.createDataNode(undefined, callId, DataNodeType.Delete, deleteVarAccess);
 
       return originalFunction.apply(arr, args);
     }
@@ -170,7 +193,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getDataNodeIdFromRef(ref);
 
       // let BCE hold DataNode of newArray
       // DataNodeType.Create
@@ -181,7 +204,7 @@ export default function patchArray() {
 
       start = !isNaN(start) ? wrapIndex(start, arr) : 0;
       end = !isNaN(end) ? wrapIndex(end, arr) : arr.length;
-      
+
 
       // record all DataNodes of copy operation
       for (let i = start; i < end; ++i) {
@@ -235,7 +258,7 @@ export default function patchArray() {
           bceTrace.data = bceTrace.data || {};
           bceTrace.data.specialDynamicType = SpecialDynamicTraceType.ArrayHofCall;
 
-          const arrNodeId = getNodeIdFromRef(ref);
+          const arrNodeId = getDataNodeIdFromRef(ref);
 
           // record all DataNodes of copy operation
           for (let i = 0; i < arr.length; ++i) {
@@ -278,7 +301,6 @@ export default function patchArray() {
     "find",
     "findIndex",
     "lastIndexOf",
-    "pop",
     "reverse",
     "unshift",
     "sort",

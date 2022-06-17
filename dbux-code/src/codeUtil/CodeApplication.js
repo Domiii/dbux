@@ -21,9 +21,9 @@ export class CodeApplication extends Application {
     projectManager._handleNewApplication(this);
   }
 
-  getDefaultApplicationExportPath(zip) {
-    if (this.importFilePath && this.importFilePath.endsWith('.zip') === zip) {
-      return this.importFilePath;
+  getDefaultApplicationExportPath(zip = true) {
+    if (this.filePath && this.filePath.endsWith('.zip') === zip) {
+      return this.filePath;
     }
     const applicationName = this.getSafeFileName();
     const projectName = this.projectName && pathSafe(this.projectName) || '';

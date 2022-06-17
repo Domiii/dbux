@@ -1,4 +1,5 @@
 import PatternAstNodeType from '@dbux/common/src/types/constants/PatternAstNodeType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 import { buildGroupNodeAst, addPatternChildNode, PatternBuildConfig } from './helpers/patterns';
@@ -23,12 +24,14 @@ export default class ObjectPattern extends BaseNode {
    * @param {PatternBuildConfig} patternCfg
    * @param {BaseNode} node
    */
-  addPatternNode(patternCfg, prop) {
+  addPatternNode(patternCfg, prop, moreData = EmptyObject) {
     const [propertyNodes] = this.getChildNodes();
     const childIndexes = [];
 
     // add own node
-    const nodeIndex = patternCfg.addBuilder(buildGroupNodeAst.bind(this, prop, childIndexes, PatternAstNodeType.Object));
+    const nodeIndex = patternCfg.addBuilder(
+      buildGroupNodeAst.bind(this, childIndexes, PatternAstNodeType.Object, prop, moreData)
+    );
 
     // add children (DFS)
     for (let i = 0; i < propertyNodes.length; ++i) {

@@ -6,7 +6,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
-import GlobalDebugNode from './nodes/GlobalDebugNode';
+import GlobalDDGNode from './nodes/GlobalDDGNode';
 import GlobalErrorsNode from './nodes/GlobalErrorsNode';
 import GlobalSearchNode from './nodes/GlobalSearchNode';
 
@@ -119,12 +119,7 @@ export default class GlobalAnalysisViewController {
 
   async revealDDG(ddg) {
     try {
-      const debugNode = this.treeDataProvider.getRootByClass(GlobalDebugNode);
-
-      await this.treeView.reveal(debugNode, { expand: true });
-      await sleep(100);
-
-      const ddgsNode = debugNode.children.find(n => n.label === 'DDG');
+      const ddgsNode = this.treeDataProvider.getRootByClass(GlobalDDGNode);
       if (ddgsNode) {
         await this.treeView.reveal(ddgsNode, { expand: true });
         await sleep(100);

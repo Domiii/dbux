@@ -21,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { disposeDDGWebviews, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
+import { disposeDDGWebviews, getActiveDDGWebview, showDDGViewForArgs, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -39,24 +39,26 @@ import { runFile } from './runCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { getOrOpenTraceEditor } from '../codeUtil/codeNav';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
+import { getTestDDGArgs } from '../testUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
 
-const TestDDGKeyName = 'dbux.command.testDDG.params';
+const ZipDefault = true;
 
 async function doImportApplication(filePath) {
   allApplications.selection.clear();
 
+  let app;
   await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
     progress.report({ message: `importing from "${path.basename(filePath)}"...` });
     await sleep(20);
-    await importApplicationFromFile(filePath);
+    app = await importApplicationFromFile(filePath);
     await sleep(20);
   });
+  return app;
 }
 
-const ZipDefault = true;
 
 export function initUserCommands(extensionContext) {
   // ###########################################################################
@@ -138,51 +140,66 @@ export function initUserCommands(extensionContext) {
    * NOTE: this is code for testing → move to test file
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
-    let { testFilePath, contextId } = mementoGet(TestDDGKeyName, EmptyObject);
+    let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestDDGArgs();
+    watchTraceIds = null;
+    contextId = traceSelection.selected?.contextId || contextId;
 
-    if (!allApplications.selection.count) {
-      const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
-      // const testFileName = 'data-multi1';
-      // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
-      // await doImportApplication(testFilePath);
-
-      // load an application, if none active
-      const confirmMsg = `Current test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to proceed?`;
-      const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
-      if (shouldUpdateTestFilePath) {
-        const fileDialogOptions = {
-          title: 'Select a new test file to read',
-          folder: getDefaultExportDirectory(),
-          filters: {
-            'Dbux Exported Application Data': ['json.zip']
-          },
-        };
-        testFilePath = await chooseFile(fileDialogOptions);
-        if (!testFilePath) {
-          throw new Error(`DDG Test Cancelled - No test file selected`);
-        }
-        testFilePath = pathNormalizedForce(testFilePath);
-
-        // unset contextId
-        contextId = 0;
-
-        await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+    let app = allApplications.getById(applicationUuid);
+    if (!allApplications.selection.containsApplication(app)) {
+      // app is there but not active
+      app = null;
+    }
+    if (!app) {
+      if (allApplications.selection.getFirst()) {
+        // select first app instead → reset
+        // contextId = watchTraceIds = null;
+        app = allApplications.selection.getFirst();
       }
+      else {
+        // try re-import
+        const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
+        // const testFileName = 'data-multi1';
+        // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
+        // await doImportApplication(testFilePath);
 
-      await doImportApplication(testFilePath);
+        // load an application, if none active
+        const confirmMsg = `Current DDG test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to import it?`;
+        const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
+        if (shouldUpdateTestFilePath) {
+          const fileDialogOptions = {
+            title: 'Select a new test file to read',
+            folder: getDefaultExportDirectory(),
+            filters: {
+              'Dbux Exported Application Data': ['json.zip']
+            },
+          };
+          testFilePath = await chooseFile(fileDialogOptions);
+          if (!testFilePath) {
+            throw new Error(`DDG Test Cancelled - No test file selected`);
+          }
+          testFilePath = pathNormalizedForce(testFilePath);
+
+          // test file changed → reset
+          contextId = watchTraceIds = null;
+        }
+
+        app = await doImportApplication(testFilePath);
+      }
     }
 
-    let trace = traceSelection.selected;
-    if (!trace) {
-      // default: get first active application
-      const firstApplication = allApplications.selection.getFirst();
-      if (!firstApplication) {
-        throw new Error('Could not run DDG test: No applications running');
-      }
+    if (!app) {
+      throw new Error('Could not run DDG test: No applications running');
+    }
 
+    let trace;
+    const dp = app.dataProvider;
+    if (!watchTraceIds &&
+      (!contextId || !!dp.ddgs.getCreateDDGFailureReason({ contextId }))
+    ) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
-      const dp = firstApplication.dataProvider;
+      trace = traceSelection.selected;
+      contextId = trace?.contextId;
       const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
       if (needsNewContextId) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().
@@ -213,27 +230,23 @@ export function initUserCommands(extensionContext) {
       // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
     }
 
-    if (trace) {
-      contextId = trace.contextId;
-
+    if (contextId || watchTraceIds) {
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
-      await getOrOpenTraceEditor(trace);
+      trace && await getOrOpenTraceEditor(trace);
 
       // clear all previous DDGs
-      const app = allApplications.getById(trace.applicationId);
-      const dp = app.dataProvider;
       dp.ddgs.clear();
       disposeDDGWebviews();
 
       // show webview
-      await showDDGViewForContextOfSelectedTrace();
-
-      // this worked! Hooray! → update memento (and hope that app is already exported)
-      testFilePath = app.getDefaultApplicationExportPath(ZipDefault);
-      await mementoSet(TestDDGKeyName, { testFilePath, contextId });
+      await showDDGViewForArgs({
+        applicationUuid: app.applicationUuid,
+        watchTraceIds,
+        contextId
+      });
 
       // select DDG Debug node
-      const ddg = dp.ddgs.graphs[0];
+      const ddg = dp.ddgs.ddgs[0];
       if (ddg) {
         await getGlobalAnalysisViewController().revealDDG(ddg);
       }
@@ -298,7 +311,7 @@ export function initUserCommands(extensionContext) {
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    let traceId;
+    let traceId, dataNodeId;
     if (userInput.startsWith('c')) {
       // by contextId
       const contextId = parseInt(userInput.substring(1), 10);
@@ -325,13 +338,33 @@ export function initUserCommands(extensionContext) {
     }
     else if (userInput.startsWith('n')) {
       // by DataNode.nodeId
-      const nodeId = parseInt(userInput.substring(1), 10);
-      traceId = dp.util.getDataNode(nodeId)?.traceId;
+      dataNodeId = parseInt(userInput.substring(1), 10);
+      traceId = dp.util.getDataNode(dataNodeId)?.traceId;
     }
     else if (userInput.startsWith('v')) {
       // by valueRef.refId
       const refId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getFirstTraceByRefId(refId)?.traceId;
+    }
+    else if (userInput.startsWith('tl')) {
+      // timeline
+      const ddgView = getActiveDDGWebview();
+      if (!ddgView) {
+        await showErrorMessage(`DDG is not active.`);
+        return;
+      }
+      if (ddgView.ddg.dp.application !== application) {
+        await showErrorMessage(`Active DDG is not that of current application.`);
+        return;
+      }
+      const timelineId = parseInt(userInput.substring(2), 10);
+      const timelineNode = ddgView.ddg.timelineNodes[timelineId];
+      if (!timelineNode) {
+        await showErrorMessage(`Active DDG does not have timelineId=${timelineId}.`);
+        return;
+      }
+      const dataNode = dp.util.getDataNode(dataNodeId = timelineNode.dataNodeId);
+      traceId = dataNode.traceId;
     }
     else {
       // by trace
@@ -353,7 +386,7 @@ export function initUserCommands(extensionContext) {
       await showErrorMessage(`Can't find trace of traceId=${traceId} (applicationId=${applicationId})`);
     }
     else {
-      traceSelection.selectTrace(trace);
+      traceSelection.selectTrace(trace, 'user.selectTraceById', dataNodeId);
       emitSelectTraceAction(trace, UserActionType.SelectTraceById, { userInput });
     }
   }

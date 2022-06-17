@@ -56,7 +56,7 @@ export class PrettyTimer {
   }
 
   print(printFun, msg) {
-    printFun(`[perf] ${msg}: ${this}`);
+    (printFun || console.debug)(`[perf] ${msg}: ${this}`);
   }
 
   toString() {

@@ -6,12 +6,17 @@ import ApplicationSetData from './ApplicationSetData';
 
 /** @typedef {import('./Application').default} Application */
 
-export default class ApplicationSet {
-  _unsubscribeCallbacks = [];
-  _applicationIds = new Set();
-  _applications = [];
+/**
+ * @callback applicationsChangedCallback
+ * @param {Application[]} applications
+ */
 
-  _emitter = new NanoEvents();
+export default class ApplicationSet {
+  _applicationIds = new Set();
+  /**
+   * @type {Application[]}
+   */
+  _applications = [];
 
   constructor(allApplications) {
     this.allApplications = allApplications;
@@ -95,8 +100,7 @@ export default class ApplicationSet {
     }
     const application = this.allApplications.getApplication(applicationOrIdOrEntryPointPath);
 
-    this._applicationIds.delete(application.applicationId);
-    pull(this._applications, application);
+    this.#doRemove(application);
 
     this._notifyChanged();
   }
@@ -111,10 +115,9 @@ export default class ApplicationSet {
       previousApplications = [previousApplications];
     }
 
-    for (const prevApps of previousApplications) {
-      if (this.containsApplication(prevApps)) {
-        this._applicationIds.delete(prevApps.applicationId);
-        pull(this._applications, prevApps);
+    for (const prevApp of previousApplications) {
+      if (this.containsApplication(prevApp)) {
+        this.#doRemove(prevApp);
       }
     }
 
@@ -125,30 +128,44 @@ export default class ApplicationSet {
     this._notifyChanged();
   }
 
-  clear() {
-    return this._setApplications();
+  /**
+   * @param {Application} app 
+   */
+  #doRemove(app) {
+    this.#handleRemoving(app);
+    this._applicationIds.delete(app.applicationId);
+    pull(this._applications, app);
   }
 
-  _setApplications(...applications) {
-    if (areArraysEqual(this._applications, applications)) {
+  /**
+   * @param {Application} app 
+   */
+  #handleRemoving(app) {
+    // clean things up (and emit clean up events)
+    app.dataProvider.ddgs.clear();
+  }
+
+  clear() {
+    if (!this._applications.length) {
       return;
     }
 
-    this._applicationIds = new Set(applications.map(app => app.applicationId));
-    this._applications = applications;
+    for (const app of this._applications) {
+      this.#handleRemoving(app);
+    }
+
+    this._applicationIds = new Set();
+    this._applications = [];
 
     this._notifyChanged();
   }
 
   // ###########################################################################
-  // event listeners
+  // events + subscriptions
   // ###########################################################################
 
-  _notifyChanged() {
-    this.unsubscribeAll();
-    this._emitter.emit('_applicationsChanged0', this._applications);   // used internally
-    this._emitter.emit('applicationsChanged', this._applications);
-  }
+  _unsubscribeCallbacks = [];
+  _emitter = new NanoEvents();
 
   /**
    * @param {applicationsChangedCallback} cb
@@ -165,11 +182,17 @@ export default class ApplicationSet {
     this._unsubscribeCallbacks.push(...unsubscribeCallbacks);
   }
 
+  _notifyChanged() {
+    this.#unsubscribeAll();
+    this._emitter.emit('_applicationsChanged0', this._applications);   // used internally
+    this._emitter.emit('applicationsChanged', this._applications);
+  }
+
   /**
    * Stop listening on all events subscribed to with subscribe.
    * This will be called automatically whenever applications changes.
    */
-  unsubscribeAll() {
+  #unsubscribeAll() {
     this._unsubscribeCallbacks.forEach(unsubscribe => unsubscribe());
     this._unsubscribeCallbacks = [];
   }

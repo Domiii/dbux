@@ -17,7 +17,7 @@ function fixFetch(fixUrl) {
 export default class DDGDocument extends ClientComponentEndpoint {
   createEl() {
     const el = document.getElementById('root');
-    el.innerHTML = /*html*/`<div data-mount="Toolbar,DDGTimelineView">
+    el.innerHTML = /*html*/`<div class="root-cont" data-mount="Toolbar,DDGTimelineView">
     </div>`;
     return el;
   }

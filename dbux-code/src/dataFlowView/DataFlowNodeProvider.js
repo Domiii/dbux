@@ -1,5 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeRead, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -95,10 +95,10 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     if (DataFlowFilterModeType.is.ReadOnly(this.controller.filterMode)) {
-      dataNodes = dataNodes?.filter(node => DataNodeType.is.Read(node.type));
+      dataNodes = dataNodes?.filter(node => isDataNodeRead(node.type));
     }
     else if (DataFlowFilterModeType.is.WriteOnly(this.controller.filterMode)) {
-      dataNodes = dataNodes?.filter(node => DataNodeType.is.Write(node.type));
+      dataNodes = dataNodes?.filter(node => isDataNodeWrite(node.type));
     }
 
     const dataTraceIds = new Set();
@@ -106,7 +106,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     if (firstNode && dataNodes?.[0]?.nodeId !== firstNode.nodeId) {
       // manually add first trace
       // see https://github.com/Domiii/dbux/issues/702
-      dataNodes.unshift(firstNode);
+      dataNodes = [firstNode, ...dataNodes]; // NOTE: don't modify the original array
     }
 
     return dataNodes?.map((node) => {

@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import template from '@babel/template';
 import { buildTraceCall, bindExpressionTemplate } from './templateUtil';
-import { getTraceCall, makeInputs, ZeroNode } from './buildUtil';
+import { getTraceCall, makeInputs, NullNode, ZeroNode } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
@@ -19,20 +19,19 @@ import { buildTraceExpression } from './misc';
 const buildtraceExpressionMEDefault = bindExpressionTemplate(
   '%%tme%%(%%object%%, %%property%%, %%value%%, %%tid%%, %%objectTid%%)',
   function buildtraceExpressionMEDefault(/* meNode, */ state, traceCfg) {
-    const meNode = getInstrumentTargetAstNode(state, traceCfg);
+    const meAstNode = getInstrumentTargetAstNode(state, traceCfg);
     const trace = getTraceCall(state, traceCfg, 'traceExpressionME');
     const tid = buildTraceId(state, traceCfg);
 
     const {
-      object: objectNode,
-      property: propertyNode,
+      object: objectAstNode,
+      property: propertyAstNode,
       computed
-    } = meNode;
+    } = meAstNode;
 
     const {
       data: {
         objectTid,
-        isObjectTracedAlready,
         objectVar,
         propertyVar, // NOTE: this is `undefined`, if `!computed`
         optional
@@ -40,10 +39,11 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
     } = traceCfg;
 
     // build object
-    const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
+
+    const o = buildMEObject(meAstNode, traceCfg);
 
     // build propertyValue
-    let propValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
+    let propValue = convertNonComputedPropToStringLiteral(propertyAstNode, computed);
     if (computed) {
       propValue = t.assignmentExpression('=',
         propertyVar,
@@ -51,10 +51,17 @@ const buildtraceExpressionMEDefault = bindExpressionTemplate(
       );
     }
 
+    let newO = objectVar || objectAstNode;
+    if (objectAstNode.type === 'Super') {
+      // hackfix: super
+      // don't replace `super` in `super.f()` (but do trace `this` instead of `super`)
+      newO = objectAstNode;
+    }
+
     // build actual MemberExpression
     const newMemberExpression = (optional ? t.optionalMemberExpression : t.memberExpression)(
-      objectVar,
-      propertyVar || propertyNode,
+      newO,
+      propertyVar || propertyAstNode,
       computed,
       optional
     );
@@ -114,21 +121,14 @@ export const buildTraceWriteME = buildTraceCall(
     } = assignmentExpression;
 
     const {
-      property: propertyNode
-    } = meAstNode;
-
-    const {
       data: {
         objectTid,
-        propTid,
-        isObjectTracedAlready,
-        propertyVar, // NOTE: this is `undefined`, if `!computed`
-        objectVar
+        propTid
       }
     } = traceCfg;
 
     // build object
-    const o = isObjectTracedAlready ? objectVar : buildMEObject(meAstNode, traceCfg);
+    const o = buildMEObject(meAstNode, traceCfg);
 
     // build propValue
     let propValue = buildMEProp(meAstNode, traceCfg);
@@ -228,15 +228,22 @@ export const buildTraceDeleteME = buildTraceCall(
  */
 export function buildMEObject(meAstNode, traceCfg) {
   const {
-    object: objectNode,
-  } = meAstNode;
-
-  const {
     data: {
+      dontTraceObject,
       objectVar
     }
   } = traceCfg;
-  return t.assignmentExpression('=', objectVar, objectNode);
+
+  const {
+    object: objectAstNode,
+  } = meAstNode;
+
+  if (dontTraceObject) {
+    return objectVar || NullNode;
+  }
+
+
+  return t.assignmentExpression('=', objectVar, objectAstNode);
 }
 
 /**
@@ -290,6 +297,7 @@ export function getMEpropVal(meAstNode, traceCfg) {
  */
 export function buildMELval(meAstNode, traceCfg) {
   const {
+    object: objectAstNode,
     property: propertyAstNode,
     computed
   } = meAstNode;
@@ -301,10 +309,11 @@ export function buildMELval(meAstNode, traceCfg) {
     }
   } = traceCfg;
 
+  const obj = objectVar || objectAstNode;
   const prop = propertyVar || propertyAstNode;
 
   return t.memberExpression(
-    objectVar,
+    obj,
     prop,
     computed,
     false

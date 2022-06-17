@@ -21,8 +21,9 @@ export default class DDGBounds {
    * @param {BaseDDG} ddg
    * @param {number[]} watchTraceIds
    */
-  constructor(ddg, watchTraceIds) {
+  constructor(ddg) {
     this.ddg = ddg;
+    const { watchTraceIds } = ddg.watchSet;
     this.watchedTraceIds = watchTraceIds.sort((a, b) => a - b);
 
     const { dp } = this;

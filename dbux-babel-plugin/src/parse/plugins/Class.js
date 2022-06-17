@@ -51,7 +51,8 @@ export default class Class extends BasePlugin {
       // ################################################################################
 
       const astNode = memberNode.path.node;
-      const isMethod = memberNode instanceof ClassMethod && astNode.kind === 'method';
+      const isMethod = memberNode instanceof ClassMethod && 
+        (astNode.kind === 'method' || astNode.kind === 'constructor');
 
       // console.warn(memberNode.path.toString(), isMethod);
 
