@@ -1,0 +1,20 @@
+diff --git a/babel.config.js b/babel.config.js
+index ac33a47..f39a384 100644
+--- a/babel.config.js
++++ b/babel.config.js
+@@ -51,10 +51,11 @@ module.exports = {
+     ]
+   ],
+   plugins: [
+-    [dbuxBabelPlugin, {
+-      verbose: 1,
+-      // runtime: '{"tracesDisabled": 1}'
+-    }]],
++    // [dbuxBabelPlugin, {
++    //   verbose: 1,
++    //   // runtime: '{"tracesDisabled": 1}'
++    // }]
++  ],
+ 
+   ignore
+ };
