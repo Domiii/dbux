@@ -112,7 +112,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
   /**
    * Summary data by `timelineId`.
-   * NOTE: This is built lazily in `buildNodeSummary`.
+   * NOTE: This is built lazily in {@link DataDependencyGraph##buildNodeSummary}.
    * 
    * @type {Object.<string, DDGNodeSummary>}
    */
@@ -485,6 +485,14 @@ export default class DataDependencyGraph extends BaseDDG {
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });
 
+    // TODO: not good enough to determine "deep access"
+    // const accessedAccessIds = new Set(
+    //   summaryRefEntries.map(([refId, dataNodeId]) => {
+    //     const dataNode = this.dp.util.getDataNode(dataNodeId);
+    //     return dataNode.accessId;
+    //   })
+    // );
+
     // add ref snapshots
     /**
      * @type {SnapshotMap}
@@ -646,7 +654,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (children) {
       const isCollapsed = !currentCollapsedAncestor &&
         ddgQueries.isCollapsed(this, node);
-        // ddgQueries.doesNodeHaveSummary(this, node);
+      // ddgQueries.doesNodeHaveSummary(this, node);
       if (isCollapsed) {
         // node is collapsed and has summary data (if not, just hide children)
         summaryState.currentCollapsedAncestor = node;

@@ -120,9 +120,18 @@ export default class DDGTDNode extends TraceDetailNode {
         (ddg.getTimelineNodesOfDataNode(n.nodeId) || EmptyArray)
       );
 
-    const summaries = Array.from(new Set(timelineNodes
-      .map(node => ddgQueries.getSummarizedGroupOfNode(ddg, node))
-      .filter(Boolean)
+    const allSummaries = Object.values(ddg.nodeSummaries);
+    let summaries = Array.from(new Set(
+      timelineNodes
+        // collapsed ancestor summaries
+        .map(node => ddgQueries.getSummarizedGroupOfNode(ddg, node))
+        .concat(
+          // summaries which have any DataNode in their root
+          dataNodes.map(n => allSummaries.filter(
+            summary => summary.summaryRoots.some(rootNode => rootNode.dataNodeId === n.nodeId)
+          ))
+        )
+        .filter(Boolean)
     ));
     const description = !dataNodes.length ?
       '(no DataNodes)' :
@@ -133,6 +142,7 @@ export default class DDGTDNode extends TraceDetailNode {
           !summaries.length ?
             '(not currently summarized)' :
             `(${summaries.length})`;
+
     return makeTreeItem(() => ({
       label: 'Summaries',
       children: () => renderDDGSummaries(ddg, summaries),

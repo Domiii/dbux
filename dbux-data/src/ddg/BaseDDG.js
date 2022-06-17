@@ -346,10 +346,6 @@ export default class BaseDDG {
     newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
 
-    if (newNode.dataNodeId === 1137) {
-      console.log('debug');
-    }
-
     if (newNode.dataNodeId && this.building) {
       // register with `WatchSet`
       this.watchSet.maybeAddWatchedNode(newNode);
@@ -947,12 +943,19 @@ export default class BaseDDG {
     const childDataNode = this.dp.util.getDataNode(childDataNodeId);
     let lastAccessNode;
     return (
-      parentSnapshot.watched && (                                         // watched snapshot
-        this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return node"
-        !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
-      ) ||
+      // hackfix
+      !this.building ||
+
+      // watched stuff
       (
-        // this DataNode is a ref that will be accessed later
+        parentSnapshot.watched && (                                         // watched snapshot
+          this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return node"
+          !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
+        )
+      ) ||
+      
+      // this DataNode is a ref that will be accessed later
+      (
         childDataNode.refId &&
         (lastAccessNode = this.dp.indexes.dataNodes.byObjectNodeId.getLast(childDataNode.nodeId)) &&
         lastAccessNode.nodeId > childDataNodeId

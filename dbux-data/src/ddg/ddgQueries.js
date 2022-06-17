@@ -124,6 +124,8 @@ const ddgQueries = {
   },
 
   /**
+   * WARNING: This does not work on summary nodes (would need to check !node.og as well).
+   * 
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
