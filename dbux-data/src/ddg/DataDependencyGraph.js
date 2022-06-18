@@ -518,14 +518,14 @@ export default class DataDependencyGraph extends BaseDDG {
     /**
      * @type {SnapshotMap}
      */
-    const snapshotsByRefId = new Map();
+    const finalSnapshotsByRefId = new Map();
     for (const [refId, dataNodeId] of summaryRefEntries) {
-      if (snapshotsByRefId.has(refId)) {
+      if (finalSnapshotsByRefId.has(refId)) {
         // skip if this ref was already added as a descendant of a previous ref
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
+      const newNode = this.og.addNewRefSnapshot(dataNode, refId, finalSnapshotsByRefId, null);
 
       // override label to be the var name (if possible), since its more representative
       newNode.label = dp.util.getDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
@@ -544,14 +544,14 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const summaryRoots = (
       // ref roots
-      Array.from(snapshotsByRefId.values())
+      Array.from(finalSnapshotsByRefId.values())
         .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
         .concat(
           // var roots
           Array.from(varNodesByTid.values())
         ));
 
-    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByTid, summaryRoots);
+    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, finalSnapshotsByRefId, varNodesByTid, summaryRoots);
   }
 
   /**
