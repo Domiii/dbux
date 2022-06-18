@@ -155,29 +155,17 @@ export default class ChapterListNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const Keywords = ['Sort', 'Search'];
-    const chapters = Object.fromEntries(Keywords.map(keyword => [keyword, []]));
-    const otherChapters = [];
+    const chaptersByGroup = new Map();
     for (const chapter of this.chapters) {
-      let matchedKeyword;
-      for (const keyword of Keywords) {
-        if (chapter.name.toLowerCase().includes(keyword.toLowerCase())) {
-          matchedKeyword = keyword;
-          break;
-        }
+      const { group } = chapter;
+      if (!chaptersByGroup.has(group)) {
+        chaptersByGroup.set(group, []);
       }
-      if (matchedKeyword) {
-        chapters[matchedKeyword].push(chapter);
-      }
-      else {
-        otherChapters.push(chapter);
-      }
+      chaptersByGroup.get(group).push(chapter);
     }
 
-    return [
-      ...Keywords.map(keyword => this.treeNodeProvider.buildNode(ExerciseChapterGroupNode, chapters[keyword], this, { keyword })),
-      this.treeNodeProvider.buildNode(ExerciseChapterGroupNode, otherChapters, this, { keyword: 'Others' }),
-      // otherChapters.map(chapter => this.treeNodeProvider.buildNode(DDGChapterNode, chapter, this)),
-    ];
+    return Array.from(chaptersByGroup.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([keyword, chapters]) => this.treeNodeProvider.buildNode(ExerciseChapterGroupNode, chapters, this, { keyword }));
   }
 }

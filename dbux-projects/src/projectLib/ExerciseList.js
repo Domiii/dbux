@@ -34,7 +34,8 @@ export default class ExerciseList {
       this._byNumber[exercise.number] = exercise;
       if (exercise.name) {
         if (this._byName[exercise.name]) {
-          throw new Error(`exercise name is not unique for ${exercise.id}: ${JSON.stringify(exercise)}`);
+          // throw new Error(`exercise name is not unique for ${exercise.id}: ${JSON.stringify(exercise)}`);
+          throw new Error(`exercise name is not unique for ${exercise.id}, name: ${exercise.name}`);
         }
         this._byName[exercise.name] = exercise;
       }

@@ -1,7 +1,8 @@
 import fs from 'fs';
-import { dirname } from 'path';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
@@ -9,8 +10,6 @@ import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 import { getCurrentResearch } from '../research/Research';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import sleep from '@dbux/common/src/util/sleep';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -60,6 +59,7 @@ export default class ChapterListBuilderViewController {
       return {
         id: index + 1,
         name: chapterName,
+        group: exercises[0].chapterGroup,
         exercises: exercises.map(e => e.id),
       };
     });
@@ -88,6 +88,11 @@ export default class ChapterListBuilderViewController {
     }
     return null;
   }
+
+  // addExerciseConfig() {
+  //   const configs = this.project.loadExerciseConfigs(ExerciseListName);
+  //   configs.push()
+  // }
 
   init() {
     this.reloadExerciseList();
@@ -161,10 +166,13 @@ function findDDGContextIdInApp(app, exercise) {
   // const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
   const testProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
     const { filePath } = staticProgramContext;
-    const fileDir = dirname(filePath);
-    const readmeFilePath = pathResolve(fileDir, 'README.md');
-    const testFolderPath = pathResolve(fileDir, '__test__');
-    return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
+    // const fileDir = dirname(filePath);
+    // const readmeFilePath = pathResolve(fileDir, 'README.md');
+    // const testFolderPath = pathResolve(fileDir, '__test__');
+
+    // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
+    const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/(.*).js/;
+    return ValidFilePattern.test(filePath);
   });
 
   const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
@@ -213,8 +221,6 @@ function findDDGContextIdInApp(app, exercise) {
     };
   }).filter(x => !!x);
 }
-
-
 
 // ###########################################################################
 // init

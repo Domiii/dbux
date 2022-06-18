@@ -1,13 +1,17 @@
-import { TreeItemCollapsibleState } from 'vscode';
+import { commands, TreeItemCollapsibleState, window } from 'vscode';
 import fs from 'fs';
+import { basename, dirname } from 'path';
+import open from 'open';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import Process from '@dbux/projects/src/util/Process';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
+import { showTextInNewFile } from '../codeUtil/codeNav';
 import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
+import { translate } from '../lang';
 
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
@@ -16,6 +20,15 @@ const ExportExercises = 4;
 const CustomPatchByChapter = {
   hanoiTower: 'hanoiTower0',
 };
+/**
+ * NOTE:
+ *  This excludes:
+ *    `src/algorithms/sorting/__test__/Sort.test.js`,
+ *  and includes:
+ *    `src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js`,
+ *    `src/algorithms/math/matrix/__tests__/Matrix.test.js`
+ */
+const ValidFilePattern = /^src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/(.*).js$/;
 
 class ToolNode extends BaseTreeViewNode {
   /**
@@ -56,6 +69,10 @@ class GenerateListNode extends ToolNode {
 
       await this.manager.externals.initRuntimeServer();
 
+      progress.report({ message: 'Disabling dbux-babel-plugin...' });
+      await project.gitResetHard();
+      await project.applyPatch('disable_dbux');
+
       progress.report({ message: 'Parsing tests...' });
       const processOptions = {
         cwd: project.projectPath,
@@ -64,31 +81,43 @@ class GenerateListNode extends ToolNode {
       /**
        * NOTE: set `testNamePattern` to an unused name to skip running all tests
        * @see https://stackoverflow.com/a/69099439/11309695
-       */ 
+       */
       const UnusedTestPattern = 'zzzzz';
       const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
       const testData = JSON.parse(testDataRaw);
 
       const exerciseConfigs = [];
-      const addedPattern = new Set();
+      const addedExerciseNames = new Set();
 
       for (const testResult of testData.testResults) {
         for (const assertionResult of testResult.assertionResults) {
           const { fullName } = assertionResult;
-          if (!addedPattern.has(fullName)) {
-            addedPattern.add(fullName);
+          /**
+           * NOTE: `PolynomialHash` and `SimplePolynomialHash` shares the same fullName in different test files
+           */
+          const testFilePath = pathRelative(project.projectPath, testResult.name);
+          const baseName = basename(testFilePath);
+          const name = `${fullName}@${baseName}`;
+          if (!addedExerciseNames.has(name)) {
+            addedExerciseNames.add(name);
           }
           else {
             continue;
           }
-          const chapter = fullName.substring(0, fullName.indexOf(' '));
+          // const chapter = fullName.substring(0, fullName.indexOf(' '));
+          const testFileMatchResult = testFilePath.match(ValidFilePattern);
+          if (!testFileMatchResult) {
+            continue;
+          }
+          const [, chapterGroup, chapter] = testFileMatchResult;
           const exerciseConfig = {
-            name: fullName,
+            name,
             label: fullName,
             testNamePattern: fullName,
+            chapterGroup,
             chapter,
             patch: CustomPatchByChapter[chapter],
-            testFilePaths: [pathRelative(project.projectPath, testResult.name)],
+            testFilePaths: [testFilePath],
           };
           exerciseConfigs.push(exerciseConfig);
         }
@@ -106,6 +135,9 @@ class GenerateListNode extends ToolNode {
 
       progress.report({ message: `Loading chapter list...` });
       const chapters = this.controller.reloadChapterList();
+
+      progress.report({ message: 'Recovering project...' });
+      await project.applyPatch('disable_dbux', true);
 
       showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
 
@@ -185,6 +217,49 @@ class DeleteExportedApplicationNode extends ToolNode {
   }
 }
 
+class GeneratePatchNode extends ToolNode {
+  static makeLabel() {
+    return `Generate Patch`;
+  }
+
+  async handleClick() {
+    const { project } = this.controller;
+    const patchString = await project.getPatchString();
+    const editor = await showTextInNewFile('diff.diff', patchString);
+    const result = await confirm(`Do you want to save the patch?`, false);
+
+    if (window.activeTextEditor === editor) {
+      await commands.executeCommand('workbench.action.closeActiveEditor');
+    }
+
+    if (!result) {
+      return;
+    }
+
+    const name = await window.showInputBox({
+      placeHolder: 'unnamed',
+      prompt: 'Patch file name'
+    });
+
+    if (!name) {
+      return;
+    }
+
+    const filePath = project.getPatchFile(name);
+    fs.writeFileSync(filePath, patchString);
+
+    // TODO: add exercise config depends on active application
+    // this.controller.addExerciseConfig({ name, patch: basename(filePath, '.patch') });
+
+    const msg = translate('savedSuccessfully', { fileName: filePath });
+    await showInformationMessage(msg, {
+      async 'Show File'() {
+        await open(dirname(filePath));
+      }
+    });
+  }
+}
+
 export default class ToolRootNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Tools';
@@ -198,5 +273,6 @@ export default class ToolRootNode extends BaseTreeViewNode {
     GenerateListNode,
     ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
+    GeneratePatchNode,
   ]
 }
