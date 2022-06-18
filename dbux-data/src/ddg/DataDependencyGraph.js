@@ -489,17 +489,19 @@ export default class DataDependencyGraph extends BaseDDG {
       });
 
     if (DDGTimelineNodeType.is.Context(node.type)) {
-      // add return return argument
+      // add return input argument
       const returnInputDataNodeId = dp.util.getReturnArgumentInputDataNodeIdOfContext(node.contextId);
       if (returnInputDataNodeId) {
         const returnDataNode = dp.util.getDataNode(returnInputDataNodeId);
-        const skippedNode = this.timelineBuilder.getSkippedByNode(returnDataNode);
-        const timelineNodes = this.getTimelineNodesOfDataNode(returnInputDataNodeId);
-        const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
-        if (skippedNode || timelineNodes) {
-          // always override previous, because its always last
-          const returnTimelineId = (skippedNode || last(timelineNodes)).timelineId;
-          varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
+        if (!lastModifyNodesByRefId.get(returnDataNode.refId)) { // don't add if we already have a ref summary of it
+          const skippedNode = this.timelineBuilder.getSkippedByNode(returnDataNode);
+          const timelineNodes = this.getTimelineNodesOfDataNode(returnInputDataNodeId);
+          const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
+          if (skippedNode || timelineNodes) {
+            // always override previous, because its always last
+            const returnTimelineId = (skippedNode || last(timelineNodes)).timelineId;
+            varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
+          }
         }
       }
     }
