@@ -11,6 +11,7 @@ import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNo
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
 import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
+import PDGSnapshotConfig from './PDGSnapshotConfig';
 
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
@@ -201,12 +202,12 @@ export default class DDGTimelineBuilder {
       const partialChildren = dataNodes.filter(n => n.varAccess?.objectNodeId === objectNodeId);
       const refDataNode = this.dp.util.getDataNodeAccessedObjectNode(dataNode.nodeId);
 
-      const snapshotsByRefId = new Map();
-      newNode = this.ddg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotsByRefId, null, partialChildren);
+      const snapshotCfg = new PDGSnapshotConfig();
+      newNode = this.ddg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotCfg, null, partialChildren);
     }
     else if (this.#shouldBuildRootSnapshot(dataNode)) {
-      const snapshotsByRefId = new Map();
-      newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, null);
+      const snapshotCfg = new PDGSnapshotConfig();
+      newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotCfg, null);
     }
     else if (isDataNodeDelete(dataNode.type)) {
       newNode = this.ddg.addDeleteEntryNode(dataNode);

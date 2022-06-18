@@ -14,6 +14,7 @@ import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
+import PDGSnapshotConfig from './PDGSnapshotConfig';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -518,14 +519,23 @@ export default class DataDependencyGraph extends BaseDDG {
     /**
      * @type {SnapshotMap}
      */
-    const finalSnapshotsByRefId = new Map();
+    const snapshotCfg = new PDGSnapshotConfig();
+    const summaryRefIds = new Set(summaryRefEntries.map(([refId]) => refId));
+    snapshotCfg.shouldBuildDeep = (parentSnapshot, dataNode) => {
+      return (
+        // go deep if it should be summarized
+        summaryRefIds.has(dataNode.refId) &&
+        // and it is not already summarized
+        !snapshotCfg.snapshotsByRefId.has(dataNode.refId)
+      );
+    };
     for (const [refId, dataNodeId] of summaryRefEntries) {
-      if (finalSnapshotsByRefId.has(refId)) {
+      if (snapshotCfg.snapshotsByRefId.has(refId)) {
         // skip if this ref was already added as a descendant of a previous ref
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      const newNode = this.og.addNewRefSnapshot(dataNode, refId, finalSnapshotsByRefId, null);
+      const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotCfg, null);
 
       // override label to be the var name (if possible), since its more representative
       newNode.label = dp.util.getDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
@@ -544,14 +554,14 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const summaryRoots = (
       // ref roots
-      Array.from(finalSnapshotsByRefId.values())
+      Array.from(snapshotCfg.snapshotsByRefId.values())
         .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
         .concat(
           // var roots
           Array.from(varNodesByTid.values())
         ));
 
-    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, finalSnapshotsByRefId, varNodesByTid, summaryRoots);
+    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotCfg.snapshotsByRefId, varNodesByTid, summaryRoots);
   }
 
   /**

@@ -107,6 +107,44 @@ module.exports = [
     "chapter": "bellman-ford",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(bellmanFord, ƒ (anonymous))",
+        "contextId": 9,
+        "filePath": "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 30,
+            "index": 281
+          },
+          "end": {
+            "line": 117,
+            "column": 1,
+            "index": 3990
+          }
+        },
+        "applicationUuid": "0.22852868927632475"
+      },
+      {
+        "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 282,
+        "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 56,
+            "index": 172
+          },
+          "end": {
+            "line": 45,
+            "column": 1,
+            "index": 1581
+          }
+        },
+        "applicationUuid": "0.22852868927632475"
+      }
     ]
   },
   {

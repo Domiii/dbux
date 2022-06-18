@@ -26,6 +26,7 @@ import { DDGRootTimelineId } from './constants';
 import ddgQueries, { ddgHostQueries } from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
+import PDGSnapshotConfig from './PDGSnapshotConfig';
 
 /** @typedef { import("./DDGSet").default } DDGSet */
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
@@ -33,20 +34,6 @@ import DDGEdgeType from './DDGEdgeType';
 
 const VerboseAccess = 0;
 // const VerboseAccess = 2;
-
-/** ###########################################################################
- * util
- * ##########################################################################*/
-
-/**
- * Recurds and allows customizing snapshot creation.
- */
-class SnapshotConfig {
-  /**
-   * @param {SnapshotMap?} snapshotsByRefId If provided, helps keep track of all snapshots of a set.
-   */
-  snapshotsByRefId;
-}
 
 /** ###########################################################################
  * {@link BaseDDG}
@@ -658,7 +645,11 @@ export default class BaseDDG {
             this.#onSnapshotNodeCreated(newChild, snapshotCfg, parentSnapshot);
           }
           else {
-            if (!shallowOnly && dataNode.refId && this.shouldBuildDeepSnapshotChild(parentSnapshot, dataNode.nodeId)) {
+            if (
+              dataNode.refId &&
+              !shallowOnly && 
+              this.shouldBuildDeepSnapshotChild(parentSnapshot, dataNode, snapshotCfg)
+            ) {
               // → go deep on ref
               newChild = this.addNewRefSnapshot(dataNode, dataNode.refId, snapshotCfg, parentSnapshot);
             }
@@ -956,15 +947,16 @@ export default class BaseDDG {
    *  (2) go deep on new ref node.
    * 
    * @param {RefSnapshotTimelineNode} parentSnapshot 
+   * @param {PDGSnapshotConfig} snapshotCfg
    */
-  shouldBuildDeepSnapshotChild(parentSnapshot, childDataNodeId) {
+  shouldBuildDeepSnapshotChild(parentSnapshot, childDataNode, snapshotCfg) {
     // this.logger.debug('deep', parentSnapshot.timelineId, childDataNodeId, this.doesDataNodeHaveOutgoingEdge(childDataNodeId));
-    const childDataNode = this.dp.util.getDataNode(childDataNodeId);
+    const childDataNodeId = childDataNode.nodeId;
     let lastAccessNode;
+    if (snapshotCfg?.shouldBuildDeep) {
+      return snapshotCfg.shouldBuildDeep(parentSnapshot, childDataNode);
+    }
     return (
-      // hackfix
-      !this.building ||
-
       // watched stuff
       (
         parentSnapshot.watched && (                                         // watched snapshot
@@ -972,7 +964,7 @@ export default class BaseDDG {
           !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
         )
       ) ||
-      
+
       // this DataNode is a ref that will be accessed later
       (
         childDataNode.refId &&

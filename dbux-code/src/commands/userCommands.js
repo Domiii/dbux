@@ -141,8 +141,12 @@ export function initUserCommands(extensionContext) {
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
     let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestDDGArgs();
-    watchTraceIds = null;
-    contextId = traceSelection.selected?.contextId || contextId;
+
+    if (traceSelection.selected) {
+      contextId = traceSelection.selected.contextId;
+      watchTraceIds = null;
+      applicationUuid = allApplications.getById(traceSelection.selected.applicationId);
+    }
 
     let app = allApplications.getById(applicationUuid);
     if (!allApplications.selection.containsApplication(app)) {
@@ -163,7 +167,7 @@ export function initUserCommands(extensionContext) {
         // await doImportApplication(testFilePath);
 
         // load an application, if none active
-        const confirmMsg = `Current DDG test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to import it?`;
+        const confirmMsg = `Current PDG test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to import it?`;
         const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
         if (shouldUpdateTestFilePath) {
           const fileDialogOptions = {
