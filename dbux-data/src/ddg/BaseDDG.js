@@ -13,7 +13,7 @@ import DataNodeType, { isDataNodeDelete, isDataNodeModifyType } from '@dbux/comm
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData, isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import DDGWatchSet from './DDGWatchSet';
@@ -297,7 +297,7 @@ export default class BaseDDG {
 
     node.connected = true;
 
-    if (doesTimelineNodeCarryData(node.type)) {
+    if (!isControlGroupTimelineNode(node.type)) {
       const fromEdges = this.inEdgesByTimelineId[node.timelineId] || EmptyArray;
       for (const edgeId of fromEdges) {
         const edge = this.edges[edgeId];
@@ -345,10 +345,6 @@ export default class BaseDDG {
     newNode.timelineId = this.timelineNodes.length;
     newNode.og = !!this.building;
     this.timelineNodes.push(newNode);
-
-    if (newNode.dataNodeId === 1137) {
-      console.log('debug');
-    }
 
     if (newNode.dataNodeId && this.building) {
       // register with `WatchSet`
@@ -456,10 +452,28 @@ export default class BaseDDG {
    * labels
    * ##########################################################################*/
 
-  makeSnapshotLabel(refDataNode, partialChildren) {
-    if (partialChildren) {
-      // partial snapshots represent a trace → use that for the label
-      const trace = this.dp.util.getTrace(partialChildren[0].traceId);
+  /**
+   * NOTE: this is a hackfix workaround for partial snapshots,
+   * since their `dataNodeId` is a hackfix that points to the "wrong" thing.
+   * If you change this, also change {@link BaseDDG#makeSnapshotLabel}!
+   */
+  getPartialSnapshotTraceId(node) {
+    const child0Id = node.children[0];
+    if (child0Id) {
+      const child0 = this.timelineNodes[child0Id];
+      const dataNode = this.dp.util.getDataNode(child0.dataNodeId);
+      return dataNode.traceId;
+    }
+    return null;
+  }
+
+  makeSnapshotLabel(refDataNode, partialChildrenDataNodes) {
+    if (partialChildrenDataNodes) {
+      /**
+       * Partial snapshots represent a trace → use that for the label.
+       * If you change this, also change {@link BaseDDG#getPartialSnapshotTraceId}!
+       */
+      const trace = this.dp.util.getTrace(partialChildrenDataNodes[0].traceId);
       const label = makeTraceLabel(trace);
       if (label) {
         return label;
@@ -909,7 +923,8 @@ export default class BaseDDG {
       //    and often shares descendants with previous snapshots who actually contain the Write.
       //    → so we want to allow those edges to come in nevertheless.
       (
-        fromWatched !== toWatched
+        // fromWatched !== toWatched
+        toWatched
       )
     );
   }
@@ -928,12 +943,19 @@ export default class BaseDDG {
     const childDataNode = this.dp.util.getDataNode(childDataNodeId);
     let lastAccessNode;
     return (
-      parentSnapshot.watched && (                                         // watched snapshot
-        this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return node"
-        !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
-      ) ||
+      // hackfix
+      !this.building ||
+
+      // watched stuff
       (
-        // this DataNode is a ref that will be accessed later
+        parentSnapshot.watched && (                                         // watched snapshot
+          this.watchSet.isReturnDataNode(parentSnapshot.dataNodeId) ||      // parent is "return node"
+          !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
+        )
+      ) ||
+      
+      // this DataNode is a ref that will be accessed later
+      (
         childDataNode.refId &&
         (lastAccessNode = this.dp.indexes.dataNodes.byObjectNodeId.getLast(childDataNode.nodeId)) &&
         lastAccessNode.nodeId > childDataNodeId

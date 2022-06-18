@@ -257,10 +257,30 @@ module.exports = [
     "chapter": "power-set",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "btPowerSet([1,2])",
+        "contextId": 5,
+        "filePath": "src/algorithms/sets/power-set/btPowerSet.js",
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 48,
+            "index": 1726
+          },
+          "end": {
+            "line": 41,
+            "column": 1,
+            "index": 1787
+          }
+        },
+        "applicationUuid": "0.08245080136535377"
+      }
     ]
   },
   {
-    "name": "btUniquePaths should find the number of unique paths on board@btUniquePaths.test.js",
+    "name": "btUniquePaths should find the number of unique paths on board",
     "label": "btUniquePaths should find the number of unique paths on board",
     "testNamePattern": "btUniquePaths should find the number of unique paths on board",
     "chapterGroup": "uncategorized",
@@ -777,10 +797,30 @@ module.exports = [
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 97,
+        "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 53,
+            "index": 577
+          },
+          "end": {
+            "line": 80,
+            "column": 1,
+            "index": 3052
+          }
+        },
+        "applicationUuid": "0.7807030264691521"
+      }
     ]
   },
   {
-    "name": "discreteFourierTransform should split signal into frequencies@discreteFourierTransform.test.js",
+    "name": "discreteFourierTransform should split signal into frequencies",
     "label": "discreteFourierTransform should split signal into frequencies",
     "testNamePattern": "discreteFourierTransform should split signal into frequencies",
     "chapterGroup": "math",

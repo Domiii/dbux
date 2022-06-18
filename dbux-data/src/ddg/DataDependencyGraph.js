@@ -3,9 +3,9 @@ import { throttle } from '@dbux/common/src/util/scheduling';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
 import DataNodeType, { isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
-import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { DDGRootTimelineId } from './constants';
+import { DDGRootTimelineId, isDDGRoot } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode, isExpandedMode } from './DDGSummaryMode';
@@ -112,7 +112,7 @@ export default class DataDependencyGraph extends BaseDDG {
 
   /**
    * Summary data by `timelineId`.
-   * NOTE: This is built lazily in `buildNodeSummary`.
+   * NOTE: This is built lazily in {@link DataDependencyGraph##buildNodeSummary}.
    * 
    * @type {Object.<string, DDGNodeSummary>}
    */
@@ -459,7 +459,10 @@ export default class DataDependencyGraph extends BaseDDG {
   #buildNodeSummarySnapshotsAndVars(timelineId) {
     const { dp } = this;
     const node = this.timelineNodes[timelineId];
-    if (!node.hasSummarizableWrites
+    if (
+      !node.hasSummarizableWrites ||
+      // only non-root control groups
+      isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)
       /*  || this.nodeSummaries[timelineId] */ // build again, for dev purposes
     ) {
       // already built or nothing to build
@@ -472,10 +475,23 @@ export default class DataDependencyGraph extends BaseDDG {
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
-        // const lastDataNodeIdOfRef = this.watchSet.lastDataNodeByWatchedRefs.get(refId);
-        const lastDataNodeIdOfRef = dp.util.getLastDataNodeByRefId(refId)?.nodeId;
+        const lastDataNodeIdOfRef = Math.max(
+          // check if accessed again
+          dp.util.getLastDataNodeByRefId(refId)?.nodeId || 0,
+
+          // check if shown in later watch node
+          this.watchSet.lastDataNodeByWatchedRefs.get(refId) || 0
+        );
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });
+
+    // TODO: not good enough to determine "deep access"
+    // const accessedAccessIds = new Set(
+    //   summaryRefEntries.map(([refId, dataNodeId]) => {
+    //     const dataNode = this.dp.util.getDataNode(dataNodeId);
+    //     return dataNode.accessId;
+    //   })
+    // );
 
     // add ref snapshots
     /**
@@ -619,12 +635,10 @@ export default class DataDependencyGraph extends BaseDDG {
     // node.parentNodeId ||  // don't hide snapshot children
 
     let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
-    const needsSummaryData = !currentCollapsedAncestor && ddgQueries.isNodeSummarizedMode(this, node);
     let targetNode = currentCollapsedAncestor || node;
-    let isSummarized = !!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node);
 
     // prep
-    if (needsSummaryData) {
+    if (!currentCollapsedAncestor) {
       // build node summary (if not already built)
       this.#buildNodeSummary(timelineId);
 
@@ -634,11 +648,13 @@ export default class DataDependencyGraph extends BaseDDG {
       // }
     }
 
+    let isSummarized = !!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node);
+
     // DFS recursion
     if (children) {
       const isCollapsed = !currentCollapsedAncestor &&
-        ddgQueries.isCollapsed(this, node) &&
-        ddgQueries.doesNodeHaveSummary(this, node);
+        ddgQueries.isCollapsed(this, node);
+      // ddgQueries.doesNodeHaveSummary(this, node);
       if (isCollapsed) {
         // node is collapsed and has summary data (if not, just hide children)
         summaryState.currentCollapsedAncestor = node;

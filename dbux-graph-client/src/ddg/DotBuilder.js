@@ -40,6 +40,12 @@ function fixProp(prop) {
   return prop;
 }
 
+function isConnected(node) {
+  return node.connected || 
+    // non-build nodes (summary nodes) are always connected
+    !node.og;
+}
+
 /** ###########################################################################
  * Colors + Cfg
  * ##########################################################################*/
@@ -284,9 +290,7 @@ export default class DotBuilder {
   node(node, force = false) {
     const { ddg } = this;
     const show = force || ddgQueries.isVisible(ddg, node);
-    if (node.timelineId === 452) {
-      console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, group=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
-    }
+    // console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
     }
@@ -588,9 +592,14 @@ export default class DotBuilder {
    * snapshotTable
    *  #########################################################################*/
 
+  /**
+   * Whether given node is a build-time snapshot and it is not connected (we don't want to render those).
+   * Summary nodes are exempted.
+   */
   isDisconnectedSnapshot(node) {
     const { ddg } = this;
-    return ddgQueries.isSnapshot(ddg, node) && !node.connected;
+    return ddgQueries.isSnapshot(ddg, node) && 
+      !isConnected(node);
   }
 
   /**
@@ -640,7 +649,7 @@ export default class DotBuilder {
             // not empty
             isEmpty(child.children) ||
             // connected
-            !child.connected ||
+            !isConnected(child) ||
             // has at least one child that is connected
             Object.values(child.children)
               .every(c => this.isDisconnectedSnapshot(timelineNodes[c]))

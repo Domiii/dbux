@@ -1,19 +1,12 @@
 /* eslint-disable camelcase */
 
-import { TreeItem } from 'vscode';
-import size from 'lodash/size';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
-import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
-import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
-import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 

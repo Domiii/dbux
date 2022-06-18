@@ -1,13 +1,16 @@
+import { isFunction } from 'lodash';
 import size from 'lodash/size';
 import isNumber from 'lodash/isNumber';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import DDGNodeSummary from '@dbux/data/src/ddg/DDGNodeSummary';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
+import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
+import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
-import { isFunction } from 'lodash';
 
 /**
  * @param {DDGTimelineNode} node 
@@ -22,7 +25,7 @@ export function renderNodeTree(ddg, node, cfg) {
   const children = new childrenIds.constructor();
   Object.entries(childrenIds).forEach(([key, childId]) => {
     const childNode = timelineNodes[childId];
-    if (predicate?.(childNode)) {
+    if (!predicate || predicate(childNode)) {
       // add child
       children[key] = renderNodeTree(ddg, childNode, cfg);
     }
@@ -30,7 +33,8 @@ export function renderNodeTree(ddg, node, cfg) {
   const props = propsFactory?.(node, children) || EmptyObject;
   const nodeItem = renderDDGNode(ddg, node, children, props);
 
-  nodeItem.id = node.label + '#' + Math.random() + ''; // hackfix
+  // hackfix to allow for customizable `collapsibleState`
+  nodeItem.id = node.label + '#' + Math.random() + '';
   return nodeItem;
 }
 
@@ -50,7 +54,7 @@ export function makeDDGNodeDescription(ddg, node) {
   const dataInfo = dataNodeId ? ` (n${dataNodeId})` : '';
   const summaryMode = summaryModes[timelineId];
   // eslint-disable-next-line no-nested-ternary
-  const summaryModeLabel =
+  let summaryModeLabel =
     watched ?
       'Watched' :
       summaryMode ?
@@ -58,6 +62,11 @@ export function makeDDGNodeDescription(ddg, node) {
         og ?
           '(unknown)' :
           'SummaryNode';
+  if (isControlGroupTimelineNode(node.type)) {
+    const summarizable = ddgQueries.isNodeSummarizable(ddg, node);
+    const summarizableChildren = ddgQueries.getSummarizableChildren(ddg, node.timelineId);
+    summaryModeLabel += ` (s: ${summarizable}, sC: ${summarizableChildren?.length || 0})`;
+  }
   return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryModeLabel}`;
 }
 
@@ -70,8 +79,9 @@ export function makeDDGNodeLabel(ddg, timelineId) {
  * @param {DataDependencyGraph} ddg
  * @param {DDGTimelineNode} node 
  */
-export function renderDDGNode(ddg, node, children = null, moreProps = EmptyObject, labelPrefix = '') {
+export function renderDDGNode(ddg, node, children = null, moreProps, labelPrefix = '') {
   const { dp } = ddg;
+  moreProps ||= EmptyObject;
   const labelOverride = moreProps.label;
   const { handleClick } = moreProps;
   ({ labelPrefix = labelPrefix } = moreProps);
@@ -248,28 +258,35 @@ export function renderEdges(ddg, edges, label = null, nodeDescription = null) {
  *  #########################################################################*/
 
 /**
- * @param {DDGNodeSummary} summaries 
+ * @param {DDGNodeSummary[] || Object.<string, DDGNodeSummary>} summaries 
  */
 export function renderDDGSummaries(ddg, summaries) {
   const { timelineNodes } = ddg;
-  return Object.entries(summaries).map(([timelineId, summary]) => {
-    const {
-      summaryRoots,
-      snapshotsByRefId
-    } = summary;
-    const node = timelineNodes[timelineId];
-    return makeTreeItem(node.label,
-      {
-        node: renderDDGNode(ddg, node),
-        roots: summaryRoots.map(rootId => {
-          const root = timelineNodes[rootId];
-          return renderNodeTree(ddg, root);
-        }),
-        snapshotsByRefId
-      },
-      {
-        // description: `${summaryModeLabel}`
-      }
-    );
-  });
+  return Object.values(summaries).map(
+    /**
+     * @param {DDGNodeSummary} summary 
+     */
+    (summary) => {
+      const {
+        timelineId,
+        summaryRoots,
+        snapshotsByRefId,
+        nodesByTid
+      } = summary;
+      const node = timelineNodes[timelineId];
+      return makeTreeItem(node.label,
+        {
+          node: renderDDGNode(ddg, node, null, null, 'Summarized by: '),
+          roots: summaryRoots.map(rootId => {
+            const root = timelineNodes[rootId];
+            return renderNodeTree(ddg, root);
+          }),
+          snapshotsByRefId: Object.fromEntries(snapshotsByRefId.entries()),
+          nodesByTid: Object.fromEntries(nodesByTid.entries())
+        },
+        {
+          // description: `${summaryModeLabel}`
+        }
+      );
+    });
 }

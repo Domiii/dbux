@@ -44,6 +44,7 @@ export default class DDGWatchSet {
    * It contains the {@link DataNode#nodeId} of the last DataNode
    * of the trace of the last snapshot root or {@link DataTimelineNode}
    * accessing that `refId` in (near) execution order.
+   * @type {Map.<number, number>}
    */
   lastDataNodeByWatchedRefs = new Map();
 

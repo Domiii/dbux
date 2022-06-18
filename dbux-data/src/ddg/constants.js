@@ -1,7 +1,7 @@
 
 export const DDGRootTimelineId = 1;
 
-export function isRoot(timelineId) {
+export function isDDGRoot(timelineId) {
   return timelineId === DDGRootTimelineId;
 }
 

@@ -92,7 +92,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
    * public
    * ##########################################################################*/
 
-  public = {
+  _public = {
     /**
      * HACKFIX: we do this, so we can resolve `ddg` in here.
      *    → That is necessary b/c VSCode won't resolve the nesting class's prop.
@@ -101,12 +101,19 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     get ddg() { return null; },
 
     selectNode(timelineId) {
-      const { timelineNodes, applicationId } = this.renderState;
+      const { timelineNodes } = this.renderState;
       const node = timelineNodes[timelineId];
       if (node.dataNodeId) {
-        const dp = allApplications.getById(applicationId).dataProvider;
-        const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
-        const trace = dp.collections.traces.getById(dataNode.traceId);
+        let traceId;
+        const { dp } = this.ddg;
+        if (node.isPartial) {
+          traceId = this.ddg.getPartialSnapshotTraceId(node);
+        }
+        else {
+          const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
+          traceId = dataNode.traceId;
+        }
+        const trace = dp.collections.traces.getById(traceId);
         if (trace) {
           traceSelection.selectTrace(trace, null, node.dataNodeId);
         }
@@ -122,9 +129,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
      */
     async updateGraph(cfg) {
       const {
-        timelineId,
-        summaryMode,
-        settings
+        timelineId, summaryMode, settings
       } = cfg;
       const { ddg } = this;
 
@@ -135,31 +140,12 @@ export default class DDGTimelineView extends HostComponentEndpoint {
         // update graph
         ddg.setSummaryMode(timelineId, summaryMode);
       }
-
-      // const origTimelineNodesLength = ddg.timelineNodes.length;
-      // const origNodeSummaryKeys = Object.keys(ddg.nodeSummaries);
-
-
-      // // state delta: new nodes
-      // const newNodes = ddg.timelineNodes.slice(origTimelineNodesLength);
-
-      // // state delta: added summaries
-      // const newNodeSummaries = ddg.nodeSummaries;
-      // const newSummaryKeys = Object.keys(newNodeSummaries);
-      // const addedSummaryKeys = difference(newSummaryKeys, origNodeSummaryKeys);
-      // const addedSummaries = Object.fromEntries(addedSummaryKeys.map(k => [k, newNodeSummaries[k]]));
-
-      //   // state delta: new nodes
-
-      //   // call setState
-      //   this.doc.setState(ddg.getChangingData(), {
-      //     arrayAdd: {
-      //       timelineNodes: newNodes
-      //     },
-      //     objectMerge: {
-      //       nodeSummaries: addedSummaries
-      //     }
-      //   });
     }
+  };
+  get public() {
+    return this._public;
+  }
+  set public(value) {
+    this._public = value;
   }
 }

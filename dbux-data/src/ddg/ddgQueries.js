@@ -1,7 +1,7 @@
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { isRoot } from './constants';
+import { isDDGRoot } from './constants';
 import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
@@ -65,12 +65,12 @@ const _canApplySummaryMode = {
   },
   [DDGSummaryMode.Hide]: (ddg, node) => {
     return (
-      !isRoot(node.timelineId) && // cannot hide the root
+      !isDDGRoot(node.timelineId) && // cannot hide the root
       !node.watched // cannot change state of watched nodes
     );
   },
   [DDGSummaryMode.Collapse]: (ddg, node) => {
-    return !isRoot(node.timelineId) &&
+    return !isDDGRoot(node.timelineId) &&
       isControlGroupTimelineNode(node.type);
   },
   /**
@@ -93,7 +93,7 @@ const _canApplySummaryMode = {
   },
   [DDGSummaryMode.HideChildren]: (ddg, node) => {
     // only applies to root (all other nodes are "collapse"d instead)
-    return isRoot(node.timelineId);
+    return isDDGRoot(node.timelineId);
   }
 };
 
@@ -124,6 +124,8 @@ const ddgQueries = {
   },
 
   /**
+   * WARNING: This does not work on summary nodes (would need to check !node.og as well).
+   * 
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
@@ -208,7 +210,17 @@ const ddgQueries = {
    */
   canNodeExpand(ddg, node) {
     // ddgQueries.getSummarizableChildren(this, node.timelineId).length
-    return ddgQueries.isNodeSummarizable(ddg, node) && !!ddgQueries.getSummarizableChildren(ddg, node.timelineId).length;
+    // return ddgQueries.isNodeSummarizable(ddg, node) && 
+    //   ;
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   */
+  hasSummarizableChildren(ddg, node) {
+    return !!ddgQueries.getSummarizableChildren(ddg, node.timelineId).length;
   },
 
   /**
@@ -261,7 +273,7 @@ const ddgQueries = {
   },
 
   /** ###########################################################################
-   * summaries
+   * Summary queries
    *  #########################################################################*/
 
   /**
@@ -290,7 +302,7 @@ const ddgQueries = {
    */
   doesNodeHaveSummary(ddg, node) {
     const nodeSummary = ddg.nodeSummaries[node.timelineId];
-    return nodeSummary?.summaryRoots?.length;
+    return !!nodeSummary?.summaryRoots?.length;
   },
 
   wasNodeSummarizedBefore(ddg, node) {
@@ -299,19 +311,30 @@ const ddgQueries = {
   },
 
   /**
+   * WARNING: This will check "summarizability" recursively
+   * 
    * @param {RenderState} ddg 
    * @param {DDGTimelineNode} node
    */
   isNodeSummarizable(ddg, node) {
     return (
-      !isRoot(node.timelineId) &&
-      isControlGroupTimelineNode(node.type) &&
+      !isDDGRoot(node.timelineId) &&
       node.hasSummarizableWrites && (
-        // we don't know yet
-        !ddgQueries.wasNodeSummarizedBefore(ddg, node) ||
+        !isControlGroupTimelineNode(node.type) ||
+        (
+          // it itself can be summarized
+          (
+            // we don't know yet
+            !ddgQueries.wasNodeSummarizedBefore(ddg, node) ||
 
-        // actually check if summarizable
-        ddgQueries.doesNodeHaveSummary(ddg, node)
+            // actually check if summary is non-empty
+            ddgQueries.doesNodeHaveSummary(ddg, node)
+          ) ||
+          // children can be summarized
+          (
+            ddgQueries.hasSummarizableChildren(ddg, node)
+          )
+        )
       )
     );
   },
@@ -348,6 +371,19 @@ const ddgQueries = {
   getSummarySnapshots(ddg, summary) {
     const summaryNodeIds = Array.from(summary.snapshotsByRefId.values());
     return summaryNodeIds.map(id => ddg.timelineNodes[id]);
+  },
+
+  /**
+   * @param {RenderState} ddg 
+   * @param {DDGTimelineNode} node
+   * @return {DDGNodeSummary} Summary of first summarized ancestor node.
+   */
+  getSummarizedGroupOfNode(ddg, node) {
+    let current = node;
+    while (current && !ddgQueries.isNodeSummarizedMode(ddg, current) && current.groupId) {
+      current = ddg.timelineNodes[current.groupId];
+    }
+    return current && ddg.nodeSummaries[current.timelineId] || null;
   },
 
   /** ###########################################################################
