@@ -1061,7 +1061,7 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "bitsDiff(0, 1)",
+        "ddgTitle": "bitsDiff(0, 0)",
         "contextId": 6,
         "filePath": "src/algorithms/math/bits/bitsDiff.js",
         "loc": {
@@ -1076,7 +1076,115 @@ module.exports = [
             "index": 332
           }
         },
-        "applicationUuid": "0.4597341131278494"
+        "applicationUuid": "0.003099417459174969"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 1)",
+        "contextId": 8,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.003099417459174969"
+      },
+      {
+        "ddgTitle": "bitsDiff(124, 124)",
+        "contextId": 10,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.003099417459174969"
+      },
+      {
+        "ddgTitle": "bitsDiff(0, 1)",
+        "contextId": 12,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.003099417459174969"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 0)",
+        "contextId": 14,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.003099417459174969"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 2)",
+        "contextId": 16,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.003099417459174969"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 3)",
+        "contextId": 18,
+        "filePath": "src/algorithms/math/bits/bitsDiff.js",
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 51,
+            "index": 285
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 332
+          }
+        },
+        "applicationUuid": "0.003099417459174969"
       }
     ]
   },

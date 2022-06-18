@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import last from 'lodash/last';
 import { throttle } from '@dbux/common/src/util/scheduling';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
@@ -471,7 +472,9 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const lastModifyNodesByRefId = new Map();           // summary ref set
     const varModifyOrReturnDataNodes = new Map();       // summary var + return set
-    const lastNestedDataNodeId = this.#collectNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+    const lastNestedDataNodeId = this.#gatherNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+
+    // fix up refs
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
@@ -484,6 +487,22 @@ export default class DataDependencyGraph extends BaseDDG {
         );
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });
+
+    if (DDGTimelineNodeType.is.Context(node.type)) {
+      // add return return argument
+      const returnInputDataNodeId = dp.util.getReturnArgumentInputDataNodeIdOfContext(node.contextId);
+      if (returnInputDataNodeId) {
+        const returnDataNode = dp.util.getDataNode(returnInputDataNodeId);
+        const skippedNode = this.timelineBuilder.getSkippedByNode(returnDataNode);
+        const timelineNodes = this.getTimelineNodesOfDataNode(returnInputDataNodeId);
+        const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
+        if (skippedNode || timelineNodes) {
+          // always override previous, because its always last
+          const returnTimelineId = (skippedNode || last(timelineNodes)).timelineId;
+          varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
+        }
+      }
+    }
 
     // TODO: not good enough to determine "deep access"
     // const accessedAccessIds = new Set(
@@ -541,7 +560,7 @@ export default class DataDependencyGraph extends BaseDDG {
    * @param {Map.<number, number>} lastModifyNodesByRefId
    * @return {number} The `lastDataNodeId` of the entire node.
    */
-  #collectNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes) {
+  #gatherNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes) {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
 
@@ -560,10 +579,7 @@ export default class DataDependencyGraph extends BaseDDG {
         const isPreexistingVar = varDeclarationTid && (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid);
         if (
           // Pre-existing variable Write or Compute
-          isPreexistingVar ||
-
-          // return argument
-          (DDGTimelineNodeType.is.Context(summarizingNode.type) && dp.util.isReturnArgumentInputDataNode(node.dataNodeId))
+          isPreexistingVar
         ) {
           // store variable writes, if variable was declared before summarizingNode
           varModifyOrReturnDataNodes.set(varDeclarationTid, node.timelineId);
@@ -573,7 +589,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (node.children) {
       for (const childId of Object.values(node.children)) {
         const childNode = this.timelineNodes[childId];
-        const lastChildDataNodeId = this.#collectNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+        const lastChildDataNodeId = this.#gatherNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
         if (lastChildDataNodeId) {
           lastDataNodeId = lastChildDataNodeId;
         }
