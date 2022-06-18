@@ -10,10 +10,11 @@ export default class Chapter {
    * @param {string} name 
    * @param {Exercise[]} exercises 
    */
-  constructor(manager, id, name, exercises) {
+  constructor(manager, id, name, exercises, cfg) {
     this.manager = manager;
     this.name = name;
     this.id = id;
     this.exercises = new ExerciseList(exercises);
+    Object.assign(this, cfg);
   }
 }
