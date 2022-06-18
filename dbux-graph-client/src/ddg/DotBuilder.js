@@ -41,7 +41,7 @@ function fixProp(prop) {
 }
 
 function isConnected(node) {
-  return node.connected || 
+  return node.connected ||
     // non-build nodes (summary nodes) are always connected
     !node.og;
 }
@@ -227,6 +227,16 @@ export default class DotBuilder {
   }
 
   /** ###########################################################################
+   * summary stuff
+   *  #########################################################################*/
+
+  iSummary = 0;
+
+  getRootShapeStyleOverride() {
+    return this.iSummary ? 'shape=box3d,style="bold"' : null;
+  }
+
+  /** ###########################################################################
    * build
    * ##########################################################################*/
 
@@ -373,9 +383,13 @@ export default class DotBuilder {
     this.indentLevel += 1;
     this._groupAttrs(node);
 
+    this.iSummary += 1;
+
     for (const root of roots) {
       this.node(root, true);
     }
+
+    this.iSummary -= 1;
 
     this.indentLevel -= 1;
     this.fragment(`}`);
@@ -549,7 +563,7 @@ export default class DotBuilder {
       this.nodeAttrs(node.timelineId)
     ];
     if (this.isPropRecordNode(node)) {
-      attrs.push(`shape=plaintext`);
+      attrs.push(this.getRootShapeStyleOverride() || `shape=plaintext`);
       // record with prop + value
       // → has no ID itself. Child cell has ID instead.
       l = `<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
@@ -560,7 +574,7 @@ export default class DotBuilder {
 </TABLE>`;
     }
     else {
-      attrs.push(`shape=record`); // this adds an outline to the table
+      attrs.push(this.getRootShapeStyleOverride() || `shape=record`); // NOTE: `record` adds an outline to the table
       l = `
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
   <TR>
@@ -598,7 +612,7 @@ export default class DotBuilder {
    */
   isDisconnectedSnapshot(node) {
     const { ddg } = this;
-    return ddgQueries.isSnapshot(ddg, node) && 
+    return ddgQueries.isSnapshot(ddg, node) &&
       !isConnected(node);
   }
 
@@ -633,7 +647,9 @@ export default class DotBuilder {
           return this.makePropValueCell(childId, prop);
         })
         .join('');
-      this.command(`${timelineId} [${attrs},shape=plaintext,label=<
+
+      const shapeAndStyle = this.getRootShapeStyleOverride() || 'shape=plaintext';
+      this.command(`${timelineId} [${attrs},${shapeAndStyle},label=<
 <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
     ${hasLabel ? `<TD ROWSPAN="2">${this.wrapText(label)}</TD>` : ''}
