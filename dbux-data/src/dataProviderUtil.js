@@ -807,17 +807,9 @@ const dataProviderUtil = {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeDeclarationTid(dp, dataNodeId) {
+  getDataNodeAccessedDeclarationTid(dp, dataNodeId) {
     const dataNode = dp.util.getDataNode(dataNodeId);
     return dataNode?.varAccess?.declarationTid;
-  },
-
-  /**
-   * @param {RuntimeDataProvider} dp
-   * @return {DataNodeTypeValue}
-   */
-  getDataNodeType(dp, dataNodeId) {
-    return dp.collections.dataNodes.getById(dataNodeId).type;
   },
 
   /** @param {RuntimeDataProvider} dp */
@@ -1376,11 +1368,16 @@ const dataProviderUtil = {
   },
 
   /** @param {RuntimeDataProvider} dp */
+  getStaticTraceDeclarationVarName(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.data?.name || staticTrace.displayName;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
   getDataNodeDeclarationVarName(dp, dataNodeId) {
-    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
+    const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(dataNodeId);
     if (declarationTid) {
-      const staticTrace = dp.util.getStaticTrace(declarationTid);
-      return staticTrace.data?.name || staticTrace.displayName;
+      return dp.util.getStaticTraceDeclarationVarName(dp.util.getStaticTraceId(declarationTid));
     }
     return null;
   },

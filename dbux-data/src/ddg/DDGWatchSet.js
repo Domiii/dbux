@@ -161,7 +161,7 @@ export default class DDGWatchSet {
       return true;
     }
 
-    const declarationTid = this.dp.util.getDataNodeDeclarationTid(dataNodeId);
+    const declarationTid = this.dp.util.getDataNodeAccessedDeclarationTid(dataNodeId);
     if (this.declarationTids.has(declarationTid)) {
       return true;
     }

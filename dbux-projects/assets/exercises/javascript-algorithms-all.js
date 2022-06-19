@@ -1705,6 +1705,80 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(kMeans, ƒ (anonymous))",
+        "contextId": 5,
+        "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 25,
+            "index": 60
+          },
+          "end": {
+            "line": 40,
+            "column": 1,
+            "index": 1214
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)",
+        "contextId": 7,
+        "filePath": "src/algorithms/ml/k-means/kMeans.js",
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 2,
+            "index": 442
+          },
+          "end": {
+            "line": 85,
+            "column": 1,
+            "index": 3303
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 578,
+        "filePath": "src/algorithms/ml/k-means/kMeans.js",
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 2,
+            "index": 442
+          },
+          "end": {
+            "line": 85,
+            "column": 1,
+            "index": 3303
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 940,
+        "filePath": "src/algorithms/ml/k-means/kMeans.js",
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 2,
+            "index": 442
+          },
+          "end": {
+            "line": 85,
+            "column": 1,
+            "index": 3303
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      }
     ]
   },
   {
@@ -1855,6 +1929,156 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(kNN, ƒ (anonymous))",
+        "contextId": 5,
+        "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 22,
+            "index": 51
+          },
+          "end": {
+            "line": 71,
+            "column": 1,
+            "index": 2299
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[]], [1,2], [1,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25])",
+        "contextId": 47,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25], 5)",
+        "contextId": 193,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,1])",
+        "contextId": 340,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,0,1])",
+        "contextId": 401,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      }
     ]
   },
   {

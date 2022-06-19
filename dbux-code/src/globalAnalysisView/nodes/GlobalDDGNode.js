@@ -2,16 +2,20 @@
 
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import size from 'lodash/size';
+import groupBy from 'lodash/groupBy';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import DDGSummaryMode, { isExpandedMode } from '@dbux/data/src/ddg/DDGSummaryMode';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
+import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
+import makeTreeItem, { makeTreeChildren, mkTreeItem, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
+// eslint-disable-next-line max-len
+import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode } from '../../treeViewsShared/ddgTreeViewUtil';
+
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -99,7 +103,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
             predicate: (node) => isControlGroupTimelineNode(node.type),
             propsFactory: (node, children) => {
               const summaryMode = ddg.summaryModes[node.timelineId];
-              const expanded = isExpandedMode(summaryMode) || 
+              const expanded = isExpandedMode(summaryMode) ||
                 Object.values(children).some(c => c.collapsibleState === TreeItemCollapsibleState.Expanded);
               const cannotExpand = !expanded && !ddgQueries.canNodeExpand(ddg, node);
               const collapsibleState = (expanded) ?
@@ -187,6 +191,109 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
             }
           };
         },
+        /** ###########################################################################
+         * Summarizable Writes
+         * ##########################################################################*/
+        function Summarizable_Writes() {
+          const { dp } = ddg;
+          function makeWriteEntry(timelineNode, props) {
+            const { traceId } = dp.util.getDataNode(timelineNode.dataNodeId);
+            const { staticTraceId } = dp.util.getTrace(traceId);
+            return {
+              ...props,
+              staticTraceId,
+              traceId,
+              timelineNode,
+              treeItem: renderDDGNode(ddg, timelineNode)
+            };
+          }
+          function makeGroups(prop, allItems) {
+            return Object.values(groupBy(allItems, prop))
+              .sort((a, b) => a[0][prop] - b[0][prop])
+              .map(group => {
+                const innerGroups = Object.values(groupBy(group, 'staticTraceId'))
+                  .sort((a, b) => a.staticTraceId - b.staticTraceId);
+                return {
+                  [prop]: group[0][prop],
+                  children: () => innerGroups.map(innerItems => {
+                    const label = truncateStringDefault(dp.collections.staticTraces.getById(innerItems[0].staticTraceId), { length: 30 });
+                    return mkTreeItem(
+                      label,
+                      () => innerItems.map(item => item.treeItem),
+                      {
+                        description: `(${innerItems.length})`
+                      }
+                    );
+                  }),
+                  props: {
+                    description: `(${group.length})`
+                  }
+                };
+              });
+          }
+          return {
+            children() {
+              const summarizableNodes = timelineNodes.filter(node => node?.hasSummarizableWrites);
+
+              const summarizableRefs = makeGroups(
+                'refId',
+                summarizableNodes.map(timelineNode => {
+                  const refId = dp.util.getDataNodeAccessedRefId(timelineNode.dataNodeId);
+                  if (!refId) {
+                    return null;
+                  }
+                  return makeWriteEntry(timelineNode, {
+                    refId
+                  });
+                }).filter(Boolean)
+              );
+
+              const summarizableVars = makeGroups(
+                'declarationStaticTraceId',
+                summarizableNodes.map(timelineNode => {
+                  const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
+                  if (!declarationTid) {
+                    return null;
+                  }
+                  const declarationStaticTraceId = dp.util.getTrace(declarationTid).staticTraceId;
+                  return makeWriteEntry(timelineNode, {
+                    declarationStaticTraceId,
+                    declarationTid,
+                  });
+                }).filter(Boolean)
+              );
+
+              return [
+                mkTreeItem(
+                  'Refs',
+                  summarizableRefs.map((group) => mkTreeItem(
+                    dp.util.getRefOriginalVarName(group.refId),
+                    group.children,
+                    group.props
+                  )),
+                  {
+                    description: `(${summarizableRefs.length})`
+                  }
+                ),
+                mkTreeItem(
+                  'Vars',
+                  summarizableVars.map((group) => mkTreeItem(
+                    dp.util.getStaticTraceDeclarationVarName(group.declarationStaticTraceId),
+                    group.children,
+                    group.props
+                  )),
+                  {
+                    description: `(${summarizableRefs.length})`
+                  }
+                )
+              ];
+            }
+          };
+        },
+
+        /** ###########################################################################
+         * DOT
+         * ##########################################################################*/
         function Dot() {
           return {
             props: {
