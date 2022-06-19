@@ -9,8 +9,9 @@ import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDG
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import { groupBySorted } from '@dbux/common/src/util/arrayUtil';
-import { makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
+import { makeContextLabel, makeStaticContextLabel, makeStaticContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
+import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
 import makeTreeItem, { mkTreeItem, makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
 
@@ -305,8 +306,7 @@ export function renderDDGSummaries(ddg, summaries) {
  * @param {DataDependencyGraph} ddg
  * @param {number[]} dataNodeIds
  */
-export function renderAccessedRefIdGroups(ddg, timelineNodes, getRefIdCb) {
-  // TODO: deal w/ globals
+export function renderRefGroups(ddg, timelineNodes, getRefIdCb) {
   const { dp } = ddg;
   const items = timelineNodes
     .filter(timelineNode => timelineNode.dataNodeId && getRefIdCb(timelineNode))
@@ -314,16 +314,87 @@ export function renderAccessedRefIdGroups(ddg, timelineNodes, getRefIdCb) {
       const refId = getRefIdCb(timelineNode);
       const firstAccessDataNode = dp.util.findRefFirstAccessDataNode(refId);
       const varName = dp.util.getDataNodeVarAccessName(firstAccessDataNode.nodeId);
+      const staticContext = dp.util.getTraceStaticContext(firstAccessDataNode.traceId);
       const dataNode = dp.util.getDataNode(timelineNode.dataNodeId);
       return {
-        refId,
         timelineNode,
+        refId,
         dataNode,
+        staticContext,
+        staticContextId: staticContext.staticContextId,
         varName,
         varDataNode: firstAccessDataNode,
         varDataNodeId: firstAccessDataNode.nodeId,
       };
     });
+
+  return groupBySorted(items, 'staticContextId').map((ofStaticContext) => {
+    return mkTreeItem(
+      truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
+      () => groupBySorted(ofStaticContext, 'varName')
+        .sort((a, b) => a.varDataNodeId - b.varDataNodeId)
+        .map(ofVar => {
+          return mkTreeItem(
+            ofVar[0].varName,
+            () => groupBySorted(ofVar, 'refId').map(ofRefId => {
+              const refItem = ofRefId[0];
+              const refTrace = dp.util.getTraceOfDataNode(refItem.varDataNode.nodeId);
+              return mkTreeItem(
+                makeTraceLocLabel(refTrace),
+                () => {
+                  return ofRefId.map(item => renderDDGNode(ddg, item.timelineNode));
+                },
+                {
+                  description: `(${ofRefId.length})`,
+                  handleClick() {
+                    traceSelection.selectTrace(refTrace);
+                  }
+                }
+              );
+            }),
+            {
+              description: `(${new Set(ofVar.map(i => i.refId)).size} refs, ${ofVar.length} nodes)`,
+              handleClick() {
+                const trace = dp.util.getTrace(ofVar[0].varDataNode.traceId);
+                traceSelection.selectTrace(trace);
+              }
+            }
+          );
+        }),
+      {
+        description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
+        handleClick() {
+          const trace = dp.util.getTrace(ofStaticContext[0].varDataNode.traceId);
+          traceSelection.selectTrace(trace);
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Groups by:
+ * firstVarName → refId → dataNodeId.
+ * 
+ * @param {DataDependencyGraph} ddg
+ * @param {number[]} dataNodeIds
+ */
+export function renderVarGroups(ddg, timelineNodes) {
+  const { dp } = ddg;
+  const items = timelineNodes
+    .filter(timelineNode => dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId))
+    .map(timelineNode => {
+      const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
+      const staticDeclarationTid = dp.util.getStaticTraceId(declarationTid);
+      const varName = dp.util.getDataNodeVarAccessName(firstAccessDataNode.nodeId);
+      return {
+        timelineNode,
+        declarationTid,
+        staticDeclarationTid,
+        varName
+      };
+    });
+  // const label = truncateStringShort(dp.util.getStaticTraceDeclarationVarName(innerItems[0].staticTraceId));
 
   return groupBySorted(items, 'varName').map((ofVar) => {
     return mkTreeItem(
@@ -353,4 +424,19 @@ export function renderAccessedRefIdGroups(ddg, timelineNodes, getRefIdCb) {
       }
     );
   });
+  // truncateStringShort(dp.util.getStaticTraceDeclarationVarName(group.declarationStaticTraceId)),
+  // const summarizableVars = makeGroups(
+  //   'declarationStaticTraceId',
+  //   summarizableNodes.map(timelineNode => {
+  //     const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
+  //     if (!declarationTid) {
+  //       return null;
+  //     }
+  //     const declarationStaticTraceId = dp.util.getTrace(declarationTid).staticTraceId;
+  //     return makeWriteEntry(timelineNode, {
+  //       declarationStaticTraceId,
+  //       declarationTid,
+  //     });
+  //   }).filter(Boolean)
+  // );
 }

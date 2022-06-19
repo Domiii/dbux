@@ -14,7 +14,7 @@ import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
 // eslint-disable-next-line max-len
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode, renderAccessedRefIdGroups } from '../../treeViewsShared/ddgTreeViewUtil';
+import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode, renderRefGroups } from '../../treeViewsShared/ddgTreeViewUtil';
 import traceSelection from '@dbux/data/src/traceSelection';
 
 
@@ -197,79 +197,19 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
          * ##########################################################################*/
         function Summarizable_Writes() {
           const { dp } = ddg;
-          function makeWriteEntry(timelineNode, props) {
-            const { traceId } = dp.util.getDataNode(timelineNode.dataNodeId);
-            const { staticTraceId } = dp.util.getTrace(traceId);
-            return {
-              ...props,
-              staticTraceId,
-              traceId,
-              timelineNode,
-              treeItem: renderDDGNode(ddg, timelineNode)
-            };
-          }
-          function makeGroups(prop, allItems) {
-            return Object.values(groupBy(allItems, prop))
-              .sort((a, b) => a[0][prop] - b[0][prop])
-              .map(outerGroup => {
-                // TODO: sort by outer staticTraceId
-                const innerGroups = Object.values(groupBy(outerGroup, 'staticTraceId'))
-                  .sort((a, b) => a.staticTraceId - b.staticTraceId);
-                return {
-                  [prop]: outerGroup[0][prop],
-                  children: () => innerGroups.map(innerItems => {
-                    const label = truncateStringShort(dp.util.getStaticTraceDeclarationVarName(innerItems[0].staticTraceId));
-                    return mkTreeItem(
-                      label,
-                      () => innerItems.map(item => item.treeItem),
-                      {
-                        description: `(${innerItems.length})`,
-                        handleClick() {
-                          const trace = dp.util.getTrace(innerItems[0].traceId);
-                          traceSelection.selectTrace(trace);
-                        }
-                      }
-                    );
-                  }),
-                  props: {
-                    description: `(${outerGroup.length})`
-                  },
-                  handleClick() {
-                    // TODO: get proper click place
-                    const trace = dp.util.getTrace(outerGroup[0].traceId);
-                    traceSelection.selectTrace(trace);
-                  }
-                };
-              });
-          }
+
           return {
             children() {
               const summarizableNodes = timelineNodes.filter(node => !!node?.hasSummarizableWrites && !!node.dataNodeId);
 
-              // truncateStringShort(dp.util.getStaticTraceDeclarationVarName(group.declarationStaticTraceId)),
-              // const summarizableVars = makeGroups(
-              //   'declarationStaticTraceId',
-              //   summarizableNodes.map(timelineNode => {
-              //     const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
-              //     if (!declarationTid) {
-              //       return null;
-              //     }
-              //     const declarationStaticTraceId = dp.util.getTrace(declarationTid).staticTraceId;
-              //     return makeWriteEntry(timelineNode, {
-              //       declarationStaticTraceId,
-              //       declarationTid,
-              //     });
-              //   }).filter(Boolean)
-              // );
-
               const getAccessedRefId = timelineNode => dp.util.getDataNodeAccessedRefId(timelineNode.dataNodeId);
               const accessedRefIds = new Set(summarizableNodes.map(getAccessedRefId));
-              const accessedRefGroups = renderAccessedRefIdGroups(
+              const accessedRefGroups = renderRefGroups(
                 ddg,
                 summarizableNodes,
                 getAccessedRefId
               );
-              const otherRefGroups = renderAccessedRefIdGroups(
+              const otherRefGroups = renderRefGroups(
                 ddg,
                 summarizableNodes,
                 timelineNode => {
@@ -283,7 +223,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                   'Accessed Refs',
                   accessedRefGroups,
                   {
-                    tooltip: 'All PDG nodes capturing access to a property of a reference type object.',
+                    tooltip: 'All PDG nodes capturing access to a property of a reference type object. \nBy Declaring_Function → var → instance.',
                     description: `(${accessedRefGroups.length})`
                   }
                 ),
