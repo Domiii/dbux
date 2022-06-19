@@ -380,50 +380,6 @@ export function renderRefGroups(ddg, timelineNodes, getRefIdCb) {
  * @param {number[]} dataNodeIds
  */
 export function renderVarGroups(ddg, timelineNodes) {
-  const { dp } = ddg;
-  const items = timelineNodes
-    .filter(timelineNode => dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId))
-    .map(timelineNode => {
-      const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
-      const staticDeclarationTid = dp.util.getStaticTraceId(declarationTid);
-      const varName = dp.util.getDataNodeVarAccessName(firstAccessDataNode.nodeId);
-      return {
-        timelineNode,
-        declarationTid,
-        staticDeclarationTid,
-        varName
-      };
-    });
-  // const label = truncateStringShort(dp.util.getStaticTraceDeclarationVarName(innerItems[0].staticTraceId));
-
-  return groupBySorted(items, 'varName').map((ofVar) => {
-    return mkTreeItem(
-      ofVar[0].varName,
-      () => groupBySorted(ofVar, 'refId').map(ofRefId => {
-        const refItem = ofRefId[0];
-        const refTrace = dp.util.getTraceOfDataNode(refItem.varDataNode.nodeId);
-        return mkTreeItem(
-          makeTraceLocLabel(refTrace),
-          () => {
-            return ofRefId.map(item => renderDDGNode(ddg, item.timelineNode));
-          },
-          {
-            description: `(${ofRefId.length})`,
-            handleClick() {
-              traceSelection.selectTrace(refTrace);
-            }
-          }
-        );
-      }),
-      {
-        description: `(${new Set(ofVar.map(i => i.refId)).size} refs, ${ofVar.length} nodes)`,
-        handleClick() {
-          const trace = dp.util.getTrace(ofVar[0].varDataNode.traceId);
-          traceSelection.selectTrace(trace);
-        }
-      }
-    );
-  });
   // truncateStringShort(dp.util.getStaticTraceDeclarationVarName(group.declarationStaticTraceId)),
   // const summarizableVars = makeGroups(
   //   'declarationStaticTraceId',
@@ -439,4 +395,53 @@ export function renderVarGroups(ddg, timelineNodes) {
   //     });
   //   }).filter(Boolean)
   // );
+
+  const { dp } = ddg;
+  const items = timelineNodes
+    .filter(timelineNode => dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId))
+    .map(timelineNode => {
+      const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
+      const staticDeclarationTid = dp.util.getStaticTraceId(declarationTid);
+      const varName = dp.util.getStaticTraceDeclarationVarName(staticDeclarationTid);
+      const staticContext = dp.util.getTraceStaticContext(declarationTid);
+      const dataNode = dp.util.getDataNode(timelineNode.dataNodeId);
+      return {
+        timelineNode,
+        declarationTid,
+        staticDeclarationTid,
+        dataNode,
+        staticContext,
+        staticContextId: staticContext.staticContextId,
+        varName,
+      };
+    });
+
+  return groupBySorted(items, 'staticContextId').map((ofStaticContext) => {
+    return mkTreeItem(
+      truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
+      () => groupBySorted(ofStaticContext, 'staticDeclarationTid')
+        .map(ofVar => {
+          return mkTreeItem(
+            ofVar[0].varName,
+            () => {
+              return ofVar.map(item => renderDDGNode(ddg, item.timelineNode));
+            },
+            {
+              description: `(${new Set(ofVar.map(i => i.staticDeclarationTid)).size} vars, ${ofVar.length} nodes)`,
+              handleClick() {
+                const trace = dp.util.getTrace(ofVar[0].declarationTid);
+                traceSelection.selectTrace(trace);
+              }
+            }
+          );
+        }),
+      {
+        description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
+        handleClick() {
+          const trace = dp.util.getTrace(ofStaticContext[0].varDataNode.traceId);
+          traceSelection.selectTrace(trace);
+        }
+      }
+    );
+  });
 }
