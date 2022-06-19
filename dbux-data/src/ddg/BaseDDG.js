@@ -428,7 +428,7 @@ export default class BaseDDG {
     }
     else {
       // future-work: this only gives the first name assigned to it, but we might be more interested in "the most recent name" instead
-      const varName = this.dp.util.getDataNodeAccessedRefVarName(dataNode.nodeId);
+      const varName = this.dp.util.findDataNodeAccessedRefVarName(dataNode.nodeId);
       deleteLabel = `${varName || '?'}[${varAccess.prop}]`;
     }
     const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, deleteLabel);

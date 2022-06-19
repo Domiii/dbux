@@ -28,7 +28,7 @@ export default class DDGSet {
   }
 
   #makeGraphId(...inputs) {
-    return `DDG (${inputs.join(',')})`;
+    return `PDG (${inputs.join(',')})`;
   }
 
   getCreateDDGFailureReason({ applicationId, contextId }) {

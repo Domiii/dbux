@@ -1,6 +1,7 @@
 import { format } from 'util';
 import stripAnsi from 'strip-ansi';
 import isString from 'lodash/isString';
+import find from 'lodash/find';
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
@@ -10,7 +11,7 @@ import sum from 'lodash/sum';
 import clone from 'lodash/clone';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
-import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
+import { groupBySorted, pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
@@ -34,7 +35,7 @@ import { isTraceControlRolePop, isTraceControlRoleDecision } from '@dbux/common/
 import RefSnapshot, { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/common/src/types/RefSnapshot';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
-import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
+import { makeContextSchedulerLabel, makeTraceLabel, makeTraceLocLabel } from './helpers/makeLabels';
 
 /** @typedef {import('./RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
@@ -132,10 +133,10 @@ function truncateStringDefault(s, cfg = TruncateDefaultCfg) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }
 
-const dataProviderUtil = {
 
+const dataProviderUtil = {
   // ###########################################################################
-  // Program utils
+  // StaticProgramContexts
   // ###########################################################################
   /** @param {RuntimeDataProvider} dp */
   getFilePathFromProgramId(dp, programId) {
@@ -1315,8 +1316,13 @@ const dataProviderUtil = {
     return valueString;
   },
 
+  /** ###########################################################################
+   * DataNode ref + var names
+   * ##########################################################################*/
+
   /**
    * Uses some heuristics to get a good name for a ref that was stored in given node.
+   * 
    * @param {RuntimeDataProvider} dp 
    */
   guessRefVarName(dp, nodeId) {
@@ -1325,44 +1331,93 @@ const dataProviderUtil = {
     if (!varName) {
       // 1. get original var name
       const dataNode = dp.util.getDataNode(nodeId);
-      varName = dp.util.getRefOriginalVarName(dataNode.refId);
+      varName = dp.util.findRefLastVarName(dataNode.refId);
     }
     return varName;
   },
 
-  /** 
-   * Uses some heuristics to find the last var a given ref was assigned to.
+  /**
+   * @param {RuntimeDataProvider} dp 
+   */
+  _refAccessDataNodeCheck(dp, dataNode) {
+    if (!dataNode.varAccess) {
+      return false;
+    }
+    return (
+      // var name (e.g. `x = ...`)
+      dataNode.varAccess.declarationTid ||
+      // string prop (e.g. `this.x = ...`)
+      (dataNode.varAccess.prop && !isNumber(dataNode.varAccess.prop))
+    );
+  },
+
+  /**
    * WARNING: [perf-search] This is not O(1). It could potentially look through all of the ref's DataNodes.
    * 
    * @param {RuntimeDataProvider} dp 
    */
-  getRefOriginalVarName(dp, refId) {
-    // TODO: consider variables that are not assigned to a variable
+  findRefFirstAccessDataNode(dp, refId) {
     // 1. all dataNodes who held the value of given refId
     const dataNodes = dp.util.getDataNodesByRefId(refId);
     if (dataNodes) {
       // 2. find first DataNode that represents a variable
-      const varNode = findLast(dataNodes, n => {
-        if (!n.varAccess) {
-          return false;
-        }
-        return (
-          // var name (e.g. `x = ...`)
-          n.varAccess.declarationTid ||
-          // string prop (e.g. `this.x = ...`)
-          (n.varAccess.prop && !isNumber(n.varAccess.prop))
-        );
-      });
-      if (varNode) {
-        if (varNode.varAccess.declarationTid) {
-          // 3. return name of variable
-          return dp.util.getDataNodeDeclarationVarName(varNode.nodeId);
-        }
-        else {
-          // 4. return name of prop
-          return varNode.varAccess.prop;
-        }
-      }
+      return find(dataNodes, n => dp.util._refAccessDataNodeCheck(n));
+    }
+    return null;
+  },
+
+  /**
+   * WARNING: [perf-search] This is not O(1). It could potentially look through all of the ref's DataNodes.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  findRefLastAccessDataNode(dp, refId) {
+    // 1. all dataNodes who held the value of given refId
+    const dataNodes = dp.util.getDataNodesByRefId(refId);
+    if (dataNodes) {
+      // 2. find last DataNode that represents a variable
+      return findLast(dataNodes, n => dp.util._refAccessDataNodeCheck(n));
+    }
+    return null;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp 
+   */
+  getDataNodeVarAccessName(dp, nodeId) {
+    const varAccessNode = dp.util.getDataNode(nodeId);
+    if (varAccessNode.varAccess.declarationTid) {
+      // 3. return name of variable
+      return dp.util.getDataNodeDeclarationVarName(varAccessNode.nodeId);
+    }
+    else {
+      // 4. return name of prop
+      return varAccessNode.varAccess.prop;
+    }
+  },
+
+  /** 
+   * Uses some heuristics to find the first var (or prop) a given ref was assigned to.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  findRefFirstVarName(dp, refId) {
+    const varAccessNode = dp.util.findRefFirstAccessDataNode(refId);
+    if (varAccessNode) {
+      return dp.util.getDataNodeVarAccessName(varAccessNode.nodeId);
+    }
+    return null;
+  },
+
+  /** 
+   * Uses some heuristics to find the last var (or prop) a given ref was assigned to.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  findRefLastVarName(dp, refId) {
+    const varAccessNode = dp.util.findRefLastAccessDataNode(refId);
+    if (varAccessNode) {
+      return dp.util.getDataNodeVarAccessName(varAccessNode.nodeId);
     }
     return null;
   },
@@ -1383,10 +1438,10 @@ const dataProviderUtil = {
   },
 
   /** @param {RuntimeDataProvider} dp */
-  getDataNodeAccessedRefVarName(dp, dataNodeId) {
+  findDataNodeAccessedRefVarName(dp, dataNodeId) {
     const refId = dp.util.getDataNodeAccessedRefId(dataNodeId);
     if (refId) {
-      return dp.util.getRefOriginalVarName(refId);
+      return dp.util.findRefLastVarName(refId);
     }
     return null;
   },

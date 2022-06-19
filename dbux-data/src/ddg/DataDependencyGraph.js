@@ -538,7 +538,7 @@ export default class DataDependencyGraph extends BaseDDG {
       const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotCfg, null);
 
       // override label to be the var name (if possible), since its more representative
-      newNode.label = dp.util.getDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
+      newNode.label = dp.util.findDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
     }
 
     // add var + compute nodes

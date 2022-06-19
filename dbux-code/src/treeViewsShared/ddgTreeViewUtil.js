@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isFunction';
 import size from 'lodash/size';
 import isNumber from 'lodash/isNumber';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -8,8 +8,10 @@ import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import { groupBySorted } from '@dbux/common/src/util/arrayUtil';
+import { makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
-import makeTreeItem, { makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
+import makeTreeItem, { mkTreeItem, makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
 
 /**
@@ -289,4 +291,66 @@ export function renderDDGSummaries(ddg, summaries) {
         }
       );
     });
+}
+
+
+/** ###########################################################################
+ * DataNode var + ref groups
+ * ##########################################################################*/
+
+/**
+ * Groups by:
+ * firstVarName → refId → dataNodeId.
+ * 
+ * @param {DataDependencyGraph} ddg
+ * @param {number[]} dataNodeIds
+ */
+export function renderAccessedRefIdGroups(ddg, timelineNodes, getRefIdCb) {
+  // TODO: deal w/ globals
+  const { dp } = ddg;
+  const items = timelineNodes
+    .filter(timelineNode => timelineNode.dataNodeId && getRefIdCb(timelineNode))
+    .map(timelineNode => {
+      const refId = getRefIdCb(timelineNode);
+      const firstAccessDataNode = dp.util.findRefFirstAccessDataNode(refId);
+      const varName = dp.util.getDataNodeVarAccessName(firstAccessDataNode.nodeId);
+      const dataNode = dp.util.getDataNode(timelineNode.dataNodeId);
+      return {
+        refId,
+        timelineNode,
+        dataNode,
+        varName,
+        varDataNode: firstAccessDataNode,
+        varDataNodeId: firstAccessDataNode.nodeId,
+      };
+    });
+
+  return groupBySorted(items, 'varName').map((ofVar) => {
+    return mkTreeItem(
+      ofVar[0].varName,
+      () => groupBySorted(ofVar, 'refId').map(ofRefId => {
+        const refItem = ofRefId[0];
+        const refTrace = dp.util.getTraceOfDataNode(refItem.varDataNode.nodeId);
+        return mkTreeItem(
+          makeTraceLocLabel(refTrace),
+          () => {
+            return ofRefId.map(item => renderDDGNode(ddg, item.timelineNode));
+          },
+          {
+            description: `(${ofRefId.length})`,
+            handleClick() {
+              traceSelection.selectTrace(refTrace);
+            }
+          }
+        );
+      }),
+      {
+        description: `(${new Set(ofVar.map(i => i.refId)).size} refs, ${ofVar.length} nodes)`,
+        handleClick() {
+          const trace = dp.util.getTrace(ofVar[0].varDataNode.traceId);
+          traceSelection.selectTrace(trace);
+        }
+      }
+    );
+  });
 }
