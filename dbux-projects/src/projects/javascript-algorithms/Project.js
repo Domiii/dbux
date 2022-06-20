@@ -8,6 +8,13 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
 
 /** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
+/**
+ * Hackfix: hardcode some patches to deal with some PDG issues
+ */
+const extraPatches = [
+  'BubbleSort-baseline'
+];
+
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
   gitCommit = 'cb7afe1';
@@ -39,7 +46,7 @@ export default class JavascriptAlgorithmProject extends Project {
     if (!Array.isArray(patches)) {
       patches = [patches];
     }
-    patches.push('baseline');
+    patches.push(...extraPatches);
 
     return {
 
