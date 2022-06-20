@@ -594,7 +594,12 @@ export default class DataDependencyGraph extends BaseDDG {
       const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
       if (refId) {
         // Ref Write
-        lastModifyNodesByRefId.set(refId, node.dataNodeId);
+        // NOTE: we take `max` here because:
+        //    In case of nested watched nodes that adopted nodes (i.e. return watched nodes), not in order,
+        //      `dataNodeId`s are not ordered with `timelineId`s.
+        //      
+        const prev = lastModifyNodesByRefId.get(refId) || 0;
+        lastModifyNodesByRefId.set(refId, Math.max(node.dataNodeId, prev));
       }
       else {
         const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
@@ -610,11 +615,12 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
     if (node.children) {
-      for (const childId of Object.values(node.children)) {
+      for (const childId of Object.values(node.children).sort((a, b) => a - b)) {
         const childNode = this.timelineNodes[childId];
         const lastChildDataNodeId = this.#gatherNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
         if (lastChildDataNodeId) {
-          lastDataNodeId = lastChildDataNodeId;
+          // console.debug(`lastDataNodeId #${summarizingNode.timelineId} at #${node.timelineId}/${childId}: ${lastDataNodeId} → ${lastChildDataNodeId}`);
+          lastDataNodeId = Math.max(lastDataNodeId || 0, lastChildDataNodeId);
         }
       }
     }
