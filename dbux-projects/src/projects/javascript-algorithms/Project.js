@@ -23,6 +23,12 @@ export default class JavascriptAlgorithmProject extends Project {
     writeMergePackageJson(this.projectPath, { scripts: { prepare: '' } });
   }
 
+  async afterInstall() {
+    // NOTE:
+    // git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/javascript-algorithms/baseline.patch
+    await this.applyPatch('baseline');
+  }
+
   canRunExercise(config) {
     return !!config.testFilePaths;
   }
