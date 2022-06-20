@@ -289,8 +289,8 @@ export function initUserCommands(extensionContext) {
   // show/hide error log
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.openPracticeLogFolder', () => {
-    open(getLogsDirectory());
+  registerCommand(extensionContext, 'dbux.openPracticeLogFolder', async () => {
+    await open(getLogsDirectory());
   });
 
   // ###########################################################################

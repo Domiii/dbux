@@ -133,8 +133,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
   debugValueId;
 
-  constructor(ddgSet, graphId) {
-    super(ddgSet, graphId);
+  constructor(ddgSet, graphId, applicationId, contextId) {
+    super(ddgSet, graphId, applicationId, contextId);
   }
 
   getRenderData() {

@@ -774,38 +774,43 @@ export default class ProjectsManager {
 
     // save changes in the project
     const { project } = exercise;
-    const previousExercise = await project.getCurrentBugFromTag();
-    if (previousExercise) {
-      await this.saveFileChanges(previousExercise);
-    }
-    if (project.doesProjectFolderExist() && await project.isGitInitialized()) {
-      await project.gitResetHard();
+
+    if (!project.dontReset) {
+      const previousExercise = await project.getCurrentBugFromTag();
+      if (previousExercise) {
+        await this.saveFileChanges(previousExercise);
+      }
+      if (project.doesProjectFolderExist() && await project.isGitInitialized()) {
+        await project.gitResetHard();
+      }
     }
 
     // install things
     await this.runner.activateExercise(exercise);
 
-    // apply stored patch
-    try {
-      await this.applyUserPatch(exercise);
-    } catch (err) {
-      if (!err.applyFailedFlag) {
-        // logError(err);
-        throw err;
-      }
+    if (!project.dontReset) {
+      // apply stored patch
+      try {
+        await this.applyUserPatch(exercise);
+      } catch (err) {
+        if (!err.applyFailedFlag) {
+          // logError(err);
+          throw err;
+        }
 
-      const keepRunning = await this.externals.showMessage.warn(`Failed when applying previous progress of this exercise.`, {
-        'Show diff in new tab and cancel': async () => {
-          await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
-          return false;
-        },
-        'Ignore and keep running': () => {
-          return true;
-        },
-      }, { modal: true });
+        const keepRunning = await this.externals.showMessage.warn(`Failed when applying previous progress of this exercise.`, {
+          'Show diff in new tab and cancel': async () => {
+            await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
+            return false;
+          },
+          'Ignore and keep running': () => {
+            return true;
+          },
+        }, { modal: true });
 
-      if (!keepRunning) {
-        throw err;
+        if (!keepRunning) {
+          throw err;
+        }
       }
     }
   }

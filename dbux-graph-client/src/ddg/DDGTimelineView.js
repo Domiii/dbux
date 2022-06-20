@@ -479,9 +479,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     buildDot() {
       return this.buildDot();
     },
-    takeScreenshot() {
-      return this.getScreenshot();
-    }
+    // takeScreenshot() {
+    //   return this.getScreenshot();
+    // }
   };
 
 
@@ -780,10 +780,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   //   //    Then return it all to host.
   // }
 
-  async getScreenshot() {
+  getScreenshot() {
     this.clearDeco();
     // TODO
     // * take screenshot in current mode
     // * add background to top: <rect width="100%" height="100%" fill="#444"/>
+    const lines = this.graphEl.innerHTML.split('\n');
+    
+    return lines[0] + `\n<rect width="100%" height="100%" fill="#444"/>\n` + lines.slice(1);
   }
 }

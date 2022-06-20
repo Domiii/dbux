@@ -143,6 +143,10 @@ export default class Project extends ProjectBase {
     // this.reloadExercises();
   }
 
+  get dontReset() {
+    return false;
+  }
+
   get originalGitFolderPath() {
     return pathResolve(this.projectPath, '.git');
   }

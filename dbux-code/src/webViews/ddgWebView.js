@@ -1,13 +1,18 @@
 import {
   ViewColumn
 } from 'vscode';
+import fs from 'fs';
+import { dirname } from 'path';
+import open from 'open';
 import DDGHost from '@dbux/graph-host/src/DDGHost';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { getThemeResourcePathUri } from '../codeUtil/codePath';
-import RichWebView from './RichWebView';
+import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
 import { setTestDDGArgs } from '../testUtil';
+import { confirm, showInformationMessage } from '../codeUtil/codeModals';
+import { translate } from '../lang';
+import RichWebView from './RichWebView';
 
 
 const defaultColumn = ViewColumn.Two;
@@ -45,7 +50,27 @@ export default class DataDependencyGraphWebView extends RichWebView {
    *  #########################################################################*/
 
   externals = {
+    getDefaultExportDirectory,
+    saveFile: async (filePath, data) => {
+      if (fs.existsSync(filePath)) {
+        const result = await confirm(`File "${filePath}" already exists, do you want to override?`);
+        if (!result) {
+          return;
+        }
+      }
 
+      const folderPath = dirname(filePath);
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath);
+      }
+      fs.writeFileSync(filePath, data);
+      const msg = translate('savedSuccessfully', { fileName: filePath });
+      await showInformationMessage(msg, {
+        async 'Show File'() {
+          await open(folderPath);
+        }
+      });
+    }
   }
 }
 
@@ -115,7 +140,7 @@ export async function showDDGViewForArgs(ddgArgs) {
   let ddg;
   if (failureReason) {
     initialState = makeFailureState(failureReason);
-    hostOnlyState = { };
+    hostOnlyState = {};
   }
   else {
     ddg = dp.ddgs.getOrCreateDDG(ddgArgs);

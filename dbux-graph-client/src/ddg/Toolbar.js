@@ -18,9 +18,12 @@ class Toolbar extends ClientComponentEndpoint {
     const el = compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div data-el="buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
-          🔁
-        </button>
+          <button title="Rebuild" data-el="rebuildBtn" class="toolbar-btn btn btn-info" href="#">
+            🔁
+          </button>
+          <button title="Take Screenshot" data-el="screenshotBtn" class="toolbar-btn btn btn-info" href="#">
+            📸
+          </button>
           ${BootstrapBtnGroupSeparatorHtml}
         </div>
       </nav>
@@ -94,6 +97,15 @@ class Toolbar extends ClientComponentEndpoint {
       async click(evt) {
         evt.preventDefault();
         this.doc.timeline.rebuildGraph(true);
+      },
+
+      focus(evt) { evt.target.blur(); }
+    },
+    screenshotBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        const svgString = this.doc.timeline.getScreenshot();
+        await this.doc.timeline.remote.saveScreenshot(svgString);
       },
 
       focus(evt) { evt.target.blur(); }

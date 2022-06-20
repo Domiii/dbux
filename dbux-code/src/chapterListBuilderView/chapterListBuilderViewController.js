@@ -171,7 +171,10 @@ function findDDGContextIdInApp(app, exercise) {
     // const testFolderPath = pathResolve(fileDir, '__test__');
 
     // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
-    const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/(.*).js/;
+    /**
+     * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}.js`
+     */
+    const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/([^/]*).js/;
     return ValidFilePattern.test(filePath);
   });
 

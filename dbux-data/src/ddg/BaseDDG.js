@@ -124,10 +124,12 @@ export default class BaseDDG {
    * 
    * @param {DDGSet} ddgSet
    */
-  constructor(ddgSet, graphId) {
+  constructor(ddgSet, graphId, applicationId, contextId) {
     this.logger = newLogger('DDG');
     this.ddgSet = ddgSet;
     this.graphId = graphId;
+    this.applicationId = applicationId;
+    this.contextId = contextId;
   }
 
   /** ###########################################################################

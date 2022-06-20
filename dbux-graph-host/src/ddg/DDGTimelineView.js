@@ -1,6 +1,6 @@
-import difference from 'lodash/difference';
-import allApplications from '@dbux/data/src/applications/allApplications';
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import traceSelection from '@dbux/data/src/traceSelection/index';
+import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 /** @typedef { import("@dbux/data/src/ddg/DataDependencyGraph").default } DataDependencyGraph */
@@ -140,6 +140,16 @@ export default class DDGTimelineView extends HostComponentEndpoint {
         // update graph
         ddg.setSummaryMode(timelineId, summaryMode);
       }
+    },
+    async saveScreenshot(svgString) {
+      const { dp, contextId } = this.ddg;
+      const context = dp.collections.executionContexts.getById(contextId);
+      const { application } = dp;
+      const name = makeContextLabel(context, application);
+
+      const defaultExportFolder = this.componentManager.externals.getDefaultExportDirectory();
+      const exportPath = pathResolve(defaultExportFolder, 'screenshots', `${name}#${contextId}.svg`);
+      await this.componentManager.externals.saveFile(exportPath, svgString);
     }
   };
   get public() {
