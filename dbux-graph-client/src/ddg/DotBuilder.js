@@ -304,10 +304,6 @@ export default class DotBuilder {
     // console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
-
-      // Not summarized children of a summarized group node
-      //    (→ deal with nested watched nodes)
-      this.nodesByIds(node.children);
     }
     else if (show) {
       if (ddgQueries.isExpandedGroupNode(ddg, node)) {
@@ -367,14 +363,14 @@ export default class DotBuilder {
 
   nodeSummary(node) {
     const { ddg } = this;
-    if (ddgQueries.doesNodeHaveSummary(ddg, node)) {
-      // render summary nodes
-      this.summaryGroup(node);
-    }
-    else {
-      // render node as-is
-      this.valueNode(node);
-    }
+    // if (ddgQueries.doesNodeHaveSummary(ddg, node)) {
+    // render summary nodes
+    this.summaryGroup(node);
+    // }
+    // else {
+    //   // render node as-is
+    //   this.valueNode(node);
+    // }
   }
 
   summaryGroup(node) {
@@ -388,13 +384,20 @@ export default class DotBuilder {
     this.indentLevel += 1;
     this._groupAttrs(node);
 
-    this.iSummary += 1;
+    if (roots) {
+      this.iSummary += 1;
 
-    for (const root of roots) {
-      this.node(root, true);
+      // render summary
+      for (const root of roots) {
+        this.node(root, true);
+      }
+
+      this.iSummary -= 1;
     }
 
-    this.iSummary -= 1;
+    // Non-summarized children of a summarized group node
+    //    (→ deal with nested watched nodes)
+    this.nodesByIds(node.children);
 
     this.indentLevel -= 1;
     this.fragment(`}`);

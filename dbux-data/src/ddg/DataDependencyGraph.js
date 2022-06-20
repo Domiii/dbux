@@ -474,8 +474,9 @@ export default class DataDependencyGraph extends BaseDDG {
     if (
       !node.hasSummarizableWrites ||
       // only non-root control groups
-      (isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)) ||
-      this.nodeSummaries[timelineId]
+      (isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)) 
+      // ||
+      // this.nodeSummaries[timelineId]
     ) {
       // already built or nothing to build
       return this.nodeSummaries[timelineId];
@@ -668,7 +669,8 @@ export default class DataDependencyGraph extends BaseDDG {
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
 
-    if (node.watched) {
+    let isSummarizedWatchedNode = !!currentCollapsedAncestor && node.watched;
+    if (isSummarizedWatchedNode) {
       // don't try to summarize watched nodes
       currentCollapsedAncestor = null;
     }
@@ -744,12 +746,18 @@ export default class DataDependencyGraph extends BaseDDG {
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
       this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
-    // console.debug(`DDG-SUMM: #${timelineId} ${node.label}, sum: ${isSummarized}, c: ${!!children}, vis: ${isVisible}`);
+      // console.debug(`DDG-SUMM: #${timelineId} ${node.label}, sum: ${isSummarized}, c: ${!!children}, vis: ${isVisible}`);
     }
 
     if (isVisible) {
       // node is (1) shown, (2) collapsed into `currentCollapsedAncestor` or (3) summarized
-      nodeRouteMap.set(timelineId, new Set([targetNode]));
+
+      if (isSummarizedWatchedNode) {
+        this.#rerouteHiddenNode(timelineId, nodeRouteMap);
+      }
+      else {
+        nodeRouteMap.set(timelineId, new Set([targetNode]));
+      }
 
       for (const edgeId of incomingEdges) {
         const edge = this.og.edges[edgeId];
@@ -769,33 +777,39 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     else {
       // node is hidden
-      // → multicast all outgoing edges to all incoming edges
-      // → to that end, add all `from`s to this node's `reroutes`
-      /**
-       * @type {Set.<DDGTimelineNode>}
-       */
-      let reroutes = new Set();
-      for (const edgeId of incomingEdges) {
-        const edge = this.og.edges[edgeId];
-        const { from: fromOg, type } = edge;
-        // TODO: summarize edge type correctly
-        const allFrom = nodeRouteMap.get(fromOg);
-        if (allFrom) {
-          for (const from of allFrom) {
-            reroutes.add(from);
-          }
+      this.#rerouteHiddenNode(timelineId, nodeRouteMap);
+    }
+  }
+
+  #rerouteHiddenNode(timelineId, nodeRouteMap) {
+    const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
+    // → multicast all outgoing edges to all incoming edges
+    // → to that end, add all `from`s to this node's `reroutes`
+    /**
+     * @type {Set.<DDGTimelineNode>}
+     */
+    let reroutes = new Set();
+    for (const edgeId of incomingEdges) {
+      const edge = this.og.edges[edgeId];
+      const { from: fromOg, type } = edge;
+      // TODO: summarize edge type correctly
+      const allFrom = nodeRouteMap.get(fromOg);
+      if (allFrom) {
+        for (const from of allFrom) {
+          reroutes.add(from);
         }
       }
-      if (reroutes.size) {
-        nodeRouteMap.set(timelineId, reroutes);
-      }
-      // eslint-disable-next-line max-len
-      if (VerboseSumm && (!this.debugValueId || dataNode?.valueId === this.debugValueId)) {
-        reroutes.size && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
-        // VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
-        //   .map(([timelineId, reroutes]) =>
-        //     `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);
-      }
+    }
+    if (reroutes.size) {
+      nodeRouteMap.set(timelineId, reroutes);
+    }
+    // eslint-disable-next-line max-len
+    const { dp } = this.ddgSet;
+    if (VerboseSumm && (!this.debugValueId || dp.util.getDataNode(this.timelineNodes[timelineId]?.dataNodeId)?.valueId === this.debugValueId)) {
+      reroutes.size && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
+      // VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
+      //   .map(([timelineId, reroutes]) =>
+      //     `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);
     }
   }
 

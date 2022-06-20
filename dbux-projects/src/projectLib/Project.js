@@ -896,13 +896,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   /**
    * NOTE: This will only be called when the bug is run the first time.
-   * @param {Exercise} bug 
+   * @param {Exercise} exercise 
    */
-  async selectExercise(bug) {
-    const { tag, commit } = bug;
+  async selectExercise(exercise) {
+    const { tag, commit } = exercise;
     if (tag || commit) {
       // checkout bug tag/commit
-      const target = bug.tag ? `tags/${tag}` : commit;
+      const target = exercise.tag ? `tags/${tag}` : commit;
       const targetName = tag || commit;
       await this.gitCheckout(target, targetName);
     }
@@ -911,11 +911,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // await this.selectDefaultCommit();
     }
 
-    // apply bug patch
-    if ('patch' in bug) {
-      if (bug.patch) {
+    // apply patch
+    await this.applyExercisePatches(exercise);
+  }
+
+  async applyExercisePatches(exercise) {
+    if ('patch' in exercise) {
+      if (exercise.patch) {
         // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
-        await this.applyPatches(bug.patch);
+        await this.applyPatches(exercise.patch);
       }
     }
   }

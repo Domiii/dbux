@@ -1,8 +1,19 @@
+// NOTE:
+/*
+git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/javascript-algorithms/X.patch
+*/
 import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import Project from '../../projectLib/Project';
 import { buildJestRunBugCommand } from '../../util/jestUtil';
 
 /** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
+
+/**
+ * Hackfix: hardcode some patches to deal with some PDG issues
+ */
+const extraPatches = [
+  'BubbleSort-baseline'
+];
 
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
@@ -28,19 +39,21 @@ export default class JavascriptAlgorithmProject extends Project {
   }
 
   async afterInstall() {
-    // NOTE:
-    /*
-git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/javascript-algorithms/X.patch
-    */
-    await this.applyPatch('baseline');
   }
 
   canRunExercise(config) {
     return !!config.testFilePaths;
   }
 
-  decorateExercise(config) {
+  decorateExercise(exercise) {
+    let patches = exercise.patch || [];
+    if (!Array.isArray(patches)) {
+      patches = [patches];
+    }
+    patches.push(...extraPatches);
+
     return {
+
       // id: i + 1,
       // name: config.testName,
       // description: bug.testName,
@@ -50,12 +63,14 @@ git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/asset
         /**
          * @see https://jestjs.io/docs/cli#--testnamepatternregex
          */
-        `"${config.testNamePattern}"`,
+        `"${exercise.testNamePattern}"`,
         '--runTestsByPath',
-        config.testFilePaths.join(' ')
+        exercise.testFilePaths.join(' ')
       ],
       enableSourceMaps: false,
-      ...config,
+      ...exercise,
+
+      patch: patches
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     };
   }
