@@ -1,14 +1,14 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import fs from 'fs';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { exportApplicationToFile, importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import ChapterNode from '../projectViews/practiceView/ChapterNode';
 import ExerciseNode from '../projectViews/practiceView/ExerciseNode';
 import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
-import { confirm, showInformationMessage } from '../codeUtil/codeModals';
+import { confirm } from '../codeUtil/codeModals';
 import { goToCodeLoc } from '../codeUtil/codeNav';
 import { showDDGViewForArgs } from '../webViews/ddgWebView';
 import { getCurrentResearch } from '../research/Research';

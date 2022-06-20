@@ -1,6 +1,5 @@
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import NanoEvents from 'nanoevents';
-import traceSelection from '@dbux/data/src/traceSelection/index';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';

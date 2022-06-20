@@ -119,10 +119,12 @@ export default class BaseDDG {
    * 
    * @param {DDGSet} ddgSet
    */
-  constructor(ddgSet, graphId) {
+  constructor(ddgSet, graphId, applicationId, contextId) {
     this.logger = newLogger('DDG');
     this.ddgSet = ddgSet;
     this.graphId = graphId;
+    this.applicationId = applicationId;
+    this.contextId = contextId;
   }
 
   /** ###########################################################################
@@ -953,7 +955,7 @@ export default class BaseDDG {
           !this.watchSet.isAddedAndWatchedDataNode(childDataNodeId)         // new node not already watched
         )
       ) ||
-      
+
       // this DataNode is a ref that will be accessed later
       (
         childDataNode.refId &&

@@ -75,13 +75,13 @@ export default class DDGSet {
         watchTraceIds.push(returnTraceId);
       }
 
-      this.newDataDependencyGraph(graphId, { watchTraceIds, returnTraceId });
+      this.newDataDependencyGraph(graphId, applicationId, contextId, { watchTraceIds, returnTraceId });
     }
     return this.graphsById.get(graphId);
   }
 
-  newDataDependencyGraph(graphId, watched) {
-    const graph = new DataDependencyGraph(this, graphId);
+  newDataDependencyGraph(graphId, applicationId, contextId, watched) {
+    const graph = new DataDependencyGraph(this, graphId, applicationId, contextId);
     graph.build(watched);
     this.#add(graphId, graph);
     return graph;
