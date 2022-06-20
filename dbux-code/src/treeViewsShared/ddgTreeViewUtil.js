@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isFunction';
 import size from 'lodash/size';
 import isNumber from 'lodash/isNumber';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -8,9 +8,13 @@ import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import { groupBySorted } from '@dbux/common/src/util/arrayUtil';
+import { makeContextLabel, makeStaticContextLabel, makeStaticContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
-import makeTreeItem, { makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
+import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
+import makeTreeItem, { mkTreeItem, makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
+import { TreeItemCollapsibleState } from 'vscode';
 
 /**
  * @param {DDGTimelineNode} node 
@@ -54,20 +58,20 @@ export function makeDDGNodeDescription(ddg, node) {
   const dataInfo = dataNodeId ? ` (n${dataNodeId})` : '';
   const summaryMode = summaryModes[timelineId];
   // eslint-disable-next-line no-nested-ternary
+
+  const summaryPrefix = watched ? '👁' : '';
   let summaryModeLabel =
-    watched ?
-      'Watched' :
-      summaryMode ?
-        DDGSummaryMode.nameFrom(summaryMode) :
-        og ?
-          '(unknown)' :
-          'SummaryNode';
+    summaryMode ?
+      DDGSummaryMode.nameFrom(summaryMode) :
+      og ?
+        '(unknown)' :
+        'SummaryNode';
   if (isControlGroupTimelineNode(node.type)) {
     const summarizable = ddgQueries.isNodeSummarizable(ddg, node);
     const summarizableChildren = ddgQueries.getSummarizableChildren(ddg, node.timelineId);
     summaryModeLabel += ` (s: ${summarizable}, sC: ${summarizableChildren?.length || 0})`;
   }
-  return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryModeLabel}`;
+  return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryPrefix}${summaryModeLabel}`;
 }
 
 export function makeDDGNodeLabel(ddg, timelineId) {
@@ -289,4 +293,169 @@ export function renderDDGSummaries(ddg, summaries) {
         }
       );
     });
+}
+
+
+/** ###########################################################################
+ * DataNode var + ref groups
+ * ##########################################################################*/
+
+/**
+ * Groups by:
+ * firstVarName → refId → dataNodeId.
+ * 
+ * @param {DataDependencyGraph} ddg
+ * @param {number[]} dataNodeIds
+ */
+export function renderRefGroups(ddg, timelineNodes, getRefIdCb) {
+  const { dp } = ddg;
+  const items = timelineNodes
+    .filter(timelineNode => timelineNode.dataNodeId && getRefIdCb(timelineNode))
+    .map(timelineNode => {
+      const refId = getRefIdCb(timelineNode);
+      const firstAccessDataNode = dp.util.findRefFirstAccessDataNode(refId);
+      const varName = dp.util.getDataNodeVarAccessName(firstAccessDataNode.nodeId);
+      const staticContext = dp.util.getTraceStaticContext(firstAccessDataNode.traceId);
+      const dataNode = dp.util.getDataNode(timelineNode.dataNodeId);
+      return {
+        timelineNode,
+        refId,
+        dataNode,
+        staticContext,
+        staticContextId: staticContext.staticContextId,
+        varName,
+        varDataNode: firstAccessDataNode,
+        varDataNodeId: firstAccessDataNode.nodeId,
+      };
+    });
+
+  return groupBySorted(items, 'staticContextId')
+    .sort((a, b) => a[0].varDataNodeId - b[0].varDataNodeId)
+    .map((ofStaticContext) => {
+      return mkTreeItem(
+        truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
+        () => groupBySorted(ofStaticContext, 'varName')
+          .sort((a, b) => {
+            return a[0].varDataNodeId - b[0].varDataNodeId;
+          })
+          .map(ofVar => {
+            return mkTreeItem(
+              ofVar[0].varName,
+              () => groupBySorted(ofVar, 'refId').map(ofRefId => {
+                const refItem = ofRefId[0];
+                const refTrace = dp.util.getTraceOfDataNode(refItem.varDataNode.nodeId);
+                const usedNames = Array.from(new Set(ofRefId
+                  .map(item => dp.util.getDataNodeVarAccessName(item.dataNode.nodeId))
+                  .filter(Boolean)
+                ))
+                  .join(', ');
+                return mkTreeItem(
+                  `Ref as: ${usedNames}`,
+                  () => {
+                    return ofRefId.map(item => renderDDGNode(ddg, item.timelineNode));
+                  },
+                  {
+                    description: `(${ofRefId.length})`,
+                    handleClick() {
+                      traceSelection.selectTrace(refTrace);
+                    }
+                  }
+                );
+              }),
+              {
+                description: `(${new Set(ofVar.map(i => i.refId)).size} refs, ${ofVar.length} nodes)`,
+                handleClick() {
+                  const trace = dp.util.getTrace(ofVar[0].varDataNode.traceId);
+                  traceSelection.selectTrace(trace);
+                }
+              }
+            );
+          }),
+        {
+          description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
+          handleClick() {
+            const trace = dp.util.getTrace(ofStaticContext[0].varDataNode.traceId);
+            traceSelection.selectTrace(trace);
+          }
+        }
+      );
+    });
+}
+
+/**
+ * Groups by:
+ * firstVarName → refId → dataNodeId.
+ * 
+ * @param {DataDependencyGraph} ddg
+ * @param {number[]} dataNodeIds
+ */
+export function renderVarGroups(ddg, timelineNodes) {
+  // truncateStringShort(dp.util.getStaticTraceDeclarationVarName(group.declarationStaticTraceId)),
+  // const summarizableVars = makeGroups(
+  //   'declarationStaticTraceId',
+  //   summarizableNodes.map(timelineNode => {
+  //     const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
+  //     if (!declarationTid) {
+  //       return null;
+  //     }
+  //     const declarationStaticTraceId = dp.util.getTrace(declarationTid).staticTraceId;
+  //     return makeWriteEntry(timelineNode, {
+  //       declarationStaticTraceId,
+  //       declarationTid,
+  //     });
+  //   }).filter(Boolean)
+  // );
+
+  const { dp } = ddg;
+  const items = timelineNodes
+    .filter(timelineNode => dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId))
+    .map(timelineNode => {
+      const declarationTid = dp.util.getDataNodeAccessedDeclarationTid(timelineNode.dataNodeId);
+      const staticDeclarationTid = dp.util.getStaticTraceId(declarationTid);
+      const varName = dp.util.getStaticTraceDeclarationVarName(staticDeclarationTid);
+      const staticContext = dp.util.getTraceStaticContext(declarationTid);
+      const dataNode = dp.util.getDataNode(timelineNode.dataNodeId);
+      return {
+        timelineNode,
+        declarationTid,
+        staticDeclarationTid,
+        dataNode,
+        staticContext,
+        staticContextId: staticContext.staticContextId,
+        varName,
+      };
+    });
+
+  return {
+    items,
+    groups: groupBySorted(items, 'staticContextId').map((ofStaticContext) => {
+      return mkTreeItem(
+        truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
+        () => groupBySorted(ofStaticContext, 'staticDeclarationTid')
+          .map(ofVar => {
+            return mkTreeItem(
+              ofVar[0].varName,
+              () => {
+                return ofVar.map(item => renderDDGNode(ddg, item.timelineNode));
+              },
+              {
+                description: `(${new Set(ofVar.map(i => i.staticDeclarationTid)).size} vars, ${ofVar.length} nodes)`,
+                handleClick() {
+                  const trace = dp.util.getTrace(ofVar[0].declarationTid);
+                  traceSelection.selectTrace(trace);
+                }
+              }
+            );
+          }),
+        {
+          collapsibleState: TreeItemCollapsibleState.Expanded,
+          description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
+          handleClick() {
+            const trace = dp.util.getTrace(ofStaticContext[0].declarationTid);
+            traceSelection.selectTrace(trace);
+          },
+        }
+      );
+    })
+  };
 }

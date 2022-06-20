@@ -93,7 +93,7 @@ const _canApplySummaryMode = {
   },
   [DDGSummaryMode.HideChildren]: (ddg, node) => {
     // only applies to root (all other nodes are "collapse"d instead)
-    return isDDGRoot(node.timelineId);
+    return isDDGRoot(node.timelineId) || node.watched;
   }
 };
 

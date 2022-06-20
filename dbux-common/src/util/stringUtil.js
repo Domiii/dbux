@@ -10,12 +10,20 @@ export function renderValueSimple(obj) {
 }
 
 
-const ShortenMaxLength = 100;
-const ShortenCfg = { length: ShortenMaxLength };
+const DefaultMaxLength = 100;
+const DefaultTruncateCfg = { length: DefaultMaxLength };
+const ShortMaxLength = 30;
+const ShortTruncateCfg = { length: ShortMaxLength };
 
 /**
  * @param {string} s 
  */
-export function truncateStringDefault(s, cfg = ShortenCfg) {
+export function truncateStringDefault(s, cfg = DefaultTruncateCfg) {
+  return truncate(s.replace(/\s+/g, ' '), cfg);
+}
+/**
+ * @param {string} s 
+ */
+export function truncateStringShort(s, cfg = ShortTruncateCfg) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }

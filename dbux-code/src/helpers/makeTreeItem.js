@@ -150,7 +150,16 @@ function checkTreeItem(arg, ...otherArgs) {
 }
 
 /**
- * TODO: Replace this with `makeTreeViewItem`, rename this to `makeTreeItemSimple`.
+ * NOTE: This creates a {@link TreeItem} right away, but its children function will be called lazily.
+ * TODO: this should be the default, instead of makeTreeItem. Gotta rename and re-structure things.
+ */
+export function mkTreeItem(label, childrenFn, props) {
+  return makeTreeItem(() => ({ label, children: childrenFn, props }));
+}
+
+/**
+ * NOTE: this thing evolved in a somewhat bad way. Needs some proper clean-up without edge cases and
+ * clear naming.
  */
 export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
   let label;
@@ -171,7 +180,7 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
       .replace(/[_]/g, ' ')    // replace _ with spaces (looks prettier)
       .replace(/^bound /, ''); // functions created with `.bind()` are prefixed with "bound "
     labelOrArrOrItem = labelOrArrOrItem();
-    
+
     if (checkTreeItem(labelOrArrOrItem, childrenRaw, itemProps)) {
       return labelOrArrOrItem;
     }

@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import last from 'lodash/last';
 import { throttle } from '@dbux/common/src/util/scheduling';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
@@ -13,6 +14,7 @@ import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGSettings from './DDGSettings';
+import PDGSnapshotConfig from './PDGSnapshotConfig';
 
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
@@ -286,6 +288,15 @@ export default class DataDependencyGraph extends BaseDDG {
    * summarization propagation
    * ##########################################################################*/
 
+  #getHideNodeMode(node) {
+    if (node.watched) {
+      return isControlGroupTimelineNode(node.type) ?
+        DDGSummaryMode.HideChildren :
+        DDGSummaryMode.Show;
+    }
+    return DDGSummaryMode.Hide;
+  }
+
   propagateSummaryMode = {
     [DDGSummaryMode.Show]: (timelineId) => {
       const { og } = this;
@@ -317,8 +328,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // hide all children
       for (const childId of node.children) {
-        // const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, DDGSummaryMode.Hide);
+        const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, this.#getHideNodeMode(childNode));
       }
     },
     [DDGSummaryMode.CollapseSummary]: (timelineId) => {
@@ -327,8 +338,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // hide all children
       for (const childId of node.children) {
-        // const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, DDGSummaryMode.Hide);
+        const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, this.#getHideNodeMode(childNode));
       }
     },
     [DDGSummaryMode.SummarizeChildren]: (timelineId) => {
@@ -340,7 +351,7 @@ export default class DataDependencyGraph extends BaseDDG {
         const childNode = og.timelineNodes[childId];
         const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
           DDGSummaryMode.CollapseSummary :
-          DDGSummaryMode.Hide;
+          this.#getHideNodeMode(childNode);
         this.#applyMode(childId, targetMode);
       }
     },
@@ -376,7 +387,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // hide all children
       for (const childId of node.children) {
-        this.#applyMode(childId, DDGSummaryMode.Hide);
+        const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, this.#getHideNodeMode(childNode));
       }
     }
   };
@@ -462,8 +474,8 @@ export default class DataDependencyGraph extends BaseDDG {
     if (
       !node.hasSummarizableWrites ||
       // only non-root control groups
-      isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)
-      /*  || this.nodeSummaries[timelineId] */ // build again, for dev purposes
+      (isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)) ||
+      this.nodeSummaries[timelineId]
     ) {
       // already built or nothing to build
       return this.nodeSummaries[timelineId];
@@ -471,7 +483,9 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const lastModifyNodesByRefId = new Map();           // summary ref set
     const varModifyOrReturnDataNodes = new Map();       // summary var + return set
-    const lastNestedDataNodeId = this.#collectNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+    const lastNestedDataNodeId = this.#gatherNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+
+    // fix up refs
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
@@ -485,6 +499,24 @@ export default class DataDependencyGraph extends BaseDDG {
         return lastDataNodeIdOfRef > lastNestedDataNodeId;
       });
 
+    if (DDGTimelineNodeType.is.Context(node.type)) {
+      // add return input argument
+      const returnInputDataNodeId = dp.util.getReturnArgumentInputDataNodeIdOfContext(node.contextId);
+      if (returnInputDataNodeId) {
+        const returnDataNode = dp.util.getDataNode(returnInputDataNodeId);
+        if (!lastModifyNodesByRefId.get(returnDataNode.refId)) { // don't add if we already have a ref summary of it
+          const skippedNode = this.timelineBuilder.getSkippedByNode(returnDataNode);
+          const timelineNodes = this.getTimelineNodesOfDataNode(returnInputDataNodeId);
+          const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
+          if (skippedNode || timelineNodes) {
+            // always override previous, because its always last
+            const returnTimelineId = (skippedNode || last(timelineNodes)).timelineId;
+            varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
+          }
+        }
+      }
+    }
+
     // TODO: not good enough to determine "deep access"
     // const accessedAccessIds = new Set(
     //   summaryRefEntries.map(([refId, dataNodeId]) => {
@@ -497,17 +529,26 @@ export default class DataDependencyGraph extends BaseDDG {
     /**
      * @type {SnapshotMap}
      */
-    const snapshotsByRefId = new Map();
+    const snapshotCfg = new PDGSnapshotConfig();
+    const summaryRefIds = new Set(summaryRefEntries.map(([refId]) => refId));
+    snapshotCfg.shouldBuildDeep = (parentSnapshot, dataNode) => {
+      return (
+        // go deep if it should be summarized
+        summaryRefIds.has(dataNode.refId) &&
+        // and it is not already summarized
+        !snapshotCfg.snapshotsByRefId.has(dataNode.refId)
+      );
+    };
     for (const [refId, dataNodeId] of summaryRefEntries) {
-      if (snapshotsByRefId.has(refId)) {
+      if (snapshotCfg.snapshotsByRefId.has(refId)) {
         // skip if this ref was already added as a descendant of a previous ref
         continue;
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
-      const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotsByRefId, null);
+      const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotCfg, null);
 
       // override label to be the var name (if possible), since its more representative
-      newNode.label = dp.util.getDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
+      newNode.label = dp.util.findDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
     }
 
     // add var + compute nodes
@@ -523,14 +564,14 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const summaryRoots = (
       // ref roots
-      Array.from(snapshotsByRefId.values())
+      Array.from(snapshotCfg.snapshotsByRefId.values())
         .filter(snapshotId => !this.timelineNodes[snapshotId].parentNodeId)
         .concat(
           // var roots
           Array.from(varNodesByTid.values())
         ));
 
-    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotsByRefId, varNodesByTid, summaryRoots);
+    return this.nodeSummaries[timelineId] = new DDGNodeSummary(timelineId, snapshotCfg.snapshotsByRefId, varNodesByTid, summaryRoots);
   }
 
   /**
@@ -541,7 +582,7 @@ export default class DataDependencyGraph extends BaseDDG {
    * @param {Map.<number, number>} lastModifyNodesByRefId
    * @return {number} The `lastDataNodeId` of the entire node.
    */
-  #collectNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes) {
+  #gatherNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes) {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
 
@@ -560,10 +601,7 @@ export default class DataDependencyGraph extends BaseDDG {
         const isPreexistingVar = varDeclarationTid && (!summarizingNode.pushTid || varDeclarationTid < summarizingNode.pushTid);
         if (
           // Pre-existing variable Write or Compute
-          isPreexistingVar ||
-
-          // return argument
-          (DDGTimelineNodeType.is.Context(summarizingNode.type) && dp.util.isReturnArgumentInputDataNode(node.dataNodeId))
+          isPreexistingVar
         ) {
           // store variable writes, if variable was declared before summarizingNode
           varModifyOrReturnDataNodes.set(varDeclarationTid, node.timelineId);
@@ -573,7 +611,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (node.children) {
       for (const childId of Object.values(node.children)) {
         const childNode = this.timelineNodes[childId];
-        const lastChildDataNodeId = this.#collectNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+        const lastChildDataNodeId = this.#gatherNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
         if (lastChildDataNodeId) {
           lastDataNodeId = lastChildDataNodeId;
         }
@@ -630,6 +668,10 @@ export default class DataDependencyGraph extends BaseDDG {
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
 
+    if (node.watched) {
+      // don't try to summarize watched nodes
+      currentCollapsedAncestor = null;
+    }
 
     // TODO: deal with invisible snapshot children?
     // node.parentNodeId ||  // don't hide snapshot children
@@ -648,7 +690,9 @@ export default class DataDependencyGraph extends BaseDDG {
       // }
     }
 
-    let isSummarized = !!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node);
+    let isSummarized = (
+      (!!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node))
+    );
 
     // DFS recursion
     if (children) {
@@ -700,6 +744,7 @@ export default class DataDependencyGraph extends BaseDDG {
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
       this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+    // console.debug(`DDG-SUMM: #${timelineId} ${node.label}, sum: ${isSummarized}, c: ${!!children}, vis: ${isVisible}`);
     }
 
     if (isVisible) {

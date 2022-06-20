@@ -1,0 +1,16 @@
+diff --git a/src/algorithms/sorting/bubble-sort/BubbleSort.js b/src/algorithms/sorting/bubble-sort/BubbleSort.js
+index d78ebcb..18d21ba 100644
+--- a/src/algorithms/sorting/bubble-sort/BubbleSort.js
++++ b/src/algorithms/sorting/bubble-sort/BubbleSort.js
+@@ -19,7 +19,10 @@ export default class BubbleSort extends Sort {
+ 
+         // Swap elements if they are in wrong order.
+         if (this.comparator.lessThan(array[j + 1], array[j])) {
+-          [array[j], array[j + 1]] = [array[j + 1], array[j]];
++          // [array[j], array[j + 1]] = [array[j + 1], array[j]];
++          const tmp = array[j];
++          array[j] = array[j + 1];
++          array[j + 1] = tmp;
+ 
+           // Register the swap.
+           swapped = true;

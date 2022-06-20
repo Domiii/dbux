@@ -26,6 +26,7 @@ import { DDGRootTimelineId } from './constants';
 import ddgQueries, { ddgHostQueries } from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
+import PDGSnapshotConfig from './PDGSnapshotConfig';
 
 /** @typedef { import("./DDGSet").default } DDGSet */
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
@@ -33,6 +34,10 @@ import DDGEdgeType from './DDGEdgeType';
 
 const VerboseAccess = 0;
 // const VerboseAccess = 2;
+
+/** ###########################################################################
+ * {@link BaseDDG}
+ * ##########################################################################*/
 
 /**
  * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
@@ -425,7 +430,7 @@ export default class BaseDDG {
     }
     else {
       // future-work: this only gives the first name assigned to it, but we might be more interested in "the most recent name" instead
-      const varName = this.dp.util.getDataNodeAccessedRefVarName(dataNode.nodeId);
+      const varName = this.dp.util.findDataNodeAccessedRefVarName(dataNode.nodeId);
       deleteLabel = `${varName || '?'}[${varAccess.prop}]`;
     }
     const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, deleteLabel);
@@ -562,8 +567,9 @@ export default class BaseDDG {
    * @param {ISnapshotChildren} originalChildren 
    * @param {DataNode[]} modificationDataNodes 
    * @param {boolean} isOriginalValueRef We call this function in two different flavors: with ValueRef.children or with TimelineNode.children
+   * @param {SnapshotConfig} snapshotCfg
    */
-  #addSnapshotChildren(parentSnapshot, originalChildren, modificationDataNodes, isOriginalValueRef, snapshotsByRefId, shallowOnly = false) {
+  #addSnapshotChildren(parentSnapshot, originalChildren, modificationDataNodes, isOriginalValueRef, snapshotCfg, shallowOnly = false) {
     /**
      * @type {Object.<string, DataNode>}
      */
@@ -602,7 +608,7 @@ export default class BaseDDG {
         else {
           // original is timelineId
           // NOTE: we are probably not using this anymore
-          newChild = this.#deepCloneSnapshot(original, parentSnapshot, snapshotsByRefId);
+          newChild = this.#deepCloneSnapshot(original, parentSnapshot, snapshotCfg);
         }
       }
       else {
@@ -631,24 +637,28 @@ export default class BaseDDG {
           }
 
           // update references
-          this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
+          this.#onSnapshotNodeCreated(newChild, snapshotCfg, parentSnapshot);
         }
         else {
           // create new child
           if (isDataNodeDelete(dataNode.type)) {
             // delete
             newChild = this.addDeleteEntryNode(dataNode);
-            this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
+            this.#onSnapshotNodeCreated(newChild, snapshotCfg, parentSnapshot);
           }
           else {
-            if (!shallowOnly && dataNode.refId && this.shouldBuildDeepSnapshotChild(parentSnapshot, dataNode.nodeId)) {
+            if (
+              dataNode.refId &&
+              !shallowOnly && 
+              this.shouldBuildDeepSnapshotChild(parentSnapshot, dataNode, snapshotCfg)
+            ) {
               // → go deep on ref
-              newChild = this.addNewRefSnapshot(dataNode, dataNode.refId, snapshotsByRefId, parentSnapshot);
+              newChild = this.addNewRefSnapshot(dataNode, dataNode.refId, snapshotCfg, parentSnapshot);
             }
             else {
               // add shallow node
               newChild = this.addValueDataNode(dataNode);
-              this.#onSnapshotNodeCreated(newChild, snapshotsByRefId, parentSnapshot);
+              this.#onSnapshotNodeCreated(newChild, snapshotCfg, parentSnapshot);
             }
           }
           if (!existingNodeOfDataNode && skippedBy) {
@@ -694,7 +704,7 @@ export default class BaseDDG {
     return cloned;
   }
 
-  #deepCloneSnapshot(timelineId, snapshotsByRefId, parentSnapshot) {
+  #deepCloneSnapshot(timelineId, snapshotCfg, parentSnapshot) {
     const originalNode = this.timelineNodes[timelineId];
 
     let newNode;
@@ -705,11 +715,11 @@ export default class BaseDDG {
     else {
       newNode = this.cloneNode(timelineId);
     }
-    this.#onSnapshotNodeCreated(newNode, snapshotsByRefId, parentSnapshot);
+    this.#onSnapshotNodeCreated(newNode, snapshotCfg, parentSnapshot);
 
     if (originalNode.children) {
       // → keep cloning
-      this.#addSnapshotChildren(newNode, originalNode.children, EmptyArray, false, snapshotsByRefId);
+      this.#addSnapshotChildren(newNode, originalNode.children, EmptyArray, false, snapshotCfg);
     }
     return newNode;
   }
@@ -730,13 +740,13 @@ export default class BaseDDG {
   /**
    * @param {DataNode} ownDataNode 
    * @param {number} refId The refId of the snapshot. For roots, this is `getDataNodeAccessedRefId`, while for children and certain watched roots, it is {@link DataNode.refId}.
-   * @param {SnapshotMap?} snapshotsByRefId If provided, it helps keep track of all snapshots of a set.
+   * @param {SnapshotConfig} snapshotCfg
    * @param {RefSnapshotTimelineNode?} parentSnapshot
    * @param {DDGTimelineNode[]?} partialChildren Optional: partial children of the snapshot to be rendered.
    * 
    * @return {RefSnapshotTimelineNode}
    */
-  addNewRefSnapshot(ownDataNode, refId, snapshotsByRefId, parentSnapshot, partialChildren = null) {
+  addNewRefSnapshot(ownDataNode, refId, snapshotCfg, parentSnapshot, partialChildren = null) {
     const { dp } = this;
 
     if (!refId) {
@@ -744,21 +754,21 @@ export default class BaseDDG {
     }
 
     // handle circular refs (or otherwise repeated refs in set)
-    const snapshotId = snapshotsByRefId.get(refId);
+    const snapshotId = snapshotCfg.snapshotsByRefId.get(refId);
     const snapshotOfRef = this.timelineNodes[snapshotId];
     if (snapshotOfRef) {
       // this ref already has a snapshot in set (used during summarization)
-      if (snapshotsByRefId.size > 1 && this.#isIndependentRootNode(snapshotOfRef, parentSnapshot)) {
+      if (snapshotCfg.snapshotsByRefId.size > 1 && this.#isIndependentRootNode(snapshotOfRef, parentSnapshot)) {
         // NOTE: no need to check, if there is only one root
         // → independent root: we can freely move node from root position to this parent instead
-        this.#onSnapshotNodeCreated(snapshotOfRef, snapshotsByRefId, parentSnapshot);
+        this.#onSnapshotNodeCreated(snapshotOfRef, snapshotCfg, parentSnapshot);
         return snapshotOfRef;
       }
 
       // if circular or otherwise repeated → add repeater node
       const snapshot = new RepeatedRefTimelineNode(ownDataNode.traceId, ownDataNode.nodeId, refId, snapshotOfRef.timelineId);
       this.addNode(snapshot);
-      this.#onSnapshotNodeCreated(snapshot, snapshotsByRefId, parentSnapshot);
+      this.#onSnapshotNodeCreated(snapshot, snapshotCfg, parentSnapshot);
       return snapshot;
     }
 
@@ -774,8 +784,8 @@ export default class BaseDDG {
     // create snapshot
     const ownTraceId = ownDataNode.traceId; /*TODO: are we really using traceId?*/
     const snapshot = new RefSnapshotTimelineNode(ownTraceId, ownDataNode.nodeId, refId);
-    this.addNode(snapshot, snapshotsByRefId);
-    this.#onSnapshotNodeCreated(snapshot, snapshotsByRefId, parentSnapshot);
+    this.addNode(snapshot);
+    this.#onSnapshotNodeCreated(snapshot, snapshotCfg, parentSnapshot);
     snapshot.label = this.makeSnapshotLabel(ownDataNode, partialChildren);
     snapshot.isPartial = !!partialChildren;
 
@@ -790,7 +800,7 @@ export default class BaseDDG {
     this.#addSnapshotChildren(
       snapshot,
       originalChildren,
-      modificationDataNodes, true, snapshotsByRefId, !!partialChildren);
+      modificationDataNodes, true, snapshotCfg, !!partialChildren);
 
     // snapshot.hasRefWriteNodes = true;
     this._refSnapshotsByDataNodeId[snapshot.dataNodeId] = snapshot;
@@ -802,15 +812,15 @@ export default class BaseDDG {
    * This is called on any snapshot or snapshot child node.
    * 
    * @param {DDGTimelineNode} newNode 
-   * @param {SnapshotMap?} snapshotsByRefId
+   * @param {SnapshotConfig?} snapshotCfg
    * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
-  #onSnapshotNodeCreated(newNode, snapshotsByRefId, parentSnapshot) {
+  #onSnapshotNodeCreated(newNode, snapshotCfg, parentSnapshot) {
     newNode.parentNodeId = parentSnapshot?.timelineId;
     newNode.rootTimelineId = parentSnapshot?.rootTimelineId || newNode.timelineId;
 
     // update snapshot set
-    snapshotsByRefId?.set(newNode.refId, newNode.timelineId);
+    snapshotCfg?.snapshotsByRefId.set(newNode.refId, newNode.timelineId);
 
 
     if (this.building) {
@@ -901,15 +911,15 @@ export default class BaseDDG {
    * @param {DDGTimelineNode} fromNode
    */
   shouldAddEdge(fromNode, toNode) {
-    const fromWatched = fromNode.watched;
+    // const fromWatched = fromNode.watched;
     const toWatched = toNode.watched;
-    if (fromWatched && toWatched &&
-      ddgQueries.isSnapshotRoot(this, fromNode) &&
-      ddgQueries.isSnapshotRoot(this, toNode)
-    ) {
-      // don't add edges between watched snapshot ROOTS
-      return false;
-    }
+    // if (fromWatched && toWatched &&
+    //   ddgQueries.isSnapshotRoot(this, fromNode) &&
+    //   ddgQueries.isSnapshotRoot(this, toNode)
+    // ) {
+    //   // don't add edges between watched snapshot ROOTS
+    //   return false;
+    // }
 
     return (
       // only link nodes of two snapshots of the same thing if there was a write in between
@@ -939,15 +949,16 @@ export default class BaseDDG {
    *  (2) go deep on new ref node.
    * 
    * @param {RefSnapshotTimelineNode} parentSnapshot 
+   * @param {PDGSnapshotConfig} snapshotCfg
    */
-  shouldBuildDeepSnapshotChild(parentSnapshot, childDataNodeId) {
+  shouldBuildDeepSnapshotChild(parentSnapshot, childDataNode, snapshotCfg) {
     // this.logger.debug('deep', parentSnapshot.timelineId, childDataNodeId, this.doesDataNodeHaveOutgoingEdge(childDataNodeId));
-    const childDataNode = this.dp.util.getDataNode(childDataNodeId);
+    const childDataNodeId = childDataNode.nodeId;
     let lastAccessNode;
+    if (snapshotCfg?.shouldBuildDeep) {
+      return snapshotCfg.shouldBuildDeep(parentSnapshot, childDataNode);
+    }
     return (
-      // hackfix
-      !this.building ||
-
       // watched stuff
       (
         parentSnapshot.watched && (                                         // watched snapshot

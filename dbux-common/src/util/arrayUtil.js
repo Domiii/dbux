@@ -3,6 +3,9 @@ import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import xor from 'lodash/xor';
 import mergeWith from 'lodash/mergeWith';
+import groupBy from 'lodash/groupBy';
+import isString from 'lodash/isString';
+import EmptyArray from './EmptyArray';
 
 
 /**
@@ -110,4 +113,20 @@ export function binarySearchByKey(arr, x, makeKey) {
 
   // x not in arr
   return null;
+}
+
+
+export function groupBySorted(arr, prop) {
+  if (!arr.length) {
+    return EmptyArray;
+  }
+  const cmp = isString(arr[0][prop]) ?
+    (a, b) => a.localeCompare(b) :
+    (a, b) => a - b;
+  return Object.values(groupBy(arr, prop),)
+    .sort((groupA, groupB) => {
+      const a = groupA[0][prop];
+      const b = groupB[0][prop];
+      return cmp(a, b);
+    });
 }

@@ -1,9 +1,11 @@
 import RefSnapshot from './RefSnapshot';
+import ValueTypeCategory from './constants/ValueTypeCategory';
 
 /** @typedef { any } RawValue */
 
 export default class ValueRef extends RefSnapshot {
   /**
+   * {@link ValueTypeCategory}
    * @type {number}
    */
   category;

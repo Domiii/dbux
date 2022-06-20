@@ -2,16 +2,22 @@
 
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import size from 'lodash/size';
+import groupBy from 'lodash/groupBy';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
 import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
 import DDGSummaryMode, { isExpandedMode } from '@dbux/data/src/ddg/DDGSummaryMode';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
+import { truncateStringDefault, truncateStringShort } from '@dbux/common/src/util/stringUtil';
+import makeTreeItem, { makeTreeChildren, mkTreeItem, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
+// eslint-disable-next-line max-len
+import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode, renderRefGroups, renderVarGroups } from '../../treeViewsShared/ddgTreeViewUtil';
+import traceSelection from '@dbux/data/src/traceSelection';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
+
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -99,7 +105,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
             predicate: (node) => isControlGroupTimelineNode(node.type),
             propsFactory: (node, children) => {
               const summaryMode = ddg.summaryModes[node.timelineId];
-              const expanded = isExpandedMode(summaryMode) || 
+              const expanded = isExpandedMode(summaryMode) ||
                 Object.values(children).some(c => c.collapsibleState === TreeItemCollapsibleState.Expanded);
               const cannotExpand = !expanded && !ddgQueries.canNodeExpand(ddg, node);
               const collapsibleState = (expanded) ?
@@ -187,6 +193,94 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
             }
           };
         },
+        /** ###########################################################################
+         * Summarizable Writes
+         * ##########################################################################*/
+        function Summarizable_Writes() {
+          const { dp } = ddg;
+
+          return {
+            children() {
+              const summarizableNodes = timelineNodes.filter(node => !!node?.hasSummarizableWrites && !!node.dataNodeId);
+
+              const getAccessedRefId = timelineNode => dp.util.getDataNodeAccessedRefId(timelineNode.dataNodeId);
+              const accessedRefIds = new Set(summarizableNodes.map(getAccessedRefId));
+              const accessedRefGroups = renderRefGroups(
+                ddg,
+                summarizableNodes,
+                getAccessedRefId
+              );
+              const otherRefGroups = renderRefGroups(
+                ddg,
+                summarizableNodes,
+                timelineNode => {
+                  const { refId } = dp.util.getDataNode(timelineNode.dataNodeId);
+                  if (accessedRefIds.has(refId)) { return null; }
+                  return refId;
+                }
+              );
+              let { items: varItems, groups: varGroups } = renderVarGroups(
+                ddg,
+                summarizableNodes.filter(n => {
+                  const { refId } = dp.util.getDataNode(n.dataNodeId);
+                  const ref = dp.collections.values.getById(refId);
+                  return !ref || !ValueTypeCategory.is.Function(ref.category);
+                })
+              );
+              const { items: functionVarItems, groups: functionGroups } = renderVarGroups(
+                ddg,
+                summarizableNodes.filter(n => {
+                  const { refId } = dp.util.getDataNode(n.dataNodeId);
+                  const ref = dp.collections.values.getById(refId);
+                  return ref && !!ValueTypeCategory.is.Function(ref.category);
+                })
+              );
+
+              varItems = Array.from(new Set(varItems.map(item => item.staticDeclarationTid)));
+
+              return [
+                mkTreeItem(
+                  'Ref Access',
+                  accessedRefGroups,
+                  {
+                    tooltip: 'All PDG nodes capturing access to a property of a reference type object. \nBy Declaring_Function → var → instance.',
+                    description: `(${accessedRefGroups.length})`
+                  }
+                ),
+                mkTreeItem(
+                  'Ref Movement',
+                  otherRefGroups,
+                  {
+                    // eslint-disable-next-line max-len
+                    tooltip: 'All recorded PDG nodes capturing data flow of reference type objects but whose properties are never accessed in the PDG. There can be a large intersection between this and "Variables".',
+                    description: `(${otherRefGroups.length})`
+                  }
+                ),
+                mkTreeItem(
+                  'Variables',
+                  varGroups,
+                  {
+                    tooltip: 'All PDG nodes capturing reads or writes of variables. \nBy Declaring_Function → statement → declaration.',
+                    description: `(${varItems.length} vars, ${varGroups.length} functions)`
+                  }
+                ),
+                mkTreeItem(
+                  'Functions & Callbacks',
+                  functionGroups,
+                  {
+                    // eslint-disable-next-line max-len
+                    tooltip: 'All PDG nodes capturing functions and callbacks. We generally ignore data dependencies from and to function instances for now, since they often muddy the waters of what is actually important. Need a better solution in the future.',
+                    description: `(${functionGroups.length})`
+                  }
+                ),
+              ];
+            }
+          };
+        },
+
+        /** ###########################################################################
+         * DOT
+         * ##########################################################################*/
         function Dot() {
           return {
             props: {

@@ -107,6 +107,44 @@ module.exports = [
     "chapter": "bellman-ford",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(bellmanFord, ƒ (anonymous))",
+        "contextId": 9,
+        "filePath": "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 30,
+            "index": 281
+          },
+          "end": {
+            "line": 117,
+            "column": 1,
+            "index": 3990
+          }
+        },
+        "applicationUuid": "0.22852868927632475"
+      },
+      {
+        "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 282,
+        "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 56,
+            "index": 172
+          },
+          "end": {
+            "line": 45,
+            "column": 1,
+            "index": 1581
+          }
+        },
+        "applicationUuid": "0.22852868927632475"
+      }
     ]
   },
   {
@@ -317,6 +355,278 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(BubbleSort, ƒ (anonymous))",
+        "contextId": 6,
+        "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 29,
+            "index": 389
+          },
+          "end": {
+            "line": 64,
+            "column": 1,
+            "index": 1677
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,2])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([2,1])",
+        "contextId": 19,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 24,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 148,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 207,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 797,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 1337,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"\"])",
+        "contextId": 1401,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"a\"])",
+        "contextId": 1402,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
+        "contextId": 1403,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 1408,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
+        "contextId": 1426,
+        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22,
+            "index": 101
+          },
+          "end": {
+            "line": 40,
+            "column": 3,
+            "index": 1166
+          }
+        },
+        "applicationUuid": "0.23647008865394548"
+      }
     ]
   },
   {
@@ -800,8 +1110,26 @@ module.exports = [
     ],
     "ddgs": [
       {
+        "ddgTitle": "[cb] describe(dijkstra, ƒ (anonymous))",
+        "contextId": 12,
+        "filePath": "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 27,
+            "index": 272
+          },
+          "end": {
+            "line": 117,
+            "column": 1,
+            "index": 3975
+          }
+        },
+        "applicationUuid": "0.47802892801692987"
+      },
+      {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 97,
+        "contextId": 285,
         "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
         "loc": {
           "start": {
@@ -815,7 +1143,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.7807030264691521"
+        "applicationUuid": "0.47802892801692987"
       }
     ]
   },
@@ -1667,6 +1995,80 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(kMeans, ƒ (anonymous))",
+        "contextId": 5,
+        "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 25,
+            "index": 60
+          },
+          "end": {
+            "line": 40,
+            "column": 1,
+            "index": 1214
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)",
+        "contextId": 7,
+        "filePath": "src/algorithms/ml/k-means/kMeans.js",
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 2,
+            "index": 442
+          },
+          "end": {
+            "line": 85,
+            "column": 1,
+            "index": 3303
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 578,
+        "filePath": "src/algorithms/ml/k-means/kMeans.js",
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 2,
+            "index": 442
+          },
+          "end": {
+            "line": 85,
+            "column": 1,
+            "index": 3303
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 940,
+        "filePath": "src/algorithms/ml/k-means/kMeans.js",
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 2,
+            "index": 442
+          },
+          "end": {
+            "line": 85,
+            "column": 1,
+            "index": 3303
+          }
+        },
+        "applicationUuid": "0.840231172655828"
+      }
     ]
   },
   {
@@ -1817,6 +2219,156 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "[cb] describe(kNN, ƒ (anonymous))",
+        "contextId": 5,
+        "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 22,
+            "index": 51
+          },
+          "end": {
+            "line": 71,
+            "column": 1,
+            "index": 2299
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[]], [1,2], [1,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25])",
+        "contextId": 47,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25], 5)",
+        "contextId": 193,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,1])",
+        "contextId": 340,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,0,1])",
+        "contextId": 401,
+        "filePath": "src/algorithms/ml/knn/kNN.js",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 2,
+            "index": 656,
+            "_pos": {
+              "line": 17,
+              "character": 2
+            }
+          },
+          "end": {
+            "line": 60,
+            "column": 1,
+            "index": 1992,
+            "_pos": {
+              "line": 59,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.61475701154482"
+      }
     ]
   },
   {
