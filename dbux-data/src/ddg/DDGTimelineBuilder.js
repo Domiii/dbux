@@ -485,6 +485,17 @@ export default class DDGTimelineBuilder {
       newNode = this.#addSnapshotOrDataNode(dataNode);
     }
 
+    if (newNode.watched) {
+      // set ancestor groups to watched
+      for (let i = this.stack.length - 1; i >= 0; --i) {
+        const group = this.stack[i];
+        if (group.watched) {
+          break; // we are already done
+        }
+        this.ddg.watchSet.setWatchedGroup(group);
+      }
+    }
+
     // bookkeeping for summaries
     const accessedRefId = dp.util.getDataNodeAccessedRefId(dataNode.nodeId);
     const varDeclarationTid = dataNode.varAccess?.declarationTid;

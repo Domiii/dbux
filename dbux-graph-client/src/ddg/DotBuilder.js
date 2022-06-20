@@ -67,7 +67,8 @@ const Colors = {
   line: 'white',
   nodeOutlineDefault: 'white',
   watchedNodeOutline: 'green',
-  edge: '#AAAAAA',
+  // edge: '#AAAAAA',
+  edge: '#6666FF', // blue/purple-ish
   groupBorder: 'gray',
 
   groupLabel: 'yellow',
@@ -303,6 +304,10 @@ export default class DotBuilder {
     // console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
+
+      // Not summarized children of a summarized group node
+      //    (→ deal with nested watched nodes)
+      this.nodesByIds(node.children);
     }
     else if (show) {
       if (ddgQueries.isExpandedGroupNode(ddg, node)) {

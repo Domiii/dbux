@@ -58,20 +58,20 @@ export function makeDDGNodeDescription(ddg, node) {
   const dataInfo = dataNodeId ? ` (n${dataNodeId})` : '';
   const summaryMode = summaryModes[timelineId];
   // eslint-disable-next-line no-nested-ternary
+
+  const summaryPrefix = watched ? '👁' : '';
   let summaryModeLabel =
-    watched ?
-      'Watched' :
-      summaryMode ?
-        DDGSummaryMode.nameFrom(summaryMode) :
-        og ?
-          '(unknown)' :
-          'SummaryNode';
+    summaryMode ?
+      DDGSummaryMode.nameFrom(summaryMode) :
+      og ?
+        '(unknown)' :
+        'SummaryNode';
   if (isControlGroupTimelineNode(node.type)) {
     const summarizable = ddgQueries.isNodeSummarizable(ddg, node);
     const summarizableChildren = ddgQueries.getSummarizableChildren(ddg, node.timelineId);
     summaryModeLabel += ` (s: ${summarizable}, sC: ${summarizableChildren?.length || 0})`;
   }
-  return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryModeLabel}`;
+  return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryPrefix}${summaryModeLabel}`;
 }
 
 export function makeDDGNodeLabel(ddg, timelineId) {

@@ -197,6 +197,10 @@ export default class DDGWatchSet {
     }
   }
 
+  setWatchedGroup(node) {
+    node.watched = true;
+  }
+
   /**
    * @param {DDGTimelineNode} node 
    */

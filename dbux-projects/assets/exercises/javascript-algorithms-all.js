@@ -373,7 +373,7 @@ module.exports = [
             "index": 1677
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([])",
@@ -391,7 +391,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([1])",
@@ -409,7 +409,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,2])",
@@ -427,7 +427,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([2,1])",
@@ -445,7 +445,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
@@ -463,7 +463,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
@@ -481,7 +481,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
@@ -499,7 +499,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
@@ -517,7 +517,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
@@ -535,7 +535,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"\"])",
@@ -553,7 +553,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"a\"])",
@@ -571,7 +571,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
@@ -589,7 +589,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
@@ -607,7 +607,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
@@ -625,7 +625,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.8772423257101054"
+        "applicationUuid": "0.23647008865394548"
       }
     ]
   },

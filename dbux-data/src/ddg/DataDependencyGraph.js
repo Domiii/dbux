@@ -288,6 +288,15 @@ export default class DataDependencyGraph extends BaseDDG {
    * summarization propagation
    * ##########################################################################*/
 
+  #getHideNodeMode(node) {
+    if (node.watched) {
+      return isControlGroupTimelineNode(node.type) ?
+        DDGSummaryMode.HideChildren :
+        DDGSummaryMode.Show;
+    }
+    return DDGSummaryMode.Hide;
+  }
+
   propagateSummaryMode = {
     [DDGSummaryMode.Show]: (timelineId) => {
       const { og } = this;
@@ -319,8 +328,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // hide all children
       for (const childId of node.children) {
-        // const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, DDGSummaryMode.Hide);
+        const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, this.#getHideNodeMode(childNode));
       }
     },
     [DDGSummaryMode.CollapseSummary]: (timelineId) => {
@@ -329,8 +338,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // hide all children
       for (const childId of node.children) {
-        // const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, DDGSummaryMode.Hide);
+        const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, this.#getHideNodeMode(childNode));
       }
     },
     [DDGSummaryMode.SummarizeChildren]: (timelineId) => {
@@ -342,7 +351,7 @@ export default class DataDependencyGraph extends BaseDDG {
         const childNode = og.timelineNodes[childId];
         const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
           DDGSummaryMode.CollapseSummary :
-          DDGSummaryMode.Hide;
+          this.#getHideNodeMode(childNode);
         this.#applyMode(childId, targetMode);
       }
     },
@@ -378,7 +387,8 @@ export default class DataDependencyGraph extends BaseDDG {
 
       // hide all children
       for (const childId of node.children) {
-        this.#applyMode(childId, DDGSummaryMode.Hide);
+        const childNode = og.timelineNodes[childId];
+        this.#applyMode(childId, this.#getHideNodeMode(childNode));
       }
     }
   };
@@ -658,6 +668,10 @@ export default class DataDependencyGraph extends BaseDDG {
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
 
+    if (node.watched) {
+      // don't try to summarize watched nodes
+      currentCollapsedAncestor = null;
+    }
 
     // TODO: deal with invisible snapshot children?
     // node.parentNodeId ||  // don't hide snapshot children
@@ -676,7 +690,9 @@ export default class DataDependencyGraph extends BaseDDG {
       // }
     }
 
-    let isSummarized = !!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node);
+    let isSummarized = (
+      (!!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node))
+    );
 
     // DFS recursion
     if (children) {
@@ -728,6 +744,7 @@ export default class DataDependencyGraph extends BaseDDG {
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
       this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+    // console.debug(`DDG-SUMM: #${timelineId} ${node.label}, sum: ${isSummarized}, c: ${!!children}, vis: ${isVisible}`);
     }
 
     if (isVisible) {
