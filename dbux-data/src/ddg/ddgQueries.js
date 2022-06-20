@@ -359,7 +359,7 @@ const ddgQueries = {
    */
   getSummaryRoots(ddg, summary) {
     const rootIds = summary.summaryRoots;
-    return rootIds.map(id => ddg.timelineNodes[id]);
+    return rootIds?.map(id => ddg.timelineNodes[id]);
   },
 
   /**
