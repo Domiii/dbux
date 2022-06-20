@@ -18,6 +18,10 @@ export default class JavascriptAlgorithmProject extends Project {
 
   };
 
+  get dontReset() {
+    return true;
+  }
+
   async beforeInstall() {
     // remove husky from package.json
     writeMergePackageJson(this.projectPath, { scripts: { prepare: '' } });
