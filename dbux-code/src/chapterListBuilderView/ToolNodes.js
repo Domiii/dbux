@@ -2,8 +2,9 @@ import { commands, TreeItemCollapsibleState, window } from 'vscode';
 import fs from 'fs';
 import { basename, dirname } from 'path';
 import open from 'open';
-import allApplications from '@dbux/data/src/applications/allApplications';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import Process from '@dbux/projects/src/util/Process';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -15,6 +16,9 @@ import { translate } from '../lang';
 
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('ToolNodes');
 
 const ExportExercises = 4;
 const CustomPatchByChapter = {
@@ -260,6 +264,19 @@ class GeneratePatchNode extends ToolNode {
   }
 }
 
+class ExportAllDDGScreenshotNode extends ToolNode {
+  static makeLabel() {
+    return `Export DDG screenshots(test)`;
+  }
+
+  async handleClick() {
+    // TODO
+    const exercises = this.controller.exerciseList.getAll().slice(10, 12);
+    const args = await this.controller.gallery.getAllExerciseDDGArgs(exercises);
+    log(`gallery.getAllExerciseDDGArgs() = `, args);
+  }
+}
+
 export default class ToolRootNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Tools';
@@ -274,5 +291,6 @@ export default class ToolRootNode extends BaseTreeViewNode {
     ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
     GeneratePatchNode,
+    ExportAllDDGScreenshotNode,
   ]
 }

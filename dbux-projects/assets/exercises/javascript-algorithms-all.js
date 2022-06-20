@@ -7,6 +7,188 @@ module.exports = [
     "chapter": "best-time-to-buy-sell-stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5])",
+        "contextId": 5,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1], ƒ mockConstructor)",
+        "contextId": 8,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
+        "contextId": 9,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
+        "contextId": 10,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
+        "contextId": 11,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
+        "contextId": 12,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
+        "contextId": 13,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
+        "contextId": 14,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
+        "contextId": 15,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
+        "contextId": 16,
+        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 73,
+            "index": 390
+          },
+          "end": {
+            "line": 18,
+            "column": 1,
+            "index": 673
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      }
     ]
   },
   {
@@ -17,6 +199,26 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 231,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241
+          }
+        },
+        "applicationUuid": "0.9919389746400384"
+      }
     ]
   },
   {
@@ -27,6 +229,44 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 231,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241
+          }
+        },
+        "applicationUuid": "0.4124151362185098"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 734,
+        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+        "loc": {
+          "start": {
+            "line": 22,
+            "column": 50,
+            "index": 633
+          },
+          "end": {
+            "line": 113,
+            "column": 1,
+            "index": 4241
+          }
+        },
+        "applicationUuid": "0.4124151362185098"
+      }
     ]
   },
   {
@@ -155,6 +395,188 @@ module.exports = [
     "chapter": "maximum-subarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfMaximumSubarray([])",
+        "contextId": 5,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0])",
+        "contextId": 6,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1])",
+        "contextId": 7,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1,2])",
+        "contextId": 8,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,-1,2])",
+        "contextId": 9,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
+        "contextId": 10,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
+        "contextId": 11,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 12,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 13,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 14,
+        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 54,
+            "index": 173
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 847
+          }
+        },
+        "applicationUuid": "0.08805859012151318"
+      }
     ]
   },
   {
