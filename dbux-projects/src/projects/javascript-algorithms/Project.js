@@ -25,7 +25,9 @@ export default class JavascriptAlgorithmProject extends Project {
 
   async afterInstall() {
     // NOTE:
-    // git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/javascript-algorithms/baseline.patch
+    /*
+git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/javascript-algorithms/X.patch
+    */
     await this.applyPatch('baseline');
   }
 
