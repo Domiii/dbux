@@ -5,6 +5,7 @@ import xor from 'lodash/xor';
 import mergeWith from 'lodash/mergeWith';
 import groupBy from 'lodash/groupBy';
 import isString from 'lodash/isString';
+import EmptyArray from './EmptyArray';
 
 
 /**
@@ -116,6 +117,9 @@ export function binarySearchByKey(arr, x, makeKey) {
 
 
 export function groupBySorted(arr, prop) {
+  if (!arr.length) {
+    return EmptyArray;
+  }
   const cmp = isString(arr[0][prop]) ?
     (a, b) => a.localeCompare(b) :
     (a, b) => a - b;

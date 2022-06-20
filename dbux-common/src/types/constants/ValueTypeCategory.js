@@ -6,7 +6,7 @@ import isFunction from 'lodash/isFunction';
 import Enum from '../../util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let ValueTypeCategory = {
+let ValueTypeCategoryObj = {
   /**
    * Primitives have a small, fixed size, primarily: number, bool
    */
@@ -19,7 +19,7 @@ let ValueTypeCategory = {
   Array: 5
 };
 
-ValueTypeCategory = new Enum(ValueTypeCategory);
+const ValueTypeCategory = new Enum(ValueTypeCategoryObj);
 
 export function determineValueTypeCategory(value) {
   if (isFunction(value)) {

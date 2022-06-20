@@ -14,8 +14,9 @@ import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
 // eslint-disable-next-line max-len
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode, renderRefGroups } from '../../treeViewsShared/ddgTreeViewUtil';
+import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode, renderRefGroups, renderVarGroups } from '../../treeViewsShared/ddgTreeViewUtil';
 import traceSelection from '@dbux/data/src/traceSelection';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
@@ -218,9 +219,28 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                   return refId;
                 }
               );
+              let { items: varItems, groups: varGroups } = renderVarGroups(
+                ddg,
+                summarizableNodes.filter(n => {
+                  const { refId } = dp.util.getDataNode(n.dataNodeId);
+                  const ref = dp.collections.values.getById(refId);
+                  return !ref || !ValueTypeCategory.is.Function(ref.category);
+                })
+              );
+              const { items: functionVarItems, groups: functionGroups } = renderVarGroups(
+                ddg,
+                summarizableNodes.filter(n => {
+                  const { refId } = dp.util.getDataNode(n.dataNodeId);
+                  const ref = dp.collections.values.getById(refId);
+                  return ref && !!ValueTypeCategory.is.Function(ref.category);
+                })
+              );
+
+              varItems = Array.from(new Set(varItems.map(item => item.staticDeclarationTid)));
+
               return [
                 mkTreeItem(
-                  'Accessed Refs',
+                  'Ref Access',
                   accessedRefGroups,
                   {
                     tooltip: 'All PDG nodes capturing access to a property of a reference type object. \nBy Declaring_Function → var → instance.',
@@ -228,13 +248,31 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                   }
                 ),
                 mkTreeItem(
-                  'Other Refs',
+                  'Ref Movement',
                   otherRefGroups,
                   {
-                    tooltip: 'All PDG nodes capturing reference type objects whose properties are never accessed in the entire PDG.',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'All recorded PDG nodes capturing data flow of reference type objects but whose properties are never accessed in the PDG. There can be a large intersection between this and "Variables".',
                     description: `(${otherRefGroups.length})`
                   }
-                )
+                ),
+                mkTreeItem(
+                  'Variables',
+                  varGroups,
+                  {
+                    tooltip: 'All PDG nodes capturing reads or writes of variables. \nBy Declaring_Function → statement → declaration.',
+                    description: `(${varItems.length} vars, ${varGroups.length} functions)`
+                  }
+                ),
+                mkTreeItem(
+                  'Functions & Callbacks',
+                  functionGroups,
+                  {
+                    // eslint-disable-next-line max-len
+                    tooltip: 'All PDG nodes capturing functions and callbacks. We generally ignore data dependencies from and to function instances for now, since they often muddy the waters of what is actually important. Need a better solution in the future.',
+                    description: `(${functionGroups.length})`
+                  }
+                ),
               ];
             }
           };

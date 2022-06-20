@@ -464,8 +464,8 @@ export default class DataDependencyGraph extends BaseDDG {
     if (
       !node.hasSummarizableWrites ||
       // only non-root control groups
-      isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)
-      /*  || this.nodeSummaries[timelineId] */ // build again, for dev purposes
+      (isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)) ||
+      this.nodeSummaries[timelineId]
     ) {
       // already built or nothing to build
       return this.nodeSummaries[timelineId];

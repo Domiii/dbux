@@ -14,6 +14,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
 import makeTreeItem, { mkTreeItem, makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
+import { TreeItemCollapsibleState } from 'vscode';
 
 /**
  * @param {DDGTimelineNode} node 
@@ -328,48 +329,57 @@ export function renderRefGroups(ddg, timelineNodes, getRefIdCb) {
       };
     });
 
-  return groupBySorted(items, 'staticContextId').map((ofStaticContext) => {
-    return mkTreeItem(
-      truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
-      () => groupBySorted(ofStaticContext, 'varName')
-        .sort((a, b) => a.varDataNodeId - b.varDataNodeId)
-        .map(ofVar => {
-          return mkTreeItem(
-            ofVar[0].varName,
-            () => groupBySorted(ofVar, 'refId').map(ofRefId => {
-              const refItem = ofRefId[0];
-              const refTrace = dp.util.getTraceOfDataNode(refItem.varDataNode.nodeId);
-              return mkTreeItem(
-                makeTraceLocLabel(refTrace),
-                () => {
-                  return ofRefId.map(item => renderDDGNode(ddg, item.timelineNode));
-                },
-                {
-                  description: `(${ofRefId.length})`,
-                  handleClick() {
-                    traceSelection.selectTrace(refTrace);
+  return groupBySorted(items, 'staticContextId')
+    .sort((a, b) => a[0].varDataNodeId - b[0].varDataNodeId)
+    .map((ofStaticContext) => {
+      return mkTreeItem(
+        truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
+        () => groupBySorted(ofStaticContext, 'varName')
+          .sort((a, b) => {
+            return a[0].varDataNodeId - b[0].varDataNodeId;
+          })
+          .map(ofVar => {
+            return mkTreeItem(
+              ofVar[0].varName,
+              () => groupBySorted(ofVar, 'refId').map(ofRefId => {
+                const refItem = ofRefId[0];
+                const refTrace = dp.util.getTraceOfDataNode(refItem.varDataNode.nodeId);
+                const usedNames = Array.from(new Set(ofRefId
+                  .map(item => dp.util.getDataNodeVarAccessName(item.dataNode.nodeId))
+                  .filter(Boolean)
+                ))
+                  .join(', ');
+                return mkTreeItem(
+                  `Ref as: ${usedNames}`,
+                  () => {
+                    return ofRefId.map(item => renderDDGNode(ddg, item.timelineNode));
+                  },
+                  {
+                    description: `(${ofRefId.length})`,
+                    handleClick() {
+                      traceSelection.selectTrace(refTrace);
+                    }
                   }
+                );
+              }),
+              {
+                description: `(${new Set(ofVar.map(i => i.refId)).size} refs, ${ofVar.length} nodes)`,
+                handleClick() {
+                  const trace = dp.util.getTrace(ofVar[0].varDataNode.traceId);
+                  traceSelection.selectTrace(trace);
                 }
-              );
-            }),
-            {
-              description: `(${new Set(ofVar.map(i => i.refId)).size} refs, ${ofVar.length} nodes)`,
-              handleClick() {
-                const trace = dp.util.getTrace(ofVar[0].varDataNode.traceId);
-                traceSelection.selectTrace(trace);
               }
-            }
-          );
-        }),
-      {
-        description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
-        handleClick() {
-          const trace = dp.util.getTrace(ofStaticContext[0].varDataNode.traceId);
-          traceSelection.selectTrace(trace);
+            );
+          }),
+        {
+          description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
+          handleClick() {
+            const trace = dp.util.getTrace(ofStaticContext[0].varDataNode.traceId);
+            traceSelection.selectTrace(trace);
+          }
         }
-      }
-    );
-  });
+      );
+    });
 }
 
 /**
@@ -416,32 +426,36 @@ export function renderVarGroups(ddg, timelineNodes) {
       };
     });
 
-  return groupBySorted(items, 'staticContextId').map((ofStaticContext) => {
-    return mkTreeItem(
-      truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
-      () => groupBySorted(ofStaticContext, 'staticDeclarationTid')
-        .map(ofVar => {
-          return mkTreeItem(
-            ofVar[0].varName,
-            () => {
-              return ofVar.map(item => renderDDGNode(ddg, item.timelineNode));
-            },
-            {
-              description: `(${new Set(ofVar.map(i => i.staticDeclarationTid)).size} vars, ${ofVar.length} nodes)`,
-              handleClick() {
-                const trace = dp.util.getTrace(ofVar[0].declarationTid);
-                traceSelection.selectTrace(trace);
+  return {
+    items,
+    groups: groupBySorted(items, 'staticContextId').map((ofStaticContext) => {
+      return mkTreeItem(
+        truncateStringShort(makeStaticContextLabel(ofStaticContext[0].staticContextId, dp.application)),
+        () => groupBySorted(ofStaticContext, 'staticDeclarationTid')
+          .map(ofVar => {
+            return mkTreeItem(
+              ofVar[0].varName,
+              () => {
+                return ofVar.map(item => renderDDGNode(ddg, item.timelineNode));
+              },
+              {
+                description: `(${new Set(ofVar.map(i => i.staticDeclarationTid)).size} vars, ${ofVar.length} nodes)`,
+                handleClick() {
+                  const trace = dp.util.getTrace(ofVar[0].declarationTid);
+                  traceSelection.selectTrace(trace);
+                }
               }
-            }
-          );
-        }),
-      {
-        description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
-        handleClick() {
-          const trace = dp.util.getTrace(ofStaticContext[0].varDataNode.traceId);
-          traceSelection.selectTrace(trace);
+            );
+          }),
+        {
+          collapsibleState: TreeItemCollapsibleState.Expanded,
+          description: `(${ofStaticContext.length}) @${makeStaticContextLocLabel(dp.application.applicationId, ofStaticContext[0].staticContextId)}`,
+          handleClick() {
+            const trace = dp.util.getTrace(ofStaticContext[0].declarationTid);
+            traceSelection.selectTrace(trace);
+          },
         }
-      }
-    );
-  });
+      );
+    })
+  };
 }

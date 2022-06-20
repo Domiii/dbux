@@ -909,15 +909,15 @@ export default class BaseDDG {
    * @param {DDGTimelineNode} fromNode
    */
   shouldAddEdge(fromNode, toNode) {
-    const fromWatched = fromNode.watched;
+    // const fromWatched = fromNode.watched;
     const toWatched = toNode.watched;
-    if (fromWatched && toWatched &&
-      ddgQueries.isSnapshotRoot(this, fromNode) &&
-      ddgQueries.isSnapshotRoot(this, toNode)
-    ) {
-      // don't add edges between watched snapshot ROOTS
-      return false;
-    }
+    // if (fromWatched && toWatched &&
+    //   ddgQueries.isSnapshotRoot(this, fromNode) &&
+    //   ddgQueries.isSnapshotRoot(this, toNode)
+    // ) {
+    //   // don't add edges between watched snapshot ROOTS
+    //   return false;
+    // }
 
     return (
       // only link nodes of two snapshots of the same thing if there was a write in between
