@@ -73,8 +73,8 @@ const GraphVizCfg = {
    */
   tweenShapes: false,
   tweenPaths: false,
-  tweenPrecision: 100,
-  convertEqualSidedPolygons: false
+  // tweenPrecision: 100, // NOTE: not necessary when tweening is disabled
+  // convertEqualSidedPolygons: false // NOTE: not necessary when `tweenShapes` is disabled
 };
 
 const RenderCfg = {

@@ -293,13 +293,13 @@ export default class DDGTimelineBuilder {
     const trace = dp.util.getTrace(traceId);
     const staticTrace = dp.util.getStaticTrace(traceId);
     if (TraceType.is.PushImmediate(staticTrace.type)) {
-      // push context
+      // push 1: context
       const context = dp.collections.executionContexts.getById(trace.contextId);
       const contextLabel = makeContextLabel(context, dp.application);
       this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel), traceId);
     }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
-      // push branch statement
+      // push 2: branch and loop
       const controlStatementId = staticTrace.controlId;
       const controlStaticTrace = dp.collections.staticTraces.getById(controlStatementId);
       const { syntax } = controlStaticTrace;
@@ -315,6 +315,7 @@ export default class DDGTimelineBuilder {
       }
     }
     else if (dp.util.isTraceControlGroupPop(traceId)) {
+      // any pop
       const currentGroup = this.peekStack();
 
       // sanity checks
