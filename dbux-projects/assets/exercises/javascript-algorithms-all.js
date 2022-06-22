@@ -1818,24 +1818,6 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "[cb] describe(kMeans, ƒ (anonymous))",
-        "contextId": 5,
-        "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
-        "loc": {
-          "start": {
-            "line": 3,
-            "column": 25,
-            "index": 60
-          },
-          "end": {
-            "line": 40,
-            "column": 1,
-            "index": 1214
-          }
-        },
-        "applicationUuid": "0.840231172655828"
-      },
-      {
         "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)",
         "contextId": 7,
         "filePath": "src/algorithms/ml/k-means/kMeans.js",
@@ -1851,7 +1833,7 @@ module.exports = [
             "index": 3303
           }
         },
-        "applicationUuid": "0.840231172655828"
+        "applicationUuid": "0.20861870771665414"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -1869,7 +1851,7 @@ module.exports = [
             "index": 3303
           }
         },
-        "applicationUuid": "0.840231172655828"
+        "applicationUuid": "0.20861870771665414"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -1887,7 +1869,7 @@ module.exports = [
             "index": 3303
           }
         },
-        "applicationUuid": "0.840231172655828"
+        "applicationUuid": "0.20861870771665414"
       }
     ]
   },

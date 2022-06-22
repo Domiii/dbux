@@ -119,7 +119,7 @@ export function isExpandedMode(mode) {
 }
 
 const shallowExpandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-shallowExpandedModes[DDGSummaryMode.ExpandSelf] = true;
+// shallowExpandedModes[DDGSummaryMode.ExpandSelf] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf1] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf2] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf3] = true;

@@ -794,6 +794,7 @@ export default class DataDependencyGraph extends BaseDDG {
     const { timelineId, dataNodeId, children } = node;
     const mode = this.summaryModes[timelineId];
 
+    const isSummarizedMode = ddgQueries.isNodeSummarizedMode(this, node);
     const isShallowSummarizedGroup = isShallowExpandedMode(mode);
 
     /**
@@ -806,7 +807,7 @@ export default class DataDependencyGraph extends BaseDDG {
         node.watched ||
 
         // allow summarization for nested group nodes
-        isShallowSummarizedGroup
+        (isSummarizedMode && isAncestorShallowSummarized)
       )
     );
     if (isSummarizedAndVisible) {

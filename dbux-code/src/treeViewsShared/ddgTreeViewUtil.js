@@ -275,7 +275,8 @@ export function renderDDGSummaries(ddg, summaries) {
         timelineId,
         summaryRoots,
         snapshotsByRefId,
-        nodesByTid
+        nodesByTid,
+        ...other
       } = summary;
       const node = timelineNodes[timelineId];
       return makeTreeItem(node.label,
@@ -286,7 +287,8 @@ export function renderDDGSummaries(ddg, summaries) {
             return renderNodeTree(ddg, root);
           }),
           snapshotsByRefId: Object.fromEntries(snapshotsByRefId.entries()),
-          nodesByTid: Object.fromEntries(nodesByTid.entries())
+          nodesByTid: Object.fromEntries(nodesByTid.entries()),
+          ...other
         },
         {
           // description: `${summaryModeLabel}`

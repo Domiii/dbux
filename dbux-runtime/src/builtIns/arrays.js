@@ -129,6 +129,39 @@ export default function patchArray() {
   );
 
   // ###########################################################################
+  // fill
+  // ###########################################################################
+
+  monkeyPatchMethod(Array, 'fill',
+    (arr, args, originalFunction, patchedFunction) => {
+      const ref = valueCollection.getRefByValue(arr);
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
+
+      const { traceId: callId } = bceTrace;
+      const arrNodeId = getDataNodeIdFromRef(ref);
+      const allInputs = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
+      const writeInputs = [allInputs[0]];
+
+      let [value, start, end] = args;
+      start = !isNaN(start) ? wrapIndex(start, arr) : 0;
+      end = !isNaN(end) ? wrapIndex(end, arr) : arr.length;
+
+      for (let i = start; i < end; ++i) {
+        const varAccess = {
+          objectNodeId: arrNodeId,
+          prop: i
+        };
+        dataNodeCollection.createBCEDataNode(value, callId, DataNodeType.Write, varAccess, writeInputs);
+      }
+
+      return originalFunction.apply(arr, args);
+    }
+  );
+
+  // ###########################################################################
   // shift
   // ###########################################################################
 
@@ -297,7 +330,6 @@ export default function patchArray() {
   [
     "concat",
     "copyWithin",
-    "fill",
     "find",
     "findIndex",
     "lastIndexOf",
