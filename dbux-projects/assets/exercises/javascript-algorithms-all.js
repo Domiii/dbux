@@ -7,188 +7,6 @@ module.exports = [
     "chapter": "best-time-to-buy-sell-stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5])",
-        "contextId": 5,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1], ƒ mockConstructor)",
-        "contextId": 8,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
-        "contextId": 9,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
-        "contextId": 10,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
-        "contextId": 11,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
-        "contextId": 12,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
-        "contextId": 13,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
-        "contextId": 14,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
-        "contextId": 15,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      },
-      {
-        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
-        "contextId": 16,
-        "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 73,
-            "index": 390
-          },
-          "end": {
-            "line": 18,
-            "column": 1,
-            "index": 673
-          }
-        },
-        "applicationUuid": "0.8964063139788399"
-      }
     ]
   },
   {
@@ -199,26 +17,6 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 231,
-        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-        "loc": {
-          "start": {
-            "line": 22,
-            "column": 50,
-            "index": 633
-          },
-          "end": {
-            "line": 113,
-            "column": 1,
-            "index": 4241
-          }
-        },
-        "applicationUuid": "0.9919389746400384"
-      }
     ]
   },
   {
@@ -229,44 +27,6 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 231,
-        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-        "loc": {
-          "start": {
-            "line": 22,
-            "column": 50,
-            "index": 633
-          },
-          "end": {
-            "line": 113,
-            "column": 1,
-            "index": 4241
-          }
-        },
-        "applicationUuid": "0.4124151362185098"
-      },
-      {
-        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 734,
-        "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-        "loc": {
-          "start": {
-            "line": 22,
-            "column": 50,
-            "index": 633
-          },
-          "end": {
-            "line": 113,
-            "column": 1,
-            "index": 4241
-          }
-        },
-        "applicationUuid": "0.4124151362185098"
-      }
     ]
   },
   {
@@ -337,39 +97,11 @@ module.exports = [
     "chapter": "bellman-ford",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
-    ]
-  },
-  {
-    "name": "bellmanFord should find minimum paths to all vertices for undirected graph@bellmanFord.test.js",
-    "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
-    "chapterGroup": "graph",
-    "chapter": "bellman-ford",
-    "testFilePaths": [
-      "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
     ],
     "ddgs": [
       {
-        "ddgTitle": "[cb] describe(bellmanFord, ƒ (anonymous))",
-        "contextId": 9,
-        "filePath": "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js",
-        "loc": {
-          "start": {
-            "line": 6,
-            "column": 30,
-            "index": 281
-          },
-          "end": {
-            "line": 117,
-            "column": 1,
-            "index": 3990
-          }
-        },
-        "applicationUuid": "0.22852868927632475"
-      },
-      {
         "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 282,
+        "contextId": 179,
         "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
         "loc": {
           "start": {
@@ -383,8 +115,18 @@ module.exports = [
             "index": 1581
           }
         },
-        "applicationUuid": "0.22852868927632475"
+        "applicationUuid": "0.45767544087224143"
       }
+    ]
+  },
+  {
+    "name": "bellmanFord should find minimum paths to all vertices for undirected graph@bellmanFord.test.js",
+    "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
+    "chapterGroup": "graph",
+    "chapter": "bellman-ford",
+    "testFilePaths": [
+      "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
     ]
   },
   {
@@ -395,188 +137,6 @@ module.exports = [
     "chapter": "maximum-subarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "bfMaximumSubarray([])",
-        "contextId": 5,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([0,0])",
-        "contextId": 6,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([0,0,1])",
-        "contextId": 7,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([0,0,1,2])",
-        "contextId": 8,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([0,0,-1,2])",
-        "contextId": 9,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
-        "contextId": 10,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
-        "contextId": 11,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
-        "contextId": 12,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
-        "contextId": 13,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      },
-      {
-        "ddgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
-        "contextId": 14,
-        "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 54,
-            "index": 173
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 847
-          }
-        },
-        "applicationUuid": "0.08805859012151318"
-      }
     ]
   },
   {
@@ -717,30 +277,10 @@ module.exports = [
     "chapter": "power-set",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "btPowerSet([1,2])",
-        "contextId": 5,
-        "filePath": "src/algorithms/sets/power-set/btPowerSet.js",
-        "loc": {
-          "start": {
-            "line": 39,
-            "column": 48,
-            "index": 1726
-          },
-          "end": {
-            "line": 41,
-            "column": 1,
-            "index": 1787
-          }
-        },
-        "applicationUuid": "0.08245080136535377"
-      }
     ]
   },
   {
-    "name": "btUniquePaths should find the number of unique paths on board",
+    "name": "btUniquePaths should find the number of unique paths on board@btUniquePaths.test.js",
     "label": "btUniquePaths should find the number of unique paths on board",
     "testNamePattern": "btUniquePaths should find the number of unique paths on board",
     "chapterGroup": "uncategorized",
@@ -777,116 +317,6 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
-        "contextId": 12,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.9575911300522832"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"\"])",
-        "contextId": 141,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.9575911300522832"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"a\"])",
-        "contextId": 142,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.9575911300522832"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
-        "contextId": 143,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.9575911300522832"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
-        "contextId": 148,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.9575911300522832"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
-        "contextId": 166,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.9575911300522832"
-      }
     ]
   },
   {
@@ -1367,48 +797,10 @@ module.exports = [
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "[cb] describe(dijkstra, ƒ (anonymous))",
-        "contextId": 12,
-        "filePath": "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js",
-        "loc": {
-          "start": {
-            "line": 6,
-            "column": 27,
-            "index": 272
-          },
-          "end": {
-            "line": 117,
-            "column": 1,
-            "index": 3975
-          }
-        },
-        "applicationUuid": "0.47802892801692987"
-      },
-      {
-        "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 285,
-        "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 53,
-            "index": 577
-          },
-          "end": {
-            "line": 80,
-            "column": 1,
-            "index": 3052
-          }
-        },
-        "applicationUuid": "0.47802892801692987"
-      }
     ]
   },
   {
-    "name": "discreteFourierTransform should split signal into frequencies",
+    "name": "discreteFourierTransform should split signal into frequencies@discreteFourierTransform.test.js",
     "label": "discreteFourierTransform should split signal into frequencies",
     "testNamePattern": "discreteFourierTransform should split signal into frequencies",
     "chapterGroup": "math",
@@ -2255,80 +1647,6 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "[cb] describe(kMeans, ƒ (anonymous))",
-        "contextId": 5,
-        "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
-        "loc": {
-          "start": {
-            "line": 3,
-            "column": 25,
-            "index": 60
-          },
-          "end": {
-            "line": 40,
-            "column": 1,
-            "index": 1214
-          }
-        },
-        "applicationUuid": "0.840231172655828"
-      },
-      {
-        "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)",
-        "contextId": 7,
-        "filePath": "src/algorithms/ml/k-means/kMeans.js",
-        "loc": {
-          "start": {
-            "line": 14,
-            "column": 2,
-            "index": 442
-          },
-          "end": {
-            "line": 85,
-            "column": 1,
-            "index": 3303
-          }
-        },
-        "applicationUuid": "0.840231172655828"
-      },
-      {
-        "ddgTitle": "KMeans([[],[],[]], 2)",
-        "contextId": 578,
-        "filePath": "src/algorithms/ml/k-means/kMeans.js",
-        "loc": {
-          "start": {
-            "line": 14,
-            "column": 2,
-            "index": 442
-          },
-          "end": {
-            "line": 85,
-            "column": 1,
-            "index": 3303
-          }
-        },
-        "applicationUuid": "0.840231172655828"
-      },
-      {
-        "ddgTitle": "KMeans([[],[],[]], 2)",
-        "contextId": 940,
-        "filePath": "src/algorithms/ml/k-means/kMeans.js",
-        "loc": {
-          "start": {
-            "line": 14,
-            "column": 2,
-            "index": 442
-          },
-          "end": {
-            "line": 85,
-            "column": 1,
-            "index": 3303
-          }
-        },
-        "applicationUuid": "0.840231172655828"
-      }
     ]
   },
   {
@@ -2479,156 +1797,6 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "[cb] describe(kNN, ƒ (anonymous))",
-        "contextId": 5,
-        "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
-        "loc": {
-          "start": {
-            "line": 3,
-            "column": 22,
-            "index": 51
-          },
-          "end": {
-            "line": 71,
-            "column": 1,
-            "index": 2299
-          }
-        },
-        "applicationUuid": "0.61475701154482"
-      },
-      {
-        "ddgTitle": "kNN([[],[]], [1,2], [1,1])",
-        "contextId": 7,
-        "filePath": "src/algorithms/ml/knn/kNN.js",
-        "loc": {
-          "start": {
-            "line": 18,
-            "column": 2,
-            "index": 656,
-            "_pos": {
-              "line": 17,
-              "character": 2
-            }
-          },
-          "end": {
-            "line": 60,
-            "column": 1,
-            "index": 1992,
-            "_pos": {
-              "line": 59,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.61475701154482"
-      },
-      {
-        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25])",
-        "contextId": 47,
-        "filePath": "src/algorithms/ml/knn/kNN.js",
-        "loc": {
-          "start": {
-            "line": 18,
-            "column": 2,
-            "index": 656,
-            "_pos": {
-              "line": 17,
-              "character": 2
-            }
-          },
-          "end": {
-            "line": 60,
-            "column": 1,
-            "index": 1992,
-            "_pos": {
-              "line": 59,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.61475701154482"
-      },
-      {
-        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25], 5)",
-        "contextId": 193,
-        "filePath": "src/algorithms/ml/knn/kNN.js",
-        "loc": {
-          "start": {
-            "line": 18,
-            "column": 2,
-            "index": 656,
-            "_pos": {
-              "line": 17,
-              "character": 2
-            }
-          },
-          "end": {
-            "line": 60,
-            "column": 1,
-            "index": 1992,
-            "_pos": {
-              "line": 59,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.61475701154482"
-      },
-      {
-        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,1])",
-        "contextId": 340,
-        "filePath": "src/algorithms/ml/knn/kNN.js",
-        "loc": {
-          "start": {
-            "line": 18,
-            "column": 2,
-            "index": 656,
-            "_pos": {
-              "line": 17,
-              "character": 2
-            }
-          },
-          "end": {
-            "line": 60,
-            "column": 1,
-            "index": 1992,
-            "_pos": {
-              "line": 59,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.61475701154482"
-      },
-      {
-        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,0,1])",
-        "contextId": 401,
-        "filePath": "src/algorithms/ml/knn/kNN.js",
-        "loc": {
-          "start": {
-            "line": 18,
-            "column": 2,
-            "index": 656,
-            "_pos": {
-              "line": 17,
-              "character": 2
-            }
-          },
-          "end": {
-            "line": 60,
-            "column": 1,
-            "index": 1992,
-            "_pos": {
-              "line": 59,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.61475701154482"
-      }
     ]
   },
   {

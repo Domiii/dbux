@@ -24,15 +24,6 @@ const ExportExercises = 4;
 const CustomPatchByChapter = {
   hanoiTower: 'hanoiTower0',
 };
-/**
- * NOTE:
- *  This excludes:
- *    `src/algorithms/sorting/__test__/Sort.test.js`,
- *  and includes:
- *    `src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js`,
- *    `src/algorithms/math/matrix/__tests__/Matrix.test.js`
- */
-const ValidFilePattern = /^src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/(.*).js$/;
 
 class ToolNode extends BaseTreeViewNode {
   /**
@@ -112,11 +103,11 @@ class GenerateListNode extends ToolNode {
               continue;
             }
             // const chapter = fullName.substring(0, fullName.indexOf(' '));
-            const testFileMatchResult = testFilePath.match(ValidFilePattern);
-            if (!testFileMatchResult) {
+            const testFileData = this.controller.parseTestFilePath(testFilePath);
+            if (!testFileData) {
               continue;
             }
-            const [, chapterGroup, chapter] = testFileMatchResult;
+            const { chapterGroup, chapter } = testFileData;
             const exerciseConfig = {
               name,
               label: fullName,
@@ -148,7 +139,7 @@ class GenerateListNode extends ToolNode {
         progress.report({ message: 'Recovering project...' });
         await project.revertPatch('disable_dbux');
       }
-      
+
       showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
 
       this.treeNodeProvider.refresh();

@@ -157,6 +157,37 @@ export default class ChapterListBuilderViewController {
    *  #########################################################################*/
 
   /**
+   * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}`
+   */
+  isValidDDGFilePath(filePath) {
+    const ValidFilePattern = /src\/algorithms\/([^/]*)\/([^/]*)\/([^/]*.js)$/;
+    return ValidFilePattern.test(filePath);
+  }
+
+  /**
+   * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/(__test__|_test_|__tests__)/${fileName}.js`
+   *  e.g.:
+   *    `src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js`,
+   *    `src/algorithms/math/matrix/__tests__/Matrix.test.js`
+   *  but not:
+   *    `src/algorithms/sorting/__test__/Sort.test.js`,
+   */
+  parseTestFilePath(testFilePath) {
+    const ValidTestFilePattern = /src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/([^/]*.js)$/;
+    const matchResult = testFilePath.match(ValidTestFilePattern);
+    if (matchResult) {
+      return {
+        chapterGroup: matchResult[1],
+        chapter: matchResult[2],
+        fileName: matchResult[3],
+      };
+    }
+    else {
+      return null;
+    }
+  }
+
+  /**
    * @param {CodeApplication} app 
    * @param {Exercise} exercise
    */
@@ -171,11 +202,7 @@ export default class ChapterListBuilderViewController {
       // const testFolderPath = pathResolve(fileDir, '__test__');
 
       // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
-      /**
-       * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}.js`
-       */
-      const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/([^/]*).js/;
-      return ValidFilePattern.test(filePath);
+      return this.isValidDDGFilePath(filePath);
     });
 
     const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
