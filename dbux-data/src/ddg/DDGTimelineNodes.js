@@ -118,8 +118,6 @@ export class DataTimelineNode extends DDGTimelineNode {
    * Whether node is watched.
    */
   watched;
-  nInputs;
-  nOutputs;
 }
 
 export class ValueTimelineNode extends DataTimelineNode {

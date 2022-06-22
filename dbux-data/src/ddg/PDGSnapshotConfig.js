@@ -14,6 +14,8 @@ export default class PDGSnapshotConfig {
    * @type {(parentSnapshot: RefSnapshotTimelineNode, childDataNodeId: DataNode) => boolean?}
    */
   shouldBuildDeep;
+
+  nodeBuilt;
 }
 
 

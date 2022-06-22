@@ -48,12 +48,13 @@ const stepByActionType = {
   [UserActionType.SessionFinished]: StepType.SessionFinished
 };
 
+// Verbose sanity checks for debugging purposes.
 // make sure, every ActionType is accounted for
-const missingActions = UserActionType.values.filter(action => !(action in stepByActionType));
-if (missingActions.length) {
-  const missingStr = missingActions.map(action => UserActionType.nameFrom(action)).join(', ');
-  warn(`Missing UserActionTypes in stepByActionType: ${missingStr}`);
-}
+// const missingActions = UserActionType.values.filter(action => !(action in stepByActionType));
+// if (missingActions.length) {
+//   const missingStr = missingActions.map(action => UserActionType.nameFrom(action)).join(', ');
+//   warn(`Missing UserActionTypes in stepByActionType: ${missingStr}`);
+// }
 
 
 export function getStepTypeByActionType(actionType) {

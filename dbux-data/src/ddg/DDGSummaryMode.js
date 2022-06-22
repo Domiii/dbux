@@ -24,27 +24,35 @@ let dDGSummaryModeConfig = {
 
   /**
    * Group nodes only.
-   * Like `ExpandSelf`.
-   * Group children: CollapseSummary
-   * Non-snapshot children: Hide
-   */
-  SummarizeChildren: 5,
-
-  /**
-   * Group nodes only.
-   * Expand the node, but only one level deep. Collapse all children.
+   * Expand only the node itself. Collapse all children.
    */
   ExpandSelf: 6,
+
+  /**
+   * ExpandSelf + 1 level.
+   * Group nodes only.
+   * Expand the node and all direct children. Collapse all deeper descendants.
+   */
+  ExpandSelf1: 7,
+
+  /**
+   * ExpandSelf + 2 levels.
+   * Group nodes only.
+   * Expand the node and all direct children and children's children. Collapse all deeper descendants.
+   */
+  ExpandSelf2: 8,
+  ExpandSelf3: 9,
+  ExpandSelf4: 10,
   /**
    * Group nodes only.
    * Expand the node and all its descendants.
    */
-  ExpandSubgraph: 7,
+  ExpandSubgraph: 15,
   /**
    * Root node only.
    * This will hide everything, except for watched nodes.
    */
-  HideChildren: 8
+  HideChildren: 16
 };
 
 /**
@@ -57,19 +65,35 @@ const DDGSummaryMode = new Enum(dDGSummaryModeConfig);
  */
 export const RootSummaryModes = [
   DDGSummaryMode.HideChildren,
-  // DDGSummaryMode.ExpandSelf,
-  DDGSummaryMode.SummarizeChildren,
+  DDGSummaryMode.ExpandSelf,
+  DDGSummaryMode.ExpandSelf1,
+  DDGSummaryMode.ExpandSelf2,
+  DDGSummaryMode.ExpandSelf3,
+  DDGSummaryMode.ExpandSelf4,
+  DDGSummaryMode.ExpandSubgraph
+];
+
+export const GroupDefaultSummaryModes = [
+  DDGSummaryMode.CollapseSummary,
+  DDGSummaryMode.ExpandSelf,
+  DDGSummaryMode.ExpandSelf1,
+  DDGSummaryMode.ExpandSelf2,
+  DDGSummaryMode.ExpandSelf3,
+  DDGSummaryMode.ExpandSelf4,
   DDGSummaryMode.ExpandSubgraph
 ];
 
 
 const shownModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 shownModes[DDGSummaryMode.Show] = true;
+shownModes[DDGSummaryMode.ExpandSelf] = true;
+shownModes[DDGSummaryMode.ExpandSelf1] = true;
+shownModes[DDGSummaryMode.ExpandSelf2] = true;
+shownModes[DDGSummaryMode.ExpandSelf3] = true;
+shownModes[DDGSummaryMode.ExpandSelf4] = true;
+shownModes[DDGSummaryMode.ExpandSubgraph] = true;
 shownModes[DDGSummaryMode.Collapse] = true;
 shownModes[DDGSummaryMode.CollapseSummary] = true;
-shownModes[DDGSummaryMode.SummarizeChildren] = true;
-shownModes[DDGSummaryMode.ExpandSelf] = true;
-shownModes[DDGSummaryMode.ExpandSubgraph] = true;
 shownModes[DDGSummaryMode.HideChildren] = true;
 export function isShownMode(mode) {
   return shownModes[mode] || false;
@@ -84,13 +108,24 @@ export function isCollapsedMode(mode) {
 
 const expandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 expandedModes[DDGSummaryMode.ExpandSelf] = true;
+expandedModes[DDGSummaryMode.ExpandSelf1] = true;
+expandedModes[DDGSummaryMode.ExpandSelf2] = true;
+expandedModes[DDGSummaryMode.ExpandSelf3] = true;
+expandedModes[DDGSummaryMode.ExpandSelf4] = true;
 expandedModes[DDGSummaryMode.ExpandSubgraph] = true;
 expandedModes[DDGSummaryMode.HideChildren] = true;
-expandedModes[DDGSummaryMode.SummarizeChildren] = true;
 export function isExpandedMode(mode) {
   return expandedModes[mode] || false;
 }
 
+const shallowExpandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
+shallowExpandedModes[DDGSummaryMode.ExpandSelf1] = true;
+shallowExpandedModes[DDGSummaryMode.ExpandSelf2] = true;
+shallowExpandedModes[DDGSummaryMode.ExpandSelf3] = true;
+shallowExpandedModes[DDGSummaryMode.ExpandSelf4] = true;
+export function isShallowExpandedMode(mode) {
+  return shallowExpandedModes[mode] || false;
+}
 
 const hasSummaryDataModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 hasSummaryDataModes[DDGSummaryMode.CollapseSummary] = true;

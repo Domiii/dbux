@@ -1,5 +1,5 @@
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
+import DDGSummaryMode, { } from '@dbux/data/src/ddg/DDGSummaryMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { addElementEventListeners, compileHtmlElement, decorateClasses } from '../util/domUtil';
 
@@ -18,6 +18,10 @@ export const DefaultToolbarBtnClass = 'toolbar-btn btn btn-info';
 const summaryBtnLabelHtml = {
   [DDGSummaryMode.Hide]: '⛒',
   [DDGSummaryMode.HideChildren]: '⛒',
+  [DDGSummaryMode.ExpandSelf1]: '1️⃣',
+  [DDGSummaryMode.ExpandSelf2]: '2️⃣',
+  [DDGSummaryMode.ExpandSelf3]: '3️⃣',
+  [DDGSummaryMode.ExpandSelf4]: '4️⃣',
   // [DDGSummaryMode.CollapseSummary]: '💢'
 };
 
