@@ -1,6 +1,6 @@
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { peekBCEMatchCallee } from '../data/dataUtil';
-import { monkeyPatchFunctionHolder, monkeyPatchFunctionHolderPurpose, monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionHolder, monkeyPatchFunctionHolderPurpose, monkeyPatchMethod, monkeyPatchMethodPurpose, registerMonkeyPatchedProxy } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -21,36 +21,39 @@ export default function patchNumber() {
   ];
 
   defaultComputeFunctions.forEach(f => {
-    monkeyPatchFunctionHolder(Number, f,
-      // eslint-disable-next-line no-loop-func
-      (arr, args, originalFunction, patchedFunction) => {
-        const bceTrace = peekBCEMatchCallee(patchedFunction);
-        const result = originalFunction.apply(arr, args);
-        if (bceTrace) {
-          addPurpose(bceTrace, {
-            type: TracePurpose.Compute,
-            name: f
-          });
-        }
-        return result;
-      }
-    );
+    monkeyPatchFunctionHolderPurpose(Number, f, {
+      type: TracePurpose.Compute,
+      name: f
+    });
   });
 
   defaultComputeMethods.forEach(f => {
-    monkeyPatchMethod(Number, f,
-      // eslint-disable-next-line no-loop-func
-      (arr, args, originalFunction, patchedFunction) => {
-        const bceTrace = peekBCEMatchCallee(patchedFunction);
-        const result = originalFunction.apply(arr, args);
-        if (bceTrace) {
-          addPurpose(bceTrace, {
-            type: TracePurpose.Compute,
-            name: f
-          });
-        }
-        return result;
-      }
-    );
+    monkeyPatchMethodPurpose(Number, f, {
+      type: TracePurpose.ComputeWithThis,
+      name: f
+    });
   });
+
+  // override Number ctor
+  const ctorHandler = (args, result) => {
+    const bceTrace = peekBCEMatchCallee(Number);
+    if (bceTrace) {
+      addPurpose(bceTrace, {
+        type: TracePurpose.Compute,
+        name: 'Number'
+      });
+    }
+    return result;
+  };
+  const p = new Proxy(Number, {
+    apply(target, thisArg, args) {
+      const result = Reflect.apply(target, thisArg, args);
+      return ctorHandler(args, result);
+    },
+    construct(target, args) {
+      const result = Reflect.construct(target, args);
+      return ctorHandler(args, result);
+    }
+  });
+  registerMonkeyPatchedProxy(Number, p);
 }

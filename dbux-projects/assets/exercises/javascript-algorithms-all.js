@@ -1095,6 +1095,200 @@ module.exports = [
     "chapter": "euclidean-distance",
     "testFilePaths": [
       "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "euclideanDistance([[]], [[]])",
+        "contextId": 6,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.6646805241350302"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[]], [[]])",
+        "contextId": 21,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.6646805241350302"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[]], [[]])",
+        "contextId": 36,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.6646805241350302"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[],[]], [[],[]])",
+        "contextId": 55,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.6646805241350302"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[]], [[]])",
+        "contextId": 76,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.6646805241350302"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[],[],[]], [[],[],[]])",
+        "contextId": 99,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 14,
+              "character": 36
+            },
+            {
+              "line": 25,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.6646805241350302"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[],[],[]], [[],[],[]])",
+        "contextId": 126,
+        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 36,
+            "index": 309,
+            "_pos": {
+              "line": 14,
+              "character": 36
+            }
+          },
+          "end": {
+            "line": 26,
+            "column": 1,
+            "index": 591,
+            "_pos": {
+              "line": 25,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.6646805241350302"
+      }
     ]
   },
   {
@@ -1833,7 +2027,7 @@ module.exports = [
             "index": 3303
           }
         },
-        "applicationUuid": "0.20861870771665414"
+        "applicationUuid": "0.3529650809275271"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -1851,7 +2045,7 @@ module.exports = [
             "index": 3303
           }
         },
-        "applicationUuid": "0.20861870771665414"
+        "applicationUuid": "0.3529650809275271"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -1869,7 +2063,7 @@ module.exports = [
             "index": 3303
           }
         },
-        "applicationUuid": "0.20861870771665414"
+        "applicationUuid": "0.3529650809275271"
       }
     ]
   },
@@ -2371,6 +2565,148 @@ module.exports = [
     "chapter": "matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "add([[]], [[]])",
+        "contextId": 5,
+        "filePath": "src/algorithms/math/matrix/Matrix.js",
+        "loc": {
+          "start": {
+            "line": 249,
+            "column": 29,
+            "index": 6302,
+            "_pos": {
+              "line": 248,
+              "character": 29
+            }
+          },
+          "end": {
+            "line": 263,
+            "column": 1,
+            "index": 6687,
+            "_pos": {
+              "line": 262,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.5947806075209974"
+      },
+      {
+        "ddgTitle": "add([[]], [[]])",
+        "contextId": 37,
+        "filePath": "src/algorithms/math/matrix/Matrix.js",
+        "loc": {
+          "start": {
+            "line": 249,
+            "column": 29,
+            "index": 6302,
+            "_pos": {
+              "line": 248,
+              "character": 29
+            }
+          },
+          "end": {
+            "line": 263,
+            "column": 1,
+            "index": 6687,
+            "_pos": {
+              "line": 262,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.5947806075209974"
+      },
+      {
+        "ddgTitle": "add([[],[],[]], [[],[],[]])",
+        "contextId": 91,
+        "filePath": "src/algorithms/math/matrix/Matrix.js",
+        "loc": {
+          "start": {
+            "line": 249,
+            "column": 29,
+            "index": 6302,
+            "_pos": {
+              "line": 248,
+              "character": 29
+            }
+          },
+          "end": {
+            "line": 263,
+            "column": 1,
+            "index": 6687,
+            "_pos": {
+              "line": 262,
+              "character": 1
+            }
+          },
+          "_range": [
+            {
+              "line": 248,
+              "character": 29
+            },
+            {
+              "line": 262,
+              "character": 1
+            }
+          ]
+        },
+        "applicationUuid": "0.5947806075209974"
+      },
+      {
+        "ddgTitle": "add([[],[],[]], [[],[],[]])",
+        "contextId": 155,
+        "filePath": "src/algorithms/math/matrix/Matrix.js",
+        "loc": {
+          "start": {
+            "line": 249,
+            "column": 29,
+            "index": 6302,
+            "_pos": {
+              "line": 248,
+              "character": 29
+            }
+          },
+          "end": {
+            "line": 263,
+            "column": 1,
+            "index": 6687,
+            "_pos": {
+              "line": 262,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.5947806075209974"
+      },
+      {
+        "ddgTitle": "add([[],[],[]], [[],[],[]])",
+        "contextId": 285,
+        "filePath": "src/algorithms/math/matrix/Matrix.js",
+        "loc": {
+          "start": {
+            "line": 249,
+            "column": 29,
+            "index": 6302,
+            "_pos": {
+              "line": 248,
+              "character": 29
+            }
+          },
+          "end": {
+            "line": 263,
+            "column": 1,
+            "index": 6687,
+            "_pos": {
+              "line": 262,
+              "character": 1
+            }
+          }
+        },
+        "applicationUuid": "0.5947806075209974"
+      }
     ]
   },
   {

@@ -5,7 +5,7 @@ import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
-import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault, monkeyPatchMethodPurpose } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -257,7 +257,7 @@ export default function patchArray() {
 
 
       addPurpose(bceTrace, {
-        type: TracePurpose.CalleeInput
+        type: TracePurpose.CalleeObjectInput
       });
 
       return newArray;
@@ -277,7 +277,9 @@ export default function patchArray() {
     "filter",
     "map",
     "every",
-    "some"
+    "some",
+    "findIndex",
+    "flatMap"
   ].forEach((m) => {
     monkeyPatchMethod(Array, m,
       (arr, args, originalFunction, patchedFunction) => {
@@ -311,6 +313,22 @@ export default function patchArray() {
     );
   });
 
+
+  const defaultComputeMethods = [
+    "toLocaleString",
+    "toString"
+  ];
+  defaultComputeMethods.forEach(f => {
+    monkeyPatchMethodPurpose(Array, f, {
+      type: TracePurpose.ComputeWithThis,
+      name: f
+    });
+  });
+
+  /** ###########################################################################
+   * TODO: other (make non-patchable for now)
+   * ###########################################################################*/
+
   [
     "reduce",
     "reduceRight"
@@ -319,34 +337,24 @@ export default function patchArray() {
     monkeyPatchMethodOverrideDefault(Array, m);
   });
 
-
-  /** ###########################################################################
-   * other (make non-patchable for now)
-   * ###########################################################################*/
-
   // var ign = new Set(['constructor', 'at']);
   // copy(Object.getOwnPropertyNames(Array.prototype).filter(f => Array.prototype[f] instanceof Function && 
   //  !ign.has(f)))
   [
+    "indexOf",
+    "lastIndexOf",
     "concat",
     "copyWithin",
-    "find",
-    "findIndex",
-    "lastIndexOf",
     "reverse",
     "unshift",
     "sort",
     "splice",
     "includes",
-    "indexOf",
     "join",
     "keys",
     "entries",
     "values",
     "flat",
-    "flatMap",
-    "toLocaleString",
-    "toString"
   ].forEach(m => monkeyPatchMethodOverrideDefault(Array, m));
 }
 

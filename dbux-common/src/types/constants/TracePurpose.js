@@ -10,15 +10,20 @@ let tracePurposeObj = {
    * Generic compute call.
    * → Handled as a standard computation with (maybe multiple) inputs and single output.
    */
-  Compute: 10,
+  Compute: 9,
+  /**
+   * Function call should as inputs take in all arguments as well as this (or `CalleeObject` as we call it below).
+   */
+  ComputeWithThis: 10,
   MathMax: 11,
   MathMin: 12,
 
   /**
-   * Callee of function call should be added as input to own DataNode.
+   * Generally: CalleeObject = this.
+   * Callee object of function call (e.g. `o` in `o.f()`) should be added as input to own DataNode.
    * Similar assumption to Compute: used on BCE with `createBCEOwnDataNode`.
    */
-  CalleeInput: 20,
+  CalleeObjectInput: 20,
 
   /**
    * hackfix: This is added to an input trace that is recorded after its target trace (because instrumentation is hard).
