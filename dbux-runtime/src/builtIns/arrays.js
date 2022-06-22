@@ -102,33 +102,6 @@ export default function patchArray() {
   );
 
   // ###########################################################################
-  // pop
-  // ###########################################################################
-
-  monkeyPatchMethod(Array, 'pop',
-    (arr, args, originalFunction, patchedFunction) => {
-      const ref = valueCollection.getRefByValue(arr);
-      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
-      if (!bceTrace) {
-        return originalFunction.apply(arr, args);
-      }
-
-      const { traceId: callId } = bceTrace;
-      const arrNodeId = getDataNodeIdFromRef(ref);
-
-      // delete and return last
-      const i = arr.length - 1;
-      const varAccess = {
-        objectNodeId: arrNodeId,
-        prop: i
-      };
-      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.ReadAndDelete, varAccess);
-
-      return originalFunction.apply(arr, args);
-    }
-  );
-
-  // ###########################################################################
   // fill
   // ###########################################################################
 
@@ -255,7 +228,6 @@ export default function patchArray() {
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
 
-
       addPurpose(bceTrace, {
         type: TracePurpose.CalleeObjectInput
       });
@@ -263,6 +235,59 @@ export default function patchArray() {
       return newArray;
     }
   );
+
+  // ###########################################################################
+  // pop
+  // ###########################################################################
+
+  monkeyPatchMethod(Array, 'pop',
+    (arr, args, originalFunction, patchedFunction) => {
+      const ref = valueCollection.getRefByValue(arr);
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
+
+      const { traceId: callId } = bceTrace;
+      const arrNodeId = getDataNodeIdFromRef(ref);
+
+      // delete and return last
+      const i = arr.length - 1;
+      const varAccess = {
+        objectNodeId: arrNodeId,
+        prop: i
+      };
+      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.ReadAndDelete, varAccess);
+
+      return originalFunction.apply(arr, args);
+    }
+  );
+
+  // // ###########################################################################
+  // // indexOf
+  // // ###########################################################################
+
+  // monkeyPatchMethod(Array, 'indexOf',
+  //   (arr, args, originalFunction, patchedFunction) => {
+  //     const ref = valueCollection.getRefByValue(arr);
+  //     const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+  //     if (!bceTrace) {
+  //       return originalFunction.apply(arr, args);
+  //     }
+
+  //     const allInputs = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
+  //     const resultIdx = originalFunction.apply(arr, args);
+
+  //     const { traceId: callId } = bceTrace;
+  //     const arrNodeId = getDataNodeIdFromRef(ref);
+
+  //     if (resultIdx > -1) {
+  //       // NOTE: there is no read here
+  //     }
+
+  //     return resultIdx;
+  //   }
+  // );
 
   /** ###########################################################################
    * built-in HOFs
@@ -316,7 +341,9 @@ export default function patchArray() {
 
   const defaultComputeMethods = [
     "toLocaleString",
-    "toString"
+    "toString",
+    "indexOf",
+    "lastIndexOf"
   ];
   defaultComputeMethods.forEach(f => {
     monkeyPatchMethodPurpose(Array, f, {
@@ -341,8 +368,6 @@ export default function patchArray() {
   // copy(Object.getOwnPropertyNames(Array.prototype).filter(f => Array.prototype[f] instanceof Function && 
   //  !ign.has(f)))
   [
-    "indexOf",
-    "lastIndexOf",
     "concat",
     "copyWithin",
     "reverse",
