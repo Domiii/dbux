@@ -48,7 +48,7 @@ export default class RichWebView extends WebviewWrapper {
   handleGraphHostStarted = (manager) => {
     // (re-)started!
     this.hostComponentManager = manager;
-    this.hostWrapper.onStart?.();
+    this.hostWrapper.handleStarted?.();
   }
 
   async buildClientHtml() {

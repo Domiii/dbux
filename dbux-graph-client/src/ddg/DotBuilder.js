@@ -41,9 +41,9 @@ function fixProp(prop) {
 }
 
 function isConnected(node) {
-  return node.connected ||
-    // non-build nodes (summary nodes) are always connected
-    !node.og;
+  return node.connected; // ||
+  // non-build nodes (summary nodes) are always connected
+  // !node.og;
 }
 
 /** ###########################################################################
@@ -301,7 +301,9 @@ export default class DotBuilder {
   node(node, force = false) {
     const { ddg } = this;
     const show = force || ddgQueries.isVisible(ddg, node);
-    // console.debug(`node #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
+    // if (ddgQueries.isExpandedGroupNode(ddg, node)) {
+    //   console.debug(`node "${node.label}" #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
+    // }
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
     }
@@ -395,8 +397,7 @@ export default class DotBuilder {
       this.iSummary -= 1;
     }
 
-    // Non-summarized children of a summarized group node
-    //    (→ deal with nested watched nodes)
+    // also render non-summarized children of a summarized group node
     this.nodesByIds(node.children);
 
     this.indentLevel -= 1;

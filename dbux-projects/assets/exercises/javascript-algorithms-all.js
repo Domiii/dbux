@@ -797,6 +797,26 @@ module.exports = [
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 285,
+        "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 53,
+            "index": 577
+          },
+          "end": {
+            "line": 80,
+            "column": 1,
+            "index": 3052
+          }
+        },
+        "applicationUuid": "0.6361009700046483"
+      }
     ]
   },
   {

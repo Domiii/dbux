@@ -119,6 +119,7 @@ export function isExpandedMode(mode) {
 }
 
 const shallowExpandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
+shallowExpandedModes[DDGSummaryMode.ExpandSelf] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf1] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf2] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf3] = true;
@@ -129,6 +130,11 @@ export function isShallowExpandedMode(mode) {
 
 const hasSummaryDataModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 hasSummaryDataModes[DDGSummaryMode.CollapseSummary] = true;
+hasSummaryDataModes[DDGSummaryMode.ExpandSelf] = true;
+hasSummaryDataModes[DDGSummaryMode.ExpandSelf1] = true;
+hasSummaryDataModes[DDGSummaryMode.ExpandSelf2] = true;
+hasSummaryDataModes[DDGSummaryMode.ExpandSelf3] = true;
+hasSummaryDataModes[DDGSummaryMode.ExpandSelf4] = true;
 export function isSummaryMode(mode) {
   return hasSummaryDataModes[mode] || false;
 }

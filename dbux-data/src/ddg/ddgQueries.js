@@ -2,7 +2,7 @@ import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/sr
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { isDDGRoot } from './constants';
-import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode } from './DDGSummaryMode';
+import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode, isExpandedMode } from './DDGSummaryMode';
 import { DDGTimelineNode } from './DDGTimelineNodes';
 import DDGNodeSummary from './DDGNodeSummary';
 import DDGSettings from './DDGSettings';
@@ -214,7 +214,9 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   isExpandedGroupNode(ddg, node) {
-    return isControlGroupTimelineNode(node.type) && !ddgQueries.isCollapsed(ddg, node);
+    const summaryMode = ddg.summaryModes[node.timelineId];
+    return isControlGroupTimelineNode(node.type) && 
+      isExpandedMode(summaryMode);
   },
 
   /**
@@ -315,7 +317,10 @@ const ddgQueries = {
    */
   doesNodeHaveSummary(ddg, node) {
     const nodeSummary = ddg.nodeSummaries[node.timelineId];
-    return !!nodeSummary?.summaryRoots?.length;
+    if (!nodeSummary) {
+      return false;
+    }
+    return !!nodeSummary.summaryRoots?.length || nodeSummary.hasNestedSummaries;
   },
 
   wasNodeSummarizedBefore(ddg, node) {

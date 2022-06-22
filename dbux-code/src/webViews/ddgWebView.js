@@ -21,8 +21,12 @@ export default class DataDependencyGraphWebView extends RichWebView {
   /**
    * @param {DataDependencyGraph} ddg 
    */
-  constructor(ddg, mainComponentInitialState, mainComponentHostOnlyState) {
+  constructor(ddg, mainComponentInitialState, mainComponentHostOnlyState, handleStarted) {
     super(DDGHost, 'dbux-data-graph', defaultColumn, mainComponentInitialState, mainComponentHostOnlyState);
+    /**
+     * hackfix: add a promise-based wait method instead
+     */
+    this.hostWrapper.handleStarted = handleStarted;
     this.ddg = ddg;
   }
 
@@ -178,7 +182,8 @@ async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
   // TODO: we currently don't close window if DDG is gone from set, but this way, it will be out of sync with DDGs treeview
 
   // future-work: select correct window, based on initial state
-  const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState);
+  const handleWebviewStarted = null; // TODO
+  const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState, handleWebviewStarted);
   await dDGWebView.init();
   await dDGWebView.show();
   // pathways-todo: add new action type

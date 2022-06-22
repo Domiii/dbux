@@ -21,6 +21,12 @@ export default class DDGNodeSummary {
    */
   summaryRoots;
 
+  /**
+   * Whether this summary has nested summaries.
+   * If true, it means that this is a shallow summary that has visible descendant summaries.
+   */
+  hasNestedSummaries = false;
+
   constructor(timelineId, snapshotsByRefId, nodesByTid, summaryRoots) {
     this.timelineId = timelineId;
     this.snapshotsByRefId = snapshotsByRefId;
