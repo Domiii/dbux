@@ -153,7 +153,7 @@ export default class TraceCollection extends Collection {
    */
   resolveDataNodes(traces) {
     for (const trace of traces) {
-      if (SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType)) {
+      if (this.dp.util.isTraceHofBCE(trace.traceId)) {
         // 1. Array HOFs
         // TODO: remove specialDynamicType and use purpose instead
         this.dp.collections.executionContexts.resolveBuiltInHOFParamDataNodes(trace);

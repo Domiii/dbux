@@ -1,3 +1,4 @@
+import { TreeItemCollapsibleState } from 'vscode';
 import isFunction from 'lodash/isFunction';
 import size from 'lodash/size';
 import isNumber from 'lodash/isNumber';
@@ -14,7 +15,6 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
 import makeTreeItem, { mkTreeItem, makeTreeItems, makeTreeChildren, objectToTreeItems } from '../helpers/makeTreeItem';
 import { renderDataNode, selectDataNodeOrTrace } from './dataTreeViewUtil';
-import { TreeItemCollapsibleState } from 'vscode';
 
 /**
  * @param {DDGTimelineNode} node 

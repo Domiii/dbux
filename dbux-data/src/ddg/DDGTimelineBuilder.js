@@ -7,7 +7,7 @@ import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategor
 // eslint-disable-next-line max-len
 import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode, RepeatedRefTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode, RepeatedRefTimelineNode, HofTimelineNode } from './DDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
 import DDGEdgeType from './DDGEdgeType';
 import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
@@ -19,7 +19,7 @@ import PDGSnapshotConfig from './PDGSnapshotConfig';
 /** @typedef { Map.<number, number> } SnapshotMap */
 /** @typedef {Map.<DataTimelineNode, { n: number }>} EdgeInfos */
 
-// const Verbose = 1;
+// const Verbose = 2;
 const Verbose = 0;
 
 /** ###########################################################################
@@ -298,8 +298,15 @@ export default class DDGTimelineBuilder {
       const contextLabel = makeContextLabel(context, dp.application);
       this.#addAndPushGroup(new ContextTimelineNode(trace.contextId, contextLabel), traceId);
     }
+    else if (dp.util.isTraceHofBCE(traceId)) {
+      // push 2: built-in hofs
+      // const context = dp.collections.executionContexts.getById(trace.contextId);
+      // const contextLabel = makeContextLabel(context, dp.application);
+      const label = makeTraceLabel(dp.util.getCalleeTrace(traceId));
+      this.#addAndPushGroup(new HofTimelineNode(trace.traceId, label), traceId);
+    }
     else if (isTraceControlRolePush(staticTrace.controlRole)) {
-      // push 2: branch and loop
+      // push 3: branch and loop
       const controlStatementId = staticTrace.controlId;
       const controlStaticTrace = dp.collections.staticTraces.getById(controlStatementId);
       const { syntax } = controlStaticTrace;
@@ -314,8 +321,12 @@ export default class DDGTimelineBuilder {
         this.#addAndPushGroup(group, traceId);
       }
     }
-    else if (dp.util.isTraceControlGroupPop(traceId)) {
-      // any pop
+    else if (
+      // pop 1: hof
+      (DDGTimelineNodeType.is.Hof(this.peekStack()?.type) && dp.util.isTraceHofBCE(trace.resultCallId)) ||
+      // pop 2: any other pop
+      dp.util.isTraceControlGroupPop(traceId)
+    ) {
       const currentGroup = this.peekStack();
 
       // sanity checks
@@ -325,6 +336,9 @@ export default class DDGTimelineBuilder {
           this.logger.logTrace(`Invalid pop: expected context=${trace.contextId}, but got: ${currentGroup.toString()}`);
           return;
         }
+      }
+      else if (DDGTimelineNodeType.is.Hof(currentGroup.type)) {
+        // don't update label
       }
       else {
         if (isLoopIterationTimelineNode(currentGroup.type)) {

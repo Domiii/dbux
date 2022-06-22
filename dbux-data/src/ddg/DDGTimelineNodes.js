@@ -264,6 +264,20 @@ export class ContextTimelineNode extends GroupTimelineNode {
   }
 }
 
+export class HofTimelineNode extends GroupTimelineNode {
+  /**
+   * Only used for hof nodes
+   */
+  hofCallId;
+
+  constructor(hofCallId, label) {
+    super(DDGTimelineNodeType.Hof);
+    this.hofCallId = hofCallId;
+    this.label = label;
+    this.children = [];
+  }
+}
+
 
 export class BranchTimelineNode extends GroupTimelineNode {
   controlStatementId;
