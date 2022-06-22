@@ -9,7 +9,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { DDGRootTimelineId, isDDGRoot } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
-import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode, isExpandedMode } from './DDGSummaryMode';
+import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode, isExpandedMode, isShallowExpandedMode } from './DDGSummaryMode';
 import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
@@ -26,10 +26,28 @@ const VerboseSumm = 0;
  * default config
  * ##########################################################################*/
 
-// const RootDefaultSummaryMode = {
-// };
-// const RootDefaultSummaryMode = DDGSummaryMode.SummarizeChildren;
+// const RootDefaultSummaryMode = DDGSummaryMode.ExpandSelf;
 const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
+
+/**
+ * What to do with non-expandable modes nodes when expanding a group.
+ * (Does not apply to `ExpandSubgraph`.)
+ */
+const DefaultNonExpandableExpandMode = DDGSummaryMode.Hide;
+// const DefaultExpandLeafNodeMode = DDGSummaryMode.Show;
+
+/** ###########################################################################
+ * util
+ * ##########################################################################*/
+
+const ShallowSummaryConfig = {
+  isShallow: true,
+  maxGroupDepth: -1
+};
+
+const DefaultSummaryConfig = {
+  isShallow: false
+};
 
 /** ###########################################################################
  * {@link BuildStage}
@@ -288,7 +306,19 @@ export default class DataDependencyGraph extends BaseDDG {
    * summarization propagation
    * ##########################################################################*/
 
-  #getHideNodeMode(node) {
+  /**
+   * Heuristic: what to do with non-expandable nodes when expanding.
+   */
+  #getNonExpandableNodeExpandMode(node) {
+    if (node.watched) {
+      return isControlGroupTimelineNode(node.type) ?
+        DDGSummaryMode.HideChildren :
+        DDGSummaryMode.Show;
+    }
+    return DefaultNonExpandableExpandMode;
+  }
+
+  #getHideMode(node) {
     if (node.watched) {
       return isControlGroupTimelineNode(node.type) ?
         DDGSummaryMode.HideChildren :
@@ -329,7 +359,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // hide all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, this.#getHideNodeMode(childNode));
+        this.#applyMode(childId, this.#getHideMode(childNode));
       }
     },
     [DDGSummaryMode.CollapseSummary]: (timelineId) => {
@@ -339,20 +369,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // hide all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, this.#getHideNodeMode(childNode));
-      }
-    },
-    [DDGSummaryMode.SummarizeChildren]: (timelineId) => {
-      const { og } = this;
-      const node = og.timelineNodes[timelineId];
-
-      // hide all children
-      for (const childId of node.children) {
-        const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
-          DDGSummaryMode.CollapseSummary :
-          this.#getHideNodeMode(childNode);
-        this.#applyMode(childId, targetMode);
+        this.#applyMode(childId, this.#getHideMode(childNode));
       }
     },
     [DDGSummaryMode.ExpandSelf]: (timelineId) => {
@@ -363,8 +380,60 @@ export default class DataDependencyGraph extends BaseDDG {
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
         const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
-          DDGSummaryMode.CollapseSummary : // temporary hackfix
-          DDGSummaryMode.Show;
+          DDGSummaryMode.CollapseSummary :
+          this.#getNonExpandableNodeExpandMode(childNode);
+        this.#applyMode(childId, targetMode);
+      }
+    },
+    [DDGSummaryMode.ExpandSelf1]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // collapse all children
+      for (const childId of node.children) {
+        const childNode = og.timelineNodes[childId];
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.ExpandSelf) ?
+          DDGSummaryMode.ExpandSelf :
+          this.#getNonExpandableNodeExpandMode(childNode);
+        this.#applyMode(childId, targetMode);
+      }
+    },
+    [DDGSummaryMode.ExpandSelf2]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // collapse all children
+      for (const childId of node.children) {
+        const childNode = og.timelineNodes[childId];
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.ExpandSelf1) ?
+          DDGSummaryMode.ExpandSelf1 :
+          this.#getNonExpandableNodeExpandMode(childNode);
+        this.#applyMode(childId, targetMode);
+      }
+    },
+    [DDGSummaryMode.ExpandSelf3]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // collapse all children
+      for (const childId of node.children) {
+        const childNode = og.timelineNodes[childId];
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.ExpandSelf2) ?
+          DDGSummaryMode.ExpandSelf2 :
+          this.#getNonExpandableNodeExpandMode(childNode);
+        this.#applyMode(childId, targetMode);
+      }
+    },
+    [DDGSummaryMode.ExpandSelf4]: (timelineId) => {
+      const { og } = this;
+      const node = og.timelineNodes[timelineId];
+
+      // collapse all children
+      for (const childId of node.children) {
+        const childNode = og.timelineNodes[childId];
+        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.ExpandSelf3) ?
+          DDGSummaryMode.ExpandSelf3 :
+          this.#getNonExpandableNodeExpandMode(childNode);
         this.#applyMode(childId, targetMode);
       }
     },
@@ -388,7 +457,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // hide all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, this.#getHideNodeMode(childNode));
+        this.#applyMode(childId, this.#getHideMode(childNode));
       }
     }
   };
@@ -438,8 +507,8 @@ export default class DataDependencyGraph extends BaseDDG {
    * During initial build, not all details of every node are prepared.
    * When investigating a node's details, this function needs to run first.
    */
-  #buildNodeSummary(timelineId) {
-    return this.#buildNodeSummarySnapshotsAndVars(timelineId);
+  #buildNodeSummary(timelineId, summaryCfg) {
+    return this.#buildNodeSummarySnapshotsAndVars(timelineId, summaryCfg);
   }
 
   /** ###########################################################################
@@ -468,15 +537,15 @@ export default class DataDependencyGraph extends BaseDDG {
   /**
    * @param {number} timelineId Summary group node
    */
-  #buildNodeSummarySnapshotsAndVars(timelineId) {
+  #buildNodeSummarySnapshotsAndVars(timelineId, summaryCfg) {
     const { dp } = this;
     const node = this.timelineNodes[timelineId];
     if (
       !node.hasSummarizableWrites ||
       // only non-root control groups
-      (isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type)) 
+      (isDDGRoot(timelineId) || !isControlGroupTimelineNode(node.type))
       // ||
-      // this.nodeSummaries[timelineId]
+      // this.nodeSummaries[timelineId] // TODO: account for different summaryCfgs
     ) {
       // already built or nothing to build
       return this.nodeSummaries[timelineId];
@@ -484,11 +553,16 @@ export default class DataDependencyGraph extends BaseDDG {
 
     const lastModifyNodesByRefId = new Map();           // summary ref set
     const varModifyOrReturnDataNodes = new Map();       // summary var + return set
-    const lastNestedDataNodeId = this.#gatherNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
+    const lastNestedDataNodeId = this.#gatherNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes, summaryCfg);
 
     // fix up refs
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
+        if (summaryCfg.isShallow) {
+          // in case of nested group summaries, don't try to hide things
+          return true;
+        }
+
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
         const lastDataNodeIdOfRef = Math.max(
           // check if accessed again
@@ -547,6 +621,7 @@ export default class DataDependencyGraph extends BaseDDG {
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
       const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotCfg, null);
+      // TODO: nodeBuilt() { this._setConnectedDFS(newNode); }
 
       // override label to be the var name (if possible), since its more representative
       newNode.label = dp.util.findDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
@@ -581,9 +656,10 @@ export default class DataDependencyGraph extends BaseDDG {
    * @param {DDGTimelineNode} summarizingNode
    * @param {DDGTimelineNode} node
    * @param {Map.<number, number>} lastModifyNodesByRefId
+   * 
    * @return {number} The `lastDataNodeId` of the entire node.
    */
-  #gatherNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes) {
+  #gatherNestedUniqueSummaryTrees(summarizingNode, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes, summaryCfg, depth = 0) {
     const { dp } = this;
     let lastDataNodeId = node.dataNodeId;
 
@@ -594,7 +670,12 @@ export default class DataDependencyGraph extends BaseDDG {
       const refId = dp.util.getDataNodeModifyingRefId(node.dataNodeId);
       if (refId) {
         // Ref Write
-        lastModifyNodesByRefId.set(refId, node.dataNodeId);
+        // NOTE: we take `max` here because:
+        //    In case of nested watched nodes that adopted nodes (i.e. return watched nodes), not in order,
+        //      `dataNodeId`s are not ordered with `timelineId`s.
+        //      
+        const prev = lastModifyNodesByRefId.get(refId) || 0;
+        lastModifyNodesByRefId.set(refId, Math.max(node.dataNodeId, prev));
       }
       else {
         const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
@@ -610,11 +691,17 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
     if (node.children) {
-      for (const childId of Object.values(node.children)) {
-        const childNode = this.timelineNodes[childId];
-        const lastChildDataNodeId = this.#gatherNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes);
-        if (lastChildDataNodeId) {
-          lastDataNodeId = lastChildDataNodeId;
+      if (
+        !isControlGroupTimelineNode(node.type) ||
+        (!summaryCfg.isShallow || depth <= summaryCfg.maxGroupDepth)
+      ) {
+        for (const childId of Object.values(node.children).sort((a, b) => a - b)) {
+          const childNode = this.timelineNodes[childId];
+          const lastChildDataNodeId = this.#gatherNestedUniqueSummaryTrees(summarizingNode, childNode, lastModifyNodesByRefId, varModifyOrReturnDataNodes, summaryCfg, depth + 1);
+          if (lastChildDataNodeId) {
+            // console.debug(`lastDataNodeId #${summarizingNode.timelineId} at #${node.timelineId}/${childId}: ${lastDataNodeId} → ${lastChildDataNodeId}`);
+            lastDataNodeId = Math.max(lastDataNodeId || 0, lastChildDataNodeId);
+          }
         }
       }
     }
@@ -668,10 +755,24 @@ export default class DataDependencyGraph extends BaseDDG {
       currentCollapsedAncestor
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
+    const mode = this.summaryModes[timelineId];
 
-    let isSummarizedWatchedNode = !!currentCollapsedAncestor && node.watched;
-    if (isSummarizedWatchedNode) {
-      // don't try to summarize watched nodes
+    const isShallowSummarizedGroup = isShallowExpandedMode(mode);
+
+    /**
+     * Sometimes, a node might be visible but also summarized.
+     */
+    let isSummarizedAndVisible = (
+      !!currentCollapsedAncestor &&
+      (
+        // don't try to summarize watched nodes
+        node.watched ||
+
+        // allow summarization for nested group nodes
+        isShallowSummarizedGroup
+      )
+    );
+    if (isSummarizedAndVisible) {
       currentCollapsedAncestor = null;
     }
 
@@ -684,8 +785,8 @@ export default class DataDependencyGraph extends BaseDDG {
     // prep
     if (!currentCollapsedAncestor) {
       // build node summary (if not already built)
-      this.#buildNodeSummary(timelineId);
-
+      let summaryCfg = isShallowSummarizedGroup ? ShallowSummaryConfig : DefaultSummaryConfig;
+      this.#buildNodeSummary(timelineId, summaryCfg);
       // if (!ddgQueries.doesNodeHaveSummary(this, node)) {
       //   // straight up ignore for now
       //   return;
@@ -731,7 +832,10 @@ export default class DataDependencyGraph extends BaseDDG {
         const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
         // link to summaryNode instead of `targetNode`
         targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
-        if (!targetNode) {
+        if (
+          !targetNode ||
+          !ddgQueries.isVisible(this, targetNode)
+        ) {
           // NOTE: we simply "hide" nodes that do not have a summarized representation (leads to its edges getting propagated)
           isVisible = false;
         }
@@ -752,7 +856,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (isVisible) {
       // node is (1) shown, (2) collapsed into `currentCollapsedAncestor` or (3) summarized
 
-      if (isSummarizedWatchedNode) {
+      if (isSummarizedAndVisible) {
         this.#rerouteHiddenNode(timelineId, nodeRouteMap);
       }
       else {
@@ -805,7 +909,9 @@ export default class DataDependencyGraph extends BaseDDG {
     }
     // eslint-disable-next-line max-len
     const { dp } = this.ddgSet;
-    if (VerboseSumm && (!this.debugValueId || dp.util.getDataNode(this.timelineNodes[timelineId]?.dataNodeId)?.valueId === this.debugValueId)) {
+    if (VerboseSumm && (
+      !this.debugValueId || dp.util.getDataNode(this.timelineNodes[timelineId]?.dataNodeId)?.valueId === this.debugValueId)
+    ) {
       reroutes.size && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
       // VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
       //   .map(([timelineId, reroutes]) =>

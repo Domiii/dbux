@@ -257,22 +257,22 @@ export default class BaseDDG {
       }
 
 
-      /** ########################################
-       * phase 2: 
-       *  1. use edges to gather connectivity data for nodes
-       *  2. (and some general post-processing)
-       *  ######################################*/
+      // /** ########################################
+      //  * phase 2: 
+      //  *  1. use edges to gather connectivity data for nodes
+      //  *  2. (and some general post-processing)
+      //  *  ######################################*/
 
-      for (const node of this.timelineNodes) {
-        if (!node?.dataNodeId) {
-          continue;
-        }
-        const nIncomingEdges = this.inEdgesByTimelineId[node.timelineId]?.length || 0;
-        const nOutgoingEdges = this.outEdgesByTimelineId[node.timelineId]?.length || 0;
+      // for (const node of this.timelineNodes) {
+      //   if (!node?.dataNodeId) {
+      //     continue;
+      //   }
+      //   const nIncomingEdges = this.inEdgesByTimelineId[node.timelineId]?.length || 0;
+      //   const nOutgoingEdges = this.outEdgesByTimelineId[node.timelineId]?.length || 0;
 
-        node.nInputs = nIncomingEdges;
-        node.nOutputs = nOutgoingEdges;
-      }
+      //   node.nInputs = nIncomingEdges;
+      //   node.nOutputs = nOutgoingEdges;
+      // }
 
       /** ########################################
        * phase 3: identify connected nodes
@@ -283,7 +283,7 @@ export default class BaseDDG {
           continue;
         }
         if (node.watched) {
-          this.#setConnectedDFS(node);
+          this._setConnectedDFS(node);
         }
       }
     }
@@ -296,7 +296,7 @@ export default class BaseDDG {
    * 
    * @param {DataTimelineNode} node 
    */
-  #setConnectedDFS(node) {
+  _setConnectedDFS(node) {
     if (node.connected) {
       // node already found, stop propagation
       return;
@@ -310,13 +310,13 @@ export default class BaseDDG {
         const edge = this.edges[edgeId];
         const { from } = edge;
         const fromNode = this.timelineNodes[from];
-        this.#setConnectedDFS(fromNode);
+        this._setConnectedDFS(fromNode);
       }
     }
     if (node.children) {
       for (const child of Object.values(node.children)) {
         const childNode = this.timelineNodes[child];
-        this.#setConnectedDFS(childNode);
+        this._setConnectedDFS(childNode);
       }
     }
     this.#setConnectedUp(node);

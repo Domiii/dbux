@@ -780,25 +780,7 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "[cb] describe(BubbleSort, ƒ (anonymous))",
-        "contextId": 6,
-        "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
-        "loc": {
-          "start": {
-            "line": 16,
-            "column": 29,
-            "index": 389
-          },
-          "end": {
-            "line": 64,
-            "column": 1,
-            "index": 1677
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([])",
+        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
         "contextId": 12,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
@@ -813,11 +795,11 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.23647008865394548"
+        "applicationUuid": "0.9575911300522832"
       },
       {
-        "ddgTitle": "BubbleSort.sort([1])",
-        "contextId": 13,
+        "ddgTitle": "BubbleSort.sort([\"\"])",
+        "contextId": 141,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -831,11 +813,11 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.23647008865394548"
+        "applicationUuid": "0.9575911300522832"
       },
       {
-        "ddgTitle": "BubbleSort.sort([1,2])",
-        "contextId": 14,
+        "ddgTitle": "BubbleSort.sort([\"a\"])",
+        "contextId": 142,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -849,11 +831,11 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.23647008865394548"
+        "applicationUuid": "0.9575911300522832"
       },
       {
-        "ddgTitle": "BubbleSort.sort([2,1])",
-        "contextId": 19,
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
+        "contextId": 143,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -867,28 +849,10 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.23647008865394548"
+        "applicationUuid": "0.9575911300522832"
       },
       {
-        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
-        "contextId": 24,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
         "contextId": 148,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
@@ -903,137 +867,11 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
-        "contextId": 207,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
-        "contextId": 797,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
-        "contextId": 1337,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"\"])",
-        "contextId": 1401,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"a\"])",
-        "contextId": 1402,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
-        "contextId": 1403,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
-      },
-      {
-        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
-        "contextId": 1408,
-        "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 22,
-            "index": 101
-          },
-          "end": {
-            "line": 40,
-            "column": 3,
-            "index": 1166
-          }
-        },
-        "applicationUuid": "0.23647008865394548"
+        "applicationUuid": "0.9575911300522832"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
-        "contextId": 1426,
+        "contextId": 166,
         "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
         "loc": {
           "start": {
@@ -1047,7 +885,7 @@ module.exports = [
             "index": 1166
           }
         },
-        "applicationUuid": "0.23647008865394548"
+        "applicationUuid": "0.9575911300522832"
       }
     ]
   },

@@ -82,14 +82,23 @@ const _canApplySummaryMode = {
     // eslint-disable-next-line no-use-before-define
     return ddgQueries.isNodeSummarizable(ddg, node);
   },
-  [DDGSummaryMode.SummarizeChildren]: (ddg, node) => {
-    return isControlGroupTimelineNode(node.type);
-  },
   [DDGSummaryMode.ExpandSelf]: (ddg, node) => {
-    return isControlGroupTimelineNode(node.type);
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
+  },
+  [DDGSummaryMode.ExpandSelf1]: (ddg, node) => {
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
+  },
+  [DDGSummaryMode.ExpandSelf2]: (ddg, node) => {
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
+  },
+  [DDGSummaryMode.ExpandSelf3]: (ddg, node) => {
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
+  },
+  [DDGSummaryMode.ExpandSelf4]: (ddg, node) => {
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
   },
   [DDGSummaryMode.ExpandSubgraph]: (ddg, node) => {
-    return isControlGroupTimelineNode(node.type);
+    return isControlGroupTimelineNode(node.type) && !!node.children.length;
   },
   [DDGSummaryMode.HideChildren]: (ddg, node) => {
     // only applies to root (all other nodes are "collapse"d instead)
@@ -175,15 +184,19 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   isVisible(ddg, node) {
-    const summaryMode = ddg.summaryModes[node.timelineId];
-
     return node.watched || (
-      isShownMode(summaryMode) &&
-      ddgQueries.checkNodeVisibilitySettings(ddg, node) &&
-
-      // hide empty summary nodes
-      // NOTE: we check for `doesNodeHaveSummary` in a few other places as well
-      (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
+      // check summary status
+      (
+        // summarized nodes don't have a summary status
+        !node.og ||
+        (
+          // og node must be shown
+          isShownMode(ddg.summaryModes[node.timelineId]) &&
+          // and summarized og group nodes must have a non-empty summary
+          (!ddgQueries.isNodeSummarizedMode(ddg, node) || ddgQueries.doesNodeHaveSummary(ddg, node))
+        )
+      ) &&
+      ddgQueries.checkNodeVisibilitySettings(ddg, node)
     );
   },
 
@@ -212,7 +225,7 @@ const ddgQueries = {
     // ddgQueries.getSummarizableChildren(this, node.timelineId).length
     // return ddgQueries.isNodeSummarizable(ddg, node) && 
     //   ;
-    return isControlGroupTimelineNode(node.type) && !!node.children.length;
+    return ddgQueries.canApplySummaryMode(ddg, node, DDGSummaryMode.ExpandSelf);
   },
 
   /**
@@ -395,6 +408,9 @@ const ddgQueries = {
    */
   canApplySummaryMode(ddg, node, mode) {
     // const node = ddg.timelineNodes[timelineId];
+    if (!_canApplySummaryMode[mode]) {
+      throw new Error(`SummaryMode has not been configured: ${mode}`);
+    }
     return _canApplySummaryMode[mode](ddg, node);
   },
 

@@ -11,7 +11,7 @@ import isPlainObject from 'lodash/isPlainObject';
 import { PrettyTimer } from '@dbux/common/src/util/timeUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
-import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
+import DDGSummaryMode, { GroupDefaultSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import { getStructuredRandomAngle, makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
@@ -40,12 +40,6 @@ const NodeMenuYOffset = 4;
 
 let documentMouseMoveHandler;
 
-const GroupDefaultSummaryModes = [
-  DDGSummaryMode.CollapseSummary,
-  // DDGSummaryMode.SummarizeChildren,
-  DDGSummaryMode.ExpandSelf,
-  DDGSummaryMode.ExpandSubgraph
-];
 
 function getElTopOffset(el) {
   const s = getComputedStyle(el, null);
@@ -73,8 +67,8 @@ const GraphVizCfg = {
    */
   tweenShapes: false,
   tweenPaths: false,
-  tweenPrecision: 100,
-  convertEqualSidedPolygons: false
+  // tweenPrecision: 100, // NOTE: not necessary when tweening is disabled
+  // convertEqualSidedPolygons: false // NOTE: not necessary when `tweenShapes` is disabled
 };
 
 const RenderCfg = {
