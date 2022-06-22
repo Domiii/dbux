@@ -9,7 +9,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { DDGRootTimelineId, isDDGRoot } from './constants';
 import BaseDDG from './BaseDDG';
 import { EdgeState } from './DDGEdge';
-import DDGSummaryMode, { isSummaryMode, isCollapsedMode, isShownMode, isExpandedMode, isShallowExpandedMode } from './DDGSummaryMode';
+import DDGSummaryMode, { isExpandedMode, isShallowExpandedMode } from './DDGSummaryMode';
 import ddgQueries from './ddgQueries';
 import DDGNodeSummary from './DDGNodeSummary';
 import { DDGTimelineNode } from './DDGTimelineNodes';
@@ -19,8 +19,8 @@ import PDGSnapshotConfig from './PDGSnapshotConfig';
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-// const VerboseSumm = 2;
-const VerboseSumm = 0;
+const VerboseSumm = 2;
+// const VerboseSumm = 0;
 
 /** ###########################################################################
  * default config
@@ -34,7 +34,7 @@ const RootDefaultSummaryMode = DDGSummaryMode.HideChildren;
  * (Does not apply to `ExpandSubgraph`.)
  */
 const DefaultNonExpandableExpandMode = DDGSummaryMode.Hide;
-// const DefaultExpandLeafNodeMode = DDGSummaryMode.Show;
+// const DefaultNonExpandableExpandMode = DDGSummaryMode.Show;
 
 /** ###########################################################################
  * util
@@ -42,7 +42,7 @@ const DefaultNonExpandableExpandMode = DDGSummaryMode.Hide;
 
 const ShallowSummaryConfig = {
   isShallow: true,
-  maxGroupDepth: -1
+  maxGroupDepth: 1
 };
 
 const DefaultSummaryConfig = {
@@ -614,6 +614,8 @@ export default class DataDependencyGraph extends BaseDDG {
         !snapshotCfg.snapshotsByRefId.has(dataNode.refId)
       );
     };
+    // snapshotCfg.nodeBuilt = (newNode, parentSnapshot) => {
+    // };
     for (const [refId, dataNodeId] of summaryRefEntries) {
       if (snapshotCfg.snapshotsByRefId.has(refId)) {
         // skip if this ref was already added as a descendant of a previous ref
@@ -621,7 +623,7 @@ export default class DataDependencyGraph extends BaseDDG {
       }
       const dataNode = dp.collections.dataNodes.getById(dataNodeId);
       const newNode = this.og.addNewRefSnapshot(dataNode, refId, snapshotCfg, null);
-      // TODO: nodeBuilt() { this._setConnectedDFS(newNode); }
+      this._setConnectedDFS(newNode);
 
       // override label to be the var name (if possible), since its more representative
       newNode.label = dp.util.findDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
@@ -631,6 +633,8 @@ export default class DataDependencyGraph extends BaseDDG {
     const varNodesByTid = new Map();
     for (const [declarationTid, varOrReturnNodeTimelineId] of varModifyOrReturnDataNodes) {
       const newNode = this.cloneNode(varOrReturnNodeTimelineId);
+      // NOTE: we are already cloning `connected` state
+      // future-work: consider what it means if a different write of this var is connected, but not this final write in summarized group
 
       // override label to be the var name (if possible), since its more representative
       newNode.label = dp.util.getDataNodeDeclarationVarName(newNode.dataNodeId) || newNode.label;
@@ -693,7 +697,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (node.children) {
       if (
         !isControlGroupTimelineNode(node.type) ||
-        (!summaryCfg.isShallow || depth <= summaryCfg.maxGroupDepth)
+        (!summaryCfg.isShallow || depth < summaryCfg.maxGroupDepth)
       ) {
         for (const childId of Object.values(node.children).sort((a, b) => a - b)) {
           const childNode = this.timelineNodes[childId];
@@ -752,7 +756,8 @@ export default class DataDependencyGraph extends BaseDDG {
     const { dp } = this;
     let {
       nodeRouteMap,
-      currentCollapsedAncestor
+      currentCollapsedAncestor,
+      isAncestorShallowSummarized
     } = summaryState;
     const { timelineId, dataNodeId, children } = node;
     const mode = this.summaryModes[timelineId];
@@ -799,12 +804,15 @@ export default class DataDependencyGraph extends BaseDDG {
 
     // DFS recursion
     if (children) {
-      const isCollapsed = !currentCollapsedAncestor &&
-        ddgQueries.isCollapsed(this, node);
+      const isCollapsed =
+        !isDDGRoot(timelineId) &&
+        (!currentCollapsedAncestor || isAncestorShallowSummarized) &&
+        ddgQueries.isNodeSummarizedMode(this, node);
       // ddgQueries.doesNodeHaveSummary(this, node);
       if (isCollapsed) {
         // node is collapsed and has summary data (if not, just hide children)
         summaryState.currentCollapsedAncestor = node;
+        summaryState.isAncestorShallowSummarized = isShallowSummarizedGroup;
       }
       for (const childId of Object.values(children)) {
         const childNode = this.og.timelineNodes[childId];
@@ -813,6 +821,7 @@ export default class DataDependencyGraph extends BaseDDG {
       if (isCollapsed) {
         // reset collapsed ancestor
         summaryState.currentCollapsedAncestor = null;
+        summaryState.isAncestorShallowSummarized = isAncestorShallowSummarized;
       }
     }
 
@@ -849,7 +858,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (VerboseSumm && (!this.debugValueId || dataNode?.valueId === this.debugValueId) &&
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
-      this.logger.debug(`Summarizing ${timelineId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+      this.logger.debug(`Summarizing ${timelineId}, d=${targetNode?.dataNodeId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
       // console.debug(`DDG-SUMM: #${timelineId} ${node.label}, sum: ${isSummarized}, c: ${!!children}, vis: ${isVisible}`);
     }
 
@@ -872,7 +881,7 @@ export default class DataDependencyGraph extends BaseDDG {
             if (from !== targetNode) {
               summaryState.addEdge(from, targetNode, type);
               if (VerboseSumm && (!this.debugValueId || dataNode?.valueId === this.debugValueId)) {
-                this.logger.debug(`SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
+                this.logger.debug(`  SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
               }
             }
           }

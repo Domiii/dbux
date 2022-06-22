@@ -121,17 +121,16 @@ export default class DDGTDNode extends TraceDetailNode {
       );
 
     const allSummaries = Object.values(ddg.nodeSummaries);
+    const nodeSummaries = timelineNodes
+      // collapsed ancestor summaries
+      .map(node => ddgQueries.getSummarizedGroupOfNode(ddg, node));
+
+    // summaries which have any DataNode in their root
+    const dataNodeSummaries = dataNodes.flatMap(n => allSummaries.filter(
+      summary => summary.summaryRoots.some(rootNode => rootNode.dataNodeId === n.nodeId)
+    ));
     let summaries = Array.from(new Set(
-      timelineNodes
-        // collapsed ancestor summaries
-        .map(node => ddgQueries.getSummarizedGroupOfNode(ddg, node))
-        .concat(
-          // summaries which have any DataNode in their root
-          dataNodes.map(n => allSummaries.filter(
-            summary => summary.summaryRoots.some(rootNode => rootNode.dataNodeId === n.nodeId)
-          ))
-        )
-        .filter(Boolean)
+      nodeSummaries.concat(dataNodeSummaries).filter(Boolean)
     ));
     const description = !dataNodes.length ?
       '(no DataNodes)' :
