@@ -132,6 +132,16 @@ export class ValueTimelineNode extends DataTimelineNode {
 }
 
 /**
+ * NOTE: a `Value` node that is not part of a snapshot.
+ */
+export class IndependentValueTimelineNode extends ValueTimelineNode {
+  /**
+   * Given if this value accesses a nested object field
+   */
+  parentLabel;
+}
+
+/**
  * future-work: this is actually now basically a `DataTimelineNode`. Need to integrate the two.
  * This node represents a ref value at time t = {@link RefTimelineNode#dataNodeId}.
  */

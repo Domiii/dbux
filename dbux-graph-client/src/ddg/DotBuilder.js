@@ -564,7 +564,7 @@ export default class DotBuilder {
   }
 
   nodeRecord(node) {
-    const { timelineId, label, varAccess } = node;
+    const { timelineId, label, parentLabel, varAccess } = node;
     const prop = varAccess?.prop;
     const value = this.makeNodeValueString(node);
 
@@ -572,17 +572,20 @@ export default class DotBuilder {
       this.nodeAttrs(node.timelineId)
     ];
     if (this.isPropRecordNode(node)) {
-      attrs.push(this.getRootShapeStyleOverride() || `shape=plaintext`);
-      // record with prop + value
+      // nested access
+      // label0 | label/value
       // → has no ID itself. Child cell has ID instead.
+      attrs.push(this.getRootShapeStyleOverride() || `shape=plaintext`); // NOTE: plaintext means no extra border
       l = `<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
   <TR>
-    <TD ROWSPAN="2">${this.wrapText(label || ' ')}</TD>
+    <TD ROWSPAN="2">${this.wrapText(parentLabel || ' ')}</TD>
     ${this.makePropValueCell(timelineId, prop, prop)}
   </TR>
 </TABLE>`;
     }
     else {
+      // non-nested access
+      // label | value
       attrs.push(this.getRootShapeStyleOverride() || `shape=record`); // NOTE: `record` adds an outline to the table
       l = `
 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
