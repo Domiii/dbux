@@ -39,7 +39,7 @@ class DDGNode extends BaseTreeViewNode {
   }
 
   async handleClick() {
-    let { applicationUuid, contextId, filePath, loc } = this;
+    let { applicationUuid, contextId, algoLoc: { filePath, loc } } = this;
     let application = allApplications.getById(applicationUuid);
     const fullContextFilePath = pathResolve(this.exercise.project.projectPath, filePath);
     if (!application) {

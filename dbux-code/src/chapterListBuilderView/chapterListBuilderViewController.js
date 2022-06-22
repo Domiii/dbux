@@ -2,7 +2,7 @@ import fs from 'fs';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
@@ -12,6 +12,9 @@ import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 import { getCurrentResearch } from '../research/Research';
 import PDGGallery from '../research/PDGGallery';
 
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
+/** @typedef {import('@dbux/projects/src/projectLib/ExerciseConfig').default} ExerciseConfig */
+/** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ChapterListBuilderViewController');
@@ -24,6 +27,11 @@ const ExerciseListFileName = `${ExerciseListName}.js`;
 const ChapterListFileName = `${ChapterListName}.js`;
 
 export default class ChapterListBuilderViewController {
+  /**
+   * @type {Map<string, ExerciseConfig>}
+   */
+  exerciseConfigsByName;
+
   constructor() {
     this.treeNodeProvider = new ChapterListBuilderNodeProvider(this);
     this.gallery = new PDGGallery(this);
@@ -194,8 +202,8 @@ export default class ChapterListBuilderViewController {
   findDDGContextIdInApp(app, exercise) {
     const { project } = exercise;
     const dp = app.dataProvider;
-    // const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
-    const testProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
+    const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
+    const validDDGProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
       const { filePath } = staticProgramContext;
       // const fileDir = dirname(filePath);
       // const readmeFilePath = pathResolve(fileDir, 'README.md');
@@ -205,7 +213,7 @@ export default class ChapterListBuilderViewController {
       return this.isValidDDGFilePath(filePath);
     });
 
-    const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
+    const staticContexts = validDDGProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
     const contexts = staticContexts
       .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
       .sort((a, b) => a.contextId - b.contextId);
@@ -219,6 +227,7 @@ export default class ChapterListBuilderViewController {
         return null;
       }
 
+      // filter out children of added contexts
       let { parentContextId } = context;
       while (parentContextId) {
         if (addedContextIds.has(parentContextId)) {
@@ -226,30 +235,52 @@ export default class ChapterListBuilderViewController {
         }
         ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
       }
+      addedContextIds.add(contextId);
 
       // const callerProgramPath = dp.util.getTraceFilePath(callerTrace.traceId);
       // if (callerProgramPath !== testFilePath) {
       //   return null;
       // }
 
-      const params = dp.util.getCallArgValueStrings(callerTrace.callId);
-      const fullContextFilePath = dp.util.getContextFilePath(contextId);
-      const filePath = pathRelative(project.projectPath, fullContextFilePath);
-      const staticContext = dp.util.getContextStaticContext(contextId);
-      const loc = { ...staticContext.loc };
-      deleteCachedLocRange(loc);
+      // find test context in ancestors
+      let testContextId;
+      ({ parentContextId } = context);
+      while (parentContextId) {
+        if (testFilePath === dp.util.getContextFilePath(parentContextId)) {
+          testContextId = parentContextId;
+          break;
+        }
+        ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
+      }
 
-      addedContextIds.add(contextId);
+      const params = dp.util.getCallArgValueStrings(callerTrace.callId);
 
       return {
         ddgTitle: `${functionName}(${params.join(', ')})`,
         contextId,
         // fullContextFilePath,
-        filePath,
-        loc,
+        algoLoc: this.getLocOfContext(dp, contextId, project.projectPath),
+        testLoc: testContextId ? this.getLocOfContext(dp, testContextId, project.projectPath) : null,
         applicationUuid,
       };
     }).filter(x => !!x);
+  }
+
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  getLocOfContext(dp, contextId, projectPath) {
+    const fullContextFilePath = dp.util.getContextFilePath(contextId);
+    const filePath = pathRelative(projectPath, fullContextFilePath);
+    const staticContext = dp.util.getContextStaticContext(contextId);
+    const loc = { ...staticContext.loc };
+    deleteCachedLocRange(loc);
+
+    return {
+      filePath,
+      loc,
+    };
   }
 }
 

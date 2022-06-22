@@ -102,20 +102,37 @@ module.exports = [
       {
         "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
         "contextId": 179,
-        "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
-        "loc": {
-          "start": {
-            "line": 6,
-            "column": 56,
-            "index": 172
-          },
-          "end": {
-            "line": 45,
-            "column": 1,
-            "index": 1581
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 172
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1581
+            }
           }
         },
-        "applicationUuid": "0.45767544087224143"
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js",
+          "loc": {
+            "start": {
+              "line": 68,
+              "column": 102,
+              "index": 2439
+            },
+            "end": {
+              "line": 116,
+              "column": 3,
+              "index": 3985
+            }
+          }
+        },
+        "applicationUuid": "0.24530467067687822"
       }
     ]
   },
@@ -127,6 +144,43 @@ module.exports = [
     "chapter": "bellman-ford",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 282,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 172
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1581
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 77,
+              "index": 361
+            },
+            "end": {
+              "line": 66,
+              "column": 3,
+              "index": 2331
+            }
+          }
+        },
+        "applicationUuid": "0.10108157263984996"
+      }
     ]
   },
   {
@@ -137,6 +191,358 @@ module.exports = [
     "chapter": "maximum-subarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfMaximumSubarray([])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,1,2])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([0,0,-1,2])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      },
+      {
+        "ddgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 847
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 75,
+              "index": 171
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 897
+            }
+          }
+        },
+        "applicationUuid": "0.18527760007346683"
+      }
     ]
   },
   {
