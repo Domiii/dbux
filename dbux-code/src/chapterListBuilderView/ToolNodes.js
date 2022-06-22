@@ -73,76 +73,82 @@ class GenerateListNode extends ToolNode {
 
       await this.manager.externals.initRuntimeServer();
 
-      progress.report({ message: 'Disabling dbux-babel-plugin...' });
-      await project.gitResetHard();
-      await project.applyPatch('disable_dbux');
+      let exerciseConfigs, chapters;
 
-      progress.report({ message: 'Parsing tests...' });
-      const processOptions = {
-        cwd: project.projectPath,
-      };
-      const testDirectory = 'src/algorithms';
-      /**
-       * NOTE: set `testNamePattern` to an unused name to skip running all tests
-       * @see https://stackoverflow.com/a/69099439/11309695
-       */
-      const UnusedTestPattern = 'zzzzz';
-      const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
-      const testData = JSON.parse(testDataRaw);
+      try {
+        progress.report({ message: 'Disabling dbux-babel-plugin...' });
+        await project.gitResetHard();
+        await project.applyPatch('disable_dbux');
 
-      const exerciseConfigs = [];
-      const addedExerciseNames = new Set();
+        progress.report({ message: 'Parsing tests...' });
+        const processOptions = {
+          cwd: project.projectPath,
+        };
+        const testDirectory = 'src/algorithms';
+        /**
+         * NOTE: set `testNamePattern` to an unused name to skip running all tests
+         * @see https://stackoverflow.com/a/69099439/11309695
+         */
+        const UnusedTestPattern = 'zzzzz';
+        const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
+        const testData = JSON.parse(testDataRaw);
 
-      for (const testResult of testData.testResults) {
-        for (const assertionResult of testResult.assertionResults) {
-          const { fullName } = assertionResult;
-          /**
-           * NOTE: `PolynomialHash` and `SimplePolynomialHash` shares the same fullName in different test files
-           */
-          const testFilePath = pathRelative(project.projectPath, testResult.name);
-          const baseName = basename(testFilePath);
-          const name = `${fullName}@${baseName}`;
-          if (!addedExerciseNames.has(name)) {
-            addedExerciseNames.add(name);
+        exerciseConfigs = [];
+        const addedExerciseNames = new Set();
+
+        for (const testResult of testData.testResults) {
+          for (const assertionResult of testResult.assertionResults) {
+            const { fullName } = assertionResult;
+            /**
+             * NOTE: `PolynomialHash` and `SimplePolynomialHash` shares the same fullName in different test files
+             */
+            const testFilePath = pathRelative(project.projectPath, testResult.name);
+            const baseName = basename(testFilePath);
+            const name = `${fullName}@${baseName}`;
+            if (!addedExerciseNames.has(name)) {
+              addedExerciseNames.add(name);
+            }
+            else {
+              continue;
+            }
+            // const chapter = fullName.substring(0, fullName.indexOf(' '));
+            const testFileMatchResult = testFilePath.match(ValidFilePattern);
+            if (!testFileMatchResult) {
+              continue;
+            }
+            const [, chapterGroup, chapter] = testFileMatchResult;
+            const exerciseConfig = {
+              name,
+              label: fullName,
+              testNamePattern: fullName,
+              chapterGroup,
+              chapter,
+              patch: CustomPatchByChapter[chapter],
+              testFilePaths: [testFilePath],
+            };
+            exerciseConfigs.push(exerciseConfig);
           }
-          else {
-            continue;
-          }
-          // const chapter = fullName.substring(0, fullName.indexOf(' '));
-          const testFileMatchResult = testFilePath.match(ValidFilePattern);
-          if (!testFileMatchResult) {
-            continue;
-          }
-          const [, chapterGroup, chapter] = testFileMatchResult;
-          const exerciseConfig = {
-            name,
-            label: fullName,
-            testNamePattern: fullName,
-            chapterGroup,
-            chapter,
-            patch: CustomPatchByChapter[chapter],
-            testFilePaths: [testFilePath],
-          };
-          exerciseConfigs.push(exerciseConfig);
         }
+        exerciseConfigs.sort((a, b) => a.name.localeCompare(b.name));
+
+        progress.report({ message: `Generating exercise file...` });
+        this.controller.writeExerciseJs(exerciseConfigs);
+
+        progress.report({ message: `Loading exercises...` });
+        const exerciseList = this.controller.reloadExerciseList();
+
+        progress.report({ message: `Generating chapter list file...` });
+        this.controller.writeChapterListJs(exerciseList);
+
+        progress.report({ message: `Loading chapter list...` });
+        chapters = this.controller.reloadChapterList();
       }
-      exerciseConfigs.sort((a, b) => a.name.localeCompare(b.name));
-
-      progress.report({ message: `Generating exercise file...` });
-      this.controller.writeExerciseJs(exerciseConfigs);
-
-      progress.report({ message: `Loading exercises...` });
-      const exerciseList = this.controller.reloadExerciseList();
-
-      progress.report({ message: `Generating chapter list file...` });
-      this.controller.writeChapterListJs(exerciseList);
-
-      progress.report({ message: `Loading chapter list...` });
-      const chapters = this.controller.reloadChapterList();
-
-      progress.report({ message: 'Recovering project...' });
-      await project.applyPatch('disable_dbux', true);
-
+      finally {
+        // TODO: add sanity checks when doing anything that depends on dbux to be enabled, in case of this patch is not reverted successfully
+        progress.report({ message: 'Recovering project...' });
+        await project.revertPatch('disable_dbux');
+      }
+      
       showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
 
       this.treeNodeProvider.refresh();
