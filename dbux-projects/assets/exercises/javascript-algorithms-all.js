@@ -948,24 +948,6 @@ module.exports = [
     ],
     "ddgs": [
       {
-        "ddgTitle": "[cb] describe(dijkstra, ƒ (anonymous))",
-        "contextId": 12,
-        "filePath": "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js",
-        "loc": {
-          "start": {
-            "line": 6,
-            "column": 27,
-            "index": 272
-          },
-          "end": {
-            "line": 117,
-            "column": 1,
-            "index": 3975
-          }
-        },
-        "applicationUuid": "0.47802892801692987"
-      },
-      {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
         "contextId": 285,
         "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
@@ -981,7 +963,7 @@ module.exports = [
             "index": 3052
           }
         },
-        "applicationUuid": "0.47802892801692987"
+        "applicationUuid": "0.6361009700046483"
       }
     ]
   },
