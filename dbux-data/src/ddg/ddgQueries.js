@@ -157,10 +157,11 @@ const ddgQueries = {
       (ddg.settings.connectedOnly && ddgQueries.isNodeConnected(ddg, node)) ||
 
       // even if not connected, node must have at least one edge
-      (!ddg.settings.connectedOnly && (
-        !!ddg.inEdgesByTimelineId[node.timelineId]?.length ||
-        !!ddg.outEdgesByTimelineId[node.timelineId]?.length
-      ))
+      // TODO: client has no access to og, and summarization checks this before edges are built
+      (!ddg.settings.connectedOnly /* && (
+        !!ddg.og.inEdgesByTimelineId[node.timelineId]?.length ||
+        !!ddg.og.outEdgesByTimelineId[node.timelineId]?.length
+      ) */)
     );
   },
 
