@@ -41,121 +41,155 @@ import pdg40 from './graph/floyd-warshall/javascript-algorithms#111/pdgData.json
 import pdg41 from './graph/floyd-warshall/javascript-algorithms#112/pdgData.json';
 import pdg42 from './graph/hamiltonian-cycle/javascript-algorithms#122/pdgData.json';
 import pdg43 from './graph/hamiltonian-cycle/javascript-algorithms#123/pdgData.json';
-import pdg44 from './graph/travelling-salesman/javascript-algorithms#14/pdgData.json';
-import pdg45 from './math/binary-floating-point/javascript-algorithms#108/pdgData.json';
-import pdg46 from './math/binary-floating-point/javascript-algorithms#109/pdgData.json';
-import pdg47 from './math/binary-floating-point/javascript-algorithms#19/pdgData.json';
-import pdg48 from './math/binary-floating-point/javascript-algorithms#20/pdgData.json';
-import pdg49 from './math/binary-floating-point/javascript-algorithms#21/pdgData.json';
-import pdg50 from './math/bits/javascript-algorithms#113/pdgData.json';
-import pdg51 from './math/bits/javascript-algorithms#154/pdgData.json';
-import pdg52 from './math/bits/javascript-algorithms#155/pdgData.json';
-import pdg53 from './math/bits/javascript-algorithms#157/pdgData.json';
-import pdg54 from './math/bits/javascript-algorithms#17/pdgData.json';
-import pdg55 from './math/bits/javascript-algorithms#18/pdgData.json';
-import pdg56 from './math/bits/javascript-algorithms#46/pdgData.json';
-import pdg57 from './math/bits/javascript-algorithms#67/pdgData.json';
-import pdg58 from './math/bits/javascript-algorithms#80/pdgData.json';
-import pdg59 from './math/complex-number/javascript-algorithms#50/pdgData.json';
-import pdg60 from './math/complex-number/javascript-algorithms#51/pdgData.json';
-import pdg61 from './math/complex-number/javascript-algorithms#52/pdgData.json';
-import pdg62 from './math/complex-number/javascript-algorithms#53/pdgData.json';
-import pdg63 from './math/complex-number/javascript-algorithms#54/pdgData.json';
-import pdg64 from './math/complex-number/javascript-algorithms#55/pdgData.json';
-import pdg65 from './math/complex-number/javascript-algorithms#56/pdgData.json';
-import pdg66 from './math/complex-number/javascript-algorithms#57/pdgData.json';
-import pdg67 from './math/complex-number/javascript-algorithms#58/pdgData.json';
-import pdg68 from './math/complex-number/javascript-algorithms#59/pdgData.json';
-import pdg69 from './math/euclidean-algorithm/javascript-algorithms#89/pdgData.json';
-import pdg70 from './math/euclidean-algorithm/javascript-algorithms#90/pdgData.json';
-import pdg71 from './math/euclidean-distance/javascript-algorithms#91/pdgData.json';
-import pdg72 from './math/euclidean-distance/javascript-algorithms#92/pdgData.json';
-import pdg73 from './math/factorial/javascript-algorithms#96/pdgData.json';
-import pdg74 from './math/factorial/javascript-algorithms#97/pdgData.json';
-import pdg75 from './math/fast-powering/javascript-algorithms#101/pdgData.json';
-import pdg76 from './math/fibonacci/javascript-algorithms#102/pdgData.json';
-import pdg77 from './math/fibonacci/javascript-algorithms#103/pdgData.json';
-import pdg78 from './math/fibonacci/javascript-algorithms#104/pdgData.json';
-import pdg79 from './math/fibonacci/javascript-algorithms#105/pdgData.json';
-import pdg80 from './math/fourier-transform/javascript-algorithms#100/pdgData.json';
-import pdg81 from './math/fourier-transform/javascript-algorithms#153/pdgData.json';
-import pdg82 from './math/fourier-transform/javascript-algorithms#79/pdgData.json';
-import pdg83 from './math/fourier-transform/javascript-algorithms#98/pdgData.json';
-import pdg84 from './math/fourier-transform/javascript-algorithms#99/pdgData.json';
-import pdg85 from './math/horner-method/javascript-algorithms#141/pdgData.json';
-import pdg86 from './math/horner-method/javascript-algorithms#142/pdgData.json';
-import pdg87 from './math/horner-method/javascript-algorithms#45/pdgData.json';
-import pdg88 from './math/integer-partition/javascript-algorithms#151/pdgData.json';
-import pdg89 from './math/is-power-of-two/javascript-algorithms#156/pdgData.json';
-import pdg90 from './math/is-power-of-two/javascript-algorithms#158/pdgData.json';
-import pdg91 from './math/radian/javascript-algorithms#69/pdgData.json';
-import pdg92 from './search/binary-search/javascript-algorithms#15/pdgData.json';
-import pdg93 from './search/binary-search/javascript-algorithms#16/pdgData.json';
-import pdg94 from './search/interpolation-search/javascript-algorithms#152/pdgData.json';
-import pdg95 from './search/jump-search/javascript-algorithms#159/pdgData.json';
-import pdg96 from './sets/cartesian-product/javascript-algorithms#43/pdgData.json';
-import pdg97 from './sets/cartesian-product/javascript-algorithms#44/pdgData.json';
-import pdg98 from './sets/combination-sum/javascript-algorithms#47/pdgData.json';
-import pdg99 from './sets/combinations/javascript-algorithms#48/pdgData.json';
-import pdg100 from './sets/combinations/javascript-algorithms#49/pdgData.json';
-import pdg101 from './sets/fisher-yates/javascript-algorithms#106/pdgData.json';
-import pdg102 from './sets/fisher-yates/javascript-algorithms#107/pdgData.json';
-import pdg103 from './sets/longest-increasing-subsequence/javascript-algorithms#83/pdgData.json';
-import pdg104 from './sets/maximum-subarray/javascript-algorithms#12/pdgData.json';
-import pdg105 from './sets/maximum-subarray/javascript-algorithms#68/pdgData.json';
-import pdg106 from './sets/maximum-subarray/javascript-algorithms#84/pdgData.json';
-import pdg107 from './sets/power-set/javascript-algorithms#26/pdgData.json';
-import pdg108 from './sets/power-set/javascript-algorithms#36/pdgData.json';
-import pdg109 from './sorting/bubble-sort/javascript-algorithms#28/pdgData.json';
-import pdg110 from './sorting/bubble-sort/javascript-algorithms#29/pdgData.json';
-import pdg111 from './sorting/bubble-sort/javascript-algorithms#30/pdgData.json';
-import pdg112 from './sorting/bubble-sort/javascript-algorithms#31/pdgData.json';
-import pdg113 from './sorting/bubble-sort/javascript-algorithms#32/pdgData.json';
-import pdg114 from './sorting/bubble-sort/javascript-algorithms#33/pdgData.json';
-import pdg115 from './sorting/bubble-sort/javascript-algorithms#34/pdgData.json';
-import pdg116 from './sorting/bubble-sort/javascript-algorithms#35/pdgData.json';
-import pdg117 from './sorting/counting-sort/javascript-algorithms#60/pdgData.json';
-import pdg118 from './sorting/counting-sort/javascript-algorithms#61/pdgData.json';
-import pdg119 from './sorting/counting-sort/javascript-algorithms#62/pdgData.json';
-import pdg120 from './sorting/counting-sort/javascript-algorithms#63/pdgData.json';
-import pdg121 from './sorting/counting-sort/javascript-algorithms#64/pdgData.json';
-import pdg122 from './sorting/counting-sort/javascript-algorithms#65/pdgData.json';
-import pdg123 from './sorting/counting-sort/javascript-algorithms#66/pdgData.json';
-import pdg124 from './sorting/heap-sort/javascript-algorithms#129/pdgData.json';
-import pdg125 from './sorting/heap-sort/javascript-algorithms#130/pdgData.json';
-import pdg126 from './sorting/heap-sort/javascript-algorithms#131/pdgData.json';
-import pdg127 from './sorting/heap-sort/javascript-algorithms#132/pdgData.json';
-import pdg128 from './sorting/heap-sort/javascript-algorithms#133/pdgData.json';
-import pdg129 from './sorting/heap-sort/javascript-algorithms#134/pdgData.json';
-import pdg130 from './sorting/heap-sort/javascript-algorithms#135/pdgData.json';
-import pdg131 from './sorting/insertion-sort/javascript-algorithms#143/pdgData.json';
-import pdg132 from './sorting/insertion-sort/javascript-algorithms#144/pdgData.json';
-import pdg133 from './sorting/insertion-sort/javascript-algorithms#145/pdgData.json';
-import pdg134 from './sorting/insertion-sort/javascript-algorithms#146/pdgData.json';
-import pdg135 from './sorting/insertion-sort/javascript-algorithms#147/pdgData.json';
-import pdg136 from './sorting/insertion-sort/javascript-algorithms#148/pdgData.json';
-import pdg137 from './sorting/insertion-sort/javascript-algorithms#149/pdgData.json';
-import pdg138 from './sorting/insertion-sort/javascript-algorithms#150/pdgData.json';
-import pdg139 from './string/hamming-distance/javascript-algorithms#124/pdgData.json';
-import pdg140 from './string/hamming-distance/javascript-algorithms#125/pdgData.json';
-import pdg141 from './tree/breadth-first-search/javascript-algorithms#22/pdgData.json';
-import pdg142 from './tree/breadth-first-search/javascript-algorithms#25/pdgData.json';
-import pdg143 from './tree/depth-first-search/javascript-algorithms#70/pdgData.json';
-import pdg144 from './tree/depth-first-search/javascript-algorithms#73/pdgData.json';
-import pdg145 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#1/pdgData.json';
-import pdg146 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#81/pdgData.json';
-import pdg147 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#88/pdgData.json';
-import pdg148 from './uncategorized/hanoi-tower/javascript-algorithms#126/pdgData.json';
-import pdg149 from './uncategorized/hanoi-tower/javascript-algorithms#127/pdgData.json';
-import pdg150 from './uncategorized/hanoi-tower/javascript-algorithms#128/pdgData.json';
-import pdg151 from './uncategorized/jump-game/javascript-algorithms#121/pdgData.json';
-import pdg152 from './uncategorized/jump-game/javascript-algorithms#82/pdgData.json';
-import pdg153 from './uncategorized/jump-game/javascript-algorithms#86/pdgData.json';
-import pdg154 from './uncategorized/jump-game/javascript-algorithms#9/pdgData.json';
-import pdg155 from './uncategorized/rain-terraces/javascript-algorithms#13/pdgData.json';
-import pdg156 from './uncategorized/rain-terraces/javascript-algorithms#85/pdgData.json';
-import pdg157 from './uncategorized/unique-paths/javascript-algorithms#27/pdgData.json';
-import pdg158 from './uncategorized/unique-paths/javascript-algorithms#87/pdgData.json';
+import pdg44 from './graph/kruskal/javascript-algorithms#183/pdgData.json';
+import pdg45 from './graph/kruskal/javascript-algorithms#184/pdgData.json';
+import pdg46 from './graph/kruskal/javascript-algorithms#185/pdgData.json';
+import pdg47 from './graph/travelling-salesman/javascript-algorithms#14/pdgData.json';
+import pdg48 from './math/binary-floating-point/javascript-algorithms#108/pdgData.json';
+import pdg49 from './math/binary-floating-point/javascript-algorithms#109/pdgData.json';
+import pdg50 from './math/binary-floating-point/javascript-algorithms#19/pdgData.json';
+import pdg51 from './math/binary-floating-point/javascript-algorithms#20/pdgData.json';
+import pdg52 from './math/binary-floating-point/javascript-algorithms#21/pdgData.json';
+import pdg53 from './math/bits/javascript-algorithms#113/pdgData.json';
+import pdg54 from './math/bits/javascript-algorithms#114/pdgData.json';
+import pdg55 from './math/bits/javascript-algorithms#154/pdgData.json';
+import pdg56 from './math/bits/javascript-algorithms#155/pdgData.json';
+import pdg57 from './math/bits/javascript-algorithms#157/pdgData.json';
+import pdg58 from './math/bits/javascript-algorithms#17/pdgData.json';
+import pdg59 from './math/bits/javascript-algorithms#18/pdgData.json';
+import pdg60 from './math/bits/javascript-algorithms#46/pdgData.json';
+import pdg61 from './math/bits/javascript-algorithms#67/pdgData.json';
+import pdg62 from './math/bits/javascript-algorithms#80/pdgData.json';
+import pdg63 from './math/complex-number/javascript-algorithms#50/pdgData.json';
+import pdg64 from './math/complex-number/javascript-algorithms#51/pdgData.json';
+import pdg65 from './math/complex-number/javascript-algorithms#52/pdgData.json';
+import pdg66 from './math/complex-number/javascript-algorithms#53/pdgData.json';
+import pdg67 from './math/complex-number/javascript-algorithms#54/pdgData.json';
+import pdg68 from './math/complex-number/javascript-algorithms#55/pdgData.json';
+import pdg69 from './math/complex-number/javascript-algorithms#56/pdgData.json';
+import pdg70 from './math/complex-number/javascript-algorithms#57/pdgData.json';
+import pdg71 from './math/complex-number/javascript-algorithms#58/pdgData.json';
+import pdg72 from './math/complex-number/javascript-algorithms#59/pdgData.json';
+import pdg73 from './math/euclidean-algorithm/javascript-algorithms#89/pdgData.json';
+import pdg74 from './math/euclidean-algorithm/javascript-algorithms#90/pdgData.json';
+import pdg75 from './math/euclidean-distance/javascript-algorithms#91/pdgData.json';
+import pdg76 from './math/euclidean-distance/javascript-algorithms#92/pdgData.json';
+import pdg77 from './math/factorial/javascript-algorithms#96/pdgData.json';
+import pdg78 from './math/factorial/javascript-algorithms#97/pdgData.json';
+import pdg79 from './math/fast-powering/javascript-algorithms#101/pdgData.json';
+import pdg80 from './math/fibonacci/javascript-algorithms#102/pdgData.json';
+import pdg81 from './math/fibonacci/javascript-algorithms#103/pdgData.json';
+import pdg82 from './math/fibonacci/javascript-algorithms#104/pdgData.json';
+import pdg83 from './math/fibonacci/javascript-algorithms#105/pdgData.json';
+import pdg84 from './math/fourier-transform/javascript-algorithms#100/pdgData.json';
+import pdg85 from './math/fourier-transform/javascript-algorithms#153/pdgData.json';
+import pdg86 from './math/fourier-transform/javascript-algorithms#79/pdgData.json';
+import pdg87 from './math/fourier-transform/javascript-algorithms#98/pdgData.json';
+import pdg88 from './math/fourier-transform/javascript-algorithms#99/pdgData.json';
+import pdg89 from './math/horner-method/javascript-algorithms#141/pdgData.json';
+import pdg90 from './math/horner-method/javascript-algorithms#142/pdgData.json';
+import pdg91 from './math/horner-method/javascript-algorithms#45/pdgData.json';
+import pdg92 from './math/integer-partition/javascript-algorithms#151/pdgData.json';
+import pdg93 from './math/is-power-of-two/javascript-algorithms#156/pdgData.json';
+import pdg94 from './math/is-power-of-two/javascript-algorithms#158/pdgData.json';
+import pdg95 from './math/least-common-multiple/javascript-algorithms#186/pdgData.json';
+import pdg96 from './math/liu-hui/javascript-algorithms#191/pdgData.json';
+import pdg97 from './math/liu-hui/javascript-algorithms#192/pdgData.json';
+import pdg98 from './math/radian/javascript-algorithms#69/pdgData.json';
+import pdg99 from './ml/k-means/javascript-algorithms#161/pdgData.json';
+import pdg100 from './ml/k-means/javascript-algorithms#162/pdgData.json';
+import pdg101 from './ml/k-means/javascript-algorithms#163/pdgData.json';
+import pdg102 from './ml/k-means/javascript-algorithms#164/pdgData.json';
+import pdg103 from './ml/k-means/javascript-algorithms#165/pdgData.json';
+import pdg104 from './ml/knn/javascript-algorithms#176/pdgData.json';
+import pdg105 from './ml/knn/javascript-algorithms#177/pdgData.json';
+import pdg106 from './ml/knn/javascript-algorithms#178/pdgData.json';
+import pdg107 from './ml/knn/javascript-algorithms#179/pdgData.json';
+import pdg108 from './ml/knn/javascript-algorithms#180/pdgData.json';
+import pdg109 from './ml/knn/javascript-algorithms#181/pdgData.json';
+import pdg110 from './search/binary-search/javascript-algorithms#15/pdgData.json';
+import pdg111 from './search/binary-search/javascript-algorithms#16/pdgData.json';
+import pdg112 from './search/interpolation-search/javascript-algorithms#152/pdgData.json';
+import pdg113 from './search/jump-search/javascript-algorithms#159/pdgData.json';
+import pdg114 from './search/jump-search/javascript-algorithms#160/pdgData.json';
+import pdg115 from './search/linear-search/javascript-algorithms#188/pdgData.json';
+import pdg116 from './search/linear-search/javascript-algorithms#189/pdgData.json';
+import pdg117 from './search/linear-search/javascript-algorithms#190/pdgData.json';
+import pdg118 from './sets/cartesian-product/javascript-algorithms#43/pdgData.json';
+import pdg119 from './sets/cartesian-product/javascript-algorithms#44/pdgData.json';
+import pdg120 from './sets/combination-sum/javascript-algorithms#47/pdgData.json';
+import pdg121 from './sets/combinations/javascript-algorithms#48/pdgData.json';
+import pdg122 from './sets/combinations/javascript-algorithms#49/pdgData.json';
+import pdg123 from './sets/fisher-yates/javascript-algorithms#106/pdgData.json';
+import pdg124 from './sets/fisher-yates/javascript-algorithms#107/pdgData.json';
+import pdg125 from './sets/knapsack-problem/javascript-algorithms#166/pdgData.json';
+import pdg126 from './sets/knapsack-problem/javascript-algorithms#167/pdgData.json';
+import pdg127 from './sets/knapsack-problem/javascript-algorithms#168/pdgData.json';
+import pdg128 from './sets/knapsack-problem/javascript-algorithms#169/pdgData.json';
+import pdg129 from './sets/knapsack-problem/javascript-algorithms#170/pdgData.json';
+import pdg130 from './sets/knapsack-problem/javascript-algorithms#171/pdgData.json';
+import pdg131 from './sets/knapsack-problem/javascript-algorithms#172/pdgData.json';
+import pdg132 from './sets/knapsack-problem/javascript-algorithms#173/pdgData.json';
+import pdg133 from './sets/longest-increasing-subsequence/javascript-algorithms#83/pdgData.json';
+import pdg134 from './sets/maximum-subarray/javascript-algorithms#12/pdgData.json';
+import pdg135 from './sets/maximum-subarray/javascript-algorithms#68/pdgData.json';
+import pdg136 from './sets/maximum-subarray/javascript-algorithms#84/pdgData.json';
+import pdg137 from './sets/power-set/javascript-algorithms#26/pdgData.json';
+import pdg138 from './sets/power-set/javascript-algorithms#36/pdgData.json';
+import pdg139 from './sorting/bubble-sort/javascript-algorithms#28/pdgData.json';
+import pdg140 from './sorting/bubble-sort/javascript-algorithms#29/pdgData.json';
+import pdg141 from './sorting/bubble-sort/javascript-algorithms#30/pdgData.json';
+import pdg142 from './sorting/bubble-sort/javascript-algorithms#31/pdgData.json';
+import pdg143 from './sorting/bubble-sort/javascript-algorithms#32/pdgData.json';
+import pdg144 from './sorting/bubble-sort/javascript-algorithms#33/pdgData.json';
+import pdg145 from './sorting/bubble-sort/javascript-algorithms#34/pdgData.json';
+import pdg146 from './sorting/bubble-sort/javascript-algorithms#35/pdgData.json';
+import pdg147 from './sorting/counting-sort/javascript-algorithms#60/pdgData.json';
+import pdg148 from './sorting/counting-sort/javascript-algorithms#61/pdgData.json';
+import pdg149 from './sorting/counting-sort/javascript-algorithms#62/pdgData.json';
+import pdg150 from './sorting/counting-sort/javascript-algorithms#63/pdgData.json';
+import pdg151 from './sorting/counting-sort/javascript-algorithms#64/pdgData.json';
+import pdg152 from './sorting/counting-sort/javascript-algorithms#65/pdgData.json';
+import pdg153 from './sorting/counting-sort/javascript-algorithms#66/pdgData.json';
+import pdg154 from './sorting/heap-sort/javascript-algorithms#129/pdgData.json';
+import pdg155 from './sorting/heap-sort/javascript-algorithms#130/pdgData.json';
+import pdg156 from './sorting/heap-sort/javascript-algorithms#131/pdgData.json';
+import pdg157 from './sorting/heap-sort/javascript-algorithms#132/pdgData.json';
+import pdg158 from './sorting/heap-sort/javascript-algorithms#133/pdgData.json';
+import pdg159 from './sorting/heap-sort/javascript-algorithms#134/pdgData.json';
+import pdg160 from './sorting/heap-sort/javascript-algorithms#135/pdgData.json';
+import pdg161 from './sorting/insertion-sort/javascript-algorithms#143/pdgData.json';
+import pdg162 from './sorting/insertion-sort/javascript-algorithms#144/pdgData.json';
+import pdg163 from './sorting/insertion-sort/javascript-algorithms#145/pdgData.json';
+import pdg164 from './sorting/insertion-sort/javascript-algorithms#146/pdgData.json';
+import pdg165 from './sorting/insertion-sort/javascript-algorithms#147/pdgData.json';
+import pdg166 from './sorting/insertion-sort/javascript-algorithms#148/pdgData.json';
+import pdg167 from './sorting/insertion-sort/javascript-algorithms#149/pdgData.json';
+import pdg168 from './sorting/insertion-sort/javascript-algorithms#150/pdgData.json';
+import pdg169 from './string/hamming-distance/javascript-algorithms#124/pdgData.json';
+import pdg170 from './string/hamming-distance/javascript-algorithms#125/pdgData.json';
+import pdg171 from './string/knuth-morris-pratt/javascript-algorithms#182/pdgData.json';
+import pdg172 from './string/levenshtein-distance/javascript-algorithms#187/pdgData.json';
+import pdg173 from './tree/breadth-first-search/javascript-algorithms#22/pdgData.json';
+import pdg174 from './tree/breadth-first-search/javascript-algorithms#25/pdgData.json';
+import pdg175 from './tree/depth-first-search/javascript-algorithms#70/pdgData.json';
+import pdg176 from './tree/depth-first-search/javascript-algorithms#73/pdgData.json';
+import pdg177 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#1/pdgData.json';
+import pdg178 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#81/pdgData.json';
+import pdg179 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#88/pdgData.json';
+import pdg180 from './uncategorized/hanoi-tower/javascript-algorithms#126/pdgData.json';
+import pdg181 from './uncategorized/hanoi-tower/javascript-algorithms#127/pdgData.json';
+import pdg182 from './uncategorized/hanoi-tower/javascript-algorithms#128/pdgData.json';
+import pdg183 from './uncategorized/jump-game/javascript-algorithms#121/pdgData.json';
+import pdg184 from './uncategorized/jump-game/javascript-algorithms#82/pdgData.json';
+import pdg185 from './uncategorized/jump-game/javascript-algorithms#86/pdgData.json';
+import pdg186 from './uncategorized/jump-game/javascript-algorithms#9/pdgData.json';
+import pdg187 from './uncategorized/knight-tour/javascript-algorithms#174/pdgData.json';
+import pdg188 from './uncategorized/knight-tour/javascript-algorithms#175/pdgData.json';
+import pdg189 from './uncategorized/rain-terraces/javascript-algorithms#13/pdgData.json';
+import pdg190 from './uncategorized/rain-terraces/javascript-algorithms#85/pdgData.json';
+import pdg191 from './uncategorized/unique-paths/javascript-algorithms#27/pdgData.json';
+import pdg192 from './uncategorized/unique-paths/javascript-algorithms#87/pdgData.json';
 
 export default {
   "chapterGroups": [
@@ -400,11 +434,28 @@ export default {
           ]
         },
         {
+          "name": "kruskal",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#183",
+              "ddgs": pdg44
+            },
+            {
+              "id": "javascript-algorithms#184",
+              "ddgs": pdg45
+            },
+            {
+              "id": "javascript-algorithms#185",
+              "ddgs": pdg46
+            }
+          ]
+        },
+        {
           "name": "travelling-salesman",
           "exercises": [
             {
               "id": "javascript-algorithms#14",
-              "ddgs": pdg44
+              "ddgs": pdg47
             }
           ]
         }
@@ -418,23 +469,23 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#108",
-              "ddgs": pdg45
-            },
-            {
-              "id": "javascript-algorithms#109",
-              "ddgs": pdg46
-            },
-            {
-              "id": "javascript-algorithms#19",
-              "ddgs": pdg47
-            },
-            {
-              "id": "javascript-algorithms#20",
               "ddgs": pdg48
             },
             {
-              "id": "javascript-algorithms#21",
+              "id": "javascript-algorithms#109",
               "ddgs": pdg49
+            },
+            {
+              "id": "javascript-algorithms#19",
+              "ddgs": pdg50
+            },
+            {
+              "id": "javascript-algorithms#20",
+              "ddgs": pdg51
+            },
+            {
+              "id": "javascript-algorithms#21",
+              "ddgs": pdg52
             }
           ]
         },
@@ -443,39 +494,43 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#113",
-              "ddgs": pdg50
-            },
-            {
-              "id": "javascript-algorithms#154",
-              "ddgs": pdg51
-            },
-            {
-              "id": "javascript-algorithms#155",
-              "ddgs": pdg52
-            },
-            {
-              "id": "javascript-algorithms#157",
               "ddgs": pdg53
             },
             {
-              "id": "javascript-algorithms#17",
+              "id": "javascript-algorithms#114",
               "ddgs": pdg54
             },
             {
-              "id": "javascript-algorithms#18",
+              "id": "javascript-algorithms#154",
               "ddgs": pdg55
             },
             {
-              "id": "javascript-algorithms#46",
+              "id": "javascript-algorithms#155",
               "ddgs": pdg56
             },
             {
-              "id": "javascript-algorithms#67",
+              "id": "javascript-algorithms#157",
               "ddgs": pdg57
             },
             {
-              "id": "javascript-algorithms#80",
+              "id": "javascript-algorithms#17",
               "ddgs": pdg58
+            },
+            {
+              "id": "javascript-algorithms#18",
+              "ddgs": pdg59
+            },
+            {
+              "id": "javascript-algorithms#46",
+              "ddgs": pdg60
+            },
+            {
+              "id": "javascript-algorithms#67",
+              "ddgs": pdg61
+            },
+            {
+              "id": "javascript-algorithms#80",
+              "ddgs": pdg62
             }
           ]
         },
@@ -484,43 +539,43 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#50",
-              "ddgs": pdg59
-            },
-            {
-              "id": "javascript-algorithms#51",
-              "ddgs": pdg60
-            },
-            {
-              "id": "javascript-algorithms#52",
-              "ddgs": pdg61
-            },
-            {
-              "id": "javascript-algorithms#53",
-              "ddgs": pdg62
-            },
-            {
-              "id": "javascript-algorithms#54",
               "ddgs": pdg63
             },
             {
-              "id": "javascript-algorithms#55",
+              "id": "javascript-algorithms#51",
               "ddgs": pdg64
             },
             {
-              "id": "javascript-algorithms#56",
+              "id": "javascript-algorithms#52",
               "ddgs": pdg65
             },
             {
-              "id": "javascript-algorithms#57",
+              "id": "javascript-algorithms#53",
               "ddgs": pdg66
             },
             {
-              "id": "javascript-algorithms#58",
+              "id": "javascript-algorithms#54",
               "ddgs": pdg67
             },
             {
-              "id": "javascript-algorithms#59",
+              "id": "javascript-algorithms#55",
               "ddgs": pdg68
+            },
+            {
+              "id": "javascript-algorithms#56",
+              "ddgs": pdg69
+            },
+            {
+              "id": "javascript-algorithms#57",
+              "ddgs": pdg70
+            },
+            {
+              "id": "javascript-algorithms#58",
+              "ddgs": pdg71
+            },
+            {
+              "id": "javascript-algorithms#59",
+              "ddgs": pdg72
             }
           ]
         },
@@ -529,11 +584,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#89",
-              "ddgs": pdg69
+              "ddgs": pdg73
             },
             {
               "id": "javascript-algorithms#90",
-              "ddgs": pdg70
+              "ddgs": pdg74
             }
           ]
         },
@@ -542,11 +597,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#91",
-              "ddgs": pdg71
+              "ddgs": pdg75
             },
             {
               "id": "javascript-algorithms#92",
-              "ddgs": pdg72
+              "ddgs": pdg76
             }
           ]
         },
@@ -555,11 +610,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#96",
-              "ddgs": pdg73
+              "ddgs": pdg77
             },
             {
               "id": "javascript-algorithms#97",
-              "ddgs": pdg74
+              "ddgs": pdg78
             }
           ]
         },
@@ -568,7 +623,7 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#101",
-              "ddgs": pdg75
+              "ddgs": pdg79
             }
           ]
         },
@@ -577,19 +632,19 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#102",
-              "ddgs": pdg76
+              "ddgs": pdg80
             },
             {
               "id": "javascript-algorithms#103",
-              "ddgs": pdg77
+              "ddgs": pdg81
             },
             {
               "id": "javascript-algorithms#104",
-              "ddgs": pdg78
+              "ddgs": pdg82
             },
             {
               "id": "javascript-algorithms#105",
-              "ddgs": pdg79
+              "ddgs": pdg83
             }
           ]
         },
@@ -598,23 +653,23 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#100",
-              "ddgs": pdg80
+              "ddgs": pdg84
             },
             {
               "id": "javascript-algorithms#153",
-              "ddgs": pdg81
+              "ddgs": pdg85
             },
             {
               "id": "javascript-algorithms#79",
-              "ddgs": pdg82
+              "ddgs": pdg86
             },
             {
               "id": "javascript-algorithms#98",
-              "ddgs": pdg83
+              "ddgs": pdg87
             },
             {
               "id": "javascript-algorithms#99",
-              "ddgs": pdg84
+              "ddgs": pdg88
             }
           ]
         },
@@ -623,15 +678,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#141",
-              "ddgs": pdg85
+              "ddgs": pdg89
             },
             {
               "id": "javascript-algorithms#142",
-              "ddgs": pdg86
+              "ddgs": pdg90
             },
             {
               "id": "javascript-algorithms#45",
-              "ddgs": pdg87
+              "ddgs": pdg91
             }
           ]
         },
@@ -640,7 +695,7 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#151",
-              "ddgs": pdg88
+              "ddgs": pdg92
             }
           ]
         },
@@ -649,11 +704,33 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#156",
-              "ddgs": pdg89
+              "ddgs": pdg93
             },
             {
               "id": "javascript-algorithms#158",
-              "ddgs": pdg90
+              "ddgs": pdg94
+            }
+          ]
+        },
+        {
+          "name": "least-common-multiple",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#186",
+              "ddgs": pdg95
+            }
+          ]
+        },
+        {
+          "name": "liu-hui",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#191",
+              "ddgs": pdg96
+            },
+            {
+              "id": "javascript-algorithms#192",
+              "ddgs": pdg97
             }
           ]
         },
@@ -662,7 +739,66 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#69",
-              "ddgs": pdg91
+              "ddgs": pdg98
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ml",
+      "chapters": [
+        {
+          "name": "k-means",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#161",
+              "ddgs": pdg99
+            },
+            {
+              "id": "javascript-algorithms#162",
+              "ddgs": pdg100
+            },
+            {
+              "id": "javascript-algorithms#163",
+              "ddgs": pdg101
+            },
+            {
+              "id": "javascript-algorithms#164",
+              "ddgs": pdg102
+            },
+            {
+              "id": "javascript-algorithms#165",
+              "ddgs": pdg103
+            }
+          ]
+        },
+        {
+          "name": "knn",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#176",
+              "ddgs": pdg104
+            },
+            {
+              "id": "javascript-algorithms#177",
+              "ddgs": pdg105
+            },
+            {
+              "id": "javascript-algorithms#178",
+              "ddgs": pdg106
+            },
+            {
+              "id": "javascript-algorithms#179",
+              "ddgs": pdg107
+            },
+            {
+              "id": "javascript-algorithms#180",
+              "ddgs": pdg108
+            },
+            {
+              "id": "javascript-algorithms#181",
+              "ddgs": pdg109
             }
           ]
         }
@@ -676,11 +812,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#15",
-              "ddgs": pdg92
+              "ddgs": pdg110
             },
             {
               "id": "javascript-algorithms#16",
-              "ddgs": pdg93
+              "ddgs": pdg111
             }
           ]
         },
@@ -689,7 +825,7 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#152",
-              "ddgs": pdg94
+              "ddgs": pdg112
             }
           ]
         },
@@ -698,7 +834,28 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#159",
-              "ddgs": pdg95
+              "ddgs": pdg113
+            },
+            {
+              "id": "javascript-algorithms#160",
+              "ddgs": pdg114
+            }
+          ]
+        },
+        {
+          "name": "linear-search",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#188",
+              "ddgs": pdg115
+            },
+            {
+              "id": "javascript-algorithms#189",
+              "ddgs": pdg116
+            },
+            {
+              "id": "javascript-algorithms#190",
+              "ddgs": pdg117
             }
           ]
         }
@@ -712,11 +869,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#43",
-              "ddgs": pdg96
+              "ddgs": pdg118
             },
             {
               "id": "javascript-algorithms#44",
-              "ddgs": pdg97
+              "ddgs": pdg119
             }
           ]
         },
@@ -725,7 +882,7 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#47",
-              "ddgs": pdg98
+              "ddgs": pdg120
             }
           ]
         },
@@ -734,11 +891,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#48",
-              "ddgs": pdg99
+              "ddgs": pdg121
             },
             {
               "id": "javascript-algorithms#49",
-              "ddgs": pdg100
+              "ddgs": pdg122
             }
           ]
         },
@@ -747,11 +904,48 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#106",
-              "ddgs": pdg101
+              "ddgs": pdg123
             },
             {
               "id": "javascript-algorithms#107",
-              "ddgs": pdg102
+              "ddgs": pdg124
+            }
+          ]
+        },
+        {
+          "name": "knapsack-problem",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#166",
+              "ddgs": pdg125
+            },
+            {
+              "id": "javascript-algorithms#167",
+              "ddgs": pdg126
+            },
+            {
+              "id": "javascript-algorithms#168",
+              "ddgs": pdg127
+            },
+            {
+              "id": "javascript-algorithms#169",
+              "ddgs": pdg128
+            },
+            {
+              "id": "javascript-algorithms#170",
+              "ddgs": pdg129
+            },
+            {
+              "id": "javascript-algorithms#171",
+              "ddgs": pdg130
+            },
+            {
+              "id": "javascript-algorithms#172",
+              "ddgs": pdg131
+            },
+            {
+              "id": "javascript-algorithms#173",
+              "ddgs": pdg132
             }
           ]
         },
@@ -760,7 +954,7 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#83",
-              "ddgs": pdg103
+              "ddgs": pdg133
             }
           ]
         },
@@ -769,15 +963,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#12",
-              "ddgs": pdg104
+              "ddgs": pdg134
             },
             {
               "id": "javascript-algorithms#68",
-              "ddgs": pdg105
+              "ddgs": pdg135
             },
             {
               "id": "javascript-algorithms#84",
-              "ddgs": pdg106
+              "ddgs": pdg136
             }
           ]
         },
@@ -786,11 +980,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#26",
-              "ddgs": pdg107
+              "ddgs": pdg137
             },
             {
               "id": "javascript-algorithms#36",
-              "ddgs": pdg108
+              "ddgs": pdg138
             }
           ]
         }
@@ -804,35 +998,35 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#28",
-              "ddgs": pdg109
+              "ddgs": pdg139
             },
             {
               "id": "javascript-algorithms#29",
-              "ddgs": pdg110
+              "ddgs": pdg140
             },
             {
               "id": "javascript-algorithms#30",
-              "ddgs": pdg111
+              "ddgs": pdg141
             },
             {
               "id": "javascript-algorithms#31",
-              "ddgs": pdg112
+              "ddgs": pdg142
             },
             {
               "id": "javascript-algorithms#32",
-              "ddgs": pdg113
+              "ddgs": pdg143
             },
             {
               "id": "javascript-algorithms#33",
-              "ddgs": pdg114
+              "ddgs": pdg144
             },
             {
               "id": "javascript-algorithms#34",
-              "ddgs": pdg115
+              "ddgs": pdg145
             },
             {
               "id": "javascript-algorithms#35",
-              "ddgs": pdg116
+              "ddgs": pdg146
             }
           ]
         },
@@ -841,31 +1035,31 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#60",
-              "ddgs": pdg117
+              "ddgs": pdg147
             },
             {
               "id": "javascript-algorithms#61",
-              "ddgs": pdg118
+              "ddgs": pdg148
             },
             {
               "id": "javascript-algorithms#62",
-              "ddgs": pdg119
+              "ddgs": pdg149
             },
             {
               "id": "javascript-algorithms#63",
-              "ddgs": pdg120
+              "ddgs": pdg150
             },
             {
               "id": "javascript-algorithms#64",
-              "ddgs": pdg121
+              "ddgs": pdg151
             },
             {
               "id": "javascript-algorithms#65",
-              "ddgs": pdg122
+              "ddgs": pdg152
             },
             {
               "id": "javascript-algorithms#66",
-              "ddgs": pdg123
+              "ddgs": pdg153
             }
           ]
         },
@@ -874,31 +1068,31 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#129",
-              "ddgs": pdg124
+              "ddgs": pdg154
             },
             {
               "id": "javascript-algorithms#130",
-              "ddgs": pdg125
+              "ddgs": pdg155
             },
             {
               "id": "javascript-algorithms#131",
-              "ddgs": pdg126
+              "ddgs": pdg156
             },
             {
               "id": "javascript-algorithms#132",
-              "ddgs": pdg127
+              "ddgs": pdg157
             },
             {
               "id": "javascript-algorithms#133",
-              "ddgs": pdg128
+              "ddgs": pdg158
             },
             {
               "id": "javascript-algorithms#134",
-              "ddgs": pdg129
+              "ddgs": pdg159
             },
             {
               "id": "javascript-algorithms#135",
-              "ddgs": pdg130
+              "ddgs": pdg160
             }
           ]
         },
@@ -907,35 +1101,35 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#143",
-              "ddgs": pdg131
+              "ddgs": pdg161
             },
             {
               "id": "javascript-algorithms#144",
-              "ddgs": pdg132
+              "ddgs": pdg162
             },
             {
               "id": "javascript-algorithms#145",
-              "ddgs": pdg133
+              "ddgs": pdg163
             },
             {
               "id": "javascript-algorithms#146",
-              "ddgs": pdg134
+              "ddgs": pdg164
             },
             {
               "id": "javascript-algorithms#147",
-              "ddgs": pdg135
+              "ddgs": pdg165
             },
             {
               "id": "javascript-algorithms#148",
-              "ddgs": pdg136
+              "ddgs": pdg166
             },
             {
               "id": "javascript-algorithms#149",
-              "ddgs": pdg137
+              "ddgs": pdg167
             },
             {
               "id": "javascript-algorithms#150",
-              "ddgs": pdg138
+              "ddgs": pdg168
             }
           ]
         }
@@ -949,11 +1143,29 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#124",
-              "ddgs": pdg139
+              "ddgs": pdg169
             },
             {
               "id": "javascript-algorithms#125",
-              "ddgs": pdg140
+              "ddgs": pdg170
+            }
+          ]
+        },
+        {
+          "name": "knuth-morris-pratt",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#182",
+              "ddgs": pdg171
+            }
+          ]
+        },
+        {
+          "name": "levenshtein-distance",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#187",
+              "ddgs": pdg172
             }
           ]
         }
@@ -967,11 +1179,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#22",
-              "ddgs": pdg141
+              "ddgs": pdg173
             },
             {
               "id": "javascript-algorithms#25",
-              "ddgs": pdg142
+              "ddgs": pdg174
             }
           ]
         },
@@ -980,11 +1192,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#70",
-              "ddgs": pdg143
+              "ddgs": pdg175
             },
             {
               "id": "javascript-algorithms#73",
-              "ddgs": pdg144
+              "ddgs": pdg176
             }
           ]
         }
@@ -998,15 +1210,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#1",
-              "ddgs": pdg145
+              "ddgs": pdg177
             },
             {
               "id": "javascript-algorithms#81",
-              "ddgs": pdg146
+              "ddgs": pdg178
             },
             {
               "id": "javascript-algorithms#88",
-              "ddgs": pdg147
+              "ddgs": pdg179
             }
           ]
         },
@@ -1015,15 +1227,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#126",
-              "ddgs": pdg148
+              "ddgs": pdg180
             },
             {
               "id": "javascript-algorithms#127",
-              "ddgs": pdg149
+              "ddgs": pdg181
             },
             {
               "id": "javascript-algorithms#128",
-              "ddgs": pdg150
+              "ddgs": pdg182
             }
           ]
         },
@@ -1032,19 +1244,32 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#121",
-              "ddgs": pdg151
+              "ddgs": pdg183
             },
             {
               "id": "javascript-algorithms#82",
-              "ddgs": pdg152
+              "ddgs": pdg184
             },
             {
               "id": "javascript-algorithms#86",
-              "ddgs": pdg153
+              "ddgs": pdg185
             },
             {
               "id": "javascript-algorithms#9",
-              "ddgs": pdg154
+              "ddgs": pdg186
+            }
+          ]
+        },
+        {
+          "name": "knight-tour",
+          "exercises": [
+            {
+              "id": "javascript-algorithms#174",
+              "ddgs": pdg187
+            },
+            {
+              "id": "javascript-algorithms#175",
+              "ddgs": pdg188
             }
           ]
         },
@@ -1053,11 +1278,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#13",
-              "ddgs": pdg155
+              "ddgs": pdg189
             },
             {
               "id": "javascript-algorithms#85",
-              "ddgs": pdg156
+              "ddgs": pdg190
             }
           ]
         },
@@ -1066,11 +1291,11 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#27",
-              "ddgs": pdg157
+              "ddgs": pdg191
             },
             {
               "id": "javascript-algorithms#87",
-              "ddgs": pdg158
+              "ddgs": pdg192
             }
           ]
         }

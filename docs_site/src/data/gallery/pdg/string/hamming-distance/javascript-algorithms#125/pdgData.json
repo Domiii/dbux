@@ -1,4 +1,4 @@
 {
   "success": false,
-  "error": "TypeError: Cannot read property 'updateSettings' of null\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:18631:19\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:7880:12"
+  "error": "TypeError: Cannot read property 'updateSettings' of null\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:18636:19\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:7885:12"
 }

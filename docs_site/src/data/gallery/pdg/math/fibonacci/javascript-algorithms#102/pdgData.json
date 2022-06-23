@@ -38,7 +38,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -46,7 +47,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -57,7 +59,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -71,7 +74,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       }
     ]

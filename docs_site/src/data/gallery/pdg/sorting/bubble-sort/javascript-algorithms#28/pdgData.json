@@ -6,14 +6,14 @@
       "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
       "loc": {
         "start": {
-          "line": 28,
+          "line": 25,
           "column": 39,
-          "index": 660
+          "index": 638
         },
         "end": {
-          "line": 30,
+          "line": 27,
           "column": 3,
-          "index": 713
+          "index": 691
         }
       }
     },
@@ -38,7 +38,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -46,7 +47,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -54,7 +56,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -62,7 +65,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -70,7 +74,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -78,7 +83,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -86,7 +92,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       }
     ]

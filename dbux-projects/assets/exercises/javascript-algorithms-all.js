@@ -42,7 +42,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([1], ƒ mockConstructor)",
@@ -77,7 +77,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
@@ -112,7 +112,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
@@ -147,7 +147,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
@@ -182,7 +182,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
@@ -217,7 +217,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
@@ -252,7 +252,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
@@ -287,7 +287,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
@@ -322,7 +322,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       },
       {
         "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
@@ -357,7 +357,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8964063139788399"
+        "applicationUuid": "0.9418876661893107"
       }
     ]
   },
@@ -404,7 +404,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9919389746400384"
+        "applicationUuid": "0.27747758894914965"
       }
     ]
   },
@@ -451,7 +451,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4124151362185098"
+        "applicationUuid": "0.4391366167056847"
       },
       {
         "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -486,7 +486,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4124151362185098"
+        "applicationUuid": "0.4391366167056847"
       }
     ]
   },
@@ -533,7 +533,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.005929982857880489"
+        "applicationUuid": "0.47140934008155955"
       }
     ]
   },
@@ -580,7 +580,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8183227451715542"
+        "applicationUuid": "0.31216339611699206"
       },
       {
         "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -615,7 +615,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8183227451715542"
+        "applicationUuid": "0.31216339611699206"
       }
     ]
   },
@@ -662,7 +662,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6294515278226329"
+        "applicationUuid": "0.6222030107127303"
       },
       {
         "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -697,7 +697,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6294515278226329"
+        "applicationUuid": "0.6222030107127303"
       },
       {
         "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -732,7 +732,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6294515278226329"
+        "applicationUuid": "0.6222030107127303"
       }
     ]
   },
@@ -779,7 +779,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9540885110974402"
+        "applicationUuid": "0.9514241307928495"
       }
     ]
   },
@@ -826,7 +826,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8129800105859846"
+        "applicationUuid": "0.17351276666610715"
       }
     ]
   },
@@ -873,7 +873,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([100,0])",
@@ -908,7 +908,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([2,3,1,1,4])",
@@ -943,7 +943,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([1,1,1,1,1])",
@@ -978,7 +978,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([1,1,1,10,1])",
@@ -1013,7 +1013,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([1,5,2,1,0,2,0])",
@@ -1048,7 +1048,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([1,0,1])",
@@ -1083,7 +1083,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([3,2,1,0,4])",
@@ -1118,7 +1118,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([0,0,0,0,0])",
@@ -1153,7 +1153,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       },
       {
         "ddgTitle": "backtrackingJumpGame([5,4,3,2,1,0,0])",
@@ -1188,7 +1188,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.760265439308272"
+        "applicationUuid": "0.4449807654974356"
       }
     ]
   },
@@ -1235,7 +1235,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11730598761127387"
+        "applicationUuid": "0.6427393855054344"
       }
     ]
   },
@@ -1282,7 +1282,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10108157263984996"
+        "applicationUuid": "0.4213398899294023"
       }
     ]
   },
@@ -1329,7 +1329,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([0,0])",
@@ -1364,7 +1364,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([0,0,1])",
@@ -1399,7 +1399,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([0,0,1,2])",
@@ -1434,7 +1434,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([0,0,-1,2])",
@@ -1469,7 +1469,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
@@ -1504,7 +1504,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
@@ -1539,7 +1539,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
@@ -1574,7 +1574,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
@@ -1609,7 +1609,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       },
       {
         "ddgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
@@ -1644,7 +1644,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18527760007346683"
+        "applicationUuid": "0.17513937735307672"
       }
     ]
   },
@@ -1691,7 +1691,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([1,0])",
@@ -1726,7 +1726,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1])",
@@ -1761,7 +1761,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0])",
@@ -1796,7 +1796,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,0])",
@@ -1831,7 +1831,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,0,1,0])",
@@ -1866,7 +1866,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,2,0,0,1,0])",
@@ -1901,7 +1901,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([2,0,2])",
@@ -1936,7 +1936,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([2,0,5])",
@@ -1971,7 +1971,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([3,0,0,2,0,4])",
@@ -2006,7 +2006,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
@@ -2041,7 +2041,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([1,1,1,1,1])",
@@ -2076,7 +2076,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([1,2,3,4,5])",
@@ -2111,7 +2111,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
@@ -2146,7 +2146,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       },
       {
         "ddgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
@@ -2181,7 +2181,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.998288557729758"
+        "applicationUuid": "0.6943486070390053"
       }
     ]
   },
@@ -2228,7 +2228,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4185053376990937"
+        "applicationUuid": "0.40003908314185677"
       }
     ]
   },
@@ -2275,7 +2275,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1], 1)",
@@ -2310,7 +2310,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,2], 1)",
@@ -2345,7 +2345,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,2], 2)",
@@ -2380,7 +2380,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,5,10,12], 1)",
@@ -2415,7 +2415,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 17)",
@@ -2450,7 +2450,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 1)",
@@ -2485,7 +2485,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 100)",
@@ -2520,7 +2520,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       },
       {
         "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 0)",
@@ -2555,7 +2555,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4787970406548545"
+        "applicationUuid": "0.14260686309978898"
       }
     ]
   },
@@ -2593,24 +2593,16 @@ module.exports = [
             "start": {
               "line": 16,
               "column": 51,
-              "index": 715,
-              "_pos": {
-                "line": 15,
-                "character": 51
-              }
+              "index": 715
             },
             "end": {
               "line": 33,
               "column": 3,
-              "index": 1386,
-              "_pos": {
-                "line": 32,
-                "character": 3
-              }
+              "index": 1386
             }
           }
         },
-        "applicationUuid": "0.2645554390910636"
+        "applicationUuid": "0.7993967002141287"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -2636,24 +2628,16 @@ module.exports = [
             "start": {
               "line": 16,
               "column": 51,
-              "index": 715,
-              "_pos": {
-                "line": 15,
-                "character": 51
-              }
+              "index": 715
             },
             "end": {
               "line": 33,
               "column": 3,
-              "index": 1386,
-              "_pos": {
-                "line": 32,
-                "character": 3
-              }
+              "index": 1386
             }
           }
         },
-        "applicationUuid": "0.2645554390910636"
+        "applicationUuid": "0.7993967002141287"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -2679,24 +2663,16 @@ module.exports = [
             "start": {
               "line": 16,
               "column": 51,
-              "index": 715,
-              "_pos": {
-                "line": 15,
-                "character": 51
-              }
+              "index": 715
             },
             "end": {
               "line": 33,
               "column": 3,
-              "index": 1386,
-              "_pos": {
-                "line": 32,
-                "character": 3
-              }
+              "index": 1386
             }
           }
         },
-        "applicationUuid": "0.2645554390910636"
+        "applicationUuid": "0.7993967002141287"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -2722,24 +2698,16 @@ module.exports = [
             "start": {
               "line": 16,
               "column": 51,
-              "index": 715,
-              "_pos": {
-                "line": 15,
-                "character": 51
-              }
+              "index": 715
             },
             "end": {
               "line": 33,
               "column": 3,
-              "index": 1386,
-              "_pos": {
-                "line": 32,
-                "character": 3
-              }
+              "index": 1386
             }
           }
         },
-        "applicationUuid": "0.2645554390910636"
+        "applicationUuid": "0.7993967002141287"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -2765,24 +2733,16 @@ module.exports = [
             "start": {
               "line": 16,
               "column": 51,
-              "index": 715,
-              "_pos": {
-                "line": 15,
-                "character": 51
-              }
+              "index": 715
             },
             "end": {
               "line": 33,
               "column": 3,
-              "index": 1386,
-              "_pos": {
-                "line": 32,
-                "character": 3
-              }
+              "index": 1386
             }
           }
         },
-        "applicationUuid": "0.2645554390910636"
+        "applicationUuid": "0.7993967002141287"
       }
     ]
   },
@@ -2829,7 +2789,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(1)",
@@ -2864,7 +2824,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(1)",
@@ -2899,7 +2859,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(5)",
@@ -2934,7 +2894,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(5)",
@@ -2969,7 +2929,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(21)",
@@ -3004,7 +2964,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(245)",
@@ -3039,7 +2999,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       },
       {
         "ddgTitle": "bitLength(245)",
@@ -3074,7 +3034,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7649103221519271"
+        "applicationUuid": "0.3376064023951737"
       }
     ]
   },
@@ -3121,7 +3081,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       },
       {
         "ddgTitle": "bitsDiff(1, 1)",
@@ -3156,7 +3116,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       },
       {
         "ddgTitle": "bitsDiff(124, 124)",
@@ -3191,7 +3151,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       },
       {
         "ddgTitle": "bitsDiff(0, 1)",
@@ -3226,7 +3186,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       },
       {
         "ddgTitle": "bitsDiff(1, 0)",
@@ -3261,7 +3221,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       },
       {
         "ddgTitle": "bitsDiff(1, 2)",
@@ -3296,7 +3256,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       },
       {
         "ddgTitle": "bitsDiff(1, 3)",
@@ -3331,7 +3291,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8981918726129681"
+        "applicationUuid": "0.5341832248020759"
       }
     ]
   },
@@ -3378,7 +3338,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([1,1,1,1,0,0,0,1,0,0,0,0,1,1,0,1])",
@@ -3413,7 +3373,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([1,1,0,0,1,1,1,0,1,1,0,0,1,0,1,0])",
@@ -3448,7 +3408,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0])",
@@ -3483,7 +3443,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([1,0,1,0,1,1,1,0,0,1,1,0,0,1,1,0])",
@@ -3518,7 +3478,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -3553,7 +3513,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1])",
@@ -3588,7 +3548,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0])",
@@ -3623,7 +3583,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,0,1,1,1,0,0,1,1,0,0,1,1,0])",
@@ -3658,7 +3618,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,1,0,0,1,0,0,1,1,0,0,1,1,0])",
@@ -3693,7 +3653,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,1,0,1,0,0,1,1,0,0,1,1,0,1])",
@@ -3728,7 +3688,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0])",
@@ -3763,7 +3723,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0])",
@@ -3798,7 +3758,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0])",
@@ -3833,7 +3793,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0])",
@@ -3868,7 +3828,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       },
       {
         "ddgTitle": "bitsToFloat16([0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1])",
@@ -3903,7 +3863,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8461218480821897"
+        "applicationUuid": "0.10562308703010959"
       }
     ]
   },
@@ -3950,7 +3910,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([1,1,0,0,0,1,1,0,0,0,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1,1,1,1])",
@@ -3985,7 +3945,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([1,1,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4020,7 +3980,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([1,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4055,7 +4015,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([1,0,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])",
@@ -4090,7 +4050,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4125,7 +4085,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4160,7 +4120,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,1,0])",
@@ -4195,7 +4155,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])",
@@ -4230,7 +4190,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])",
@@ -4265,7 +4225,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -4300,7 +4260,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4335,7 +4295,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4370,7 +4330,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4405,7 +4365,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4440,7 +4400,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       },
       {
         "ddgTitle": "bitsToFloat32([0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
@@ -4475,7 +4435,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.37807534058290804"
+        "applicationUuid": "0.5245534341586795"
       }
     ]
   },
@@ -4522,7 +4482,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([1,1,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1])",
@@ -4557,7 +4517,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([1,1,0,0,0,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0])",
@@ -4592,7 +4552,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4627,7 +4587,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([1,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -4662,7 +4622,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4697,7 +4657,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4732,7 +4692,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0])",
@@ -4767,7 +4727,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -4802,7 +4762,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -4837,7 +4797,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0])",
@@ -4872,7 +4832,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4907,7 +4867,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4942,7 +4902,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -4977,7 +4937,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -5012,7 +4972,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       },
       {
         "ddgTitle": "bitsToFloat64([0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
@@ -5047,7 +5007,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23047687143570905"
+        "applicationUuid": "0.29492440599399994"
       }
     ]
   },
@@ -5094,7 +5054,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6444030898163964"
+        "applicationUuid": "0.19841756067373595"
       },
       {
         "ddgTitle": "breadthFirstSearch({left,right,parent,value,meta,nodeComparator}, {allowTraversal,enterNode,leaveNode})",
@@ -5129,7 +5089,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6444030898163964"
+        "applicationUuid": "0.19841756067373595"
       }
     ]
   },
@@ -5176,7 +5136,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9429907745259103"
+        "applicationUuid": "0.3147854483667736"
       }
     ]
   },
@@ -5223,7 +5183,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.747019806775326"
+        "applicationUuid": "0.2982298424792844"
       },
       {
         "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
@@ -5258,7 +5218,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.747019806775326"
+        "applicationUuid": "0.2982298424792844"
       }
     ]
   },
@@ -5305,7 +5265,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5100197037478575"
+        "applicationUuid": "0.7350893578746036"
       },
       {
         "ddgTitle": "breadthFirstSearch({left,right,parent,value,meta,nodeComparator}, {enterNode,leaveNode})",
@@ -5340,7 +5300,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5100197037478575"
+        "applicationUuid": "0.7350893578746036"
       }
     ]
   },
@@ -5387,7 +5347,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.1404093913987754"
+        "applicationUuid": "0.9632638536405485"
       },
       {
         "ddgTitle": "btPowerSet([1,2,3])",
@@ -5422,7 +5382,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.1404093913987754"
+        "applicationUuid": "0.9632638536405485"
       }
     ]
   },
@@ -5468,18 +5428,18 @@ module.exports = [
           "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
           "loc": {
             "start": {
-              "line": 28,
+              "line": 25,
               "column": 39,
-              "index": 660
+              "index": 638
             },
             "end": {
-              "line": 30,
+              "line": 27,
               "column": 3,
-              "index": 713
+              "index": 691
             }
           }
         },
-        "applicationUuid": "0.5273362871453244"
+        "applicationUuid": "0.413636238814157"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"a\",\"bbbb\",\"ccc\"])",
@@ -5503,18 +5463,18 @@ module.exports = [
           "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
           "loc": {
             "start": {
-              "line": 28,
+              "line": 25,
               "column": 39,
-              "index": 660
+              "index": 638
             },
             "end": {
-              "line": 30,
+              "line": 27,
               "column": 3,
-              "index": 713
+              "index": 691
             }
           }
         },
-        "applicationUuid": "0.5273362871453244"
+        "applicationUuid": "0.413636238814157"
       }
     ]
   },
@@ -5561,7 +5521,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08899522561608242"
+        "applicationUuid": "0.5444932370367599"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"a\"])",
@@ -5596,7 +5556,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08899522561608242"
+        "applicationUuid": "0.5444932370367599"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
@@ -5631,7 +5591,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08899522561608242"
+        "applicationUuid": "0.5444932370367599"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
@@ -5666,7 +5626,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08899522561608242"
+        "applicationUuid": "0.5444932370367599"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
@@ -5701,7 +5661,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08899522561608242"
+        "applicationUuid": "0.5444932370367599"
       }
     ]
   },
@@ -5748,7 +5708,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([1])",
@@ -5783,7 +5743,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,2])",
@@ -5818,7 +5778,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([2,1])",
@@ -5853,7 +5813,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
@@ -5888,7 +5848,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
@@ -5923,7 +5883,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
@@ -5958,7 +5918,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
@@ -5993,7 +5953,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
@@ -6028,7 +5988,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"\"])",
@@ -6063,7 +6023,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"a\"])",
@@ -6098,7 +6058,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
@@ -6133,7 +6093,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
@@ -6168,7 +6128,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       },
       {
         "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
@@ -6203,7 +6163,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18632386952808133"
+        "applicationUuid": "0.49649460321074623"
       }
     ]
   },
@@ -6250,7 +6210,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9586611019978726"
+        "applicationUuid": "0.6229828806341413"
       }
     ]
   },
@@ -6297,7 +6257,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6686987326430816"
+        "applicationUuid": "0.003383205574100989"
       }
     ]
   },
@@ -6344,7 +6304,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7378908632624126"
+        "applicationUuid": "0.7563083258027976"
       }
     ]
   },
@@ -6391,7 +6351,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3115923355674475"
+        "applicationUuid": "0.8606952067379274"
       }
     ]
   },
@@ -6438,7 +6398,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4935947117779136"
+        "applicationUuid": "0.42861495579459463"
       }
     ]
   },
@@ -6485,7 +6445,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0018509492122491533"
+        "applicationUuid": "0.9608737178217153"
       },
       {
         "ddgTitle": "bwPowerSet([1,2,3])",
@@ -6520,7 +6480,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0018509492122491533"
+        "applicationUuid": "0.9608737178217153"
       }
     ]
   },
@@ -6567,7 +6527,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.47376656965302133"
+        "applicationUuid": "0.5369307987595391"
       }
     ]
   },
@@ -6614,7 +6574,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5794348417318833"
+        "applicationUuid": "0.26681125337526224"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(defgh, 3)",
@@ -6649,7 +6609,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5794348417318833"
+        "applicationUuid": "0.26681125337526224"
       },
       {
         "ddgTitle": "caesarCipherEncrypt(abcde, 1)",
@@ -6684,7 +6644,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5794348417318833"
+        "applicationUuid": "0.26681125337526224"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(bcdef, 1)",
@@ -6719,7 +6679,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5794348417318833"
+        "applicationUuid": "0.26681125337526224"
       },
       {
         "ddgTitle": "caesarCipherEncrypt(xyz, 1)",
@@ -6754,7 +6714,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5794348417318833"
+        "applicationUuid": "0.26681125337526224"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(yza, 1)",
@@ -6789,7 +6749,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5794348417318833"
+        "applicationUuid": "0.26681125337526224"
       }
     ]
   },
@@ -6836,7 +6796,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.417948003989016"
+        "applicationUuid": "0.42159465962050513"
       }
     ]
   },
@@ -6883,7 +6843,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.45107857874361756"
+        "applicationUuid": "0.4017630486003232"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(qeb nrfzh yoltk clu grjmp lsbo qeb ixwv ald, 23)",
@@ -6918,7 +6878,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.45107857874361756"
+        "applicationUuid": "0.4017630486003232"
       }
     ]
   },
@@ -6965,7 +6925,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9769763055947274"
+        "applicationUuid": "0.19876696511562164"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(abcd, 0)",
@@ -7000,7 +6960,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9769763055947274"
+        "applicationUuid": "0.19876696511562164"
       }
     ]
   },
@@ -7047,7 +7007,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.537405394065479"
+        "applicationUuid": "0.6084619063296388"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(de2fgh, 3)",
@@ -7082,7 +7042,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.537405394065479"
+        "applicationUuid": "0.6084619063296388"
       }
     ]
   },
@@ -7129,7 +7089,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6191821894339562"
+        "applicationUuid": "0.9036222580654845"
       },
       {
         "ddgTitle": "cartesianProduct([1,2], [3,5])",
@@ -7164,7 +7124,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6191821894339562"
+        "applicationUuid": "0.9036222580654845"
       }
     ]
   },
@@ -7211,7 +7171,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8090245842275079"
+        "applicationUuid": "0.43353000700394717"
       },
       {
         "ddgTitle": "cartesianProduct([], null)",
@@ -7246,7 +7206,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8090245842275079"
+        "applicationUuid": "0.43353000700394717"
       }
     ]
   },
@@ -7293,7 +7253,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([2,4,2,5], 0.555)",
@@ -7328,7 +7288,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([2,4,2,5], 0.75)",
@@ -7363,7 +7323,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([1,1,1,1,1], 1.75)",
@@ -7398,7 +7358,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([15,3.5,0,2,1.42,0.41], 0.315)",
@@ -7433,7 +7393,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([0,0,2.77,1.42,0.41], 1.35)",
@@ -7468,7 +7428,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([0,0,2.77,1.42,2.3311], 1.35)",
@@ -7503,7 +7463,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       },
       {
         "ddgTitle": "classicPolynome([2,0,0,5.757,5.31412,12.3213], 3.141)",
@@ -7538,7 +7498,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6220981425496099"
+        "applicationUuid": "0.4976760336909716"
       }
     ]
   },
@@ -7585,7 +7545,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8954091714860195"
+        "applicationUuid": "0.7266944393694634"
       },
       {
         "ddgTitle": "clearBit(1, 1)",
@@ -7620,7 +7580,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8954091714860195"
+        "applicationUuid": "0.7266944393694634"
       },
       {
         "ddgTitle": "clearBit(1, 2)",
@@ -7655,7 +7615,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8954091714860195"
+        "applicationUuid": "0.7266944393694634"
       },
       {
         "ddgTitle": "clearBit(10, 0)",
@@ -7690,7 +7650,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8954091714860195"
+        "applicationUuid": "0.7266944393694634"
       },
       {
         "ddgTitle": "clearBit(10, 1)",
@@ -7725,7 +7685,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8954091714860195"
+        "applicationUuid": "0.7266944393694634"
       },
       {
         "ddgTitle": "clearBit(10, 3)",
@@ -7760,7 +7720,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8954091714860195"
+        "applicationUuid": "0.7266944393694634"
       }
     ]
   },
@@ -7807,7 +7767,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4774741125164441"
+        "applicationUuid": "0.04978536248869747"
       },
       {
         "ddgTitle": "combinationSum([2,3,6,7], 7)",
@@ -7842,7 +7802,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4774741125164441"
+        "applicationUuid": "0.04978536248869747"
       },
       {
         "ddgTitle": "combinationSum([2,3,5], 8)",
@@ -7877,7 +7837,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4774741125164441"
+        "applicationUuid": "0.04978536248869747"
       },
       {
         "ddgTitle": "combinationSum([2,5], 3)",
@@ -7912,7 +7872,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4774741125164441"
+        "applicationUuid": "0.04978536248869747"
       },
       {
         "ddgTitle": "combinationSum([], 3)",
@@ -7947,7 +7907,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4774741125164441"
+        "applicationUuid": "0.04978536248869747"
       }
     ]
   },
@@ -7994,7 +7954,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\"], 1)",
@@ -8029,7 +7989,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\"], 1)",
@@ -8064,7 +8024,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\"], 2)",
@@ -8099,7 +8059,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\"], 2)",
@@ -8134,7 +8094,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\"], 3)",
@@ -8169,7 +8129,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\",\"D\"], 3)",
@@ -8204,7 +8164,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\"], 3)",
@@ -8239,7 +8199,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\"], 4)",
@@ -8274,7 +8234,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "factorial(8)",
@@ -8309,7 +8269,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "factorial(4)",
@@ -8344,7 +8304,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "factorial(4)",
@@ -8379,7 +8339,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       },
       {
         "ddgTitle": "pascalTriangle(8)",
@@ -8414,7 +8374,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2477131273209654"
+        "applicationUuid": "0.4919391041545025"
       }
     ]
   },
@@ -8461,7 +8421,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 1)",
@@ -8496,7 +8456,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 2)",
@@ -8531,7 +8491,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 3)",
@@ -8566,7 +8526,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 2)",
@@ -8601,7 +8561,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 3)",
@@ -8636,7 +8596,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\"], 4)",
@@ -8671,7 +8631,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "factorial(11)",
@@ -8706,7 +8666,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "factorial(4)",
@@ -8741,7 +8701,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       },
       {
         "ddgTitle": "factorial(7)",
@@ -8776,7 +8736,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0575084258504861"
+        "applicationUuid": "0.9773461175378004"
       }
     ]
   },
@@ -8823,7 +8783,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5344437293261621"
+        "applicationUuid": "0.5374905777261385"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re})",
@@ -8858,7 +8818,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5344437293261621"
+        "applicationUuid": "0.5374905777261385"
       },
       {
         "ddgTitle": "ComplexNumber.add({re,im})",
@@ -8893,7 +8853,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5344437293261621"
+        "applicationUuid": "0.5374905777261385"
       },
       {
         "ddgTitle": "ComplexNumber.add({re,im})",
@@ -8928,7 +8888,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5344437293261621"
+        "applicationUuid": "0.5374905777261385"
       },
       {
         "ddgTitle": "ComplexNumber.add(3)",
@@ -8963,7 +8923,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5344437293261621"
+        "applicationUuid": "0.5374905777261385"
       }
     ]
   },
@@ -9010,7 +8970,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5338621187107102"
+        "applicationUuid": "0.36172186614033164"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -9045,7 +9005,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5338621187107102"
+        "applicationUuid": "0.36172186614033164"
       },
       {
         "ddgTitle": "ComplexNumber.add({re,im})",
@@ -9080,7 +9040,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5338621187107102"
+        "applicationUuid": "0.36172186614033164"
       },
       {
         "ddgTitle": "ComplexNumber.add({re,im})",
@@ -9115,7 +9075,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5338621187107102"
+        "applicationUuid": "0.36172186614033164"
       }
     ]
   },
@@ -9162,7 +9122,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.22656687919506924"
+        "applicationUuid": "0.971330704754477"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -9197,7 +9157,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.22656687919506924"
+        "applicationUuid": "0.971330704754477"
       }
     ]
   },
@@ -9244,7 +9204,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.058344874140007"
+        "applicationUuid": "0.9703889576211542"
       }
     ]
   },
@@ -9291,7 +9251,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31537752042390266"
+        "applicationUuid": "0.4139759308641555"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -9326,7 +9286,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31537752042390266"
+        "applicationUuid": "0.4139759308641555"
       },
       {
         "ddgTitle": "ComplexNumber.divide({re,im})",
@@ -9361,7 +9321,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31537752042390266"
+        "applicationUuid": "0.4139759308641555"
       },
       {
         "ddgTitle": "ComplexNumber.divide(2)",
@@ -9396,7 +9356,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31537752042390266"
+        "applicationUuid": "0.4139759308641555"
       }
     ]
   },
@@ -9443,7 +9403,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9215245000630039"
+        "applicationUuid": "0.6144601913810488"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -9478,7 +9438,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9215245000630039"
+        "applicationUuid": "0.6144601913810488"
       }
     ]
   },
@@ -9525,7 +9485,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -9560,7 +9520,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -9595,7 +9555,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -9630,7 +9590,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       },
       {
         "ddgTitle": "ComplexNumber.multiply(5)",
@@ -9665,7 +9625,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -9700,7 +9660,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -9735,7 +9695,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7885742533663278"
+        "applicationUuid": "0.0460301040106299"
       }
     ]
   },
@@ -9782,7 +9742,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -9817,7 +9777,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -9852,7 +9812,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -9887,7 +9847,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -9922,7 +9882,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -9957,7 +9917,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -9992,7 +9952,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10027,7 +9987,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -10062,7 +10022,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10097,7 +10057,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10132,7 +10092,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10167,7 +10127,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -10202,7 +10162,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10237,7 +10197,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10272,7 +10232,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10307,7 +10267,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -10342,7 +10302,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10377,7 +10337,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10412,7 +10372,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10447,7 +10407,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -10482,7 +10442,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10517,7 +10477,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10552,7 +10512,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10587,7 +10547,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -10622,7 +10582,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10657,7 +10617,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10692,7 +10652,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10727,7 +10687,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10762,7 +10722,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10797,7 +10757,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10832,7 +10792,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -10867,7 +10827,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10902,7 +10862,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -10937,7 +10897,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -10972,7 +10932,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -11007,7 +10967,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -11042,7 +11002,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm()",
@@ -11077,7 +11037,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -11112,7 +11072,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4297347790996231"
+        "applicationUuid": "0.20745412419487708"
       }
     ]
   },
@@ -11159,7 +11119,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7178139475382652"
+        "applicationUuid": "0.616758570208138"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re})",
@@ -11194,7 +11154,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7178139475382652"
+        "applicationUuid": "0.616758570208138"
       },
       {
         "ddgTitle": "ComplexNumber.subtract({re,im})",
@@ -11229,7 +11189,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7178139475382652"
+        "applicationUuid": "0.616758570208138"
       },
       {
         "ddgTitle": "ComplexNumber.subtract({re,im})",
@@ -11264,7 +11224,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7178139475382652"
+        "applicationUuid": "0.616758570208138"
       },
       {
         "ddgTitle": "ComplexNumber.subtract(3)",
@@ -11299,7 +11259,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7178139475382652"
+        "applicationUuid": "0.616758570208138"
       }
     ]
   },
@@ -11346,7 +11306,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44367355511084705"
+        "applicationUuid": "0.4099013627111967"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -11381,7 +11341,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44367355511084705"
+        "applicationUuid": "0.4099013627111967"
       },
       {
         "ddgTitle": "ComplexNumber.subtract({re,im})",
@@ -11416,7 +11376,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44367355511084705"
+        "applicationUuid": "0.4099013627111967"
       },
       {
         "ddgTitle": "ComplexNumber.subtract({re,im})",
@@ -11451,7 +11411,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44367355511084705"
+        "applicationUuid": "0.4099013627111967"
       }
     ]
   },
@@ -11498,7 +11458,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2545534944461716"
+        "applicationUuid": "0.17249283692351902"
       }
     ]
   },
@@ -11545,7 +11505,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([1])",
@@ -11580,7 +11540,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([1,2])",
@@ -11615,7 +11575,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([2,1])",
@@ -11650,7 +11610,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([3,4,2,1,0,0,4,3,4,2])",
@@ -11685,7 +11645,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
@@ -11720,7 +11680,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
@@ -11755,7 +11715,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
@@ -11790,7 +11750,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       },
       {
         "ddgTitle": "CountingSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
@@ -11825,7 +11785,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5765333906424812"
+        "applicationUuid": "0.7335166953365417"
       }
     ]
   },
@@ -11872,7 +11832,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7338901497150108"
+        "applicationUuid": "0.3067919708749445"
       }
     ]
   },
@@ -11919,7 +11879,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7274668066465442"
+        "applicationUuid": "0.23206010649003517"
       }
     ]
   },
@@ -11966,7 +11926,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08928913086503143"
+        "applicationUuid": "0.529791817814738"
       }
     ]
   },
@@ -12013,7 +11973,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7280671593555075"
+        "applicationUuid": "0.4718842053206789"
       }
     ]
   },
@@ -12060,7 +12020,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3285237301601527"
+        "applicationUuid": "0.7175139663570929"
       }
     ]
   },
@@ -12107,7 +12067,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(1)",
@@ -12142,7 +12102,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(2)",
@@ -12177,7 +12137,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(3)",
@@ -12212,7 +12172,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(4)",
@@ -12247,7 +12207,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(5)",
@@ -12282,7 +12242,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(21)",
@@ -12317,7 +12277,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(255)",
@@ -12352,7 +12312,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(1023)",
@@ -12387,7 +12347,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(-1)",
@@ -12422,7 +12382,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(-21)",
@@ -12457,7 +12417,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(-255)",
@@ -12492,7 +12452,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(-1023)",
@@ -12527,7 +12487,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       },
       {
         "ddgTitle": "countSetBits(-4294967296)",
@@ -12562,7 +12522,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7004423107030311"
+        "applicationUuid": "0.6527705213035913"
       }
     ]
   },
@@ -12609,7 +12569,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0])",
@@ -12644,7 +12604,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,1])",
@@ -12679,7 +12639,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,1,2])",
@@ -12714,7 +12674,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,-1,2])",
@@ -12749,7 +12709,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-1,-2,-3,-4,-5])",
@@ -12784,7 +12744,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([1,2,3,2,3,4,5])",
@@ -12819,7 +12779,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-2,1,-3,4,-1,2,1,-5,4])",
@@ -12854,7 +12814,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-2,-3,4,-1,-2,1,5,-3])",
@@ -12889,7 +12849,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([1,-3,2,-5,7,6,-1,4,11,-23])",
@@ -12924,7 +12884,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.024601460211225668"
+        "applicationUuid": "0.7075516914547106"
       }
     ]
   },
@@ -12971,7 +12931,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2428072971210422"
+        "applicationUuid": "0.5064226111677279"
       },
       {
         "ddgTitle": "degreeToRadian(45)",
@@ -13006,7 +12966,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2428072971210422"
+        "applicationUuid": "0.5064226111677279"
       },
       {
         "ddgTitle": "degreeToRadian(90)",
@@ -13041,7 +13001,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2428072971210422"
+        "applicationUuid": "0.5064226111677279"
       },
       {
         "ddgTitle": "degreeToRadian(180)",
@@ -13076,7 +13036,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2428072971210422"
+        "applicationUuid": "0.5064226111677279"
       },
       {
         "ddgTitle": "degreeToRadian(270)",
@@ -13111,7 +13071,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2428072971210422"
+        "applicationUuid": "0.5064226111677279"
       },
       {
         "ddgTitle": "degreeToRadian(360)",
@@ -13146,7 +13106,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2428072971210422"
+        "applicationUuid": "0.5064226111677279"
       }
     ]
   },
@@ -13193,7 +13153,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31469200849982704"
+        "applicationUuid": "0.6455821035823501"
       },
       {
         "ddgTitle": "depthFirstSearch({left,right,parent,value,meta,nodeComparator}, {allowTraversal,enterNode,leaveNode})",
@@ -13228,7 +13188,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31469200849982704"
+        "applicationUuid": "0.6455821035823501"
       }
     ]
   },
@@ -13275,7 +13235,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.04480481598077324"
+        "applicationUuid": "0.04989409359024277"
       }
     ]
   },
@@ -13322,7 +13282,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.36504538677048437"
+        "applicationUuid": "0.9776709762255755"
       },
       {
         "ddgTitle": "depthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
@@ -13357,7 +13317,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.36504538677048437"
+        "applicationUuid": "0.9776709762255755"
       }
     ]
   },
@@ -13404,7 +13364,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2393292836979799"
+        "applicationUuid": "0.20244632948868357"
       },
       {
         "ddgTitle": "depthFirstSearch({left,right,parent,value,meta,nodeComparator}, {enterNode,leaveNode})",
@@ -13439,7 +13399,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2393292836979799"
+        "applicationUuid": "0.20244632948868357"
       }
     ]
   },
@@ -13486,7 +13446,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3861599238481812"
+        "applicationUuid": "0.7765801891654265"
       },
       {
         "ddgTitle": "detectDirectedCycle({vertices,edges,isDirected})",
@@ -13521,7 +13481,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3861599238481812"
+        "applicationUuid": "0.7765801891654265"
       }
     ]
   },
@@ -13568,7 +13528,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7874491265354782"
+        "applicationUuid": "0.6946714450816334"
       },
       {
         "ddgTitle": "detectUndirectedCycle({vertices,edges,isDirected})",
@@ -13603,7 +13563,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7874491265354782"
+        "applicationUuid": "0.6946714450816334"
       }
     ]
   },
@@ -13650,7 +13610,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8357889743276397"
+        "applicationUuid": "0.01920583273228127"
       },
       {
         "ddgTitle": "detectUndirectedCycleUsingDisjointSet({vertices,edges,isDirected})",
@@ -13685,7 +13645,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8357889743276397"
+        "applicationUuid": "0.01920583273228127"
       }
     ]
   },
@@ -13732,7 +13692,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.45232461437424765"
+        "applicationUuid": "0.24896241124666374"
       }
     ]
   },
@@ -13779,7 +13739,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.04280511982278745"
+        "applicationUuid": "0.9581869620991084"
       }
     ]
   },
@@ -13826,7 +13786,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -13861,7 +13821,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([1,0])",
@@ -13896,7 +13856,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -13931,7 +13891,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -13966,7 +13926,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([2,0])",
@@ -14001,7 +13961,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14036,7 +13996,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14071,7 +14031,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([1,0,0])",
@@ -14106,7 +14066,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14141,7 +14101,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14176,7 +14136,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14211,7 +14171,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([1,0,0,0])",
@@ -14246,7 +14206,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14281,7 +14241,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14316,7 +14276,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14351,7 +14311,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14386,7 +14346,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([0,1,0,0])",
@@ -14421,7 +14381,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14456,7 +14416,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14491,7 +14451,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14526,7 +14486,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14561,7 +14521,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([0,0,1,0])",
@@ -14596,7 +14556,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14631,7 +14591,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14666,7 +14626,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14701,7 +14661,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14736,7 +14696,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([0,0,0,2])",
@@ -14771,7 +14731,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14806,7 +14766,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14841,7 +14801,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14876,7 +14836,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14911,7 +14871,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([0,1,0,2])",
@@ -14946,7 +14906,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -14981,7 +14941,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15016,7 +14976,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15051,7 +15011,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15086,7 +15046,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([4,1,0,2])",
@@ -15121,7 +15081,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15156,7 +15116,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15191,7 +15151,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15226,7 +15186,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15261,7 +15221,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([4,1,-3,2])",
@@ -15296,7 +15256,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15331,7 +15291,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15366,7 +15326,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15401,7 +15361,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15436,7 +15396,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "dft([1,2,3,4])",
@@ -15471,7 +15431,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15506,7 +15466,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15541,7 +15501,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15576,7 +15536,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       },
       {
         "ddgTitle": "ComplexNumber.getPolarForm(false)",
@@ -15611,7 +15571,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.653175861282389"
+        "applicationUuid": "0.4620504614075156"
       }
     ]
   },
@@ -15658,7 +15618,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12846387798945313"
+        "applicationUuid": "0.21831109096265777"
       },
       {
         "ddgTitle": "divideByTwo(1)",
@@ -15693,7 +15653,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12846387798945313"
+        "applicationUuid": "0.21831109096265777"
       },
       {
         "ddgTitle": "divideByTwo(3)",
@@ -15728,7 +15688,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12846387798945313"
+        "applicationUuid": "0.21831109096265777"
       },
       {
         "ddgTitle": "divideByTwo(10)",
@@ -15763,7 +15723,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12846387798945313"
+        "applicationUuid": "0.21831109096265777"
       },
       {
         "ddgTitle": "divideByTwo(17)",
@@ -15798,7 +15758,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12846387798945313"
+        "applicationUuid": "0.21831109096265777"
       },
       {
         "ddgTitle": "divideByTwo(125)",
@@ -15833,7 +15793,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12846387798945313"
+        "applicationUuid": "0.21831109096265777"
       }
     ]
   },
@@ -15880,7 +15840,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([1], ƒ mockConstructor)",
@@ -15915,7 +15875,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
@@ -15950,7 +15910,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
@@ -15985,7 +15945,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
@@ -16020,7 +15980,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
@@ -16055,7 +16015,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
@@ -16090,7 +16050,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
@@ -16125,7 +16085,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
@@ -16160,7 +16120,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       },
       {
         "ddgTitle": "dpBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
@@ -16195,7 +16155,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.30570647046730737"
+        "applicationUuid": "0.3975014893644522"
       }
     ]
   },
@@ -16242,7 +16202,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([100,0])",
@@ -16277,7 +16237,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([2,3,1,1,4])",
@@ -16312,7 +16272,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([1,1,1,1,1])",
@@ -16347,7 +16307,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([1,1,1,10,1])",
@@ -16382,7 +16342,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([1,5,2,1,0,2,0])",
@@ -16417,7 +16377,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([1,0,1])",
@@ -16452,7 +16412,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([3,2,1,0,4])",
@@ -16487,7 +16447,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([0,0,0,0,0])",
@@ -16522,7 +16482,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       },
       {
         "ddgTitle": "dpBottomUpJumpGame([5,4,3,2,1,0,0])",
@@ -16557,7 +16517,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9061351777602411"
+        "applicationUuid": "0.5781407656839399"
       }
     ]
   },
@@ -16604,7 +16564,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10302057803450504"
+        "applicationUuid": "0.6789376736198318"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([0,1,2,3,4,5,6,7,8,9])",
@@ -16639,7 +16599,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10302057803450504"
+        "applicationUuid": "0.6789376736198318"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([3,4,-1,0,6,2,3])",
@@ -16674,7 +16634,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10302057803450504"
+        "applicationUuid": "0.6789376736198318"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15])",
@@ -16709,7 +16669,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10302057803450504"
+        "applicationUuid": "0.6789376736198318"
       }
     ]
   },
@@ -16756,7 +16716,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([0,0])",
@@ -16791,7 +16751,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([0,0,1])",
@@ -16826,7 +16786,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([0,0,1,2])",
@@ -16861,7 +16821,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([0,0,-1,2])",
@@ -16896,7 +16856,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([-1,-2,-3,-4,-5])",
@@ -16931,7 +16891,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([1,2,3,2,3,4,5])",
@@ -16966,7 +16926,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
@@ -17001,7 +16961,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
@@ -17036,7 +16996,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       },
       {
         "ddgTitle": "dpMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
@@ -17071,7 +17031,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11592762310872273"
+        "applicationUuid": "0.6942349602311588"
       }
     ]
   },
@@ -17118,7 +17078,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([1,0])",
@@ -17153,7 +17113,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1])",
@@ -17188,7 +17148,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0])",
@@ -17223,7 +17183,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,0])",
@@ -17258,7 +17218,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,0,1,0])",
@@ -17293,7 +17253,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,2,0,0,1,0])",
@@ -17328,7 +17288,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([2,0,2])",
@@ -17363,7 +17323,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([2,0,5])",
@@ -17398,7 +17358,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([3,0,0,2,0,4])",
@@ -17433,7 +17393,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
@@ -17468,7 +17428,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([1,1,1,1,1])",
@@ -17503,7 +17463,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([1,2,3,4,5])",
@@ -17538,7 +17498,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([4,1,3,1,2,1,2,1])",
@@ -17573,7 +17533,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       },
       {
         "ddgTitle": "dpRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
@@ -17608,7 +17568,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8933591976426398"
+        "applicationUuid": "0.4658095904339572"
       }
     ]
   },
@@ -17655,7 +17615,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([100,0])",
@@ -17690,7 +17650,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([2,3,1,1,4])",
@@ -17725,7 +17685,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,1,1,1,1])",
@@ -17760,7 +17720,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,1,1,10,1])",
@@ -17795,7 +17755,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,5,2,1,0,2,0])",
@@ -17830,7 +17790,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,0,1])",
@@ -17865,7 +17825,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([3,2,1,0,4])",
@@ -17900,7 +17860,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([0,0,0,0,0])",
@@ -17935,7 +17895,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([5,4,3,2,1,0,0])",
@@ -17970,7 +17930,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9531129869184822"
+        "applicationUuid": "0.8135538952540629"
       }
     ]
   },
@@ -18017,7 +17977,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7589643253606586"
+        "applicationUuid": "0.4895995802589479"
       },
       {
         "ddgTitle": "dpUniquePaths(7, 3)",
@@ -18052,7 +18012,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7589643253606586"
+        "applicationUuid": "0.4895995802589479"
       },
       {
         "ddgTitle": "dpUniquePaths(3, 7)",
@@ -18087,7 +18047,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7589643253606586"
+        "applicationUuid": "0.4895995802589479"
       },
       {
         "ddgTitle": "dpUniquePaths(10, 10)",
@@ -18122,7 +18082,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7589643253606586"
+        "applicationUuid": "0.4895995802589479"
       },
       {
         "ddgTitle": "dpUniquePaths(100, 1)",
@@ -18157,7 +18117,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7589643253606586"
+        "applicationUuid": "0.4895995802589479"
       },
       {
         "ddgTitle": "dpUniquePaths(1, 100)",
@@ -18192,7 +18152,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7589643253606586"
+        "applicationUuid": "0.4895995802589479"
       }
     ]
   },
@@ -18249,7 +18209,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(2, 0)",
@@ -18284,7 +18244,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(0, 2)",
@@ -18319,7 +18279,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(1, 2)",
@@ -18354,7 +18314,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(2, 1)",
@@ -18389,7 +18349,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(6, 6)",
@@ -18424,7 +18384,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(2, 4)",
@@ -18459,7 +18419,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(4, 2)",
@@ -18494,7 +18454,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(12, 4)",
@@ -18529,7 +18489,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(4, 12)",
@@ -18564,7 +18524,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(5, 13)",
@@ -18599,7 +18559,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(27, 13)",
@@ -18634,7 +18594,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(24, 60)",
@@ -18669,7 +18629,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(60, 24)",
@@ -18704,7 +18664,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(252, 105)",
@@ -18739,7 +18699,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(105, 252)",
@@ -18774,7 +18734,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(1071, 462)",
@@ -18809,7 +18769,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(462, 1071)",
@@ -18844,7 +18804,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(462, -1071)",
@@ -18879,7 +18839,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       },
       {
         "ddgTitle": "euclideanAlgorithm(-462, -1071)",
@@ -18914,7 +18874,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.19270870260538997"
+        "applicationUuid": "0.6625940981258951"
       }
     ]
   },
@@ -18961,7 +18921,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(2, 0)",
@@ -18996,7 +18956,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(0, 2)",
@@ -19031,7 +18991,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(1, 2)",
@@ -19066,7 +19026,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(2, 1)",
@@ -19101,7 +19061,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(6, 6)",
@@ -19136,7 +19096,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(2, 4)",
@@ -19171,7 +19131,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(4, 2)",
@@ -19206,7 +19166,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(12, 4)",
@@ -19241,7 +19201,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(4, 12)",
@@ -19276,7 +19236,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(5, 13)",
@@ -19311,7 +19271,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(27, 13)",
@@ -19346,7 +19306,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(24, 60)",
@@ -19381,7 +19341,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(60, 24)",
@@ -19416,7 +19376,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(252, 105)",
@@ -19451,7 +19411,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(105, 252)",
@@ -19486,7 +19446,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(1071, 462)",
@@ -19521,7 +19481,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(462, 1071)",
@@ -19556,7 +19516,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(462, -1071)",
@@ -19591,7 +19551,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(-462, -1071)",
@@ -19626,7 +19586,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.14711752481348017"
+        "applicationUuid": "0.8378623932865938"
       }
     ]
   },
@@ -19673,7 +19633,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
@@ -19708,7 +19668,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
@@ -19743,7 +19703,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       },
       {
         "ddgTitle": "euclideanDistance([[],[]], [[],[]])",
@@ -19778,7 +19738,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
@@ -19813,7 +19773,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       },
       {
         "ddgTitle": "euclideanDistance([[],[],[]], [[],[],[]])",
@@ -19848,7 +19808,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       },
       {
         "ddgTitle": "euclideanDistance([[],[],[]], [[],[],[]])",
@@ -19883,7 +19843,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7325062149924124"
+        "applicationUuid": "0.4518273271654787"
       }
     ]
   },
@@ -19930,7 +19890,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4967011089461588"
+        "applicationUuid": "0.23358205581667835"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
@@ -19965,7 +19925,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4967011089461588"
+        "applicationUuid": "0.23358205581667835"
       }
     ]
   },
@@ -20012,7 +19972,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.23566758465487192"
+        "applicationUuid": "0.6961869236183491"
       }
     ]
   },
@@ -20059,7 +20019,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2870287839812573"
+        "applicationUuid": "0.04085887455726667"
       }
     ]
   },
@@ -20106,7 +20066,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7436378422715022"
+        "applicationUuid": "0.4630398550806514"
       }
     ]
   },
@@ -20153,7 +20113,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9184629220184182"
+        "applicationUuid": "0.1663757011242597"
       },
       {
         "ddgTitle": "factorial(1)",
@@ -20188,7 +20148,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9184629220184182"
+        "applicationUuid": "0.1663757011242597"
       },
       {
         "ddgTitle": "factorial(5)",
@@ -20223,7 +20183,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9184629220184182"
+        "applicationUuid": "0.1663757011242597"
       },
       {
         "ddgTitle": "factorial(8)",
@@ -20258,7 +20218,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9184629220184182"
+        "applicationUuid": "0.1663757011242597"
       },
       {
         "ddgTitle": "factorial(10)",
@@ -20293,7 +20253,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9184629220184182"
+        "applicationUuid": "0.1663757011242597"
       }
     ]
   },
@@ -20340,7 +20300,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4046074571064946"
+        "applicationUuid": "0.2313741801233129"
       },
       {
         "ddgTitle": "factorialRecursive(1)",
@@ -20375,7 +20335,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4046074571064946"
+        "applicationUuid": "0.2313741801233129"
       },
       {
         "ddgTitle": "factorialRecursive(5)",
@@ -20410,7 +20370,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4046074571064946"
+        "applicationUuid": "0.2313741801233129"
       },
       {
         "ddgTitle": "factorialRecursive(8)",
@@ -20445,7 +20405,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4046074571064946"
+        "applicationUuid": "0.2313741801233129"
       },
       {
         "ddgTitle": "factorialRecursive(10)",
@@ -20480,7 +20440,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4046074571064946"
+        "applicationUuid": "0.2313741801233129"
       }
     ]
   },
@@ -20527,7 +20487,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17224403932219667"
+        "applicationUuid": "0.30196136635279736"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20562,7 +20522,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17224403932219667"
+        "applicationUuid": "0.30196136635279736"
       },
       {
         "ddgTitle": "fastFourierTransform([{}])",
@@ -20597,7 +20557,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17224403932219667"
+        "applicationUuid": "0.30196136635279736"
       },
       {
         "ddgTitle": "fastFourierTransform([{}], true)",
@@ -20632,7 +20592,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17224403932219667"
+        "applicationUuid": "0.30196136635279736"
       }
     ]
   },
@@ -20679,7 +20639,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20714,7 +20674,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20749,7 +20709,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20784,7 +20744,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20819,7 +20779,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20854,7 +20814,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -20889,7 +20849,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{}])",
@@ -20924,7 +20884,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{},{}], true)",
@@ -20959,7 +20919,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6340049458510233"
+        "applicationUuid": "0.2366704173480163"
       }
     ]
   },
@@ -21006,7 +20966,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21041,7 +21001,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21076,7 +21036,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21111,7 +21071,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21146,7 +21106,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21181,7 +21141,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21216,7 +21176,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21251,7 +21211,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21286,7 +21246,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21321,7 +21281,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21356,7 +21316,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21391,7 +21351,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21426,7 +21386,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21461,7 +21421,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21496,7 +21456,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21531,7 +21491,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21566,7 +21526,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21601,7 +21561,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21636,7 +21596,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21671,7 +21631,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21706,7 +21666,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21741,7 +21701,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21776,7 +21736,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21811,7 +21771,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21846,7 +21806,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -21881,7 +21841,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{},{},{},{},{},{},{},{}])",
@@ -21916,7 +21876,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}], true)",
@@ -21951,20 +21911,616 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9455559160252691"
+        "applicationUuid": "0.24551761935528016"
       }
     ]
   },
   {
     "name": "fastPowering should compute power in log(n) time@fastPowering.test.js",
     "label": "fastPowering should compute power in log(n) time",
-    "testNamePattern": "fastPowering should compute power in log(n) time",
+    "testNamePattern": "fastPowering should compute power in log.n. time",
     "chapterGroup": "math",
     "chapter": "fast-powering",
     "testFilePaths": [
       "src/algorithms/math/fast-powering/__test__/fastPowering.test.js"
     ],
-    "ddgs": []
+    "ddgs": [
+      {
+        "ddgTitle": "fastPowering(1, 1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 0)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 3)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 4)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 5)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 6)",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 7)",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(2, 8)",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(3, 4)",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(190, 2)",
+        "contextId": 39,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(11, 5)",
+        "contextId": 42,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(13, 11)",
+        "contextId": 46,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(9, 16)",
+        "contextId": 51,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(16, 16)",
+        "contextId": 57,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(7, 21)",
+        "contextId": 63,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      },
+      {
+        "ddgTitle": "fastPowering(100, 9)",
+        "contextId": 69,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fast-powering/fastPowering.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 50,
+              "index": 325
+            },
+            "end": {
+              "line": 30,
+              "column": 1,
+              "index": 921
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 131
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 943
+            }
+          }
+        },
+        "applicationUuid": "0.7259609769755184"
+      }
+    ]
   },
   {
     "name": "fibonacci should calculate fibonacci correctly@fibonacci.test.js",
@@ -22009,7 +22565,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(2)",
@@ -22044,7 +22600,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(3)",
@@ -22079,7 +22635,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(4)",
@@ -22114,7 +22670,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(5)",
@@ -22149,7 +22705,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(6)",
@@ -22184,7 +22740,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(7)",
@@ -22219,7 +22775,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(8)",
@@ -22254,7 +22810,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(9)",
@@ -22289,7 +22845,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       },
       {
         "ddgTitle": "fibonacci(10)",
@@ -22324,7 +22880,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.608971551549707"
+        "applicationUuid": "0.39092442847582953"
       }
     ]
   },
@@ -22371,7 +22927,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(2)",
@@ -22406,7 +22962,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(3)",
@@ -22441,7 +22997,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(4)",
@@ -22476,7 +23032,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(5)",
@@ -22511,7 +23067,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(6)",
@@ -22546,7 +23102,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(7)",
@@ -22581,7 +23137,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(8)",
@@ -22616,7 +23172,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(20)",
@@ -22651,7 +23207,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(30)",
@@ -22686,7 +23242,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(50)",
@@ -22721,7 +23277,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       },
       {
         "ddgTitle": "fibonacciClosedForm(70)",
@@ -22756,7 +23312,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.05128266984304797"
+        "applicationUuid": "0.12506950432964548"
       }
     ]
   },
@@ -22803,7 +23359,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3785555127047515"
+        "applicationUuid": "0.22830563788678937"
       }
     ]
   },
@@ -22850,7 +23406,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(2)",
@@ -22885,7 +23441,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(3)",
@@ -22920,7 +23476,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(4)",
@@ -22955,7 +23511,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(5)",
@@ -22990,7 +23546,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(6)",
@@ -23025,7 +23581,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(7)",
@@ -23060,7 +23616,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(8)",
@@ -23095,7 +23651,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(20)",
@@ -23130,7 +23686,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(30)",
@@ -23165,7 +23721,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(50)",
@@ -23200,7 +23756,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(70)",
@@ -23235,7 +23791,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(71)",
@@ -23270,7 +23826,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(72)",
@@ -23305,7 +23861,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(73)",
@@ -23340,7 +23896,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(74)",
@@ -23375,7 +23931,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       },
       {
         "ddgTitle": "fibonacciNth(75)",
@@ -23410,7 +23966,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2304982953795025"
+        "applicationUuid": "0.8915920364800762"
       }
     ]
   },
@@ -23457,10 +24013,10 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.1820421040559801"
+        "applicationUuid": "0.4796561716121641"
       },
       {
-        "ddgTitle": "QuickSort.sort([10,13,3,19,1,15,14,2,20,11,5,16,4,12,18,9,17,8,6,7])",
+        "ddgTitle": "QuickSort.sort([1,17,7,16,3,8,20,13,10,19,18,15,4,9,14,6,12,2,11,5])",
         "contextId": 13,
         "algoLoc": {
           "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
@@ -23492,7 +24048,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.1820421040559801"
+        "applicationUuid": "0.4796561716121641"
       }
     ]
   },
@@ -23539,7 +24095,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8073361596358062"
+        "applicationUuid": "0.4193578530221582"
       },
       {
         "ddgTitle": "fisherYates([1])",
@@ -23574,7 +24130,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8073361596358062"
+        "applicationUuid": "0.4193578530221582"
       }
     ]
   },
@@ -23621,7 +24177,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(-10345.5595703125)",
@@ -23656,7 +24212,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(-27.15625)",
@@ -23691,7 +24247,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(-1)",
@@ -23726,7 +24282,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(-0.1)",
@@ -23761,7 +24317,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(0)",
@@ -23796,7 +24352,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(1.401298464324817e-45)",
@@ -23831,7 +24387,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(0.00000456)",
@@ -23866,7 +24422,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(0.1)",
@@ -23901,7 +24457,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(0.2)",
@@ -23936,7 +24492,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(0.3)",
@@ -23971,7 +24527,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(1)",
@@ -24006,7 +24562,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(1.5)",
@@ -24041,7 +24597,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(1.75)",
@@ -24076,7 +24632,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(1.875)",
@@ -24111,7 +24667,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       },
       {
         "ddgTitle": "floatAs32BinaryString(3.4028234663852886e+38)",
@@ -24146,7 +24702,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.0474670622206832"
+        "applicationUuid": "0.3775814045683761"
       }
     ]
   },
@@ -24193,7 +24749,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(-10345.5595703125)",
@@ -24228,7 +24784,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(-27.15625)",
@@ -24263,7 +24819,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(-1)",
@@ -24298,7 +24854,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(-0.1)",
@@ -24333,7 +24889,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(0)",
@@ -24368,7 +24924,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(5e-324)",
@@ -24403,7 +24959,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(0.00000456)",
@@ -24438,7 +24994,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(0.1)",
@@ -24473,7 +25029,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(0.2)",
@@ -24508,7 +25064,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(0.3)",
@@ -24543,7 +25099,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(1)",
@@ -24578,7 +25134,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(1.5)",
@@ -24613,7 +25169,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(1.75)",
@@ -24648,7 +25204,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(1.875)",
@@ -24683,7 +25239,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       },
       {
         "ddgTitle": "floatAs64BinaryString(1.7976931348623157e+308)",
@@ -24718,7 +25274,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4593088101553924"
+        "applicationUuid": "0.40483503237997587"
       }
     ]
   },
@@ -24765,7 +25321,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5461334469959973"
+        "applicationUuid": "0.8670660871224602"
       }
     ]
   },
@@ -24812,7 +25368,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.34432523664787995"
+        "applicationUuid": "0.9571213881421525"
       },
       {
         "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
@@ -24847,7 +25403,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.34432523664787995"
+        "applicationUuid": "0.9571213881421525"
       }
     ]
   },
@@ -24894,7 +25450,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6555288042134155"
+        "applicationUuid": "0.7781939056510838"
       }
     ]
   },
@@ -24941,7 +25497,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(2, 0)",
@@ -24976,7 +25532,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(0, 2)",
@@ -25011,7 +25567,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(1, 2)",
@@ -25046,7 +25602,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(2, 1)",
@@ -25081,7 +25637,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(6, 6)",
@@ -25116,7 +25672,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(-2, 4)",
@@ -25151,7 +25707,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(4, -2)",
@@ -25186,7 +25742,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(-4, -4)",
@@ -25221,7 +25777,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(4, -5)",
@@ -25256,7 +25812,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(2, 121)",
@@ -25291,7 +25847,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       },
       {
         "ddgTitle": "fullAdder(121, 2)",
@@ -25326,7 +25882,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6775786194064841"
+        "applicationUuid": "0.3548181591060826"
       }
     ]
   },
@@ -25338,6 +25894,358 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/getBit.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "getBit(1, 0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(1, 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(2, 0)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(2, 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(3, 0)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(3, 1)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(10, 0)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(10, 1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(10, 2)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      },
+      {
+        "ddgTitle": "getBit(10, 3)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/getBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 52,
+              "index": 156
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "index": 199
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/getBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 50,
+              "index": 113
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 556
+            }
+          }
+        },
+        "applicationUuid": "0.5929756749697044"
+      }
     ]
   },
   {
@@ -25348,6 +26256,43 @@ module.exports = [
     "chapter": "bridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 231,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 79,
+              "index": 3316
+            },
+            "end": {
+              "line": 137,
+              "column": 3,
+              "index": 4675
+            }
+          }
+        },
+        "applicationUuid": "0.3631002773213403"
+      }
     ]
   },
   {
@@ -25358,6 +26303,78 @@ module.exports = [
     "chapter": "bridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 231,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 57,
+              "column": 43,
+              "index": 1872
+            },
+            "end": {
+              "line": 96,
+              "column": 3,
+              "index": 3231
+            }
+          }
+        },
+        "applicationUuid": "0.8620682189555204"
+      },
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 775,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 79,
+              "index": 3316
+            },
+            "end": {
+              "line": 137,
+              "column": 3,
+              "index": 4675
+            }
+          }
+        },
+        "applicationUuid": "0.8620682189555204"
+      }
     ]
   },
   {
@@ -25368,6 +26385,43 @@ module.exports = [
     "chapter": "bridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 113,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 65,
+              "index": 1133
+            },
+            "end": {
+              "line": 55,
+              "column": 3,
+              "index": 1823
+            }
+          }
+        },
+        "applicationUuid": "0.347408800487516"
+      }
     ]
   },
   {
@@ -25378,6 +26432,78 @@ module.exports = [
     "chapter": "bridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 95,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 50,
+              "index": 337
+            },
+            "end": {
+              "line": 30,
+              "column": 3,
+              "index": 1062
+            }
+          }
+        },
+        "applicationUuid": "0.41883137622063793"
+      },
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 350,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 65,
+              "index": 1133
+            },
+            "end": {
+              "line": 55,
+              "column": 3,
+              "index": 1823
+            }
+          }
+        },
+        "applicationUuid": "0.41883137622063793"
+      }
     ]
   },
   {
@@ -25388,6 +26514,43 @@ module.exports = [
     "chapter": "bridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 138,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 58,
+              "index": 4739
+            },
+            "end": {
+              "line": 166,
+              "column": 3,
+              "index": 5605
+            }
+          }
+        },
+        "applicationUuid": "0.12944486054436188"
+      }
     ]
   },
   {
@@ -25398,6 +26561,43 @@ module.exports = [
     "chapter": "bridges",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "graphBridges({vertices,edges,isDirected})",
+        "contextId": 206,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bridges/graphBridges.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 44,
+              "index": 405
+            },
+            "end": {
+              "line": 95,
+              "column": 1,
+              "index": 3470
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/bridges/__test__/graphBridges.test.js",
+          "loc": {
+            "start": {
+              "line": 168,
+              "column": 58,
+              "index": 5669
+            },
+            "end": {
+              "line": 202,
+              "column": 3,
+              "index": 6796
+            }
+          }
+        },
+        "applicationUuid": "0.5230759041957092"
+      }
     ]
   },
   {
@@ -25408,6 +26608,358 @@ module.exports = [
     "chapter": "jump-game",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "greedyJumpGame([1,0])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([100,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([2,3,1,1,4])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([1,1,1,1,1])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([1,1,1,10,1])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([1,5,2,1,0,2,0])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([1,0,1])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([3,2,1,0,4])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([0,0,0,0,0])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      },
+      {
+        "ddgTitle": "greedyJumpGame([5,4,3,2,1,0,0])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/greedyJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 48,
+              "index": 885
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1812
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 149
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 722
+            }
+          }
+        },
+        "applicationUuid": "0.5463012581811102"
+      }
     ]
   },
   {
@@ -25418,6 +26970,43 @@ module.exports = [
     "chapter": "hamiltonian-cycle",
     "testFilePaths": [
       "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hamiltonianCycle({vertices,edges,isDirected})",
+        "contextId": 191,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js",
+          "loc": {
+            "start": {
+              "line": 105,
+              "column": 48,
+              "index": 3516
+            },
+            "end": {
+              "line": 134,
+              "column": 1,
+              "index": 4410
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 53,
+              "index": 352
+            },
+            "end": {
+              "line": 61,
+              "column": 3,
+              "index": 2796
+            }
+          }
+        },
+        "applicationUuid": "0.4401848566079005"
+      }
     ]
   },
   {
@@ -25428,6 +27017,43 @@ module.exports = [
     "chapter": "hamiltonian-cycle",
     "testFilePaths": [
       "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hamiltonianCycle({vertices,edges,isDirected})",
+        "contextId": 155,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js",
+          "loc": {
+            "start": {
+              "line": 105,
+              "column": 48,
+              "index": 3516
+            },
+            "end": {
+              "line": 134,
+              "column": 1,
+              "index": 4410
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js",
+          "loc": {
+            "start": {
+              "line": 63,
+              "column": 69,
+              "index": 2871
+            },
+            "end": {
+              "line": 89,
+              "column": 3,
+              "index": 3713
+            }
+          }
+        },
+        "applicationUuid": "0.7265645053433643"
+      }
     ]
   },
   {
@@ -25438,6 +27064,253 @@ module.exports = [
     "chapter": "hamming-distance",
     "testFilePaths": [
       "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hammingDistance(a, a)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      },
+      {
+        "ddgTitle": "hammingDistance(a, b)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      },
+      {
+        "ddgTitle": "hammingDistance(abc, add)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      },
+      {
+        "ddgTitle": "hammingDistance(karolin, kathrin)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      },
+      {
+        "ddgTitle": "hammingDistance(karolin, kerstin)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      },
+      {
+        "ddgTitle": "hammingDistance(1011101, 1001001)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      },
+      {
+        "ddgTitle": "hammingDistance(2173896, 2233796)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 62,
+              "index": 415
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 809
+            }
+          }
+        },
+        "applicationUuid": "0.19752079375996323"
+      }
     ]
   },
   {
@@ -25448,6 +27321,43 @@ module.exports = [
     "chapter": "hamming-distance",
     "testFilePaths": [
       "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hammingDistance(a, aa)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 46,
+              "index": 121
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 372
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 50,
+              "index": 235
+            },
+            "end": {
+              "line": 7,
+              "column": 5,
+              "index": 278
+            }
+          }
+        },
+        "applicationUuid": "0.27231613443662583"
+      }
     ]
   },
   {
@@ -25458,6 +27368,43 @@ module.exports = [
     "chapter": "hanoi-tower",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 40,
+              "index": 1624
+            },
+            "end": {
+              "line": 88,
+              "column": 1,
+              "index": 2284
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 62,
+              "index": 199
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1174
+            }
+          }
+        },
+        "applicationUuid": "0.3330912836490365"
+      }
     ]
   },
   {
@@ -25468,6 +27415,43 @@ module.exports = [
     "chapter": "hanoi-tower",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTowerRecursive({numberOfDiscs,fromPole,withPole,toPole,moveCallback})",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 3,
+              "index": 381
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1329
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js",
+          "loc": {
+            "start": {
+              "line": 39,
+              "column": 62,
+              "index": 1242
+            },
+            "end": {
+              "line": 49,
+              "column": 3,
+              "index": 1464
+            }
+          }
+        },
+        "applicationUuid": "0.4799272056726487"
+      }
     ]
   },
   {
@@ -25478,6 +27462,43 @@ module.exports = [
     "chapter": "hanoi-tower",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 40,
+              "index": 1624
+            },
+            "end": {
+              "line": 88,
+              "column": 1,
+              "index": 2284
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js",
+          "loc": {
+            "start": {
+              "line": 51,
+              "column": 62,
+              "index": 1532
+            },
+            "end": {
+              "line": 61,
+              "column": 3,
+              "index": 1754
+            }
+          }
+        },
+        "applicationUuid": "0.3298083715927431"
+      }
     ]
   },
   {
@@ -25488,6 +27509,183 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([\"\"])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.5079865125252021"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"a\"])",
+        "contextId": 27,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.5079865125252021"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"a\"])",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.5079865125252021"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 78,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.5079865125252021"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"aa\"])",
+        "contextId": 186,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.5079865125252021"
+      }
     ]
   },
   {
@@ -25498,6 +27696,498 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,2])",
+        "contextId": 31,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([2,1])",
+        "contextId": 62,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 100,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 600,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 1860,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 3610,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 5084,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 32,
+              "index": 535
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 577
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"\"])",
+        "contextId": 5814,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"a\"])",
+        "contextId": 5827,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"a\"])",
+        "contextId": 5840,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 5878,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      },
+      {
+        "ddgTitle": "HeapSort.sort([\"aa\",\"aa\"])",
+        "contextId": 5986,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 23,
+              "column": 55,
+              "index": 638
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 700
+            }
+          }
+        },
+        "applicationUuid": "0.9427913951482463"
+      }
     ]
   },
   {
@@ -25508,6 +28198,43 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([-1,0,5,-10,20,13,-7,3,2,-3])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 27,
+              "column": 43,
+              "index": 749
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.2773902449596173"
+      }
     ]
   },
   {
@@ -25518,6 +28245,43 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 73,
+              "index": 885
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1013
+            }
+          }
+        },
+        "applicationUuid": "0.40364640574615995"
+      }
     ]
   },
   {
@@ -25528,6 +28292,43 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 78,
+              "index": 1307
+            },
+            "end": {
+              "line": 53,
+              "column": 3,
+              "index": 1444
+            }
+          }
+        },
+        "applicationUuid": "0.6161260411102025"
+      }
     ]
   },
   {
@@ -25538,6 +28339,43 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 55,
+              "column": 82,
+              "index": 1532
+            },
+            "end": {
+              "line": 61,
+              "column": 3,
+              "index": 1671
+            }
+          }
+        },
+        "applicationUuid": "0.6440911950073565"
+      }
     ]
   },
   {
@@ -25548,6 +28386,43 @@ module.exports = [
     "chapter": "heap-sort",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "HeapSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/HeapSort.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 22,
+              "index": 161
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js",
+          "loc": {
+            "start": {
+              "line": 39,
+              "column": 74,
+              "index": 1093
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1223
+            }
+          }
+        },
+        "applicationUuid": "0.927318139496522"
+      }
     ]
   },
   {
@@ -25558,6 +28433,113 @@ module.exports = [
     "chapter": "hill-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hillCipherEncrypt(ACT, GYBNQKURP)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 62,
+              "index": 1631
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1829
+            }
+          }
+        },
+        "applicationUuid": "0.22318821241851183"
+      },
+      {
+        "ddgTitle": "hillCipherEncrypt(CAT, GYBNQKURP)",
+        "contextId": 64,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 62,
+              "index": 1631
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1829
+            }
+          }
+        },
+        "applicationUuid": "0.22318821241851183"
+      },
+      {
+        "ddgTitle": "hillCipherEncrypt(GFG, HILLMAGIC)",
+        "contextId": 122,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 62,
+              "index": 1631
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1829
+            }
+          }
+        },
+        "applicationUuid": "0.22318821241851183"
+      }
     ]
   },
   {
@@ -25568,6 +28550,78 @@ module.exports = [
     "chapter": "hill-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hillCipherEncrypt(hell3, helloworld)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 44,
+              "index": 404
+            },
+            "end": {
+              "line": 11,
+              "column": 5,
+              "index": 461
+            }
+          }
+        },
+        "applicationUuid": "0.07902376259247634"
+      },
+      {
+        "ddgTitle": "hillCipherEncrypt(hello, hel12world)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 46,
+              "index": 510
+            },
+            "end": {
+              "line": 14,
+              "column": 5,
+              "index": 567
+            }
+          }
+        },
+        "applicationUuid": "0.07902376259247634"
+      }
     ]
   },
   {
@@ -25578,6 +28632,43 @@ module.exports = [
     "chapter": "hill-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hillCipherEncrypt(ab, aaabbbccc)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 43,
+              "index": 1357
+            },
+            "end": {
+              "line": 35,
+              "column": 5,
+              "index": 1410
+            }
+          }
+        },
+        "applicationUuid": "0.9333422942086118"
+      }
     ]
   },
   {
@@ -25588,6 +28679,43 @@ module.exports = [
     "chapter": "hill-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hillCipherEncrypt(ab, ab)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 54,
+              "index": 1867
+            },
+            "end": {
+              "line": 82,
+              "column": 1,
+              "index": 2771
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 43,
+              "index": 981
+            },
+            "end": {
+              "line": 26,
+              "column": 5,
+              "index": 1027
+            }
+          }
+        },
+        "applicationUuid": "0.9445912692006715"
+      }
     ]
   },
   {
@@ -25598,6 +28726,43 @@ module.exports = [
     "chapter": "hill-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hillCipherDecrypt(This method is not implemented yet)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/hillCipher.js",
+          "loc": {
+            "start": {
+              "line": 85,
+              "column": 39,
+              "index": 2848
+            },
+            "end": {
+              "line": 87,
+              "column": 1,
+              "index": 2910
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 169
+            },
+            "end": {
+              "line": 6,
+              "column": 3,
+              "index": 258
+            }
+          }
+        },
+        "applicationUuid": "0.6700733873871891"
+      }
     ]
   },
   {
@@ -25608,6 +28773,288 @@ module.exports = [
     "chapter": "horner-method",
     "testFilePaths": [
       "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hornerMethod([8], 0.1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([2,4,2,5], 0.555)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([2,4,2,5], 0.75)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([1,1,1,1,1], 1.75)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([15,3.5,0,2,1.42,0.41], 0.315)",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([0,0,2.77,1.42,0.41], 1.35)",
+        "contextId": 31,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([0,0,2.77,1.42,2.3311], 1.35)",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      },
+      {
+        "ddgTitle": "hornerMethod([2,0,0,5.757,5.31412,12.3213], 3.141)",
+        "contextId": 43,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 84,
+              "index": 216
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 810
+            }
+          }
+        },
+        "applicationUuid": "0.17244610571975505"
+      }
     ]
   },
   {
@@ -25618,6 +29065,218 @@ module.exports = [
     "chapter": "horner-method",
     "testFilePaths": [
       "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "hornerMethod([8], 0.1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 78,
+              "index": 894
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 1149
+            }
+          }
+        },
+        "applicationUuid": "0.8858563607150496"
+      },
+      {
+        "ddgTitle": "classicPolynome([8], 0.1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 78,
+              "index": 894
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 1149
+            }
+          }
+        },
+        "applicationUuid": "0.8858563607150496"
+      },
+      {
+        "ddgTitle": "hornerMethod([2,4,2,5], 0.555)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 78,
+              "index": 894
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 1149
+            }
+          }
+        },
+        "applicationUuid": "0.8858563607150496"
+      },
+      {
+        "ddgTitle": "classicPolynome([2,4,2,5], 0.555)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 78,
+              "index": 894
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 1149
+            }
+          }
+        },
+        "applicationUuid": "0.8858563607150496"
+      },
+      {
+        "ddgTitle": "hornerMethod([2,4,2,5], 0.75)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/hornerMethod.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 57,
+              "index": 291
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 447
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 78,
+              "index": 894
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 1149
+            }
+          }
+        },
+        "applicationUuid": "0.8858563607150496"
+      },
+      {
+        "ddgTitle": "classicPolynome([2,4,2,5], 0.75)",
+        "contextId": 25,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/hornerMethod.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 78,
+              "index": 894
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 1149
+            }
+          }
+        },
+        "applicationUuid": "0.8858563607150496"
+      }
     ]
   },
   {
@@ -25628,6 +29287,78 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([\"bb\",\"aa\",\"c\"])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 39,
+              "index": 653
+            },
+            "end": {
+              "line": 27,
+              "column": 3,
+              "index": 709
+            }
+          }
+        },
+        "applicationUuid": "0.08093682877886654"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"q\",\"a\",\"bbbb\",\"ccc\"])",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 39,
+              "index": 653
+            },
+            "end": {
+              "line": 27,
+              "column": 3,
+              "index": 709
+            }
+          }
+        },
+        "applicationUuid": "0.08093682877886654"
+      }
     ]
   },
   {
@@ -25638,6 +29369,183 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([\"\"])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.5088810089417946"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"a\"])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.5088810089417946"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"a\"])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.5088810089417946"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.5088810089417946"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"aa\"])",
+        "contextId": 33,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.5088810089417946"
+      }
     ]
   },
   {
@@ -25648,6 +29556,498 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([1])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([1,2])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([2,1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 105,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 163,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 753,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 1048,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 433
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"\"])",
+        "contextId": 1111,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"a\"])",
+        "contextId": 1112,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"a\"])",
+        "contextId": 1113,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 1118,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      },
+      {
+        "ddgTitle": "InsertionSort.sort([\"aa\",\"aa\"])",
+        "contextId": 1132,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 541
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 608
+            }
+          }
+        },
+        "applicationUuid": "0.2148168443100218"
+      }
     ]
   },
   {
@@ -25658,6 +30058,43 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([-1,0,5,-10,20,13,-7,3,2,-3])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 29,
+              "column": 43,
+              "index": 758
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 820
+            }
+          }
+        },
+        "applicationUuid": "0.6845120936765903"
+      }
     ]
   },
   {
@@ -25668,6 +30105,43 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 899
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1032
+            }
+          }
+        },
+        "applicationUuid": "0.5221185467169844"
+      }
     ]
   },
   {
@@ -25678,6 +30152,43 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 78,
+              "index": 1331
+            },
+            "end": {
+              "line": 55,
+              "column": 3,
+              "index": 1473
+            }
+          }
+        },
+        "applicationUuid": "0.800138107188844"
+      }
     ]
   },
   {
@@ -25688,6 +30199,43 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 57,
+              "column": 82,
+              "index": 1561
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 1705
+            }
+          }
+        },
+        "applicationUuid": "0.015932266254600425"
+      }
     ]
   },
   {
@@ -25698,6 +30246,43 @@ module.exports = [
     "chapter": "insertion-sort",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "InsertionSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 104
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1038
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 74,
+              "index": 1112
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1247
+            }
+          }
+        },
+        "applicationUuid": "0.5276741951483086"
+      }
     ]
   },
   {
@@ -25708,6 +30293,288 @@ module.exports = [
     "chapter": "integer-partition",
     "testFilePaths": [
       "src/algorithms/math/integer-partition/__test__/integerPartition.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "integerPartition(1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(3)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(4)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(5)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(6)",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(7)",
+        "contextId": 38,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      },
+      {
+        "ddgTitle": "integerPartition(8)",
+        "contextId": 47,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/integer-partition/integerPartition.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 49,
+              "index": 107
+            },
+            "end": {
+              "line": 57,
+              "column": 1,
+              "index": 2709
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/integer-partition/__test__/integerPartition.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 42,
+              "index": 135
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 480
+            }
+          }
+        },
+        "applicationUuid": "0.3233832037944804"
+      }
     ]
   },
   {
@@ -25718,6 +30585,638 @@ module.exports = [
     "chapter": "interpolation-search",
     "testFilePaths": [
       "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "interpolationSearch([], 1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1], 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1], 0)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,1], 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2], 1)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2], 2)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([10,20,30,40,50], 40)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], 14)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,6,7,8,12,13,14,19,21,23,24,24,24,300], 24)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 600)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 1)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 2)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 3)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 700)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 800)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([0,2,3,700,800,1200,1300,1400,1900], 1200)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,19000], 800)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      },
+      {
+        "ddgTitle": "interpolationSearch([0,10,11,12,13,14,15], 10)",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/interpolationSearch.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 70,
+              "index": 251
+            },
+            "end": {
+              "line": 52,
+              "column": 1,
+              "index": 1800
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 166
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 1560
+            }
+          }
+        },
+        "applicationUuid": "0.1134927471225804"
+      }
     ]
   },
   {
@@ -25728,6 +31227,1828 @@ module.exports = [
     "chapter": "fourier-transform",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{}])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{}])",
+        "contextId": 27,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 62,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 64,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{}])",
+        "contextId": 65,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 100,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 102,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 104,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{}])",
+        "contextId": 105,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 177,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 179,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 181,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 183,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 184,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 307,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 309,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 311,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 313,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 314,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 437,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 439,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 441,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 443,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 444,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 567,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 569,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 571,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 573,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 574,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 697,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 699,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 701,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 703,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 704,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 827,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 829,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 831,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 833,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 834,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 957,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 959,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 961,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 963,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 964,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 1087,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 1089,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 1091,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 1093,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      },
+      {
+        "ddgTitle": "inverseDiscreteFourierTransform([{},{},{},{}])",
+        "contextId": 1094,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/inverseDiscreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 2,
+              "index": 643
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1799
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 70,
+              "index": 254
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 341
+            }
+          }
+        },
+        "applicationUuid": "0.20084211965047905"
+      }
     ]
   },
   {
@@ -25738,6 +33059,463 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/isEven.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "isEven(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(2)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(-2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(-1)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(-3)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(3)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(8)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(9)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(121)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(122)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(1201)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      },
+      {
+        "ddgTitle": "isEven(1202)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isEven.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 39,
+              "index": 98
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 132
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isEven.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 111
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 592
+            }
+          }
+        },
+        "applicationUuid": "0.4162141145978062"
+      }
     ]
   },
   {
@@ -25748,6 +33526,428 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/isPositive.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "isPositive(1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(2)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(5665)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(56644325)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(0)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(0)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(-1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(-2)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(-126)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(-5665)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      },
+      {
+        "ddgTitle": "isPositive(-56644325)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPositive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 43,
+              "index": 120
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 360
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 638
+            }
+          }
+        },
+        "applicationUuid": "0.06736976001687389"
+      }
     ]
   },
   {
@@ -25758,6 +33958,603 @@ module.exports = [
     "chapter": "is-power-of-two",
     "testFilePaths": [
       "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "isPowerOfTwo(-1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(1)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(3)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(4)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(5)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(6)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(7)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(8)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(10)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(12)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(16)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(31)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(64)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(1024)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(1023)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 104
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 596
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 150
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 875
+            }
+          }
+        },
+        "applicationUuid": "0.1706412888184372"
+      }
     ]
   },
   {
@@ -25768,6 +34565,498 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "isPowerOfTwo(1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(2)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(4)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(5)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(6)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(7)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(8)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(9)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(16)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(23)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(32)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(127)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      },
+      {
+        "ddgTitle": "isPowerOfTwo(128)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/isPowerOfTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 99
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 144
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 58,
+              "index": 139
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 733
+            }
+          }
+        },
+        "applicationUuid": "0.24173807537447978"
+      }
     ]
   },
   {
@@ -25778,6 +35067,603 @@ module.exports = [
     "chapter": "is-power-of-two",
     "testFilePaths": [
       "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(-1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(1)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(3)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(4)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(5)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(6)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(7)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(8)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(10)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(12)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(16)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(31)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(64)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(1024)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      },
+      {
+        "ddgTitle": "isPowerOfTwoBitwise(1023)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwoBitwise.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 52,
+              "index": 111
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 699
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 69,
+              "index": 171
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 1015
+            }
+          }
+        },
+        "applicationUuid": "0.10825090063098619"
+      }
     ]
   },
   {
@@ -25788,6 +35674,498 @@ module.exports = [
     "chapter": "jump-search",
     "testFilePaths": [
       "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "jumpSearch([], 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1], 2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1], 1)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2], 1)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2], 1)",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,1,1], 1)",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 2)",
+        "contextId": 38,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 0)",
+        "contextId": 46,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 0)",
+        "contextId": 56,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 7)",
+        "contextId": 66,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 5)",
+        "contextId": 78,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 20)",
+        "contextId": 88,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 30)",
+        "contextId": 98,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      },
+      {
+        "ddgTitle": "jumpSearch([1,2,5,10,20,21,24,30,48], 48)",
+        "contextId": 110,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 59,
+              "index": 134
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 973
+            }
+          }
+        },
+        "applicationUuid": "0.4652570060216614"
+      }
     ]
   },
   {
@@ -25798,6 +36176,183 @@ module.exports = [
     "chapter": "jump-search",
     "testFilePaths": [
       "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "jumpSearch([], {key}, ƒ (anonymous))",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 51,
+              "index": 1030
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1691
+            }
+          }
+        },
+        "applicationUuid": "0.3828482519811294"
+      },
+      {
+        "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 51,
+              "index": 1030
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1691
+            }
+          }
+        },
+        "applicationUuid": "0.3828482519811294"
+      },
+      {
+        "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 51,
+              "index": 1030
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1691
+            }
+          }
+        },
+        "applicationUuid": "0.3828482519811294"
+      },
+      {
+        "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 51,
+              "index": 1030
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1691
+            }
+          }
+        },
+        "applicationUuid": "0.3828482519811294"
+      },
+      {
+        "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/jump-search/jumpSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 81,
+              "index": 327
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1592
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/jump-search/__test__/jumpSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 51,
+              "index": 1030
+            },
+            "end": {
+              "line": 38,
+              "column": 3,
+              "index": 1691
+            }
+          }
+        },
+        "applicationUuid": "0.3828482519811294"
+      }
     ]
   },
   {
@@ -25808,6 +36363,43 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KMeans([[],[],[]], 3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 27,
+              "column": 60,
+              "index": 796
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 965
+            }
+          }
+        },
+        "applicationUuid": "0.259079842055598"
+      }
     ]
   },
   {
@@ -25818,6 +36410,43 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 60,
+              "index": 1031
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1209
+            }
+          }
+        },
+        "applicationUuid": "0.8975772665648138"
+      }
     ]
   },
   {
@@ -25828,6 +36457,113 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 48,
+              "index": 433
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 730
+            }
+          }
+        },
+        "applicationUuid": "0.43722691360928145"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 578,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 48,
+              "index": 433
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 730
+            }
+          }
+        },
+        "applicationUuid": "0.43722691360928145"
+      },
+      {
+        "ddgTitle": "KMeans([[],[],[]], 2)",
+        "contextId": 940,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 60,
+              "index": 1031
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1209
+            }
+          }
+        },
+        "applicationUuid": "0.43722691360928145"
+      }
     ]
   },
   {
@@ -25838,6 +36574,43 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KMeans([[],[]], 2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 17,
+              "index": 284
+            },
+            "end": {
+              "line": 13,
+              "column": 5,
+              "index": 325
+            }
+          }
+        },
+        "applicationUuid": "0.4497531805696977"
+      }
     ]
   },
   {
@@ -25848,6 +36621,43 @@ module.exports = [
     "chapter": "k-means",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KMeans()",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/k-means/kMeans.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "index": 442
+            },
+            "end": {
+              "line": 85,
+              "column": 1,
+              "index": 3303
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/k-means/__test__/kMeans.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 17,
+              "index": 135
+            },
+            "end": {
+              "line": 7,
+              "column": 5,
+              "index": 160
+            }
+          }
+        },
+        "applicationUuid": "0.3323894781692791"
+      }
     ]
   },
   {
@@ -25858,6 +36668,428 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{}], 7)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 110,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 112,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 115,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 117,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 119,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 120,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.5605565211704338"
+      }
     ]
   },
   {
@@ -25868,6 +37100,603 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{},{}], 3)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 182,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 184,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 186,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 189,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 191,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 193,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 195,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 196,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 197,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.04974890033659052"
+      }
     ]
   },
   {
@@ -25878,6 +37707,218 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.6239191607620092"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.6239191607620092"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.6239191607620092"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.6239191607620092"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{}], 7)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.6239191607620092"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.6239191607620092"
+      }
     ]
   },
   {
@@ -25888,6 +37929,1653 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{}], 7)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 110,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 112,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 115,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 117,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 119,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 120,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 48,
+              "index": 162
+            },
+            "end": {
+              "line": 24,
+              "column": 3,
+              "index": 853
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 122,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 123,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 124,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 125,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{}], 7)",
+        "contextId": 126,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 127,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 223,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 225,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 228,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 230,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 232,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 233,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 74,
+              "index": 933
+            },
+            "end": {
+              "line": 45,
+              "column": 3,
+              "index": 1624
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 235,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 236,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 237,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 238,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{}], 7)",
+        "contextId": 239,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 240,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 47,
+              "column": 74,
+              "index": 1704
+            },
+            "end": {
+              "line": 64,
+              "column": 3,
+              "index": 2261
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 338,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 339,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 340,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 341,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 342,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 343,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{},{}], 3)",
+        "contextId": 344,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()",
+        "contextId": 345,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 32,
+              "index": 1691
+            },
+            "end": {
+              "line": 151,
+              "column": 3,
+              "index": 5734
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 511,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 513,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 515,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 518,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 520,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 522,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 524,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 525,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 526,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 71,
+              "index": 2338
+            },
+            "end": {
+              "line": 88,
+              "column": 3,
+              "index": 3199
+            }
+          }
+        },
+        "applicationUuid": "0.40229692227376845"
+      }
     ]
   },
   {
@@ -25898,6 +39586,778 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 60)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 155,
+              "column": 34,
+              "index": 5835
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 6923
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 217,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 219,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 221,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 223,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 225,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 228,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 230,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 232,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 234,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 236,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 238,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 239,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 240,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 241,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 242,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8881261816107815"
+      }
     ]
   },
   {
@@ -25908,6 +40368,1338 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 17)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 155,
+              "column": 34,
+              "index": 5835
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 6923
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 199,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 201,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 203,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 206,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 208,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 210,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 212,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 213,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 214,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 216,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 217,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 218,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 219,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 220,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 60)",
+        "contextId": 221,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
+        "contextId": 222,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 155,
+              "column": 34,
+              "index": 5835
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 6923
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 424,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 426,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 428,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 430,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 432,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 435,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 437,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 439,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 441,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 443,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 445,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 446,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 447,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 448,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 449,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.6618780298768958"
+      }
     ]
   },
   {
@@ -25918,6 +41710,2108 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 15)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 155,
+              "column": 34,
+              "index": 5835
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 6923
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 217,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 219,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 221,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 223,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 225,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 228,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 230,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 232,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 234,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 236,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 238,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 239,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 240,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 241,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 242,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 90,
+              "column": 52,
+              "index": 3257
+            },
+            "end": {
+              "line": 113,
+              "column": 3,
+              "index": 4332
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 244,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 245,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 246,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 247,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 248,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 17)",
+        "contextId": 249,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
+        "contextId": 250,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 155,
+              "column": 34,
+              "index": 5835
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 6923
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 434,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 436,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 438,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 441,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 443,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 445,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 447,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 448,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 449,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 72,
+              "index": 4410
+            },
+            "end": {
+              "line": 136,
+              "column": 3,
+              "index": 5427
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 451,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 452,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 453,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 454,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
+        "contextId": 455,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 60)",
+        "contextId": 456,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 42,
+              "index": 230
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 344
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
+        "contextId": 457,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 155,
+              "column": 34,
+              "index": 5835
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 6923
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 659,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 661,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 663,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 665,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 667,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 184,
+              "column": 60,
+              "index": 7046
+            },
+            "end": {
+              "line": 186,
+              "column": 5,
+              "index": 7099
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 670,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 672,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 674,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 676,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
+        "contextId": 678,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/Knapsack.js",
+          "loc": {
+            "start": {
+              "line": 191,
+              "column": 60,
+              "index": 7233
+            },
+            "end": {
+              "line": 193,
+              "column": 5,
+              "index": 7287
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 680,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 681,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 682,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 683,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 684,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js",
+          "loc": {
+            "start": {
+              "line": 138,
+              "column": 114,
+              "index": 5547
+            },
+            "end": {
+              "line": 161,
+              "column": 3,
+              "index": 6782
+            }
+          }
+        },
+        "applicationUuid": "0.8769213552778137"
+      }
     ]
   },
   {
@@ -25928,6 +43822,148 @@ module.exports = [
     "chapter": "knapsack-problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "KnapsackItem.constructor({value,weight})",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 381
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 572
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 79,
+              "index": 160
+            },
+            "end": {
+              "line": 34,
+              "column": 3,
+              "index": 1308
+            }
+          }
+        },
+        "applicationUuid": "0.31181798409286765"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 79,
+              "index": 160
+            },
+            "end": {
+              "line": 34,
+              "column": 3,
+              "index": 1308
+            }
+          }
+        },
+        "applicationUuid": "0.31181798409286765"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 79,
+              "index": 160
+            },
+            "end": {
+              "line": 34,
+              "column": 3,
+              "index": 1308
+            }
+          }
+        },
+        "applicationUuid": "0.31181798409286765"
+      },
+      {
+        "ddgTitle": "KnapsackItem.toString()",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 13,
+              "index": 895
+            },
+            "end": {
+              "line": 32,
+              "column": 3,
+              "index": 966
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 79,
+              "index": 160
+            },
+            "end": {
+              "line": 34,
+              "column": 3,
+              "index": 1308
+            }
+          }
+        },
+        "applicationUuid": "0.31181798409286765"
+      }
     ]
   },
   {
@@ -25948,6 +43984,43 @@ module.exports = [
     "chapter": "knight-tour",
     "testFilePaths": [
       "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "knightTour(3)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/knight-tour/knightTour.js",
+          "loc": {
+            "start": {
+              "line": 96,
+              "column": 51,
+              "index": 2907
+            },
+            "end": {
+              "line": 112,
+              "column": 1,
+              "index": 3396
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 127
+            },
+            "end": {
+              "line": 8,
+              "column": 3,
+              "index": 204
+            }
+          }
+        },
+        "applicationUuid": "0.2609481930667157"
+      }
     ]
   },
   {
@@ -25958,6 +44031,43 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 60,
+              "index": 2069
+            },
+            "end": {
+              "line": 70,
+              "column": 3,
+              "index": 2294
+            }
+          }
+        },
+        "applicationUuid": "0.49201540738259575"
+      }
     ]
   },
   {
@@ -25968,6 +44078,43 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 56,
+              "column": 69,
+              "index": 1790
+            },
+            "end": {
+              "line": 62,
+              "column": 3,
+              "index": 2003
+            }
+          }
+        },
+        "applicationUuid": "0.3412482233031324"
+      }
     ]
   },
   {
@@ -25978,6 +44125,183 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kNN([[],[]], [1,2], [1,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 48,
+              "index": 982
+            },
+            "end": {
+              "line": 54,
+              "column": 3,
+              "index": 1715
+            }
+          }
+        },
+        "applicationUuid": "0.7847478349816508"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25])",
+        "contextId": 47,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 48,
+              "index": 982
+            },
+            "end": {
+              "line": 54,
+              "column": 3,
+              "index": 1715
+            }
+          }
+        },
+        "applicationUuid": "0.7847478349816508"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[],[],[],[],[]], [1,2,1,2,1,2,1], [1.25,1.25], 5)",
+        "contextId": 193,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 48,
+              "index": 982
+            },
+            "end": {
+              "line": 54,
+              "column": 3,
+              "index": 1715
+            }
+          }
+        },
+        "applicationUuid": "0.7847478349816508"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,1])",
+        "contextId": 340,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 56,
+              "column": 69,
+              "index": 1790
+            },
+            "end": {
+              "line": 62,
+              "column": 3,
+              "index": 2003
+            }
+          }
+        },
+        "applicationUuid": "0.7847478349816508"
+      },
+      {
+        "ddgTitle": "kNN([[],[],[]], [1,3,3], [0,0,1])",
+        "contextId": 401,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 64,
+              "column": 60,
+              "index": 2069
+            },
+            "end": {
+              "line": 70,
+              "column": 3,
+              "index": 2294
+            }
+          }
+        },
+        "applicationUuid": "0.7847478349816508"
+      }
     ]
   },
   {
@@ -25988,6 +44312,43 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kNN()",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 17,
+              "index": 126
+            },
+            "end": {
+              "line": 7,
+              "column": 5,
+              "index": 148
+            }
+          }
+        },
+        "applicationUuid": "0.6322696347455552"
+      }
     ]
   },
   {
@@ -25998,6 +44359,43 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kNN([[]])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 27,
+              "index": 313
+            },
+            "end": {
+              "line": 13,
+              "column": 5,
+              "index": 343
+            }
+          }
+        },
+        "applicationUuid": "0.8697936490396634"
+      }
     ]
   },
   {
@@ -26008,6 +44406,78 @@ module.exports = [
     "chapter": "knn",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kNN([[]], [1])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 35,
+              "index": 556
+            },
+            "end": {
+              "line": 20,
+              "column": 5,
+              "index": 591
+            }
+          }
+        },
+        "applicationUuid": "0.03732075844262561"
+      },
+      {
+        "ddgTitle": "kNN([[]], [1], [1])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/ml/knn/kNN.js",
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 2,
+              "index": 656
+            },
+            "end": {
+              "line": 60,
+              "column": 1,
+              "index": 1992
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/ml/knn/__test__/knn.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 31,
+              "index": 808
+            },
+            "end": {
+              "line": 27,
+              "column": 5,
+              "index": 848
+            }
+          }
+        },
+        "applicationUuid": "0.03732075844262561"
+      }
     ]
   },
   {
@@ -26018,6 +44488,323 @@ module.exports = [
     "chapter": "knuth-morris-pratt",
     "testFilePaths": [
       "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "knuthMorrisPratt(, )",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(a, )",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(a, a)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(abcbcglx, abca)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(abcbcglx, bcgl)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabca)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(abcxabcdabxaabcdabcabcdabcdabcy, abcdabca)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      },
+      {
+        "ddgTitle": "knuthMorrisPratt(abcxabcdabxaabaabaaaabcdabcdabcy, aabaabaaa)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/knuthMorrisPratt.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 53,
+              "index": 762
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1346
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 54,
+              "index": 147
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 750
+            }
+          }
+        },
+        "applicationUuid": "0.17496345023876092"
+      }
     ]
   },
   {
@@ -26028,6 +44815,43 @@ module.exports = [
     "chapter": "kruskal",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kruskal({vertices,edges,isDirected})",
+        "contextId": 141,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/kruskal/kruskal.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 39,
+              "index": 294
+            },
+            "end": {
+              "line": 62,
+              "column": 1,
+              "index": 2208
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/kruskal/__test__/kruskal.test.js",
+          "loc": {
+            "start": {
+              "line": 61,
+              "column": 65,
+              "index": 2193
+            },
+            "end": {
+              "line": 90,
+              "column": 3,
+              "index": 3223
+            }
+          }
+        },
+        "applicationUuid": "0.327769039013462"
+      }
     ]
   },
   {
@@ -26038,6 +44862,78 @@ module.exports = [
     "chapter": "kruskal",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kruskal({vertices,edges,isDirected})",
+        "contextId": 257,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/kruskal/kruskal.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 39,
+              "index": 294
+            },
+            "end": {
+              "line": 62,
+              "column": 1,
+              "index": 2208
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/kruskal/__test__/kruskal.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 48,
+              "index": 555
+            },
+            "end": {
+              "line": 59,
+              "column": 3,
+              "index": 2122
+            }
+          }
+        },
+        "applicationUuid": "0.5574809205410913"
+      },
+      {
+        "ddgTitle": "kruskal({vertices,edges,isDirected})",
+        "contextId": 1236,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/kruskal/kruskal.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 39,
+              "index": 294
+            },
+            "end": {
+              "line": 62,
+              "column": 1,
+              "index": 2208
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/kruskal/__test__/kruskal.test.js",
+          "loc": {
+            "start": {
+              "line": 61,
+              "column": 65,
+              "index": 2193
+            },
+            "end": {
+              "line": 90,
+              "column": 3,
+              "index": 3223
+            }
+          }
+        },
+        "applicationUuid": "0.5574809205410913"
+      }
     ]
   },
   {
@@ -26048,6 +44944,43 @@ module.exports = [
     "chapter": "kruskal",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "kruskal({vertices,edges,isDirected})",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/kruskal/kruskal.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 39,
+              "index": 294
+            },
+            "end": {
+              "line": 62,
+              "column": 1,
+              "index": 2208
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/kruskal/__test__/kruskal.test.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 40,
+              "index": 369
+            },
+            "end": {
+              "line": 12,
+              "column": 5,
+              "index": 440
+            }
+          }
+        },
+        "applicationUuid": "0.21533087779481286"
+      }
     ]
   },
   {
@@ -26058,6 +44991,428 @@ module.exports = [
     "chapter": "least-common-multiple",
     "testFilePaths": [
       "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "leastCommonMultiple(0, 0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(1, 0)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(0, 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(4, 6)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(6, 21)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(7, 2)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(3, 5)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(7, 3)",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(1000000, 2)",
+        "contextId": 33,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(-9, -18)",
+        "contextId": 36,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(-7, -9)",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      },
+      {
+        "ddgTitle": "leastCommonMultiple(-7, 9)",
+        "contextId": 46,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/leastCommonMultiple.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 50,
+              "index": 206
+            },
+            "end": {
+              "line": 11,
+              "column": 1,
+              "index": 295
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 48,
+              "index": 150
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 759
+            }
+          }
+        },
+        "applicationUuid": "0.012019329034475446"
+      }
     ]
   },
   {
@@ -26068,6 +45423,393 @@ module.exports = [
     "chapter": "levenshtein-distance",
     "testFilePaths": [
       "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "levenshteinDistance(, )",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(a, )",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(, a)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(abc, )",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(, abc)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(islander, slander)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(mart, karma)",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(kitten, sitting)",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(ball, football)",
+        "contextId": 44,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(football, foot)",
+        "contextId": 54,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      },
+      {
+        "ddgTitle": "levenshteinDistance(intention, execution)",
+        "contextId": 60,
+        "algoLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 50,
+              "index": 125
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1323
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 65,
+              "index": 167
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 1161
+            }
+          }
+        },
+        "applicationUuid": "0.024794426799538805"
+      }
     ]
   },
   {
@@ -26078,6 +45820,113 @@ module.exports = [
     "chapter": "linear-search",
     "testFilePaths": [
       "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "linearSearch([1,2,4,6,2], 10)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 49,
+              "index": 130
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 327
+            }
+          }
+        },
+        "applicationUuid": "0.005925799912125385"
+      },
+      {
+        "ddgTitle": "linearSearch([1,2,4,6,2], 1)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 49,
+              "index": 130
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 327
+            }
+          }
+        },
+        "applicationUuid": "0.005925799912125385"
+      },
+      {
+        "ddgTitle": "linearSearch([1,2,4,6,2], 2)",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 49,
+              "index": 130
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 327
+            }
+          }
+        },
+        "applicationUuid": "0.005925799912125385"
+      }
     ]
   },
   {
@@ -26088,6 +45937,113 @@ module.exports = [
     "chapter": "linear-search",
     "testFilePaths": [
       "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], c)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 49,
+              "index": 382
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 584
+            }
+          }
+        },
+        "applicationUuid": "0.5562504117443814"
+      },
+      {
+        "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], b)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 49,
+              "index": 382
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 584
+            }
+          }
+        },
+        "applicationUuid": "0.5562504117443814"
+      },
+      {
+        "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], a)",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 49,
+              "index": 382
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 584
+            }
+          }
+        },
+        "applicationUuid": "0.5562504117443814"
+      }
     ]
   },
   {
@@ -26098,6 +46054,113 @@ module.exports = [
     "chapter": "linear-search",
     "testFilePaths": [
       "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "linearSearch([{},{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 52,
+              "index": 642
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1148
+            }
+          }
+        },
+        "applicationUuid": "0.3856024189626359"
+      },
+      {
+        "ddgTitle": "linearSearch([{},{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 52,
+              "index": 642
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1148
+            }
+          }
+        },
+        "applicationUuid": "0.3856024189626359"
+      },
+      {
+        "ddgTitle": "linearSearch([{},{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 34,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/linear-search/linearSearch.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 77,
+              "index": 313
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 568
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/linear-search/__test__/linearSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 52,
+              "index": 642
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1148
+            }
+          }
+        },
+        "applicationUuid": "0.3856024189626359"
+      }
     ]
   },
   {
@@ -26178,148 +46241,6 @@ module.exports = [
     "chapter": "matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ],
-    "ddgs": [
-      {
-        "ddgTitle": "add([[]], [[]])",
-        "contextId": 5,
-        "filePath": "src/algorithms/math/matrix/Matrix.js",
-        "loc": {
-          "start": {
-            "line": 249,
-            "column": 29,
-            "index": 6302,
-            "_pos": {
-              "line": 248,
-              "character": 29
-            }
-          },
-          "end": {
-            "line": 263,
-            "column": 1,
-            "index": 6687,
-            "_pos": {
-              "line": 262,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.5947806075209974"
-      },
-      {
-        "ddgTitle": "add([[]], [[]])",
-        "contextId": 37,
-        "filePath": "src/algorithms/math/matrix/Matrix.js",
-        "loc": {
-          "start": {
-            "line": 249,
-            "column": 29,
-            "index": 6302,
-            "_pos": {
-              "line": 248,
-              "character": 29
-            }
-          },
-          "end": {
-            "line": 263,
-            "column": 1,
-            "index": 6687,
-            "_pos": {
-              "line": 262,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.5947806075209974"
-      },
-      {
-        "ddgTitle": "add([[],[],[]], [[],[],[]])",
-        "contextId": 91,
-        "filePath": "src/algorithms/math/matrix/Matrix.js",
-        "loc": {
-          "start": {
-            "line": 249,
-            "column": 29,
-            "index": 6302,
-            "_pos": {
-              "line": 248,
-              "character": 29
-            }
-          },
-          "end": {
-            "line": 263,
-            "column": 1,
-            "index": 6687,
-            "_pos": {
-              "line": 262,
-              "character": 1
-            }
-          },
-          "_range": [
-            {
-              "line": 248,
-              "character": 29
-            },
-            {
-              "line": 262,
-              "character": 1
-            }
-          ]
-        },
-        "applicationUuid": "0.5947806075209974"
-      },
-      {
-        "ddgTitle": "add([[],[],[]], [[],[],[]])",
-        "contextId": 155,
-        "filePath": "src/algorithms/math/matrix/Matrix.js",
-        "loc": {
-          "start": {
-            "line": 249,
-            "column": 29,
-            "index": 6302,
-            "_pos": {
-              "line": 248,
-              "character": 29
-            }
-          },
-          "end": {
-            "line": 263,
-            "column": 1,
-            "index": 6687,
-            "_pos": {
-              "line": 262,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.5947806075209974"
-      },
-      {
-        "ddgTitle": "add([[],[],[]], [[],[],[]])",
-        "contextId": 285,
-        "filePath": "src/algorithms/math/matrix/Matrix.js",
-        "loc": {
-          "start": {
-            "line": 249,
-            "column": 29,
-            "index": 6302,
-            "_pos": {
-              "line": 248,
-              "character": 29
-            }
-          },
-          "end": {
-            "line": 263,
-            "column": 1,
-            "index": 6687,
-            "_pos": {
-              "line": 262,
-              "character": 1
-            }
-          }
-        },
-        "applicationUuid": "0.5947806075209974"
-      }
     ]
   },
   {
@@ -26975,7 +46896,7 @@ module.exports = [
   {
     "name": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times@RadixSort.test.js",
     "label": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
-    "testNamePattern": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
+    "testNamePattern": "RadixSort should visit array of integers n .number of elements. x m .length of longest integer. times",
     "chapterGroup": "sorting",
     "chapter": "radix-sort",
     "testFilePaths": [
@@ -26985,7 +46906,7 @@ module.exports = [
   {
     "name": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times@RadixSort.test.js",
     "label": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
-    "testNamePattern": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+    "testNamePattern": "RadixSort should visit array of strings n .number of strings. x m .length of longest element. times",
     "chapterGroup": "sorting",
     "chapter": "radix-sort",
     "testFilePaths": [

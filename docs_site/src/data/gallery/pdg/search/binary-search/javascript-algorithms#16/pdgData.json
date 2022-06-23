@@ -8,20 +8,12 @@
         "start": {
           "line": 16,
           "column": 51,
-          "index": 715,
-          "_pos": {
-            "line": 15,
-            "character": 51
-          }
+          "index": 715
         },
         "end": {
           "line": 33,
           "column": 3,
-          "index": 1386,
-          "_pos": {
-            "line": 32,
-            "character": 3
-          }
+          "index": 1386
         }
       }
     },
@@ -46,7 +38,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -54,7 +47,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -62,7 +56,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -70,7 +65,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -78,7 +74,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       },
       {
@@ -89,7 +86,8 @@
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
-          "params": false
+          "params": false,
+          "anim": true
         }
       }
     ]
