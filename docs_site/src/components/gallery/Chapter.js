@@ -6,8 +6,10 @@ export default function Chapter(props) {
   const { name, exercises } = chapter;
   return <div className="container">
     <h3>{name}</h3>
-    {exercises.map(exercise => {
-      return <Exercise key={exercise.id} exercise={exercise}></Exercise>;
-    })}
+    <ul>
+      {exercises.map(exercise => {
+        return <li key={exercise.id}><Exercise key={exercise.id} exercise={exercise}></Exercise></li>;
+      })}
+    </ul>
   </div>;
 }

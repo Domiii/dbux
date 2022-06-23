@@ -5,11 +5,11 @@ export default function Exercise(props) {
   const { exercise } = props;
   const { id, ddgs } = exercise;
   if (!Array.isArray(ddgs)) {
-    return null;
+    return <a className="text-danger" title={ddgs.error}>{id}</a>;
   }
-  return <ul>
+  return <>
     {ddgs.map(renderData => {
-      return <li key={renderData.id}><PDGLink pdgId={renderData.id}>{id}</PDGLink></li>;
+      return <PDGLink key={renderData.id} pdgId={renderData.id}>{id}</PDGLink>;
     })}
-  </ul>;
+  </>;
 }

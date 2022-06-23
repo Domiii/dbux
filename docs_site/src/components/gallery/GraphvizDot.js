@@ -31,8 +31,8 @@ export default function GraphvizDot(props) {
     const graphviz = window.d3.select(graphElRef.current, { ...GraphVizCfg }).graphviz();
     graphviz.renderDot(dot).on('end', () => {
       const svgEl = graphElRef.current.querySelector('svg');
-      svgEl.classList.add('h-100');
-      svgEl.classList.add('w-100');
+      svgEl?.classList.add('h-100');
+      svgEl?.classList.add('w-100');
     });
   });
   return <div key={`${exerciseId}_${index}`} className="h-100" ref={graphElRef}></div>;
