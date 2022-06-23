@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "sets_maximum-subarray_javascript-algorithms#84_1",
+    "testLoc": {
+      "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 83,
+          "index": 179
+        },
+        "end": {
+          "line": 15,
+          "column": 3,
+          "index": 905
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 54,
+          "index": 179
+        },
+        "end": {
+          "line": 45,
+          "column": 1,
+          "index": 1520
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">inputArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-3</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-4</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_90 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=90;\n    label=\"\";\n    90 [id=90,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"91\" ROWSPAN=\"2\" PORT=\"91\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2:3 -> 90:91 [id=e1];\n  2 -> 90 [id=e2];\n  2 -> 90[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">inputArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-3</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-4</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_group_21 {\n    id=21;\n    label=\"inputArray.forEach\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"&#91;cb&#93; inputArray.forEach\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_26 {\n        id=26;\n        label=\"&#91;cb&#93; inputArray.forEach#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_31 {\n        id=31;\n        label=\"&#91;cb&#93; inputArray.forEach#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_37 {\n      id=37;\n      label=\"&#91;cb&#93; inputArray.forEach\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_43 {\n        id=43;\n        label=\"&#91;cb&#93; inputArray.forEach#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_49 {\n      id=49;\n      label=\"&#91;cb&#93; inputArray.forEach\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_55 {\n        id=55;\n        label=\"&#91;cb&#93; inputArray.forEach#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_61 {\n      id=61;\n      label=\"&#91;cb&#93; inputArray.forEach\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_67 {\n        id=67;\n        label=\"&#91;cb&#93; inputArray.forEach#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_73 {\n      id=73;\n      label=\"&#91;cb&#93; inputArray.forEach\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_79 {\n        id=79;\n        label=\"&#91;cb&#93; inputArray.forEach#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  subgraph cluster_ref_88 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=88;\n    label=\"\";\n    88 [id=88,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">inputArray.slice&#40;maxStartIn...</TD>\n    <TD TITLE=\"89\" ROWSPAN=\"2\" PORT=\"89\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_90 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=90;\n    label=\"\";\n    90 [id=90,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"91\" ROWSPAN=\"2\" PORT=\"91\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2:3 -> 88:89 [id=e1];\n  2 -> 88 [id=e2];\n  88:89 -> 90:91 [id=e3];\n  88 -> 90 [id=e4];\n  2 -> 88 -> 90[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

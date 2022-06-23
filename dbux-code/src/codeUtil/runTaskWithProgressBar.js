@@ -25,6 +25,7 @@ const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
 
 /**
  * @param {taskWithProgressBarCallback} cb
+ * @param {{title: string}} options
  */
 export async function runTaskWithProgressBar(cb, options) {
   options = defaultsDeep(options, {

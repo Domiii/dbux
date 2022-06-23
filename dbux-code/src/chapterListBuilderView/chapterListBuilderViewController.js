@@ -2,7 +2,7 @@ import fs from 'fs';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
@@ -10,7 +10,11 @@ import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 import { getCurrentResearch } from '../research/Research';
+import PDGGallery from '../research/PDGGallery';
 
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
+/** @typedef {import('@dbux/projects/src/projectLib/ExerciseConfig').default} ExerciseConfig */
+/** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ChapterListBuilderViewController');
@@ -23,8 +27,14 @@ const ExerciseListFileName = `${ExerciseListName}.js`;
 const ChapterListFileName = `${ChapterListName}.js`;
 
 export default class ChapterListBuilderViewController {
+  /**
+   * @type {Map<string, ExerciseConfig>}
+   */
+  exerciseConfigsByName;
+
   constructor() {
     this.treeNodeProvider = new ChapterListBuilderNodeProvider(this);
+    this.gallery = new PDGGallery(this);
   }
 
   get treeView() {
@@ -106,6 +116,7 @@ export default class ChapterListBuilderViewController {
   }
 
   /**
+   * Run exercise, parse its DDG args and save it into exercise.js
    * @param {Exercise} exercise 
    */
   async runAndExportDDGApplication(exercise, progress) {
@@ -127,9 +138,9 @@ export default class ChapterListBuilderViewController {
 
     progress?.report({ message: `Parsing application` });
     if (allApplications.selection.count !== 1) {
-      this.treeNodeProvider.warn(`Ran test, but found more than one application (selecting first).`);
+      warn(`Ran test, but found more than one application (selecting first).`);
     }
-    const ddgs = findDDGContextIdInApp(app, exercise);
+    const ddgs = this.findDDGContextIdInApp(app, exercise);
     exercise.ddgs = ddgs;
 
     progress?.report({ message: `Storing results and exporting application...` });
@@ -141,88 +152,136 @@ export default class ChapterListBuilderViewController {
 
     // export application
     const fpath = getCurrentResearch().getAppZipFilePath(app);
-    await exportApplicationToFile(app, fpath);
+    exportApplicationToFile(app, fpath);
 
     // showInformationMessage(`Found ${ddgs.length} ddg(s).`);
     this.treeNodeProvider.refresh();
 
     return app;
   }
-}
 
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
 
-
-/** ###########################################################################
- * util
- *  #########################################################################*/
-
-/**
- * @param {CodeApplication} app 
- * @param {Exercise} exercise
- */
-function findDDGContextIdInApp(app, exercise) {
-  const { project } = exercise;
-  const dp = app.dataProvider;
-  // const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
-  const testProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
-    const { filePath } = staticProgramContext;
-    // const fileDir = dirname(filePath);
-    // const readmeFilePath = pathResolve(fileDir, 'README.md');
-    // const testFolderPath = pathResolve(fileDir, '__test__');
-
-    // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
-    /**
-     * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}.js`
-     */
-    const ValidFilePattern = /src\/algorithms\/([^/])*\/([^/])*\/([^/]*).js/;
+  /**
+   * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}`
+   */
+  isValidDDGFilePath(filePath) {
+    const ValidFilePattern = /src\/algorithms\/([^/]*)\/([^/]*)\/([^/]*.js)$/;
     return ValidFilePattern.test(filePath);
-  });
+  }
 
-  const staticContexts = testProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
-  const contexts = staticContexts
-    .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
-    .sort((a, b) => a.contextId - b.contextId);
-  const addedContextIds = new Set();
-  return contexts.map(context => {
-    const { contextId } = context;
-    const { applicationUuid } = app;
-    const functionName = makeContextLabel(context, app);
-    const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
-    if (!callerTrace) {
+  /**
+   * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/(__test__|_test_|__tests__)/${fileName}.js`
+   *  e.g.:
+   *    `src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js`,
+   *    `src/algorithms/math/matrix/__tests__/Matrix.test.js`
+   *  but not:
+   *    `src/algorithms/sorting/__test__/Sort.test.js`,
+   */
+  parseTestFilePath(testFilePath) {
+    const ValidTestFilePattern = /src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/([^/]*.js)$/;
+    const matchResult = testFilePath.match(ValidTestFilePattern);
+    if (matchResult) {
+      return {
+        chapterGroup: matchResult[1],
+        chapter: matchResult[2],
+        fileName: matchResult[3],
+      };
+    }
+    else {
       return null;
     }
+  }
 
-    let { parentContextId } = context;
-    while (parentContextId) {
-      if (addedContextIds.has(parentContextId)) {
+  /**
+   * @param {CodeApplication} app 
+   * @param {Exercise} exercise
+   */
+  findDDGContextIdInApp(app, exercise) {
+    const { project } = exercise;
+    const dp = app.dataProvider;
+    const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
+    const validDDGProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
+      const { filePath } = staticProgramContext;
+      // const fileDir = dirname(filePath);
+      // const readmeFilePath = pathResolve(fileDir, 'README.md');
+      // const testFolderPath = pathResolve(fileDir, '__test__');
+
+      // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
+      return this.isValidDDGFilePath(filePath);
+    });
+
+    const staticContexts = validDDGProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
+    const contexts = staticContexts
+      .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
+      .sort((a, b) => a.contextId - b.contextId);
+    const addedContextIds = new Set();
+    return contexts.map(context => {
+      const { contextId } = context;
+      const { applicationUuid } = app;
+      const functionName = makeContextLabel(context, app);
+      const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+      if (!callerTrace) {
         return null;
       }
-      ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
-    }
 
-    // const callerProgramPath = dp.util.getTraceFilePath(callerTrace.traceId);
-    // if (callerProgramPath !== testFilePath) {
-    //   return null;
-    // }
+      // filter out children of added contexts
+      let { parentContextId } = context;
+      while (parentContextId) {
+        if (addedContextIds.has(parentContextId)) {
+          return null;
+        }
+        ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
+      }
+      addedContextIds.add(contextId);
 
-    const params = dp.util.getCallArgValueStrings(callerTrace.callId);
+      // const callerProgramPath = dp.util.getTraceFilePath(callerTrace.traceId);
+      // if (callerProgramPath !== testFilePath) {
+      //   return null;
+      // }
+
+      // find test context in ancestors
+      let testContextId;
+      ({ parentContextId } = context);
+      while (parentContextId) {
+        if (testFilePath === dp.util.getContextFilePath(parentContextId)) {
+          testContextId = parentContextId;
+          break;
+        }
+        ({ parentContextId } = dp.util.getExecutionContext(parentContextId));
+      }
+
+      const params = dp.util.getCallArgValueStrings(callerTrace.callId);
+
+      return {
+        ddgTitle: `${functionName}(${params.join(', ')})`,
+        contextId,
+        // fullContextFilePath,
+        algoLoc: this.getLocOfContext(dp, contextId, project.projectPath),
+        testLoc: testContextId ? this.getLocOfContext(dp, testContextId, project.projectPath) : null,
+        applicationUuid,
+      };
+    }).filter(x => !!x);
+  }
+
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  getLocOfContext(dp, contextId, projectPath) {
     const fullContextFilePath = dp.util.getContextFilePath(contextId);
-    const filePath = pathRelative(project.projectPath, fullContextFilePath);
+    const filePath = pathRelative(projectPath, fullContextFilePath);
     const staticContext = dp.util.getContextStaticContext(contextId);
     const loc = { ...staticContext.loc };
     deleteCachedLocRange(loc);
 
-    addedContextIds.add(contextId);
-
     return {
-      ddgTitle: `${functionName}(${params.join(', ')})`,
-      contextId,
-      // fullContextFilePath,
       filePath,
       loc,
-      applicationUuid,
     };
-  }).filter(x => !!x);
+  }
 }
 
 // ###########################################################################

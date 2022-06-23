@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "sets_cartesian-product_javascript-algorithms#44_1",
+    "testLoc": {
+      "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 77,
+          "index": 170
+        },
+        "end": {
+          "line": 10,
+          "column": 3,
+          "index": 347
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 53,
+          "index": 170
+        },
+        "end": {
+          "line": 27,
+          "column": 1,
+          "index": 824
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">setA</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">&#91;&#93;</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">setB</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">null</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_8 {\n    id=8;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    9 [id=9,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">null</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  2 -> 3 -> 9[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "sameAs": 5
+      }
+    ]
+  }
+]

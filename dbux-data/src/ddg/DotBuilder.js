@@ -1,13 +1,14 @@
 import isEmpty from 'lodash/isEmpty';
-import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import DDGTimelineNodeType, { isControlGroupTimelineNode, isDataTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
+import { isControlGroupTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
-import DDGEdgeType from '@dbux/data/src/ddg/DDGEdgeType';
 import UniqueRefId from '@dbux/common/src/types/constants/UniqueRefId';
 import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
-import { makeSummaryLabel } from './ddgDomUtil';
+import ddgQueries from './ddgQueries';
+import { DDGRootTimelineId } from './constants';
+import DDGEdgeType from './DDGEdgeType';
+
+/** @typedef {import('./ddgQueries').RenderState} RenderState */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -98,8 +99,10 @@ export default class DotBuilder {
   _indentLevel;
   fragments = [];
 
-  constructor(doc, renderState) {
-    this.doc = doc;
+  /**
+   * @param {RenderState} renderState 
+   */
+  constructor(renderState) {
     this.renderState = renderState;
   }
 
@@ -810,4 +813,13 @@ function invisAttrs() {
 
 function makePullId(id) {
   return 's' + id;
+}
+
+/** ###########################################################################
+ * public
+ *  #########################################################################*/
+
+export function buildDot(ddg) {
+  const dotBuilder = new DotBuilder(ddg);
+  return dotBuilder.build();
 }

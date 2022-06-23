@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "sets_fisher-yates_javascript-algorithms#107_1",
+    "testLoc": {
+      "filePath": "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 42,
+          "index": 242
+        },
+        "end": {
+          "line": 9,
+          "column": 3,
+          "index": 334
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sets/fisher-yates/fisherYates.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 51,
+          "index": 110
+        },
+        "end": {
+          "line": 15,
+          "column": 1,
+          "index": 456
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">originalArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_15 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=15;\n    label=\"\";\n    15 [id=15,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"16\" ROWSPAN=\"2\" PORT=\"16\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2:3 -> 15:16 [id=e1];\n  2 -> 15 [id=e2];\n  2 -> 15[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">originalArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_5 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=5;\n    label=\"\";\n    5 [id=5,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">array</TD>\n    <TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">array</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">📦</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_8 {\n    id=8;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  subgraph cluster_ref_15 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=15;\n    label=\"\";\n    15 [id=15,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"16\" ROWSPAN=\"2\" PORT=\"16\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2:3 -> 5:6 [id=e1];\n  2 -> 5 [id=e2];\n  5 -> 7 [id=e3];\n  5:6 -> 15:16 [id=e4];\n  7 -> 15 [id=e5];\n  2 -> 5 -> 7 -> 15[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

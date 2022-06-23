@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "checkJs": false, /* Typecheck .js files. */
+    "lib": [
+      "es6"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": [
+        "./src/*"
+      ],
+      "@comp/*": [
+        "./src/components/*"
+      ],
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

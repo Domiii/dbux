@@ -36,7 +36,7 @@ NOTE: The code should still work fine, but some of Dbux's analysis tools (especi
 
 ## Remote Analysis without VSCode server
 
-`@dbux/runtime` is currently hard-coded to connect to a `localhost` server (see <CodeLink path="dbux-runtime/src/client/Client.js" />), and additionally the extension expects to be able to access the file paths reported in the execution trace locally. Thus, the only way to use Dbux remotely is currently [using a VSCode remote session](../08-faq.mdx#how-can-i-debug-code-remotely). However, one can [export + import trace log files](./05-data-analysis.mdx#art-vandelay) on different machines.
+`@dbux/runtime` is currently hard-coded to connect to a `localhost` server (see <CodeLink path="dbux-runtime/src/client/Client.js" />), and additionally the extension expects to be able to access the file paths reported in the execution trace locally. Thus, the only way to use Dbux remotely is currently [using a VSCode remote session](../90-faq.mdx#how-can-i-debug-code-remotely). However, one can [export + import trace log files](./05-data-analysis.mdx#art-vandelay) on different machines.
 
 Tracked in: https://github.com/Domiii/dbux/issues/639.
 

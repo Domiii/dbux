@@ -151,6 +151,12 @@ const config = {
       },
     }),
 
+  scripts: [
+    "//d3js.org/d3.v5.min.js",
+    "https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js",
+    "https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js",
+  ],
+
   /** ###########################################################################
    * deployment
    * @see https://docusaurus.io/docs/deployment#deploying-to-github-pages

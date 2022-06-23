@@ -19,6 +19,10 @@ export default class DDGSet {
     this.clear();
   }
 
+  get applicationId() {
+    return this.dp.application.applicationId;
+  }
+
   getAll() {
     return this.ddgs;
   }
@@ -28,11 +32,11 @@ export default class DDGSet {
   }
 
   #makeGraphId(...inputs) {
-    return `PDG (${inputs.join(',')})`;
+    return `PDG (${[this.applicationId, ...inputs].join(',')})`;
   }
 
-  getCreateDDGFailureReason({ applicationId, contextId }) {
-    const graphId = this.#makeGraphId(applicationId, contextId);
+  getCreateDDGFailureReason({ contextId }) {
+    const graphId = this.#makeGraphId(contextId);
     if (!this.graphsById.get(graphId)) {
       const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
       const returnArgumentInputDataNodeId = this.dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
@@ -51,8 +55,9 @@ export default class DDGSet {
    * @returns {DataDependencyGraph}
    */
   getOrCreateDDG(ddgArgs) {
-    let { applicationId, contextId, watchTraceIds, returnTraceId } = ddgArgs;
-    const graphId = this.#makeGraphId(applicationId, contextId);
+    let { contextId, watchTraceIds, returnTraceId } = ddgArgs;
+    const { applicationId } = this;
+    const graphId = this.#makeGraphId(contextId);
     if (!this.graphsById.get(graphId)) {
       if (!watchTraceIds) {
         watchTraceIds = [];

@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "sets_knapsack-problem_javascript-algorithms#173_1",
+    "testLoc": {
+      "filePath": "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 79,
+          "index": 160
+        },
+        "end": {
+          "line": 34,
+          "column": 3,
+          "index": 1308
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
+      "loc": {
+        "start": {
+          "line": 30,
+          "column": 13,
+          "index": 895
+        },
+        "end": {
+          "line": 32,
+          "column": 3,
+          "index": 966
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  7 [id=7,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">\"v3 w2 x 0\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  7[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">knapsackItem</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">value</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">weight</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">itemsInStock</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">quantity</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">0</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  7 [id=7,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">\"v3 w2 x 0\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2:3 -> 7 [id=e1];\n  2:4 -> 7 [id=e2];\n  2:6 -> 7 [id=e3];\n  2 -> 7[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

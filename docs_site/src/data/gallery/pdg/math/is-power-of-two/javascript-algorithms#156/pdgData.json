@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_1",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_12 {\n        id=12;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "sameAs": 5
+      }
+    ]
+  }
+]

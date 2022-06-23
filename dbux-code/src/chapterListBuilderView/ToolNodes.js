@@ -2,8 +2,9 @@ import { commands, TreeItemCollapsibleState, window } from 'vscode';
 import fs from 'fs';
 import { basename, dirname } from 'path';
 import open from 'open';
-import allApplications from '@dbux/data/src/applications/allApplications';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import Process from '@dbux/projects/src/util/Process';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -16,19 +17,13 @@ import { translate } from '../lang';
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('ToolNodes');
+
 const ExportExercises = 4;
 const CustomPatchByChapter = {
   hanoiTower: 'hanoiTower0',
 };
-/**
- * NOTE:
- *  This excludes:
- *    `src/algorithms/sorting/__test__/Sort.test.js`,
- *  and includes:
- *    `src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js`,
- *    `src/algorithms/math/matrix/__tests__/Matrix.test.js`
- */
-const ValidFilePattern = /^src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/(.*).js$/;
 
 class ToolNode extends BaseTreeViewNode {
   /**
@@ -69,75 +64,86 @@ class GenerateListNode extends ToolNode {
 
       await this.manager.externals.initRuntimeServer();
 
-      progress.report({ message: 'Disabling dbux-babel-plugin...' });
-      await project.gitResetHard();
-      await project.applyPatch('disable_dbux');
+      let exerciseConfigs, chapters;
 
-      progress.report({ message: 'Parsing tests...' });
-      const processOptions = {
-        cwd: project.projectPath,
-      };
-      const testDirectory = 'src/algorithms';
-      /**
-       * NOTE: set `testNamePattern` to an unused name to skip running all tests
-       * @see https://stackoverflow.com/a/69099439/11309695
-       */
-      const UnusedTestPattern = 'zzzzz';
-      const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
-      const testData = JSON.parse(testDataRaw);
+      try {
+        progress.report({ message: 'Disabling dbux-babel-plugin...' });
+        await project.gitResetHard();
+        await project.applyPatch('disable_dbux');
 
-      const exerciseConfigs = [];
-      const addedExerciseNames = new Set();
+        progress.report({ message: 'Parsing tests...' });
+        const processOptions = {
+          cwd: project.projectPath,
+        };
+        const testDirectory = 'src/algorithms';
+        /**
+         * NOTE: set `testNamePattern` to an unused name to skip running all tests
+         * @see https://stackoverflow.com/a/69099439/11309695
+         */
+        const UnusedTestPattern = 'zzzzz';
+        const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
+        const testData = JSON.parse(testDataRaw);
 
-      for (const testResult of testData.testResults) {
-        for (const assertionResult of testResult.assertionResults) {
-          const { fullName } = assertionResult;
-          /**
-           * NOTE: `PolynomialHash` and `SimplePolynomialHash` shares the same fullName in different test files
-           */
-          const testFilePath = pathRelative(project.projectPath, testResult.name);
-          const baseName = basename(testFilePath);
-          const name = `${fullName}@${baseName}`;
-          if (!addedExerciseNames.has(name)) {
-            addedExerciseNames.add(name);
+        exerciseConfigs = [];
+        const addedExerciseNames = new Set();
+
+        for (const testResult of testData.testResults) {
+          for (const assertionResult of testResult.assertionResults) {
+            const { fullName } = assertionResult;
+            /**
+             * NOTE: `PolynomialHash` and `SimplePolynomialHash` shares the same fullName in different test files
+             */
+            const testFilePath = pathRelative(project.projectPath, testResult.name);
+            const baseName = basename(testFilePath);
+            const name = `${fullName}@${baseName}`;
+            if (!addedExerciseNames.has(name)) {
+              addedExerciseNames.add(name);
+            }
+            else {
+              continue;
+            }
+            // const chapter = fullName.substring(0, fullName.indexOf(' '));
+            const testFileData = this.controller.parseTestFilePath(testFilePath);
+            if (!testFileData) {
+              continue;
+            }
+            /**
+             * hackfix: Parentheses in testNamePattern cannot be matched, use '.' to avoid any parentheses in pattern.
+             * @see https://jestjs.io/docs/cli#--testmatch-glob1--globn
+             */
+            const testNamePattern = fullName.replaceAll('(', '.').replaceAll(')', '.');
+            const { chapterGroup, chapter } = testFileData;
+            const exerciseConfig = {
+              name,
+              label: fullName,
+              testNamePattern,
+              chapterGroup,
+              chapter,
+              patch: CustomPatchByChapter[chapter],
+              testFilePaths: [testFilePath],
+            };
+            exerciseConfigs.push(exerciseConfig);
           }
-          else {
-            continue;
-          }
-          // const chapter = fullName.substring(0, fullName.indexOf(' '));
-          const testFileMatchResult = testFilePath.match(ValidFilePattern);
-          if (!testFileMatchResult) {
-            continue;
-          }
-          const [, chapterGroup, chapter] = testFileMatchResult;
-          const exerciseConfig = {
-            name,
-            label: fullName,
-            testNamePattern: fullName,
-            chapterGroup,
-            chapter,
-            patch: CustomPatchByChapter[chapter],
-            testFilePaths: [testFilePath],
-          };
-          exerciseConfigs.push(exerciseConfig);
         }
+        exerciseConfigs.sort((a, b) => a.name.localeCompare(b.name));
+
+        progress.report({ message: `Generating exercise file...` });
+        this.controller.writeExerciseJs(exerciseConfigs);
+
+        progress.report({ message: `Loading exercises...` });
+        const exerciseList = this.controller.reloadExerciseList();
+
+        progress.report({ message: `Generating chapter list file...` });
+        this.controller.writeChapterListJs(exerciseList);
+
+        progress.report({ message: `Loading chapter list...` });
+        chapters = this.controller.reloadChapterList();
       }
-      exerciseConfigs.sort((a, b) => a.name.localeCompare(b.name));
-
-      progress.report({ message: `Generating exercise file...` });
-      this.controller.writeExerciseJs(exerciseConfigs);
-
-      progress.report({ message: `Loading exercises...` });
-      const exerciseList = this.controller.reloadExerciseList();
-
-      progress.report({ message: `Generating chapter list file...` });
-      this.controller.writeChapterListJs(exerciseList);
-
-      progress.report({ message: `Loading chapter list...` });
-      const chapters = this.controller.reloadChapterList();
-
-      progress.report({ message: 'Recovering project...' });
-      await project.applyPatch('disable_dbux', true);
+      finally {
+        // TODO: add sanity checks when doing anything that depends on dbux to be enabled, in case of this patch is not reverted successfully
+        progress.report({ message: 'Recovering project...' });
+        await project.revertPatch('disable_dbux');
+      }
 
       showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
 
@@ -260,6 +266,30 @@ class GeneratePatchNode extends ToolNode {
   }
 }
 
+class ExportAllDDGScreenshotNode extends ToolNode {
+  static makeLabel() {
+    return `Export DDG screenshots(test)`;
+  }
+
+  async handleClick() {
+    // const exercises = this.controller.exerciseList.getAll().slice(113, 114);
+    const exercises = this.controller.exerciseList.getAll();
+
+    await this.controller.gallery.buildGalleryForExercises(exercises);
+    // await this.controller.gallery.buildGalleryForExercises(exercises, true);
+  }
+}
+
+class GenerateGraphsJSNode extends ToolNode {
+  static makeLabel() {
+    return `Generate graphs.js`;
+  }
+
+  async handleClick() {
+    this.controller.gallery.generateGraphsJS();
+  }
+}
+
 export default class ToolRootNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Tools';
@@ -274,5 +304,7 @@ export default class ToolRootNode extends BaseTreeViewNode {
     ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
     GeneratePatchNode,
+    ExportAllDDGScreenshotNode,
+    GenerateGraphsJSNode,
   ]
 }
