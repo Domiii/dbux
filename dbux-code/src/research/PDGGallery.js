@@ -122,11 +122,12 @@ export default class PDGGallery {
           for (let k = 0; k < screenshotConfigs.length; k++) {
             progress.report({ message: `Exercise: "${exercise.id}" (${i}/${exercises.length}), DDG: (${k}/${screenshotConfigs.length})` });
             const screenshotConfig = screenshotConfigs[k];
+            const { settings, rootSummaryMode } = screenshotConfig;
             const app = allApplications.getById(ddgArg.applicationUuid);
             const dp = app.dataProvider;
             const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
-            ddg.updateSettings(screenshotConfig.settings);
-            ddg.setSummaryMode(DDGRootTimelineId, screenshotConfig.rootSummaryMode);
+            ddg.updateSettings(settings);
+            ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
             await showDDGViewForArgs(ddgArg);
             const dot = await getDDGDot(ddg);
             disposeDDGWebviews();
@@ -137,7 +138,7 @@ export default class PDGGallery {
             }
             else {
               lastDot = dot;
-              screenshots.push({ dot });
+              screenshots.push({ dot, settings });
             }
           }
           PDGRenderData.push({

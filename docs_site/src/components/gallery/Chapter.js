@@ -1,5 +1,5 @@
 import React from 'react';
-import DDGExercise from './DDGExercise';
+import Exercise from './Exercise';
 
 export default function Chapter(props) {
   const { chapter } = props;
@@ -7,7 +7,7 @@ export default function Chapter(props) {
   return <>
     <h2>{name}</h2>
     {exercises.map(exercise => {
-      return <DDGExercise key={exercise.id} exercise={exercise}></DDGExercise>;
+      return <Exercise key={exercise.id} exercise={exercise}></Exercise>;
     })}
   </>;
 }
