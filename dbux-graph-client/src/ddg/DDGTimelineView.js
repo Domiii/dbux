@@ -13,15 +13,14 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
 import DDGSummaryMode, { GroupDefaultSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
+import DotBuilder from '@dbux/data/src/ddg/DotBuilder';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { getStructuredRandomAngle, makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
+import { makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import sleep from '@dbux/common/src/util/sleep';
 import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
 import { compileHtmlElement } from '../util/domUtil';
-import { updateElDecorations, makeSummaryButtons, makeSummaryLabel, makeSummaryLabelSvgCompiled, makeSummaryLabelEl } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import DotBuilder from './DotBuilder';
 
 // const AutoLayoutAnimationDuration = 300;
 // const labelSize = 24;
@@ -434,7 +433,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * 
    */
   buildDot() {
-    this.dotBuilder = new DotBuilder(this.doc, this.renderState);
+    this.dotBuilder = new DotBuilder(this.renderState);
     return this.dotBuilder.build();
   }
 

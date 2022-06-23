@@ -5,13 +5,13 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { buildDot } from '@dbux/data/src/ddg/DotBuilder';
 import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import isPlainObject from 'lodash/isPlainObject';
 import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
 import { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import DDGSettings from '@dbux/data/src/ddg/DDGSettings';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
-import { disposeDDGWebviews, getDDGDot, showDDGViewForArgs } from '../webViews/ddgWebView';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getCurrentResearch } from './Research';
@@ -147,9 +147,9 @@ export default class PDGGallery {
               const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
               ddg.updateSettings(settings);
               ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
-              await showDDGViewForArgs(ddgArg);
-              const dot = await getDDGDot(ddg);
-              disposeDDGWebviews();
+
+              const dot = buildDot(ddg);
+
               if (dot === lastDot) {
                 screenshots.push({
                   sameAs: k - 1
