@@ -107,11 +107,16 @@ class GenerateListNode extends ToolNode {
             if (!testFileData) {
               continue;
             }
+            /**
+             * hackfix: Parentheses in testNamePattern cannot be matched, use '.' to avoid any parentheses in pattern.
+             * @see https://jestjs.io/docs/cli#--testmatch-glob1--globn
+             */
+            const testNamePattern = fullName.replaceAll('(', '.').replaceAll(')', '.');
             const { chapterGroup, chapter } = testFileData;
             const exerciseConfig = {
               name,
               label: fullName,
-              testNamePattern: fullName,
+              testNamePattern,
               chapterGroup,
               chapter,
               patch: CustomPatchByChapter[chapter],
@@ -267,7 +272,7 @@ class ExportAllDDGScreenshotNode extends ToolNode {
   }
 
   async handleClick() {
-    // const exercises = this.controller.exerciseList.getAll().slice(0, 200);
+    // const exercises = this.controller.exerciseList.getAll().slice(113, 114);
     const exercises = this.controller.exerciseList.getAll();
 
     await this.controller.gallery.buildGalleryForExercises(exercises);

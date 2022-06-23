@@ -1,0 +1,89 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "string_hamming-distance_javascript-algorithms#124_1",
+    "testLoc": {
+      "filePath": "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 12,
+          "column": 62,
+          "index": 415
+        },
+        "end": {
+          "line": 20,
+          "column": 3,
+          "index": 809
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/hamming-distance/hammingDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 46,
+          "index": 121
+        },
+        "end": {
+          "line": 20,
+          "column": 1,
+          "index": 372
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"karolin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"kathrin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  60 [id=60,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3 -> 60[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"karolin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"kathrin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_9 {\n    id=9;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    61 [id=61,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"61\" TITLE=\"61\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  60 [id=60,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  61 -> 60 [id=e1];\n  2 -> 3 -> 61 -> 60[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"karolin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"kathrin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_9 {\n    id=9;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_24 {\n      id=24;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      61 [id=61,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"61\" TITLE=\"61\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_32 {\n      id=32;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      62 [id=62,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"62\" TITLE=\"62\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_40 {\n      id=40;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      63 [id=63,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"63\" TITLE=\"63\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  60 [id=60,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  61 -> 62 [id=e1];\n  62 -> 63 [id=e2];\n  63 -> 60 [id=e3];\n  2 -> 3 -> 61 -> 62 -> 63 -> 60[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"karolin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"kathrin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_9 {\n    id=9;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_24 {\n      id=24;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_summary_27 {\n        id=27;\n        label=\"for#2#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        61 [id=61,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"61\" TITLE=\"61\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n    subgraph cluster_summary_32 {\n      id=32;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_summary_35 {\n        id=35;\n        label=\"for#3#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        62 [id=62,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"62\" TITLE=\"62\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n    subgraph cluster_summary_40 {\n      id=40;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_summary_43 {\n        id=43;\n        label=\"for#4#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        63 [id=63,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"63\" TITLE=\"63\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  60 [id=60,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  61 -> 62 [id=e1];\n  62 -> 63 [id=e2];\n  63 -> 60 [id=e3];\n  2 -> 3 -> 61 -> 62 -> 63 -> 60[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"karolin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"kathrin\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_9 {\n    id=9;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_12 {\n      id=12;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_27 {\n        id=27;\n        label=\"for#2#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        28 [id=28,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"28\" TITLE=\"28\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        29 [id=29,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance += 1</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_35 {\n        id=35;\n        label=\"for#3#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        36 [id=36,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        37 [id=37,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance += 1</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n    subgraph cluster_group_40 {\n      id=40;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_43 {\n        id=43;\n        label=\"for#4#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        44 [id=44,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"44\" TITLE=\"44\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        45 [id=45,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">distance += 1</TD>\n    <TD ID=\"45\" TITLE=\"45\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n    subgraph cluster_group_48 {\n      id=48;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_54 {\n      id=54;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  60 [id=60,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 -> 8 [id=e1];\n  8 -> 29 [id=e2];\n  8 -> 37 [id=e3];\n  8 -> 45 [id=e4];\n  28 -> 29 [id=e5];\n  29 -> 37 [id=e6];\n  36 -> 37 [id=e7];\n  37 -> 45 [id=e8];\n  44 -> 45 [id=e9];\n  45 -> 60 [id=e10];\n  2 -> 3 -> 7 -> 8 -> 28 -> 29 -> 36 -> 37 -> 44 -> 45 -> 60[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

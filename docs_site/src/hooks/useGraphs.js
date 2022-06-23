@@ -8,6 +8,10 @@ let lastPdgId = 0;
 for (const chapterGroup of graphs.chapterGroups) {
   for (const chapter of chapterGroup.chapters) {
     for (const exercise of chapter.exercises) {
+      if (!Array.isArray(exercise.ddgs)) {
+        // console.error(`ddgs is not array`, exercise.ddgs);
+        continue;
+      }
       for (const renderData of exercise.ddgs) {
         const { uniqueId, ...otherProps } = renderData;
         const id = ++lastPdgId;

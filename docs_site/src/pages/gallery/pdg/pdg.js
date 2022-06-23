@@ -14,7 +14,5 @@ export default function pdg() {
   const pdgId = parseInt(pdgIdString, 10);
   const renderData = useGraphs({ pdgId });
 
-  return <div className="container">
-    <PDG {...renderData}></PDG>
-  </div>;
+  return <PDG {...renderData}></PDG>;
 }

@@ -24,12 +24,14 @@ const GraphVizCfg = {
 };
 
 export default function GraphvizDot(props) {
-  const { dot } = props;
+  const { dot, exerciseId, index } = props;
   const graphElRef = useRef(null);
 
   useEffect(() => {
     const graphviz = window.d3.select(graphElRef.current, { ...GraphVizCfg }).graphviz();
-    graphviz.renderDot(dot);
+    graphviz.renderDot(dot).on('end', () => {
+      graphElRef.current.querySelector('svg').classList.add('h-100');
+    });
   });
-  return <div ref={graphElRef}></div>;
+  return <div key={`${exerciseId}_${index}`} className="h-100" ref={graphElRef}></div>;
 }
