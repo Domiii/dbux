@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "cryptography_caesar-cipher_javascript-algorithms#41_1",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 57,
+          "index": 170
+        },
+        "end": {
+          "line": 7,
+          "column": 3,
+          "index": 292
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+      "loc": {
+        "start": {
+          "line": 50,
+          "column": 79,
+          "index": 1668
+        },
+        "end": {
+          "line": 58,
+          "column": 1,
+          "index": 1863
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">str</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abcd\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">shift</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_ref_5 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=5;\n    label=\"\";\n    5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">alphabet</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">&#91;&#93;</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  699 [id=699,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"699\" TITLE=\"699\"><FONT COLOR=\"lightblue\">\"abcd\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3 -> 5 -> 699[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">str</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abcd\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">shift</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">englishAlphabet</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">📦</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_ref_5 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=5;\n    label=\"\";\n    5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">alphabet</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">&#91;&#93;</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  subgraph cluster_group_7 {\n    id=7;\n    label=\"getCipherMap\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_11 {\n      id=11;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_25 {\n      id=25;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_39 {\n      id=39;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_54 {\n      id=54;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_70 {\n      id=70;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_87 {\n      id=87;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_105 {\n      id=105;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_124 {\n      id=124;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_144 {\n      id=144;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_165 {\n      id=165;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_187 {\n      id=187;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_210 {\n      id=210;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_234 {\n      id=234;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_259 {\n      id=259;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_285 {\n      id=285;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_312 {\n      id=312;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_340 {\n      id=340;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_369 {\n      id=369;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_399 {\n      id=399;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_430 {\n      id=430;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_462 {\n      id=462;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_495 {\n      id=495;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_529 {\n      id=529;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_564 {\n      id=564;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_600 {\n      id=600;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_637 {\n      id=637;\n      label=\"&#91;cb&#93; alphabet .reduce\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_679 {\n    id=679;\n    label=\"str .toLowerCase&#40;&#41; .split&#40;'...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_685 {\n      id=685;\n      label=\"&#91;cb&#93; str .toLowerCase&#40;&#41; .sp...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_688 {\n      id=688;\n      label=\"&#91;cb&#93; str .toLowerCase&#40;&#41; .sp...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_691 {\n      id=691;\n      label=\"&#91;cb&#93; str .toLowerCase&#40;&#41; .sp...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_694 {\n      id=694;\n      label=\"&#91;cb&#93; str .toLowerCase&#40;&#41; .sp...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  699 [id=699,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"699\" TITLE=\"699\"><FONT COLOR=\"lightblue\">\"abcd\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 -> 5 [id=e1];\n  2 -> 3 -> 4 -> 5 -> 699[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

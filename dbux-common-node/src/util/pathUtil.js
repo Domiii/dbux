@@ -22,6 +22,10 @@ export function pathResolve(...paths) {
   return pathNormalized(path.resolve(...paths));
 }
 
+/**
+ * @param  {...string} paths 
+ * @returns {string}
+ */
 export function pathJoin(...paths) {
   return pathNormalized(path.join(...paths));
 }

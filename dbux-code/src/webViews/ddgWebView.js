@@ -98,6 +98,7 @@ export async function getDDGDot(ddg) {
   if (webview) {
     const doc = webview.hostWrapper.mainComponent;
     const timelineView = doc.children.getComponent('DDGTimelineView');
+    await timelineView.waitForAll();
     return await timelineView.remote.buildDot();
   }
   return null;
@@ -156,7 +157,6 @@ export async function showDDGViewForArgs(ddgArgs) {
   const testFilePath = app.getDefaultApplicationExportPath();
   testFilePath && await setTestDDGArgs({ testFilePath, ...ddgArgs, applicationUuid });
 
-
   return await showDDGView(ddg, initialState, hostOnlyState);
 }
 
@@ -182,7 +182,8 @@ async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
   // TODO: we currently don't close window if DDG is gone from set, but this way, it will be out of sync with DDGs treeview
 
   // future-work: select correct window, based on initial state
-  const handleWebviewStarted = null; // TODO
+  let handleWebviewStarted = null;
+  const viewStartedPromise = new Promise((resolve) => handleWebviewStarted = resolve);
   const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState, handleWebviewStarted);
   await dDGWebView.init();
   await dDGWebView.show();
@@ -197,6 +198,7 @@ async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
   //     // ddg got removed → clean up?
   //   }
   // });
+  await viewStartedPromise;
   return dDGWebView;
 }
 

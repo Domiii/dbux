@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "uniqueId": "math_complex-number_javascript-algorithms#54_1",
+    "testLoc": {
+      "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+      "loc": {
+        "start": {
+          "line": 116,
+          "column": 44,
+          "index": 3917
+        },
+        "end": {
+          "line": 128,
+          "column": 3,
+          "index": 4355
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 18,
+          "index": 1584
+        },
+        "end": {
+          "line": 79,
+          "column": 3,
+          "index": 2198
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">divider</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">4</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_70 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=70;\n    label=\"\";\n    70 [id=70,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"71\" ROWSPAN=\"2\" PORT=\"71\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-0.17073170731707318</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"72\" ROWSPAN=\"2\" PORT=\"72\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">0.5365853658536586</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2 -> 70[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">divider</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">4</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_summary_64 {\n    id=64;\n    label=\"ComplexNumber.constructor\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_73 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=73;\n      label=\"\";\n      73 [id=73,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">complexNumber3</TD>\n    <TD TITLE=\"74\" ROWSPAN=\"2\" PORT=\"74\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-0.17073170731707318</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"75\" ROWSPAN=\"2\" PORT=\"75\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">0.5365853658536586</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n  }\n  subgraph cluster_ref_70 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=70;\n    label=\"\";\n    70 [id=70,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"71\" ROWSPAN=\"2\" PORT=\"71\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-0.17073170731707318</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"72\" ROWSPAN=\"2\" PORT=\"72\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">0.5365853658536586</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  73:74 -> 70:71 [id=e1];\n  73:75 -> 70:72 [id=e2];\n  2 -> 73 -> 70[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 1
+      },
+      {
+        "sameAs": 2
+      },
+      {
+        "sameAs": 3
+      },
+      {
+        "sameAs": 4
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">divider</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">4</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_group_8 {\n    id=8;\n    label=\"ComplexNumber.toComplexNumber\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  subgraph cluster_group_12 {\n    id=12;\n    label=\"ComplexNumber.conjugate\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_14 {\n      id=14;\n      label=\"ComplexNumber.toComplexNumber\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"ComplexNumber.constructor\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_31 {\n    id=31;\n    label=\"ComplexNumber.multiply\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_33 {\n      id=33;\n      label=\"ComplexNumber.toComplexNumber\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_46 {\n      id=46;\n      label=\"ComplexNumber.constructor\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_64 {\n    id=64;\n    label=\"ComplexNumber.constructor\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    65 [id=65,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ComplexNumber.constructor</TD>\n    <TD ID=\"65\" TITLE=\"65\"><FONT COLOR=\"lightblue\">📦</FONT></TD>\n  </TR>\n</TABLE>>];\n    66 [id=66,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">re</TD>\n    <TD ID=\"66\" TITLE=\"66\"><FONT COLOR=\"lightblue\">-0.17073170731707318</FONT></TD>\n  </TR>\n</TABLE>>];\n    67 [id=67,shape=plaintext,label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">complexNumber3</TD>\n    <TD TITLE=\"re\" ROWSPAN=\"2\" PORT=\"re\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-0.17073170731707318</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>>];\n    68 [id=68,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">im</TD>\n    <TD ID=\"68\" TITLE=\"68\"><FONT COLOR=\"lightblue\">0.5365853658536586</FONT></TD>\n  </TR>\n</TABLE>>];\n    69 [id=69,shape=plaintext,label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">complexNumber3</TD>\n    <TD TITLE=\"im\" ROWSPAN=\"2\" PORT=\"im\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">0.5365853658536586</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>>];\n  }\n  subgraph cluster_ref_70 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=70;\n    label=\"\";\n    70 [id=70,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"71\" ROWSPAN=\"2\" PORT=\"71\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">re</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">-0.17073170731707318</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"72\" ROWSPAN=\"2\" PORT=\"72\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">im</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">0.5365853658536586</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  66 -> 67:re [id=e1];\n  68 -> 69:im [id=e2];\n  67:re -> 70:71 [id=e3];\n  69:im -> 70:72 [id=e4];\n  65 -> 70 [id=e5];\n  2 -> 65 -> 66 -> 67 -> 68 -> 69 -> 70[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]
