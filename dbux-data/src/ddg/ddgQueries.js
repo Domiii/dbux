@@ -152,7 +152,16 @@ const ddgQueries = {
    * @param {DDGTimelineNode} node
    */
   checkConnected(ddg, node) {
-    return !ddg.settings.connectedOnly || ddgQueries.isNodeConnected(ddg, node);
+    return (
+      // connected only
+      (ddg.settings.connectedOnly && ddgQueries.isNodeConnected(ddg, node)) ||
+
+      // even if not connected, node must have at least one edge
+      (!ddg.settings.connectedOnly && (
+        !!ddg.inEdgesByTimelineId[node.timelineId]?.length ||
+        !!ddg.outEdgesByTimelineId[node.timelineId]?.length
+      ))
+    );
   },
 
   /**
@@ -215,7 +224,7 @@ const ddgQueries = {
    */
   isExpandedGroupNode(ddg, node) {
     const summaryMode = ddg.summaryModes[node.timelineId];
-    return isControlGroupTimelineNode(node.type) && 
+    return isControlGroupTimelineNode(node.type) &&
       isExpandedMode(summaryMode);
   },
 

@@ -342,8 +342,8 @@ export default function patchArray() {
   const defaultComputeMethods = [
     "toLocaleString",
     "toString",
-    "indexOf",
-    "lastIndexOf"
+    // "indexOf",
+    // "lastIndexOf"
   ];
   defaultComputeMethods.forEach(f => {
     monkeyPatchMethodPurpose(Array, f, {
