@@ -7,6 +7,358 @@ module.exports = [
     "chapter": "best-time-to-buy-sell-stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1], ƒ mockConstructor)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      },
+      {
+        "ddgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 73,
+              "index": 390
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 673
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 210
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1753
+            }
+          }
+        },
+        "applicationUuid": "0.8964063139788399"
+      }
     ]
   },
   {
@@ -17,6 +369,43 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 231,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 126,
+              "column": 94,
+              "index": 4537
+            },
+            "end": {
+              "line": 166,
+              "column": 3,
+              "index": 6046
+            }
+          }
+        },
+        "applicationUuid": "0.9919389746400384"
+      }
     ]
   },
   {
@@ -27,6 +416,78 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 231,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 84,
+              "column": 55,
+              "index": 2928
+            },
+            "end": {
+              "line": 124,
+              "column": 3,
+              "index": 4437
+            }
+          }
+        },
+        "applicationUuid": "0.4124151362185098"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 734,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 126,
+              "column": 94,
+              "index": 4537
+            },
+            "end": {
+              "line": 166,
+              "column": 3,
+              "index": 6046
+            }
+          }
+        },
+        "applicationUuid": "0.4124151362185098"
+      }
     ]
   },
   {
@@ -37,6 +498,43 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 138,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 56,
+              "column": 80,
+              "index": 2008
+            },
+            "end": {
+              "line": 82,
+              "column": 3,
+              "index": 2867
+            }
+          }
+        },
+        "applicationUuid": "0.005929982857880489"
+      }
     ]
   },
   {
@@ -47,6 +545,78 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 113,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 77,
+              "index": 1183
+            },
+            "end": {
+              "line": 54,
+              "column": 3,
+              "index": 1922
+            }
+          }
+        },
+        "applicationUuid": "0.8183227451715542"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 362,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 56,
+              "column": 80,
+              "index": 2008
+            },
+            "end": {
+              "line": 82,
+              "column": 3,
+              "index": 2867
+            }
+          }
+        },
+        "applicationUuid": "0.8183227451715542"
+      }
     ]
   },
   {
@@ -57,6 +627,113 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 95,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 62,
+              "index": 367
+            },
+            "end": {
+              "line": 29,
+              "column": 3,
+              "index": 1100
+            }
+          }
+        },
+        "applicationUuid": "0.6294515278226329"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 308,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 77,
+              "index": 1183
+            },
+            "end": {
+              "line": 54,
+              "column": 3,
+              "index": 1922
+            }
+          }
+        },
+        "applicationUuid": "0.6294515278226329"
+      },
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 557,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 56,
+              "column": 80,
+              "index": 2008
+            },
+            "end": {
+              "line": 82,
+              "column": 3,
+              "index": 2867
+            }
+          }
+        },
+        "applicationUuid": "0.6294515278226329"
+      }
     ]
   },
   {
@@ -67,6 +744,43 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 138,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 168,
+              "column": 70,
+              "index": 6122
+            },
+            "end": {
+              "line": 195,
+              "column": 3,
+              "index": 7052
+            }
+          }
+        },
+        "applicationUuid": "0.9540885110974402"
+      }
     ]
   },
   {
@@ -77,6 +791,43 @@ module.exports = [
     "chapter": "articulation-points",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 206,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 50,
+              "index": 633
+            },
+            "end": {
+              "line": 113,
+              "column": 1,
+              "index": 4241
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 197,
+              "column": 70,
+              "index": 7128
+            },
+            "end": {
+              "line": 231,
+              "column": 3,
+              "index": 8304
+            }
+          }
+        },
+        "applicationUuid": "0.8129800105859846"
+      }
     ]
   },
   {
@@ -87,6 +838,358 @@ module.exports = [
     "chapter": "jump-game",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "backtrackingJumpGame([1,0])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([100,0])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([2,3,1,1,4])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([1,1,1,1,1])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([1,1,1,10,1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([1,5,2,1,0,2,0])",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([1,0,1])",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([3,2,1,0,4])",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([0,0,0,0,0])",
+        "contextId": 36,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      },
+      {
+        "ddgTitle": "backtrackingJumpGame([5,4,3,2,1,0,0])",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 658
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1730
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 173
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 806
+            }
+          }
+        },
+        "applicationUuid": "0.760265439308272"
+      }
     ]
   },
   {
@@ -132,7 +1235,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24530467067687822"
+        "applicationUuid": "0.11730598761127387"
       }
     ]
   },
@@ -553,6 +1656,533 @@ module.exports = [
     "chapter": "rain-terraces",
     "testFilePaths": [
       "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfRainTerraces([1])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,0])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,0,1,0])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,2,0,0,1,0])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([2,0,2])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([2,0,5])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([3,0,0,2,0,4])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,1,1,1,1])",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([1,2,3,4,5])",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      },
+      {
+        "ddgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 180
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1211
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.998288557729758"
+      }
     ]
   },
   {
@@ -563,6 +2193,43 @@ module.exports = [
     "chapter": "travelling-salesman",
     "testFilePaths": [
       "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bfTravellingSalesman({vertices,edges,isDirected})",
+        "contextId": 220,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/travelling-salesman/bfTravellingSalesman.js",
+          "loc": {
+            "start": {
+              "line": 69,
+              "column": 52,
+              "index": 2047
+            },
+            "end": {
+              "line": 104,
+              "column": 1,
+              "index": 3439
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 52,
+              "index": 363
+            },
+            "end": {
+              "line": 50,
+              "column": 3,
+              "index": 1918
+            }
+          }
+        },
+        "applicationUuid": "0.4185053376990937"
+      }
     ]
   },
   {
@@ -573,6 +2240,323 @@ module.exports = [
     "chapter": "binary-search",
     "testFilePaths": [
       "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "binarySearch([], 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1], 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,2], 1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,2], 2)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,5,10,12], 1)",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 17)",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 1)",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 100)",
+        "contextId": 52,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      },
+      {
+        "ddgTitle": "binarySearch([1,5,10,12,14,17,22,100], 0)",
+        "contextId": 68,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 658
+            }
+          }
+        },
+        "applicationUuid": "0.4787970406548545"
+      }
     ]
   },
   {
@@ -583,6 +2567,223 @@ module.exports = [
     "chapter": "binary-search",
     "testFilePaths": [
       "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "binarySearch([], {key}, ƒ (anonymous))",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 51,
+              "index": 715,
+              "_pos": {
+                "line": 15,
+                "character": 51
+              }
+            },
+            "end": {
+              "line": 33,
+              "column": 3,
+              "index": 1386,
+              "_pos": {
+                "line": 32,
+                "character": 3
+              }
+            }
+          }
+        },
+        "applicationUuid": "0.2645554390910636"
+      },
+      {
+        "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 51,
+              "index": 715,
+              "_pos": {
+                "line": 15,
+                "character": 51
+              }
+            },
+            "end": {
+              "line": 33,
+              "column": 3,
+              "index": 1386,
+              "_pos": {
+                "line": 32,
+                "character": 3
+              }
+            }
+          }
+        },
+        "applicationUuid": "0.2645554390910636"
+      },
+      {
+        "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 51,
+              "index": 715,
+              "_pos": {
+                "line": 15,
+                "character": 51
+              }
+            },
+            "end": {
+              "line": 33,
+              "column": 3,
+              "index": 1386,
+              "_pos": {
+                "line": 32,
+                "character": 3
+              }
+            }
+          }
+        },
+        "applicationUuid": "0.2645554390910636"
+      },
+      {
+        "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 51,
+              "index": 715,
+              "_pos": {
+                "line": 15,
+                "character": 51
+              }
+            },
+            "end": {
+              "line": 33,
+              "column": 3,
+              "index": 1386,
+              "_pos": {
+                "line": 32,
+                "character": 3
+              }
+            }
+          }
+        },
+        "applicationUuid": "0.2645554390910636"
+      },
+      {
+        "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 83,
+              "index": 325
+            },
+            "end": {
+              "line": 44,
+              "column": 1,
+              "index": 1536
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/search/binary-search/__test__/binarySearch.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 51,
+              "index": 715,
+              "_pos": {
+                "line": 15,
+                "character": 51
+              }
+            },
+            "end": {
+              "line": 33,
+              "column": 3,
+              "index": 1386,
+              "_pos": {
+                "line": 32,
+                "character": 3
+              }
+            }
+          }
+        },
+        "applicationUuid": "0.2645554390910636"
+      }
     ]
   },
   {
@@ -593,6 +2794,288 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitLength.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitLength(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(1)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(5)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(5)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(21)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(245)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      },
+      {
+        "ddgTitle": "bitLength(245)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitLength.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 149
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 478
+            }
+          }
+        },
+        "applicationUuid": "0.7649103221519271"
+      }
     ]
   },
   {
@@ -603,6 +3086,253 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitsDiff.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitsDiff(0, 0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      },
+      {
+        "ddgTitle": "bitsDiff(124, 124)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      },
+      {
+        "ddgTitle": "bitsDiff(0, 1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 0)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 2)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      },
+      {
+        "ddgTitle": "bitsDiff(1, 3)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/bitsDiff.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 67,
+              "index": 136
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 405
+            }
+          }
+        },
+        "applicationUuid": "0.8981918726129681"
+      }
     ]
   },
   {
@@ -613,6 +3343,568 @@ module.exports = [
     "chapter": "binary-floating-point",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitsToFloat16([1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([1,1,1,1,0,0,0,1,0,0,0,0,1,1,0,1])",
+        "contextId": 57,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([1,1,0,0,1,1,1,0,1,1,0,0,1,0,1,0])",
+        "contextId": 90,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 123,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([1,0,1,0,1,1,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 156,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 189,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1])",
+        "contextId": 222,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0])",
+        "contextId": 255,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,0,1,1,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 288,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,1,0,0,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 321,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,1,0,1,0,0,1,1,0,0,1,1,0,1])",
+        "contextId": 354,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 387,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0])",
+        "contextId": 420,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0])",
+        "contextId": 453,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0])",
+        "contextId": 486,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      },
+      {
+        "ddgTitle": "bitsToFloat16([0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 519,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 36,
+              "index": 2929
+            },
+            "end": {
+              "line": 99,
+              "column": 1,
+              "index": 2985
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 89,
+              "index": 288
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 603
+            }
+          }
+        },
+        "applicationUuid": "0.8461218480821897"
+      }
     ]
   },
   {
@@ -623,6 +3915,568 @@ module.exports = [
     "chapter": "binary-floating-point",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitsToFloat32([1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([1,1,0,0,0,1,1,0,0,0,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1,1,1,1])",
+        "contextId": 105,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([1,1,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 170,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([1,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 235,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([1,0,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])",
+        "contextId": 300,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 365,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 430,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,1,0])",
+        "contextId": 495,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])",
+        "contextId": 560,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1])",
+        "contextId": 625,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 690,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 755,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 820,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 885,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 950,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      },
+      {
+        "ddgTitle": "bitsToFloat32([0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 1015,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 36,
+              "index": 3309
+            },
+            "end": {
+              "line": 109,
+              "column": 1,
+              "index": 3367
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 89,
+              "index": 738
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1053
+            }
+          }
+        },
+        "applicationUuid": "0.37807534058290804"
+      }
     ]
   },
   {
@@ -633,6 +4487,568 @@ module.exports = [
     "chapter": "binary-floating-point",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bitsToFloat64([1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 72,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([1,1,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1])",
+        "contextId": 201,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([1,1,0,0,0,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0])",
+        "contextId": 330,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 459,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([1,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 588,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 717,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 846,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0])",
+        "contextId": 975,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 1104,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
+        "contextId": 1233,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0])",
+        "contextId": 1362,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 1491,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 1620,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 1749,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
+        "contextId": 1878,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      },
+      {
+        "ddgTitle": "bitsToFloat64([0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 2007,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/bitsToFloat.js",
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 36,
+              "index": 3691
+            },
+            "end": {
+              "line": 119,
+              "column": 1,
+              "index": 3749
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 89,
+              "index": 1188
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1504
+            }
+          }
+        },
+        "applicationUuid": "0.23047687143570905"
+      }
     ]
   },
   {
@@ -643,6 +5059,78 @@ module.exports = [
     "chapter": "breadth-first-search",
     "testFilePaths": [
       "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "breadthFirstSearch({left,right,parent,value,meta,nodeComparator})",
+        "contextId": 718,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 72,
+              "index": 1120
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1855
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 55,
+              "column": 58,
+              "index": 2296
+            },
+            "end": {
+              "line": 101,
+              "column": 3,
+              "index": 4033
+            }
+          }
+        },
+        "applicationUuid": "0.6444030898163964"
+      },
+      {
+        "ddgTitle": "breadthFirstSearch({left,right,parent,value,meta,nodeComparator}, {allowTraversal,enterNode,leaveNode})",
+        "contextId": 786,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 72,
+              "index": 1120
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1855
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 55,
+              "column": 58,
+              "index": 2296
+            },
+            "end": {
+              "line": 101,
+              "column": 3,
+              "index": 4033
+            }
+          }
+        },
+        "applicationUuid": "0.6444030898163964"
+      }
     ]
   },
   {
@@ -653,6 +5141,43 @@ module.exports = [
     "chapter": "breadth-first-search",
     "testFilePaths": [
       "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex,allowTraversal})",
+        "contextId": 205,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 82,
+              "index": 1473
+            },
+            "end": {
+              "line": 75,
+              "column": 1,
+              "index": 2298
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 92,
+              "column": 66,
+              "index": 3839
+            },
+            "end": {
+              "line": 173,
+              "column": 3,
+              "index": 7123
+            }
+          }
+        },
+        "applicationUuid": "0.9429907745259103"
+      }
     ]
   },
   {
@@ -663,6 +5188,78 @@ module.exports = [
     "chapter": "breadth-first-search",
     "testFilePaths": [
       "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 205,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 82,
+              "index": 1473
+            },
+            "end": {
+              "line": 75,
+              "column": 1,
+              "index": 2298
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 52,
+              "index": 357
+            },
+            "end": {
+              "line": 90,
+              "column": 3,
+              "index": 3767
+            }
+          }
+        },
+        "applicationUuid": "0.747019806775326"
+      },
+      {
+        "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
+        "contextId": 343,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 82,
+              "index": 1473
+            },
+            "end": {
+              "line": 75,
+              "column": 1,
+              "index": 2298
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 52,
+              "index": 357
+            },
+            "end": {
+              "line": 90,
+              "column": 3,
+              "index": 3767
+            }
+          }
+        },
+        "applicationUuid": "0.747019806775326"
+      }
     ]
   },
   {
@@ -673,6 +5270,78 @@ module.exports = [
     "chapter": "breadth-first-search",
     "testFilePaths": [
       "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "breadthFirstSearch({left,right,parent,value,meta,nodeComparator})",
+        "contextId": 718,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 72,
+              "index": 1120
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1855
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 229
+            },
+            "end": {
+              "line": 53,
+              "column": 3,
+              "index": 2232
+            }
+          }
+        },
+        "applicationUuid": "0.5100197037478575"
+      },
+      {
+        "ddgTitle": "breadthFirstSearch({left,right,parent,value,meta,nodeComparator}, {enterNode,leaveNode})",
+        "contextId": 786,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/breadthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 72,
+              "index": 1120
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1855
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 229
+            },
+            "end": {
+              "line": 53,
+              "column": 3,
+              "index": 2232
+            }
+          }
+        },
+        "applicationUuid": "0.5100197037478575"
+      }
     ]
   },
   {
@@ -683,6 +5352,78 @@ module.exports = [
     "chapter": "power-set",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "btPowerSet([1])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/power-set/btPowerSet.js",
+          "loc": {
+            "start": {
+              "line": 39,
+              "column": 48,
+              "index": 1726
+            },
+            "end": {
+              "line": 41,
+              "column": 1,
+              "index": 1774
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/power-set/__test__/btPowerSet.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 82,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 400
+            }
+          }
+        },
+        "applicationUuid": "0.1404093913987754"
+      },
+      {
+        "ddgTitle": "btPowerSet([1,2,3])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/power-set/btPowerSet.js",
+          "loc": {
+            "start": {
+              "line": 39,
+              "column": 48,
+              "index": 1726
+            },
+            "end": {
+              "line": 41,
+              "column": 1,
+              "index": 1774
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/power-set/__test__/btPowerSet.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 82,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 400
+            }
+          }
+        },
+        "applicationUuid": "0.1404093913987754"
+      }
     ]
   },
   {
@@ -703,6 +5444,78 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([\"bb\",\"aa\",\"c\"])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 28,
+              "column": 39,
+              "index": 660
+            },
+            "end": {
+              "line": 30,
+              "column": 3,
+              "index": 713
+            }
+          }
+        },
+        "applicationUuid": "0.5273362871453244"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"a\",\"bbbb\",\"ccc\"])",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 28,
+              "column": 39,
+              "index": 660
+            },
+            "end": {
+              "line": 30,
+              "column": 3,
+              "index": 713
+            }
+          }
+        },
+        "applicationUuid": "0.5273362871453244"
+      }
     ]
   },
   {
@@ -713,6 +5526,183 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([\"\"])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.08899522561608242"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"a\"])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.08899522561608242"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.08899522561608242"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.08899522561608242"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.08899522561608242"
+      }
     ]
   },
   {
@@ -723,6 +5713,498 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,2])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([2,1])",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 148,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 207,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 797,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 1337,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 424
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 468
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"\"])",
+        "contextId": 1401,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"a\"])",
+        "contextId": 1402,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"a\"])",
+        "contextId": 1403,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 1408,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      },
+      {
+        "ddgTitle": "BubbleSort.sort([\"aa\",\"aa\"])",
+        "contextId": 1426,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 37,
+              "column": 3,
+              "index": 1063
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 529
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 593
+            }
+          }
+        },
+        "applicationUuid": "0.18632386952808133"
+      }
     ]
   },
   {
@@ -733,6 +6215,43 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([-1,0,5,-10,20,13,-7,3,2,-3])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1166
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 29,
+              "column": 43,
+              "index": 740
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 799
+            }
+          }
+        },
+        "applicationUuid": "0.9586611019978726"
+      }
     ]
   },
   {
@@ -743,6 +6262,43 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1166
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 878
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1008
+            }
+          }
+        },
+        "applicationUuid": "0.6686987326430816"
+      }
     ]
   },
   {
@@ -753,6 +6309,43 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1166
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 78,
+              "index": 1304
+            },
+            "end": {
+              "line": 55,
+              "column": 3,
+              "index": 1443
+            }
+          }
+        },
+        "applicationUuid": "0.7378908632624126"
+      }
     ]
   },
   {
@@ -763,6 +6356,43 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1166
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 57,
+              "column": 82,
+              "index": 1531
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 1672
+            }
+          }
+        },
+        "applicationUuid": "0.3115923355674475"
+      }
     ]
   },
   {
@@ -773,6 +6403,43 @@ module.exports = [
     "chapter": "bubble-sort",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "BubbleSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/BubbleSort.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 22,
+              "index": 101
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1166
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 74,
+              "index": 1088
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1220
+            }
+          }
+        },
+        "applicationUuid": "0.4935947117779136"
+      }
     ]
   },
   {
@@ -783,6 +6450,78 @@ module.exports = [
     "chapter": "power-set",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/bwPowerSet.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "bwPowerSet([1])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/power-set/bwPowerSet.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 48,
+              "index": 163
+            },
+            "end": {
+              "line": 34,
+              "column": 1,
+              "index": 1339
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/power-set/__test__/bwPowerSet.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 152
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 395
+            }
+          }
+        },
+        "applicationUuid": "0.0018509492122491533"
+      },
+      {
+        "ddgTitle": "bwPowerSet([1,2,3])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/power-set/bwPowerSet.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 48,
+              "index": 163
+            },
+            "end": {
+              "line": 34,
+              "column": 1,
+              "index": 1339
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/power-set/__test__/bwPowerSet.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 152
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 395
+            }
+          }
+        },
+        "applicationUuid": "0.0018509492122491533"
+      }
     ]
   },
   {
@@ -793,6 +6532,43 @@ module.exports = [
     "chapter": "caesar-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "caesarCipherEncrypt(ABCDE, 3)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 41,
+              "index": 766
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 832
+            }
+          }
+        },
+        "applicationUuid": "0.47376656965302133"
+      }
     ]
   },
   {
@@ -803,6 +6579,218 @@ module.exports = [
     "chapter": "caesar-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "caesarCipherEncrypt(abcde, 3)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 59,
+              "index": 357
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 719
+            }
+          }
+        },
+        "applicationUuid": "0.5794348417318833"
+      },
+      {
+        "ddgTitle": "caesarCipherDecrypt(defgh, 3)",
+        "contextId": 38,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 79,
+              "index": 1668
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1863
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 59,
+              "index": 357
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 719
+            }
+          }
+        },
+        "applicationUuid": "0.5794348417318833"
+      },
+      {
+        "ddgTitle": "caesarCipherEncrypt(abcde, 1)",
+        "contextId": 71,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 59,
+              "index": 357
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 719
+            }
+          }
+        },
+        "applicationUuid": "0.5794348417318833"
+      },
+      {
+        "ddgTitle": "caesarCipherDecrypt(bcdef, 1)",
+        "contextId": 104,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 79,
+              "index": 1668
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1863
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 59,
+              "index": 357
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 719
+            }
+          }
+        },
+        "applicationUuid": "0.5794348417318833"
+      },
+      {
+        "ddgTitle": "caesarCipherEncrypt(xyz, 1)",
+        "contextId": 137,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 59,
+              "index": 357
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 719
+            }
+          }
+        },
+        "applicationUuid": "0.5794348417318833"
+      },
+      {
+        "ddgTitle": "caesarCipherDecrypt(yza, 1)",
+        "contextId": 168,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 79,
+              "index": 1668
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1863
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 59,
+              "index": 357
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 719
+            }
+          }
+        },
+        "applicationUuid": "0.5794348417318833"
+      }
     ]
   },
   {
@@ -813,6 +6801,43 @@ module.exports = [
     "chapter": "caesar-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "caesarCipherEncrypt(, 3)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 55,
+              "index": 893
+            },
+            "end": {
+              "line": 26,
+              "column": 3,
+              "index": 949
+            }
+          }
+        },
+        "applicationUuid": "0.417948003989016"
+      }
     ]
   },
   {
@@ -823,6 +6848,78 @@ module.exports = [
     "chapter": "caesar-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "caesarCipherEncrypt(THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG, 23)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 54,
+              "index": 1191
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1489
+            }
+          }
+        },
+        "applicationUuid": "0.45107857874361756"
+      },
+      {
+        "ddgTitle": "caesarCipherDecrypt(qeb nrfzh yoltk clu grjmp lsbo qeb ixwv ald, 23)",
+        "contextId": 76,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 79,
+              "index": 1668
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1863
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 54,
+              "index": 1191
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1489
+            }
+          }
+        },
+        "applicationUuid": "0.45107857874361756"
+      }
     ]
   },
   {
@@ -833,6 +6930,78 @@ module.exports = [
     "chapter": "caesar-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "caesarCipherEncrypt(abcd, 0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 57,
+              "index": 170
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 292
+            }
+          }
+        },
+        "applicationUuid": "0.9769763055947274"
+      },
+      {
+        "ddgTitle": "caesarCipherDecrypt(abcd, 0)",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 79,
+              "index": 1668
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1863
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 57,
+              "index": 170
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 292
+            }
+          }
+        },
+        "applicationUuid": "0.9769763055947274"
+      }
     ]
   },
   {
@@ -843,6 +7012,78 @@ module.exports = [
     "chapter": "caesar-cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "caesarCipherEncrypt(ab2cde, 3)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 79,
+              "index": 1278
+            },
+            "end": {
+              "line": 42,
+              "column": 1,
+              "index": 1472
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 28,
+              "column": 46,
+              "index": 1001
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1131
+            }
+          }
+        },
+        "applicationUuid": "0.537405394065479"
+      },
+      {
+        "ddgTitle": "caesarCipherDecrypt(de2fgh, 3)",
+        "contextId": 39,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 79,
+              "index": 1668
+            },
+            "end": {
+              "line": 58,
+              "column": 1,
+              "index": 1863
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 28,
+              "column": 46,
+              "index": 1001
+            },
+            "end": {
+              "line": 31,
+              "column": 3,
+              "index": 1131
+            }
+          }
+        },
+        "applicationUuid": "0.537405394065479"
+      }
     ]
   },
   {
@@ -853,6 +7094,78 @@ module.exports = [
     "chapter": "cartesian-product",
     "testFilePaths": [
       "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "cartesianProduct([1], [1])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 53,
+              "index": 170
+            },
+            "end": {
+              "line": 27,
+              "column": 1,
+              "index": 824
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 55,
+              "index": 408
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 628
+            }
+          }
+        },
+        "applicationUuid": "0.6191821894339562"
+      },
+      {
+        "ddgTitle": "cartesianProduct([1,2], [3,5])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 53,
+              "index": 170
+            },
+            "end": {
+              "line": 27,
+              "column": 1,
+              "index": 824
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 55,
+              "index": 408
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 628
+            }
+          }
+        },
+        "applicationUuid": "0.6191821894339562"
+      }
     ]
   },
   {
@@ -863,6 +7176,78 @@ module.exports = [
     "chapter": "cartesian-product",
     "testFilePaths": [
       "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "cartesianProduct([1], null)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 53,
+              "index": 170
+            },
+            "end": {
+              "line": 27,
+              "column": 1,
+              "index": 824
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 170
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 347
+            }
+          }
+        },
+        "applicationUuid": "0.8090245842275079"
+      },
+      {
+        "ddgTitle": "cartesianProduct([], null)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 53,
+              "index": 170
+            },
+            "end": {
+              "line": 27,
+              "column": 1,
+              "index": 824
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 77,
+              "index": 170
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 347
+            }
+          }
+        },
+        "applicationUuid": "0.8090245842275079"
+      }
     ]
   },
   {
@@ -873,6 +7258,288 @@ module.exports = [
     "chapter": "horner-method",
     "testFilePaths": [
       "src/algorithms/math/horner-method/__test__/classicPolynome.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "classicPolynome([8], 0.1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([2,4,2,5], 0.555)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([2,4,2,5], 0.75)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([1,1,1,1,1], 1.75)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([15,3.5,0,2,1.42,0.41], 0.315)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([0,0,2.77,1.42,0.41], 1.35)",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([0,0,2.77,1.42,2.3311], 1.35)",
+        "contextId": 36,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      },
+      {
+        "ddgTitle": "classicPolynome([2,0,0,5.757,5.31412,12.3213], 3.141)",
+        "contextId": 42,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/horner-method/classicPolynome.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 60,
+              "index": 317
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 501
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/horner-method/__test__/classicPolynome.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 174
+            },
+            "end": {
+              "line": 13,
+              "column": 3,
+              "index": 793
+            }
+          }
+        },
+        "applicationUuid": "0.6220981425496099"
+      }
     ]
   },
   {
@@ -883,6 +7550,218 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/clearBit.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "clearBit(1, 0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/clearBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 54,
+              "index": 158
+            },
+            "end": {
+              "line": 10,
+              "column": 1,
+              "index": 226
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/clearBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 121
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 394
+            }
+          }
+        },
+        "applicationUuid": "0.8954091714860195"
+      },
+      {
+        "ddgTitle": "clearBit(1, 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/clearBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 54,
+              "index": 158
+            },
+            "end": {
+              "line": 10,
+              "column": 1,
+              "index": 226
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/clearBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 121
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 394
+            }
+          }
+        },
+        "applicationUuid": "0.8954091714860195"
+      },
+      {
+        "ddgTitle": "clearBit(1, 2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/clearBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 54,
+              "index": 158
+            },
+            "end": {
+              "line": 10,
+              "column": 1,
+              "index": 226
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/clearBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 121
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 394
+            }
+          }
+        },
+        "applicationUuid": "0.8954091714860195"
+      },
+      {
+        "ddgTitle": "clearBit(10, 0)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/clearBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 54,
+              "index": 158
+            },
+            "end": {
+              "line": 10,
+              "column": 1,
+              "index": 226
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/clearBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 121
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 394
+            }
+          }
+        },
+        "applicationUuid": "0.8954091714860195"
+      },
+      {
+        "ddgTitle": "clearBit(10, 1)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/clearBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 54,
+              "index": 158
+            },
+            "end": {
+              "line": 10,
+              "column": 1,
+              "index": 226
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/clearBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 121
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 394
+            }
+          }
+        },
+        "applicationUuid": "0.8954091714860195"
+      },
+      {
+        "ddgTitle": "clearBit(10, 3)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/clearBit.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 54,
+              "index": 158
+            },
+            "end": {
+              "line": 10,
+              "column": 1,
+              "index": 226
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/clearBit.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 52,
+              "index": 121
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 394
+            }
+          }
+        },
+        "applicationUuid": "0.8954091714860195"
+      }
     ]
   },
   {
@@ -893,6 +7772,183 @@ module.exports = [
     "chapter": "combination-sum",
     "testFilePaths": [
       "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "combinationSum([1], 4)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/combinationSum.js",
+          "loc": {
+            "start": {
+              "line": 63,
+              "column": 59,
+              "index": 2102
+            },
+            "end": {
+              "line": 65,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 61,
+              "index": 148
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 547
+            }
+          }
+        },
+        "applicationUuid": "0.4774741125164441"
+      },
+      {
+        "ddgTitle": "combinationSum([2,3,6,7], 7)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/combinationSum.js",
+          "loc": {
+            "start": {
+              "line": 63,
+              "column": 59,
+              "index": 2102
+            },
+            "end": {
+              "line": 65,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 61,
+              "index": 148
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 547
+            }
+          }
+        },
+        "applicationUuid": "0.4774741125164441"
+      },
+      {
+        "ddgTitle": "combinationSum([2,3,5], 8)",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/combinationSum.js",
+          "loc": {
+            "start": {
+              "line": 63,
+              "column": 59,
+              "index": 2102
+            },
+            "end": {
+              "line": 65,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 61,
+              "index": 148
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 547
+            }
+          }
+        },
+        "applicationUuid": "0.4774741125164441"
+      },
+      {
+        "ddgTitle": "combinationSum([2,5], 3)",
+        "contextId": 64,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/combinationSum.js",
+          "loc": {
+            "start": {
+              "line": 63,
+              "column": 59,
+              "index": 2102
+            },
+            "end": {
+              "line": 65,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 61,
+              "index": 148
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 547
+            }
+          }
+        },
+        "applicationUuid": "0.4774741125164441"
+      },
+      {
+        "ddgTitle": "combinationSum([], 3)",
+        "contextId": 70,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/combinationSum.js",
+          "loc": {
+            "start": {
+              "line": 63,
+              "column": 59,
+              "index": 2102
+            },
+            "end": {
+              "line": 65,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 61,
+              "index": 148
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 547
+            }
+          }
+        },
+        "applicationUuid": "0.4774741125164441"
+      }
     ]
   },
   {
@@ -903,6 +7959,463 @@ module.exports = [
     "chapter": "combinations",
     "testFilePaths": [
       "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\"], 3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\"], 1)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\"], 1)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\"], 2)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\"], 2)",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\"], 3)",
+        "contextId": 39,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\",\"D\"], 3)",
+        "contextId": 55,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\"], 3)",
+        "contextId": 88,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "combineWithoutRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\"], 4)",
+        "contextId": 149,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithoutRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 77,
+              "index": 167
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1075
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "factorial(8)",
+        "contextId": 614,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "factorial(4)",
+        "contextId": 615,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "factorial(4)",
+        "contextId": 616,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      },
+      {
+        "ddgTitle": "pascalTriangle(8)",
+        "contextId": 617,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/pascal-triangle/pascalTriangle.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 129
+            },
+            "end": {
+              "line": 16,
+              "column": 1,
+              "index": 459
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 312
+            },
+            "end": {
+              "line": 63,
+              "column": 3,
+              "index": 2018
+            }
+          }
+        },
+        "applicationUuid": "0.2477131273209654"
+      }
     ]
   },
   {
@@ -913,6 +8426,358 @@ module.exports = [
     "chapter": "combinations",
     "testFilePaths": [
       "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\"], 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 2)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 3)",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 2)",
+        "contextId": 45,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 3)",
+        "contextId": 64,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\"], 4)",
+        "contextId": 113,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/combinations/combineWithRepetitions.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 74,
+              "index": 164
+            },
+            "end": {
+              "line": 32,
+              "column": 1,
+              "index": 1047
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "factorial(11)",
+        "contextId": 1762,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "factorial(4)",
+        "contextId": 1763,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      },
+      {
+        "ddgTitle": "factorial(7)",
+        "contextId": 1764,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 224
+            },
+            "end": {
+              "line": 58,
+              "column": 3,
+              "index": 1677
+            }
+          }
+        },
+        "applicationUuid": "0.0575084258504861"
+      }
     ]
   },
   {
@@ -923,6 +8788,183 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 53,
+              "index": 1021
+            },
+            "end": {
+              "line": 46,
+              "column": 3,
+              "index": 1573
+            }
+          }
+        },
+        "applicationUuid": "0.5344437293261621"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 53,
+              "index": 1021
+            },
+            "end": {
+              "line": 46,
+              "column": 3,
+              "index": 1573
+            }
+          }
+        },
+        "applicationUuid": "0.5344437293261621"
+      },
+      {
+        "ddgTitle": "ComplexNumber.add({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 14,
+              "index": 413
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 650
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 53,
+              "index": 1021
+            },
+            "end": {
+              "line": 46,
+              "column": 3,
+              "index": 1573
+            }
+          }
+        },
+        "applicationUuid": "0.5344437293261621"
+      },
+      {
+        "ddgTitle": "ComplexNumber.add({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 14,
+              "index": 413
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 650
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 53,
+              "index": 1021
+            },
+            "end": {
+              "line": 46,
+              "column": 3,
+              "index": 1573
+            }
+          }
+        },
+        "applicationUuid": "0.5344437293261621"
+      },
+      {
+        "ddgTitle": "ComplexNumber.add(3)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 14,
+              "index": 413
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 650
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 53,
+              "index": 1021
+            },
+            "end": {
+              "line": 46,
+              "column": 3,
+              "index": 1573
+            }
+          }
+        },
+        "applicationUuid": "0.5344437293261621"
+      }
     ]
   },
   {
@@ -933,6 +8975,148 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 41,
+              "index": 516
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 962
+            }
+          }
+        },
+        "applicationUuid": "0.5338621187107102"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 41,
+              "index": 516
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 962
+            }
+          }
+        },
+        "applicationUuid": "0.5338621187107102"
+      },
+      {
+        "ddgTitle": "ComplexNumber.add({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 14,
+              "index": 413
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 650
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 41,
+              "index": 516
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 962
+            }
+          }
+        },
+        "applicationUuid": "0.5338621187107102"
+      },
+      {
+        "ddgTitle": "ComplexNumber.add({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 20,
+              "column": 14,
+              "index": 413
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 650
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 41,
+              "index": 516
+            },
+            "end": {
+              "line": 28,
+              "column": 3,
+              "index": 962
+            }
+          }
+        },
+        "applicationUuid": "0.5338621187107102"
+      }
     ]
   },
   {
@@ -943,6 +9127,78 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 49,
+              "index": 3669
+            },
+            "end": {
+              "line": 114,
+              "column": 3,
+              "index": 3867
+            }
+          }
+        },
+        "applicationUuid": "0.22656687919506924"
+      },
+      {
+        "ddgTitle": "ComplexNumber.multiply({re,im})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 25,
+              "index": 1143
+            },
+            "end": {
+              "line": 56,
+              "column": 3,
+              "index": 1474
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 49,
+              "index": 3669
+            },
+            "end": {
+              "line": 114,
+              "column": 3,
+              "index": 3867
+            }
+          }
+        },
+        "applicationUuid": "0.22656687919506924"
+      }
     ]
   },
   {
@@ -953,6 +9209,43 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 44,
+              "index": 128
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 469
+            }
+          }
+        },
+        "applicationUuid": "0.058344874140007"
+      }
     ]
   },
   {
@@ -963,6 +9256,148 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 116,
+              "column": 44,
+              "index": 3917
+            },
+            "end": {
+              "line": 128,
+              "column": 3,
+              "index": 4355
+            }
+          }
+        },
+        "applicationUuid": "0.31537752042390266"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 116,
+              "column": 44,
+              "index": 3917
+            },
+            "end": {
+              "line": 128,
+              "column": 3,
+              "index": 4355
+            }
+          }
+        },
+        "applicationUuid": "0.31537752042390266"
+      },
+      {
+        "ddgTitle": "ComplexNumber.divide({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 18,
+              "index": 1584
+            },
+            "end": {
+              "line": 79,
+              "column": 3,
+              "index": 2198
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 116,
+              "column": 44,
+              "index": 3917
+            },
+            "end": {
+              "line": 128,
+              "column": 3,
+              "index": 4355
+            }
+          }
+        },
+        "applicationUuid": "0.31537752042390266"
+      },
+      {
+        "ddgTitle": "ComplexNumber.divide(2)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 18,
+              "index": 1584
+            },
+            "end": {
+              "line": 79,
+              "column": 3,
+              "index": 2198
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 116,
+              "column": 44,
+              "index": 3917
+            },
+            "end": {
+              "line": 128,
+              "column": 3,
+              "index": 4355
+            }
+          }
+        },
+        "applicationUuid": "0.31537752042390266"
+      }
     ]
   },
   {
@@ -973,6 +9408,78 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 60,
+              "index": 3417
+            },
+            "end": {
+              "line": 105,
+              "column": 3,
+              "index": 3614
+            }
+          }
+        },
+        "applicationUuid": "0.9215245000630039"
+      },
+      {
+        "ddgTitle": "ComplexNumber.multiply({re,im})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 25,
+              "index": 1143
+            },
+            "end": {
+              "line": 56,
+              "column": 3,
+              "index": 1474
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 60,
+              "index": 3417
+            },
+            "end": {
+              "line": 105,
+              "column": 3,
+              "index": 3614
+            }
+          }
+        },
+        "applicationUuid": "0.9215245000630039"
+      }
     ]
   },
   {
@@ -983,6 +9490,253 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 80,
+              "column": 46,
+              "index": 2765
+            },
+            "end": {
+              "line": 96,
+              "column": 3,
+              "index": 3351
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 80,
+              "column": 46,
+              "index": 2765
+            },
+            "end": {
+              "line": 96,
+              "column": 3,
+              "index": 3351
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      },
+      {
+        "ddgTitle": "ComplexNumber.multiply({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 25,
+              "index": 1143
+            },
+            "end": {
+              "line": 56,
+              "column": 3,
+              "index": 1474
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 80,
+              "column": 46,
+              "index": 2765
+            },
+            "end": {
+              "line": 96,
+              "column": 3,
+              "index": 3351
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      },
+      {
+        "ddgTitle": "ComplexNumber.multiply({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 25,
+              "index": 1143
+            },
+            "end": {
+              "line": 56,
+              "column": 3,
+              "index": 1474
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 80,
+              "column": 46,
+              "index": 2765
+            },
+            "end": {
+              "line": 96,
+              "column": 3,
+              "index": 3351
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      },
+      {
+        "ddgTitle": "ComplexNumber.multiply(5)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 25,
+              "index": 1143
+            },
+            "end": {
+              "line": 56,
+              "column": 3,
+              "index": 1474
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 80,
+              "column": 46,
+              "index": 2765
+            },
+            "end": {
+              "line": 96,
+              "column": 3,
+              "index": 3351
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 60,
+              "index": 3417
+            },
+            "end": {
+              "line": 105,
+              "column": 3,
+              "index": 3614
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      },
+      {
+        "ddgTitle": "ComplexNumber.multiply({re,im})",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 25,
+              "index": 1143
+            },
+            "end": {
+              "line": 56,
+              "column": 3,
+              "index": 1474
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 60,
+              "index": 3417
+            },
+            "end": {
+              "line": 105,
+              "column": 3,
+              "index": 3614
+            }
+          }
+        },
+        "applicationUuid": "0.7885742533663278"
+      }
     ]
   },
   {
@@ -993,6 +9747,1373 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 39,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 43,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 46,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 50,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 51,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 54,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 57,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 61,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 62,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 65,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 68,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 72,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 73,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 76,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 79,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 84,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 87,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 90,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 94,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 95,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 98,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 101,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 105,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 106,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm()",
+        "contextId": 109,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 112,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 130,
+              "column": 57,
+              "index": 4418
+            },
+            "end": {
+              "line": 180,
+              "column": 3,
+              "index": 7248
+            }
+          }
+        },
+        "applicationUuid": "0.4297347790996231"
+      }
     ]
   },
   {
@@ -1003,6 +11124,183 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 58,
+              "index": 2145
+            },
+            "end": {
+              "line": 78,
+              "column": 3,
+              "index": 2713
+            }
+          }
+        },
+        "applicationUuid": "0.7178139475382652"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 58,
+              "index": 2145
+            },
+            "end": {
+              "line": 78,
+              "column": 3,
+              "index": 2713
+            }
+          }
+        },
+        "applicationUuid": "0.7178139475382652"
+      },
+      {
+        "ddgTitle": "ComplexNumber.subtract({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 23,
+              "index": 768
+            },
+            "end": {
+              "line": 42,
+              "column": 3,
+              "index": 1021
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 58,
+              "index": 2145
+            },
+            "end": {
+              "line": 78,
+              "column": 3,
+              "index": 2713
+            }
+          }
+        },
+        "applicationUuid": "0.7178139475382652"
+      },
+      {
+        "ddgTitle": "ComplexNumber.subtract({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 23,
+              "index": 768
+            },
+            "end": {
+              "line": 42,
+              "column": 3,
+              "index": 1021
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 58,
+              "index": 2145
+            },
+            "end": {
+              "line": 78,
+              "column": 3,
+              "index": 2713
+            }
+          }
+        },
+        "applicationUuid": "0.7178139475382652"
+      },
+      {
+        "ddgTitle": "ComplexNumber.subtract(3)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 23,
+              "index": 768
+            },
+            "end": {
+              "line": 42,
+              "column": 3,
+              "index": 1021
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 58,
+              "index": 2145
+            },
+            "end": {
+              "line": 78,
+              "column": 3,
+              "index": 2713
+            }
+          }
+        },
+        "applicationUuid": "0.7178139475382652"
+      }
     ]
   },
   {
@@ -1013,6 +11311,148 @@ module.exports = [
     "chapter": "complex-number",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 46,
+              "index": 1625
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2081
+            }
+          }
+        },
+        "applicationUuid": "0.44367355511084705"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 46,
+              "index": 1625
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2081
+            }
+          }
+        },
+        "applicationUuid": "0.44367355511084705"
+      },
+      {
+        "ddgTitle": "ComplexNumber.subtract({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 23,
+              "index": 768
+            },
+            "end": {
+              "line": 42,
+              "column": 3,
+              "index": 1021
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 46,
+              "index": 1625
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2081
+            }
+          }
+        },
+        "applicationUuid": "0.44367355511084705"
+      },
+      {
+        "ddgTitle": "ComplexNumber.subtract({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 34,
+              "column": 23,
+              "index": 768
+            },
+            "end": {
+              "line": 42,
+              "column": 3,
+              "index": 1021
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js",
+          "loc": {
+            "start": {
+              "line": 48,
+              "column": 46,
+              "index": 1625
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2081
+            }
+          }
+        },
+        "applicationUuid": "0.44367355511084705"
+      }
     ]
   },
   {
@@ -1023,6 +11463,43 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19], 1, 20)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 96,
+              "index": 686
+            },
+            "end": {
+              "line": 41,
+              "column": 3,
+              "index": 1317
+            }
+          }
+        },
+        "applicationUuid": "0.2545534944461716"
+      }
     ]
   },
   {
@@ -1033,6 +11510,323 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,2])",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([2,1])",
+        "contextId": 42,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 61,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 152,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 333,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 514,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      },
+      {
+        "ddgTitle": "CountingSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 695,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 428
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 474
+            }
+          }
+        },
+        "applicationUuid": "0.5765333906424812"
+      }
     ]
   },
   {
@@ -1043,6 +11837,43 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([-1,0,5,-10,20,13,-7,3,2,-3])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 43,
+              "index": 523
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 584
+            }
+          }
+        },
+        "applicationUuid": "0.7338901497150108"
+      }
     ]
   },
   {
@@ -1053,6 +11884,43 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 43,
+              "column": 73,
+              "index": 1396
+            },
+            "end": {
+              "line": 49,
+              "column": 3,
+              "index": 1528
+            }
+          }
+        },
+        "applicationUuid": "0.7274668066465442"
+      }
     ]
   },
   {
@@ -1063,6 +11931,43 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 78,
+              "index": 1826
+            },
+            "end": {
+              "line": 65,
+              "column": 3,
+              "index": 1967
+            }
+          }
+        },
+        "applicationUuid": "0.08928913086503143"
+      }
     ]
   },
   {
@@ -1073,6 +11978,43 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 67,
+              "column": 82,
+              "index": 2055
+            },
+            "end": {
+              "line": 73,
+              "column": 3,
+              "index": 2198
+            }
+          }
+        },
+        "applicationUuid": "0.7280671593555075"
+      }
     ]
   },
   {
@@ -1083,6 +12025,43 @@ module.exports = [
     "chapter": "counting-sort",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "CountingSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/CountingSort.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 79,
+              "index": 291
+            },
+            "end": {
+              "line": 77,
+              "column": 3,
+              "index": 3043
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js",
+          "loc": {
+            "start": {
+              "line": 51,
+              "column": 74,
+              "index": 1608
+            },
+            "end": {
+              "line": 57,
+              "column": 3,
+              "index": 1742
+            }
+          }
+        },
+        "applicationUuid": "0.3285237301601527"
+      }
     ]
   },
   {
@@ -1093,6 +12072,498 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/countSetBits.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "countSetBits(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(3)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(4)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(5)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(21)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(255)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(1023)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(-1)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(-21)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(-255)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(-1023)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      },
+      {
+        "ddgTitle": "countSetBits(-4294967296)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/countSetBits.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 53,
+              "index": 119
+            },
+            "end": {
+              "line": 18,
+              "column": 1,
+              "index": 412
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/countSetBits.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 128
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 697
+            }
+          }
+        },
+        "applicationUuid": "0.7004423107030311"
+      }
     ]
   },
   {
@@ -1103,6 +12574,358 @@ module.exports = [
     "chapter": "maximum-subarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dcMaximumSubarraySum([])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([0,0])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([0,0,1])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([0,0,1,2])",
+        "contextId": 25,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([0,0,-1,2])",
+        "contextId": 41,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([-1,-2,-3,-4,-5])",
+        "contextId": 57,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([1,2,3,2,3,4,5])",
+        "contextId": 79,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 116,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 172,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      },
+      {
+        "ddgTitle": "dcMaximumSubarraySum([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 218,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dcMaximumSubarraySum.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 57,
+              "index": 217
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 1278
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 86,
+              "index": 188
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 834
+            }
+          }
+        },
+        "applicationUuid": "0.024601460211225668"
+      }
     ]
   },
   {
@@ -1113,6 +12936,218 @@ module.exports = [
     "chapter": "radian",
     "testFilePaths": [
       "src/algorithms/math/radian/__test__/degreeToRadian.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "degreeToRadian(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/radian/degreeToRadian.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 47,
+              "index": 105
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 145
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/radian/__test__/degreeToRadian.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 46,
+              "index": 133
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 439
+            }
+          }
+        },
+        "applicationUuid": "0.2428072971210422"
+      },
+      {
+        "ddgTitle": "degreeToRadian(45)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/radian/degreeToRadian.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 47,
+              "index": 105
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 145
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/radian/__test__/degreeToRadian.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 46,
+              "index": 133
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 439
+            }
+          }
+        },
+        "applicationUuid": "0.2428072971210422"
+      },
+      {
+        "ddgTitle": "degreeToRadian(90)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/radian/degreeToRadian.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 47,
+              "index": 105
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 145
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/radian/__test__/degreeToRadian.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 46,
+              "index": 133
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 439
+            }
+          }
+        },
+        "applicationUuid": "0.2428072971210422"
+      },
+      {
+        "ddgTitle": "degreeToRadian(180)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/radian/degreeToRadian.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 47,
+              "index": 105
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 145
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/radian/__test__/degreeToRadian.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 46,
+              "index": 133
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 439
+            }
+          }
+        },
+        "applicationUuid": "0.2428072971210422"
+      },
+      {
+        "ddgTitle": "degreeToRadian(270)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/radian/degreeToRadian.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 47,
+              "index": 105
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 145
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/radian/__test__/degreeToRadian.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 46,
+              "index": 133
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 439
+            }
+          }
+        },
+        "applicationUuid": "0.2428072971210422"
+      },
+      {
+        "ddgTitle": "degreeToRadian(360)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/radian/degreeToRadian.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 47,
+              "index": 105
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 145
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/radian/__test__/degreeToRadian.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 46,
+              "index": 133
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 439
+            }
+          }
+        },
+        "applicationUuid": "0.2428072971210422"
+      }
     ]
   },
   {
@@ -1123,6 +13158,78 @@ module.exports = [
     "chapter": "depth-first-search",
     "testFilePaths": [
       "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "depthFirstSearch({left,right,parent,value,meta,nodeComparator})",
+        "contextId": 717,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 70,
+              "column": 62,
+              "index": 2967
+            },
+            "end": {
+              "line": 76,
+              "column": 1,
+              "index": 3270
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 55,
+              "column": 58,
+              "index": 2286
+            },
+            "end": {
+              "line": 101,
+              "column": 3,
+              "index": 4019
+            }
+          }
+        },
+        "applicationUuid": "0.31469200849982704"
+      },
+      {
+        "ddgTitle": "depthFirstSearch({left,right,parent,value,meta,nodeComparator}, {allowTraversal,enterNode,leaveNode})",
+        "contextId": 746,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 70,
+              "column": 62,
+              "index": 2967
+            },
+            "end": {
+              "line": 76,
+              "column": 1,
+              "index": 3270
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 55,
+              "column": 58,
+              "index": 2286
+            },
+            "end": {
+              "line": 101,
+              "column": 3,
+              "index": 4019
+            }
+          }
+        },
+        "applicationUuid": "0.31469200849982704"
+      }
     ]
   },
   {
@@ -1133,6 +13240,43 @@ module.exports = [
     "chapter": "depth-first-search",
     "testFilePaths": [
       "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "depthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex,allowTraversal})",
+        "contextId": 182,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 72,
+              "index": 1997
+            },
+            "end": {
+              "line": 68,
+              "column": 1,
+              "index": 2125
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 87,
+              "column": 60,
+              "index": 3659
+            },
+            "end": {
+              "line": 164,
+              "column": 3,
+              "index": 6808
+            }
+          }
+        },
+        "applicationUuid": "0.04480481598077324"
+      }
     ]
   },
   {
@@ -1143,6 +13287,78 @@ module.exports = [
     "chapter": "depth-first-search",
     "testFilePaths": [
       "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "depthFirstSearch({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 182,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 72,
+              "index": 1997
+            },
+            "end": {
+              "line": 68,
+              "column": 1,
+              "index": 2125
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 52,
+              "index": 351
+            },
+            "end": {
+              "line": 85,
+              "column": 3,
+              "index": 3593
+            }
+          }
+        },
+        "applicationUuid": "0.36504538677048437"
+      },
+      {
+        "ddgTitle": "depthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
+        "contextId": 265,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 72,
+              "index": 1997
+            },
+            "end": {
+              "line": 68,
+              "column": 1,
+              "index": 2125
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 52,
+              "index": 351
+            },
+            "end": {
+              "line": 85,
+              "column": 3,
+              "index": 3593
+            }
+          }
+        },
+        "applicationUuid": "0.36504538677048437"
+      }
     ]
   },
   {
@@ -1153,6 +13369,78 @@ module.exports = [
     "chapter": "depth-first-search",
     "testFilePaths": [
       "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "depthFirstSearch({left,right,parent,value,meta,nodeComparator})",
+        "contextId": 717,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 70,
+              "column": 62,
+              "index": 2967
+            },
+            "end": {
+              "line": 76,
+              "column": 1,
+              "index": 3270
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 223
+            },
+            "end": {
+              "line": 53,
+              "column": 3,
+              "index": 2222
+            }
+          }
+        },
+        "applicationUuid": "0.2393292836979799"
+      },
+      {
+        "ddgTitle": "depthFirstSearch({left,right,parent,value,meta,nodeComparator}, {enterNode,leaveNode})",
+        "contextId": 746,
+        "algoLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/depthFirstSearch.js",
+          "loc": {
+            "start": {
+              "line": 70,
+              "column": 62,
+              "index": 2967
+            },
+            "end": {
+              "line": 76,
+              "column": 1,
+              "index": 3270
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 223
+            },
+            "end": {
+              "line": 53,
+              "column": 3,
+              "index": 2222
+            }
+          }
+        },
+        "applicationUuid": "0.2393292836979799"
+      }
     ]
   },
   {
@@ -1163,6 +13451,78 @@ module.exports = [
     "chapter": "detect-cycle",
     "testFilePaths": [
       "src/algorithms/graph/detect-cycle/__test__/detectDirectedCycle.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "detectDirectedCycle({vertices,edges,isDirected})",
+        "contextId": 146,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/detectDirectedCycle.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 225
+            },
+            "end": {
+              "line": 93,
+              "column": 1,
+              "index": 3398
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/__test__/detectDirectedCycle.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 43,
+              "index": 351
+            },
+            "end": {
+              "line": 41,
+              "column": 3,
+              "index": 1384
+            }
+          }
+        },
+        "applicationUuid": "0.3861599238481812"
+      },
+      {
+        "ddgTitle": "detectDirectedCycle({vertices,edges,isDirected})",
+        "contextId": 276,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/detectDirectedCycle.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 51,
+              "index": 225
+            },
+            "end": {
+              "line": 93,
+              "column": 1,
+              "index": 3398
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/__test__/detectDirectedCycle.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 43,
+              "index": 351
+            },
+            "end": {
+              "line": 41,
+              "column": 3,
+              "index": 1384
+            }
+          }
+        },
+        "applicationUuid": "0.3861599238481812"
+      }
     ]
   },
   {
@@ -1173,6 +13533,78 @@ module.exports = [
     "chapter": "detect-cycle",
     "testFilePaths": [
       "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "detectUndirectedCycle({vertices,edges,isDirected})",
+        "contextId": 146,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/detectUndirectedCycle.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 229
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1979
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 45,
+              "index": 359
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1334
+            }
+          }
+        },
+        "applicationUuid": "0.7874491265354782"
+      },
+      {
+        "ddgTitle": "detectUndirectedCycle({vertices,edges,isDirected})",
+        "contextId": 280,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/detectUndirectedCycle.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 229
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 1979
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 45,
+              "index": 359
+            },
+            "end": {
+              "line": 40,
+              "column": 3,
+              "index": 1334
+            }
+          }
+        },
+        "applicationUuid": "0.7874491265354782"
+      }
     ]
   },
   {
@@ -1183,6 +13615,78 @@ module.exports = [
     "chapter": "detect-cycle",
     "testFilePaths": [
       "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycleUsingDisjointSet.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "detectUndirectedCycleUsingDisjointSet({vertices,edges,isDirected})",
+        "contextId": 147,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/detectUndirectedCycleUsingDisjointSet.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 69,
+              "index": 246
+            },
+            "end": {
+              "line": 31,
+              "column": 1,
+              "index": 1214
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycleUsingDisjointSet.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 45,
+              "index": 407
+            },
+            "end": {
+              "line": 35,
+              "column": 3,
+              "index": 1332
+            }
+          }
+        },
+        "applicationUuid": "0.8357889743276397"
+      },
+      {
+        "ddgTitle": "detectUndirectedCycleUsingDisjointSet({vertices,edges,isDirected})",
+        "contextId": 528,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/detectUndirectedCycleUsingDisjointSet.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 69,
+              "index": 246
+            },
+            "end": {
+              "line": 31,
+              "column": 1,
+              "index": 1214
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycleUsingDisjointSet.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 45,
+              "index": 407
+            },
+            "end": {
+              "line": 35,
+              "column": 3,
+              "index": 1332
+            }
+          }
+        },
+        "applicationUuid": "0.8357889743276397"
+      }
     ]
   },
   {
@@ -1193,6 +13697,43 @@ module.exports = [
     "chapter": "dijkstra",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 182,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 53,
+              "index": 577
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 3052
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js",
+          "loc": {
+            "start": {
+              "line": 68,
+              "column": 102,
+              "index": 2427
+            },
+            "end": {
+              "line": 116,
+              "column": 3,
+              "index": 3970
+            }
+          }
+        },
+        "applicationUuid": "0.45232461437424765"
+      }
     ]
   },
   {
@@ -1208,20 +13749,37 @@ module.exports = [
       {
         "ddgTitle": "dijkstra({vertices,edges,isDirected}, {value,edges})",
         "contextId": 285,
-        "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 53,
-            "index": 577
-          },
-          "end": {
-            "line": 80,
-            "column": 1,
-            "index": 3052
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/dijkstra/dijkstra.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 53,
+              "index": 577
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 3052
+            }
           }
         },
-        "applicationUuid": "0.8761360997812333"
+        "testLoc": {
+          "filePath": "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 77,
+              "index": 352
+            },
+            "end": {
+              "line": 66,
+              "column": 3,
+              "index": 2319
+            }
+          }
+        },
+        "applicationUuid": "0.04280511982278745"
       }
     ]
   },
@@ -1233,6 +13791,1828 @@ module.exports = [
     "chapter": "fourier-transform",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dft([1])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([1,0])",
+        "contextId": 39,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 95,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 100,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([2,0])",
+        "contextId": 107,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 163,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 168,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([1,0,0])",
+        "contextId": 176,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 283,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 288,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 293,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([1,0,0,0])",
+        "contextId": 302,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 476,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 481,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 486,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 491,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([0,1,0,0])",
+        "contextId": 500,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 674,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 679,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 684,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 689,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([0,0,1,0])",
+        "contextId": 698,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 872,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 877,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 882,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 887,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([0,0,0,2])",
+        "contextId": 896,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1070,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1075,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1080,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1085,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([0,1,0,2])",
+        "contextId": 1094,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1268,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1273,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1278,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1283,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([4,1,0,2])",
+        "contextId": 1292,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1466,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1471,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1476,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1481,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([4,1,-3,2])",
+        "contextId": 1490,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1664,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1669,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1674,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1679,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "dft([1,2,3,4])",
+        "contextId": 1688,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/discreteFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 22,
+              "column": 86,
+              "index": 1031
+            },
+            "end": {
+              "line": 69,
+              "column": 1,
+              "index": 2702
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1862,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1867,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1872,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      },
+      {
+        "ddgTitle": "ComplexNumber.getPolarForm(false)",
+        "contextId": 1877,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 139,
+              "column": 33,
+              "index": 3726
+            },
+            "end": {
+              "line": 144,
+              "column": 3,
+              "index": 3827
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 214
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 293
+            }
+          }
+        },
+        "applicationUuid": "0.653175861282389"
+      }
     ]
   },
   {
@@ -1243,6 +15623,218 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/divideByTwo.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "divideByTwo(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/divideByTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 44,
+              "index": 102
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 129
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/divideByTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.12846387798945313"
+      },
+      {
+        "ddgTitle": "divideByTwo(1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/divideByTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 44,
+              "index": 102
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 129
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/divideByTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.12846387798945313"
+      },
+      {
+        "ddgTitle": "divideByTwo(3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/divideByTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 44,
+              "index": 102
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 129
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/divideByTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.12846387798945313"
+      },
+      {
+        "ddgTitle": "divideByTwo(10)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/divideByTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 44,
+              "index": 102
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 129
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/divideByTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.12846387798945313"
+      },
+      {
+        "ddgTitle": "divideByTwo(17)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/divideByTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 44,
+              "index": 102
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 129
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/divideByTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.12846387798945313"
+      },
+      {
+        "ddgTitle": "divideByTwo(125)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/divideByTwo.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 44,
+              "index": 102
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 129
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/divideByTwo.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 68,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.12846387798945313"
+      }
     ]
   },
   {
@@ -1253,6 +15845,358 @@ module.exports = [
     "chapter": "best-time-to-buy-sell-stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([1,5])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([1], ƒ mockConstructor)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      },
+      {
+        "ddgTitle": "dpBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/dpBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 64,
+              "index": 389
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 727
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 63,
+              "index": 183
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1636
+            }
+          }
+        },
+        "applicationUuid": "0.30570647046730737"
+      }
     ]
   },
   {
@@ -1263,6 +16207,358 @@ module.exports = [
     "chapter": "jump-game",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpBottomUpJumpGame([1,0])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([100,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([2,3,1,1,4])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([1,1,1,1,1])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([1,1,1,10,1])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([1,5,2,1,0,2,0])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([1,0,1])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([3,2,1,0,4])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([0,0,0,0,0])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      },
+      {
+        "ddgTitle": "dpBottomUpJumpGame([5,4,3,2,1,0,0])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpBottomUpJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 52,
+              "index": 810
+            },
+            "end": {
+              "line": 46,
+              "column": 1,
+              "index": 1880
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 85,
+              "index": 184
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 797
+            }
+          }
+        },
+        "applicationUuid": "0.9061351777602411"
+      }
     ]
   },
   {
@@ -1273,6 +16569,148 @@ module.exports = [
     "chapter": "longest-increasing-subsequence",
     "testFilePaths": [
       "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpLongestIncreasingSubsequence([9,8,7,6,5,4,3,2,1,0])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/dpLongestIncreasingSubsequence.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 65,
+              "index": 229
+            },
+            "end": {
+              "line": 53,
+              "column": 1,
+              "index": 1976
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 199
+            },
+            "end": {
+              "line": 35,
+              "column": 3,
+              "index": 942
+            }
+          }
+        },
+        "applicationUuid": "0.10302057803450504"
+      },
+      {
+        "ddgTitle": "dpLongestIncreasingSubsequence([0,1,2,3,4,5,6,7,8,9])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/dpLongestIncreasingSubsequence.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 65,
+              "index": 229
+            },
+            "end": {
+              "line": 53,
+              "column": 1,
+              "index": 1976
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 199
+            },
+            "end": {
+              "line": 35,
+              "column": 3,
+              "index": 942
+            }
+          }
+        },
+        "applicationUuid": "0.10302057803450504"
+      },
+      {
+        "ddgTitle": "dpLongestIncreasingSubsequence([3,4,-1,0,6,2,3])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/dpLongestIncreasingSubsequence.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 65,
+              "index": 229
+            },
+            "end": {
+              "line": 53,
+              "column": 1,
+              "index": 1976
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 199
+            },
+            "end": {
+              "line": 35,
+              "column": 3,
+              "index": 942
+            }
+          }
+        },
+        "applicationUuid": "0.10302057803450504"
+      },
+      {
+        "ddgTitle": "dpLongestIncreasingSubsequence([0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/dpLongestIncreasingSubsequence.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 65,
+              "index": 229
+            },
+            "end": {
+              "line": 53,
+              "column": 1,
+              "index": 1976
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 64,
+              "index": 199
+            },
+            "end": {
+              "line": 35,
+              "column": 3,
+              "index": 942
+            }
+          }
+        },
+        "applicationUuid": "0.10302057803450504"
+      }
     ]
   },
   {
@@ -1283,6 +16721,358 @@ module.exports = [
     "chapter": "maximum-subarray",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpMaximumSubarray([])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([0,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([0,0,1])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([0,0,1,2])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([0,0,-1,2])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([-1,-2,-3,-4,-5])",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([1,2,3,2,3,4,5])",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 47,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      },
+      {
+        "ddgTitle": "dpMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 56,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/dpMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 179
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1520
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 83,
+              "index": 179
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 905
+            }
+          }
+        },
+        "applicationUuid": "0.11592762310872273"
+      }
     ]
   },
   {
@@ -1293,6 +17083,533 @@ module.exports = [
     "chapter": "rain-terraces",
     "testFilePaths": [
       "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpRainTerraces([1])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([1,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,1,0])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,1,0,0])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,1,0,0,1,0])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,2,0,0,1,0])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([2,0,2])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([2,0,5])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([3,0,0,2,0,4])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([1,1,1,1,1])",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([1,2,3,4,5])",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([4,1,3,1,2,1,2,1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      },
+      {
+        "ddgTitle": "dpRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 49,
+              "index": 188
+            },
+            "end": {
+              "line": 47,
+              "column": 1,
+              "index": 1757
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 20,
+              "column": 3,
+              "index": 980
+            }
+          }
+        },
+        "applicationUuid": "0.8933591976426398"
+      }
     ]
   },
   {
@@ -1303,6 +17620,358 @@ module.exports = [
     "chapter": "jump-game",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpTopDownJumpGame([1,0])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([100,0])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([2,3,1,1,4])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([1,1,1,1,1])",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([1,1,1,10,1])",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([1,5,2,1,0,2,0])",
+        "contextId": 42,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([1,0,1])",
+        "contextId": 52,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([3,2,1,0,4])",
+        "contextId": 57,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([0,0,0,0,0])",
+        "contextId": 66,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      },
+      {
+        "ddgTitle": "dpTopDownJumpGame([5,4,3,2,1,0,0])",
+        "contextId": 72,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/dpTopDownJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 2,
+              "index": 954
+            },
+            "end": {
+              "line": 80,
+              "column": 1,
+              "index": 2828
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 84,
+              "index": 180
+            },
+            "end": {
+              "line": 16,
+              "column": 3,
+              "index": 783
+            }
+          }
+        },
+        "applicationUuid": "0.9531129869184822"
+      }
     ]
   },
   {
@@ -1313,6 +17982,218 @@ module.exports = [
     "chapter": "unique-paths",
     "testFilePaths": [
       "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "dpUniquePaths(3, 2)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/dpUniquePaths.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 278
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 416
+            }
+          }
+        },
+        "applicationUuid": "0.7589643253606586"
+      },
+      {
+        "ddgTitle": "dpUniquePaths(7, 3)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/dpUniquePaths.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 278
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 416
+            }
+          }
+        },
+        "applicationUuid": "0.7589643253606586"
+      },
+      {
+        "ddgTitle": "dpUniquePaths(3, 7)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/dpUniquePaths.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 278
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 416
+            }
+          }
+        },
+        "applicationUuid": "0.7589643253606586"
+      },
+      {
+        "ddgTitle": "dpUniquePaths(10, 10)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/dpUniquePaths.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 278
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 416
+            }
+          }
+        },
+        "applicationUuid": "0.7589643253606586"
+      },
+      {
+        "ddgTitle": "dpUniquePaths(100, 1)",
+        "contextId": 31,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/dpUniquePaths.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 278
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 416
+            }
+          }
+        },
+        "applicationUuid": "0.7589643253606586"
+      },
+      {
+        "ddgTitle": "dpUniquePaths(1, 100)",
+        "contextId": 33,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/dpUniquePaths.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 53,
+              "index": 278
+            },
+            "end": {
+              "line": 40,
+              "column": 1,
+              "index": 1528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 62,
+              "index": 146
+            },
+            "end": {
+              "line": 11,
+              "column": 3,
+              "index": 416
+            }
+          }
+        },
+        "applicationUuid": "0.7589643253606586"
+      }
     ]
   },
   {
@@ -1333,6 +18214,708 @@ module.exports = [
     "chapter": "euclidean-algorithm",
     "testFilePaths": [
       "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "euclideanAlgorithm(0, 0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(2, 0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(0, 2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(1, 2)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(2, 1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(6, 6)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(2, 4)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(4, 2)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(12, 4)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(4, 12)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(5, 13)",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(27, 13)",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(24, 60)",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(60, 24)",
+        "contextId": 39,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(252, 105)",
+        "contextId": 42,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(105, 252)",
+        "contextId": 46,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(1071, 462)",
+        "contextId": 51,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(462, 1071)",
+        "contextId": 55,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(462, -1071)",
+        "contextId": 60,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithm(-462, -1071)",
+        "contextId": 65,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithm.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 65,
+              "index": 243
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 528
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 146
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1140
+            }
+          }
+        },
+        "applicationUuid": "0.19270870260538997"
+      }
     ]
   },
   {
@@ -1343,6 +18926,708 @@ module.exports = [
     "chapter": "euclidean-algorithm",
     "testFilePaths": [
       "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(0, 0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(2, 0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(0, 2)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(1, 2)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(2, 1)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(6, 6)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(2, 4)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(4, 2)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(12, 4)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(4, 12)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(5, 13)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(27, 13)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(24, 60)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(60, 24)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(252, 105)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(105, 252)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(1071, 462)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(462, 1071)",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(462, -1071)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      },
+      {
+        "ddgTitle": "euclideanAlgorithmIterative(-462, -1071)",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 74,
+              "index": 252
+            },
+            "end": {
+              "line": 20,
+              "column": 1,
+              "index": 716
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 47,
+              "index": 173
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1347
+            }
+          }
+        },
+        "applicationUuid": "0.14711752481348017"
+      }
     ]
   },
   {
@@ -1358,194 +19643,247 @@ module.exports = [
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
         "contextId": 6,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
           }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
         "contextId": 21,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
           }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
         "contextId": 36,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
           }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       },
       {
         "ddgTitle": "euclideanDistance([[],[]], [[],[]])",
         "contextId": 55,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
           }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
         "contextId": 76,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
           }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       },
       {
         "ddgTitle": "euclideanDistance([[],[],[]], [[],[],[]])",
         "contextId": 99,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
-            }
-          },
-          "_range": [
-            {
-              "line": 14,
-              "character": 36
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
             },
-            {
-              "line": 25,
-              "character": 1
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
-          ]
+          }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       },
       {
         "ddgTitle": "euclideanDistance([[],[],[]], [[],[],[]])",
         "contextId": 126,
-        "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
-        "loc": {
-          "start": {
-            "line": 15,
-            "column": 36,
-            "index": 309,
-            "_pos": {
-              "line": 14,
-              "character": 36
-            }
-          },
-          "end": {
-            "line": 26,
-            "column": 1,
-            "index": 591,
-            "_pos": {
-              "line": 25,
-              "character": 1
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
             }
           }
         },
-        "applicationUuid": "0.6646805241350302"
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 66,
+              "index": 162
+            },
+            "end": {
+              "line": 12,
+              "column": 3,
+              "index": 662
+            }
+          }
+        },
+        "applicationUuid": "0.7325062149924124"
       }
     ]
   },
@@ -1557,6 +19895,78 @@ module.exports = [
     "chapter": "euclidean-distance",
     "testFilePaths": [
       "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "euclideanDistance([[]], [[]])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 17,
+              "index": 772
+            },
+            "end": {
+              "line": 15,
+              "column": 50,
+              "index": 805
+            }
+          }
+        },
+        "applicationUuid": "0.4967011089461588"
+      },
+      {
+        "ddgTitle": "euclideanDistance([[]], [[]])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/euclideanDistance.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 36,
+              "index": 309
+            },
+            "end": {
+              "line": 26,
+              "column": 1,
+              "index": 591
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js",
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 17,
+              "index": 894
+            },
+            "end": {
+              "line": 19,
+              "column": 51,
+              "index": 928
+            }
+          }
+        },
+        "applicationUuid": "0.4967011089461588"
+      }
     ]
   },
   {
@@ -1567,6 +19977,43 @@ module.exports = [
     "chapter": "eulerian-path",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "eulerianPath({vertices,edges,isDirected})",
+        "contextId": 244,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/eulerian-path/eulerianPath.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 44,
+              "index": 252
+            },
+            "end": {
+              "line": 101,
+              "column": 1,
+              "index": 3593
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js",
+          "loc": {
+            "start": {
+              "line": 36,
+              "column": 52,
+              "index": 1254
+            },
+            "end": {
+              "line": 87,
+              "column": 3,
+              "index": 3275
+            }
+          }
+        },
+        "applicationUuid": "0.23566758465487192"
+      }
     ]
   },
   {
@@ -1577,6 +20024,43 @@ module.exports = [
     "chapter": "eulerian-path",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "eulerianPath({vertices,edges,isDirected})",
+        "contextId": 233,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/eulerian-path/eulerianPath.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 44,
+              "index": 252
+            },
+            "end": {
+              "line": 101,
+              "column": 1,
+              "index": 3593
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js",
+          "loc": {
+            "start": {
+              "line": 89,
+              "column": 49,
+              "index": 3330
+            },
+            "end": {
+              "line": 138,
+              "column": 3,
+              "index": 5251
+            }
+          }
+        },
+        "applicationUuid": "0.2870287839812573"
+      }
     ]
   },
   {
@@ -1587,6 +20071,43 @@ module.exports = [
     "chapter": "eulerian-path",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "eulerianPath({vertices,edges,isDirected})",
+        "contextId": 140,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/eulerian-path/eulerianPath.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 44,
+              "index": 252
+            },
+            "end": {
+              "line": 101,
+              "column": 1,
+              "index": 3593
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 50,
+              "index": 403
+            },
+            "end": {
+              "line": 31,
+              "column": 5,
+              "index": 1125
+            }
+          }
+        },
+        "applicationUuid": "0.7436378422715022"
+      }
     ]
   },
   {
@@ -1597,6 +20118,183 @@ module.exports = [
     "chapter": "factorial",
     "testFilePaths": [
       "src/algorithms/math/factorial/__test__/factorial.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "factorial(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorial.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 113
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 307
+            }
+          }
+        },
+        "applicationUuid": "0.9184629220184182"
+      },
+      {
+        "ddgTitle": "factorial(1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorial.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 113
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 307
+            }
+          }
+        },
+        "applicationUuid": "0.9184629220184182"
+      },
+      {
+        "ddgTitle": "factorial(5)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorial.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 113
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 307
+            }
+          }
+        },
+        "applicationUuid": "0.9184629220184182"
+      },
+      {
+        "ddgTitle": "factorial(8)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorial.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 113
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 307
+            }
+          }
+        },
+        "applicationUuid": "0.9184629220184182"
+      },
+      {
+        "ddgTitle": "factorial(10)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorial.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 42,
+              "index": 100
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 210
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorial.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 113
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 307
+            }
+          }
+        },
+        "applicationUuid": "0.9184629220184182"
+      }
     ]
   },
   {
@@ -1607,6 +20305,183 @@ module.exports = [
     "chapter": "factorial",
     "testFilePaths": [
       "src/algorithms/math/factorial/__test__/factorialRecursive.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "factorialRecursive(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 109
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 181
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 140
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.4046074571064946"
+      },
+      {
+        "ddgTitle": "factorialRecursive(1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 109
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 181
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 140
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.4046074571064946"
+      },
+      {
+        "ddgTitle": "factorialRecursive(5)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 109
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 181
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 140
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.4046074571064946"
+      },
+      {
+        "ddgTitle": "factorialRecursive(8)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 109
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 181
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 140
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.4046074571064946"
+      },
+      {
+        "ddgTitle": "factorialRecursive(10)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 109
+            },
+            "end": {
+              "line": 7,
+              "column": 1,
+              "index": 181
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 41,
+              "index": 140
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 379
+            }
+          }
+        },
+        "applicationUuid": "0.4046074571064946"
+      }
     ]
   },
   {
@@ -1617,6 +20492,148 @@ module.exports = [
     "chapter": "fourier-transform",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 73,
+              "index": 880
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1293
+            }
+          }
+        },
+        "applicationUuid": "0.17224403932219667"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 73,
+              "index": 880
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1293
+            }
+          }
+        },
+        "applicationUuid": "0.17224403932219667"
+      },
+      {
+        "ddgTitle": "fastFourierTransform([{}])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/fastFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 884
+            },
+            "end": {
+              "line": 77,
+              "column": 1,
+              "index": 2252
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 73,
+              "index": 880
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1293
+            }
+          }
+        },
+        "applicationUuid": "0.17224403932219667"
+      },
+      {
+        "ddgTitle": "fastFourierTransform([{}], true)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/fastFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 884
+            },
+            "end": {
+              "line": 77,
+              "column": 1,
+              "index": 2252
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 31,
+              "column": 73,
+              "index": 880
+            },
+            "end": {
+              "line": 39,
+              "column": 3,
+              "index": 1293
+            }
+          }
+        },
+        "applicationUuid": "0.17224403932219667"
+      }
     ]
   },
   {
@@ -1627,6 +20644,323 @@ module.exports = [
     "chapter": "fourier-transform",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "fastFourierTransform([{},{},{}])",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/fastFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 884
+            },
+            "end": {
+              "line": 77,
+              "column": 1,
+              "index": 2252
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      },
+      {
+        "ddgTitle": "fastFourierTransform([{},{},{},{}], true)",
+        "contextId": 75,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/fastFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 884
+            },
+            "end": {
+              "line": 77,
+              "column": 1,
+              "index": 2252
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 41,
+              "column": 73,
+              "index": 1372
+            },
+            "end": {
+              "line": 60,
+              "column": 3,
+              "index": 2044
+            }
+          }
+        },
+        "applicationUuid": "0.6340049458510233"
+      }
     ]
   },
   {
@@ -1637,6 +20971,988 @@ module.exports = [
     "chapter": "fourier-transform",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 25,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 27,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 31,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "ComplexNumber.constructor({re,im})",
+        "contextId": 33,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 39,
+              "index": 264
+            },
+            "end": {
+              "line": 14,
+              "column": 3,
+              "index": 308
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "fastFourierTransform([{},{},{},{},{},{},{},{},{},{}])",
+        "contextId": 34,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/fastFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 884
+            },
+            "end": {
+              "line": 77,
+              "column": 1,
+              "index": 2252
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      },
+      {
+        "ddgTitle": "fastFourierTransform([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}], true)",
+        "contextId": 461,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/fastFourierTransform.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 73,
+              "index": 884
+            },
+            "end": {
+              "line": 77,
+              "column": 1,
+              "index": 2252
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js",
+          "loc": {
+            "start": {
+              "line": 62,
+              "column": 73,
+              "index": 2123
+            },
+            "end": {
+              "line": 100,
+              "column": 3,
+              "index": 4380
+            }
+          }
+        },
+        "applicationUuid": "0.9455559160252691"
+      }
     ]
   },
   {

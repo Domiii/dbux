@@ -4,10 +4,14 @@ import Chapter from './Chapter';
 export default function ChapterGroup(props) {
   const { chapterGroup } = props;
   const { name, chapters } = chapterGroup;
-  return <>
+  return <div className="container">
     <h2>{name}</h2>
-    {chapters.map(chapter => {
-      return <Chapter key={chapter.name} chapter={chapter}></Chapter>;
-    })}
-  </>;
+    <div className="row">
+      {chapters.map(chapter => {
+        return <div key={chapter.name} className="col-6">
+          <Chapter chapter={chapter}></Chapter>
+        </div>;
+      })}
+    </div>
+  </div>;
 }

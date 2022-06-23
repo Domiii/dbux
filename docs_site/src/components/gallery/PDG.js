@@ -14,8 +14,16 @@ export default function PDG(props) {
 
     <div className="row">
       {screenshots.map((screenshot, index) => {
-        return <div className="my-2 vh-100 overflow-hidden">
-          <GraphvizDot key={index} dot={screenshot.dot}></GraphvizDot>
+        let graphEl;
+        if (screenshot.dot) {
+          graphEl = <GraphvizDot dot={screenshot.dot}></GraphvizDot>;
+        }
+        else if (screenshot.sameAs) {
+          graphEl = <GraphvizDot dot={screenshots[screenshot.sameAs].dot}></GraphvizDot>;
+        }
+
+        return <div className="my-2 vh-100 overflow-hidden" key={index}>
+          {graphEl}
         </div>;
       })}
     </div>

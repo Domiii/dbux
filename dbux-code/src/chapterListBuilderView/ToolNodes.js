@@ -267,8 +267,19 @@ class ExportAllDDGScreenshotNode extends ToolNode {
   }
 
   async handleClick() {
-    const exercises = this.controller.exerciseList.getAll().slice(10, 11);
+    const exercises = this.controller.exerciseList.getAll().slice(13, 100);
+    // const exercises = this.controller.exerciseList.getAll();
     await this.controller.gallery.buildGalleryForExercises(exercises);
+  }
+}
+
+class GenerateGraphsJSNode extends ToolNode {
+  static makeLabel() {
+    return `Generate graphs.js`;
+  }
+
+  async handleClick() {
+    this.controller.gallery.generateGraphsJS();
   }
 }
 
@@ -287,5 +298,6 @@ export default class ToolRootNode extends BaseTreeViewNode {
     DeleteExportedApplicationNode,
     GeneratePatchNode,
     ExportAllDDGScreenshotNode,
+    GenerateGraphsJSNode,
   ]
 }
