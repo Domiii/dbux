@@ -21963,7 +21963,8 @@ module.exports = [
     "chapter": "fast-powering",
     "testFilePaths": [
       "src/algorithms/math/fast-powering/__test__/fastPowering.test.js"
-    ]
+    ],
+    "ddgs": []
   },
   {
     "name": "fibonacci should calculate fibonacci correctly@fibonacci.test.js",
@@ -21973,6 +21974,358 @@ module.exports = [
     "chapter": "fibonacci",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacci.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fibonacci(1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(2)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(4)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(5)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(6)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(7)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(8)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(9)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      },
+      {
+        "ddgTitle": "fibonacci(10)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacci.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 37,
+              "index": 132
+            },
+            "end": {
+              "line": 29,
+              "column": 1,
+              "index": 523
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacci.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 123
+            },
+            "end": {
+              "line": 15,
+              "column": 3,
+              "index": 675
+            }
+          }
+        },
+        "applicationUuid": "0.608971551549707"
+      }
     ]
   },
   {
@@ -21983,6 +22336,428 @@ module.exports = [
     "chapter": "fibonacci",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fibonacciClosedForm(1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(2)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(4)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(5)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(6)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(7)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(8)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(20)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(30)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(50)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      },
+      {
+        "ddgTitle": "fibonacciClosedForm(70)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 51,
+              "index": 438
+            },
+            "end": {
+              "line": 25,
+              "column": 3,
+              "index": 1058
+            }
+          }
+        },
+        "applicationUuid": "0.05128266984304797"
+      }
     ]
   },
   {
@@ -21993,6 +22768,43 @@ module.exports = [
     "chapter": "fibonacci",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fibonacciClosedForm(76)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNthClosedForm.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 367
+            },
+            "end": {
+              "line": 23,
+              "column": 1,
+              "index": 878
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 58,
+              "index": 266
+            },
+            "end": {
+              "line": 7,
+              "column": 5,
+              "index": 309
+            }
+          }
+        },
+        "applicationUuid": "0.3785555127047515"
+      }
     ]
   },
   {
@@ -22003,6 +22815,603 @@ module.exports = [
     "chapter": "fibonacci",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fibonacciNth(1)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(2)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(3)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(4)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(5)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(6)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(7)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(8)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(20)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(30)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(50)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(70)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(71)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(72)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(73)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(74)",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      },
+      {
+        "ddgTitle": "fibonacciNth(75)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/fibonacci/fibonacciNth.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 40,
+              "index": 176
+            },
+            "end": {
+              "line": 25,
+              "column": 1,
+              "index": 489
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 51,
+              "index": 132
+            },
+            "end": {
+              "line": 22,
+              "column": 3,
+              "index": 899
+            }
+          }
+        },
+        "applicationUuid": "0.2304982953795025"
+      }
     ]
   },
   {
@@ -22013,6 +23422,78 @@ module.exports = [
     "chapter": "fisher-yates",
     "testFilePaths": [
       "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fisherYates([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/fisherYates.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 110
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 456
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 44,
+              "index": 384
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 649
+            }
+          }
+        },
+        "applicationUuid": "0.1820421040559801"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([10,13,3,19,1,15,14,2,20,11,5,16,4,12,18,9,17,8,6,7])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 44,
+              "index": 384
+            },
+            "end": {
+              "line": 18,
+              "column": 3,
+              "index": 649
+            }
+          }
+        },
+        "applicationUuid": "0.1820421040559801"
+      }
     ]
   },
   {
@@ -22023,6 +23504,78 @@ module.exports = [
     "chapter": "fisher-yates",
     "testFilePaths": [
       "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fisherYates([])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/fisherYates.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 110
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 456
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 42,
+              "index": 242
+            },
+            "end": {
+              "line": 9,
+              "column": 3,
+              "index": 334
+            }
+          }
+        },
+        "applicationUuid": "0.8073361596358062"
+      },
+      {
+        "ddgTitle": "fisherYates([1])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/fisherYates.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 51,
+              "index": 110
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 456
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 42,
+              "index": 242
+            },
+            "end": {
+              "line": 9,
+              "column": 3,
+              "index": 334
+            }
+          }
+        },
+        "applicationUuid": "0.8073361596358062"
+      }
     ]
   },
   {
@@ -22033,6 +23586,568 @@ module.exports = [
     "chapter": "binary-floating-point",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "floatAs32BinaryString(-3.4028234663852886e+38)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(-10345.5595703125)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(-27.15625)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(-1)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(-0.1)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(0)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(1.401298464324817e-45)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(0.00000456)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(0.1)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(0.2)",
+        "contextId": 25,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(0.3)",
+        "contextId": 27,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(1)",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(1.5)",
+        "contextId": 31,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(1.75)",
+        "contextId": 33,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(1.875)",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      },
+      {
+        "ddgTitle": "floatAs32BinaryString(3.4028234663852886e+38)",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 51,
+              "index": 2085
+            },
+            "end": {
+              "line": 61,
+              "column": 1,
+              "index": 2161
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 76,
+              "index": 269
+            },
+            "end": {
+              "line": 10,
+              "column": 3,
+              "index": 502
+            }
+          }
+        },
+        "applicationUuid": "0.0474670622206832"
+      }
     ]
   },
   {
@@ -22043,6 +24158,568 @@ module.exports = [
     "chapter": "binary-floating-point",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "floatAs64BinaryString(-1.7976931348623157e+308)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(-10345.5595703125)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(-27.15625)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(-1)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(-0.1)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(0)",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(5e-324)",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(0.00000456)",
+        "contextId": 21,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(0.1)",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(0.2)",
+        "contextId": 25,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(0.3)",
+        "contextId": 27,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(1)",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(1.5)",
+        "contextId": 31,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(1.75)",
+        "contextId": 33,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(1.875)",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      },
+      {
+        "ddgTitle": "floatAs64BinaryString(1.7976931348623157e+308)",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/floatAsBinaryString.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 51,
+              "index": 1714
+            },
+            "end": {
+              "line": 51,
+              "column": 1,
+              "index": 1790
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js",
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 76,
+              "index": 626
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 859
+            }
+          }
+        },
+        "applicationUuid": "0.4593088101553924"
+      }
     ]
   },
   {
@@ -22053,6 +24730,43 @@ module.exports = [
     "chapter": "floyd-warshall",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
+        "contextId": 167,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/floydWarshall.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 149
+            },
+            "end": {
+              "line": 72,
+              "column": 1,
+              "index": 3070
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js",
+          "loc": {
+            "start": {
+              "line": 150,
+              "column": 102,
+              "index": 5868
+            },
+            "end": {
+              "line": 219,
+              "column": 3,
+              "index": 8667
+            }
+          }
+        },
+        "applicationUuid": "0.5461334469959973"
+      }
     ]
   },
   {
@@ -22063,6 +24777,78 @@ module.exports = [
     "chapter": "floyd-warshall",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
+        "contextId": 137,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/floydWarshall.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 149
+            },
+            "end": {
+              "line": 72,
+              "column": 1,
+              "index": 3070
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js",
+          "loc": {
+            "start": {
+              "line": 89,
+              "column": 75,
+              "index": 3677
+            },
+            "end": {
+              "line": 148,
+              "column": 3,
+              "index": 5760
+            }
+          }
+        },
+        "applicationUuid": "0.34432523664787995"
+      },
+      {
+        "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
+        "contextId": 487,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/floydWarshall.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 149
+            },
+            "end": {
+              "line": 72,
+              "column": 1,
+              "index": 3070
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js",
+          "loc": {
+            "start": {
+              "line": 150,
+              "column": 102,
+              "index": 5868
+            },
+            "end": {
+              "line": 219,
+              "column": 3,
+              "index": 8667
+            }
+          }
+        },
+        "applicationUuid": "0.34432523664787995"
+      }
     ]
   },
   {
@@ -22073,6 +24859,43 @@ module.exports = [
     "chapter": "floyd-warshall",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
+        "contextId": 268,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/floydWarshall.js",
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 45,
+              "index": 149
+            },
+            "end": {
+              "line": 72,
+              "column": 1,
+              "index": 3070
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 77,
+              "index": 367
+            },
+            "end": {
+              "line": 87,
+              "column": 3,
+              "index": 3596
+            }
+          }
+        },
+        "applicationUuid": "0.6555288042134155"
+      }
     ]
   },
   {
@@ -22083,6 +24906,428 @@ module.exports = [
     "chapter": "bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/fullAdder.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "fullAdder(0, 0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(2, 0)",
+        "contextId": 71,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(0, 2)",
+        "contextId": 136,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(1, 2)",
+        "contextId": 201,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(2, 1)",
+        "contextId": 266,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(6, 6)",
+        "contextId": 331,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(-2, 4)",
+        "contextId": 396,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(4, -2)",
+        "contextId": 461,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(-4, -4)",
+        "contextId": 526,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(4, -5)",
+        "contextId": 591,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(2, 121)",
+        "contextId": 656,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      },
+      {
+        "ddgTitle": "fullAdder(121, 2)",
+        "contextId": 721,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/fullAdder.js",
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40,
+              "index": 985
+            },
+            "end": {
+              "line": 70,
+              "column": 1,
+              "index": 2218
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/math/bits/__test__/fullAdder.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 40,
+              "index": 112
+            },
+            "end": {
+              "line": 17,
+              "column": 3,
+              "index": 590
+            }
+          }
+        },
+        "applicationUuid": "0.6775786194064841"
+      }
     ]
   },
   {

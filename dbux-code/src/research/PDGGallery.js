@@ -89,11 +89,22 @@ export default class PDGGallery {
     return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
   }
 
-  async buildGalleryForExercises(exercises) {
+  async buildGalleryForExercises(exercises, force = false) {
     await runTaskWithProgressBar(async (progress) => {
       const failedExerciseIds = [];
       for (let i = 0; i < exercises.length; i++) {
         const exercise = exercises[i];
+        const exerciseFolderPath = this.getExerciseFolder(exercise);
+        const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
+        if (!force && fs.existsSync(renderDataJsonFilePath)) {
+          log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
+          continue;
+        }
+        else {
+          if (!fs.existsSync(exerciseFolderPath)) {
+            fs.mkdirSync(exerciseFolderPath, { recursive: true });
+          }
+        }
         try {
           const galleryConfig = exercise.gallery;
           let screenshotConfigs;
@@ -157,17 +168,16 @@ export default class PDGGallery {
               screenshots,
             });
           }
-
-          const exerciseFolderPath = this.getExerciseFolder(exercise);
-          const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
-          if (!fs.existsSync(exerciseFolderPath)) {
-            fs.mkdirSync(exerciseFolderPath, { recursive: true });
-          }
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(PDGRenderData, null, 2));
         }
         catch (err) {
           failedExerciseIds.push(exercise.id);
           logError(new NestedError(`Cannot generate pdg render data for exercise: ${exercise.id}`, err));
+          const errData = {
+            success: false,
+            error: err.stack,
+          };
+          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(errData, null, 2));
         }
       }
       if (failedExerciseIds.length) {

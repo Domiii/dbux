@@ -1,0 +1,4 @@
+{
+  "success": false,
+  "error": "TypeError: Cannot read property 'applicationUuid' of undefined\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:18626:123\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:7878:12"
+}
