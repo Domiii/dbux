@@ -607,9 +607,13 @@ export default class DataDependencyGraph extends BaseDDG {
           const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
           if (skippedNode || timelineNodes) {
             const returnNode = skippedNode || last(timelineNodes);
-            if (ddgQueries.checkNodeVisibilitySettings(this, returnNode)) {
+            const returnTimelineId = returnNode.timelineId;
+            if (
+              ddgQueries.checkNodeVisibilitySettings(this, returnNode) &&
+              // hackfix: don't accidentally grab nodes from other summary groups (in case of skip)
+              returnTimelineId > timelineId
+            ) {
               // always override previous, because its always last
-              const returnTimelineId = returnNode.timelineId;
               varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
             }
           }
@@ -790,6 +794,7 @@ export default class DataDependencyGraph extends BaseDDG {
     const { timelineId, dataNodeId, children } = node;
     const mode = this.summaryModes[timelineId];
 
+    const isSummarizedMode = ddgQueries.isNodeSummarizedMode(this, node);
     const isShallowSummarizedGroup = isShallowExpandedMode(mode);
 
     /**
@@ -802,7 +807,7 @@ export default class DataDependencyGraph extends BaseDDG {
         node.watched ||
 
         // allow summarization for nested group nodes
-        isShallowSummarizedGroup
+        (isSummarizedMode && isAncestorShallowSummarized)
       )
     );
     if (isSummarizedAndVisible) {

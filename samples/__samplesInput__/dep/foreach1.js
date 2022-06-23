@@ -1,4 +1,4 @@
-function main(a) {
+function main(a, b) {
   var b = [];
   a.forEach((x, i) => {
     b[i] = x;

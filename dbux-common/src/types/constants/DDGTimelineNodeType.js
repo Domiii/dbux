@@ -27,7 +27,9 @@ const ddgTimelineNodeTypeObj = {
   While: 16,
   DoWhile: 17,
 
-  Iteration: 20
+  Iteration: 20,
+
+  Hof: 25
 };
 
 /**
@@ -104,6 +106,7 @@ export function isLoopTimelineNode(groupType) {
 const controlGroupTypes = [...loopTypes];
 controlGroupTypes[DDGTimelineNodeType.Root] = true;
 controlGroupTypes[DDGTimelineNodeType.Context] = true;
+controlGroupTypes[DDGTimelineNodeType.Hof] = true;
 
 controlGroupTypes[DDGTimelineNodeType.If] = true;
 controlGroupTypes[DDGTimelineNodeType.Ternary] = true;

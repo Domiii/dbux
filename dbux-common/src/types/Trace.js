@@ -44,6 +44,8 @@ export class TraceData {
    * Currently only set in `BaseId` and `MemberExpression`.
    * We do not set it for constants, whose `TraceType` already encodes the same information (e.g. `super`, `this`, etc.).
    * 
+   * TODO: replace with `purpose`
+   * 
    * {@link SpecialIdentifierType}
    */
   specialType;
@@ -51,7 +53,9 @@ export class TraceData {
   /**
    * Dynamically determined special properties of a trace.
    * 
-   * {@link SpecialTraceDynamicType}
+   * TODO: replace with `purpose`
+   * 
+   * {@link specialDynamicTraceType}
    */
   specialDynamicType;
 }

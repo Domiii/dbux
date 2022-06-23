@@ -36,6 +36,7 @@ import RefSnapshot, { RefSnapshotTreeNode, VersionedRefSnapshot } from '@dbux/co
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel, makeTraceLocLabel } from './helpers/makeLabels';
+import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 
 /** @typedef {import('./RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
@@ -620,9 +621,16 @@ const dataProviderUtil = {
     return dp.util.isStaticTraceControlGroupPop(staticTraceId);
   },
 
+  /** @param {RuntimeDataProvider} dp */
+  isTraceHofBCE(dp, traceId) {
+    const trace = dp.util.getTrace(traceId);
+    return SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType);
+  },
+
   // /** @param {DataProvider} dp */
   // getStaticTraceControlId(dp, staticTraceId) {
   //   TODO
+  // SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType)
   // },
 
   // ###########################################################################

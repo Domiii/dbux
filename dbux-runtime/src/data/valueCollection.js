@@ -241,6 +241,7 @@ class ValueCollection extends Collection {
       return this.addOmitted();
     }
     else if (!isTrackableCategory(category)) {
+      // console.log('valuieCollection [notTrackable]', dataNode.nodeId, value);
       valueRef = null;
       dataNode.value = this._serializeNonTrackable(value, category);
       dataNode.hasValue = dataNode.value !== undefined;
@@ -594,6 +595,12 @@ class ValueCollection extends Collection {
         }
         // serialized = JSON.stringify(value);
       }
+      else if (value === Infinity) {
+        return this.#specialValue('Inf');
+      }
+      else if (Number.isNaN(value)) {
+        return this.#specialValue('NaN');
+      }
       else {
         const t = typeof value;
         if (t === 'bigint') {
@@ -611,12 +618,6 @@ class ValueCollection extends Collection {
            * @see https://github.com/darrachequesne/notepack/issues
            */
           serialized = this.#specialValue(value.toString());
-        }
-        else if (t === Infinity) {
-          return this.#specialValue('Inf');
-        }
-        else if (Number.isNaN(t)) {
-          return this.#specialValue('NaN');
         }
         else {
           serialized = value;

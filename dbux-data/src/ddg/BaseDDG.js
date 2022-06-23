@@ -21,7 +21,7 @@ import DDGBounds from './DDGBounds';
 import DDGEdge, { EdgeState } from './DDGEdge';
 import DDGTimelineBuilder from './DDGTimelineBuilder';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode } from './DDGTimelineNodes';
+import { DDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode, IndependentValueTimelineNode } from './DDGTimelineNodes';
 import { DDGRootTimelineId } from './constants';
 import ddgQueries, { ddgHostQueries } from './ddgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
@@ -377,13 +377,21 @@ export default class BaseDDG {
     }
   }
 
+  addSnapshotValueNode(dataNode) {
+    const label = this.makeDataNodeLabel(dataNode);
+    const newNode = new ValueTimelineNode(dataNode.nodeId, label);
+    this.addDataNode(newNode);
+    return newNode;
+  }
+
   /**
    * @param {DataNode} dataNode 
    * @return {ValueTimelineNode}
    */
   addValueDataNode(dataNode) {
     const label = this.makeDataNodeLabel(dataNode);
-    const newNode = new ValueTimelineNode(dataNode.nodeId, label);
+    const newNode = new IndependentValueTimelineNode(dataNode.nodeId, label);
+    newNode.parentLabel = this.dp.util.findDataNodeAccessedRefVarName(dataNode.nodeId);
 
     this.addDataNode(newNode);
 
@@ -657,7 +665,7 @@ export default class BaseDDG {
             }
             else {
               // add shallow node
-              newChild = this.addValueDataNode(dataNode);
+              newChild = this.addSnapshotValueNode(dataNode);
               this.#onSnapshotNodeCreated(newChild, snapshotCfg, parentSnapshot);
             }
           }

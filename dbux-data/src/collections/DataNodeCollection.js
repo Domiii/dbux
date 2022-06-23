@@ -46,6 +46,9 @@ export default class DataNodeCollection extends Collection {
       const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
       const resultDataNode = trace.resultId && dp.util.getDataNodeOfTrace(trace.resultId);
       if (argDataNodes && resultDataNode) {
+        // // add to existing inputs (because sometimes, we have some extra inputs (e.g. toFixed))
+        // resultDataNode.inputs ||= [];
+        // resultDataNode.inputs.push(...argDataNodes.map(n => n.nodeId));
         if (resultDataNode.inputs?.length) {
           this.logger.error(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
         }
@@ -57,7 +60,7 @@ export default class DataNodeCollection extends Collection {
       }
     },
 
-    [TracePurpose.CalleeInput]: (trace, purpose) => {
+    [TracePurpose.CalleeObjectInput]: (trace, purpose) => {
       const { dp } = this;
       const callId = trace.traceId;
       const calleeObjectNodeId = dp.util.getCalleeObjectNodeId(callId);
@@ -66,6 +69,39 @@ export default class DataNodeCollection extends Collection {
 
         if (bceDataNode) {
           bceDataNode.inputs = [calleeObjectNodeId];
+        }
+      }
+    },
+    [TracePurpose.ComputeWithThis]: (trace, purpose) => {
+      const { dp } = this;
+      const callId = trace.traceId;
+      if (!TraceType.is.BeforeCallExpression(dp.util.getTraceType(callId))) {
+        this.logger.error(`Invalid TracePurpose.Compute for trace (should be BCE but is not): ${dp.util.makeTraceInfo(trace)}`);
+        return;
+      }
+
+      const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+      const resultDataNode = trace.resultId && dp.util.getDataNodeOfTrace(trace.resultId);
+      if (argDataNodes && resultDataNode) {
+        // // add to existing inputs (because sometimes, we have some extra inputs (e.g. toFixed))
+        // resultDataNode.inputs ||= [];
+        // resultDataNode.inputs.push(...argDataNodes.map(n => n.nodeId));
+        if (resultDataNode.inputs?.length) {
+          this.logger.error(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
+        }
+        else {
+          resultDataNode.type = DataNodeType.Compute;
+          resultDataNode.label = purpose.name;
+
+          // add "this"
+          const calleeObjectNodeId = dp.util.getCalleeObjectNodeId(callId);
+          if (calleeObjectNodeId) {
+            resultDataNode.inputs = [calleeObjectNodeId, ...argDataNodes.map(n => n.nodeId)];
+          }
+          else {
+            // this is probably a bug
+            resultDataNode.inputs = argDataNodes.map(n => n.nodeId);
+          }
         }
       }
     },

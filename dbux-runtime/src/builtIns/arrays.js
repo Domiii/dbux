@@ -5,7 +5,7 @@ import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
-import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault, monkeyPatchMethodPurpose } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -102,10 +102,10 @@ export default function patchArray() {
   );
 
   // ###########################################################################
-  // pop
+  // fill
   // ###########################################################################
 
-  monkeyPatchMethod(Array, 'pop',
+  monkeyPatchMethod(Array, 'fill',
     (arr, args, originalFunction, patchedFunction) => {
       const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
@@ -115,14 +115,20 @@ export default function patchArray() {
 
       const { traceId: callId } = bceTrace;
       const arrNodeId = getDataNodeIdFromRef(ref);
+      const allInputs = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
+      const writeInputs = [allInputs[0]];
 
-      // delete and return last
-      const i = arr.length - 1;
-      const varAccess = {
-        objectNodeId: arrNodeId,
-        prop: i
-      };
-      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.ReadAndDelete, varAccess);
+      let [value, start, end] = args;
+      start = !isNaN(start) ? wrapIndex(start, arr) : 0;
+      end = !isNaN(end) ? wrapIndex(end, arr) : arr.length;
+
+      for (let i = start; i < end; ++i) {
+        const varAccess = {
+          objectNodeId: arrNodeId,
+          prop: i
+        };
+        dataNodeCollection.createBCEDataNode(value, callId, DataNodeType.Write, varAccess, writeInputs);
+      }
 
       return originalFunction.apply(arr, args);
     }
@@ -222,14 +228,66 @@ export default function patchArray() {
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
 
-
       addPurpose(bceTrace, {
-        type: TracePurpose.CalleeInput
+        type: TracePurpose.CalleeObjectInput
       });
 
       return newArray;
     }
   );
+
+  // ###########################################################################
+  // pop
+  // ###########################################################################
+
+  monkeyPatchMethod(Array, 'pop',
+    (arr, args, originalFunction, patchedFunction) => {
+      const ref = valueCollection.getRefByValue(arr);
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
+
+      const { traceId: callId } = bceTrace;
+      const arrNodeId = getDataNodeIdFromRef(ref);
+
+      // delete and return last
+      const i = arr.length - 1;
+      const varAccess = {
+        objectNodeId: arrNodeId,
+        prop: i
+      };
+      dataNodeCollection.createBCEOwnDataNode(arr[i], callId, DataNodeType.ReadAndDelete, varAccess);
+
+      return originalFunction.apply(arr, args);
+    }
+  );
+
+  // // ###########################################################################
+  // // indexOf
+  // // ###########################################################################
+
+  // monkeyPatchMethod(Array, 'indexOf',
+  //   (arr, args, originalFunction, patchedFunction) => {
+  //     const ref = valueCollection.getRefByValue(arr);
+  //     const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+  //     if (!bceTrace) {
+  //       return originalFunction.apply(arr, args);
+  //     }
+
+  //     const allInputs = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
+  //     const resultIdx = originalFunction.apply(arr, args);
+
+  //     const { traceId: callId } = bceTrace;
+  //     const arrNodeId = getDataNodeIdFromRef(ref);
+
+  //     if (resultIdx > -1) {
+  //       // NOTE: there is no read here
+  //     }
+
+  //     return resultIdx;
+  //   }
+  // );
 
   /** ###########################################################################
    * built-in HOFs
@@ -244,7 +302,9 @@ export default function patchArray() {
     "filter",
     "map",
     "every",
-    "some"
+    "some",
+    "findIndex",
+    "flatMap"
   ].forEach((m) => {
     monkeyPatchMethod(Array, m,
       (arr, args, originalFunction, patchedFunction) => {
@@ -278,6 +338,24 @@ export default function patchArray() {
     );
   });
 
+
+  const defaultComputeMethods = [
+    "toLocaleString",
+    "toString",
+    "indexOf",
+    "lastIndexOf"
+  ];
+  defaultComputeMethods.forEach(f => {
+    monkeyPatchMethodPurpose(Array, f, {
+      type: TracePurpose.ComputeWithThis,
+      name: f
+    });
+  });
+
+  /** ###########################################################################
+   * TODO: other (make non-patchable for now)
+   * ###########################################################################*/
+
   [
     "reduce",
     "reduceRight"
@@ -286,35 +364,22 @@ export default function patchArray() {
     monkeyPatchMethodOverrideDefault(Array, m);
   });
 
-
-  /** ###########################################################################
-   * other (make non-patchable for now)
-   * ###########################################################################*/
-
   // var ign = new Set(['constructor', 'at']);
   // copy(Object.getOwnPropertyNames(Array.prototype).filter(f => Array.prototype[f] instanceof Function && 
   //  !ign.has(f)))
   [
     "concat",
     "copyWithin",
-    "fill",
-    "find",
-    "findIndex",
-    "lastIndexOf",
     "reverse",
     "unshift",
     "sort",
     "splice",
     "includes",
-    "indexOf",
     "join",
     "keys",
     "entries",
     "values",
     "flat",
-    "flatMap",
-    "toLocaleString",
-    "toString"
   ].forEach(m => monkeyPatchMethodOverrideDefault(Array, m));
 }
 

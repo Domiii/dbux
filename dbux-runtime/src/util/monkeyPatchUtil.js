@@ -88,6 +88,12 @@ export function registerMonkeyPatchedFunction(originalFunction, patchedFunction)
   }
 }
 
+export function registerMonkeyPatchedProxy(originalFunction, proxy) {
+  functionProxiesByOriginalFunction.set(originalFunction, proxy);
+  originalFunctionsByProxy.set(proxy, originalFunction);
+  return proxy;
+}
+
 /**
  * NOTE: does not work for patched callbacks
  */
@@ -293,6 +299,20 @@ export function monkeyPatchFunctionHolderPurpose(holder, name, purpose) {
 
 export function monkeyPatchMethod(Clazz, methodName, handler) {
   return monkeyPatchFunctionHolder(Clazz.prototype, methodName, handler);
+}
+
+export function monkeyPatchMethodPurpose(Clazz, methodName, purpose) {
+  return monkeyPatchMethod(Clazz, methodName,
+    // eslint-disable-next-line no-loop-func
+    (arr, args, originalFunction, patchedFunction) => {
+      const bceTrace = peekBCEMatchCallee(patchedFunction);
+      const result = originalFunction.apply(arr, args);
+      if (bceTrace) {
+        addPurpose(bceTrace, purpose);
+      }
+      return result;
+    }
+  );
 }
 
 export function monkeyPatchFunctionHolderDefault(holder, name) {
