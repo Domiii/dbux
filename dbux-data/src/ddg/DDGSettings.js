@@ -1,9 +1,10 @@
 export default class DDGSettings {
   connectedOnly = true;
-  extraVertical = false;
+  extraVertical = true;
   /**
    * Whether to show parameters
    */
   params = false;
-  // anim = true; // doesn't work yet
+  
+  anim = true;
 }

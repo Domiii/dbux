@@ -363,12 +363,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     this.startRenderTimer();
 
-    const ShouldAnim = true;
+    const ShouldAnim = this.ddg.settings.anim;
     if (isNew) {
       this.graphviz
         // NOTE: this `end` event handler is run after anim finished
         .on('end', () => {
-          this.debug('render end');
           this.renderTimer?.print(null, `Graph Render (dot size = ${(this.graphString?.length / 1000).toFixed(2)}k)`);
           this.renderTimer = null;
           this.clearDeco();  // remove all non-graph elements from graph to avoid errors, again
@@ -404,9 +403,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   async initGraphImplementation(force) {
     // NOTE: use `this.el`'s id
-    const shouldBuildNew = force || RenderCfg.forceReinitGraphviz || !this.graphviz;
+    force ||= RenderCfg.forceReinitGraphviz;
+    const shouldBuildNew = force || !this.graphviz;
     if (shouldBuildNew) {
-      if (RenderCfg.forceReinitGraphviz) {
+      if (force) {
         /**
          * `d3-graphviz` performance bug hackfix
          * @see https://github.com/magjac/d3-graphviz/issues/232
@@ -422,7 +422,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
         this.els.graphcont.appendChild(this.graphEl);
       }
       this.graphviz = d3Graphviz.graphviz(this.graphEl, { ...GraphVizCfg });
-      this.debug(`re-initializing graph${RenderCfg.forceReinitGraphviz ? ' (force)' : ''}`);
+      this.debug(`re-initializing graph${force ? ' (force)' : ''}`);
     }
     else {
       // nothing to do for now
