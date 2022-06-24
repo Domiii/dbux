@@ -572,23 +572,35 @@ export default class DataDependencyGraph extends BaseDDG {
     const varModifyOrReturnDataNodes = new Map();       // summary var + return set
     const lastNestedDataNodeId = this.#gatherNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes, summaryCfg);
 
-    // fix up refs
+    // filter out unwanted refs
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
+        if (!this.settings.connectedOnly) {
+          // no constraint → just show everything
+          return true;
+        }
+
         if (summaryCfg.isShallow) {
           // in case of nested group summaries, don't try to hide things
+          return true;
+        }
+
+        if (this.watchSet.lastDataNodeByWatchedRefs.get(refId)) {
+          // always show watched refs
           return true;
         }
 
         // skip if this ref is only used internally (or before) this summary group and is not accessed AFTERWARDS.
         const lastDataNodeIdOfRef = Math.max(
           // check if accessed again
-          dp.util.getLastDataNodeByRefId(refId)?.nodeId || 0,
-
-          // check if shown in later watch node
-          this.watchSet.lastDataNodeByWatchedRefs.get(refId) || 0
+          dp.util.getLastDataNodeByRefId(refId)?.nodeId || 0
         );
-        return lastDataNodeIdOfRef > lastNestedDataNodeId;
+        if (lastDataNodeIdOfRef > lastNestedDataNodeId) {
+          return true;
+        }
+
+        // check connected-ness
+        return this.og._connectedRefIds.has(refId);
       });
 
     if (DDGTimelineNodeType.is.Context(node.type)) {
@@ -632,6 +644,7 @@ export default class DataDependencyGraph extends BaseDDG {
     // NOTE: a lot of data points will come from before the node, and we want those, too
     // snapshotCfg.fromTraceId = node.pushTid;
     const summaryRefIds = new Set(summaryRefEntries.map(([refId]) => refId));
+
     snapshotCfg.beforeChildren = (parentSnapshot, lastModsByProp) => {
       for (const [key, n] of Object.entries(lastModsByProp)) {
         if (n.traceId < node.pushTid && isDataNodeDelete(n.type)) {
@@ -640,6 +653,7 @@ export default class DataDependencyGraph extends BaseDDG {
         }
       }
     };
+
     snapshotCfg.shouldBuildDeep = (parentSnapshot, dataNode) => {
       return (
         // go deep if it should be summarized
@@ -648,6 +662,7 @@ export default class DataDependencyGraph extends BaseDDG {
         !snapshotCfg.snapshotsByRefId.has(dataNode.refId)
       );
     };
+
     // snapshotCfg.nodeBuilt = (newNode, parentSnapshot) => {
     // };
     for (const [refId, dataNodeId] of summaryRefEntries) {
@@ -660,6 +675,7 @@ export default class DataDependencyGraph extends BaseDDG {
       this._setConnectedDFS(newNode);
 
       // override label to be the var name (if possible), since its more representative
+      //      than the label of a random DataNode belonging to the ref
       newNode.label = dp.util.findDataNodeAccessedRefVarName(newNode.dataNodeId) || newNode.label;
     }
 
@@ -711,7 +727,7 @@ export default class DataDependencyGraph extends BaseDDG {
         // NOTE: we take `max` here because:
         //    In case of nested watched nodes that adopted nodes (i.e. return watched nodes), not in order,
         //      `dataNodeId`s are not ordered with `timelineId`s.
-        //      
+        //
         const prev = lastModifyNodesByRefId.get(refId) || 0;
         lastModifyNodesByRefId.set(refId, Math.max(node.dataNodeId, prev));
       }

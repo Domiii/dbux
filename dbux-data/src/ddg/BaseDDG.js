@@ -216,6 +216,7 @@ export default class BaseDDG {
     this._refSnapshotsByDataNodeId = [];
     this._lastAccessDataNodeIdByRefId = [];
     this._timelineNodesByDataNodeId = {};
+    this._connectedRefIds = new Set();
 
     this.resetEdges();
   }
@@ -303,6 +304,16 @@ export default class BaseDDG {
     }
 
     node.connected = true;
+    if (this.building && node.dataNodeId) {
+      // mark accessed or moved ref as connected
+      let { refId } = node;
+      if (!refId) {
+        refId = this.dp.util.getDataNodeAccessedRefId(node.dataNodeId);
+      }
+      if (refId) {
+        this._connectedRefIds.add(refId);
+      }
+    }
 
     if (!isControlGroupTimelineNode(node.type)) {
       const fromEdges = this.inEdgesByTimelineId[node.timelineId] || EmptyArray;
@@ -342,41 +353,6 @@ export default class BaseDDG {
    * nodes
    *  #########################################################################*/
 
-  /**
-   * @param {DDGTimelineNode} newNode 
-   */
-  addNode(newNode) {
-    // if (newNode.dataNodeId && this.timelineBuilder.shouldIgnoreDataNode(newNode.dataNodeId)) {
-    //   throw new Error(`added ignored node: ${JSON.stringify(newNode)}`);
-    // }
-    newNode.timelineId = this.timelineNodes.length;
-    newNode.og = !!this.building;
-    this.timelineNodes.push(newNode);
-
-    if (newNode.dataNodeId && this.building) {
-      // register with `WatchSet`
-      this.watchSet.maybeAddWatchedNode(newNode);
-
-      // get some extra data we can use
-      const dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
-      newNode.traceType = this.dp.util.getTraceType(dataNode.traceId);
-
-
-      // during build, update accessId map
-      const accessIdMap = this.timelineBuilder.lastTimelineVarNodeByAccessId;
-      if (
-        dataNode.accessId && (
-          !accessIdMap[dataNode.accessId] ||
-          (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
-        )
-      ) {
-        VerboseAccess && this.logger.debug(`Register accessId n${dataNode.nodeId}, accessId=${dataNode.accessId}, timelineId=${newNode.timelineId}`);
-        // register node by accessId
-        accessIdMap[dataNode.accessId] = newNode;
-      }
-    }
-  }
-
   addSnapshotValueNode(dataNode) {
     const label = this.makeDataNodeLabel(dataNode);
     const newNode = new ValueTimelineNode(dataNode.nodeId, label);
@@ -392,6 +368,25 @@ export default class BaseDDG {
     const label = this.makeDataNodeLabel(dataNode);
     const newNode = new IndependentValueTimelineNode(dataNode.nodeId, label);
     newNode.parentLabel = this.dp.util.findDataNodeAccessedRefVarName(dataNode.nodeId);
+
+    this.addDataNode(newNode);
+
+    return newNode;
+  }
+
+  addDeleteEntryNode(dataNode) {
+    const { varAccess } = dataNode;
+    let deleteLabel;
+    if (!varAccess) {
+      // should not happen
+      deleteLabel = '?';
+    }
+    else {
+      // future-work: this only gives the first name assigned to it, but we might be more interested in "the most recent name" instead
+      const varName = this.dp.util.findDataNodeAccessedRefVarName(dataNode.nodeId);
+      deleteLabel = `${varName || '?'}[${varAccess.prop}]`;
+    }
+    const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, deleteLabel);
 
     this.addDataNode(newNode);
 
@@ -429,24 +424,42 @@ export default class BaseDDG {
     }
   }
 
-  addDeleteEntryNode(dataNode) {
-    const { varAccess } = dataNode;
-    let deleteLabel;
-    if (!varAccess) {
-      // should not happen
-      deleteLabel = '?';
-    }
-    else {
-      // future-work: this only gives the first name assigned to it, but we might be more interested in "the most recent name" instead
-      const varName = this.dp.util.findDataNodeAccessedRefVarName(dataNode.nodeId);
-      deleteLabel = `${varName || '?'}[${varAccess.prop}]`;
-    }
-    const newNode = new DeleteEntryTimelineNode(dataNode.nodeId, deleteLabel);
 
-    this.addDataNode(newNode);
+  /**
+   * @param {DDGTimelineNode} newNode 
+   */
+  addNode(newNode) {
+    // if (newNode.dataNodeId && this.timelineBuilder.shouldIgnoreDataNode(newNode.dataNodeId)) {
+    //   throw new Error(`added ignored node: ${JSON.stringify(newNode)}`);
+    // }
+    newNode.timelineId = this.timelineNodes.length;
+    newNode.og = !!this.building;
+    this.timelineNodes.push(newNode);
 
-    return newNode;
+    if (newNode.dataNodeId && this.building) {
+      // register with `WatchSet`
+      this.watchSet.maybeAddWatchedNode(newNode);
+
+      // get some extra data we can use
+      const dataNode = this.dp.util.getDataNode(newNode.dataNodeId);
+      newNode.traceType = this.dp.util.getTraceType(dataNode.traceId);
+
+
+      // during build, update accessId map
+      const accessIdMap = this.timelineBuilder.lastTimelineVarNodeByAccessId;
+      if (
+        dataNode.accessId && (
+          !accessIdMap[dataNode.accessId] ||
+          (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
+        )
+      ) {
+        VerboseAccess && this.logger.debug(`Register accessId n${dataNode.nodeId}, accessId=${dataNode.accessId}, timelineId=${newNode.timelineId}`);
+        // register node by accessId
+        accessIdMap[dataNode.accessId] = newNode;
+      }
+    }
   }
+
 
   getFirstDataTimelineNodeByDataNodeId(dataNodeId) {
     return first(this._timelineNodesByDataNodeId[dataNodeId] || EmptyArray);
@@ -662,7 +675,7 @@ export default class BaseDDG {
           else {
             if (
               dataNode.refId &&
-              !shallowOnly && 
+              !shallowOnly &&
               this.shouldBuildDeepSnapshotChild(parentSnapshot, dataNode, snapshotCfg)
             ) {
               // → go deep on ref
@@ -791,7 +804,7 @@ export default class BaseDDG {
 
     // get modifications on nested refs first
     // → since we are not building upon a previous snapshot, we have to collect everything from scratch
-    const fromTraceId = snapshotCfg?.fromTraceId || 0; 
+    const fromTraceId = snapshotCfg?.fromTraceId || 0;
     const rootDataNode = parentSnapshot && ddgHostQueries.getRootDataNode(this, parentSnapshot);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
 
