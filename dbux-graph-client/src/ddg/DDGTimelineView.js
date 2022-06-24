@@ -541,13 +541,30 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * Important: make sure, we don't create a new function each time
    * ##########################################################################*/
 
-  handleGroupLabelClick = (evt) => {
-    const { node } = evt.target;
-    return this.toggleSummaryMode(node.timelineId);
+  #getEventTargetNode(evt) {
+    let { node } = evt.target;
+    if (!node) {
+      const closestNodeEl = evt.target.closest('.node');
+      node = closestNodeEl?.node;
+      if (!node) {
+        // console.warn(`handleNodeMouseOver called on non-node element:`, evt.target, evt);
+        // return;
+      }
+    }
+    return node;
+  }
+
+  handleGroupLabelClick = async (evt) => {
+    const node = this.#getEventTargetNode(evt);
+    if (!node) { return; }
+    
+    await this.toggleSummaryMode(node.timelineId);
   };
 
   handleNodeClick = async (evt) => {
-    const { node } = evt.target;
+    const node = this.#getEventTargetNode(evt);
+    if (!node) { return; }
+
     if (node.dataNodeId) {
       await this.remote.selectNode(node.timelineId);
     }
@@ -555,15 +572,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   handleNodeMouseOver = (evt) => {
     // show debug overlay
-    let { node } = evt.target;
-    if (!node) {
-      const closestNodeEl = evt.target.closest('.node');
-      node = closestNodeEl?.node;
-      if (!node) {
-        // console.warn(`handleNodeMouseOver called on non-node element:`, evt.target, evt);
-        return;
-      }
-    }
+    const node = this.#getEventTargetNode(evt);
+    if (!node) { return; }
+
     if (!evt.target.debugOverlay && RenderCfg.debugViewEnabled) {
       // this.debug(`Hover node:`, evt.target);
       this.el.appendChild(evt.target.debugOverlay = this.makeNodeDebugOverlay(node));

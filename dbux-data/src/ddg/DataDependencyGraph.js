@@ -1,10 +1,11 @@
 import last from 'lodash/last';
 import findLastIndex from 'lodash/findLastIndex';
+import pullAllBy from 'lodash/pullAllBy';
 import NanoEvents from 'nanoevents';
 import { throttle } from '@dbux/common/src/util/scheduling';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
-import DataNodeType, { isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import DataNodeType, { isDataNodeDelete, isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { DDGRootTimelineId, isDDGRoot } from './constants';
@@ -628,7 +629,17 @@ export default class DataDependencyGraph extends BaseDDG {
      * @type {SnapshotMap}
      */
     const snapshotCfg = new PDGSnapshotConfig();
+    // NOTE: a lot of data points will come from before the node, and we want those, too
+    // snapshotCfg.fromTraceId = node.pushTid;
     const summaryRefIds = new Set(summaryRefEntries.map(([refId]) => refId));
+    snapshotCfg.beforeChildren = (parentSnapshot, lastModsByProp) => {
+      for (const [key, n] of Object.entries(lastModsByProp)) {
+        if (n.traceId < node.pushTid && isDataNodeDelete(n.type)) {
+          // we don't want deletes from before the node to be summarized
+          delete lastModsByProp[key];
+        }
+      }
+    };
     snapshotCfg.shouldBuildDeep = (parentSnapshot, dataNode) => {
       return (
         // go deep if it should be summarized

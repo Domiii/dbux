@@ -587,6 +587,11 @@ export default class BaseDDG {
       lastModsByProp[dataNode.varAccess.prop] = dataNode;
     }
 
+    // hackfix: allow modifying the array
+    snapshotCfg?.beforeChildren?.(parentSnapshot, lastModsByProp);
+
+    // TODO: properly merge originalChildren into the lastModsByProp set
+
     const allProps = new Set([
       ...Object.keys(lastModsByProp),
       ...Object.keys(originalChildren)
@@ -785,7 +790,8 @@ export default class BaseDDG {
      */
 
     // get modifications on nested refs first
-    const fromTraceId = 0;  // → since we are not building upon a previous snapshot, we have to collect everything from scratch
+    // → since we are not building upon a previous snapshot, we have to collect everything from scratch
+    const fromTraceId = snapshotCfg?.fromTraceId || 0; 
     const rootDataNode = parentSnapshot && ddgHostQueries.getRootDataNode(this, parentSnapshot);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
 
@@ -802,7 +808,7 @@ export default class BaseDDG {
      * NOTE: this is loosely based on {@link dp.util.constructVersionedValueSnapshot}.
      */
     const valueRef = this.dp.collections.values.getById(refId);
-    const modificationDataNodes = partialChildren || dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
+    let modificationDataNodes = partialChildren || dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
     const originalChildren = partialChildren ? EmptyObject : valueRef.children;
     // Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
     this.#addSnapshotChildren(
