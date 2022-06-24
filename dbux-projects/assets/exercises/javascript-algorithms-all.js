@@ -17164,6 +17164,498 @@ module.exports = [
     "chapter": "quick-sort",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
+    ],
+    "ddgs": [
+      {
+        "ddgTitle": "QuickSort.sort([])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([1])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([1,2])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([2,1])",
+        "contextId": 22,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([3,4,2,1,0,0,4,3,4,2])",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+        "contextId": 121,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1])",
+        "contextId": 1110,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([15,8,5,12,10,1,16,9,11,7,20,3,2,6,17,18,4,13,14,19])",
+        "contextId": 2099,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+        "contextId": 2436,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 32,
+              "index": 421
+            },
+            "end": {
+              "line": 19,
+              "column": 3,
+              "index": 464
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([\"\"])",
+        "contextId": 2501,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 525
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 588
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([\"a\"])",
+        "contextId": 2502,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 525
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 588
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([\"aa\",\"a\"])",
+        "contextId": 2503,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 525
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 588
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([\"aa\",\"q\",\"bbbb\",\"ccc\"])",
+        "contextId": 2511,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 525
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 588
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      },
+      {
+        "ddgTitle": "QuickSort.sort([\"aa\",\"aa\"])",
+        "contextId": 2536,
+        "algoLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 22,
+              "index": 167
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1486
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 55,
+              "index": 525
+            },
+            "end": {
+              "line": 23,
+              "column": 3,
+              "index": 588
+            }
+          }
+        },
+        "applicationUuid": "0.5682116464991105"
+      }
     ]
   },
   {

@@ -822,7 +822,9 @@ export default class BaseDDG {
      */
     const valueRef = this.dp.collections.values.getById(refId);
     let modificationDataNodes = partialChildren || dp.util.collectDataSnapshotModificationNodes(refId, fromTraceId, toTraceId);
-    const originalChildren = partialChildren ? EmptyObject : valueRef.children;
+    const originalChildren = partialChildren ? 
+      new valueRef.children.constructor() : // shallow; ignore original values?!
+      valueRef.children;
     // Verbose && console.debug(`${snapshot.timelineId} modificationDataNodes ${fromTraceId}→${toTraceId}: ${JSON.stringify(modificationDataNodes.map(n => n.nodeId))}`);
     this.#addSnapshotChildren(
       snapshot,

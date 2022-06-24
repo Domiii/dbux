@@ -188,18 +188,20 @@ export default function patchArray() {
   // slice
   // ###########################################################################
 
-  function arrayCopy(srcArr, start, end, srcNodeId, dstNodeId, callId) {
+  function arrayCopy(srcArr, srcStart, dstStart, len, srcNodeId, dstNodeId, callId) {
     // record all DataNodes of copy operation
-    for (let i = start; i < end; ++i) {
+    for (let i = 0; i < len; ++i) {
+      const iSrc = i + srcStart;
+      const iDst = i + dstStart;
       const varAccessRead = {
         objectNodeId: srcNodeId,
-        prop: i
+        prop: iSrc
       };
-      const readNode = dataNodeCollection.createDataNode(srcArr[i], callId, DataNodeType.Read, varAccessRead);
+      const readNode = dataNodeCollection.createDataNode(srcArr[iSrc], callId, DataNodeType.Read, varAccessRead);
 
       const varAccessWrite = {
         objectNodeId: dstNodeId,
-        prop: i - start
+        prop: iDst
       };
       dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
     }
@@ -228,7 +230,7 @@ export default function patchArray() {
       start = !isNaN(start) ? wrapIndex(start, arr) : 0;
       end = !isNaN(end) ? wrapIndex(end, arr) : arr.length;
 
-      arrayCopy(arr, start, end, arrNodeId, newArrayNode.nodeId, callId);
+      arrayCopy(arr, start, 0, end - start, arrNodeId, newArrayNode.nodeId, callId);
 
       addPurpose(bceTrace, {
         type: TracePurpose.CalleeObjectInput
@@ -269,19 +271,19 @@ export default function patchArray() {
    * concat
    * ##########################################################################*/
 
-  function _concatAddArrayOrValue(arr, args, arrNodeId, srcIdx, dstIdx, targetTid, inputs) {
-    const varAccess = {
-      objectNodeId: arrNodeId,
-      prop: dstIdx
-    };
-    const val = args[idx];
+  function _concatAddArrayOrValue(arr, val, arrIdx, srcNodeId, dstNodeId, targetTid) {
     if (Array.isArray(val)) {
-      TODO;
-      // arrayCopy
+      arrayCopy(val, 0, arrIdx, val.length, srcNodeId, dstNodeId, targetTid);
+      return arrIdx + val.length;
     }
     else {
+      const varAccess = {
+        objectNodeId: dstNodeId,
+        prop: arrIdx
+      };
+      const inputs = [srcNodeId];
       dataNodeCollection.createBCEDataNode(val, targetTid, DataNodeType.Write, varAccess, inputs);
-      return targetIdx + 1;
+      return arrIdx + 1;
     }
   }
 
@@ -306,14 +308,16 @@ export default function patchArray() {
 
       const inputNodeIds = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
 
-      const arrNodeId = getDataNodeIdFromRef(ref);
+      const origArrNodeId = getDataNodeIdFromRef(ref);
 
       // 2. copy input array
       const newArrayNode = dataNodeCollection.createBCEOwnDataNode(resultArr, callId, DataNodeType.Compute, null, null, ShallowValueRefMeta);
-      arrayCopy(arr, 0, arr.length, arrNodeId, newArrayNode.nodeId, callId);
+      arrayCopy(arr, 0, 0, arr.length, origArrNodeId, newArrayNode.nodeId, callId);
 
-      let srcIdx = arr.length;
-      let dstIdx = TODO;
+      // console.log(`concat arrNodeId=${arrNodeId}`);
+
+      let argIdx = 0;
+      let arrIdx = arr.length;
       for (let i = 0; i < argTids.length; ++i) {
         // const argTid = argTids[i];
         // const targetTid = argTid || callId;
@@ -323,11 +327,11 @@ export default function patchArray() {
         if (!spreadLen) {
           // default concat
           // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
-          const inputs = [inputNodeIds[i]];
+          const srcNodeId = inputNodeIds[i];
 
           // dataNodeCollection.createBCEDataNode(args[idx], targetTid, DataNodeType.Write, varAccessWrite, inputs);
-          dstIdx = _concatAddArrayOrValue(arr, args, srcIdx, dstIdx, arrNodeId, targetTid, inputs);
-          ++srcIdx;
+          arrIdx = _concatAddArrayOrValue(arr, args[argIdx], arrIdx, srcNodeId, newArrayNode.nodeId, targetTid);
+          ++argIdx;
         }
         else {
           // spread concat
@@ -337,12 +341,11 @@ export default function patchArray() {
               objectNodeId: inputNodeIds[i],
               prop: j
             };
-            const readNode = dataNodeCollection.createBCEDataNode(args[srcIdx], targetTid, DataNodeType.Read, varAccessRead);
+            const readNode = dataNodeCollection.createBCEDataNode(args[argIdx], targetTid, DataNodeType.Read, varAccessRead);
+            const srcNodeId = readNode.nodeId;
 
-            const inputs = [readNode.nodeId];
-
-            dstIdx = _concatAddArrayOrValue(arr, args, srcIdx, dstIdx, arrNodeId, targetTid, inputs);
-            ++srcIdx;
+            arrIdx = _concatAddArrayOrValue(arr, args[argIdx], arrIdx, srcNodeId, newArrayNode.nodeId, targetTid);
+            ++argIdx;
             // dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, varAccessWrite);
           }
         }

@@ -3,6 +3,7 @@ import isFunction from 'lodash/isFunction';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import set from 'lodash/set';
+import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -250,7 +251,7 @@ class ValueCollection extends Collection {
       valueRef = this._serialize(value, nodeId, 1, category, meta);
       dataNode.value = undefined;
     }
-    Verbose && this._logValue(`[/val] dataNode #${nodeId}:`, valueRef, category, value);
+    Verbose > 1 && this._logValue(`[/val] dataNode #${nodeId}:`, valueRef, category, value);
     return valueRef;
   }
 
@@ -323,7 +324,7 @@ class ValueCollection extends Collection {
 
   _logValue(prefix, valueRef, value) {
     const category = ValueTypeCategory.nameFrom(this.determineValueTypeCategory(value));
-    if (valueRef) {
+    if (!valueRef) {
       this._log(`${prefix}${ValueTypeCategory.nameFrom(category)} -`, value);
     }
     else {
@@ -702,6 +703,8 @@ class ValueCollection extends Collection {
 
     // new ref
     valueRef = this._addValueRef(category, nodeId, value);
+
+    Verbose && debug(`[serialize] ${valueRef?.refId} (n${nodeId}) value="${truncateStringDefault(value?.toString())}" (shallow: ${meta?.shallow})`);
 
     if (this.valuesShallow || meta?.shallow) {
       // shortcut -> don't serialize children
