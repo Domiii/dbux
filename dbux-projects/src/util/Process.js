@@ -166,7 +166,7 @@ export default class Process {
     const [commandName, ...commandArgs] = stringArgv(command);
     this.commandName = commandName;
 
-    let processExecLabel = `${cwd}$ "${commandName}" ${commandArgs.map(s => `${s}`).join(' ')}`;
+    let processExecLabel = `${path.basename(cwd)}$ "${commandName}" ${commandArgs.map(s => `${s}`).join(' ')}`;
     processExecLabel = truncateStringDefault(processExecLabel);
     logger.debug('>', processExecLabel); //, `(pwd = ${sh.pwd().toString()})`);
 

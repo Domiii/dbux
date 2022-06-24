@@ -599,14 +599,18 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return 0;
   }
 
-  exec = async (command, options, input) => {
+  #normalizeExecOptions(options) {
     const cwd = options?.cwd || this.projectPath;
-    options = defaultsDeep(options, {
+    return defaultsDeep(options, {
       ...(options || EmptyObject),
       processOptions: {
         cwd
       }
     });
+  }
+
+  exec = async (command, options, input) => {
+    options = this.#normalizeExecOptions(options);
     return this.runner._exec(command, this.logger, options, input);
   }
 
@@ -614,33 +618,24 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * TODO: possibly replace all `git` calls to {@link #execCaptureOut}
    *   -> use a command similar to `execGitCaptureErr` instead, but return `out`, instead of `err`.
    */
-  execCaptureOut = async (command, processOptions) => {
-    processOptions = {
-      cwd: this.projectPath,
-      ...(processOptions || EmptyObject)
-    };
-    return Process.execCaptureOut(command, { processOptions });
+  execCaptureOut = async (command, options) => {
+    options = this.#normalizeExecOptions(options);
+    return Process.execCaptureOut(command, options);
   }
 
-  execCaptureErr = async (command, processOptions) => {
-    processOptions = {
-      cwd: this.projectPath,
-      ...(processOptions || EmptyObject)
-    };
-    return Process.execCaptureErr(command, { processOptions });
+  execCaptureErr = async (command, options) => {
+    options = this.#normalizeExecOptions(options);
+    return Process.execCaptureErr(command, options);
   }
 
   /**
    * 
    * @param {string} command 
-   * @param {ProcessOptions} processOptions 
+   * @param {ExecOptions} options 
    */
-  execCaptureAll = async (command, processOptions) => {
-    processOptions = {
-      cwd: this.projectPath,
-      ...(processOptions || EmptyObject)
-    };
-    return Process.execCaptureAll(command, { processOptions });
+  execCaptureAll = async (command, options) => {
+    options = this.#normalizeExecOptions(options);
+    return Process.execCaptureAll(command, options);
   }
 
   /**
@@ -771,6 +766,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return !!code;  // code !== 0 means that there are pending changes
   }
 
+  async gitDiff() {
+    return await this.execCaptureAll(`${this.gitCommand} diff-index --exit-code HEAD --`, {
+      failOnStatusCode: false,
+      failWhenNotFound: false // weird -> it responds with ENOENT sometimes?!
+    });
+  }
+
   // async hasAnyChangedFiles() {
   //   const changes = await this.execCaptureOut(`${git} status -s`);
   //   return !!changes;
@@ -852,7 +854,22 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     let successfulCacheFlag = false;
     if (await project.gitDoesTagExistLocally(exerciseCachedTag)) {
       // get back to bug's original state
-      await project._gitCheckout(exerciseCachedTag);
+      try {
+        await project._gitCheckout(exerciseCachedTag);
+      }
+      catch (err) {
+        const diffObj = await this.gitDiff();
+        const diffString = diffObj.out + '\n' + diffObj.err;
+        this.logger.error(err);
+        // eslint-disable-next-line max-len
+        if (!await this.confirm(`Exercise reset failed due to pending changes. Do you want to git reset hard?\n${diffString || err.stack}`)) {
+          // NOTE: we currently rely on that tag to exist
+          throw new Error(`Abort! (${err.message})`);
+        }
+        else {
+          await this._gitResetAndCheckout(exerciseCachedTag);
+        }
+      }
       const currentTags = await project.gitGetAllCurrentTagName();
       if (currentTags.includes(exerciseCachedTag)) {
         // hackfix: there is some bug here where `exerciseCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
@@ -860,13 +877,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         successfulCacheFlag = true;
       }
       else {
-        throw new Error(`installBug failed - tried to checkout bug tag "${exerciseCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
+        throw new Error(`installExercise failed - tried to checkout bug tag "${exerciseCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
       }
     }
 
     if (!successfulCacheFlag) {
       // fresh start
-      await project._gitCheckout(installedTag);
+      try {
+        await project._gitCheckout(installedTag);
+      }
+      catch (err) {
+        const diff = await this.gitDiff();
+        this.logger.error(err);
+        if (!await this.confirm(`First checkout of exercise failed due to pending changes. Do you want to git reset hard?\n${diff || err.stack}`)) {
+          throw new Error(`Abort! (${err.message})`);
+        }
+        else {
+          await this._gitResetAndCheckout(installedTag);
+        }
+      }
 
       // checkout bug commit, apply patch, etc.
       await project.beforeSelectBug?.(exercise);
@@ -961,6 +990,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   /** ###########################################################################
    * deactivate, reset, delete
    * ##########################################################################*/
+
+  async confirm(...args) {
+    return this.manager.externals.confirm(...args);
+  }
 
   async tryDeactivate() {
     // ensure project is not running
