@@ -269,13 +269,19 @@ export default function patchArray() {
    * concat
    * ##########################################################################*/
 
-  function _concatAddArrayOrValue(arr, args, idx, targetTid, varAccess, inputs) {
+  function _concatAddArrayOrValue(arr, args, arrNodeId, srcIdx, dstIdx, targetTid, inputs) {
+    const varAccess = {
+      objectNodeId: arrNodeId,
+      prop: dstIdx
+    };
     const val = args[idx];
     if (Array.isArray(val)) {
       TODO;
+      // arrayCopy
     }
     else {
       dataNodeCollection.createBCEDataNode(val, targetTid, DataNodeType.Write, varAccess, inputs);
+      return targetIdx + 1;
     }
   }
 
@@ -306,7 +312,8 @@ export default function patchArray() {
       const newArrayNode = dataNodeCollection.createBCEOwnDataNode(resultArr, callId, DataNodeType.Compute, null, null, ShallowValueRefMeta);
       arrayCopy(arr, 0, arr.length, arrNodeId, newArrayNode.nodeId, callId);
 
-      let idx = arr.length;
+      let srcIdx = arr.length;
+      let dstIdx = TODO;
       for (let i = 0; i < argTids.length; ++i) {
         // const argTid = argTids[i];
         // const targetTid = argTid || callId;
@@ -315,16 +322,12 @@ export default function patchArray() {
 
         if (!spreadLen) {
           // default concat
-          const varAccessWrite = {
-            objectNodeId: arrNodeId,
-            prop: idx
-          };
           // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
           const inputs = [inputNodeIds[i]];
 
           // dataNodeCollection.createBCEDataNode(args[idx], targetTid, DataNodeType.Write, varAccessWrite, inputs);
-          _concatAddArrayOrValue(arr, args, idx, targetTid, varAccessWrite, inputs);
-          idx++;
+          dstIdx = _concatAddArrayOrValue(arr, args, srcIdx, dstIdx, arrNodeId, targetTid, inputs);
+          ++srcIdx;
         }
         else {
           // spread concat
@@ -334,17 +337,13 @@ export default function patchArray() {
               objectNodeId: inputNodeIds[i],
               prop: j
             };
-            const readNode = dataNodeCollection.createBCEDataNode(args[idx], targetTid, DataNodeType.Read, varAccessRead);
+            const readNode = dataNodeCollection.createBCEDataNode(args[srcIdx], targetTid, DataNodeType.Read, varAccessRead);
 
-            const varAccessWrite = {
-              objectNodeId: arrNodeId,
-              prop: idx
-            };
             const inputs = [readNode.nodeId];
 
-            _concatAddArrayOrValue(arr, args, idx, targetTid, varAccessWrite, inputs);
+            dstIdx = _concatAddArrayOrValue(arr, args, srcIdx, dstIdx, arrNodeId, targetTid, inputs);
+            ++srcIdx;
             // dataNodeCollection.createWriteNodeFromReadNode(targetTid, readNode, varAccessWrite);
-            idx++;
           }
         }
       }
