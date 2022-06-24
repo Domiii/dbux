@@ -13446,7 +13446,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7765801891654265"
+        "applicationUuid": "0.321937588414676"
       },
       {
         "ddgTitle": "detectDirectedCycle({vertices,edges,isDirected})",
@@ -13481,7 +13481,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7765801891654265"
+        "applicationUuid": "0.321937588414676"
       }
     ]
   },

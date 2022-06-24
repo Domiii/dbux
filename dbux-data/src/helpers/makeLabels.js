@@ -193,9 +193,17 @@ export function makeTraceLocLabel(trace) {
   } = trace;
 
   const dp = _allApplications.getById(applicationId).dataProvider;
+
   const fileName = dp.util.getTraceFileName(traceId);
   const loc = dp.util.getTraceLoc(traceId);
+  const { line/* , column */ } = loc.start;
+  // return `@${fileName}:${line}:${column}`;
+  return `${fileName}:${line}`;
+}
 
+export function makeStaticTraceLocLabel(dp, staticTrace) {
+  const fileName = dp.util.getStaticTraceFileName(staticTrace.staticTraceId);
+  const { loc } = staticTrace;
   const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
   return `${fileName}:${line}`;
