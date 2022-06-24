@@ -37,7 +37,7 @@ export default class ExerciseList {
           // throw new Error(`exercise name is not unique for ${exercise.id}: ${JSON.stringify(exercise)}`);
           throw new Error(`exercise name is not unique for ${exercise.id}, name: ${exercise.name}`);
         }
-        this._byName[exercise.name] = exercise;
+        this._byName.set(exercise.name, exercise);
       }
       this._all.push(exercise);
     }

@@ -16,6 +16,7 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getCurrentResearch } from './Research';
 
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default}Exercise*/
 /** @typedef {import('../chapterListBuilderView/chapterListBuilderViewController').default} ChapterListBuilderViewController */
 
 // eslint-disable-next-line no-unused-vars
@@ -89,6 +90,9 @@ export default class PDGGallery {
     return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
   }
 
+  /**
+   * @param {Exercise[]} exercises
+   */
   async buildGalleryForExercises(exercises, force = false) {
     await runTaskWithProgressBar(async (progress) => {
       const failedExerciseIds = [];
@@ -96,16 +100,11 @@ export default class PDGGallery {
         const exercise = exercises[i];
         const exerciseFolderPath = this.getExerciseFolder(exercise);
         const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
-        if (!force && fs.existsSync(renderDataJsonFilePath)) {
-          log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
-          continue;
-        }
-        else {
-          if (!fs.existsSync(exerciseFolderPath)) {
-            fs.mkdirSync(exerciseFolderPath, { recursive: true });
-          }
-        }
         try {
+          if (!force && fs.existsSync(renderDataJsonFilePath)) {
+            log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
+            continue;
+          }
           const galleryConfig = exercise.gallery;
           let screenshotConfigs;
           if (galleryConfig === false) {
@@ -128,6 +127,10 @@ export default class PDGGallery {
             logError(`Invalid gallery config of exercise "${exercise.id}": ${galleryConfig}`);
           }
 
+          if (!fs.existsSync(exerciseFolderPath)) {
+            fs.mkdirSync(exerciseFolderPath, { recursive: true });
+          }
+
           const ddgArgs = await this.getAllExerciseDDGArgs(exercise);
 
           let renderDataId = 0;
@@ -135,49 +138,98 @@ export default class PDGGallery {
 
           for (let j = 0; j < ddgArgs.length; j++) {
             const ddgArg = ddgArgs[j];
-            const id = ++renderDataId;
-            let lastDot;
-            const screenshots = [];
-            for (let k = 0; k < screenshotConfigs.length; k++) {
-              progress.report({ message: `Exercise: "${exercise.id}" (${i}/${exercises.length}), DDG: (${k}/${screenshotConfigs.length})` });
-              const screenshotConfig = screenshotConfigs[k];
-              const { settings, rootSummaryMode } = screenshotConfig;
+            const { ddgTitle } = ddgArg;
+            try {
+              const id = ++renderDataId;
+              let lastDot;
+              const screenshots = [];
               const app = allApplications.getById(ddgArg.applicationUuid);
               const dp = app.dataProvider;
               const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
-              ddg.updateSettings(settings);
-              ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
 
-              const dot = buildDot(ddg);
-
-              if (dot === lastDot) {
-                screenshots.push({
-                  sameAs: k - 1
+              // check if ddg build failed
+              const failedReason = dp.ddgs.getCreateDDGFailureReason(ddgArg);
+              if (failedReason) {
+                PDGRenderData.push({
+                  success: false,
+                  failedReason,
+                  ddgTitle,
                 });
+                continue;
               }
-              else {
-                lastDot = dot;
-                screenshots.push({ dot, settings });
+
+              // check if there are missing data traces
+              const missingDataTraces = dp.util.getAllMissingDataStaticTraces();
+              if (missingDataTraces.length) {
+                const traceLocations = missingDataTraces.map(staticTrace => {
+                  const filePath = dp.util.getStaticTraceProgramPath(staticTrace.staticTraceId);
+                  const relativeFilePath = pathRelative(exercise.project.projectPath, filePath);
+                  const { line } = staticTrace.loc.start;
+                  return `${relativeFilePath}#${line}`;
+                });
+
+                PDGRenderData.push({
+                  success: false,
+                  failedReason: 'missing data traces',
+                  ddgTitle,
+                  traceLocations,
+                });
+                continue;
               }
+
+              // passed, generate screenshots
+              for (let k = 0; k < screenshotConfigs.length; k++) {
+                progress.report({ message: `Exercise: "${exercise.id}" (${i}/${exercises.length}), DDG: (${k}/${screenshotConfigs.length})` });
+                const screenshotConfig = screenshotConfigs[k];
+                const { settings, rootSummaryMode } = screenshotConfig;
+                ddg.updateSettings(settings);
+                ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
+
+                const dot = buildDot(ddg);
+
+                if (dot === lastDot) {
+                  screenshots.push({
+                    sameAs: k - 1,
+                    settings,
+                    rootSummaryMode
+                  });
+                }
+                else {
+                  lastDot = dot;
+                  screenshots.push({ dot, settings, rootSummaryMode });
+                }
+              }
+              PDGRenderData.push({
+                id,
+                ddgTitle,
+                uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
+                testLoc: ddgArg.testLoc,
+                algoLoc: ddgArg.algoLoc,
+                screenshots,
+              });
             }
-            PDGRenderData.push({
-              id,
-              uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
-              testLoc: ddgArg.testLoc,
-              algoLoc: ddgArg.algoLoc,
-              screenshots,
-            });
+            catch (err) {
+              // failed to parse renderData
+              failedExerciseIds.push(exercise.id);
+              logError(new NestedError(`Cannot generate pdg render data for exercise: ${exercise.id}`, err));
+              const errData = {
+                success: false,
+                failedReason: 'error',
+                ddgTitle,
+                error: err.stack,
+              };
+              PDGRenderData.push(errData);
+            }
           }
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(PDGRenderData, null, 2));
         }
         catch (err) {
-          failedExerciseIds.push(exercise.id);
-          logError(new NestedError(`Cannot generate pdg render data for exercise: ${exercise.id}`, err));
-          const errData = {
-            success: false,
-            error: err.stack,
-          };
-          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(errData, null, 2));
+          // failed to execute application
+          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify({
+            succses: false,
+            failedReason: 'error',
+            error: err.stack
+          }, null, 2));
         }
       }
       if (failedExerciseIds.length) {
@@ -251,5 +303,29 @@ export default class PDGGallery {
         await open(path.dirname(graphJSPath));
       }
     });
+  }
+
+  getAllPDGFiles() {
+    const allFiles = [];
+    const chapterGroups = fs.readdirSync(this.galleryDataRoot);
+    for (const chapterGroup of chapterGroups) {
+      const chapterGroupFolderPath = pathJoin(this.galleryDataRoot, chapterGroup);
+      if (!fs.lstatSync(chapterGroupFolderPath).isDirectory()) {
+        continue;
+      }
+      const chapters = fs.readdirSync(chapterGroupFolderPath);
+      for (const chapter of chapters) {
+        const chapterFolderPath = pathJoin(chapterGroupFolderPath, chapter);
+        for (const exerciseId of fs.readdirSync(chapterFolderPath)) {
+          const exerciseFolderPath = pathJoin(chapterFolderPath, exerciseId);
+          const pdgFilePath = pathJoin(exerciseFolderPath, PDGFileName);
+          if (!fs.existsSync(pdgFilePath)) {
+            continue;
+          }
+          allFiles.push({ chapterGroup, chapter, exerciseId, filePath: pdgFilePath });
+        }
+      }
+    }
+    return allFiles;
   }
 }

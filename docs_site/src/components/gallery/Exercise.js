@@ -3,13 +3,20 @@ import PDGLink from './PDGLink';
 
 export default function Exercise(props) {
   const { exercise } = props;
-  const { id, ddgs } = exercise;
+  const { ddgs } = exercise;
+
   if (!Array.isArray(ddgs)) {
-    return <a className="text-danger" title={ddgs.error}>{id}</a>;
+    return <p>{ddgs.failedReason}</p>;
   }
+
   return <>
     {ddgs.map(renderData => {
-      return <PDGLink key={renderData.id} pdgId={renderData.id}>{id}</PDGLink>;
+      if (renderData.success !== false) {
+        return <PDGLink key={renderData.id} pdgId={renderData.id}>{renderData.ddgTitle}</PDGLink>;
+      }
+      else {
+        return <PDGLink key={renderData.id} pdgId={renderData.id} className="text-danger">Failed: {renderData.failedReason}</PDGLink>;
+      }
     })}
   </>;
 }

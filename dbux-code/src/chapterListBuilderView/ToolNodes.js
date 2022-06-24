@@ -3,7 +3,7 @@ import fs from 'fs';
 import { basename, dirname } from 'path';
 import open from 'open';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import Process from '@dbux/projects/src/util/Process';
@@ -12,6 +12,7 @@ import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 import { showTextInNewFile } from '../codeUtil/codeNav';
 import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
+import { transformFiles } from '../research/babelUtil';
 import { translate } from '../lang';
 
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
@@ -280,7 +281,12 @@ class ExportAllDDGScreenshotNode extends ToolNode {
 
   async handleClick() {
     // const exercises = this.controller.exerciseList.getAll().slice(113, 114);
-    const exercises = this.controller.exerciseList.getAll();
+    // const exercises = this.controller.exerciseList.getAll();
+    const exercises = [this.controller.exerciseList.getById('javascript-algorithms#1')];
+    // const exercises = this.controller.chapters.map(chapter => {
+    //   const exercisesInChapter = chapter.exercises.getAll();
+    //   return exercisesInChapter[Math.floor(exercisesInChapter.length / 2)];
+    // });
 
     await this.controller.gallery.buildGalleryForExercises(exercises);
     // await this.controller.gallery.buildGalleryForExercises(exercises, true);
@@ -297,6 +303,40 @@ class GenerateGraphsJSNode extends ToolNode {
   }
 }
 
+class TransformDestructuringNode extends ToolNode {
+  static makeLabel() {
+    return `Transform Destructing code`;
+  }
+
+  async handleClick() {
+    // TODO
+    const { projectPath } = this.controller.project;
+    const pdgFiles = this.controller.gallery.getAllPDGFiles();
+    const filesUsingDestructing = new Set();
+    for (const { filePath } of pdgFiles) {
+      const pdgData = JSON.parse(fs.readFileSync(filePath));
+      if (Array.isArray(pdgData) && pdgData[0].traceLocations) {
+        for (const location of pdgData[0].traceLocations) {
+          const testFilePath = pathJoin(projectPath, location.split('#')[0]);
+          filesUsingDestructing.add(testFilePath);
+        }
+      }
+    }
+
+    await transformFiles([...filesUsingDestructing]);
+  }
+}
+
+// class InsertDDGTitleNode extends ToolNode {
+//   static makeLabel() {
+//     return `Insert DDG Title in pdgData.json from exerciseJs`;
+//   }
+
+//   async handleClick() {
+//     await this.controller.gallery.insertDDGTitle();
+//   }
+// }
+
 export default class ToolRootNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Tools';
@@ -308,10 +348,12 @@ export default class ToolRootNode extends BaseTreeViewNode {
 
   childClasses = [
     GenerateListNode,
-    ExportApplicationsForceNode,
+    // ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
     GeneratePatchNode,
     ExportAllDDGScreenshotNode,
     GenerateGraphsJSNode,
+    // InsertDDGTitleNode,
+    TransformDestructuringNode,
   ]
 }

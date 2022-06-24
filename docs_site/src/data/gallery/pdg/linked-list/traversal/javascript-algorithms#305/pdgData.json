@@ -1,0 +1,7 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#16) did not return anything.",
+    "ddgTitle": "traversal({head,tail,compare}, ƒ (anonymous))"
+  }
+]

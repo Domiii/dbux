@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 600)",
     "uniqueId": "search_interpolation-search_javascript-algorithms#152_1",
     "testLoc": {
       "filePath": "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js",
@@ -70,10 +71,22 @@
         }
       },
       {
-        "sameAs": 3
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
-        "sameAs": 4
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
         "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">sortedArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">700</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">800</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"8\" ROWSPAN=\"2\" PORT=\"8\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">5</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1200</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"9\" ROWSPAN=\"2\" PORT=\"9\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">6</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1300</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"10\" ROWSPAN=\"2\" PORT=\"10\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">7</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1400</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"11\" ROWSPAN=\"2\" PORT=\"11\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">8</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1900</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  12 [id=12,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">seekElement</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">600</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_19 {\n    id=19;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_20 {\n      id=20;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_37 {\n        id=37;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_41 {\n      id=41;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_49 {\n        id=49;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        50 [id=50,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"50\" TITLE=\"50\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        51 [id=51,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"51\" TITLE=\"51\"><FONT COLOR=\"lightblue\">-1</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  50 -> 51 [id=e1];\n  2 -> 12 -> 50 -> 51[style=invis,weight=2];\n}",

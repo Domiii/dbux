@@ -28,7 +28,7 @@ export default function GraphvizDot(props) {
   const graphElRef = useRef(null);
 
   useEffect(() => {
-    const graphviz = window.d3.select(graphElRef.current, { ...GraphVizCfg }).graphviz();
+    const graphviz = window.d3.select(graphElRef.current).graphviz({ ...GraphVizCfg });
     graphviz.renderDot(dot).on('end', () => {
       const svgEl = graphElRef.current.querySelector('svg');
       svgEl?.classList.add('h-100');
