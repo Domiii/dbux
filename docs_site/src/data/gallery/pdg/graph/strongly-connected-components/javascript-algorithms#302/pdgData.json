@@ -1,0 +1,17 @@
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "stronglyConnectedComponents({vertices,edges,isDirected})",
+    "traceLocations": [
+      "src/data-structures/linked-list/LinkedList.js#137",
+      "src/algorithms/graph/depth-first-search/depthFirstSearch.js#25",
+      "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js#26",
+      "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js#33",
+      "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js#38",
+      "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js#74",
+      "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js#81",
+      "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js#90"
+    ]
+  }
+]

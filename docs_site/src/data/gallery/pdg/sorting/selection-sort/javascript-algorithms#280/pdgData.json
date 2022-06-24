@@ -1,0 +1,10 @@
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "SelectionSort.sort([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
+    "traceLocations": [
+      "src/algorithms/sorting/selection-sort/SelectionSort.js#26"
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "prim({vertices,edges,isDirected})",
+    "traceLocations": [
+      "src/data-structures/linked-list/LinkedList.js#137"
+    ]
+  }
+]

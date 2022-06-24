@@ -1,0 +1,11 @@
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "squareMatrixRotation([[],[],[]])",
+    "traceLocations": [
+      "src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js#12",
+      "src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js#26"
+    ]
+  }
+]

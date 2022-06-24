@@ -4,6 +4,11 @@ import PDGLink from './PDGLink';
 export default function Exercise(props) {
   const { exercise } = props;
   const { ddgs } = exercise;
+
+  if (!Array.isArray(ddgs)) {
+    return <p>{ddgs.failedReason}</p>;
+  }
+
   return <>
     {ddgs.map(renderData => {
       if (renderData.success !== false) {

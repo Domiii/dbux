@@ -1,0 +1,14 @@
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "topologicalSort({vertices,edges,isDirected})",
+    "traceLocations": [
+      "src/data-structures/linked-list/LinkedList.js#137",
+      "src/algorithms/graph/depth-first-search/depthFirstSearch.js#25",
+      "src/algorithms/graph/topological-sorting/topologicalSort.js#21",
+      "src/algorithms/graph/topological-sorting/topologicalSort.js#28",
+      "src/algorithms/graph/topological-sorting/topologicalSort.js#32"
+    ]
+  }
+]

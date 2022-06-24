@@ -57,13 +57,12 @@ export default function PDG(props) {
   let graphContentEl;
   if (success) {
     const { dot, sameAs } = screenshots[index];
-    let graph;
     if (dot) {
-      graph = <GraphvizDot dot={dot} exerciseId={exerciseId} index={index}></GraphvizDot>;
+      graphContentEl = <GraphvizDot dot={dot} exerciseId={exerciseId} index={index}></GraphvizDot>;
     }
     else if (sameAs !== undefined) {
       const originIndex = getSameAsOrigin(screenshots, index);
-      graph = <h1 className="mt-4 text-center">
+      graphContentEl = <h1 className="mt-4 text-center">
         Graph same as {originIndex}
         <button className="mx-4 p-2" onClick={() => setIndex(originIndex)}>Go</button>
       </h1>;
@@ -73,7 +72,10 @@ export default function PDG(props) {
     }
   }
   else {
-    graphContentEl = <h1 className="mt-4 text-center">{renderData.failedReason}</h1>;
+    graphContentEl = <>
+      <h1 className="mt-4 text-center">{renderData.failedReason}</h1>
+      <pre className="">{renderData.error}</pre>
+    </>;
   }
 
   // paginationEl

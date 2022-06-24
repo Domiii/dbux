@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "squareRoot(15)",
+    "uniqueId": "math_square-root_javascript-algorithms#299_1",
+    "testLoc": {
+      "filePath": "src/algorithms/math/square-root/__test__/squareRoot.test.js",
+      "loc": {
+        "start": {
+          "line": 11,
+          "column": 76,
+          "index": 319
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 699
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/square-root/squareRoot.js",
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 58,
+          "index": 358
+        },
+        "end": {
+          "line": 40,
+          "column": 1,
+          "index": 1551
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">15</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">tolerance</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  64 [id=64,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"64\" TITLE=\"64\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 64 [id=e1];\n  4 -> 64 [id=e2];\n  2 -> 4 -> 64[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">15</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">tolerance</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_16 {\n    id=16;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    65 [id=65,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root</TD>\n    <TD ID=\"65\" TITLE=\"65\"><FONT COLOR=\"lightblue\">3.987737341772152</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  64 [id=64,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"64\" TITLE=\"64\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 65 [id=e1];\n  65 -> 64 [id=e2];\n  4 -> 64 [id=e3];\n  2 -> 4 -> 65 -> 64[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">15</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">tolerance</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_16 {\n    id=16;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_22 {\n      id=22;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      65 [id=65,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root</TD>\n    <TD ID=\"65\" TITLE=\"65\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_34 {\n      id=34;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      66 [id=66,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root</TD>\n    <TD ID=\"66\" TITLE=\"66\"><FONT COLOR=\"lightblue\">4.9375</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_46 {\n      id=46;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      67 [id=67,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root</TD>\n    <TD ID=\"67\" TITLE=\"67\"><FONT COLOR=\"lightblue\">3.987737341772152</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  64 [id=64,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"64\" TITLE=\"64\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 65 [id=e1];\n  2 -> 66 [id=e2];\n  2 -> 67 [id=e3];\n  65 -> 66 [id=e4];\n  66 -> 67 [id=e5];\n  67 -> 64 [id=e6];\n  4 -> 64 [id=e7];\n  2 -> 4 -> 65 -> 66 -> 67 -> 64[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">15</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">tolerance</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_16 {\n    id=16;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      23 [id=23,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">2</TD>\n    <TD ID=\"23\" TITLE=\"23\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      24 [id=24,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      25 [id=25,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"25\" TITLE=\"25\"><FONT COLOR=\"lightblue\">-14</FONT></TD>\n  </TR>\n</TABLE>>];\n      26 [id=26,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">2</TD>\n    <TD ID=\"26\" TITLE=\"26\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      27 [id=27,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"27\" TITLE=\"27\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      28 [id=28,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">/</TD>\n    <TD ID=\"28\" TITLE=\"28\"><FONT COLOR=\"lightblue\">-7</FONT></TD>\n  </TR>\n</TABLE>>];\n      29 [id=29,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root -= &#40;&#40;root ** 2&#41; - numb...</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_34 {\n      id=34;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      35 [id=35,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">2</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      36 [id=36,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">64</FONT></TD>\n  </TR>\n</TABLE>>];\n      37 [id=37,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">49</FONT></TD>\n  </TR>\n</TABLE>>];\n      38 [id=38,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">2</TD>\n    <TD ID=\"38\" TITLE=\"38\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      39 [id=39,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"39\" TITLE=\"39\"><FONT COLOR=\"lightblue\">16</FONT></TD>\n  </TR>\n</TABLE>>];\n      40 [id=40,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">/</TD>\n    <TD ID=\"40\" TITLE=\"40\"><FONT COLOR=\"lightblue\">3.0625</FONT></TD>\n  </TR>\n</TABLE>>];\n      41 [id=41,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root -= &#40;&#40;root ** 2&#41; - numb...</TD>\n    <TD ID=\"41\" TITLE=\"41\"><FONT COLOR=\"lightblue\">4.9375</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_46 {\n      id=46;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      47 [id=47,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">2</TD>\n    <TD ID=\"47\" TITLE=\"47\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      48 [id=48,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"48\" TITLE=\"48\"><FONT COLOR=\"lightblue\">24.37890625</FONT></TD>\n  </TR>\n</TABLE>>];\n      49 [id=49,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"49\" TITLE=\"49\"><FONT COLOR=\"lightblue\">9.37890625</FONT></TD>\n  </TR>\n</TABLE>>];\n      50 [id=50,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">2</TD>\n    <TD ID=\"50\" TITLE=\"50\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      51 [id=51,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"51\" TITLE=\"51\"><FONT COLOR=\"lightblue\">9.875</FONT></TD>\n  </TR>\n</TABLE>>];\n      52 [id=52,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">/</TD>\n    <TD ID=\"52\" TITLE=\"52\"><FONT COLOR=\"lightblue\">0.9497626582278481</FONT></TD>\n  </TR>\n</TABLE>>];\n      53 [id=53,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">root -= &#40;&#40;root ** 2&#41; - numb...</TD>\n    <TD ID=\"53\" TITLE=\"53\"><FONT COLOR=\"lightblue\">3.987737341772152</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  58 [id=58,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">10</TD>\n    <TD ID=\"58\" TITLE=\"58\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  59 [id=59,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"59\" TITLE=\"59\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  60 [id=60,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">3.987737341772152</FONT></TD>\n  </TR>\n</TABLE>>];\n  61 [id=61,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">round</TD>\n    <TD ID=\"61\" TITLE=\"61\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  62 [id=62,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">10</TD>\n    <TD ID=\"62\" TITLE=\"62\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  63 [id=63,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"63\" TITLE=\"63\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  64 [id=64,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"64\" TITLE=\"64\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  9 -> 10 [id=e2];\n  10 -> 24 [id=e3];\n  10 -> 27 [id=e4];\n  10 -> 29 [id=e5];\n  10 -> 41 [id=e6];\n  10 -> 53 [id=e7];\n  23 -> 24 [id=e8];\n  24 -> 25 [id=e9];\n  2 -> 25 [id=e10];\n  2 -> 37 [id=e11];\n  2 -> 49 [id=e12];\n  26 -> 27 [id=e13];\n  25 -> 28 [id=e14];\n  27 -> 28 [id=e15];\n  28 -> 29 [id=e16];\n  29 -> 36 [id=e17];\n  29 -> 39 [id=e18];\n  29 -> 41 [id=e19];\n  35 -> 36 [id=e20];\n  36 -> 37 [id=e21];\n  38 -> 39 [id=e22];\n  37 -> 40 [id=e23];\n  39 -> 40 [id=e24];\n  40 -> 41 [id=e25];\n  41 -> 48 [id=e26];\n  41 -> 51 [id=e27];\n  41 -> 53 [id=e28];\n  47 -> 48 [id=e29];\n  48 -> 49 [id=e30];\n  50 -> 51 [id=e31];\n  49 -> 52 [id=e32];\n  51 -> 52 [id=e33];\n  52 -> 53 [id=e34];\n  58 -> 59 [id=e35];\n  4 -> 59 [id=e36];\n  4 -> 63 [id=e37];\n  53 -> 60 [id=e38];\n  59 -> 60 [id=e39];\n  60 -> 61 [id=e40];\n  62 -> 63 [id=e41];\n  61 -> 64 [id=e42];\n  63 -> 64 [id=e43];\n  2 -> 3 -> 4 -> 9 -> 10 -> 23 -> 24 -> 25 -> 26 -> 27 -> 28 -> 29 -> 35 -> 36 -> 37 -> 38 -> 39 -> 40 -> 41 -> 47 -> 48 -> 49 -> 50 -> 51 -> 52 -> 53 -> 58 -> 59 -> 60 -> 61 -> 62 -> 63 -> 64[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

@@ -12,6 +12,9 @@ class Graphs {
     for (const chapterGroup of graphsData.chapterGroups) {
       for (const chapter of chapterGroup.chapters) {
         for (const exercise of chapter.exercises) {
+          if (!Array.isArray(exercise.ddgs)) {
+            continue;
+          }
           for (const rawRenderData of exercise.ddgs) {
             const { uniqueId, ...otherProps } = rawRenderData;
             const id = this.makePdgId(rawRenderData);

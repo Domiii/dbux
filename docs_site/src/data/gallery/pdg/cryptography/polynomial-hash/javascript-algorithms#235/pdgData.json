@@ -1,0 +1,10 @@
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "PolynomialHash.hash(c)",
+    "traceLocations": [
+      "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js#9"
+    ]
+  }
+]
