@@ -190,12 +190,13 @@ export default class PDGGallery {
                 if (dot === lastDot) {
                   screenshots.push({
                     sameAs: k - 1,
-                    settings
+                    settings,
+                    rootSummaryMode
                   });
                 }
                 else {
                   lastDot = dot;
-                  screenshots.push({ dot, settings });
+                  screenshots.push({ dot, settings, rootSummaryMode });
                 }
               }
               PDGRenderData.push({
