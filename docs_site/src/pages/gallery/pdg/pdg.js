@@ -10,9 +10,9 @@ import 'bootstrap/dist/css/bootstrap-grid.css';
 import 'bootstrap/dist/css/bootstrap-utilities.css';
 
 export default function pdg() {
-  const pdgIdString = useLocation().hash.substring(1);
-  const pdgId = parseInt(pdgIdString, 10);
-  const renderData = useGraphs({ pdgId });
+  const pdgId = useLocation().hash.substring(1);
+  const graphs = useGraphs();
+  const renderData = graphs.getById(pdgId);
 
   return <PDG {...renderData}></PDG>;
 }

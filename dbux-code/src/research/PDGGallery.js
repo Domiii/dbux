@@ -16,6 +16,7 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getCurrentResearch } from './Research';
 
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default}Exercise*/
 /** @typedef {import('../chapterListBuilderView/chapterListBuilderViewController').default} ChapterListBuilderViewController */
 
 // eslint-disable-next-line no-unused-vars
@@ -89,6 +90,9 @@ export default class PDGGallery {
     return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
   }
 
+  /**
+   * @param {Exercise[]} exercises
+   */
   async buildGalleryForExercises(exercises, force = false) {
     await runTaskWithProgressBar(async (progress) => {
       const failedExerciseIds = [];
@@ -135,12 +139,45 @@ export default class PDGGallery {
 
           for (let j = 0; j < ddgArgs.length; j++) {
             const ddgArg = ddgArgs[j];
+            const { ddgTitle } = ddgArg;
             const id = ++renderDataId;
             let lastDot;
             const screenshots = [];
             const app = allApplications.getById(ddgArg.applicationUuid);
             const dp = app.dataProvider;
             const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
+
+            // check if ddg build failed
+            const failedReason = dp.ddgs.getCreateDDGFailureReason(ddgArg);
+            if (failedReason) {
+              PDGRenderData.push({
+                success: false,
+                failedReason,
+                ddgTitle,
+              });
+              continue;
+            }
+
+            // check if there are missing data traces
+            const missingDataTraces = dp.util.getAllMissingDataStaticTraces();
+            if (missingDataTraces.length) {
+              const traceLocations = missingDataTraces.map(staticTrace => {
+                const filePath = dp.util.getStaticTraceProgramPath(staticTrace.staticTraceId);
+                const relativeFilePath = pathRelative(exercise.project.projectPath, filePath);
+                const { line } = staticTrace.loc.start;
+                return `${relativeFilePath}#${line}`;
+              });
+
+              PDGRenderData.push({
+                success: false,
+                failedReason: 'missing data traces',
+                ddgTitle,
+                traceLocations,
+              });
+              continue;
+            }
+
+            // passed, generate screenshots
             for (let k = 0; k < screenshotConfigs.length; k++) {
               progress.report({ message: `Exercise: "${exercise.id}" (${i}/${exercises.length}), DDG: (${k}/${screenshotConfigs.length})` });
               const screenshotConfig = screenshotConfigs[k];
@@ -163,7 +200,7 @@ export default class PDGGallery {
             }
             PDGRenderData.push({
               id,
-              ddgTitle: ddgArg.ddgTitle,
+              ddgTitle,
               uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
               testLoc: ddgArg.testLoc,
               algoLoc: ddgArg.algoLoc,
@@ -177,6 +214,7 @@ export default class PDGGallery {
           logError(new NestedError(`Cannot generate pdg render data for exercise: ${exercise.id}`, err));
           const errData = {
             success: false,
+            failedReason: 'error',
             error: err.stack,
           };
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(errData, null, 2));

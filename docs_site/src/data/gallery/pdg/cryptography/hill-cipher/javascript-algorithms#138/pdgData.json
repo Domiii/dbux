@@ -1,4 +1,7 @@
-{
-  "success": false,
-  "error": "TypeError: Cannot read property 'updateSettings' of null\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:18653:19\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:7902:12"
-}
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#7) did not return anything.",
+    "ddgTitle": "hillCipherEncrypt(ab, aaabbbccc)"
+  }
+]

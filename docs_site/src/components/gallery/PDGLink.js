@@ -5,13 +5,13 @@ import useBaseUrl from '../../hooks/useBaseUrl';
 const PDGBaseUrl = 'gallery/pdg/pdg';
 
 export default function PDGLink(props) {
-  const { pdgId, children, title } = props;
+  const { pdgId, children, title, className } = props;
 
   const baseUrl = useBaseUrl();
 
   const href = `${baseUrl}${PDGBaseUrl}#${pdgId}`; // join(pkg, path)
 
   return (
-    <a title={title} href={href}>{children}</a>
+    <a title={title} href={href} className={className}>{children}</a>
   );
 }

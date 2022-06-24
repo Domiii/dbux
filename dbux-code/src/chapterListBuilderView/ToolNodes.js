@@ -323,7 +323,7 @@ export default class ToolRootNode extends BaseTreeViewNode {
 
   childClasses = [
     GenerateListNode,
-    ExportApplicationsForceNode,
+    // ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
     GeneratePatchNode,
     ExportAllDDGScreenshotNode,

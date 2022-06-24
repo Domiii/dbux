@@ -580,7 +580,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.41693727691830196"
+        "applicationUuid": "0.6633273395444532"
       },
       {
         "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -615,7 +615,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.41693727691830196"
+        "applicationUuid": "0.6633273395444532"
       }
     ]
   },
@@ -1245,7 +1245,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9273588457394122"
+        "applicationUuid": "0.943857533029181"
       }
     ]
   },
@@ -1312,7 +1312,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.082932355538204"
+        "applicationUuid": "0.4028103084598933"
       }
     ]
   },
@@ -1369,7 +1369,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3697866476772751"
+        "applicationUuid": "0.3356602072110939"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1404,7 +1404,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3697866476772751"
+        "applicationUuid": "0.3356602072110939"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1439,7 +1439,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3697866476772751"
+        "applicationUuid": "0.3356602072110939"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1474,7 +1474,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3697866476772751"
+        "applicationUuid": "0.3356602072110939"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1509,7 +1509,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3697866476772751"
+        "applicationUuid": "0.3356602072110939"
       }
     ]
   },
@@ -1596,7 +1596,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([1,1,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1])",
@@ -1631,7 +1631,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([1,1,0,0,0,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0])",
@@ -1666,7 +1666,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -1701,7 +1701,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([1,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -1736,7 +1736,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -1771,7 +1771,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -1806,7 +1806,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0])",
@@ -1841,7 +1841,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -1876,7 +1876,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
@@ -1911,7 +1911,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,0,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0])",
@@ -1946,7 +1946,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -1981,7 +1981,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -2016,7 +2016,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -2051,7 +2051,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])",
@@ -2086,7 +2086,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       },
       {
         "ddgTitle": "bitsToFloat64([0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])",
@@ -2121,7 +2121,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5744483834211598"
+        "applicationUuid": "0.3768373296927561"
       }
     ]
   },
@@ -2188,7 +2188,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7930258588018997"
+        "applicationUuid": "0.04418626522381941"
       },
       {
         "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
@@ -2223,7 +2223,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7930258588018997"
+        "applicationUuid": "0.04418626522381941"
       }
     ]
   },
@@ -2340,7 +2340,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8617981483747867"
+        "applicationUuid": "0.4684688494157614"
       }
     ]
   },
@@ -2417,7 +2417,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6061159857975642"
+        "applicationUuid": "0.3861918022600468"
       },
       {
         "ddgTitle": "bwPowerSet([1,2,3])",
@@ -2452,7 +2452,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6061159857975642"
+        "applicationUuid": "0.3861918022600468"
       }
     ]
   },
@@ -2529,7 +2529,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21481304172097415"
+        "applicationUuid": "0.09204774723469833"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(qeb nrfzh yoltk clu grjmp lsbo qeb ixwv ald, 23)",
@@ -2564,7 +2564,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21481304172097415"
+        "applicationUuid": "0.09204774723469833"
       }
     ]
   },
@@ -2641,7 +2641,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.43158244815769575"
+        "applicationUuid": "0.6765910038809664"
       },
       {
         "ddgTitle": "cartesianProduct([], null)",
@@ -2676,7 +2676,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.43158244815769575"
+        "applicationUuid": "0.6765910038809664"
       }
     ]
   },
@@ -2743,7 +2743,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5920844560210041"
+        "applicationUuid": "0.4384473196442096"
       },
       {
         "ddgTitle": "combinationSum([2,3,6,7], 7)",
@@ -2778,7 +2778,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5920844560210041"
+        "applicationUuid": "0.4384473196442096"
       },
       {
         "ddgTitle": "combinationSum([2,3,5], 8)",
@@ -2813,7 +2813,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5920844560210041"
+        "applicationUuid": "0.4384473196442096"
       },
       {
         "ddgTitle": "combinationSum([2,5], 3)",
@@ -2848,7 +2848,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5920844560210041"
+        "applicationUuid": "0.4384473196442096"
       },
       {
         "ddgTitle": "combinationSum([], 3)",
@@ -2883,7 +2883,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5920844560210041"
+        "applicationUuid": "0.4384473196442096"
       }
     ]
   },
@@ -2940,7 +2940,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 1)",
@@ -2975,7 +2975,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 2)",
@@ -3010,7 +3010,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 3)",
@@ -3045,7 +3045,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 2)",
@@ -3080,7 +3080,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 3)",
@@ -3115,7 +3115,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\"], 4)",
@@ -3150,7 +3150,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "factorial(11)",
@@ -3185,7 +3185,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "factorial(4)",
@@ -3220,7 +3220,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       },
       {
         "ddgTitle": "factorial(7)",
@@ -3255,7 +3255,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4900846889088606"
+        "applicationUuid": "0.7283080545471254"
       }
     ]
   },
@@ -3352,7 +3352,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4167790304169452"
+        "applicationUuid": "0.4973288202180517"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -3387,7 +3387,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4167790304169452"
+        "applicationUuid": "0.4973288202180517"
       }
     ]
   },
@@ -3504,7 +3504,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.950112149024603"
+        "applicationUuid": "0.5720738453892245"
       }
     ]
   },
@@ -3591,7 +3591,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0])",
@@ -3626,7 +3626,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,1])",
@@ -3661,7 +3661,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,1,2])",
@@ -3696,7 +3696,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,-1,2])",
@@ -3731,7 +3731,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-1,-2,-3,-4,-5])",
@@ -3766,7 +3766,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([1,2,3,2,3,4,5])",
@@ -3801,7 +3801,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-2,1,-3,4,-1,2,1,-5,4])",
@@ -3836,7 +3836,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-2,-3,4,-1,-2,1,5,-3])",
@@ -3871,7 +3871,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([1,-3,2,-5,7,6,-1,4,11,-23])",
@@ -3906,7 +3906,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5255731358436886"
+        "applicationUuid": "0.7751832700061834"
       }
     ]
   },
@@ -3983,7 +3983,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4328130340693128"
+        "applicationUuid": "0.8957036133384706"
       },
       {
         "ddgTitle": "depthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
@@ -4018,7 +4018,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4328130340693128"
+        "applicationUuid": "0.8957036133384706"
       }
     ]
   },
@@ -4085,7 +4085,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10067907430488066"
+        "applicationUuid": "0.4932764938794296"
       },
       {
         "ddgTitle": "detectUndirectedCycle({vertices,edges,isDirected})",
@@ -4120,7 +4120,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10067907430488066"
+        "applicationUuid": "0.4932764938794296"
       }
     ]
   },
@@ -4187,7 +4187,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3390713778746346"
+        "applicationUuid": "0.8356026853715874"
       }
     ]
   },
@@ -4274,7 +4274,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.29233603243949546"
+        "applicationUuid": "0.664758070869846"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([0,1,2,3,4,5,6,7,8,9])",
@@ -4309,7 +4309,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.29233603243949546"
+        "applicationUuid": "0.664758070869846"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([3,4,-1,0,6,2,3])",
@@ -4344,7 +4344,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.29233603243949546"
+        "applicationUuid": "0.664758070869846"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15])",
@@ -4379,7 +4379,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.29233603243949546"
+        "applicationUuid": "0.664758070869846"
       }
     ]
   },
@@ -4436,7 +4436,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([1,0])",
@@ -4471,7 +4471,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1])",
@@ -4506,7 +4506,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0])",
@@ -4541,7 +4541,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,0])",
@@ -4576,7 +4576,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,0,1,0])",
@@ -4611,7 +4611,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,2,0,0,1,0])",
@@ -4646,7 +4646,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([2,0,2])",
@@ -4681,7 +4681,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([2,0,5])",
@@ -4716,7 +4716,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([3,0,0,2,0,4])",
@@ -4751,7 +4751,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
@@ -4786,7 +4786,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([1,1,1,1,1])",
@@ -4821,7 +4821,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([1,2,3,4,5])",
@@ -4856,7 +4856,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([4,1,3,1,2,1,2,1])",
@@ -4891,7 +4891,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       },
       {
         "ddgTitle": "dpRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
@@ -4926,7 +4926,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2620966279202064"
+        "applicationUuid": "0.24736177185239216"
       }
     ]
   },
@@ -4973,7 +4973,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([100,0])",
@@ -5008,7 +5008,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([2,3,1,1,4])",
@@ -5043,7 +5043,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,1,1,1,1])",
@@ -5078,7 +5078,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,1,1,10,1])",
@@ -5113,7 +5113,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,5,2,1,0,2,0])",
@@ -5148,7 +5148,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,0,1])",
@@ -5183,7 +5183,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([3,2,1,0,4])",
@@ -5218,7 +5218,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([0,0,0,0,0])",
@@ -5253,7 +5253,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([5,4,3,2,1,0,0])",
@@ -5288,7 +5288,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9733187088989075"
+        "applicationUuid": "0.11332105999330766"
       }
     ]
   },
@@ -5335,7 +5335,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3884789011758172"
+        "applicationUuid": "0.31113598284564836"
       },
       {
         "ddgTitle": "dpUniquePaths(7, 3)",
@@ -5370,7 +5370,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3884789011758172"
+        "applicationUuid": "0.31113598284564836"
       },
       {
         "ddgTitle": "dpUniquePaths(3, 7)",
@@ -5405,7 +5405,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3884789011758172"
+        "applicationUuid": "0.31113598284564836"
       },
       {
         "ddgTitle": "dpUniquePaths(10, 10)",
@@ -5440,7 +5440,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3884789011758172"
+        "applicationUuid": "0.31113598284564836"
       },
       {
         "ddgTitle": "dpUniquePaths(100, 1)",
@@ -5475,7 +5475,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3884789011758172"
+        "applicationUuid": "0.31113598284564836"
       },
       {
         "ddgTitle": "dpUniquePaths(1, 100)",
@@ -5510,7 +5510,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3884789011758172"
+        "applicationUuid": "0.31113598284564836"
       }
     ]
   },
@@ -5577,7 +5577,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(2, 0)",
@@ -5612,7 +5612,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(0, 2)",
@@ -5647,7 +5647,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(1, 2)",
@@ -5682,7 +5682,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(2, 1)",
@@ -5717,7 +5717,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(6, 6)",
@@ -5752,7 +5752,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(2, 4)",
@@ -5787,7 +5787,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(4, 2)",
@@ -5822,7 +5822,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(12, 4)",
@@ -5857,7 +5857,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(4, 12)",
@@ -5892,7 +5892,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(5, 13)",
@@ -5927,7 +5927,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(27, 13)",
@@ -5962,7 +5962,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(24, 60)",
@@ -5997,7 +5997,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(60, 24)",
@@ -6032,7 +6032,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(252, 105)",
@@ -6067,7 +6067,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(105, 252)",
@@ -6102,7 +6102,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(1071, 462)",
@@ -6137,7 +6137,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(462, 1071)",
@@ -6172,7 +6172,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(462, -1071)",
@@ -6207,7 +6207,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       },
       {
         "ddgTitle": "euclideanAlgorithmIterative(-462, -1071)",
@@ -6242,7 +6242,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5518634387189014"
+        "applicationUuid": "0.2605787023225017"
       }
     ]
   },
@@ -6299,7 +6299,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.03098750153821217"
+        "applicationUuid": "0.12456637798195702"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
@@ -6334,7 +6334,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.03098750153821217"
+        "applicationUuid": "0.12456637798195702"
       }
     ]
   },
@@ -6391,7 +6391,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.26685939712267626"
+        "applicationUuid": "0.9722946302222972"
       }
     ]
   },
@@ -6458,7 +6458,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3635820363928335"
+        "applicationUuid": "0.7385015435763866"
       },
       {
         "ddgTitle": "factorialRecursive(1)",
@@ -6493,7 +6493,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3635820363928335"
+        "applicationUuid": "0.7385015435763866"
       },
       {
         "ddgTitle": "factorialRecursive(5)",
@@ -6528,7 +6528,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3635820363928335"
+        "applicationUuid": "0.7385015435763866"
       },
       {
         "ddgTitle": "factorialRecursive(8)",
@@ -6563,7 +6563,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3635820363928335"
+        "applicationUuid": "0.7385015435763866"
       },
       {
         "ddgTitle": "factorialRecursive(10)",
@@ -6598,7 +6598,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3635820363928335"
+        "applicationUuid": "0.7385015435763866"
       }
     ]
   },
@@ -6655,7 +6655,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6690,7 +6690,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6725,7 +6725,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6760,7 +6760,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6795,7 +6795,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6830,7 +6830,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6865,7 +6865,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{}])",
@@ -6900,7 +6900,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{},{}], true)",
@@ -6935,7 +6935,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5625797692821206"
+        "applicationUuid": "0.07597827764166443"
       }
     ]
   },
@@ -6992,7 +6992,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 0)",
@@ -7027,7 +7027,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 2)",
@@ -7062,7 +7062,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 3)",
@@ -7097,7 +7097,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 4)",
@@ -7132,7 +7132,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 5)",
@@ -7167,7 +7167,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 6)",
@@ -7202,7 +7202,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 7)",
@@ -7237,7 +7237,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(2, 8)",
@@ -7272,7 +7272,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(3, 4)",
@@ -7307,7 +7307,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(190, 2)",
@@ -7342,7 +7342,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(11, 5)",
@@ -7377,7 +7377,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(13, 11)",
@@ -7412,7 +7412,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(9, 16)",
@@ -7447,7 +7447,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(16, 16)",
@@ -7482,7 +7482,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(7, 21)",
@@ -7517,7 +7517,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       },
       {
         "ddgTitle": "fastPowering(100, 9)",
@@ -7552,7 +7552,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8489279248838124"
+        "applicationUuid": "0.8047884186372938"
       }
     ]
   },
@@ -7619,7 +7619,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17389695847275988"
+        "applicationUuid": "0.6983962018769534"
       }
     ]
   },
@@ -7686,7 +7686,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4793479553331601"
+        "applicationUuid": "0.9679507465421988"
       },
       {
         "ddgTitle": "fisherYates([1])",
@@ -7721,7 +7721,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4793479553331601"
+        "applicationUuid": "0.9679507465421988"
       }
     ]
   },
@@ -7798,7 +7798,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6044991167591411"
+        "applicationUuid": "0.9778166066222262"
       },
       {
         "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
@@ -7833,7 +7833,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6044991167591411"
+        "applicationUuid": "0.9778166066222262"
       }
     ]
   },
@@ -7940,7 +7940,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.592905681060206"
+        "applicationUuid": "0.1908140566961125"
       },
       {
         "ddgTitle": "graphBridges({vertices,edges,isDirected})",
@@ -7975,7 +7975,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.592905681060206"
+        "applicationUuid": "0.1908140566961125"
       }
     ]
   },
@@ -8062,7 +8062,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.20868498394592683"
+        "applicationUuid": "0.2607863810220443"
       }
     ]
   },
@@ -8119,7 +8119,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7007492768516144"
+        "applicationUuid": "0.3051086802156695"
       }
     ]
   },
@@ -8176,7 +8176,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7057667303074837"
+        "applicationUuid": "0.9354987071516447"
       }
     ]
   },
@@ -8755,7 +8755,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6915737866107305"
+        "applicationUuid": "0.5926214941591554"
       }
     ]
   },
@@ -8852,7 +8852,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08660058318391539"
+        "applicationUuid": "0.42344086726661456"
       }
     ]
   },
@@ -8919,7 +8919,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([2,4,2,5], 0.555)",
@@ -8954,7 +8954,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([2,4,2,5], 0.75)",
@@ -8989,7 +8989,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([1,1,1,1,1], 1.75)",
@@ -9024,7 +9024,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([15,3.5,0,2,1.42,0.41], 0.315)",
@@ -9059,7 +9059,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([0,0,2.77,1.42,0.41], 1.35)",
@@ -9094,7 +9094,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([0,0,2.77,1.42,2.3311], 1.35)",
@@ -9129,7 +9129,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       },
       {
         "ddgTitle": "hornerMethod([2,0,0,5.757,5.31412,12.3213], 3.141)",
@@ -9164,7 +9164,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.513372950261088"
+        "applicationUuid": "0.7094923522285712"
       }
     ]
   },
@@ -9261,7 +9261,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6917012298993883"
+        "applicationUuid": "0.9885772165645665"
       }
     ]
   },
@@ -9338,7 +9338,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(2)",
@@ -9373,7 +9373,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(3)",
@@ -9408,7 +9408,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(4)",
@@ -9443,7 +9443,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(5)",
@@ -9478,7 +9478,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(6)",
@@ -9513,7 +9513,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(7)",
@@ -9548,7 +9548,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       },
       {
         "ddgTitle": "integerPartition(8)",
@@ -9583,7 +9583,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.21629198786179415"
+        "applicationUuid": "0.7814625465903562"
       }
     ]
   },
@@ -9630,7 +9630,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1], 1)",
@@ -9665,7 +9665,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1], 0)",
@@ -9700,7 +9700,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,1], 1)",
@@ -9735,7 +9735,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2], 1)",
@@ -9770,7 +9770,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2], 2)",
@@ -9805,7 +9805,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([10,20,30,40,50], 40)",
@@ -9840,7 +9840,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], 14)",
@@ -9875,7 +9875,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,6,7,8,12,13,14,19,21,23,24,24,24,300], 24)",
@@ -9910,7 +9910,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 600)",
@@ -9945,7 +9945,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 1)",
@@ -9980,7 +9980,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 2)",
@@ -10015,7 +10015,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 3)",
@@ -10050,7 +10050,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 700)",
@@ -10085,7 +10085,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 800)",
@@ -10120,7 +10120,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([0,2,3,700,800,1200,1300,1400,1900], 1200)",
@@ -10155,7 +10155,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,19000], 800)",
@@ -10190,7 +10190,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       },
       {
         "ddgTitle": "interpolationSearch([0,10,11,12,13,14,15], 10)",
@@ -10225,7 +10225,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.10475594421715528"
+        "applicationUuid": "0.9576727227067001"
       }
     ]
   },
@@ -10292,7 +10292,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(2)",
@@ -10327,7 +10327,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(3)",
@@ -10362,7 +10362,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(5665)",
@@ -10397,7 +10397,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(56644325)",
@@ -10432,7 +10432,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(0)",
@@ -10467,7 +10467,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(0)",
@@ -10502,7 +10502,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(-1)",
@@ -10537,7 +10537,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(-2)",
@@ -10572,7 +10572,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(-126)",
@@ -10607,7 +10607,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(-5665)",
@@ -10642,7 +10642,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       },
       {
         "ddgTitle": "isPositive(-56644325)",
@@ -10677,7 +10677,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8383375203081516"
+        "applicationUuid": "0.8863629850849457"
       }
     ]
   },
@@ -10744,7 +10744,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(0)",
@@ -10779,7 +10779,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(1)",
@@ -10814,7 +10814,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(2)",
@@ -10849,7 +10849,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(3)",
@@ -10884,7 +10884,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(4)",
@@ -10919,7 +10919,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(5)",
@@ -10954,7 +10954,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(6)",
@@ -10989,7 +10989,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(7)",
@@ -11024,7 +11024,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(8)",
@@ -11059,7 +11059,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(10)",
@@ -11094,7 +11094,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(12)",
@@ -11129,7 +11129,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(16)",
@@ -11164,7 +11164,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(31)",
@@ -11199,7 +11199,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(64)",
@@ -11234,7 +11234,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(1024)",
@@ -11269,7 +11269,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(1023)",
@@ -11304,7 +11304,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2686691328335227"
+        "applicationUuid": "0.5831551110263695"
       }
     ]
   },
@@ -11361,7 +11361,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44601929194979717"
+        "applicationUuid": "0.360819620284206"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11396,7 +11396,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44601929194979717"
+        "applicationUuid": "0.360819620284206"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11431,7 +11431,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44601929194979717"
+        "applicationUuid": "0.360819620284206"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11466,7 +11466,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44601929194979717"
+        "applicationUuid": "0.360819620284206"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11501,7 +11501,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.44601929194979717"
+        "applicationUuid": "0.360819620284206"
       }
     ]
   },
@@ -11568,7 +11568,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2764829825461923"
+        "applicationUuid": "0.676240950454833"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -11603,7 +11603,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2764829825461923"
+        "applicationUuid": "0.676240950454833"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -11638,7 +11638,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2764829825461923"
+        "applicationUuid": "0.676240950454833"
       }
     ]
   },
@@ -11745,7 +11745,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11780,7 +11780,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11815,7 +11815,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11850,7 +11850,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11885,7 +11885,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 60)",
@@ -11920,7 +11920,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
@@ -11955,7 +11955,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -11990,7 +11990,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12025,7 +12025,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12060,7 +12060,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12095,7 +12095,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12130,7 +12130,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12165,7 +12165,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12200,7 +12200,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12235,7 +12235,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12270,7 +12270,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12305,7 +12305,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12340,7 +12340,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12375,7 +12375,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12410,7 +12410,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12445,7 +12445,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12480,7 +12480,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33761491144220956"
+        "applicationUuid": "0.5982549450769643"
       }
     ]
   },
@@ -12567,7 +12567,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11749400508986119"
+        "applicationUuid": "0.875019189800516"
       }
     ]
   },
@@ -12644,7 +12644,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48045371241026147"
+        "applicationUuid": "0.7853075619878327"
       }
     ]
   },
@@ -12711,7 +12711,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(a, )",
@@ -12746,7 +12746,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(a, a)",
@@ -12781,7 +12781,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcbcglx, abca)",
@@ -12816,7 +12816,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcbcglx, bcgl)",
@@ -12851,7 +12851,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)",
@@ -12886,7 +12886,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabca)",
@@ -12921,7 +12921,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxaabcdabcabcdabcdabcy, abcdabca)",
@@ -12956,7 +12956,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxaabaabaaaabcdabcdabcy, aabaabaaa)",
@@ -12991,7 +12991,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.32599098597550635"
+        "applicationUuid": "0.9550761782510186"
       }
     ]
   },
@@ -13048,7 +13048,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6445273078726266"
+        "applicationUuid": "0.4419022827403303"
       },
       {
         "ddgTitle": "kruskal({vertices,edges,isDirected})",
@@ -13083,7 +13083,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6445273078726266"
+        "applicationUuid": "0.4419022827403303"
       }
     ]
   },
@@ -13140,7 +13140,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(1, 0)",
@@ -13175,7 +13175,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(0, 1)",
@@ -13210,7 +13210,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(4, 6)",
@@ -13245,7 +13245,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(6, 21)",
@@ -13280,7 +13280,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(7, 2)",
@@ -13315,7 +13315,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(3, 5)",
@@ -13350,7 +13350,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(7, 3)",
@@ -13385,7 +13385,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(1000000, 2)",
@@ -13420,7 +13420,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(-9, -18)",
@@ -13455,7 +13455,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(-7, -9)",
@@ -13490,7 +13490,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       },
       {
         "ddgTitle": "leastCommonMultiple(-7, 9)",
@@ -13525,7 +13525,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.49934493982583894"
+        "applicationUuid": "0.6199445874614085"
       }
     ]
   },
@@ -13572,7 +13572,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(a, )",
@@ -13607,7 +13607,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(, a)",
@@ -13642,7 +13642,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(abc, )",
@@ -13677,7 +13677,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(, abc)",
@@ -13712,7 +13712,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(islander, slander)",
@@ -13747,7 +13747,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(mart, karma)",
@@ -13782,7 +13782,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(kitten, sitting)",
@@ -13817,7 +13817,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(ball, football)",
@@ -13852,7 +13852,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(football, foot)",
@@ -13887,7 +13887,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       },
       {
         "ddgTitle": "levenshteinDistance(intention, execution)",
@@ -13922,7 +13922,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.531406737227657"
+        "applicationUuid": "0.18403051694485528"
       }
     ]
   },
@@ -13979,7 +13979,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.809484896438436"
+        "applicationUuid": "0.9213219311199117"
       },
       {
         "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], b)",
@@ -14014,7 +14014,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.809484896438436"
+        "applicationUuid": "0.9213219311199117"
       },
       {
         "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], a)",
@@ -14049,7 +14049,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.809484896438436"
+        "applicationUuid": "0.9213219311199117"
       }
     ]
   },
@@ -14923,7 +14923,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7725921753735536"
+        "applicationUuid": "0.7935449078784313"
       },
       {
         "ddgTitle": "radianToDegree(0.7853981633974483)",
@@ -14958,7 +14958,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7725921753735536"
+        "applicationUuid": "0.7935449078784313"
       },
       {
         "ddgTitle": "radianToDegree(1.5707963267948966)",
@@ -14993,7 +14993,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7725921753735536"
+        "applicationUuid": "0.7935449078784313"
       },
       {
         "ddgTitle": "radianToDegree(3.141592653589793)",
@@ -15028,7 +15028,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7725921753735536"
+        "applicationUuid": "0.7935449078784313"
       },
       {
         "ddgTitle": "radianToDegree(4.71238898038469)",
@@ -15063,7 +15063,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7725921753735536"
+        "applicationUuid": "0.7935449078784313"
       },
       {
         "ddgTitle": "radianToDegree(6.283185307179586)",
@@ -15098,7 +15098,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7725921753735536"
+        "applicationUuid": "0.7935449078784313"
       }
     ]
   },

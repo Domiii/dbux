@@ -1,4 +1,10 @@
-{
-  "success": false,
-  "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44716:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44619:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44612:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44594:323)\n\tat DataDependencyGraph.setSummaryMode (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:44529:83)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:18654:19\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:7902:12"
-}
+[
+  {
+    "success": false,
+    "failedReason": "missing data traces",
+    "ddgTitle": "bfTravellingSalesman({vertices,edges,isDirected})",
+    "traceLocations": [
+      "src/data-structures/linked-list/LinkedList.js#137"
+    ]
+  }
+]
