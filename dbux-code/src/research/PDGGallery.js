@@ -254,48 +254,48 @@ export default class PDGGallery {
     });
   }
 
-  async insertDDGTitle() {
-    let count = 0;
-    const chapterGroups = fs.readdirSync(this.galleryDataRoot);
-    for (const chapterGroupName of chapterGroups) {
-      const chapterGroupFolderPath = pathJoin(this.galleryDataRoot, chapterGroupName);
-      if (!fs.lstatSync(chapterGroupFolderPath).isDirectory()) {
-        continue;
-      }
+  // async insertDDGTitle() {
+  //   let count = 0;
+  //   const chapterGroups = fs.readdirSync(this.galleryDataRoot);
+  //   for (const chapterGroupName of chapterGroups) {
+  //     const chapterGroupFolderPath = pathJoin(this.galleryDataRoot, chapterGroupName);
+  //     if (!fs.lstatSync(chapterGroupFolderPath).isDirectory()) {
+  //       continue;
+  //     }
 
-      const chapters = fs.readdirSync(chapterGroupFolderPath);
-      for (const chapterName of chapters) {
-        const chapterFolderPath = pathJoin(chapterGroupFolderPath, chapterName);
-        for (const exerciseId of fs.readdirSync(chapterFolderPath)) {
-          const exerciseFolderPath = pathJoin(chapterFolderPath, exerciseId);
-          const pdgFilePath = pathJoin(exerciseFolderPath, PDGFileName);
-          if (!fs.existsSync(pdgFilePath)) {
-            continue;
-          }
+  //     const chapters = fs.readdirSync(chapterGroupFolderPath);
+  //     for (const chapterName of chapters) {
+  //       const chapterFolderPath = pathJoin(chapterGroupFolderPath, chapterName);
+  //       for (const exerciseId of fs.readdirSync(chapterFolderPath)) {
+  //         const exerciseFolderPath = pathJoin(chapterFolderPath, exerciseId);
+  //         const pdgFilePath = pathJoin(exerciseFolderPath, PDGFileName);
+  //         if (!fs.existsSync(pdgFilePath)) {
+  //           continue;
+  //         }
 
-          const {
-            id,
-            uniqueId,
-            testLoc,
-            algoLoc,
-            screenshots,
-          } = JSON.parse(fs.readFileSync(pdgFilePath));
-          const exercise = this.controller.exerciseList.getById(exerciseId);
-          const { ddgTitle } = exercise.ddgs[Math.floor(exercise.ddgs.length / 2)];
+  //         const {
+  //           id,
+  //           uniqueId,
+  //           testLoc,
+  //           algoLoc,
+  //           screenshots,
+  //         } = JSON.parse(fs.readFileSync(pdgFilePath));
+  //         const exercise = this.controller.exerciseList.getById(exerciseId);
+  //         const { ddgTitle } = exercise.ddgs[Math.floor(exercise.ddgs.length / 2)];
 
-          fs.writeFileSync(pdgFilePath, JSON.stringify({
-            id,
-            ddgTitle,
-            uniqueId,
-            testLoc,
-            algoLoc,
-            screenshots,
-          }));
-          count++;
-        }
-      }
-    }
+  //         fs.writeFileSync(pdgFilePath, JSON.stringify({
+  //           id,
+  //           ddgTitle,
+  //           uniqueId,
+  //           testLoc,
+  //           algoLoc,
+  //           screenshots,
+  //         }));
+  //         count++;
+  //       }
+  //     }
+  //   }
 
-    showInformationMessage(`${count} file(s) changed succesfully.`);
-  }
+  //   showInformationMessage(`${count} file(s) changed succesfully.`);
+  // }
 }
