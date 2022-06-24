@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "ddgTitle": "fastPowering(2, 8)",
     "uniqueId": "math_fast-powering_javascript-algorithms#101_1",
     "testLoc": {
       "filePath": "src/algorithms/math/fast-powering/__test__/fastPowering.test.js",

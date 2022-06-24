@@ -63,7 +63,7 @@ export default function PDG(props) {
         <PDGLink title="Next exercise" pdgId={pdgId + 1}>
           <button className="mx-4 p-2">&raquo;</button>
         </PDGLink>
-        {exerciseId}
+        {renderData.ddgTitle}
       </h1>
       <p>
         Chapter: {chapterGroup}/{chapter}

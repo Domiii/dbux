@@ -152,7 +152,8 @@ export default class PDGGallery {
 
               if (dot === lastDot) {
                 screenshots.push({
-                  sameAs: k - 1
+                  sameAs: k - 1,
+                  settings
                 });
               }
               else {

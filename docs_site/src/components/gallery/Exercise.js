@@ -9,7 +9,7 @@ export default function Exercise(props) {
   }
   return <>
     {ddgs.map(renderData => {
-      return <PDGLink key={renderData.id} pdgId={renderData.id}>{id}</PDGLink>;
+      return <PDGLink key={renderData.id} pdgId={renderData.id}>{renderData.ddgTitle}</PDGLink>;
     })}
   </>;
 }

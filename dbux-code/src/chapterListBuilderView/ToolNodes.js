@@ -273,7 +273,12 @@ class ExportAllDDGScreenshotNode extends ToolNode {
 
   async handleClick() {
     // const exercises = this.controller.exerciseList.getAll().slice(113, 114);
-    const exercises = this.controller.exerciseList.getAll();
+    // const exercises = this.controller.exerciseList.getAll();
+    // const exercises = [this.controller.exerciseList.getById('javascript-algorithms#130')];
+    const exercises = this.controller.chapters.map(chapter => {
+      const exercisesInChapter = chapter.exercises.getAll();
+      return exercisesInChapter[Math.floor(exercisesInChapter.length / 2)];
+    });
 
     await this.controller.gallery.buildGalleryForExercises(exercises);
     // await this.controller.gallery.buildGalleryForExercises(exercises, true);

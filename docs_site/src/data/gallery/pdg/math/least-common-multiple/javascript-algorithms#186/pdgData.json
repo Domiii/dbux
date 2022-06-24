@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "ddgTitle": "leastCommonMultiple(3, 5)",
     "uniqueId": "math_least-common-multiple_javascript-algorithms#186_1",
     "testLoc": {
       "filePath": "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js",
@@ -52,7 +53,13 @@
         }
       },
       {
-        "sameAs": 1
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
         "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_12 {\n    id=12;\n    label=\"euclideanAlgorithm\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    63 [id=63,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"63\" TITLE=\"63\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_22 {\n      id=22;\n      label=\"euclideanAlgorithm\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      64 [id=64,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"64\" TITLE=\"64\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  62 [id=62,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"62\" TITLE=\"62\"><FONT COLOR=\"lightblue\">15</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 64 [id=e1];\n  2 -> 62 [id=e2];\n  3 -> 64 [id=e3];\n  3 -> 62 [id=e4];\n  64 -> 62 [id=e5];\n  2 -> 3 -> 63 -> 64 -> 62[style=invis,weight=2];\n}",
