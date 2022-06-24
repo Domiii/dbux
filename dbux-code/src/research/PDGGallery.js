@@ -138,13 +138,13 @@ export default class PDGGallery {
             const id = ++renderDataId;
             let lastDot;
             const screenshots = [];
+            const app = allApplications.getById(ddgArg.applicationUuid);
+            const dp = app.dataProvider;
+            const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
             for (let k = 0; k < screenshotConfigs.length; k++) {
               progress.report({ message: `Exercise: "${exercise.id}" (${i}/${exercises.length}), DDG: (${k}/${screenshotConfigs.length})` });
               const screenshotConfig = screenshotConfigs[k];
               const { settings, rootSummaryMode } = screenshotConfig;
-              const app = allApplications.getById(ddgArg.applicationUuid);
-              const dp = app.dataProvider;
-              const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
               ddg.updateSettings(settings);
               ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
 
@@ -162,6 +162,7 @@ export default class PDGGallery {
             }
             PDGRenderData.push({
               id,
+              ddgTitle: ddgArg.ddgTitle,
               uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
               testLoc: ddgArg.testLoc,
               algoLoc: ddgArg.algoLoc,
@@ -251,5 +252,50 @@ export default class PDGGallery {
         await open(path.dirname(graphJSPath));
       }
     });
+  }
+
+  async insertDDGTitle() {
+    let count = 0;
+    const chapterGroups = fs.readdirSync(this.galleryDataRoot);
+    for (const chapterGroupName of chapterGroups) {
+      const chapterGroupFolderPath = pathJoin(this.galleryDataRoot, chapterGroupName);
+      if (!fs.lstatSync(chapterGroupFolderPath).isDirectory()) {
+        continue;
+      }
+
+      const chapters = fs.readdirSync(chapterGroupFolderPath);
+      for (const chapterName of chapters) {
+        const chapterFolderPath = pathJoin(chapterGroupFolderPath, chapterName);
+        for (const exerciseId of fs.readdirSync(chapterFolderPath)) {
+          const exerciseFolderPath = pathJoin(chapterFolderPath, exerciseId);
+          const pdgFilePath = pathJoin(exerciseFolderPath, PDGFileName);
+          if (!fs.existsSync(pdgFilePath)) {
+            continue;
+          }
+
+          const {
+            id,
+            uniqueId,
+            testLoc,
+            algoLoc,
+            screenshots,
+          } = JSON.parse(fs.readFileSync(pdgFilePath));
+          const exercise = this.controller.exerciseList.getById(exerciseId);
+          const { ddgTitle } = exercise.ddgs[Math.floor(exercise.ddgs.length / 2)];
+
+          fs.writeFileSync(pdgFilePath, JSON.stringify({
+            id,
+            ddgTitle,
+            uniqueId,
+            testLoc,
+            algoLoc,
+            screenshots,
+          }));
+          count++;
+        }
+      }
+    }
+
+    showInformationMessage(`${count} file(s) changed succesfully.`);
   }
 }

@@ -290,6 +290,16 @@ class GenerateGraphsJSNode extends ToolNode {
   }
 }
 
+class InsertDDGTitleNode extends ToolNode {
+  static makeLabel() {
+    return `Insert DDG Title in pdgData.json from exerciseJs`;
+  }
+
+  async handleClick() {
+    await this.controller.gallery.insertDDGTitle();
+  }
+}
+
 export default class ToolRootNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Tools';
@@ -306,5 +316,6 @@ export default class ToolRootNode extends BaseTreeViewNode {
     GeneratePatchNode,
     ExportAllDDGScreenshotNode,
     GenerateGraphsJSNode,
+    InsertDDGTitleNode,
   ]
 }

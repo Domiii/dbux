@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
     "uniqueId": "graph_articulation-points_javascript-algorithms#2_1",
     "testLoc": {
       "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
