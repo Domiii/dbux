@@ -114,7 +114,13 @@ const traceTypeObj = {
   PatternAssignment: 60,
   PatternWriteVar: 61,
   PatternWriteAndDeclareVar: 62,
-  PatternWriteME: 63
+  PatternWriteME: 63,
+
+  /**
+   * Meta trace type is used in some rare circumstances where we don't care about a StaticTrace itself,
+   * but only about some data we associate with it.
+   */
+  Meta: 70
 };
 
 /**

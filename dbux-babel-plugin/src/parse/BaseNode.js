@@ -5,6 +5,7 @@ import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
 import TraceCfg from '../definitions/TraceCfg';
 import { pathToStringAnnotated } from '../helpers/pathHelpers';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 
 const Verbose = 2;
@@ -205,7 +206,7 @@ export default class BaseNode extends ParseNode {
       // const trace = this.addDefaultTrace();
       // trace.build = trace.instrument = null;
       const traceId = this.state.traces.addTrace(targetPath, {
-        type: 0
+        type: TraceType.Meta
       });
       this.state.traces.addPurpose(traceId, purpose);
       console.warn('NO DATA PURPOSE (new trace)', traceId, JSON.stringify(purpose));
