@@ -97,6 +97,15 @@ export default class Function extends BasePlugin {
 
   setFunctionTraceCfg(traceCfg) {
     this.functionTraceCfg = traceCfg;
+    const noDataReason = this.isGenerator ?
+      'Generator Function' :
+      this.isAsync ?
+        'Async Function' :
+        null;
+
+    if (noDataReason) {
+      this.node.addStaticNoDataPurpose(this.node.path, noDataReason);
+    }
   }
 
   get isInterruptable() {
@@ -181,7 +190,7 @@ export default class Function extends BasePlugin {
      * @type {StaticContext}
      */
     const contextPlugin = this.node.getPlugin('StaticContext');
-    
+
     // `genContext` adds `contextIdVar` to this.StaticContext
     contextPlugin.genContext();
 

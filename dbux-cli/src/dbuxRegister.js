@@ -1,5 +1,5 @@
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
-import { escapeRegExp } from 'lodash';
+import escapeRegExp from 'lodash/escapeRegExp';
 import buildBabelOptions from './buildBabelOptions';
 
 // import './linkOwnDependencies';

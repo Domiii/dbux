@@ -65,6 +65,9 @@ export default class AssignmentLValPattern extends BasePlugin {
         }
       }
     });
+
+    // TODO: this does not work yet (so we flag it as not working)
+    this.node.addStaticNoDataPurpose(node.path, 'DestructuringAssignment');
   }
 
   instrument1() {

@@ -37,6 +37,7 @@ import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/Async
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel, makeTraceLocLabel } from './helpers/makeLabels';
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
+import TracePurpose, { containsPurpose } from '@dbux/common/src/types/constants/TracePurpose';
 
 /** @typedef {import('./RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
@@ -2159,26 +2160,6 @@ const dataProviderUtil = {
     }
   },
 
-  /**
-   * Map of `calleeRefId` -> `BCEs` of functions whose execution was not recorded/traced (e.g. native functions).
-   * @param {RuntimeDataProvider} dp
-   */
-  getAllUntracedFunctionCallsByRefId(dp) {
-    const untracedBces = dp.collections.staticTraces.all
-      .filter(staticTrace => staticTrace && TraceType.is.BeforeCallExpression(staticTrace.type))
-      .flatMap(staticTrace => dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray)
-      .filter(trace => !dp.util.isCalleeTraced(trace.traceId));
-
-    // NOTE: the same untraced function might have been called in different places
-    //    -> make unique set by callee refId
-    const byRefId = groupBy(untracedBces, trace => {
-      const calleeTraceId = dp.util.getCalleeTraceId(trace.traceId);
-      return calleeTraceId && dp.util.getTraceRefId(calleeTraceId) || 0;
-    });
-    delete byRefId[0];  // remove those whose `refId` could not be recovered (e.g. due to disabled tracing)
-    return byRefId;
-  },
-
   // ###########################################################################
   // contexts
   // ###########################################################################
@@ -2504,9 +2485,20 @@ const dataProviderUtil = {
   },
 
   /** @param {RuntimeDataProvider} dp */
+  getStaticTraceFileName(dp, staticTraceId) {
+    const programId = dp.util.getStaticTraceProgramId(staticTraceId);
+    return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
   getStaticTraceDisplayName(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     return staticTrace.displayName;
+  },
+
+  /** @param {RuntimeDataProvider} dp */
+  getFirstTraceOfStaticTrace(dp, staticTraceId) {
+    return dp.indexes.traces.byStaticTrace.get(staticTraceId)?.[0];
   },
 
   /** @param {RuntimeDataProvider} dp */
@@ -4179,6 +4171,42 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
     const parentAsyncNode = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
     return parentAsyncNode;
   },
+
+  /** ###########################################################################
+   * meta data about the trace situation itself
+   *  #########################################################################*/
+
+  doesStaticTraceHavePurpose() {
+
+  },
+
+  /**
+   * Map of `calleeRefId` -> `BCEs` of functions whose execution was not recorded/traced (e.g. native functions).
+   * @param {RuntimeDataProvider} dp
+   */
+  getAllUntracedFunctionCallsByRefId(dp) {
+    const untracedBces = dp.collections.staticTraces.all
+      .filter(staticTrace => staticTrace && TraceType.is.BeforeCallExpression(staticTrace.type))
+      .flatMap(staticTrace => dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray)
+      .filter(trace => !dp.util.isCalleeTraced(trace.traceId));
+
+    // NOTE: the same untraced function might have been called in different places
+    //    -> make unique set by callee refId
+    const byRefId = groupBy(untracedBces, trace => {
+      const calleeTraceId = dp.util.getCalleeTraceId(trace.traceId);
+      return calleeTraceId && dp.util.getTraceRefId(calleeTraceId) || 0;
+    });
+    delete byRefId[0];  // remove those whose `refId` could not be recovered (e.g. due to disabled tracing)
+    return byRefId;
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getAllMissingDataStaticTraces(dp) {
+    return dp.collections.staticTraces.getAllActual()
+      .filter(s => containsPurpose(s.purposes, TracePurpose.NoData));
+  }
 };
 
 export default dataProviderUtil;

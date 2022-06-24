@@ -29,7 +29,8 @@ let tracePurposeObj = {
    * hackfix: This is added to an input trace that is recorded after its target trace (because instrumentation is hard).
    */
   ReverseInput: 30,
-  PatternDefaultValue: 31
+  PatternDefaultValue: 31,
+  NoData: 40
 };
 
 /**
@@ -42,6 +43,10 @@ const warnPurposes = new Array(TracePurpose.getValueMaxIndex()).map(() => false)
 warnPurposes[TracePurpose.PatternDefaultValue] = true;
 export function isWarnPurpose(purpose) {
   return warnPurposes[purpose];
+}
+
+export function containsPurpose(purposes, purposeType) {
+  return purposes?.some(p => p.type === purposeType) || false;
 }
 
 export default TracePurpose;

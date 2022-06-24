@@ -1,9 +1,11 @@
 import serializeObj from 'serialize-javascript';
 import NestedError from '@dbux/common/src/NestedError';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
 import TraceCfg from '../definitions/TraceCfg';
 import { pathToStringAnnotated } from '../helpers/pathHelpers';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 
 const Verbose = 2;
@@ -190,6 +192,29 @@ export default class BaseNode extends ParseNode {
     this._traceCfg.data ||= {};
     this._traceCfg.data.purpose = purpose;
     this._traceCfg.data.purposeArg = arg;
+  }
+
+  addStaticNoDataPurpose(targetPath, reason) {
+    targetPath ||= this.path;
+    const purpose = {
+      type: TracePurpose.NoData,
+      name: this.name,
+      reason
+    };
+    const targetNode = this.getNodeOfPath(targetPath);
+    if (!targetNode?._traceCfg) {
+      // const trace = this.addDefaultTrace();
+      // trace.build = trace.instrument = null;
+      const traceId = this.state.traces.addTrace(targetPath, {
+        type: TraceType.Meta
+      });
+      this.state.traces.addPurpose(traceId, purpose);
+      console.warn('NO DATA PURPOSE (new trace)', traceId, JSON.stringify(purpose));
+    }
+    else {
+      targetNode.addStaticTracePurpose(purpose);
+      console.warn('NO DATA PURPOSE', this._traceCfg.inProgramStaticTraceId, JSON.stringify(purpose));
+    }
   }
 
   addStaticTracePurpose(purpose) {

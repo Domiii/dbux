@@ -3,10 +3,13 @@
  */
 
 import { getCommonAncestorPath } from '@dbux/common-node/src/util/pathUtil';
+import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeStaticContextLabel, makeStaticContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
+import { makeStaticContextLabel, makeStaticContextLocLabel, makeStaticTraceLocLabel, makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import path from 'path';
+import { goToCodeLoc } from '../../codeUtil/codeNav';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
 
@@ -177,9 +180,12 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
 
 
   // eslint-disable-next-line camelcase
-  Function_Stats = () => ({
-    label: 'Function Stats',
+  Trace_Info = () => ({
+    label: 'Trace Info',
     children: () => {
+      /** ###########################################################################
+       * tracedFunctions
+       *  #########################################################################*/
       const tracedFunctions = allApplications.selection.data.collectGlobalStats((dp, app) => {
         const tracesByStaticContext = {};
         dp.util.getTraceCountsByStaticContext(tracesByStaticContext);
@@ -206,6 +212,10 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
           });
       });
 
+      /** ###########################################################################
+       * untracedFunctions
+       *  #########################################################################*/
+
       let monkeyCount = 0;
       const untracedFunctions = allApplications.selection.data.collectGlobalStats((dp, app) => {
         return Object.entries(dp.util.getAllUntracedFunctionCallsByRefId())
@@ -228,6 +238,32 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
           });
       });
 
+      /** ###########################################################################
+       * missingDataStaticTraces
+       *  #########################################################################*/
+
+      const missingDataStaticTraces = allApplications.selection.data.collectGlobalStats((dp, app) => {
+        return dp.util.getAllMissingDataStaticTraces()
+          .map(staticTrace => {
+            const purposeString = staticTrace.purposes
+              .map(p => p.reason || p.name || '(unknown)')
+              .join(',');
+            return makeTreeItem(
+              `[${purposeString}] ${truncateStringShort(
+                staticTrace.data?.name || staticTrace.displayName || '(no name)'
+              )}`,
+              staticTrace,
+              {
+                description: makeStaticTraceLocLabel(dp, staticTrace),
+                handleClick() {
+                  goToCodeLoc(staticTrace.loc);
+                }
+              }
+            );
+          });
+      });
+
+
       return [
         makeTreeItem(
           'Recorded',
@@ -243,6 +279,14 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
             description: `(${untracedFunctions.length}, ${monkeyCount} x 🐵, ${untracedFunctions.length - monkeyCount} x 🙈))`
           }
         ),
+        makeTreeItem(
+          'Syntax: Missing Data',
+          missingDataStaticTraces,
+          {
+            description: `(${missingDataStaticTraces.length})`,
+            tooltip: `All pieces of code of the executed application with syntax for which we do not currently trace data flow correctly.`
+          }
+        )
       ];
     }
   });
@@ -251,7 +295,7 @@ export default class GlobalStatsNode extends BaseTreeViewNode {
     return [
       this.Traces_by_Function,
       this.Traces_by_Package,
-      this.Function_Stats
+      this.Trace_Info
     ];
   }
 

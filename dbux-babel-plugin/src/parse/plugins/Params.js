@@ -58,6 +58,7 @@ export default class Params extends BasePlugin {
 
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
     if (!isSupported(paramPath)) {
+      this.node.addStaticNoDataPurpose(paramPath, 'DestructuringParam');
       if (this.node.state.verbose.nyi) {
         this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       }

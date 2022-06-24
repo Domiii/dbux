@@ -20,7 +20,9 @@ import { translate } from '../lang';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ToolNodes');
 
-const ExportExercises = 4;
+// const ExportExercises = 5;
+const ExportExercises = 0;
+
 const CustomPatchByChapter = {
   hanoiTower: 'hanoiTower0',
 };
@@ -168,17 +170,22 @@ class ExportApplicationsForceNode extends ToolNode {
 
     await runTaskWithProgressBar(async (progress) => {
       progress.report({ message: `Start exporting exercises...` });
-      for (let i = 1; i <= ExportExercises; i++) {
+      const nExercises = Math.min(ExportExercises || exerciseList.length - 1, exerciseList.length - 1);
+      progress.report({ message: `(${0}/${nExercises}) finished...` });
+      for (let i = 1; i <= nExercises; i++) {
         const exercise = exerciseList.getAt(i);
 
         if (exercise) {
           await this.manager.switchAndTestBug(exercise);
           const app = allApplications.getById(1);
+          if (!app) {
+            throw new Error(`Export failed: no application found`);
+          }
           exportApplicationToFile(app, getCurrentResearch().getAppZipFilePath(app));
           allApplications.clear();
         }
 
-        progress.report({ message: `(${i}/${ExportExercises}) finished...`, increment: Math.floor(100 / ExportExercises) });
+        progress.report({ message: `(${i}/${nExercises}) finished...`, increment: Math.floor(100 / nExercises) });
       }
     }, { title: `Export applications` });
   }
