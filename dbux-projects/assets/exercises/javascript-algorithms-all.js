@@ -554,14 +554,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 24,
               "column": 50,
-              "index": 633
+              "index": 693
             },
             "end": {
-              "line": 113,
+              "line": 119,
               "column": 1,
-              "index": 4241
+              "index": 4485
             }
           }
         },
@@ -580,7 +580,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6633273395444532"
+        "applicationUuid": "0.04727444957316074"
       },
       {
         "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -589,14 +589,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 24,
               "column": 50,
-              "index": 633
+              "index": 693
             },
             "end": {
-              "line": 113,
+              "line": 119,
               "column": 1,
-              "index": 4241
+              "index": 4485
             }
           }
         },
@@ -615,7 +615,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6633273395444532"
+        "applicationUuid": "0.04727444957316074"
       }
     ]
   },
@@ -1234,18 +1234,18 @@ module.exports = [
           "filePath": "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js",
           "loc": {
             "start": {
-              "line": 7,
+              "line": 6,
               "column": 77,
-              "index": 361
+              "index": 359
             },
             "end": {
-              "line": 66,
+              "line": 64,
               "column": 3,
-              "index": 2331
+              "index": 2404
             }
           }
         },
-        "applicationUuid": "0.943857533029181"
+        "applicationUuid": "0.12439900168970341"
       }
     ]
   },
@@ -1312,7 +1312,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4028103084598933"
+        "applicationUuid": "0.8602137066910882"
       }
     ]
   },
@@ -1369,7 +1369,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3356602072110939"
+        "applicationUuid": "0.7430296283745244"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1404,7 +1404,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3356602072110939"
+        "applicationUuid": "0.7430296283745244"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1439,7 +1439,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3356602072110939"
+        "applicationUuid": "0.7430296283745244"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1474,7 +1474,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3356602072110939"
+        "applicationUuid": "0.7430296283745244"
       },
       {
         "ddgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -1509,7 +1509,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3356602072110939"
+        "applicationUuid": "0.7430296283745244"
       }
     ]
   },
@@ -2188,7 +2188,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.04418626522381941"
+        "applicationUuid": "0.1915373869700292"
       },
       {
         "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
@@ -2223,7 +2223,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.04418626522381941"
+        "applicationUuid": "0.1915373869700292"
       }
     ]
   },
@@ -2340,7 +2340,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4684688494157614"
+        "applicationUuid": "0.6046611603002698"
       }
     ]
   },
@@ -2417,7 +2417,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3861918022600468"
+        "applicationUuid": "0.5131631248483299"
       },
       {
         "ddgTitle": "bwPowerSet([1,2,3])",
@@ -2452,7 +2452,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3861918022600468"
+        "applicationUuid": "0.5131631248483299"
       }
     ]
   },
@@ -2529,7 +2529,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.09204774723469833"
+        "applicationUuid": "0.31436449718606196"
       },
       {
         "ddgTitle": "caesarCipherDecrypt(qeb nrfzh yoltk clu grjmp lsbo qeb ixwv ald, 23)",
@@ -2564,7 +2564,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.09204774723469833"
+        "applicationUuid": "0.31436449718606196"
       }
     ]
   },
@@ -2641,7 +2641,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6765910038809664"
+        "applicationUuid": "0.5822026768452613"
       },
       {
         "ddgTitle": "cartesianProduct([], null)",
@@ -2676,7 +2676,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6765910038809664"
+        "applicationUuid": "0.5822026768452613"
       }
     ]
   },
@@ -2743,7 +2743,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4384473196442096"
+        "applicationUuid": "0.9309512959768365"
       },
       {
         "ddgTitle": "combinationSum([2,3,6,7], 7)",
@@ -2778,7 +2778,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4384473196442096"
+        "applicationUuid": "0.9309512959768365"
       },
       {
         "ddgTitle": "combinationSum([2,3,5], 8)",
@@ -2813,7 +2813,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4384473196442096"
+        "applicationUuid": "0.9309512959768365"
       },
       {
         "ddgTitle": "combinationSum([2,5], 3)",
@@ -2848,7 +2848,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4384473196442096"
+        "applicationUuid": "0.9309512959768365"
       },
       {
         "ddgTitle": "combinationSum([], 3)",
@@ -2883,7 +2883,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4384473196442096"
+        "applicationUuid": "0.9309512959768365"
       }
     ]
   },
@@ -2940,7 +2940,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 1)",
@@ -2975,7 +2975,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 2)",
@@ -3010,7 +3010,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\"], 3)",
@@ -3045,7 +3045,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 2)",
@@ -3080,7 +3080,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\"], 3)",
@@ -3115,7 +3115,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "combineWithRepetitions([\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\"], 4)",
@@ -3150,7 +3150,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "factorial(11)",
@@ -3185,7 +3185,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "factorial(4)",
@@ -3220,7 +3220,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       },
       {
         "ddgTitle": "factorial(7)",
@@ -3255,7 +3255,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7283080545471254"
+        "applicationUuid": "0.7022910727170104"
       }
     ]
   },
@@ -3326,14 +3326,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -3352,7 +3352,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4973288202180517"
+        "applicationUuid": "0.9569227536039355"
       },
       {
         "ddgTitle": "ComplexNumber.multiply({re,im})",
@@ -3361,14 +3361,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 48,
+              "line": 52,
               "column": 25,
-              "index": 1143
+              "index": 1357
             },
             "end": {
-              "line": 56,
+              "line": 59,
               "column": 3,
-              "index": 1474
+              "index": 1686
             }
           }
         },
@@ -3387,7 +3387,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4973288202180517"
+        "applicationUuid": "0.9569227536039355"
       }
     ]
   },
@@ -3504,7 +3504,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5720738453892245"
+        "applicationUuid": "0.3005152331969627"
       }
     ]
   },
@@ -3591,7 +3591,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0])",
@@ -3626,7 +3626,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,1])",
@@ -3661,7 +3661,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,1,2])",
@@ -3696,7 +3696,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([0,0,-1,2])",
@@ -3731,7 +3731,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-1,-2,-3,-4,-5])",
@@ -3766,7 +3766,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([1,2,3,2,3,4,5])",
@@ -3801,7 +3801,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-2,1,-3,4,-1,2,1,-5,4])",
@@ -3836,7 +3836,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([-2,-3,4,-1,-2,1,5,-3])",
@@ -3871,7 +3871,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       },
       {
         "ddgTitle": "dcMaximumSubarraySum([1,-3,2,-5,7,6,-1,4,11,-23])",
@@ -3906,7 +3906,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7751832700061834"
+        "applicationUuid": "0.09034329084377735"
       }
     ]
   },
@@ -3957,14 +3957,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/depth-first-search/depthFirstSearch.js",
           "loc": {
             "start": {
-              "line": 65,
+              "line": 83,
               "column": 72,
-              "index": 1997
+              "index": 2177
             },
             "end": {
-              "line": 68,
+              "line": 91,
               "column": 1,
-              "index": 2125
+              "index": 2330
             }
           }
         },
@@ -3983,7 +3983,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8957036133384706"
+        "applicationUuid": "0.6851494442897945"
       },
       {
         "ddgTitle": "depthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})",
@@ -3992,14 +3992,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/depth-first-search/depthFirstSearch.js",
           "loc": {
             "start": {
-              "line": 65,
+              "line": 83,
               "column": 72,
-              "index": 1997
+              "index": 2177
             },
             "end": {
-              "line": 68,
+              "line": 91,
               "column": 1,
-              "index": 2125
+              "index": 2330
             }
           }
         },
@@ -4018,7 +4018,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8957036133384706"
+        "applicationUuid": "0.6851494442897945"
       }
     ]
   },
@@ -4066,7 +4066,7 @@ module.exports = [
             "end": {
               "line": 59,
               "column": 1,
-              "index": 1979
+              "index": 2105
             }
           }
         },
@@ -4085,7 +4085,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4932764938794296"
+        "applicationUuid": "0.3672151327601878"
       },
       {
         "ddgTitle": "detectUndirectedCycle({vertices,edges,isDirected})",
@@ -4101,7 +4101,7 @@ module.exports = [
             "end": {
               "line": 59,
               "column": 1,
-              "index": 1979
+              "index": 2105
             }
           }
         },
@@ -4120,7 +4120,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4932764938794296"
+        "applicationUuid": "0.3672151327601878"
       }
     ]
   },
@@ -4176,18 +4176,18 @@ module.exports = [
           "filePath": "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js",
           "loc": {
             "start": {
-              "line": 7,
+              "line": 6,
               "column": 77,
-              "index": 352
+              "index": 350
             },
             "end": {
-              "line": 66,
+              "line": 64,
               "column": 3,
-              "index": 2319
+              "index": 2383
             }
           }
         },
-        "applicationUuid": "0.8356026853715874"
+        "applicationUuid": "0.0036308161261817684"
       }
     ]
   },
@@ -4274,7 +4274,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.664758070869846"
+        "applicationUuid": "0.6477809576431539"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([0,1,2,3,4,5,6,7,8,9])",
@@ -4309,7 +4309,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.664758070869846"
+        "applicationUuid": "0.6477809576431539"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([3,4,-1,0,6,2,3])",
@@ -4344,7 +4344,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.664758070869846"
+        "applicationUuid": "0.6477809576431539"
       },
       {
         "ddgTitle": "dpLongestIncreasingSubsequence([0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15])",
@@ -4379,7 +4379,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.664758070869846"
+        "applicationUuid": "0.6477809576431539"
       }
     ]
   },
@@ -4436,7 +4436,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([1,0])",
@@ -4471,7 +4471,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1])",
@@ -4506,7 +4506,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0])",
@@ -4541,7 +4541,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,0])",
@@ -4576,7 +4576,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,0,1,0])",
@@ -4611,7 +4611,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,2,0,0,1,0])",
@@ -4646,7 +4646,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([2,0,2])",
@@ -4681,7 +4681,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([2,0,5])",
@@ -4716,7 +4716,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([3,0,0,2,0,4])",
@@ -4751,7 +4751,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
@@ -4786,7 +4786,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([1,1,1,1,1])",
@@ -4821,7 +4821,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([1,2,3,4,5])",
@@ -4856,7 +4856,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([4,1,3,1,2,1,2,1])",
@@ -4891,7 +4891,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       },
       {
         "ddgTitle": "dpRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
@@ -4926,7 +4926,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.24736177185239216"
+        "applicationUuid": "0.3001019045012525"
       }
     ]
   },
@@ -4973,7 +4973,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([100,0])",
@@ -5008,7 +5008,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([2,3,1,1,4])",
@@ -5043,7 +5043,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,1,1,1,1])",
@@ -5078,7 +5078,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,1,1,10,1])",
@@ -5113,7 +5113,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,5,2,1,0,2,0])",
@@ -5148,7 +5148,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([1,0,1])",
@@ -5183,7 +5183,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([3,2,1,0,4])",
@@ -5218,7 +5218,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([0,0,0,0,0])",
@@ -5253,7 +5253,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       },
       {
         "ddgTitle": "dpTopDownJumpGame([5,4,3,2,1,0,0])",
@@ -5288,7 +5288,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.11332105999330766"
+        "applicationUuid": "0.19276005976831723"
       }
     ]
   },
@@ -5335,7 +5335,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31113598284564836"
+        "applicationUuid": "0.36979360968025277"
       },
       {
         "ddgTitle": "dpUniquePaths(7, 3)",
@@ -5370,7 +5370,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31113598284564836"
+        "applicationUuid": "0.36979360968025277"
       },
       {
         "ddgTitle": "dpUniquePaths(3, 7)",
@@ -5405,7 +5405,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31113598284564836"
+        "applicationUuid": "0.36979360968025277"
       },
       {
         "ddgTitle": "dpUniquePaths(10, 10)",
@@ -5440,7 +5440,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31113598284564836"
+        "applicationUuid": "0.36979360968025277"
       },
       {
         "ddgTitle": "dpUniquePaths(100, 1)",
@@ -5475,7 +5475,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31113598284564836"
+        "applicationUuid": "0.36979360968025277"
       },
       {
         "ddgTitle": "dpUniquePaths(1, 100)",
@@ -5510,7 +5510,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31113598284564836"
+        "applicationUuid": "0.36979360968025277"
       }
     ]
   },
@@ -6299,7 +6299,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12456637798195702"
+        "applicationUuid": "0.8947093154519525"
       },
       {
         "ddgTitle": "euclideanDistance([[]], [[]])",
@@ -6334,7 +6334,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.12456637798195702"
+        "applicationUuid": "0.8947093154519525"
       }
     ]
   },
@@ -6357,43 +6357,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
     ],
-    "ddgs": [
-      {
-        "ddgTitle": "eulerianPath({vertices,edges,isDirected})",
-        "contextId": 233,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/eulerian-path/eulerianPath.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 44,
-              "index": 252
-            },
-            "end": {
-              "line": 101,
-              "column": 1,
-              "index": 3593
-            }
-          }
-        },
-        "testLoc": {
-          "filePath": "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js",
-          "loc": {
-            "start": {
-              "line": 89,
-              "column": 49,
-              "index": 3330
-            },
-            "end": {
-              "line": 138,
-              "column": 3,
-              "index": 5251
-            }
-          }
-        },
-        "applicationUuid": "0.9722946302222972"
-      }
-    ]
+    "ddgs": []
   },
   {
     "name": "eulerianPath should throw an error when graph is not Eulerian@eulerianPath.test.js",
@@ -6458,7 +6422,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7385015435763866"
+        "applicationUuid": "0.1400077489005278"
       },
       {
         "ddgTitle": "factorialRecursive(1)",
@@ -6493,7 +6457,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7385015435763866"
+        "applicationUuid": "0.1400077489005278"
       },
       {
         "ddgTitle": "factorialRecursive(5)",
@@ -6528,7 +6492,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7385015435763866"
+        "applicationUuid": "0.1400077489005278"
       },
       {
         "ddgTitle": "factorialRecursive(8)",
@@ -6563,7 +6527,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7385015435763866"
+        "applicationUuid": "0.1400077489005278"
       },
       {
         "ddgTitle": "factorialRecursive(10)",
@@ -6598,7 +6562,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7385015435763866"
+        "applicationUuid": "0.1400077489005278"
       }
     ]
   },
@@ -6629,14 +6593,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6655,7 +6619,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6664,14 +6628,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6690,7 +6654,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6699,14 +6663,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6725,7 +6689,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6734,14 +6698,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6760,7 +6724,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6769,14 +6733,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6795,7 +6759,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6804,14 +6768,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6830,7 +6794,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "ComplexNumber.constructor({re,im})",
@@ -6839,14 +6803,14 @@ module.exports = [
           "filePath": "src/algorithms/math/complex-number/ComplexNumber.js",
           "loc": {
             "start": {
-              "line": 11,
-              "column": 39,
-              "index": 264
+              "line": 10,
+              "column": 16,
+              "index": 239
             },
             "end": {
-              "line": 14,
+              "line": 20,
               "column": 3,
-              "index": 308
+              "index": 526
             }
           }
         },
@@ -6865,7 +6829,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{}])",
@@ -6900,7 +6864,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       },
       {
         "ddgTitle": "fastFourierTransform([{},{},{},{}], true)",
@@ -6935,7 +6899,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.07597827764166443"
+        "applicationUuid": "0.07172217760406441"
       }
     ]
   },
@@ -6992,7 +6956,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 0)",
@@ -7027,7 +6991,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 2)",
@@ -7062,7 +7026,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 3)",
@@ -7097,7 +7061,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 4)",
@@ -7132,7 +7096,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 5)",
@@ -7167,7 +7131,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 6)",
@@ -7202,7 +7166,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 7)",
@@ -7237,7 +7201,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(2, 8)",
@@ -7272,7 +7236,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(3, 4)",
@@ -7307,7 +7271,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(190, 2)",
@@ -7342,7 +7306,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(11, 5)",
@@ -7377,7 +7341,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(13, 11)",
@@ -7412,7 +7376,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(9, 16)",
@@ -7447,7 +7411,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(16, 16)",
@@ -7482,7 +7446,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(7, 21)",
@@ -7517,7 +7481,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       },
       {
         "ddgTitle": "fastPowering(100, 9)",
@@ -7552,7 +7516,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8047884186372938"
+        "applicationUuid": "0.5575583811258829"
       }
     ]
   },
@@ -7619,7 +7583,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6983962018769534"
+        "applicationUuid": "0.03965491743106875"
       }
     ]
   },
@@ -7665,9 +7629,9 @@ module.exports = [
               "index": 110
             },
             "end": {
-              "line": 15,
+              "line": 17,
               "column": 1,
-              "index": 456
+              "index": 492
             }
           }
         },
@@ -7686,7 +7650,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9679507465421988"
+        "applicationUuid": "0.9701786489287749"
       },
       {
         "ddgTitle": "fisherYates([1])",
@@ -7700,9 +7664,9 @@ module.exports = [
               "index": 110
             },
             "end": {
-              "line": 15,
+              "line": 17,
               "column": 1,
-              "index": 456
+              "index": 492
             }
           }
         },
@@ -7721,7 +7685,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9679507465421988"
+        "applicationUuid": "0.9701786489287749"
       }
     ]
   },
@@ -7798,7 +7762,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9778166066222262"
+        "applicationUuid": "0.5081006335467024"
       },
       {
         "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
@@ -7833,7 +7797,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9778166066222262"
+        "applicationUuid": "0.5081006335467024"
       }
     ]
   },
@@ -7914,14 +7878,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/bridges/graphBridges.js",
           "loc": {
             "start": {
-              "line": 17,
+              "line": 19,
               "column": 44,
-              "index": 405
+              "index": 468
             },
             "end": {
-              "line": 95,
+              "line": 105,
               "column": 1,
-              "index": 3470
+              "index": 3748
             }
           }
         },
@@ -7940,7 +7904,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.1908140566961125"
+        "applicationUuid": "0.3714916735721441"
       },
       {
         "ddgTitle": "graphBridges({vertices,edges,isDirected})",
@@ -7949,14 +7913,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/bridges/graphBridges.js",
           "loc": {
             "start": {
-              "line": 17,
+              "line": 19,
               "column": 44,
-              "index": 405
+              "index": 468
             },
             "end": {
-              "line": 95,
+              "line": 105,
               "column": 1,
-              "index": 3470
+              "index": 3748
             }
           }
         },
@@ -7975,7 +7939,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.1908140566961125"
+        "applicationUuid": "0.3714916735721441"
       }
     ]
   },
@@ -8036,14 +8000,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js",
           "loc": {
             "start": {
-              "line": 105,
+              "line": 108,
               "column": 48,
-              "index": 3516
+              "index": 3652
             },
             "end": {
-              "line": 134,
+              "line": 132,
               "column": 1,
-              "index": 4410
+              "index": 4531
             }
           }
         },
@@ -8062,7 +8026,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2607863810220443"
+        "applicationUuid": "0.8543348523539172"
       }
     ]
   },
@@ -8119,7 +8083,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3051086802156695"
+        "applicationUuid": "0.7920287700956907"
       }
     ]
   },
@@ -8176,7 +8140,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9354987071516447"
+        "applicationUuid": "0.18498246503922178"
       }
     ]
   },
@@ -8755,7 +8719,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5926214941591554"
+        "applicationUuid": "0.26530786005635365"
       }
     ]
   },
@@ -8852,7 +8816,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.42344086726661456"
+        "applicationUuid": "0.06292633179164242"
       }
     ]
   },
@@ -8919,7 +8883,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([2,4,2,5], 0.555)",
@@ -8954,7 +8918,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([2,4,2,5], 0.75)",
@@ -8989,7 +8953,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([1,1,1,1,1], 1.75)",
@@ -9024,7 +8988,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([15,3.5,0,2,1.42,0.41], 0.315)",
@@ -9059,7 +9023,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([0,0,2.77,1.42,0.41], 1.35)",
@@ -9094,7 +9058,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([0,0,2.77,1.42,2.3311], 1.35)",
@@ -9129,7 +9093,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       },
       {
         "ddgTitle": "hornerMethod([2,0,0,5.757,5.31412,12.3213], 3.141)",
@@ -9164,7 +9128,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7094923522285712"
+        "applicationUuid": "0.19060933152925252"
       }
     ]
   },
@@ -9235,14 +9199,14 @@ module.exports = [
           "filePath": "src/algorithms/sorting/insertion-sort/InsertionSort.js",
           "loc": {
             "start": {
-              "line": 4,
+              "line": 3,
               "column": 22,
-              "index": 104
+              "index": 102
             },
             "end": {
-              "line": 38,
+              "line": 28,
               "column": 3,
-              "index": 1038
+              "index": 984
             }
           }
         },
@@ -9261,7 +9225,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9885772165645665"
+        "applicationUuid": "0.5400904024919184"
       }
     ]
   },
@@ -9338,7 +9302,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(2)",
@@ -9373,7 +9337,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(3)",
@@ -9408,7 +9372,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(4)",
@@ -9443,7 +9407,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(5)",
@@ -9478,7 +9442,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(6)",
@@ -9513,7 +9477,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(7)",
@@ -9548,7 +9512,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       },
       {
         "ddgTitle": "integerPartition(8)",
@@ -9583,7 +9547,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7814625465903562"
+        "applicationUuid": "0.429485157034071"
       }
     ]
   },
@@ -9630,7 +9594,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1], 1)",
@@ -9665,7 +9629,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1], 0)",
@@ -9700,7 +9664,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,1], 1)",
@@ -9735,7 +9699,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2], 1)",
@@ -9770,7 +9734,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2], 2)",
@@ -9805,7 +9769,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([10,20,30,40,50], 40)",
@@ -9840,7 +9804,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], 14)",
@@ -9875,7 +9839,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,6,7,8,12,13,14,19,21,23,24,24,24,300], 24)",
@@ -9910,7 +9874,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 600)",
@@ -9945,7 +9909,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 1)",
@@ -9980,7 +9944,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 2)",
@@ -10015,7 +9979,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 3)",
@@ -10050,7 +10014,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 700)",
@@ -10085,7 +10049,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,1900], 800)",
@@ -10120,7 +10084,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([0,2,3,700,800,1200,1300,1400,1900], 1200)",
@@ -10155,7 +10119,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([1,2,3,700,800,1200,1300,1400,19000], 800)",
@@ -10190,7 +10154,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       },
       {
         "ddgTitle": "interpolationSearch([0,10,11,12,13,14,15], 10)",
@@ -10225,7 +10189,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9576727227067001"
+        "applicationUuid": "0.9900263573900137"
       }
     ]
   },
@@ -10292,7 +10256,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(2)",
@@ -10327,7 +10291,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(3)",
@@ -10362,7 +10326,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(5665)",
@@ -10397,7 +10361,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(56644325)",
@@ -10432,7 +10396,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(0)",
@@ -10467,7 +10431,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(0)",
@@ -10502,7 +10466,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(-1)",
@@ -10537,7 +10501,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(-2)",
@@ -10572,7 +10536,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(-126)",
@@ -10607,7 +10571,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(-5665)",
@@ -10642,7 +10606,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       },
       {
         "ddgTitle": "isPositive(-56644325)",
@@ -10677,7 +10641,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8863629850849457"
+        "applicationUuid": "0.1766966246500281"
       }
     ]
   },
@@ -10744,7 +10708,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(0)",
@@ -10779,7 +10743,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(1)",
@@ -10814,7 +10778,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(2)",
@@ -10849,7 +10813,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(3)",
@@ -10884,7 +10848,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(4)",
@@ -10919,7 +10883,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(5)",
@@ -10954,7 +10918,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(6)",
@@ -10989,7 +10953,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(7)",
@@ -11024,7 +10988,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(8)",
@@ -11059,7 +11023,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(10)",
@@ -11094,7 +11058,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(12)",
@@ -11129,7 +11093,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(16)",
@@ -11164,7 +11128,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(31)",
@@ -11199,7 +11163,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(64)",
@@ -11234,7 +11198,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(1024)",
@@ -11269,7 +11233,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       },
       {
         "ddgTitle": "isPowerOfTwoBitwise(1023)",
@@ -11304,7 +11268,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5831551110263695"
+        "applicationUuid": "0.6518317780714598"
       }
     ]
   },
@@ -11361,7 +11325,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.360819620284206"
+        "applicationUuid": "0.642686039035637"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11396,7 +11360,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.360819620284206"
+        "applicationUuid": "0.642686039035637"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11431,7 +11395,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.360819620284206"
+        "applicationUuid": "0.642686039035637"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11466,7 +11430,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.360819620284206"
+        "applicationUuid": "0.642686039035637"
       },
       {
         "ddgTitle": "jumpSearch([{},{},{}], {key}, ƒ (anonymous))",
@@ -11501,7 +11465,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.360819620284206"
+        "applicationUuid": "0.642686039035637"
       }
     ]
   },
@@ -11568,7 +11532,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.676240950454833"
+        "applicationUuid": "0.34689254825253424"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -11603,7 +11567,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.676240950454833"
+        "applicationUuid": "0.34689254825253424"
       },
       {
         "ddgTitle": "KMeans([[],[],[]], 2)",
@@ -11638,7 +11602,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.676240950454833"
+        "applicationUuid": "0.34689254825253424"
       }
     ]
   },
@@ -11720,13 +11684,13 @@ module.exports = [
           "loc": {
             "start": {
               "line": 8,
-              "column": 51,
-              "index": 381
+              "column": 20,
+              "index": 350
             },
             "end": {
-              "line": 14,
+              "line": 18,
               "column": 3,
-              "index": 572
+              "index": 718
             }
           }
         },
@@ -11745,7 +11709,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11755,13 +11719,13 @@ module.exports = [
           "loc": {
             "start": {
               "line": 8,
-              "column": 51,
-              "index": 381
+              "column": 20,
+              "index": 350
             },
             "end": {
-              "line": 14,
+              "line": 18,
               "column": 3,
-              "index": 572
+              "index": 718
             }
           }
         },
@@ -11780,7 +11744,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11790,13 +11754,13 @@ module.exports = [
           "loc": {
             "start": {
               "line": 8,
-              "column": 51,
-              "index": 381
+              "column": 20,
+              "index": 350
             },
             "end": {
-              "line": 14,
+              "line": 18,
               "column": 3,
-              "index": 572
+              "index": 718
             }
           }
         },
@@ -11815,7 +11779,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11825,13 +11789,13 @@ module.exports = [
           "loc": {
             "start": {
               "line": 8,
-              "column": 51,
-              "index": 381
+              "column": 20,
+              "index": 350
             },
             "end": {
-              "line": 14,
+              "line": 18,
               "column": 3,
-              "index": 572
+              "index": 718
             }
           }
         },
@@ -11850,7 +11814,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.constructor({value,weight,itemsInStock})",
@@ -11860,13 +11824,13 @@ module.exports = [
           "loc": {
             "start": {
               "line": 8,
-              "column": 51,
-              "index": 381
+              "column": 20,
+              "index": 350
             },
             "end": {
-              "line": 14,
+              "line": 18,
               "column": 3,
-              "index": 572
+              "index": 718
             }
           }
         },
@@ -11885,7 +11849,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "Knapsack.constructor([{},{},{},{},{}], 60)",
@@ -11920,7 +11884,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "Knapsack.solveUnboundedKnapsackProblem()",
@@ -11955,7 +11919,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -11990,7 +11954,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12025,7 +11989,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12060,7 +12024,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12095,7 +12059,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12130,7 +12094,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12165,7 +12129,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12200,7 +12164,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12235,7 +12199,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12270,7 +12234,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "[cb] this.selectedItems.reduce(ƒ (anonymous), 0)",
@@ -12305,7 +12269,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12314,14 +12278,14 @@ module.exports = [
           "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
           "loc": {
             "start": {
-              "line": 30,
+              "line": 33,
               "column": 13,
-              "index": 895
+              "index": 1038
             },
             "end": {
-              "line": 32,
+              "line": 35,
               "column": 3,
-              "index": 966
+              "index": 1109
             }
           }
         },
@@ -12340,7 +12304,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12349,14 +12313,14 @@ module.exports = [
           "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
           "loc": {
             "start": {
-              "line": 30,
+              "line": 33,
               "column": 13,
-              "index": 895
+              "index": 1038
             },
             "end": {
-              "line": 32,
+              "line": 35,
               "column": 3,
-              "index": 966
+              "index": 1109
             }
           }
         },
@@ -12375,7 +12339,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12384,14 +12348,14 @@ module.exports = [
           "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
           "loc": {
             "start": {
-              "line": 30,
+              "line": 33,
               "column": 13,
-              "index": 895
+              "index": 1038
             },
             "end": {
-              "line": 32,
+              "line": 35,
               "column": 3,
-              "index": 966
+              "index": 1109
             }
           }
         },
@@ -12410,7 +12374,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12419,14 +12383,14 @@ module.exports = [
           "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
           "loc": {
             "start": {
-              "line": 30,
+              "line": 33,
               "column": 13,
-              "index": 895
+              "index": 1038
             },
             "end": {
-              "line": 32,
+              "line": 35,
               "column": 3,
-              "index": 966
+              "index": 1109
             }
           }
         },
@@ -12445,7 +12409,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       },
       {
         "ddgTitle": "KnapsackItem.toString()",
@@ -12454,14 +12418,14 @@ module.exports = [
           "filePath": "src/algorithms/sets/knapsack-problem/KnapsackItem.js",
           "loc": {
             "start": {
-              "line": 30,
+              "line": 33,
               "column": 13,
-              "index": 895
+              "index": 1038
             },
             "end": {
-              "line": 32,
+              "line": 35,
               "column": 3,
-              "index": 966
+              "index": 1109
             }
           }
         },
@@ -12480,7 +12444,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5982549450769643"
+        "applicationUuid": "0.477037509447102"
       }
     ]
   },
@@ -12567,7 +12531,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.875019189800516"
+        "applicationUuid": "0.13782367075630497"
       }
     ]
   },
@@ -12644,7 +12608,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7853075619878327"
+        "applicationUuid": "0.5367911059134656"
       }
     ]
   },
@@ -12711,7 +12675,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(a, )",
@@ -12746,7 +12710,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(a, a)",
@@ -12781,7 +12745,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcbcglx, abca)",
@@ -12816,7 +12780,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcbcglx, bcgl)",
@@ -12851,7 +12815,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)",
@@ -12886,7 +12850,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabca)",
@@ -12921,7 +12885,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxaabcdabcabcdabcdabcy, abcdabca)",
@@ -12956,7 +12920,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       },
       {
         "ddgTitle": "knuthMorrisPratt(abcxabcdabxaabaabaaaabcdabcdabcy, aabaabaaa)",
@@ -12991,7 +12955,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9550761782510186"
+        "applicationUuid": "0.43191734376836144"
       }
     ]
   },
@@ -13048,7 +13012,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4419022827403303"
+        "applicationUuid": "0.9919980597418543"
       },
       {
         "ddgTitle": "kruskal({vertices,edges,isDirected})",
@@ -13083,7 +13047,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4419022827403303"
+        "applicationUuid": "0.9919980597418543"
       }
     ]
   },
@@ -13140,7 +13104,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(1, 0)",
@@ -13175,7 +13139,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(0, 1)",
@@ -13210,7 +13174,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(4, 6)",
@@ -13245,7 +13209,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(6, 21)",
@@ -13280,7 +13244,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(7, 2)",
@@ -13315,7 +13279,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(3, 5)",
@@ -13350,7 +13314,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(7, 3)",
@@ -13385,7 +13349,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(1000000, 2)",
@@ -13420,7 +13384,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(-9, -18)",
@@ -13455,7 +13419,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(-7, -9)",
@@ -13490,7 +13454,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       },
       {
         "ddgTitle": "leastCommonMultiple(-7, 9)",
@@ -13525,7 +13489,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.6199445874614085"
+        "applicationUuid": "0.7239989598446677"
       }
     ]
   },
@@ -13572,7 +13536,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(a, )",
@@ -13607,7 +13571,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(, a)",
@@ -13642,7 +13606,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(abc, )",
@@ -13677,7 +13641,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(, abc)",
@@ -13712,7 +13676,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(islander, slander)",
@@ -13747,7 +13711,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(mart, karma)",
@@ -13782,7 +13746,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(kitten, sitting)",
@@ -13817,7 +13781,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(ball, football)",
@@ -13852,7 +13816,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(football, foot)",
@@ -13887,7 +13851,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       },
       {
         "ddgTitle": "levenshteinDistance(intention, execution)",
@@ -13922,7 +13886,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.18403051694485528"
+        "applicationUuid": "0.7349399767054658"
       }
     ]
   },
@@ -13979,7 +13943,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9213219311199117"
+        "applicationUuid": "0.382762264853461"
       },
       {
         "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], b)",
@@ -14014,7 +13978,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9213219311199117"
+        "applicationUuid": "0.382762264853461"
       },
       {
         "ddgTitle": "linearSearch([\"a\",\"b\",\"a\"], a)",
@@ -14049,7 +14013,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9213219311199117"
+        "applicationUuid": "0.382762264853461"
       }
     ]
   },
@@ -14253,7 +14217,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       },
       {
         "ddgTitle": "longestCommonSubsequence([\"\"], [\"A\",\"B\",\"C\"])",
@@ -14288,7 +14252,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       },
       {
         "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\"], [\"\"])",
@@ -14323,7 +14287,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       },
       {
         "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\"], [\"D\",\"E\",\"F\",\"G\"])",
@@ -14358,7 +14322,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       },
       {
         "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\",\"D\",\"G\",\"H\"], [\"A\",\"E\",\"D\",\"F\",\"H\",\"R\"])",
@@ -14393,7 +14357,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       },
       {
         "ddgTitle": "longestCommonSubsequence([\"A\",\"G\",\"G\",\"T\",\"A\",\"B\"], [\"G\",\"X\",\"T\",\"X\",\"A\",\"Y\",\"B\"])",
@@ -14428,7 +14392,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       },
       {
         "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\",\"D\",\"A\",\"F\"], [\"A\",\"C\",\"B\",\"C\",\"F\"])",
@@ -14463,7 +14427,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9956835983461076"
+        "applicationUuid": "0.5424393892764974"
       }
     ]
   },
@@ -14520,7 +14484,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.006285977069197868"
+        "applicationUuid": "0.533297762931136"
       },
       {
         "ddgTitle": "longestCommonSubstring(𐌵𐌵**A, 𐌵𐌵--A)",
@@ -14555,7 +14519,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.006285977069197868"
+        "applicationUuid": "0.533297762931136"
       },
       {
         "ddgTitle": "longestCommonSubstring(A买B时, 买B时GD)",
@@ -14590,7 +14554,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.006285977069197868"
+        "applicationUuid": "0.533297762931136"
       },
       {
         "ddgTitle": "longestCommonSubstring(After test买时 case, another_test买时)",
@@ -14625,7 +14589,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.006285977069197868"
+        "applicationUuid": "0.533297762931136"
       }
     ]
   },
@@ -14742,7 +14706,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "shape([[],[]])",
@@ -14777,7 +14741,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "dot([[],[]], [[],[]])",
@@ -14812,7 +14776,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "shape([[],[]])",
@@ -14847,7 +14811,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "dot([[],[]], [[],[],[]])",
@@ -14882,7 +14846,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "shape([[],[]])",
@@ -14917,7 +14881,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "dot([[]], [[],[],[]])",
@@ -14952,7 +14916,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       },
       {
         "ddgTitle": "shape([[]])",
@@ -14987,7 +14951,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08552727958199147"
+        "applicationUuid": "0.9176352256619464"
       }
     ]
   },
@@ -15134,7 +15098,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3906036066147194"
+        "applicationUuid": "0.689545978195534"
       }
     ]
   },
@@ -15261,7 +15225,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       },
       {
         "ddgTitle": "QueenPosition.toString()",
@@ -15296,7 +15260,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       },
       {
         "ddgTitle": "QueenPosition.toString()",
@@ -15331,7 +15295,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       },
       {
         "ddgTitle": "QueenPosition.toString()",
@@ -15366,7 +15330,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       },
       {
         "ddgTitle": "QueenPosition.toString()",
@@ -15401,7 +15365,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       },
       {
         "ddgTitle": "QueenPosition.toString()",
@@ -15436,7 +15400,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       },
       {
         "ddgTitle": "QueenPosition.toString()",
@@ -15471,7 +15435,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2735280325343332"
+        "applicationUuid": "0.7420280367799805"
       }
     ]
   },
@@ -15528,7 +15492,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(pop)",
@@ -15563,7 +15527,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(deed)",
@@ -15598,7 +15562,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(kayak)",
@@ -15633,7 +15597,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(racecar)",
@@ -15668,7 +15632,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(rad)",
@@ -15703,7 +15667,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(dodo)",
@@ -15738,7 +15702,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       },
       {
         "ddgTitle": "isPalindrome(polo)",
@@ -15773,7 +15737,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7776329960851911"
+        "applicationUuid": "0.44825801447310387"
       }
     ]
   },
@@ -15830,7 +15794,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(1)",
@@ -15865,7 +15829,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(2)",
@@ -15900,7 +15864,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(3)",
@@ -15935,7 +15899,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(4)",
@@ -15970,7 +15934,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(5)",
@@ -16005,7 +15969,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(6)",
@@ -16040,7 +16004,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       },
       {
         "ddgTitle": "pascalTriangleRecursive(7)",
@@ -16075,7 +16039,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.17361239801169193"
+        "applicationUuid": "0.5985252486465178"
       }
     ]
   },
@@ -16142,7 +16106,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3918512084154211"
+        "applicationUuid": "0.6271742599923518"
       },
       {
         "ddgTitle": "permutateWithRepetitions([\"A\",\"B\"])",
@@ -16177,7 +16141,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3918512084154211"
+        "applicationUuid": "0.6271742599923518"
       },
       {
         "ddgTitle": "permutateWithRepetitions([\"A\",\"B\",\"C\"])",
@@ -16212,7 +16176,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3918512084154211"
+        "applicationUuid": "0.6271742599923518"
       },
       {
         "ddgTitle": "permutateWithRepetitions([\"A\",\"B\",\"C\",\"D\"])",
@@ -16247,7 +16211,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3918512084154211"
+        "applicationUuid": "0.6271742599923518"
       }
     ]
   },
@@ -16288,14 +16252,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 9,
-              "column": 71,
-              "index": 351
+              "line": 8,
+              "column": 16,
+              "index": 294
             },
             "end": {
-              "line": 12,
+              "line": 18,
               "column": 3,
-              "index": 409
+              "index": 655
             }
           }
         },
@@ -16314,7 +16278,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(Some long text that is used as a key)",
@@ -16323,14 +16287,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16349,7 +16313,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(Test)",
@@ -16358,14 +16322,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16384,7 +16348,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(a)",
@@ -16393,14 +16357,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16419,7 +16383,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(b)",
@@ -16428,14 +16392,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16454,7 +16418,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(c)",
@@ -16463,14 +16427,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16489,7 +16453,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(d)",
@@ -16498,14 +16462,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16524,7 +16488,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(e)",
@@ -16533,14 +16497,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16559,7 +16523,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(ab)",
@@ -16568,14 +16532,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16594,7 +16558,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       },
       {
         "ddgTitle": "PolynomialHash.hash(𠀀)",
@@ -16603,14 +16567,14 @@ module.exports = [
           "filePath": "src/algorithms/cryptography/polynomial-hash/PolynomialHash.js",
           "loc": {
             "start": {
-              "line": 22,
+              "line": 28,
               "column": 13,
-              "index": 636
+              "index": 882
             },
             "end": {
-              "line": 33,
+              "line": 39,
               "column": 3,
-              "index": 939
+              "index": 1185
             }
           }
         },
@@ -16629,7 +16593,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.8569597345715414"
+        "applicationUuid": "0.751569169320325"
       }
     ]
   },
@@ -16696,7 +16660,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.460490970713231"
+        "applicationUuid": "0.25855581709688"
       },
       {
         "ddgTitle": "prim({vertices,edges,isDirected})",
@@ -16731,7 +16695,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.460490970713231"
+        "applicationUuid": "0.25855581709688"
       }
     ]
   },
@@ -16798,7 +16762,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(4)",
@@ -16833,7 +16797,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(40)",
@@ -16868,7 +16832,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(156)",
@@ -16903,7 +16867,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(980)",
@@ -16938,7 +16902,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(52734)",
@@ -16973,7 +16937,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(343434)",
@@ -17008,7 +16972,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(456745)",
@@ -17043,7 +17007,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(510510)",
@@ -17078,7 +17042,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(8735463)",
@@ -17113,7 +17077,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       },
       {
         "ddgTitle": "hardyRamanujan(873452453)",
@@ -17148,7 +17112,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3607593101817659"
+        "applicationUuid": "0.5574528912816661"
       }
     ]
   },
@@ -17285,7 +17249,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9822020226513068"
+        "applicationUuid": "0.665828809647933"
       }
     ]
   },
@@ -17412,7 +17376,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4476701180131657"
+        "applicationUuid": "0.9681706659674383"
       },
       {
         "ddgTitle": "rabinKarp(Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktoppublishing software like Aldus PageMaker including versions of Lorem Ipsum., versions)",
@@ -17447,7 +17411,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4476701180131657"
+        "applicationUuid": "0.9681706659674383"
       },
       {
         "ddgTitle": "rabinKarp(Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktoppublishing software like Aldus PageMaker including versions of Lorem Ipsum., versions of Lorem Ipsum.)",
@@ -17482,7 +17446,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4476701180131657"
+        "applicationUuid": "0.9681706659674383"
       },
       {
         "ddgTitle": "rabinKarp(Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktoppublishing software like Aldus PageMaker including versions of Lorem Ipsum., versions of Lorem Ipsum:)",
@@ -17517,7 +17481,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4476701180131657"
+        "applicationUuid": "0.9681706659674383"
       },
       {
         "ddgTitle": "rabinKarp(Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktoppublishing software like Aldus PageMaker including versions of Lorem Ipsum., Lorem Ipsum passages, and more recently with)",
@@ -17552,7 +17516,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.4476701180131657"
+        "applicationUuid": "0.9681706659674383"
       }
     ]
   },
@@ -17609,7 +17573,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7935449078784313"
+        "applicationUuid": "0.7316855493101104"
       },
       {
         "ddgTitle": "radianToDegree(0.7853981633974483)",
@@ -17644,7 +17608,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7935449078784313"
+        "applicationUuid": "0.7316855493101104"
       },
       {
         "ddgTitle": "radianToDegree(1.5707963267948966)",
@@ -17679,7 +17643,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7935449078784313"
+        "applicationUuid": "0.7316855493101104"
       },
       {
         "ddgTitle": "radianToDegree(3.141592653589793)",
@@ -17714,7 +17678,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7935449078784313"
+        "applicationUuid": "0.7316855493101104"
       },
       {
         "ddgTitle": "radianToDegree(4.71238898038469)",
@@ -17749,7 +17713,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7935449078784313"
+        "applicationUuid": "0.7316855493101104"
       },
       {
         "ddgTitle": "radianToDegree(6.283185307179586)",
@@ -17784,7 +17748,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.7935449078784313"
+        "applicationUuid": "0.7316855493101104"
       }
     ]
   },
@@ -17841,7 +17805,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.160643251694645"
+        "applicationUuid": "0.76331552871225"
       }
     ]
   },
@@ -17937,9 +17901,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -17958,7 +17922,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(0)",
@@ -17972,9 +17936,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -17993,7 +17957,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(1)",
@@ -18007,9 +17971,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18028,7 +17992,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(2)",
@@ -18042,9 +18006,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18063,7 +18027,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(3)",
@@ -18077,9 +18041,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18098,7 +18062,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(4)",
@@ -18112,9 +18076,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18133,7 +18097,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(5)",
@@ -18147,9 +18111,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18168,7 +18132,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(6)",
@@ -18182,9 +18146,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18203,7 +18167,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(7)",
@@ -18217,9 +18181,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18238,7 +18202,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(8)",
@@ -18252,9 +18216,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18273,7 +18237,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(9)",
@@ -18287,9 +18251,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18308,7 +18272,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       },
       {
         "ddgTitle": "recursiveStaircaseIT(10)",
@@ -18322,9 +18286,9 @@ module.exports = [
               "index": 246
             },
             "end": {
-              "line": 31,
+              "line": 30,
               "column": 1,
-              "index": 1114
+              "index": 1143
             }
           }
         },
@@ -18343,7 +18307,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.3017017021555959"
+        "applicationUuid": "0.3334882559180641"
       }
     ]
   },
@@ -18400,7 +18364,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(a, a)",
@@ -18435,7 +18399,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aa, aa)",
@@ -18470,7 +18434,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, aab)",
@@ -18505,7 +18469,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, aa.)",
@@ -18540,7 +18504,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, .a.)",
@@ -18575,7 +18539,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, ...)",
@@ -18610,7 +18574,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(a, a*)",
@@ -18645,7 +18609,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aaa, a*)",
@@ -18680,7 +18644,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aaab, a*b)",
@@ -18715,7 +18679,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aaabb, a*b*)",
@@ -18750,7 +18714,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aaabb, a*b*c*)",
@@ -18785,7 +18749,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(, a*)",
@@ -18820,7 +18784,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(xaabyc, xa*b.c)",
@@ -18855,7 +18819,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, c*a*b*)",
@@ -18890,7 +18854,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(mississippi, mis*is*.p*.)",
@@ -18925,7 +18889,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(ab, .*)",
@@ -18960,7 +18924,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(, a)",
@@ -18995,7 +18959,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(a, )",
@@ -19030,7 +18994,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, aa)",
@@ -19065,7 +19029,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aab, baa)",
@@ -19100,7 +19064,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aabc, ...)",
@@ -19135,7 +19099,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(aaabbdd, a*b*c*)",
@@ -19170,7 +19134,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(mississippi, mis*is*p*.)",
@@ -19205,7 +19169,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(ab, a*)",
@@ -19240,7 +19204,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(abba, a*b*.c)",
@@ -19275,7 +19239,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       },
       {
         "ddgTitle": "regularExpressionMatching(abba, .*c)",
@@ -19310,7 +19274,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5539617235326499"
+        "applicationUuid": "0.21275169797766247"
       }
     ]
   },
@@ -19367,7 +19331,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5282801045506915"
+        "applicationUuid": "0.10794237071442736"
       }
     ]
   },
@@ -19418,14 +19382,14 @@ module.exports = [
           "filePath": "src/algorithms/sorting/selection-sort/SelectionSort.js",
           "loc": {
             "start": {
-              "line": 4,
+              "line": 3,
               "column": 22,
-              "index": 104
+              "index": 102
             },
             "end": {
-              "line": 31,
+              "line": 29,
               "column": 3,
-              "index": 910
+              "index": 933
             }
           }
         },
@@ -19444,7 +19408,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.33844048971423724"
+        "applicationUuid": "0.1625879172848097"
       }
     ]
   },
@@ -19561,7 +19525,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.20783811206693037"
+        "applicationUuid": "0.2148772296692214"
       }
     ]
   },
@@ -19638,7 +19602,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9164017156178283"
+        "applicationUuid": "0.8858748693267748"
       },
       {
         "ddgTitle": "shortestCommonSupersequence([\"G\",\"E\",\"E\",\"K\"], [\"E\",\"K\",\"E\"])",
@@ -19673,7 +19637,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9164017156178283"
+        "applicationUuid": "0.8858748693267748"
       },
       {
         "ddgTitle": "shortestCommonSupersequence([\"A\",\"G\",\"G\",\"T\",\"A\",\"B\"], [\"G\",\"X\",\"T\",\"X\",\"A\",\"Y\",\"B\"])",
@@ -19708,7 +19672,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9164017156178283"
+        "applicationUuid": "0.8858748693267748"
       },
       {
         "ddgTitle": "shortestCommonSupersequence([\"A\",\"B\",\"C\",\"B\",\"D\",\"A\",\"B\"], [\"B\",\"D\",\"C\",\"A\",\"B\",\"A\"])",
@@ -19743,7 +19707,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9164017156178283"
+        "applicationUuid": "0.8858748693267748"
       },
       {
         "ddgTitle": "shortestCommonSupersequence([\"B\",\"D\",\"C\",\"A\",\"B\",\"A\"], [\"A\",\"B\",\"C\",\"B\",\"D\",\"A\",\"B\",\"A\",\"C\"])",
@@ -19778,7 +19742,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.9164017156178283"
+        "applicationUuid": "0.8858748693267748"
       }
     ]
   },
@@ -19825,7 +19789,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.35800243491600403"
+        "applicationUuid": "0.786250858758565"
       },
       {
         "ddgTitle": "sieveOfEratosthenes(10)",
@@ -19860,7 +19824,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.35800243491600403"
+        "applicationUuid": "0.786250858758565"
       },
       {
         "ddgTitle": "sieveOfEratosthenes(100)",
@@ -19895,7 +19859,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.35800243491600403"
+        "applicationUuid": "0.786250858758565"
       }
     ]
   },
@@ -19941,9 +19905,9 @@ module.exports = [
               "index": 125
             },
             "end": {
-              "line": 37,
+              "line": 38,
               "column": 1,
-              "index": 1118
+              "index": 1171
             }
           }
         },
@@ -19962,7 +19926,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.2061423868559793"
+        "applicationUuid": "0.9054870829845358"
       }
     ]
   },
@@ -20029,7 +19993,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(1)",
@@ -20064,7 +20028,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(2)",
@@ -20099,7 +20063,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(3)",
@@ -20134,7 +20098,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(4)",
@@ -20169,7 +20133,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(15)",
@@ -20204,7 +20168,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(16)",
@@ -20239,7 +20203,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(256)",
@@ -20274,7 +20238,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(473)",
@@ -20309,7 +20273,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       },
       {
         "ddgTitle": "squareRoot(14723)",
@@ -20344,7 +20308,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.898739448413107"
+        "applicationUuid": "0.7590440380962618"
       }
     ]
   },
@@ -20385,14 +20349,14 @@ module.exports = [
           "filePath": "src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js",
           "loc": {
             "start": {
-              "line": 119,
+              "line": 116,
               "column": 59,
-              "index": 4207
+              "index": 4394
             },
             "end": {
-              "line": 133,
+              "line": 127,
               "column": 1,
-              "index": 4798
+              "index": 4977
             }
           }
         },
@@ -20411,7 +20375,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.809274960861543"
+        "applicationUuid": "0.37113474069160035"
       }
     ]
   },
@@ -20447,9 +20411,9 @@ module.exports = [
               "index": 215
             },
             "end": {
-              "line": 47,
+              "line": 44,
               "column": 1,
-              "index": 1532
+              "index": 1612
             }
           }
         },
@@ -20468,7 +20432,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.5162392344048214"
+        "applicationUuid": "0.36121702050361915"
       }
     ]
   },
@@ -20515,7 +20479,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.08677574784763054"
+        "applicationUuid": "0.7943307268649227"
       }
     ]
   },
@@ -20562,7 +20526,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(2)",
@@ -20597,7 +20561,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(3)",
@@ -20632,7 +20596,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(5)",
@@ -20667,7 +20631,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(11)",
@@ -20702,7 +20666,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(191)",
@@ -20737,7 +20701,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(191)",
@@ -20772,7 +20736,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(199)",
@@ -20807,7 +20771,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(-1)",
@@ -20842,7 +20806,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(0)",
@@ -20877,7 +20841,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(4)",
@@ -20912,7 +20876,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(6)",
@@ -20947,7 +20911,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(12)",
@@ -20982,7 +20946,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(14)",
@@ -21017,7 +20981,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(25)",
@@ -21052,7 +21016,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(192)",
@@ -21087,7 +21051,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(200)",
@@ -21122,7 +21086,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(400)",
@@ -21157,7 +21121,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(0.5)",
@@ -21192,7 +21156,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(1.3)",
@@ -21227,7 +21191,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       },
       {
         "ddgTitle": "trialDivision(10.5)",
@@ -21262,7 +21226,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.48708849900564677"
+        "applicationUuid": "0.1693378305057731"
       }
     ]
   },
@@ -21349,7 +21313,7 @@ module.exports = [
             }
           }
         },
-        "applicationUuid": "0.31762406461901915"
+        "applicationUuid": "0.6340805831700904"
       }
     ]
   },
@@ -21397,16 +21361,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abca, abca)",
@@ -21432,16 +21404,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abca, abcadfd)",
@@ -21467,16 +21447,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcbcglabcx, abc)",
@@ -21502,16 +21490,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcbcglx, bcgl)",
@@ -21537,16 +21533,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcbcglx, cglx)",
@@ -21572,16 +21576,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcxabcdabxabcdabcdabcy, abcdabcy)",
@@ -21607,16 +21619,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcxabcdabxabcdabcdabcy, abcdabca)",
@@ -21642,16 +21662,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcxabcdabxaabcdabcabcdabcdabcy, abcdabca)",
@@ -21677,16 +21705,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       },
       {
         "ddgTitle": "zAlgorithm(abcxabcdabxaabaabaaaabcdabcdabcy, aabaabaaa)",
@@ -21712,16 +21748,24 @@ module.exports = [
             "start": {
               "line": 4,
               "column": 55,
-              "index": 130
+              "index": 130,
+              "_pos": {
+                "line": 3,
+                "character": 55
+              }
             },
             "end": {
               "line": 15,
               "column": 3,
-              "index": 810
+              "index": 810,
+              "_pos": {
+                "line": 14,
+                "character": 3
+              }
             }
           }
         },
-        "applicationUuid": "0.13988066929964904"
+        "applicationUuid": "0.6500451963933715"
       }
     ]
   }

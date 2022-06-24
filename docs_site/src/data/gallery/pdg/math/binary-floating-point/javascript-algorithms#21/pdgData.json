@@ -1,13 +1,5 @@
-[
-  {
-    "success": false,
-    "failedReason": "missing data traces",
-    "ddgTitle": "bitsToFloat64([0,0,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0])",
-    "traceLocations": [
-      "src/algorithms/math/binary-floating-point/bitsToFloat.js#60",
-      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js#7",
-      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js#17",
-      "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js#27"
-    ]
-  }
-]
+{
+  "succses": false,
+  "failedReason": "error",
+  "error": "Error: Run failed. No application found.\n\tat ChapterListBuilderViewController.runAndExportDDGApplication (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:61420:13)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async PDGGallery.importOrRunDDGApplication (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:74979:7)\n\tat async PDGGallery.getAllExerciseDDGArgs (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:74998:21)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75052:27\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64267:12"
+}

@@ -22,6 +22,7 @@ const { log, debug, warn, error: logError } = newLogger('ChapterListBuilderViewC
 let controller;
 const ProjectName = 'javascript-algorithms';
 const ExerciseListName = 'javascript-algorithms-all';
+const CustomConfigName = 'javascript-algorithms-all-custom-config';
 const ChapterListName = ExerciseListName;
 const ExerciseListFileName = `${ExerciseListName}.js`;
 const ChapterListFileName = `${ChapterListName}.js`;
@@ -81,11 +82,50 @@ export default class ChapterListBuilderViewController {
 
   reloadExerciseList() {
     const exerciseFilePath = this.project.getExercisePath(ExerciseListName);
+    const customExerciseConfigPath = this.project.getExercisePath(CustomConfigName);
     if (fs.existsSync(exerciseFilePath)) {
       this.exerciseConfigs = this.project.loadExerciseConfigs(ExerciseListName);
       this.exerciseConfigsByName = new Map();
       this.exerciseConfigs.forEach(config => this.exerciseConfigsByName.set(config.name, config));
       this.exerciseList = this.project.reloadExercises(ExerciseListName);
+      if (fs.existsSync(customExerciseConfigPath)) {
+        const customConfigs = this.project.loadExerciseConfigs(CustomConfigName);
+        if (customConfigs.chapters) {
+          const exercisesByChapters = new Map();
+          for (const exercise of this.exerciseList.getAll()) {
+            const { chapter } = exercise;
+            if (!exercisesByChapters.get(chapter)) {
+              exercisesByChapters.set(chapter, []);
+            }
+            exercisesByChapters.get(chapter).push(exercise);
+          }
+
+          for (const chapterConfig of customConfigs.chapters) {
+            const { name: chapterName, ...configs } = chapterConfig;
+            const exercises = exercisesByChapters.get(chapterName);
+            if (!exercises) {
+              throw new Error(`Unknown chapter name ${chapterName}`);
+            }
+
+            for (const exercise of exercises) {
+              Object.assign(exercise, configs);
+            }
+          }
+        }
+
+        if (customConfigs.exercises) {
+          for (const exerciseConfig of customConfigs.exercises) {
+            const { name: exerciseName, ...configs } = exerciseConfig;
+            const exercise = this.exerciseList.getByName(exerciseName);
+            if (!exercise) {
+              debugger;
+              throw new Error(`Unknown exercise name ${exerciseName}`);
+            }
+            Object.assign(exercise, configs);
+          }
+        }
+      }
+
       return this.exerciseList;
     }
     return null;

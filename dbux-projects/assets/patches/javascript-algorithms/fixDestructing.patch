@@ -1,0 +1,2682 @@
+diff --git a/src/algorithms/cryptography/polynomial-hash/PolynomialHash.js b/src/algorithms/cryptography/polynomial-hash/PolynomialHash.js
+index d6f774e..014d35c 100644
+--- a/src/algorithms/cryptography/polynomial-hash/PolynomialHash.js
++++ b/src/algorithms/cryptography/polynomial-hash/PolynomialHash.js
+@@ -1,16 +1,21 @@
+ const DEFAULT_BASE = 37;
+ const DEFAULT_MODULUS = 101;
+-
+ export default class PolynomialHash {
+   /**
+    * @param {number} [base] - Base number that is used to create the polynomial.
+    * @param {number} [modulus] - Modulus number that keeps the hash from overflowing.
+    */
+-  constructor({ base = DEFAULT_BASE, modulus = DEFAULT_MODULUS } = {}) {
++  constructor() {
++    let _ref =
++        arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
++      _ref$base = _ref.base,
++      base = _ref$base === void 0 ? DEFAULT_BASE : _ref$base,
++      _ref$modulus = _ref.modulus,
++      modulus = _ref$modulus === void 0 ? DEFAULT_MODULUS : _ref$modulus;
++
+     this.base = base;
+     this.modulus = modulus;
+   }
+-
+   /**
+    * Function that creates hash representation of the word.
+    *
+@@ -19,10 +24,11 @@ export default class PolynomialHash {
+    * @param {string} word - String that needs to be hashed.
+    * @return {number}
+    */
++
+   hash(word) {
+     const charCodes = Array.from(word).map((char) => this.charToNumber(char));
+-
+     let hash = 0;
++
+     for (let charIndex = 0; charIndex < charCodes.length; charIndex += 1) {
+       hash *= this.base;
+       hash += charCodes[charIndex];
+@@ -31,7 +37,6 @@ export default class PolynomialHash {
+ 
+     return hash;
+   }
+-
+   /**
+    * Function that creates hash representation of the word
+    * based on previous word (shifted by one character left) hash value.
+@@ -46,13 +51,13 @@ export default class PolynomialHash {
+    * @param {string} newWord
+    * @return {number}
+    */
++
+   roll(prevHash, prevWord, newWord) {
+     let hash = prevHash;
+-
+     const prevValue = this.charToNumber(prevWord[0]);
+     const newValue = this.charToNumber(newWord[newWord.length - 1]);
+-
+     let prevValueMultiplier = 1;
++
+     for (let i = 1; i < prevWord.length; i += 1) {
+       prevValueMultiplier *= this.base;
+       prevValueMultiplier %= this.modulus;
+@@ -60,25 +65,23 @@ export default class PolynomialHash {
+ 
+     hash += this.modulus;
+     hash -= (prevValue * prevValueMultiplier) % this.modulus;
+-
+     hash *= this.base;
+     hash += newValue;
+     hash %= this.modulus;
+-
+     return hash;
+   }
+-
+   /**
+    * Converts char to number.
+    *
+    * @param {string} char
+    * @return {number}
+    */
++
+   charToNumber(char) {
+-    let charCode = char.codePointAt(0);
++    let charCode = char.codePointAt(0); // Check if character has surrogate pair.
+ 
+-    // Check if character has surrogate pair.
+     const surrogate = char.codePointAt(1);
++
+     if (surrogate !== undefined) {
+       const surrogateShift = 2 ** 16;
+       charCode += surrogate * surrogateShift;
+@@ -87,3 +90,4 @@ export default class PolynomialHash {
+     return charCode;
+   }
+ }
++
+diff --git a/src/algorithms/graph/articulation-points/articulationPoints.js b/src/algorithms/graph/articulation-points/articulationPoints.js
+index 0cc1db6..ce9350a 100644
+--- a/src/algorithms/graph/articulation-points/articulationPoints.js
++++ b/src/algorithms/graph/articulation-points/articulationPoints.js
+@@ -1,47 +1,46 @@
+-import depthFirstSearch from '../depth-first-search/depthFirstSearch';
+-
++import depthFirstSearch from "../depth-first-search/depthFirstSearch";
+ /**
+  * Helper class for visited vertex metadata.
+  */
++
+ class VisitMetadata {
+-  constructor({ discoveryTime, lowDiscoveryTime }) {
++  constructor(_ref) {
++    let discoveryTime = _ref.discoveryTime,
++      lowDiscoveryTime = _ref.lowDiscoveryTime;
+     this.discoveryTime = discoveryTime;
+-    this.lowDiscoveryTime = lowDiscoveryTime;
+-    // We need this in order to check graph root node, whether it has two
++    this.lowDiscoveryTime = lowDiscoveryTime; // We need this in order to check graph root node, whether it has two
+     // disconnected children or not.
++
+     this.independentChildrenCount = 0;
+   }
+ }
+-
+ /**
+  * Tarjan's algorithm for finding articulation points in graph.
+  *
+  * @param {Graph} graph
+  * @return {Object}
+  */
++
+ export default function articulationPoints(graph) {
+   // Set of vertices we've already visited during DFS.
+-  const visitedSet = {};
++  const visitedSet = {}; // Set of articulation points.
+ 
+-  // Set of articulation points.
+-  const articulationPointsSet = {};
++  const articulationPointsSet = {}; // Time needed to discover to the current vertex.
+ 
+-  // Time needed to discover to the current vertex.
+-  let discoveryTime = 0;
++  let discoveryTime = 0; // Peek the start vertex for DFS traversal.
+ 
+-  // Peek the start vertex for DFS traversal.
+   const startVertex = graph.getAllVertices()[0];
+-
+   const dfsCallbacks = {
+     /**
+      * @param {GraphVertex} currentVertex
+      * @param {GraphVertex} previousVertex
+      */
+-    enterVertex: ({ currentVertex, previousVertex }) => {
++    enterVertex: (_ref2) => {
++      let currentVertex = _ref2.currentVertex,
++        previousVertex = _ref2.previousVertex;
+       // Tick discovery time.
+-      discoveryTime += 1;
++      discoveryTime += 1; // Put current vertex to visited set.
+ 
+-      // Put current vertex to visited set.
+       visitedSet[currentVertex.getKey()] = new VisitMetadata({
+         discoveryTime,
+         lowDiscoveryTime: discoveryTime,
+@@ -52,37 +51,43 @@ export default function articulationPoints(graph) {
+         visitedSet[previousVertex.getKey()].independentChildrenCount += 1;
+       }
+     },
++
+     /**
+      * @param {GraphVertex} currentVertex
+      * @param {GraphVertex} previousVertex
+      */
+-    leaveVertex: ({ currentVertex, previousVertex }) => {
++    leaveVertex: (_ref3) => {
++      let currentVertex = _ref3.currentVertex,
++        previousVertex = _ref3.previousVertex;
++
+       if (previousVertex === null) {
+         // Don't do anything for the root vertex if it is already current (not previous one)
+         return;
+-      }
+-
+-      // Update the low time with the smallest time of adjacent vertices.
++      } // Update the low time with the smallest time of adjacent vertices.
+       // Get minimum low discovery time from all neighbors.
++
+       /** @param {GraphVertex} neighbor */
+-      visitedSet[currentVertex.getKey()].lowDiscoveryTime = currentVertex.getNeighbors()
+-        .filter((earlyNeighbor) => earlyNeighbor.getKey() !== previousVertex.getKey())
++
++      visitedSet[currentVertex.getKey()].lowDiscoveryTime = currentVertex
++        .getNeighbors()
++        .filter(
++          (earlyNeighbor) => earlyNeighbor.getKey() !== previousVertex.getKey()
++        )
+         /**
+          * @param {number} lowestDiscoveryTime
+          * @param {GraphVertex} neighbor
+          */
+-        .reduce(
+-          (lowestDiscoveryTime, neighbor) => {
+-            const neighborLowTime = visitedSet[neighbor.getKey()].lowDiscoveryTime;
+-            return neighborLowTime < lowestDiscoveryTime ? neighborLowTime : lowestDiscoveryTime;
+-          },
+-          visitedSet[currentVertex.getKey()].lowDiscoveryTime,
+-        );
+-
+-      // Detect whether previous vertex is articulation point or not.
++        .reduce((lowestDiscoveryTime, neighbor) => {
++          const neighborLowTime =
++            visitedSet[neighbor.getKey()].lowDiscoveryTime;
++          return neighborLowTime < lowestDiscoveryTime
++            ? neighborLowTime
++            : lowestDiscoveryTime;
++        }, visitedSet[currentVertex.getKey()].lowDiscoveryTime); // Detect whether previous vertex is articulation point or not.
+       // To do so we need to check two [OR] conditions:
+       // 1. Is it a root vertex with at least two independent children.
+       // 2. If its visited time is <= low time of adjacent vertex.
++
+       if (previousVertex === startVertex) {
+         // Check that root vertex has at least two independent children.
+         if (visitedSet[previousVertex.getKey()].independentChildrenCount >= 2) {
+@@ -90,24 +95,26 @@ export default function articulationPoints(graph) {
+         }
+       } else {
+         // Get current vertex low discovery time.
+-        const currentLowDiscoveryTime = visitedSet[currentVertex.getKey()].lowDiscoveryTime;
+-
+-        // Compare current vertex low discovery time with parent discovery time. Check if there
++        const currentLowDiscoveryTime =
++          visitedSet[currentVertex.getKey()].lowDiscoveryTime; // Compare current vertex low discovery time with parent discovery time. Check if there
+         // are any short path (back edge) exists. If we can't get to current vertex other then
+         // via parent then the parent vertex is articulation point for current one.
+-        const parentDiscoveryTime = visitedSet[previousVertex.getKey()].discoveryTime;
++
++        const parentDiscoveryTime =
++          visitedSet[previousVertex.getKey()].discoveryTime;
++
+         if (parentDiscoveryTime <= currentLowDiscoveryTime) {
+           articulationPointsSet[previousVertex.getKey()] = previousVertex;
+         }
+       }
+     },
+-    allowTraversal: ({ nextVertex }) => {
++    allowTraversal: (_ref4) => {
++      let nextVertex = _ref4.nextVertex;
+       return !visitedSet[nextVertex.getKey()];
+     },
+-  };
++  }; // Do Depth First Search traversal over submitted graph.
+ 
+-  // Do Depth First Search traversal over submitted graph.
+   depthFirstSearch(graph, startVertex, dfsCallbacks);
+-
+   return articulationPointsSet;
+ }
++
+diff --git a/src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js b/src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js
+index ffa30eb..1cb92a2 100644
+--- a/src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js
++++ b/src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js
+@@ -1,19 +1,17 @@
+-import GraphVertex from '../../../../data-structures/graph/GraphVertex';
+-import GraphEdge from '../../../../data-structures/graph/GraphEdge';
+-import Graph from '../../../../data-structures/graph/Graph';
+-import bellmanFord from '../bellmanFord';
+-
+-describe('bellmanFord', () => {
+-  it('should find minimum paths to all vertices for undirected graph', () => {
+-    const vertexA = new GraphVertex('A');
+-    const vertexB = new GraphVertex('B');
+-    const vertexC = new GraphVertex('C');
+-    const vertexD = new GraphVertex('D');
+-    const vertexE = new GraphVertex('E');
+-    const vertexF = new GraphVertex('F');
+-    const vertexG = new GraphVertex('G');
+-    const vertexH = new GraphVertex('H');
+-
++import GraphVertex from "../../../../data-structures/graph/GraphVertex";
++import GraphEdge from "../../../../data-structures/graph/GraphEdge";
++import Graph from "../../../../data-structures/graph/Graph";
++import bellmanFord from "../bellmanFord";
++describe("bellmanFord", () => {
++  it("should find minimum paths to all vertices for undirected graph", () => {
++    const vertexA = new GraphVertex("A");
++    const vertexB = new GraphVertex("B");
++    const vertexC = new GraphVertex("C");
++    const vertexD = new GraphVertex("D");
++    const vertexE = new GraphVertex("E");
++    const vertexF = new GraphVertex("F");
++    const vertexG = new GraphVertex("G");
++    const vertexH = new GraphVertex("H");
+     const edgeAB = new GraphEdge(vertexA, vertexB, 4);
+     const edgeAE = new GraphEdge(vertexA, vertexE, 7);
+     const edgeAC = new GraphEdge(vertexA, vertexC, 3);
+@@ -26,7 +24,6 @@ describe('bellmanFord', () => {
+     const edgeDF = new GraphEdge(vertexD, vertexF, 2);
+     const edgeFG = new GraphEdge(vertexF, vertexG, 3);
+     const edgeEG = new GraphEdge(vertexE, vertexG, 5);
+-
+     const graph = new Graph();
+     graph
+       .addVertex(vertexH)
+@@ -43,7 +40,9 @@ describe('bellmanFord', () => {
+       .addEdge(edgeFG)
+       .addEdge(edgeEG);
+ 
+-    const { distances, previousVertices } = bellmanFord(graph, vertexA);
++    const _bellmanFord = bellmanFord(graph, vertexA),
++      distances = _bellmanFord.distances,
++      previousVertices = _bellmanFord.previousVertices;
+ 
+     expect(distances).toEqual({
+       H: Infinity,
+@@ -55,25 +54,22 @@ describe('bellmanFord', () => {
+       G: 12,
+       F: 11,
+     });
+-
+-    expect(previousVertices.F.getKey()).toBe('D');
+-    expect(previousVertices.D.getKey()).toBe('B');
+-    expect(previousVertices.B.getKey()).toBe('A');
+-    expect(previousVertices.G.getKey()).toBe('E');
+-    expect(previousVertices.C.getKey()).toBe('A');
++    expect(previousVertices.F.getKey()).toBe("D");
++    expect(previousVertices.D.getKey()).toBe("B");
++    expect(previousVertices.B.getKey()).toBe("A");
++    expect(previousVertices.G.getKey()).toBe("E");
++    expect(previousVertices.C.getKey()).toBe("A");
+     expect(previousVertices.A).toBeNull();
+     expect(previousVertices.H).toBeNull();
+   });
+-
+-  it('should find minimum paths to all vertices for directed graph with negative edge weights', () => {
+-    const vertexS = new GraphVertex('S');
+-    const vertexE = new GraphVertex('E');
+-    const vertexA = new GraphVertex('A');
+-    const vertexD = new GraphVertex('D');
+-    const vertexB = new GraphVertex('B');
+-    const vertexC = new GraphVertex('C');
+-    const vertexH = new GraphVertex('H');
+-
++  it("should find minimum paths to all vertices for directed graph with negative edge weights", () => {
++    const vertexS = new GraphVertex("S");
++    const vertexE = new GraphVertex("E");
++    const vertexA = new GraphVertex("A");
++    const vertexD = new GraphVertex("D");
++    const vertexB = new GraphVertex("B");
++    const vertexC = new GraphVertex("C");
++    const vertexH = new GraphVertex("H");
+     const edgeSE = new GraphEdge(vertexS, vertexE, 8);
+     const edgeSA = new GraphEdge(vertexS, vertexA, 10);
+     const edgeED = new GraphEdge(vertexE, vertexD, 1);
+@@ -82,7 +78,6 @@ describe('bellmanFord', () => {
+     const edgeAC = new GraphEdge(vertexA, vertexC, 2);
+     const edgeCB = new GraphEdge(vertexC, vertexB, -2);
+     const edgeBA = new GraphEdge(vertexB, vertexA, 1);
+-
+     const graph = new Graph(true);
+     graph
+       .addVertex(vertexH)
+@@ -95,7 +90,9 @@ describe('bellmanFord', () => {
+       .addEdge(edgeCB)
+       .addEdge(edgeBA);
+ 
+-    const { distances, previousVertices } = bellmanFord(graph, vertexS);
++    const _bellmanFord2 = bellmanFord(graph, vertexS),
++      distances = _bellmanFord2.distances,
++      previousVertices = _bellmanFord2.previousVertices;
+ 
+     expect(distances).toEqual({
+       H: Infinity,
+@@ -106,12 +103,12 @@ describe('bellmanFord', () => {
+       D: 9,
+       E: 8,
+     });
+-
+     expect(previousVertices.H).toBeNull();
+     expect(previousVertices.S).toBeNull();
+-    expect(previousVertices.B.getKey()).toBe('C');
+-    expect(previousVertices.C.getKey()).toBe('A');
+-    expect(previousVertices.A.getKey()).toBe('D');
+-    expect(previousVertices.D.getKey()).toBe('E');
++    expect(previousVertices.B.getKey()).toBe("C");
++    expect(previousVertices.C.getKey()).toBe("A");
++    expect(previousVertices.A.getKey()).toBe("D");
++    expect(previousVertices.D.getKey()).toBe("E");
+   });
+ });
++
+diff --git a/src/algorithms/graph/bridges/graphBridges.js b/src/algorithms/graph/bridges/graphBridges.js
+index 58a6400..12c07e5 100644
+--- a/src/algorithms/graph/bridges/graphBridges.js
++++ b/src/algorithms/graph/bridges/graphBridges.js
+@@ -1,95 +1,106 @@
+-import depthFirstSearch from '../depth-first-search/depthFirstSearch';
+-
++import depthFirstSearch from "../depth-first-search/depthFirstSearch";
+ /**
+  * Helper class for visited vertex metadata.
+  */
++
+ class VisitMetadata {
+-  constructor({ discoveryTime, lowDiscoveryTime }) {
++  constructor(_ref) {
++    let discoveryTime = _ref.discoveryTime,
++      lowDiscoveryTime = _ref.lowDiscoveryTime;
+     this.discoveryTime = discoveryTime;
+     this.lowDiscoveryTime = lowDiscoveryTime;
+   }
+ }
+-
+ /**
+  * @param {Graph} graph
+  * @return {Object}
+  */
++
+ export default function graphBridges(graph) {
+   // Set of vertices we've already visited during DFS.
+-  const visitedSet = {};
++  const visitedSet = {}; // Set of bridges.
+ 
+-  // Set of bridges.
+-  const bridges = {};
++  const bridges = {}; // Time needed to discover to the current vertex.
+ 
+-  // Time needed to discover to the current vertex.
+-  let discoveryTime = 0;
++  let discoveryTime = 0; // Peek the start vertex for DFS traversal.
+ 
+-  // Peek the start vertex for DFS traversal.
+   const startVertex = graph.getAllVertices()[0];
+-
+   const dfsCallbacks = {
+     /**
+      * @param {GraphVertex} currentVertex
+      */
+-    enterVertex: ({ currentVertex }) => {
++    enterVertex: (_ref2) => {
++      let currentVertex = _ref2.currentVertex;
+       // Tick discovery time.
+-      discoveryTime += 1;
++      discoveryTime += 1; // Put current vertex to visited set.
+ 
+-      // Put current vertex to visited set.
+       visitedSet[currentVertex.getKey()] = new VisitMetadata({
+         discoveryTime,
+         lowDiscoveryTime: discoveryTime,
+       });
+     },
++
+     /**
+      * @param {GraphVertex} currentVertex
+      * @param {GraphVertex} previousVertex
+      */
+-    leaveVertex: ({ currentVertex, previousVertex }) => {
++    leaveVertex: (_ref3) => {
++      let currentVertex = _ref3.currentVertex,
++        previousVertex = _ref3.previousVertex;
++
+       if (previousVertex === null) {
+         // Don't do anything for the root vertex if it is already current (not previous one).
+         return;
+-      }
++      } // Check if current node is connected to any early node other then previous one.
+ 
+-      // Check if current node is connected to any early node other then previous one.
+-      visitedSet[currentVertex.getKey()].lowDiscoveryTime = currentVertex.getNeighbors()
+-        .filter((earlyNeighbor) => earlyNeighbor.getKey() !== previousVertex.getKey())
++      visitedSet[currentVertex.getKey()].lowDiscoveryTime = currentVertex
++        .getNeighbors()
++        .filter(
++          (earlyNeighbor) => earlyNeighbor.getKey() !== previousVertex.getKey()
++        )
+         .reduce(
+           /**
+            * @param {number} lowestDiscoveryTime
+            * @param {GraphVertex} neighbor
+            */
+           (lowestDiscoveryTime, neighbor) => {
+-            const neighborLowTime = visitedSet[neighbor.getKey()].lowDiscoveryTime;
+-            return neighborLowTime < lowestDiscoveryTime ? neighborLowTime : lowestDiscoveryTime;
++            const neighborLowTime =
++              visitedSet[neighbor.getKey()].lowDiscoveryTime;
++            return neighborLowTime < lowestDiscoveryTime
++              ? neighborLowTime
++              : lowestDiscoveryTime;
+           },
+-          visitedSet[currentVertex.getKey()].lowDiscoveryTime,
+-        );
+-
+-      // Compare low discovery times. In case if current low discovery time is less than the one
++          visitedSet[currentVertex.getKey()].lowDiscoveryTime
++        ); // Compare low discovery times. In case if current low discovery time is less than the one
+       // in previous vertex then update previous vertex low time.
+-      const currentLowDiscoveryTime = visitedSet[currentVertex.getKey()].lowDiscoveryTime;
+-      const previousLowDiscoveryTime = visitedSet[previousVertex.getKey()].lowDiscoveryTime;
+-      if (currentLowDiscoveryTime < previousLowDiscoveryTime) {
+-        visitedSet[previousVertex.getKey()].lowDiscoveryTime = currentLowDiscoveryTime;
+-      }
+ 
+-      // Compare current vertex low discovery time with parent discovery time. Check if there
++      const currentLowDiscoveryTime =
++        visitedSet[currentVertex.getKey()].lowDiscoveryTime;
++      const previousLowDiscoveryTime =
++        visitedSet[previousVertex.getKey()].lowDiscoveryTime;
++
++      if (currentLowDiscoveryTime < previousLowDiscoveryTime) {
++        visitedSet[previousVertex.getKey()].lowDiscoveryTime =
++          currentLowDiscoveryTime;
++      } // Compare current vertex low discovery time with parent discovery time. Check if there
+       // are any short path (back edge) exists. If we can't get to current vertex other then
+       // via parent then the parent vertex is articulation point for current one.
+-      const parentDiscoveryTime = visitedSet[previousVertex.getKey()].discoveryTime;
++
++      const parentDiscoveryTime =
++        visitedSet[previousVertex.getKey()].discoveryTime;
++
+       if (parentDiscoveryTime < currentLowDiscoveryTime) {
+         const bridge = graph.findEdge(previousVertex, currentVertex);
+         bridges[bridge.getKey()] = bridge;
+       }
+     },
+-    allowTraversal: ({ nextVertex }) => {
++    allowTraversal: (_ref4) => {
++      let nextVertex = _ref4.nextVertex;
+       return !visitedSet[nextVertex.getKey()];
+     },
+-  };
++  }; // Do Depth First Search traversal over submitted graph.
+ 
+-  // Do Depth First Search traversal over submitted graph.
+   depthFirstSearch(graph, startVertex, dfsCallbacks);
+-
+   return bridges;
+ }
++
+diff --git a/src/algorithms/graph/depth-first-search/depthFirstSearch.js b/src/algorithms/graph/depth-first-search/depthFirstSearch.js
+index a77c672..0fd56a3 100644
+--- a/src/algorithms/graph/depth-first-search/depthFirstSearch.js
++++ b/src/algorithms/graph/depth-first-search/depthFirstSearch.js
+@@ -14,55 +14,79 @@
+  * @param {Callbacks} [callbacks]
+  * @returns {Callbacks}
+  */
+-function initCallbacks(callbacks = {}) {
++function initCallbacks() {
++  let callbacks =
++    arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+   const initiatedCallback = callbacks;
+ 
+   const stubCallback = () => {};
+ 
+-  const allowTraversalCallback = (
+-    () => {
+-      const seen = {};
+-      return ({ nextVertex }) => {
+-        if (!seen[nextVertex.getKey()]) {
+-          seen[nextVertex.getKey()] = true;
+-          return true;
+-        }
+-        return false;
+-      };
+-    }
+-  )();
++  const allowTraversalCallback = (() => {
++    const seen = {};
++    return (_ref) => {
++      let nextVertex = _ref.nextVertex;
++
++      if (!seen[nextVertex.getKey()]) {
++        seen[nextVertex.getKey()] = true;
++        return true;
++      }
++
++      return false;
++    };
++  })();
+ 
+-  initiatedCallback.allowTraversal = callbacks.allowTraversal || allowTraversalCallback;
++  initiatedCallback.allowTraversal =
++    callbacks.allowTraversal || allowTraversalCallback;
+   initiatedCallback.enterVertex = callbacks.enterVertex || stubCallback;
+   initiatedCallback.leaveVertex = callbacks.leaveVertex || stubCallback;
+-
+   return initiatedCallback;
+ }
+-
+ /**
+  * @param {Graph} graph
+  * @param {GraphVertex} currentVertex
+  * @param {GraphVertex} previousVertex
+  * @param {Callbacks} callbacks
+  */
+-function depthFirstSearchRecursive(graph, currentVertex, previousVertex, callbacks) {
+-  callbacks.enterVertex({ currentVertex, previousVertex });
+ 
++function depthFirstSearchRecursive(
++  graph,
++  currentVertex,
++  previousVertex,
++  callbacks
++) {
++  callbacks.enterVertex({
++    currentVertex,
++    previousVertex,
++  });
+   graph.getNeighbors(currentVertex).forEach((nextVertex) => {
+-    if (callbacks.allowTraversal({ previousVertex, currentVertex, nextVertex })) {
++    if (
++      callbacks.allowTraversal({
++        previousVertex,
++        currentVertex,
++        nextVertex,
++      })
++    ) {
+       depthFirstSearchRecursive(graph, nextVertex, currentVertex, callbacks);
+     }
+   });
+-
+-  callbacks.leaveVertex({ currentVertex, previousVertex });
++  callbacks.leaveVertex({
++    currentVertex,
++    previousVertex,
++  });
+ }
+-
+ /**
+  * @param {Graph} graph
+  * @param {GraphVertex} startVertex
+  * @param {Callbacks} [callbacks]
+  */
++
+ export default function depthFirstSearch(graph, startVertex, callbacks) {
+   const previousVertex = null;
+-  depthFirstSearchRecursive(graph, startVertex, previousVertex, initCallbacks(callbacks));
++  depthFirstSearchRecursive(
++    graph,
++    startVertex,
++    previousVertex,
++    initCallbacks(callbacks)
++  );
+ }
++
+diff --git a/src/algorithms/graph/detect-cycle/detectUndirectedCycle.js b/src/algorithms/graph/detect-cycle/detectUndirectedCycle.js
+index 5bcc9bb..b19686c 100644
+--- a/src/algorithms/graph/detect-cycle/detectUndirectedCycle.js
++++ b/src/algorithms/graph/detect-cycle/detectUndirectedCycle.js
+@@ -1,38 +1,40 @@
+-import depthFirstSearch from '../depth-first-search/depthFirstSearch';
+-
++import depthFirstSearch from "../depth-first-search/depthFirstSearch";
+ /**
+  * Detect cycle in undirected graph using Depth First Search.
+  *
+  * @param {Graph} graph
+  */
++
+ export default function detectUndirectedCycle(graph) {
+-  let cycle = null;
++  let cycle = null; // List of vertices that we have visited.
+ 
+-  // List of vertices that we have visited.
+-  const visitedVertices = {};
++  const visitedVertices = {}; // List of parents vertices for every visited vertex.
+ 
+-  // List of parents vertices for every visited vertex.
+-  const parents = {};
++  const parents = {}; // Callbacks for DFS traversing.
+ 
+-  // Callbacks for DFS traversing.
+   const callbacks = {
+-    allowTraversal: ({ currentVertex, nextVertex }) => {
++    allowTraversal: (_ref) => {
++      let currentVertex = _ref.currentVertex,
++        nextVertex = _ref.nextVertex;
++
+       // Don't allow further traversal in case if cycle has been detected.
+       if (cycle) {
+         return false;
+-      }
++      } // Don't allow traversal from child back to its parent.
+ 
+-      // Don't allow traversal from child back to its parent.
+       const currentVertexParent = parents[currentVertex.getKey()];
+-      const currentVertexParentKey = currentVertexParent ? currentVertexParent.getKey() : null;
+-
++      const currentVertexParentKey = currentVertexParent
++        ? currentVertexParent.getKey()
++        : null;
+       return currentVertexParentKey !== nextVertex.getKey();
+     },
+-    enterVertex: ({ currentVertex, previousVertex }) => {
++    enterVertex: (_ref2) => {
++      let currentVertex = _ref2.currentVertex,
++        previousVertex = _ref2.previousVertex;
++
+       if (visitedVertices[currentVertex.getKey()]) {
+         // Compile cycle path based on parents of previous vertices.
+         cycle = {};
+-
+         let currentCycleVertex = currentVertex;
+         let previousCycleVertex = previousVertex;
+ 
+@@ -49,11 +51,10 @@ export default function detectUndirectedCycle(graph) {
+         parents[currentVertex.getKey()] = previousVertex;
+       }
+     },
+-  };
++  }; // Start DFS traversing.
+ 
+-  // Start DFS traversing.
+   const startVertex = graph.getAllVertices()[0];
+   depthFirstSearch(graph, startVertex, callbacks);
+-
+   return cycle;
+ }
++
+diff --git a/src/algorithms/graph/dijkstra/__test__/dijkstra.test.js b/src/algorithms/graph/dijkstra/__test__/dijkstra.test.js
+index f6c5a26..5a650fc 100644
+--- a/src/algorithms/graph/dijkstra/__test__/dijkstra.test.js
++++ b/src/algorithms/graph/dijkstra/__test__/dijkstra.test.js
+@@ -1,19 +1,17 @@
+-import GraphVertex from '../../../../data-structures/graph/GraphVertex';
+-import GraphEdge from '../../../../data-structures/graph/GraphEdge';
+-import Graph from '../../../../data-structures/graph/Graph';
+-import dijkstra from '../dijkstra';
+-
+-describe('dijkstra', () => {
+-  it('should find minimum paths to all vertices for undirected graph', () => {
+-    const vertexA = new GraphVertex('A');
+-    const vertexB = new GraphVertex('B');
+-    const vertexC = new GraphVertex('C');
+-    const vertexD = new GraphVertex('D');
+-    const vertexE = new GraphVertex('E');
+-    const vertexF = new GraphVertex('F');
+-    const vertexG = new GraphVertex('G');
+-    const vertexH = new GraphVertex('H');
+-
++import GraphVertex from "../../../../data-structures/graph/GraphVertex";
++import GraphEdge from "../../../../data-structures/graph/GraphEdge";
++import Graph from "../../../../data-structures/graph/Graph";
++import dijkstra from "../dijkstra";
++describe("dijkstra", () => {
++  it("should find minimum paths to all vertices for undirected graph", () => {
++    const vertexA = new GraphVertex("A");
++    const vertexB = new GraphVertex("B");
++    const vertexC = new GraphVertex("C");
++    const vertexD = new GraphVertex("D");
++    const vertexE = new GraphVertex("E");
++    const vertexF = new GraphVertex("F");
++    const vertexG = new GraphVertex("G");
++    const vertexH = new GraphVertex("H");
+     const edgeAB = new GraphEdge(vertexA, vertexB, 4);
+     const edgeAE = new GraphEdge(vertexA, vertexE, 7);
+     const edgeAC = new GraphEdge(vertexA, vertexC, 3);
+@@ -26,7 +24,6 @@ describe('dijkstra', () => {
+     const edgeDF = new GraphEdge(vertexD, vertexF, 2);
+     const edgeFG = new GraphEdge(vertexF, vertexG, 3);
+     const edgeEG = new GraphEdge(vertexE, vertexG, 5);
+-
+     const graph = new Graph();
+     graph
+       .addVertex(vertexH)
+@@ -43,7 +40,9 @@ describe('dijkstra', () => {
+       .addEdge(edgeFG)
+       .addEdge(edgeEG);
+ 
+-    const { distances, previousVertices } = dijkstra(graph, vertexA);
++    const _dijkstra = dijkstra(graph, vertexA),
++      distances = _dijkstra.distances,
++      previousVertices = _dijkstra.previousVertices;
+ 
+     expect(distances).toEqual({
+       H: Infinity,
+@@ -55,25 +54,22 @@ describe('dijkstra', () => {
+       G: 12,
+       F: 11,
+     });
+-
+-    expect(previousVertices.F.getKey()).toBe('D');
+-    expect(previousVertices.D.getKey()).toBe('B');
+-    expect(previousVertices.B.getKey()).toBe('A');
+-    expect(previousVertices.G.getKey()).toBe('E');
+-    expect(previousVertices.C.getKey()).toBe('A');
++    expect(previousVertices.F.getKey()).toBe("D");
++    expect(previousVertices.D.getKey()).toBe("B");
++    expect(previousVertices.B.getKey()).toBe("A");
++    expect(previousVertices.G.getKey()).toBe("E");
++    expect(previousVertices.C.getKey()).toBe("A");
+     expect(previousVertices.A).toBeNull();
+     expect(previousVertices.H).toBeNull();
+   });
+-
+-  it('should find minimum paths to all vertices for directed graph with negative edge weights', () => {
+-    const vertexS = new GraphVertex('S');
+-    const vertexE = new GraphVertex('E');
+-    const vertexA = new GraphVertex('A');
+-    const vertexD = new GraphVertex('D');
+-    const vertexB = new GraphVertex('B');
+-    const vertexC = new GraphVertex('C');
+-    const vertexH = new GraphVertex('H');
+-
++  it("should find minimum paths to all vertices for directed graph with negative edge weights", () => {
++    const vertexS = new GraphVertex("S");
++    const vertexE = new GraphVertex("E");
++    const vertexA = new GraphVertex("A");
++    const vertexD = new GraphVertex("D");
++    const vertexB = new GraphVertex("B");
++    const vertexC = new GraphVertex("C");
++    const vertexH = new GraphVertex("H");
+     const edgeSE = new GraphEdge(vertexS, vertexE, 8);
+     const edgeSA = new GraphEdge(vertexS, vertexA, 10);
+     const edgeED = new GraphEdge(vertexE, vertexD, 1);
+@@ -82,7 +78,6 @@ describe('dijkstra', () => {
+     const edgeAC = new GraphEdge(vertexA, vertexC, 2);
+     const edgeCB = new GraphEdge(vertexC, vertexB, -2);
+     const edgeBA = new GraphEdge(vertexB, vertexA, 1);
+-
+     const graph = new Graph(true);
+     graph
+       .addVertex(vertexH)
+@@ -95,7 +90,9 @@ describe('dijkstra', () => {
+       .addEdge(edgeCB)
+       .addEdge(edgeBA);
+ 
+-    const { distances, previousVertices } = dijkstra(graph, vertexS);
++    const _dijkstra2 = dijkstra(graph, vertexS),
++      distances = _dijkstra2.distances,
++      previousVertices = _dijkstra2.previousVertices;
+ 
+     expect(distances).toEqual({
+       H: Infinity,
+@@ -106,12 +103,12 @@ describe('dijkstra', () => {
+       D: 9,
+       E: 8,
+     });
+-
+     expect(previousVertices.H).toBeNull();
+     expect(previousVertices.S).toBeNull();
+-    expect(previousVertices.B.getKey()).toBe('C');
+-    expect(previousVertices.C.getKey()).toBe('A');
+-    expect(previousVertices.A.getKey()).toBe('D');
+-    expect(previousVertices.D.getKey()).toBe('E');
++    expect(previousVertices.B.getKey()).toBe("C");
++    expect(previousVertices.C.getKey()).toBe("A");
++    expect(previousVertices.A.getKey()).toBe("D");
++    expect(previousVertices.D.getKey()).toBe("E");
+   });
+ });
++
+diff --git a/src/algorithms/graph/eulerian-path/eulerianPath.js b/src/algorithms/graph/eulerian-path/eulerianPath.js
+index c82c6fd..73eed8c 100644
+--- a/src/algorithms/graph/eulerian-path/eulerianPath.js
++++ b/src/algorithms/graph/eulerian-path/eulerianPath.js
+@@ -1,47 +1,106 @@
+-import graphBridges from '../bridges/graphBridges';
++function _slicedToArray(arr, i) {
++  return (
++    _arrayWithHoles(arr) ||
++    _iterableToArrayLimit(arr, i) ||
++    _unsupportedIterableToArray(arr, i) ||
++    _nonIterableRest()
++  );
++}
++
++function _nonIterableRest() {
++  throw new TypeError(
++    "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
++  );
++}
++
++function _unsupportedIterableToArray(o, minLen) {
++  if (!o) return;
++  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
++  var n = Object.prototype.toString.call(o).slice(8, -1);
++  if (n === "Object" && o.constructor) n = o.constructor.name;
++  if (n === "Map" || n === "Set") return Array.from(o);
++  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
++    return _arrayLikeToArray(o, minLen);
++}
++
++function _arrayLikeToArray(arr, len) {
++  if (len == null || len > arr.length) len = arr.length;
++  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
++  return arr2;
++}
++
++function _iterableToArrayLimit(arr, i) {
++  var _i =
++    arr == null
++      ? null
++      : (typeof Symbol !== "undefined" && arr[Symbol.iterator]) ||
++        arr["@@iterator"];
++  if (_i == null) return;
++  var _arr = [];
++  var _n = true;
++  var _d = false;
++  var _s, _e;
++  try {
++    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
++      _arr.push(_s.value);
++      if (i && _arr.length === i) break;
++    }
++  } catch (err) {
++    _d = true;
++    _e = err;
++  } finally {
++    try {
++      if (!_n && _i["return"] != null) _i["return"]();
++    } finally {
++      if (_d) throw _e;
++    }
++  }
++  return _arr;
++}
+ 
++function _arrayWithHoles(arr) {
++  if (Array.isArray(arr)) return arr;
++}
++
++import graphBridges from "../bridges/graphBridges";
+ /**
+  * Fleury's algorithm of finding Eulerian Path (visit all graph edges exactly once).
+  *
+  * @param {Graph} graph
+  * @return {GraphVertex[]}
+  */
++
+ export default function eulerianPath(graph) {
+-  const eulerianPathVertices = [];
++  const eulerianPathVertices = []; // Set that contains all vertices with even rank (number of neighbors).
+ 
+-  // Set that contains all vertices with even rank (number of neighbors).
+-  const evenRankVertices = {};
++  const evenRankVertices = {}; // Set that contains all vertices with odd rank (number of neighbors).
+ 
+-  // Set that contains all vertices with odd rank (number of neighbors).
+-  const oddRankVertices = {};
++  const oddRankVertices = {}; // Set of all not visited edges.
+ 
+-  // Set of all not visited edges.
+   const notVisitedEdges = {};
+   graph.getAllEdges().forEach((vertex) => {
+     notVisitedEdges[vertex.getKey()] = vertex;
+-  });
++  }); // Detect whether graph contains Eulerian Circuit or Eulerian Path or none of them.
+ 
+-  // Detect whether graph contains Eulerian Circuit or Eulerian Path or none of them.
+   /** @params {GraphVertex} vertex */
++
+   graph.getAllVertices().forEach((vertex) => {
+     if (vertex.getDegree() % 2) {
+       oddRankVertices[vertex.getKey()] = vertex;
+     } else {
+       evenRankVertices[vertex.getKey()] = vertex;
+     }
+-  });
+-
+-  // Check whether we're dealing with Eulerian Circuit or Eulerian Path only.
++  }); // Check whether we're dealing with Eulerian Circuit or Eulerian Path only.
+   // Graph would be an Eulerian Circuit in case if all its vertices has even degree.
+   // If not all vertices have even degree then graph must contain only two odd-degree
+   // vertices in order to have Euler Path.
++
+   const isCircuit = !Object.values(oddRankVertices).length;
+ 
+   if (!isCircuit && Object.values(oddRankVertices).length !== 2) {
+-    throw new Error('Eulerian path must contain two odd-ranked vertices');
+-  }
++    throw new Error("Eulerian path must contain two odd-ranked vertices");
++  } // Pick start vertex for traversal.
+ 
+-  // Pick start vertex for traversal.
+   let startVertex = null;
+ 
+   if (isCircuit) {
+@@ -53,49 +112,54 @@ export default function eulerianPath(graph) {
+     // For Eulerian Path we need to start from one of two odd-degree vertices.
+     const oddVertexKey = Object.keys(oddRankVertices)[0];
+     startVertex = oddRankVertices[oddVertexKey];
+-  }
++  } // Start traversing the graph.
+ 
+-  // Start traversing the graph.
+   let currentVertex = startVertex;
++
+   while (Object.values(notVisitedEdges).length) {
+     // Add current vertex to Eulerian path.
+-    eulerianPathVertices.push(currentVertex);
+-
+-    // Detect all bridges in graph.
++    eulerianPathVertices.push(currentVertex); // Detect all bridges in graph.
+     // We need to do it in order to not delete bridges if there are other edges
+     // exists for deletion.
+-    const bridges = graphBridges(graph);
+ 
+-    // Peek the next edge to delete from graph.
++    const bridges = graphBridges(graph); // Peek the next edge to delete from graph.
++
+     const currentEdges = currentVertex.getEdges();
+     /** @var {GraphEdge} edgeToDelete */
++
+     let edgeToDelete = null;
++
+     if (currentEdges.length === 1) {
+       // If there is only one edge left we need to peek it.
+-      [edgeToDelete] = currentEdges;
++      var _currentEdges = _slicedToArray(currentEdges, 1);
++
++      edgeToDelete = _currentEdges[0];
+     } else {
+       // If there are many edges left then we need to peek any of those except bridges.
+-      [edgeToDelete] = currentEdges.filter((edge) => !bridges[edge.getKey()]);
+-    }
++      var _currentEdges$filter = currentEdges.filter(
++        (edge) => !bridges[edge.getKey()]
++      );
++
++      var _currentEdges$filter2 = _slicedToArray(_currentEdges$filter, 1);
++
++      edgeToDelete = _currentEdges$filter2[0];
++    } // Detect next current vertex.
+ 
+-    // Detect next current vertex.
+     if (currentVertex.getKey() === edgeToDelete.startVertex.getKey()) {
+       currentVertex = edgeToDelete.endVertex;
+     } else {
+       currentVertex = edgeToDelete.startVertex;
+-    }
++    } // Delete edge from not visited edges set.
+ 
+-    // Delete edge from not visited edges set.
+-    delete notVisitedEdges[edgeToDelete.getKey()];
++    delete notVisitedEdges[edgeToDelete.getKey()]; // If last edge were deleted then add finish vertex to Eulerian Path.
+ 
+-    // If last edge were deleted then add finish vertex to Eulerian Path.
+     if (Object.values(notVisitedEdges).length === 0) {
+       eulerianPathVertices.push(currentVertex);
+-    }
++    } // Delete the edge from graph.
+ 
+-    // Delete the edge from graph.
+     graph.deleteEdge(edgeToDelete);
+   }
+ 
+   return eulerianPathVertices;
+ }
++
+diff --git a/src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js b/src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js
+index 2a33bf7..c55b63a 100644
+--- a/src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js
++++ b/src/algorithms/graph/hamiltonian-cycle/hamiltonianCycle.js
+@@ -1,5 +1,4 @@
+-import GraphVertex from '../../../data-structures/graph/GraphVertex';
+-
++import GraphVertex from "../../../data-structures/graph/GraphVertex";
+ /**
+  * @param {number[][]} adjacencyMatrix
+  * @param {object} verticesIndices
+@@ -7,45 +6,47 @@ import GraphVertex from '../../../data-structures/graph/GraphVertex';
+  * @param {GraphVertex} vertexCandidate
+  * @return {boolean}
+  */
++
+ function isSafe(adjacencyMatrix, verticesIndices, cycle, vertexCandidate) {
+-  const endVertex = cycle[cycle.length - 1];
++  const endVertex = cycle[cycle.length - 1]; // Get end and candidate vertices indices in adjacency matrix.
+ 
+-  // Get end and candidate vertices indices in adjacency matrix.
+-  const candidateVertexAdjacencyIndex = verticesIndices[vertexCandidate.getKey()];
+-  const endVertexAdjacencyIndex = verticesIndices[endVertex.getKey()];
++  const candidateVertexAdjacencyIndex =
++    verticesIndices[vertexCandidate.getKey()];
++  const endVertexAdjacencyIndex = verticesIndices[endVertex.getKey()]; // Check if last vertex in the path and candidate vertex are adjacent.
+ 
+-  // Check if last vertex in the path and candidate vertex are adjacent.
+-  if (adjacencyMatrix[endVertexAdjacencyIndex][candidateVertexAdjacencyIndex] === Infinity) {
++  if (
++    adjacencyMatrix[endVertexAdjacencyIndex][candidateVertexAdjacencyIndex] ===
++    Infinity
++  ) {
+     return false;
+-  }
+-
+-  // Check if vertexCandidate is being added to the path for the first time.
+-  const candidateDuplicate = cycle.find((vertex) => vertex.getKey() === vertexCandidate.getKey());
++  } // Check if vertexCandidate is being added to the path for the first time.
+ 
++  const candidateDuplicate = cycle.find(
++    (vertex) => vertex.getKey() === vertexCandidate.getKey()
++  );
+   return !candidateDuplicate;
+ }
+-
+ /**
+  * @param {number[][]} adjacencyMatrix
+  * @param {object} verticesIndices
+  * @param {GraphVertex[]} cycle
+  * @return {boolean}
+  */
++
+ function isCycle(adjacencyMatrix, verticesIndices, cycle) {
+   // Check if first and last vertices in hamiltonian path are adjacent.
+-
+   // Get start and end vertices from the path.
+   const startVertex = cycle[0];
+-  const endVertex = cycle[cycle.length - 1];
++  const endVertex = cycle[cycle.length - 1]; // Get start/end vertices indices in adjacency matrix.
+ 
+-  // Get start/end vertices indices in adjacency matrix.
+   const startVertexAdjacencyIndex = verticesIndices[startVertex.getKey()];
+-  const endVertexAdjacencyIndex = verticesIndices[endVertex.getKey()];
++  const endVertexAdjacencyIndex = verticesIndices[endVertex.getKey()]; // Check if we can go from end vertex to the start one.
+ 
+-  // Check if we can go from end vertex to the start one.
+-  return adjacencyMatrix[endVertexAdjacencyIndex][startVertexAdjacencyIndex] !== Infinity;
++  return (
++    adjacencyMatrix[endVertexAdjacencyIndex][startVertexAdjacencyIndex] !==
++    Infinity
++  );
+ }
+-
+ /**
+  * @param {number[][]} adjacencyMatrix
+  * @param {GraphVertex[]} vertices
+@@ -53,15 +54,17 @@ function isCycle(adjacencyMatrix, verticesIndices, cycle) {
+  * @param {GraphVertex[][]} cycles
+  * @param {GraphVertex[]} cycle
+  */
+-function hamiltonianCycleRecursive({
+-  adjacencyMatrix,
+-  vertices,
+-  verticesIndices,
+-  cycles,
+-  cycle,
+-}) {
++
++function hamiltonianCycleRecursive(_ref) {
++  let adjacencyMatrix = _ref.adjacencyMatrix,
++    vertices = _ref.vertices,
++    verticesIndices = _ref.verticesIndices,
++    cycles = _ref.cycles,
++    cycle = _ref.cycle;
+   // Clone cycle in order to prevent it from modification by other DFS branches.
+-  const currentCycle = [...cycle].map((vertex) => new GraphVertex(vertex.value));
++  const currentCycle = [...cycle].map(
++    (vertex) => new GraphVertex(vertex.value)
++  );
+ 
+   if (vertices.length === currentCycle.length) {
+     // Hamiltonian path is found.
+@@ -70,65 +73,61 @@ function hamiltonianCycleRecursive({
+       // Another solution has been found. Save it.
+       cycles.push(currentCycle);
+     }
++
+     return;
+   }
+ 
+   for (let vertexIndex = 0; vertexIndex < vertices.length; vertexIndex += 1) {
+     // Get vertex candidate that we will try to put into next path step and see if it fits.
+-    const vertexCandidate = vertices[vertexIndex];
++    const vertexCandidate = vertices[vertexIndex]; // Check if it is safe to put vertex candidate to cycle.
+ 
+-    // Check if it is safe to put vertex candidate to cycle.
+-    if (isSafe(adjacencyMatrix, verticesIndices, currentCycle, vertexCandidate)) {
++    if (
++      isSafe(adjacencyMatrix, verticesIndices, currentCycle, vertexCandidate)
++    ) {
+       // Add candidate vertex to cycle path.
+-      currentCycle.push(vertexCandidate);
++      currentCycle.push(vertexCandidate); // Try to find other vertices in cycle.
+ 
+-      // Try to find other vertices in cycle.
+       hamiltonianCycleRecursive({
+         adjacencyMatrix,
+         vertices,
+         verticesIndices,
+         cycles,
+         cycle: currentCycle,
+-      });
+-
+-      // BACKTRACKING.
++      }); // BACKTRACKING.
+       // Remove candidate vertex from cycle path in order to try another one.
++
+       currentCycle.pop();
+     }
+   }
+ }
+-
+ /**
+  * @param {Graph} graph
+  * @return {GraphVertex[][]}
+  */
++
+ export default function hamiltonianCycle(graph) {
+   // Gather some information about the graph that we will need to during
+   // the problem solving.
+   const verticesIndices = graph.getVerticesIndices();
+   const adjacencyMatrix = graph.getAdjacencyMatrix();
+-  const vertices = graph.getAllVertices();
+-
+-  // Define start vertex. We will always pick the first one
++  const vertices = graph.getAllVertices(); // Define start vertex. We will always pick the first one
+   // this it doesn't matter which vertex to pick in a cycle.
+   // Every vertex is in a cycle so we can start from any of them.
+-  const startVertex = vertices[0];
+ 
+-  // Init cycles array that will hold all solutions.
+-  const cycles = [];
++  const startVertex = vertices[0]; // Init cycles array that will hold all solutions.
+ 
+-  // Init cycle array that will hold current cycle path.
+-  const cycle = [startVertex];
++  const cycles = []; // Init cycle array that will hold current cycle path.
++
++  const cycle = [startVertex]; // Try to find cycles recursively in Depth First Search order.
+ 
+-  // Try to find cycles recursively in Depth First Search order.
+   hamiltonianCycleRecursive({
+     adjacencyMatrix,
+     vertices,
+     verticesIndices,
+     cycles,
+     cycle,
+-  });
++  }); // Return found cycles.
+ 
+-  // Return found cycles.
+   return cycles;
+ }
++
+diff --git a/src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js b/src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js
+index 8096277..ef1f8b8 100644
+--- a/src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js
++++ b/src/algorithms/graph/strongly-connected-components/stronglyConnectedComponents.js
+@@ -1,93 +1,92 @@
+-import Stack from '../../../data-structures/stack/Stack';
+-import depthFirstSearch from '../depth-first-search/depthFirstSearch';
+-
++import Stack from "../../../data-structures/stack/Stack";
++import depthFirstSearch from "../depth-first-search/depthFirstSearch";
+ /**
+  * @param {Graph} graph
+  * @return {Stack}
+  */
++
+ function getVerticesSortedByDfsFinishTime(graph) {
+   // Set of all visited vertices during DFS pass.
+-  const visitedVerticesSet = {};
+-
+-  // Stack of vertices by finish time.
++  const visitedVerticesSet = {}; // Stack of vertices by finish time.
+   // All vertices in this stack are ordered by finished time in decreasing order.
+   // Vertex that has been finished first will be at the bottom of the stack and
+   // vertex that has been finished last will be at the top of the stack.
+-  const verticesByDfsFinishTime = new Stack();
+ 
+-  // Set of all vertices we're going to visit.
++  const verticesByDfsFinishTime = new Stack(); // Set of all vertices we're going to visit.
++
+   const notVisitedVerticesSet = {};
+   graph.getAllVertices().forEach((vertex) => {
+     notVisitedVerticesSet[vertex.getKey()] = vertex;
+-  });
++  }); // Specify DFS traversal callbacks.
+ 
+-  // Specify DFS traversal callbacks.
+   const dfsCallbacks = {
+-    enterVertex: ({ currentVertex }) => {
++    enterVertex: (_ref) => {
++      let currentVertex = _ref.currentVertex;
+       // Add current vertex to visited set.
+-      visitedVerticesSet[currentVertex.getKey()] = currentVertex;
++      visitedVerticesSet[currentVertex.getKey()] = currentVertex; // Delete current vertex from not visited set.
+ 
+-      // Delete current vertex from not visited set.
+       delete notVisitedVerticesSet[currentVertex.getKey()];
+     },
+-    leaveVertex: ({ currentVertex }) => {
++    leaveVertex: (_ref2) => {
++      let currentVertex = _ref2.currentVertex;
+       // Push vertex to the stack when leaving it.
+       // This will make stack to be ordered by finish time in decreasing order.
+       verticesByDfsFinishTime.push(currentVertex);
+     },
+-    allowTraversal: ({ nextVertex }) => {
++    allowTraversal: (_ref3) => {
++      let nextVertex = _ref3.nextVertex;
+       // Don't allow to traverse the nodes that have been already visited.
+       return !visitedVerticesSet[nextVertex.getKey()];
+     },
+-  };
++  }; // Do FIRST DFS PASS traversal for all graph vertices to fill the verticesByFinishTime stack.
+ 
+-  // Do FIRST DFS PASS traversal for all graph vertices to fill the verticesByFinishTime stack.
+   while (Object.values(notVisitedVerticesSet).length) {
+     // Peek any vertex to start DFS traversal from.
+     const startVertexKey = Object.keys(notVisitedVerticesSet)[0];
+     const startVertex = notVisitedVerticesSet[startVertexKey];
+     delete notVisitedVerticesSet[startVertexKey];
+-
+     depthFirstSearch(graph, startVertex, dfsCallbacks);
+   }
+ 
+   return verticesByDfsFinishTime;
+ }
+-
+ /**
+  * @param {Graph} graph
+  * @param {Stack} verticesByFinishTime
+  * @return {*[]}
+  */
++
+ function getSCCSets(graph, verticesByFinishTime) {
+   // Array of arrays of strongly connected vertices.
+-  const stronglyConnectedComponentsSets = [];
++  const stronglyConnectedComponentsSets = []; // Array that will hold all vertices that are being visited during one DFS run.
+ 
+-  // Array that will hold all vertices that are being visited during one DFS run.
+-  let stronglyConnectedComponentsSet = [];
++  let stronglyConnectedComponentsSet = []; // Visited vertices set.
+ 
+-  // Visited vertices set.
+-  const visitedVerticesSet = {};
++  const visitedVerticesSet = {}; // Callbacks for DFS traversal.
+ 
+-  // Callbacks for DFS traversal.
+   const dfsCallbacks = {
+-    enterVertex: ({ currentVertex }) => {
++    enterVertex: (_ref4) => {
++      let currentVertex = _ref4.currentVertex;
+       // Add current vertex to SCC set of current DFS round.
+-      stronglyConnectedComponentsSet.push(currentVertex);
++      stronglyConnectedComponentsSet.push(currentVertex); // Add current vertex to visited set.
+ 
+-      // Add current vertex to visited set.
+       visitedVerticesSet[currentVertex.getKey()] = currentVertex;
+     },
+-    leaveVertex: ({ previousVertex }) => {
++    leaveVertex: (_ref5) => {
++      let previousVertex = _ref5.previousVertex;
++
+       // Once DFS traversal is finished push the set of found strongly connected
+       // components during current DFS round to overall strongly connected components set.
+       // The sign that traversal is about to be finished is that we came back to start vertex
+       // which doesn't have parent.
+       if (previousVertex === null) {
+-        stronglyConnectedComponentsSets.push([...stronglyConnectedComponentsSet]);
++        stronglyConnectedComponentsSets.push([
++          ...stronglyConnectedComponentsSet,
++        ]);
+       }
+     },
+-    allowTraversal: ({ nextVertex }) => {
++    allowTraversal: (_ref6) => {
++      let nextVertex = _ref6.nextVertex;
+       // Don't allow traversal of already visited vertices.
+       return !visitedVerticesSet[nextVertex.getKey()];
+     },
+@@ -95,12 +94,10 @@ function getSCCSets(graph, verticesByFinishTime) {
+ 
+   while (!verticesByFinishTime.isEmpty()) {
+     /** @var {GraphVertex} startVertex */
+-    const startVertex = verticesByFinishTime.pop();
++    const startVertex = verticesByFinishTime.pop(); // Reset the set of strongly connected vertices.
+ 
+-    // Reset the set of strongly connected vertices.
+-    stronglyConnectedComponentsSet = [];
++    stronglyConnectedComponentsSet = []; // Don't do DFS on already visited vertices.
+ 
+-    // Don't do DFS on already visited vertices.
+     if (!visitedVerticesSet[startVertex.getKey()]) {
+       // Do DFS traversal.
+       depthFirstSearch(graph, startVertex, dfsCallbacks);
+@@ -109,25 +106,23 @@ function getSCCSets(graph, verticesByFinishTime) {
+ 
+   return stronglyConnectedComponentsSets;
+ }
+-
+ /**
+  * Kosaraju's algorithm.
+  *
+  * @param {Graph} graph
+  * @return {*[]}
+  */
++
+ export default function stronglyConnectedComponents(graph) {
+   // In this algorithm we will need to do TWO DFS PASSES overt the graph.
+-
+   // Get stack of vertices ordered by DFS finish time.
+   // All vertices in this stack are ordered by finished time in decreasing order:
+   // Vertex that has been finished first will be at the bottom of the stack and
+   // vertex that has been finished last will be at the top of the stack.
+-  const verticesByFinishTime = getVerticesSortedByDfsFinishTime(graph);
++  const verticesByFinishTime = getVerticesSortedByDfsFinishTime(graph); // Reverse the graph.
+ 
+-  // Reverse the graph.
+-  graph.reverse();
++  graph.reverse(); // Do DFS once again on reversed graph.
+ 
+-  // Do DFS once again on reversed graph.
+   return getSCCSets(graph, verticesByFinishTime);
+ }
++
+diff --git a/src/algorithms/graph/topological-sorting/topologicalSort.js b/src/algorithms/graph/topological-sorting/topologicalSort.js
+index cd7bdd3..28237de 100644
+--- a/src/algorithms/graph/topological-sorting/topologicalSort.js
++++ b/src/algorithms/graph/topological-sorting/topologicalSort.js
+@@ -1,47 +1,45 @@
+-import Stack from '../../../data-structures/stack/Stack';
+-import depthFirstSearch from '../depth-first-search/depthFirstSearch';
+-
++import Stack from "../../../data-structures/stack/Stack";
++import depthFirstSearch from "../depth-first-search/depthFirstSearch";
+ /**
+  * @param {Graph} graph
+  */
++
+ export default function topologicalSort(graph) {
+   // Create a set of all vertices we want to visit.
+   const unvisitedSet = {};
+   graph.getAllVertices().forEach((vertex) => {
+     unvisitedSet[vertex.getKey()] = vertex;
+-  });
++  }); // Create a set for all vertices that we've already visited.
+ 
+-  // Create a set for all vertices that we've already visited.
+-  const visitedSet = {};
++  const visitedSet = {}; // Create a stack of already ordered vertices.
+ 
+-  // Create a stack of already ordered vertices.
+   const sortedStack = new Stack();
+-
+   const dfsCallbacks = {
+-    enterVertex: ({ currentVertex }) => {
++    enterVertex: (_ref) => {
++      let currentVertex = _ref.currentVertex;
+       // Add vertex to visited set in case if all its children has been explored.
+-      visitedSet[currentVertex.getKey()] = currentVertex;
++      visitedSet[currentVertex.getKey()] = currentVertex; // Remove this vertex from unvisited set.
+ 
+-      // Remove this vertex from unvisited set.
+       delete unvisitedSet[currentVertex.getKey()];
+     },
+-    leaveVertex: ({ currentVertex }) => {
++    leaveVertex: (_ref2) => {
++      let currentVertex = _ref2.currentVertex;
+       // If the vertex has been totally explored then we may push it to stack.
+       sortedStack.push(currentVertex);
+     },
+-    allowTraversal: ({ nextVertex }) => {
++    allowTraversal: (_ref3) => {
++      let nextVertex = _ref3.nextVertex;
+       return !visitedSet[nextVertex.getKey()];
+     },
+-  };
++  }; // Let's go and do DFS for all unvisited nodes.
+ 
+-  // Let's go and do DFS for all unvisited nodes.
+   while (Object.keys(unvisitedSet).length) {
+     const currentVertexKey = Object.keys(unvisitedSet)[0];
+-    const currentVertex = unvisitedSet[currentVertexKey];
++    const currentVertex = unvisitedSet[currentVertexKey]; // Do DFS for current node.
+ 
+-    // Do DFS for current node.
+     depthFirstSearch(graph, currentVertex, dfsCallbacks);
+   }
+ 
+   return sortedStack.toArray();
+ }
++
+diff --git a/src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js b/src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js
+index 53afe69..84d00da 100644
+--- a/src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js
++++ b/src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js
+@@ -1,32 +1,128 @@
+-import { testCases16Bits, testCases32Bits, testCases64Bits } from '../testCases';
+-import { bitsToFloat16, bitsToFloat32, bitsToFloat64 } from '../bitsToFloat';
+-
+-describe('bitsToFloat16', () => {
+-  it('should convert floating point binary bits to floating point decimal number', () => {
+-    for (let testCaseIndex = 0; testCaseIndex < testCases16Bits.length; testCaseIndex += 1) {
+-      const [decimal, binary] = testCases16Bits[testCaseIndex];
+-      const bits = binary.split('').map((bitString) => parseInt(bitString, 10));
++function _slicedToArray(arr, i) {
++  return (
++    _arrayWithHoles(arr) ||
++    _iterableToArrayLimit(arr, i) ||
++    _unsupportedIterableToArray(arr, i) ||
++    _nonIterableRest()
++  );
++}
++
++function _nonIterableRest() {
++  throw new TypeError(
++    "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
++  );
++}
++
++function _unsupportedIterableToArray(o, minLen) {
++  if (!o) return;
++  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
++  var n = Object.prototype.toString.call(o).slice(8, -1);
++  if (n === "Object" && o.constructor) n = o.constructor.name;
++  if (n === "Map" || n === "Set") return Array.from(o);
++  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
++    return _arrayLikeToArray(o, minLen);
++}
++
++function _arrayLikeToArray(arr, len) {
++  if (len == null || len > arr.length) len = arr.length;
++  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
++  return arr2;
++}
++
++function _iterableToArrayLimit(arr, i) {
++  var _i =
++    arr == null
++      ? null
++      : (typeof Symbol !== "undefined" && arr[Symbol.iterator]) ||
++        arr["@@iterator"];
++  if (_i == null) return;
++  var _arr = [];
++  var _n = true;
++  var _d = false;
++  var _s, _e;
++  try {
++    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
++      _arr.push(_s.value);
++      if (i && _arr.length === i) break;
++    }
++  } catch (err) {
++    _d = true;
++    _e = err;
++  } finally {
++    try {
++      if (!_n && _i["return"] != null) _i["return"]();
++    } finally {
++      if (_d) throw _e;
++    }
++  }
++  return _arr;
++}
++
++function _arrayWithHoles(arr) {
++  if (Array.isArray(arr)) return arr;
++}
++
++import {
++  testCases16Bits,
++  testCases32Bits,
++  testCases64Bits,
++} from "../testCases";
++import { bitsToFloat16, bitsToFloat32, bitsToFloat64 } from "../bitsToFloat";
++describe("bitsToFloat16", () => {
++  it("should convert floating point binary bits to floating point decimal number", () => {
++    for (
++      let testCaseIndex = 0;
++      testCaseIndex < testCases16Bits.length;
++      testCaseIndex += 1
++    ) {
++      const _testCases16Bits$test = _slicedToArray(
++          testCases16Bits[testCaseIndex],
++          2
++        ),
++        decimal = _testCases16Bits$test[0],
++        binary = _testCases16Bits$test[1];
++
++      const bits = binary.split("").map((bitString) => parseInt(bitString, 10));
+       expect(bitsToFloat16(bits)).toBeCloseTo(decimal, 4);
+     }
+   });
+ });
++describe("bitsToFloat32", () => {
++  it("should convert floating point binary bits to floating point decimal number", () => {
++    for (
++      let testCaseIndex = 0;
++      testCaseIndex < testCases32Bits.length;
++      testCaseIndex += 1
++    ) {
++      const _testCases32Bits$test = _slicedToArray(
++          testCases32Bits[testCaseIndex],
++          2
++        ),
++        decimal = _testCases32Bits$test[0],
++        binary = _testCases32Bits$test[1];
+ 
+-describe('bitsToFloat32', () => {
+-  it('should convert floating point binary bits to floating point decimal number', () => {
+-    for (let testCaseIndex = 0; testCaseIndex < testCases32Bits.length; testCaseIndex += 1) {
+-      const [decimal, binary] = testCases32Bits[testCaseIndex];
+-      const bits = binary.split('').map((bitString) => parseInt(bitString, 10));
++      const bits = binary.split("").map((bitString) => parseInt(bitString, 10));
+       expect(bitsToFloat32(bits)).toBeCloseTo(decimal, 7);
+     }
+   });
+ });
++describe("bitsToFloat64", () => {
++  it("should convert floating point binary bits to floating point decimal number", () => {
++    for (
++      let testCaseIndex = 0;
++      testCaseIndex < testCases64Bits.length;
++      testCaseIndex += 1
++    ) {
++      const _testCases64Bits$test = _slicedToArray(
++          testCases64Bits[testCaseIndex],
++          2
++        ),
++        decimal = _testCases64Bits$test[0],
++        binary = _testCases64Bits$test[1];
+ 
+-describe('bitsToFloat64', () => {
+-  it('should convert floating point binary bits to floating point decimal number', () => {
+-    for (let testCaseIndex = 0; testCaseIndex < testCases64Bits.length; testCaseIndex += 1) {
+-      const [decimal, binary] = testCases64Bits[testCaseIndex];
+-      const bits = binary.split('').map((bitString) => parseInt(bitString, 10));
++      const bits = binary.split("").map((bitString) => parseInt(bitString, 10));
+       expect(bitsToFloat64(bits)).toBeCloseTo(decimal, 14);
+     }
+   });
+ });
++
+diff --git a/src/algorithms/math/binary-floating-point/bitsToFloat.js b/src/algorithms/math/binary-floating-point/bitsToFloat.js
+index 6d1ef0d..399c871 100644
+--- a/src/algorithms/math/binary-floating-point/bitsToFloat.js
++++ b/src/algorithms/math/binary-floating-point/bitsToFloat.js
+@@ -48,7 +48,6 @@ const precisionConfigs = {
+     fractionBitsCount: 52,
+   },
+ };
+-
+ /**
+  * Converts the binary representation of the floating point number to decimal float number.
+  *
+@@ -56,64 +55,67 @@ const precisionConfigs = {
+  * @param {PrecisionConfig} precisionConfig - half/single/double precision config.
+  * @return {number} - floating point number decoded from its binary representation.
+  */
++
+ function bitsToFloat(bits, precisionConfig) {
+-  const { signBitsCount, exponentBitsCount } = precisionConfig;
++  const signBitsCount = precisionConfig.signBitsCount,
++    exponentBitsCount = precisionConfig.exponentBitsCount; // Figuring out the sign.
+ 
+-  // Figuring out the sign.
+   const sign = (-1) ** bits[0]; // -1^1 = -1, -1^0 = 1
+-
+   // Calculating the exponent value.
++
+   const exponentBias = 2 ** (exponentBitsCount - 1) - 1;
+-  const exponentBits = bits.slice(signBitsCount, signBitsCount + exponentBitsCount);
++  const exponentBits = bits.slice(
++    signBitsCount,
++    signBitsCount + exponentBitsCount
++  );
+   const exponentUnbiased = exponentBits.reduce(
+     (exponentSoFar, currentBit, bitIndex) => {
+       const bitPowerOfTwo = 2 ** (exponentBitsCount - bitIndex - 1);
+       return exponentSoFar + currentBit * bitPowerOfTwo;
+     },
+-    0,
++    0
+   );
+-  const exponent = exponentUnbiased - exponentBias;
++  const exponent = exponentUnbiased - exponentBias; // Calculating the fraction value.
+ 
+-  // Calculating the fraction value.
+   const fractionBits = bits.slice(signBitsCount + exponentBitsCount);
+   const fraction = fractionBits.reduce(
+     (fractionSoFar, currentBit, bitIndex) => {
+       const bitPowerOfTwo = 2 ** -(bitIndex + 1);
+       return fractionSoFar + currentBit * bitPowerOfTwo;
+     },
+-    0,
+-  );
++    0
++  ); // Putting all parts together to calculate the final number.
+ 
+-  // Putting all parts together to calculate the final number.
+-  return sign * (2 ** exponent) * (1 + fraction);
++  return sign * 2 ** exponent * (1 + fraction);
+ }
+-
+ /**
+  *  Converts the 16-bit binary representation of the floating point number to decimal float number.
+  *
+  * @param {Bits} bits - sequence of bits that represents the floating point number.
+  * @return {number} - floating point number decoded from its binary representation.
+  */
++
+ export function bitsToFloat16(bits) {
+   return bitsToFloat(bits, precisionConfigs.half);
+ }
+-
+ /**
+  * Converts the 32-bit binary representation of the floating point number to decimal float number.
+  *
+  * @param {Bits} bits - sequence of bits that represents the floating point number.
+  * @return {number} - floating point number decoded from its binary representation.
+  */
++
+ export function bitsToFloat32(bits) {
+   return bitsToFloat(bits, precisionConfigs.single);
+ }
+-
+ /**
+  * Converts the 64-bit binary representation of the floating point number to decimal float number.
+  *
+  * @param {Bits} bits - sequence of bits that represents the floating point number.
+  * @return {number} - floating point number decoded from its binary representation.
+  */
++
+ export function bitsToFloat64(bits) {
+   return bitsToFloat(bits, precisionConfigs.double);
+ }
++
+diff --git a/src/algorithms/math/complex-number/ComplexNumber.js b/src/algorithms/math/complex-number/ComplexNumber.js
+index 9e8ffa5..78fe54c 100644
+--- a/src/algorithms/math/complex-number/ComplexNumber.js
++++ b/src/algorithms/math/complex-number/ComplexNumber.js
+@@ -1,5 +1,4 @@
+-import radianToDegree from '../radian/radianToDegree';
+-
++import radianToDegree from "../radian/radianToDegree";
+ export default class ComplexNumber {
+   /**
+    * z = re + im * i
+@@ -8,101 +7,102 @@ export default class ComplexNumber {
+    * @param {number} [re]
+    * @param {number} [im]
+    */
+-  constructor({ re = 0, im = 0 } = {}) {
++  constructor() {
++    let _ref =
++        arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
++      _ref$re = _ref.re,
++      re = _ref$re === void 0 ? 0 : _ref$re,
++      _ref$im = _ref.im,
++      im = _ref$im === void 0 ? 0 : _ref$im;
++
+     this.re = re;
+     this.im = im;
+   }
+-
+   /**
+    * @param {ComplexNumber|number} addend
+    * @return {ComplexNumber}
+    */
++
+   add(addend) {
+     // Make sure we're dealing with complex number.
+     const complexAddend = this.toComplexNumber(addend);
+-
+     return new ComplexNumber({
+       re: this.re + complexAddend.re,
+       im: this.im + complexAddend.im,
+     });
+   }
+-
+   /**
+    * @param {ComplexNumber|number} subtrahend
+    * @return {ComplexNumber}
+    */
++
+   subtract(subtrahend) {
+     // Make sure we're dealing with complex number.
+     const complexSubtrahend = this.toComplexNumber(subtrahend);
+-
+     return new ComplexNumber({
+       re: this.re - complexSubtrahend.re,
+       im: this.im - complexSubtrahend.im,
+     });
+   }
+-
+   /**
+    * @param {ComplexNumber|number} multiplicand
+    * @return {ComplexNumber}
+    */
++
+   multiply(multiplicand) {
+     // Make sure we're dealing with complex number.
+     const complexMultiplicand = this.toComplexNumber(multiplicand);
+-
+     return new ComplexNumber({
+       re: this.re * complexMultiplicand.re - this.im * complexMultiplicand.im,
+       im: this.re * complexMultiplicand.im + this.im * complexMultiplicand.re,
+     });
+   }
+-
+   /**
+    * @param {ComplexNumber|number} divider
+    * @return {ComplexNumber}
+    */
++
+   divide(divider) {
+     // Make sure we're dealing with complex number.
+-    const complexDivider = this.toComplexNumber(divider);
+-
+-    // Get divider conjugate.
+-    const dividerConjugate = this.conjugate(complexDivider);
++    const complexDivider = this.toComplexNumber(divider); // Get divider conjugate.
+ 
+-    // Multiply dividend by divider's conjugate.
+-    const finalDivident = this.multiply(dividerConjugate);
++    const dividerConjugate = this.conjugate(complexDivider); // Multiply dividend by divider's conjugate.
+ 
+-    // Calculating final divider using formula (a + bi)(a − bi) = a^2 + b^2
+-    const finalDivider = (complexDivider.re ** 2) + (complexDivider.im ** 2);
++    const finalDivident = this.multiply(dividerConjugate); // Calculating final divider using formula (a + bi)(a − bi) = a^2 + b^2
+ 
++    const finalDivider = complexDivider.re ** 2 + complexDivider.im ** 2;
+     return new ComplexNumber({
+       re: finalDivident.re / finalDivider,
+       im: finalDivident.im / finalDivider,
+     });
+   }
+-
+   /**
+    * @param {ComplexNumber|number} number
+    */
++
+   conjugate(number) {
+     // Make sure we're dealing with complex number.
+     const complexNumber = this.toComplexNumber(number);
+-
+     return new ComplexNumber({
+       re: complexNumber.re,
+       im: -1 * complexNumber.im,
+     });
+   }
+-
+   /**
+    * @return {number}
+    */
++
+   getRadius() {
+-    return Math.sqrt((this.re ** 2) + (this.im ** 2));
++    return Math.sqrt(this.re ** 2 + this.im ** 2);
+   }
+-
+   /**
+    * @param {boolean} [inRadians]
+    * @return {number}
+    */
+-  getPhase(inRadians = true) {
++
++  getPhase() {
++    let inRadians =
++      arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+     let phase = Math.atan(Math.abs(this.im) / Math.abs(this.re));
+ 
+     if (this.re < 0 && this.im > 0) {
+@@ -131,18 +131,19 @@ export default class ComplexNumber {
+ 
+     return phase;
+   }
+-
+   /**
+    * @param {boolean} [inRadians]
+    * @return {{radius: number, phase: number}}
+    */
+-  getPolarForm(inRadians = true) {
++
++  getPolarForm() {
++    let inRadians =
++      arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+     return {
+       radius: this.getRadius(),
+       phase: this.getPhase(inRadians),
+     };
+   }
+-
+   /**
+    * Convert real numbers to complex number.
+    * In case if complex number is provided then lefts it as is.
+@@ -150,11 +151,15 @@ export default class ComplexNumber {
+    * @param {ComplexNumber|number} number
+    * @return {ComplexNumber}
+    */
++
+   toComplexNumber(number) {
+     if (number instanceof ComplexNumber) {
+       return number;
+     }
+ 
+-    return new ComplexNumber({ re: number });
++    return new ComplexNumber({
++      re: number,
++    });
+   }
+ }
++
+diff --git a/src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js b/src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js
+index 302b5bf..0067109 100644
+--- a/src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js
++++ b/src/algorithms/math/euclidean-algorithm/euclideanAlgorithmIterative.js
+@@ -1,3 +1,67 @@
++function _slicedToArray(arr, i) {
++  return (
++    _arrayWithHoles(arr) ||
++    _iterableToArrayLimit(arr, i) ||
++    _unsupportedIterableToArray(arr, i) ||
++    _nonIterableRest()
++  );
++}
++
++function _nonIterableRest() {
++  throw new TypeError(
++    "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
++  );
++}
++
++function _unsupportedIterableToArray(o, minLen) {
++  if (!o) return;
++  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
++  var n = Object.prototype.toString.call(o).slice(8, -1);
++  if (n === "Object" && o.constructor) n = o.constructor.name;
++  if (n === "Map" || n === "Set") return Array.from(o);
++  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
++    return _arrayLikeToArray(o, minLen);
++}
++
++function _arrayLikeToArray(arr, len) {
++  if (len == null || len > arr.length) len = arr.length;
++  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
++  return arr2;
++}
++
++function _iterableToArrayLimit(arr, i) {
++  var _i =
++    arr == null
++      ? null
++      : (typeof Symbol !== "undefined" && arr[Symbol.iterator]) ||
++        arr["@@iterator"];
++  if (_i == null) return;
++  var _arr = [];
++  var _n = true;
++  var _d = false;
++  var _s, _e;
++  try {
++    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
++      _arr.push(_s.value);
++      if (i && _arr.length === i) break;
++    }
++  } catch (err) {
++    _d = true;
++    _e = err;
++  } finally {
++    try {
++      if (!_n && _i["return"] != null) _i["return"]();
++    } finally {
++      if (_d) throw _e;
++    }
++  }
++  return _arr;
++}
++
++function _arrayWithHoles(arr) {
++  if (Array.isArray(arr)) return arr;
++}
++
+ /**
+  * Iterative version of Euclidean Algorithm of finding greatest common divisor (GCD).
+  * @param {number} originalA
+@@ -7,14 +71,18 @@
+ export default function euclideanAlgorithmIterative(originalA, originalB) {
+   // Make input numbers positive.
+   let a = Math.abs(originalA);
+-  let b = Math.abs(originalB);
+-
+-  // Subtract one number from another until both numbers would become the same.
++  let b = Math.abs(originalB); // Subtract one number from another until both numbers would become the same.
+   // This will be out GCD. Also quit the loop if one of the numbers is zero.
++
+   while (a && b && a !== b) {
+-    [a, b] = a > b ? [a - b, b] : [a, b - a];
+-  }
++    var _ref = a > b ? [a - b, b] : [a, b - a];
++
++    var _ref2 = _slicedToArray(_ref, 2);
++
++    a = _ref2[0];
++    b = _ref2[1];
++  } // Return the number that is not equal to zero since the last subtraction (it will be a GCD).
+ 
+-  // Return the number that is not equal to zero since the last subtraction (it will be a GCD).
+   return a || b;
+ }
++
+diff --git a/src/algorithms/sets/fisher-yates/fisherYates.js b/src/algorithms/sets/fisher-yates/fisherYates.js
+index 23b710b..ee20264 100644
+--- a/src/algorithms/sets/fisher-yates/fisherYates.js
++++ b/src/algorithms/sets/fisher-yates/fisherYates.js
+@@ -6,10 +6,13 @@ export default function fisherYates(originalArray) {
+   // Clone array from preventing original array from modification (for testing purpose).
+   const array = originalArray.slice(0);
+ 
+-  for (let i = (array.length - 1); i > 0; i -= 1) {
++  for (let i = array.length - 1; i > 0; i -= 1) {
+     const randomIndex = Math.floor(Math.random() * (i + 1));
+-    [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
++    var _ref = [array[randomIndex], array[i]];
++    array[i] = _ref[0];
++    array[randomIndex] = _ref[1];
+   }
+ 
+   return array;
+ }
++
+diff --git a/src/algorithms/sets/knapsack-problem/KnapsackItem.js b/src/algorithms/sets/knapsack-problem/KnapsackItem.js
+index 4c84eee..85641c8 100644
+--- a/src/algorithms/sets/knapsack-problem/KnapsackItem.js
++++ b/src/algorithms/sets/knapsack-problem/KnapsackItem.js
+@@ -5,11 +5,15 @@ export default class KnapsackItem {
+    * @param {number} itemSettings.weight - weight of the item.
+    * @param {number} itemSettings.itemsInStock - how many items are available to be added.
+    */
+-  constructor({ value, weight, itemsInStock = 1 }) {
++  constructor(_ref) {
++    let value = _ref.value,
++      weight = _ref.weight,
++      _ref$itemsInStock = _ref.itemsInStock,
++      itemsInStock = _ref$itemsInStock === void 0 ? 1 : _ref$itemsInStock;
+     this.value = value;
+     this.weight = weight;
+-    this.itemsInStock = itemsInStock;
+-    // Actual number of items that is going to be added to knapsack.
++    this.itemsInStock = itemsInStock; // Actual number of items that is going to be added to knapsack.
++
+     this.quantity = 1;
+   }
+ 
+@@ -19,10 +23,9 @@ export default class KnapsackItem {
+ 
+   get totalWeight() {
+     return this.weight * this.quantity;
+-  }
+-
+-  // This coefficient shows how valuable the 1 unit of weight is
++  } // This coefficient shows how valuable the 1 unit of weight is
+   // for current item.
++
+   get valuePerWeightRatio() {
+     return this.value / this.weight;
+   }
+@@ -31,3 +34,4 @@ export default class KnapsackItem {
+     return `v${this.value} w${this.weight} x ${this.quantity}`;
+   }
+ }
++
+diff --git a/src/algorithms/sorting/insertion-sort/InsertionSort.js b/src/algorithms/sorting/insertion-sort/InsertionSort.js
+index 7a80161..a6b7881 100644
+--- a/src/algorithms/sorting/insertion-sort/InsertionSort.js
++++ b/src/algorithms/sorting/insertion-sort/InsertionSort.js
+@@ -1,34 +1,24 @@
+-import Sort from '../Sort';
+-
++import Sort from "../Sort";
+ export default class InsertionSort extends Sort {
+   sort(originalArray) {
+-    const array = [...originalArray];
++    const array = [...originalArray]; // Go through all array elements...
+ 
+-    // Go through all array elements...
+     for (let i = 1; i < array.length; i += 1) {
+-      let currentIndex = i;
+-
+-      // Call visiting callback.
+-      this.callbacks.visitingCallback(array[i]);
++      let currentIndex = i; // Call visiting callback.
+ 
+-      // Check if previous element is greater than current element.
++      this.callbacks.visitingCallback(array[i]); // Check if previous element is greater than current element.
+       // If so, swap the two elements.
++
+       while (
+-        array[currentIndex - 1] !== undefined
+-        && this.comparator.lessThan(array[currentIndex], array[currentIndex - 1])
++        array[currentIndex - 1] !== undefined &&
++        this.comparator.lessThan(array[currentIndex], array[currentIndex - 1])
+       ) {
+         // Call visiting callback.
+-        this.callbacks.visitingCallback(array[currentIndex - 1]);
+-
+-        // Swap the elements.
+-        [
+-          array[currentIndex - 1],
+-          array[currentIndex],
+-        ] = [
+-          array[currentIndex],
+-          array[currentIndex - 1],
+-        ];
++        this.callbacks.visitingCallback(array[currentIndex - 1]); // Swap the elements.
+ 
++        var _ref = [array[currentIndex], array[currentIndex - 1]];
++        array[currentIndex - 1] = _ref[0];
++        array[currentIndex] = _ref[1];
+         // Shift current index left.
+         currentIndex -= 1;
+       }
+@@ -37,3 +27,4 @@ export default class InsertionSort extends Sort {
+     return array;
+   }
+ }
++
+diff --git a/src/algorithms/sorting/selection-sort/SelectionSort.js b/src/algorithms/sorting/selection-sort/SelectionSort.js
+index fa4a720..5eae0cf 100644
+--- a/src/algorithms/sorting/selection-sort/SelectionSort.js
++++ b/src/algorithms/sorting/selection-sort/SelectionSort.js
+@@ -1,17 +1,14 @@
+-import Sort from '../Sort';
+-
++import Sort from "../Sort";
+ export default class SelectionSort extends Sort {
+   sort(originalArray) {
+     // Clone original array to prevent its modification.
+     const array = [...originalArray];
+ 
+     for (let i = 0; i < array.length - 1; i += 1) {
+-      let minIndex = i;
++      let minIndex = i; // Call visiting callback.
+ 
+-      // Call visiting callback.
+-      this.callbacks.visitingCallback(array[i]);
++      this.callbacks.visitingCallback(array[i]); // Find minimum element in the rest of array.
+ 
+-      // Find minimum element in the rest of array.
+       for (let j = i + 1; j < array.length; j += 1) {
+         // Call visiting callback.
+         this.callbacks.visitingCallback(array[j]);
+@@ -19,14 +16,16 @@ export default class SelectionSort extends Sort {
+         if (this.comparator.lessThan(array[j], array[minIndex])) {
+           minIndex = j;
+         }
+-      }
++      } // If new minimum element has been found then swap it with current i-th element.
+ 
+-      // If new minimum element has been found then swap it with current i-th element.
+       if (minIndex !== i) {
+-        [array[i], array[minIndex]] = [array[minIndex], array[i]];
++        var _ref = [array[minIndex], array[i]];
++        array[i] = _ref[0];
++        array[minIndex] = _ref[1];
+       }
+     }
+ 
+     return array;
+   }
+ }
++
+diff --git a/src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js b/src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js
+index 1c48cbd..63d483d 100644
+--- a/src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js
++++ b/src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js
+@@ -1,3 +1,67 @@
++function _slicedToArray(arr, i) {
++  return (
++    _arrayWithHoles(arr) ||
++    _iterableToArrayLimit(arr, i) ||
++    _unsupportedIterableToArray(arr, i) ||
++    _nonIterableRest()
++  );
++}
++
++function _nonIterableRest() {
++  throw new TypeError(
++    "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
++  );
++}
++
++function _unsupportedIterableToArray(o, minLen) {
++  if (!o) return;
++  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
++  var n = Object.prototype.toString.call(o).slice(8, -1);
++  if (n === "Object" && o.constructor) n = o.constructor.name;
++  if (n === "Map" || n === "Set") return Array.from(o);
++  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
++    return _arrayLikeToArray(o, minLen);
++}
++
++function _arrayLikeToArray(arr, len) {
++  if (len == null || len > arr.length) len = arr.length;
++  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
++  return arr2;
++}
++
++function _iterableToArrayLimit(arr, i) {
++  var _i =
++    arr == null
++      ? null
++      : (typeof Symbol !== "undefined" && arr[Symbol.iterator]) ||
++        arr["@@iterator"];
++  if (_i == null) return;
++  var _arr = [];
++  var _n = true;
++  var _d = false;
++  var _s, _e;
++  try {
++    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
++      _arr.push(_s.value);
++      if (i && _arr.length === i) break;
++    }
++  } catch (err) {
++    _d = true;
++    _e = err;
++  } finally {
++    try {
++      if (!_n && _i["return"] != null) _i["return"]();
++    } finally {
++      if (_d) throw _e;
++    }
++  }
++  return _arr;
++}
++
++function _arrayWithHoles(arr) {
++  if (Array.isArray(arr)) return arr;
++}
++
+ /**
+  * DYNAMIC PROGRAMMING approach of solving Trapping Rain Water problem.
+  *
+@@ -5,37 +69,49 @@
+  * @return {number}
+  */
+ export default function dpRainTerraces(terraces) {
+-  let waterAmount = 0;
++  let waterAmount = 0; // Init arrays that will keep the list of left and right maximum levels for specific positions.
+ 
+-  // Init arrays that will keep the list of left and right maximum levels for specific positions.
+   const leftMaxLevels = new Array(terraces.length).fill(0);
+-  const rightMaxLevels = new Array(terraces.length).fill(0);
++  const rightMaxLevels = new Array(terraces.length).fill(0); // Calculate the highest terrace level from the LEFT relative to the current terrace.
+ 
+-  // Calculate the highest terrace level from the LEFT relative to the current terrace.
+-  [leftMaxLevels[0]] = terraces;
+-  for (let terraceIndex = 1; terraceIndex < terraces.length; terraceIndex += 1) {
++  var _terraces = _slicedToArray(terraces, 1);
++
++  leftMaxLevels[0] = _terraces[0];
++
++  for (
++    let terraceIndex = 1;
++    terraceIndex < terraces.length;
++    terraceIndex += 1
++  ) {
+     leftMaxLevels[terraceIndex] = Math.max(
+       terraces[terraceIndex],
+-      leftMaxLevels[terraceIndex - 1],
++      leftMaxLevels[terraceIndex - 1]
+     );
+-  }
++  } // Calculate the highest terrace level from the RIGHT relative to the current terrace.
+ 
+-  // Calculate the highest terrace level from the RIGHT relative to the current terrace.
+   rightMaxLevels[terraces.length - 1] = terraces[terraces.length - 1];
+-  for (let terraceIndex = terraces.length - 2; terraceIndex >= 0; terraceIndex -= 1) {
++
++  for (
++    let terraceIndex = terraces.length - 2;
++    terraceIndex >= 0;
++    terraceIndex -= 1
++  ) {
+     rightMaxLevels[terraceIndex] = Math.max(
+       terraces[terraceIndex],
+-      rightMaxLevels[terraceIndex + 1],
++      rightMaxLevels[terraceIndex + 1]
+     );
+-  }
+-
+-  // Not let's go through all terraces one by one and calculate how much water
++  } // Not let's go through all terraces one by one and calculate how much water
+   // each terrace may accumulate based on previously calculated values.
+-  for (let terraceIndex = 0; terraceIndex < terraces.length; terraceIndex += 1) {
++
++  for (
++    let terraceIndex = 0;
++    terraceIndex < terraces.length;
++    terraceIndex += 1
++  ) {
+     // Pick the lowest from the left/right highest terraces.
+     const currentTerraceBoundary = Math.min(
+       leftMaxLevels[terraceIndex],
+-      rightMaxLevels[terraceIndex],
++      rightMaxLevels[terraceIndex]
+     );
+ 
+     if (currentTerraceBoundary > terraces[terraceIndex]) {
+@@ -45,3 +121,4 @@ export default function dpRainTerraces(terraces) {
+ 
+   return waterAmount;
+ }
++
+diff --git a/src/algorithms/uncategorized/recursive-staircase/recursiveStaircaseIT.js b/src/algorithms/uncategorized/recursive-staircase/recursiveStaircaseIT.js
+index e464504..0f40656 100644
+--- a/src/algorithms/uncategorized/recursive-staircase/recursiveStaircaseIT.js
++++ b/src/algorithms/uncategorized/recursive-staircase/recursiveStaircaseIT.js
+@@ -9,23 +9,23 @@ export default function recursiveStaircaseIT(stairsNum) {
+     // There is no way to go down - you climb the stairs only upwards.
+     // Also you don't need to do anything to stay on the 0th step.
+     return 0;
+-  }
++  } // Init the number of ways to get to the 0th, 1st and 2nd steps.
+ 
+-  // Init the number of ways to get to the 0th, 1st and 2nd steps.
+   const steps = [1, 2];
+ 
+   if (stairsNum <= 2) {
+     // Return the number of possible ways of how to get to the 1st or 2nd steps.
+     return steps[stairsNum - 1];
+-  }
+-
+-  // Calculate the number of ways to get to the n'th step based on previous ones.
++  } // Calculate the number of ways to get to the n'th step based on previous ones.
+   // Comparing to Dynamic Programming solution we don't store info for all the steps but
+   // rather for two previous ones only.
++
+   for (let currentStep = 3; currentStep <= stairsNum; currentStep += 1) {
+-    [steps[0], steps[1]] = [steps[1], steps[0] + steps[1]];
+-  }
++    var _ref = [steps[1], steps[0] + steps[1]];
++    steps[0] = _ref[0];
++    steps[1] = _ref[1];
++  } // Return possible ways to get to the requested step.
+ 
+-  // Return possible ways to get to the requested step.
+   return steps[1];
+ }
++
+diff --git a/src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js b/src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js
+index f2a52a7..967584e 100644
+--- a/src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js
++++ b/src/algorithms/uncategorized/square-matrix-rotation/squareMatrixRotation.js
+@@ -3,35 +3,37 @@
+  * @return {*[][]}
+  */
+ export default function squareMatrixRotation(originalMatrix) {
+-  const matrix = originalMatrix.slice();
++  const matrix = originalMatrix.slice(); // Do top-right/bottom-left diagonal reflection of the matrix.
+ 
+-  // Do top-right/bottom-left diagonal reflection of the matrix.
+   for (let rowIndex = 0; rowIndex < matrix.length; rowIndex += 1) {
+-    for (let columnIndex = rowIndex + 1; columnIndex < matrix.length; columnIndex += 1) {
++    for (
++      let columnIndex = rowIndex + 1;
++      columnIndex < matrix.length;
++      columnIndex += 1
++    ) {
+       // Swap elements.
+-      [
+-        matrix[columnIndex][rowIndex],
+-        matrix[rowIndex][columnIndex],
+-      ] = [
+-        matrix[rowIndex][columnIndex],
+-        matrix[columnIndex][rowIndex],
+-      ];
++      var _ref = [matrix[rowIndex][columnIndex], matrix[columnIndex][rowIndex]];
++      matrix[columnIndex][rowIndex] = _ref[0];
++      matrix[rowIndex][columnIndex] = _ref[1];
+     }
+-  }
++  } // Do horizontal reflection of the matrix.
+ 
+-  // Do horizontal reflection of the matrix.
+   for (let rowIndex = 0; rowIndex < matrix.length; rowIndex += 1) {
+-    for (let columnIndex = 0; columnIndex < matrix.length / 2; columnIndex += 1) {
++    for (
++      let columnIndex = 0;
++      columnIndex < matrix.length / 2;
++      columnIndex += 1
++    ) {
+       // Swap elements.
+-      [
+-        matrix[rowIndex][matrix.length - columnIndex - 1],
+-        matrix[rowIndex][columnIndex],
+-      ] = [
++      var _ref2 = [
+         matrix[rowIndex][columnIndex],
+         matrix[rowIndex][matrix.length - columnIndex - 1],
+       ];
++      matrix[rowIndex][matrix.length - columnIndex - 1] = _ref2[0];
++      matrix[rowIndex][columnIndex] = _ref2[1];
+     }
+   }
+ 
+   return matrix;
+ }
++
+diff --git a/src/data-structures/linked-list/LinkedList.js b/src/data-structures/linked-list/LinkedList.js
+index ba7d0e3..c0509cd 100644
+--- a/src/data-structures/linked-list/LinkedList.js
++++ b/src/data-structures/linked-list/LinkedList.js
+@@ -1,6 +1,5 @@
+-import LinkedListNode from './LinkedListNode';
+-import Comparator from '../../utils/comparator/Comparator';
+-
++import LinkedListNode from "./LinkedListNode";
++import Comparator from "../../utils/comparator/Comparator";
+ export default class LinkedList {
+   /**
+    * @param {Function} [comparatorFunction]
+@@ -8,70 +7,67 @@ export default class LinkedList {
+   constructor(comparatorFunction) {
+     /** @var LinkedListNode */
+     this.head = null;
+-
+     /** @var LinkedListNode */
+-    this.tail = null;
+ 
++    this.tail = null;
+     this.compare = new Comparator(comparatorFunction);
+   }
+-
+   /**
+    * @param {*} value
+    * @return {LinkedList}
+    */
++
+   prepend(value) {
+     // Make new node to be a head.
+     const newNode = new LinkedListNode(value, this.head);
+-    this.head = newNode;
++    this.head = newNode; // If there is no tail yet let's make new node a tail.
+ 
+-    // If there is no tail yet let's make new node a tail.
+     if (!this.tail) {
+       this.tail = newNode;
+     }
+ 
+     return this;
+   }
+-
+   /**
+    * @param {*} value
+    * @return {LinkedList}
+    */
++
+   append(value) {
+-    const newNode = new LinkedListNode(value);
++    const newNode = new LinkedListNode(value); // If there is no head yet let's make new node a head.
+ 
+-    // If there is no head yet let's make new node a head.
+     if (!this.head) {
+       this.head = newNode;
+       this.tail = newNode;
+-
+       return this;
+-    }
++    } // Attach new node to the end of linked list.
+ 
+-    // Attach new node to the end of linked list.
+     this.tail.next = newNode;
+     this.tail = newNode;
+-
+     return this;
+   }
+-
+   /**
+    * @param {*} value
+    * @param {number} index
+    * @return {LinkedList}
+    */
++
+   insert(value, rawIndex) {
+     const index = rawIndex < 0 ? 0 : rawIndex;
++
+     if (index === 0) {
+       this.prepend(value);
+     } else {
+       let count = 1;
+       let currentNode = this.head;
+       const newNode = new LinkedListNode(value);
++
+       while (currentNode) {
+         if (count === index) break;
+         currentNode = currentNode.next;
+         count += 1;
+       }
++
+       if (currentNode) {
+         newNode.next = currentNode.next;
+         currentNode.next = newNode;
+@@ -85,22 +81,22 @@ export default class LinkedList {
+         }
+       }
+     }
++
+     return this;
+   }
+-
+   /**
+    * @param {*} value
+    * @return {LinkedListNode}
+    */
++
+   delete(value) {
+     if (!this.head) {
+       return null;
+     }
+ 
+-    let deletedNode = null;
+-
+-    // If the head must be deleted then make next node that is different
++    let deletedNode = null; // If the head must be deleted then make next node that is different
+     // from the head to be a new head.
++
+     while (this.head && this.compare.equal(this.head.value, value)) {
+       deletedNode = this.head;
+       this.head = this.head.next;
+@@ -118,23 +114,27 @@ export default class LinkedList {
+           currentNode = currentNode.next;
+         }
+       }
+-    }
++    } // Check if tail must be deleted.
+ 
+-    // Check if tail must be deleted.
+     if (this.compare.equal(this.tail.value, value)) {
+       this.tail = currentNode;
+     }
+ 
+     return deletedNode;
+   }
+-
+   /**
+    * @param {Object} findParams
+    * @param {*} findParams.value
+    * @param {function} [findParams.callback]
+    * @return {LinkedListNode}
+    */
+-  find({ value = undefined, callback = undefined }) {
++
++  find(_ref) {
++    let _ref$value = _ref.value,
++      value = _ref$value === void 0 ? undefined : _ref$value,
++      _ref$callback = _ref.callback,
++      callback = _ref$callback === void 0 ? undefined : _ref$callback;
++
+     if (!this.head) {
+       return null;
+     }
+@@ -145,9 +145,8 @@ export default class LinkedList {
+       // If callback is specified then try to find node by callback.
+       if (callback && callback(currentNode.value)) {
+         return currentNode;
+-      }
++      } // If value is specified then try to compare by value..
+ 
+-      // If value is specified then try to compare by value..
+       if (value !== undefined && this.compare.equal(currentNode.value, value)) {
+         return currentNode;
+       }
+@@ -157,10 +156,10 @@ export default class LinkedList {
+ 
+     return null;
+   }
+-
+   /**
+    * @return {LinkedListNode}
+    */
++
+   deleteTail() {
+     const deletedTail = this.tail;
+ 
+@@ -168,14 +167,12 @@ export default class LinkedList {
+       // There is only one node in linked list.
+       this.head = null;
+       this.tail = null;
+-
+       return deletedTail;
+-    }
+-
+-    // If there are many nodes in linked list...
+-
++    } // If there are many nodes in linked list...
+     // Rewind to the last node and delete "next" link for the node before the last one.
++
+     let currentNode = this.head;
++
+     while (currentNode.next) {
+       if (!currentNode.next.next) {
+         currentNode.next = null;
+@@ -185,13 +182,12 @@ export default class LinkedList {
+     }
+ 
+     this.tail = currentNode;
+-
+     return deletedTail;
+   }
+-
+   /**
+    * @return {LinkedListNode}
+    */
++
+   deleteHead() {
+     if (!this.head) {
+       return null;
+@@ -208,24 +204,23 @@ export default class LinkedList {
+ 
+     return deletedHead;
+   }
+-
+   /**
+    * @param {*[]} values - Array of values that need to be converted to linked list.
+    * @return {LinkedList}
+    */
++
+   fromArray(values) {
+     values.forEach((value) => this.append(value));
+-
+     return this;
+   }
+-
+   /**
+    * @return {LinkedListNode[]}
+    */
++
+   toArray() {
+     const nodes = [];
+-
+     let currentNode = this.head;
++
+     while (currentNode) {
+       nodes.push(currentNode);
+       currentNode = currentNode.next;
+@@ -233,19 +228,21 @@ export default class LinkedList {
+ 
+     return nodes;
+   }
+-
+   /**
+    * @param {function} [callback]
+    * @return {string}
+    */
++
+   toString(callback) {
+-    return this.toArray().map((node) => node.toString(callback)).toString();
++    return this.toArray()
++      .map((node) => node.toString(callback))
++      .toString();
+   }
+-
+   /**
+    * Reverse a linked list.
+    * @returns {LinkedList}
+    */
++
+   reverse() {
+     let currNode = this.head;
+     let prevNode = null;
+@@ -253,20 +250,17 @@ export default class LinkedList {
+ 
+     while (currNode) {
+       // Store next node.
+-      nextNode = currNode.next;
++      nextNode = currNode.next; // Change next node of the current node so it would link to previous node.
+ 
+-      // Change next node of the current node so it would link to previous node.
+-      currNode.next = prevNode;
++      currNode.next = prevNode; // Move prevNode and currNode nodes one step forward.
+ 
+-      // Move prevNode and currNode nodes one step forward.
+       prevNode = currNode;
+       currNode = nextNode;
+-    }
++    } // Reset head and tail.
+ 
+-    // Reset head and tail.
+     this.tail = this.head;
+     this.head = prevNode;
+-
+     return this;
+   }
+ }
++

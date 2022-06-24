@@ -18,6 +18,20 @@ import PDGLink from './PDGLink';
 //   }
 // }
 
+/**
+ * hackfix: hard-coded this since old data does not contain DDGSummaryMode data yet
+ * @see @dbux/data/src/ddg/DDGSummaryMode.js
+ */
+const SummaryModeIcons = [
+  '⛒',
+  'ExpandSelf',
+  '1️⃣',
+  '2️⃣',
+  '3️⃣',
+  '4️⃣',
+  'ExpandSubgraph',
+];
+
 function getSameAsOrigin(screenshots, index) {
   const screenshot = screenshots[index];
   if ('sameAs' in screenshot) {
@@ -84,7 +98,7 @@ export default function PDG(props) {
     paginationEl = <div className="d-flex flex-row">
       <button className="mx-1 p-2" onClick={() => setIndex(index - 1)} disabled={index === 0}>&laquo;</button>
       {screenshots.map((v, i) => {
-        return <button key={i} className={"mx-1 p-2" + ((i === index) ? " active" : "")} onClick={() => setIndex(i)}>{i}</button>;
+        return <button key={i} className={"mx-1 p-2" + ((i === index) ? " active" : "")} onClick={() => setIndex(i)}>{SummaryModeIcons[i]}</button>;
       })}
       <button className="mx-1 p-2" onClick={() => setIndex(index + 1)} disabled={index === screenshots.length - 1}>&raquo;</button>
     </div>;

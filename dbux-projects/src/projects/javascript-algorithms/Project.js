@@ -12,7 +12,8 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
  * Hackfix: hardcode some patches to deal with some PDG issues
  */
 const extraPatches = [
-  'BubbleSort-baseline'
+  'BubbleSort-baseline',
+  'fixDestructing',
 ];
 
 export default class JavascriptAlgorithmProject extends Project {
