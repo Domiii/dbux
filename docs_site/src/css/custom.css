@@ -32,7 +32,7 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
  * ############################################################################*/
 
 /* Override non-category links to be horizonally compact */
-li > a.menu__link {
+li>a.menu__link {
   justify-content: flex-start;
 }
 
@@ -113,7 +113,8 @@ li > a.menu__link {
 }
 
 .code-block code {
-  flex-basis: auto; /* default value */
+  flex-basis: auto;
+  /* default value */
   flex-grow: 1;
   padding: 2px;
   height: 100%;
@@ -233,6 +234,7 @@ pre {
 [data-theme="dark"] .run-button a::before {
   content: url(/dark/play.svg);
 }
+
 [data-theme="light"] .run-button a::before {
   content: url(/light/play.svg);
 }
@@ -268,6 +270,7 @@ pre {
 [data-theme="dark"] .sidebar-call-graph a::before {
   content: url(/dark/tree.svg);
 }
+
 [data-theme="light"] .sidebar-call-graph a::before {
   content: url(/light/tree.svg);
 }
@@ -320,6 +323,7 @@ pre {
   /* get rid of the default*/
   display: none;
 }
+
 .nav-icon span::before,
 .nav-icon span::after {
   /* hackfix: vertical alignment is messed up (probably because it does not care about image height) */
@@ -334,6 +338,7 @@ pre {
   background-image: url(/img/vscode-icon.png);
   background-size: 1rem 1rem;
 }
+
 .btn-dbux-marketplace span::after {
   display: inline-block;
   /**
@@ -345,4 +350,13 @@ pre {
 .btn-dbux-discord span::after {
   display: inline-block;
   content: url(https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2);
+}
+
+/** ###########################################################################
+ * custom
+ * ############################################################################*/
+
+button.active {
+  background-color: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
 }

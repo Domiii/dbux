@@ -4,16 +4,26 @@ import GraphvizDot from './GraphvizDot';
 import JSALink from './JSALink';
 import PDGLink from './PDGLink';
 
-function getDot(screenshots, index) {
+// function getDot(screenshots, index) {
+//   const screenshot = screenshots[index];
+//   if (screenshot.dot) {
+//     return screenshot.dot;
+//   }
+//   else if ('sameAs' in screenshot) {
+//     return getDot(screenshots, screenshot.sameAs);
+//   }
+//   else {
+//     return null;
+//   }
+// }
+
+function getSameAsOrigin(screenshots, index) {
   const screenshot = screenshots[index];
-  if (screenshot.dot) {
-    return screenshot.dot;
-  }
-  else if ('sameAs' in screenshot) {
-    return getDot(screenshots, screenshot.sameAs);
+  if ('sameAs' in screenshot) {
+    return getSameAsOrigin(screenshots, screenshot.sameAs);
   }
   else {
-    return null;
+    return index;
   }
 }
 
@@ -25,21 +35,35 @@ export default function PDG(props) {
 
   const [index, setIndex] = useState(0);
 
-  const dot = getDot(screenshots, index);
+  // const dot = getDot(screenshots, index);
+  const { dot, sameAs } = screenshots[index];
+  let graph;
+  if (dot) {
+    graph = <GraphvizDot dot={dot} exerciseId={exerciseId} index={index}></GraphvizDot>;
+  }
+  else if (sameAs !== undefined) {
+    const originIndex = getSameAsOrigin(screenshots, index);
+    graph = <h1 className="mt-4 text-center">
+      Graph same as {originIndex}
+      <button className="mx-4 p-2" onClick={() => setIndex(originIndex)}>Go</button>
+    </h1>;
+  }
+  else {
+    throw new Error(`Invalid screenshot missing "dot" or "sameAs", ${JSON.stringify(screenshots[index])}`);
+  }
 
   const success = renderData.success !== false;
 
   return <>
     <div className="container">
       <h1 className="my-2">
-        <PDGLink pdgId={pdgId - 1}>
-          <button className="mx-4 p-2">&laquo;</button>
+        <PDGLink title="Previous exercise" pdgId={pdgId - 1}>
+          <button className="p-2">&laquo;</button>
         </PDGLink>
-        {exerciseId}
-
-        <PDGLink pdgId={pdgId + 1}>
+        <PDGLink title="Next exercise" pdgId={pdgId + 1}>
           <button className="mx-4 p-2">&raquo;</button>
         </PDGLink>
+        {exerciseId}
       </h1>
       <p>
         Chapter: {chapterGroup}/{chapter}
@@ -55,7 +79,7 @@ export default function PDG(props) {
       <div className="d-flex flex-row">
         <button className="mx-1 p-2" onClick={() => setIndex(index - 1)} disabled={index === 0}>&laquo;</button>
         {screenshots.map((v, i) => {
-          return <button key={i} className="mx-1 p-2" onClick={() => setIndex(i)}>{i}</button>;
+          return <button key={i} className={"mx-1 p-2" + ((i === index) ? " active" : "")} onClick={() => setIndex(i)}>{i}</button>;
         })}
         <button className="mx-1 p-2" onClick={() => setIndex(index + 1)} disabled={index === screenshots.length - 1}>&raquo;</button>
       </div>
@@ -64,7 +88,7 @@ export default function PDG(props) {
     <div className="mt-3 vh-100 overflow-hidden border border-white" key={index}>
       {
         success ?
-          <GraphvizDot dot={dot} exerciseId={exerciseId} index={index}></GraphvizDot> :
+          graph :
           <p>{renderData.error}</p>
       }
     </div>
