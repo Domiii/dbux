@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "ddgTitle": "isPositive(0)",
     "uniqueId": "math_bits_javascript-algorithms#155_1",
     "testLoc": {
       "filePath": "src/algorithms/math/bits/__test__/isPositive.test.js",
@@ -43,22 +44,58 @@
         }
       },
       {
-        "sameAs": 0
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
-        "sameAs": 1
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
-        "sameAs": 2
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
-        "sameAs": 3
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
-        "sameAs": 4
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
-        "sameAs": 5
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       }
     ]
   }

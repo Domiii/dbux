@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "trialDivision(4)",
+    "uniqueId": "math_primality-test_javascript-algorithms#306_1",
+    "testLoc": {
+      "filePath": "src/algorithms/math/primality-test/__test__/trialDivision.test.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 37,
+          "index": 142
+        },
+        "end": {
+          "line": 31,
+          "column": 1,
+          "index": 1046
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/primality-test/trialDivision.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 46,
+          "index": 105
+        },
+        "end": {
+          "line": 35,
+          "column": 1,
+          "index": 836
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_14 {\n    id=14;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    15 [id=15,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  2 -> 15[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
+      }
+    ]
+  }
+]

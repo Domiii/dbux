@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "ddgTitle": "factorialRecursive(5)",
     "uniqueId": "math_factorial_javascript-algorithms#97_1",
     "testLoc": {
       "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
@@ -52,7 +53,13 @@
         }
       },
       {
-        "sameAs": 1
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        }
       },
       {
         "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 36 [id=e1];\n  2 -> 34 [id=e2];\n  36 -> 34 [id=e3];\n  2 -> 35 -> 36 -> 34[style=invis,weight=2];\n}",
