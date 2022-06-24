@@ -300,7 +300,10 @@ export default class DataDependencyGraph extends BaseDDG {
         this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSubgraph);
       }
       else {
-        this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSelf);
+        if (!this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSelf)) {
+          // ExpandSelf did not work → expand all instead
+          this.setSummaryMode(timelineId, DDGSummaryMode.ExpandSubgraph);
+        }
         if (summarizableChildren.length === 1 &&
           !isExpandedMode(summaryModes[summarizableChildren[0].timelineId])
         ) {
@@ -374,16 +377,7 @@ export default class DataDependencyGraph extends BaseDDG {
         }
       }
     },
-    [DDGSummaryMode.Collapse]: (timelineId) => {
-      const { og } = this;
-      const node = og.timelineNodes[timelineId];
-
-      // hide all children
-      for (const childId of node.children) {
-        const childNode = og.timelineNodes[childId];
-        this.#applyMode(childId, this.#getHideMode(childNode));
-      }
-    },
+    // NOTE: DDGSummaryMode.ExpandSelf is now the same as CollapseSummary
     [DDGSummaryMode.CollapseSummary]: (timelineId) => {
       const { og } = this;
       const node = og.timelineNodes[timelineId];
@@ -401,7 +395,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // collapse all children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
+        const targetMode = ddgQueries.canNodeExpand(this, childNode) ?
           DDGSummaryMode.CollapseSummary :
           this.#getNonExpandableNodeExpandMode(childNode);
         this.#applyMode(childId, targetMode);
@@ -466,7 +460,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // expand all children and their children
       for (const childId of node.children) {
         const childNode = og.timelineNodes[childId];
-        const targetMode = ddgQueries.canApplySummaryMode(this, childNode, DDGSummaryMode.Collapse) ?
+        const targetMode = ddgQueries.canNodeExpand(this, childNode) ?
           DDGSummaryMode.ExpandSubgraph :
           DDGSummaryMode.Show;
         this.#applyMode(childId, targetMode);

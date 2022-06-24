@@ -69,10 +69,6 @@ const _canApplySummaryMode = {
       !node.watched // cannot change state of watched nodes
     );
   },
-  [DDGSummaryMode.Collapse]: (ddg, node) => {
-    return !isDDGRoot(node.timelineId) &&
-      isControlGroupTimelineNode(node.type);
-  },
   /**
    * 
    * @param {DDGTimelineNode} node 

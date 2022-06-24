@@ -442,6 +442,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    *  #########################################################################*/
 
   async toggleSummaryMode(timelineId) {
+    console.debug('toggleSummaryMode', timelineId);
     await this.remote.toggleSummaryMode({ timelineId });
   }
 
@@ -535,6 +536,54 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     updateElDecorations(summaryButtons);
   }
 
+  /** ###########################################################################
+   * node el event listeners
+   * Important: make sure, we don't create a new function each time
+   * ##########################################################################*/
+
+  handleGroupLabelClick = (evt) => {
+    const { node } = evt.target;
+    return this.toggleSummaryMode(node.timelineId);
+  };
+
+  handleNodeClick = async (evt) => {
+    const { node } = evt.target;
+    if (node.dataNodeId) {
+      await this.remote.selectNode(node.timelineId);
+    }
+  };
+
+  handleNodeMouseOver = (evt) => {
+    // show debug overlay
+    let { node } = evt.target;
+    if (!node) {
+      const closestNodeEl = evt.target.closest('.node');
+      node = closestNodeEl?.node;
+      if (!node) {
+        // console.warn(`handleNodeMouseOver called on non-node element:`, evt.target, evt);
+        return;
+      }
+    }
+    if (!evt.target.debugOverlay && RenderCfg.debugViewEnabled) {
+      // this.debug(`Hover node:`, evt.target);
+      this.el.appendChild(evt.target.debugOverlay = this.makeNodeDebugOverlay(node));
+      // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
+    }
+
+    // show popup menu and more
+    this.startNodeHoverAction(node, evt.target);
+  };
+
+  handleNodeMouseOut = (evt) => {
+    evt.target.debugOverlay?.remove();
+    evt.target.debugOverlay = null;
+  };
+
+
+  /** ###########################################################################
+   * decorateNode
+   * ##########################################################################*/
+
   /**
    * @param {DDGTimelineNode} node 
    * @param {Element} nodeEl 
@@ -577,9 +626,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       nodeEl.parentElement.appendChild(modeEl);
 
       // add click handler to label
-      labelEl.addEventListener('mousedown', () => {
-        return this.toggleSummaryMode(node.timelineId);
-      });
+      this.addNodeEventListener(node, labelEl, 'mousedown', this.handleGroupLabelClick);
 
       // future-work: add a bigger popup area, to make things better clickable
       // popupTriggerEl = compileHtmlElement(/*html*/`<`);
@@ -588,31 +635,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     if (interactionEl) {
       // add overlays
-      let debugOverlay;
-      this.addNodeEventListener(node, interactionEl, 'mouseover', (evt) => {
-        // show debug overlay
-        if (!debugOverlay && RenderCfg.debugViewEnabled) {
-          // this.debug(`Hover node:`, evt.target);
-          this.el.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-          // nodeEl.appendChild(debugOverlay = this.makeNodeDebugOverlay(node));
-        }
+      interactionEl.node = node; // hackfix
 
-        // show popup menu and more
-        this.startNodeHoverAction(node, nodeEl, interactionEl);
-      });
-      this.addNodeEventListener(node, interactionEl, 'mouseout', () => {
-        debugOverlay?.remove();
-        debugOverlay = null;
-      });
+      this.addNodeEventListener(node, interactionEl, 'mouseover', this.handleNodeMouseOver);
+      this.addNodeEventListener(node, interactionEl, 'mouseout', this.handleNodeMouseOut);
 
       // add click handler
       // NOTE: we use `mousedown` since `click` regularly gets cancelled by d3-zoom,
       //      b/c it pans ever so slightly every single time the mouse is clicked
-      this.addNodeEventListener(node, interactionEl, 'mousedown', async (evt) => {
-        if (node.dataNodeId) {
-          await this.remote.selectNode(node.timelineId);
-        }
-      });
+      this.addNodeEventListener(node, interactionEl, 'mousedown', this.handleNodeClick);
     }
   }
 
@@ -631,6 +662,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * @param {*} fn 
    */
   addNodeEventListener(node, nodeEl, evt, fn) {
+    // remove if it existed before
+    nodeEl.removeEventListener(evt, fn);
+
     nodeEl.addEventListener(evt, fn);
     // // hackfix: if we don't do it this way, many events go unnoticed?
     // for (const el of nodeEl.children) {
@@ -779,7 +813,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // * take screenshot in current mode
     // * add background to top: <rect width="100%" height="100%" fill="#444"/>
     const lines = this.graphEl.innerHTML.split('\n');
-    
+
     return lines[0] + `\n<rect width="100%" height="100%" fill="#444"/>\n` + lines.slice(1);
   }
 }

@@ -92,7 +92,6 @@ shownModes[DDGSummaryMode.ExpandSelf2] = true;
 shownModes[DDGSummaryMode.ExpandSelf3] = true;
 shownModes[DDGSummaryMode.ExpandSelf4] = true;
 shownModes[DDGSummaryMode.ExpandSubgraph] = true;
-shownModes[DDGSummaryMode.Collapse] = true;
 shownModes[DDGSummaryMode.CollapseSummary] = true;
 shownModes[DDGSummaryMode.HideChildren] = true;
 export function isShownMode(mode) {
@@ -100,7 +99,6 @@ export function isShownMode(mode) {
 }
 
 const collapsedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-collapsedModes[DDGSummaryMode.Collapse] = true;
 collapsedModes[DDGSummaryMode.CollapseSummary] = true;
 export function isCollapsedMode(mode) {
   return collapsedModes[mode] || false;
@@ -119,7 +117,10 @@ export function isExpandedMode(mode) {
 }
 
 const shallowExpandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-// shallowExpandedModes[DDGSummaryMode.ExpandSelf] = true;
+/**
+ * NOTE: ExpandSelf is shallow summary, and can nest visible CollapseSummary nodes
+ */
+shallowExpandedModes[DDGSummaryMode.ExpandSelf] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf1] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf2] = true;
 shallowExpandedModes[DDGSummaryMode.ExpandSelf3] = true;

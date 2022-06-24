@@ -68,8 +68,9 @@ export function makeDDGNodeDescription(ddg, node) {
         'SummaryNode';
   if (isControlGroupTimelineNode(node.type)) {
     const summarizable = ddgQueries.isNodeSummarizable(ddg, node);
+    const summarized = ddgQueries.isNodeSummarized(ddg, node);
     const summarizableChildren = ddgQueries.getSummarizableChildren(ddg, node.timelineId);
-    summaryModeLabel += ` (s: ${summarizable}, sC: ${summarizableChildren?.length || 0})`;
+    summaryModeLabel += ` (sa: ${summarizable}, sed: ${summarized}, sC: ${summarizableChildren?.length || 0})`;
   }
   return `${con}${timelineId}${dataInfo} [${nodeTypeLabel(node)}] ${summaryPrefix}${summaryModeLabel}`;
 }
