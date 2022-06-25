@@ -9,7 +9,7 @@ export default function ChapterGroup(props) {
     <div className="row">
       {chapters.map(chapter => {
         return <div key={chapter.name} className="col-6">
-          <Chapter chapter={chapter}></Chapter>
+          <Chapter chapterGroup={name} chapter={chapter}></Chapter>
         </div>;
       })}
     </div>

@@ -8,33 +8,55 @@ import PDG from '@comp/gallery/PDG';
  */
 import 'bootstrap/dist/css/bootstrap-grid.css';
 import 'bootstrap/dist/css/bootstrap-utilities.css';
+import { parsePdgLinkId } from '../../../pdgUtil';
 
 export default function pdg() {
-  const pdgId = useLocation().hash.substring(1);
+  const pdgLinkId = useLocation().hash.substring(1);
   // const graphs = useGraphs();
   // const renderData = graphs.getById(pdgId);
   const [sampleData, setSampleData] = useState(null);
+  
+  const linkData = parsePdgLinkId(decodeURIComponent(pdgLinkId));
 
   useEffect(() => {
     (async () => {
-      const chapterGroup = 'sorting';
-      const chapter = 'bubble-sort';
-      const exerciseId = 'javascript-algorithms#31';
+      // const chapterGroup = 'sorting';
+      // const chapter = 'bubble-sort';
+      // const exerciseId = 'javascript-algorithms#31';
+      const {
+        chapterGroup,
+        chapter,
+        exercise: exerciseId,
+        ddgTitle
+      } = linkData;
       const rawData = await import(`../../../data/gallery/pdg/${chapterGroup}/${chapter}/${exerciseId}/pdgData.json`);
+      const selected = rawData.default.find(d => d.ddgTitle === ddgTitle);
+
+      document.title = 'Dbux-PDG: ' + linkData.ddgTitle;
+      
       setSampleData({
         chapterGroup: chapterGroup,
         chapter: chapter,
         exerciseId,
-        renderData: rawData.default[0],
+        ddgTitle,
+        renderData: selected,
       });
     })();
   }, []);
+
+  if (!linkData) {
+    return <span className="danger">404 - invalid link: ${pdgLinkId}</span>;
+  }
 
   if (!sampleData) {
     return 'loading...';
   }
 
-  console.log('renderData', sampleData);
+  if (!sampleData.renderData) {
+    return <span className="danger">404 - invalid link - could not find PDG of title "{linkData.ddgTitle}"</span>;
+  }
+
+  // console.log('renderData', sampleData);
 
   return <PDG {...sampleData}></PDG>;
 }
