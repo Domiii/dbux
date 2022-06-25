@@ -14,8 +14,11 @@ const transformOptions = {
   // presets: [
   //   'env'
   // ],
+  retainLines: true,
+  babelrc: false,
+  configFile: false,
   include: (...args) => {
-    console.log(args);
+    // console.log('babel include', args);
     return true;
   },
   plugins: [
@@ -41,6 +44,8 @@ async function transformFile(fpath) {
 
     // write back
     fs.writeFileSync(fpath, finalCode);
+
+    console.log(`Transformed file: ${fpath}`);
   }
   catch (err) {
     throw new NestedError(`Could not transform file ${fpath}.`, err);

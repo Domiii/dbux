@@ -309,21 +309,26 @@ class TransformDestructuringNode extends ToolNode {
   }
 
   async handleClick() {
-    // TODO
-    const { projectPath } = this.controller.project;
-    const pdgFiles = this.controller.gallery.getAllPDGFiles();
-    const filesUsingDestructing = new Set();
-    for (const { filePath } of pdgFiles) {
-      const pdgData = JSON.parse(fs.readFileSync(filePath));
-      if (Array.isArray(pdgData) && pdgData[0].traceLocations) {
-        for (const location of pdgData[0].traceLocations) {
-          const testFilePath = pathJoin(projectPath, location.split('#')[0]);
-          filesUsingDestructing.add(testFilePath);
-        }
-      }
-    }
+    /**
+     * TODO:
+     *   1. make sure, the project is completely "factory reset" before doing this
+     *   2. make sure, a `babel.config.js` exists (for some reason)
+     *   3. need to store the patch after its generated
+     */
+    // const { projectPath } = this.controller.project;
+    const fpaths = this.controller.gallery.getAllJSAFiles();
+    // const filesUsingDestructing = new Set();
+    // for (const fpath of fpaths) {
+    //   const pdgData = JSON.parse(fs.readFileSync(fpath));
+    //   if (Array.isArray(pdgData) && pdgData[0].traceLocations) {
+    //     for (const location of pdgData[0].traceLocations) {
+    //       const testFilePath = pathJoin(projectPath, location.split('#')[0]);
+    //       filesUsingDestructing.add(testFilePath);
+    //     }
+    //   }
+    // }
 
-    await transformFiles([...filesUsingDestructing]);
+    await transformFiles(fpaths);
   }
 }
 

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import path, { basename } from 'path';
 import open from 'open';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
@@ -305,6 +305,16 @@ export default class PDGGallery {
     });
   }
 
+  getAllJSAFiles() {
+    const jsaRoot = pathJoin(this.controller.project.projectPath, 'src');
+    const fpaths = getFilesRecursive(jsaRoot);
+    console.log(`${fpaths.length} files found (in "${jsaRoot}"):\n  ${fpaths.map(f => f.replaceAll(jsaRoot + '/', '')).join('\n  ')}`);
+    return fpaths;
+  }
+
+  /**
+   * @deprecated
+   */
   getAllPDGFiles() {
     const allFiles = [];
     const chapterGroups = fs.readdirSync(this.galleryDataRoot);
@@ -328,4 +338,30 @@ export default class PDGGallery {
     }
     return allFiles;
   }
+}
+
+/**
+ * @see https://stackoverflow.com/a/16684530
+ */
+function getFilesRecursive(dir) {
+  let results = [];
+  let list = fs.readdirSync(dir);
+  list.forEach(function (fname) {
+    const file = pathJoin(dir, fname);
+    let stat = fs.statSync(file);
+    if (stat && stat.isDirectory()) {
+      if (fname.match(/(node_modules|\.dist)/)) {
+        return;
+      }
+      /* Recurse into a subdirectory */
+      results = results.concat(getFilesRecursive(file));
+    } else {
+      if (!fname.match(/\.js$/)) {
+        return;
+      }
+      /* Is a file */
+      results.push(file);
+    }
+  });
+  return results;
 }
