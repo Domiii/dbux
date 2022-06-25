@@ -4219,8 +4219,18 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
    * @param {RuntimeDataProvider} dp
    */
   getAllMissingDataStaticTraces(dp) {
-    return dp.collections.staticTraces.getAllActual()
-      .filter(s => containsPurpose(s.purposes, TracePurpose.NoData));
+    // TODO: use byPurpose index instead
+    // by dynamic trace
+    const missingOfTraces = dp.collections.traces.getAllActual()
+      .filter(s => containsPurpose(s.purposes, TracePurpose.NoData))
+      .map(t => dp.util.getStaticTrace(t.traceId));
+
+    // by StaticTrace
+    return Array.from(new Set(
+      dp.collections.staticTraces.getAllActual()
+        .filter(s => containsPurpose(s.purposes, TracePurpose.NoData))
+        .concat(missingOfTraces)
+    ));
   },
 
   /**

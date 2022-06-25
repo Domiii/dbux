@@ -291,6 +291,7 @@ export default function patchArray() {
     (arr, args, originalFunction, patchedFunction) => {
       const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+
       if (!bceTrace?.data?.argTids) {
         return originalFunction.apply(arr, args);
       }
@@ -350,11 +351,6 @@ export default function patchArray() {
           }
         }
       }
-
-      // TODO: fixme
-      addPurpose(bceTrace, {
-        type: TracePurpose.NoData
-      });
 
       return resultArr;
     }

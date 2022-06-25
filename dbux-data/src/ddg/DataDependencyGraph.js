@@ -6,7 +6,7 @@ import { throttle } from '@dbux/common/src/util/scheduling';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Enum from '@dbux/common/src/util/Enum';
 import DataNodeType, { isDataNodeDelete, isDataNodeModifyOrComputeType, isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
-import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DDGTimelineNodeType, { isControlGroupTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { DDGRootTimelineId, isDDGRoot } from './constants';
 import BaseDDG from './BaseDDG';
@@ -572,6 +572,36 @@ export default class DataDependencyGraph extends BaseDDG {
     const varModifyOrReturnDataNodes = new Map();       // summary var + return set
     const lastNestedDataNodeId = this.#gatherNestedUniqueSummaryTrees(node, node, lastModifyNodesByRefId, varModifyOrReturnDataNodes, summaryCfg);
 
+    if (DDGTimelineNodeType.is.Context(node.type)) {
+      // add return input argument
+      const returnInputDataNodeId = dp.util.getReturnArgumentInputDataNodeIdOfContext(node.contextId);
+      if (returnInputDataNodeId) {
+        const returnDataNode = dp.util.getDataNode(returnInputDataNodeId);
+        if (!lastModifyNodesByRefId.get(returnDataNode.refId)) { // don't add if we already have a ref summary of it
+          const skippedNode = this.timelineBuilder.getSkippedByNode(returnDataNode);
+          const timelineNodes = this.getTimelineNodesOfDataNode(returnInputDataNodeId);
+          const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
+          if (skippedNode || timelineNodes) {
+            const returnNode = skippedNode || last(timelineNodes);
+            const returnTimelineId = returnNode.timelineId;
+            if (
+              ddgQueries.checkNodeVisibilitySettings(this, returnNode) &&
+              // hackfix: don't accidentally grab nodes from other summary groups (in case of skip)
+              returnTimelineId > timelineId
+            ) {
+              if (isSnapshotTimelineNode(returnNode.type)) {
+                lastModifyNodesByRefId.set(returnNode.refId, returnNode.dataNodeId);
+              }
+              else {
+                // always override previous, because its always last
+                varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
+              }
+            }
+          }
+        }
+      }
+    }
+
     // filter out unwanted refs
     const summaryRefEntries = Array.from(lastModifyNodesByRefId.entries())
       .filter(([refId]) => {
@@ -602,31 +632,6 @@ export default class DataDependencyGraph extends BaseDDG {
         // check connected-ness
         return this.og._connectedRefIds.has(refId);
       });
-
-    if (DDGTimelineNodeType.is.Context(node.type)) {
-      // add return input argument
-      const returnInputDataNodeId = dp.util.getReturnArgumentInputDataNodeIdOfContext(node.contextId);
-      if (returnInputDataNodeId) {
-        const returnDataNode = dp.util.getDataNode(returnInputDataNodeId);
-        if (!lastModifyNodesByRefId.get(returnDataNode.refId)) { // don't add if we already have a ref summary of it
-          const skippedNode = this.timelineBuilder.getSkippedByNode(returnDataNode);
-          const timelineNodes = this.getTimelineNodesOfDataNode(returnInputDataNodeId);
-          const returnVarTid = returnDataNode.varAccess?.declarationTid || returnDataNode.traceId;
-          if (skippedNode || timelineNodes) {
-            const returnNode = skippedNode || last(timelineNodes);
-            const returnTimelineId = returnNode.timelineId;
-            if (
-              ddgQueries.checkNodeVisibilitySettings(this, returnNode) &&
-              // hackfix: don't accidentally grab nodes from other summary groups (in case of skip)
-              returnTimelineId > timelineId
-            ) {
-              // always override previous, because its always last
-              varModifyOrReturnDataNodes.set(returnVarTid, returnTimelineId);
-            }
-          }
-        }
-      }
-    }
 
     // TODO: not good enough to determine "deep access"
     // const accessedAccessIds = new Set(

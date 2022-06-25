@@ -69,7 +69,8 @@ const Colors = {
   nodeOutlineDefault: 'white',
   watchedNodeOutline: 'green',
   // edge: '#AAAAAA',
-  edge: '#6666FF', // blue/purple-ish
+  // edge: '#6666FF', // blue/purple-ish
+  edge: '#AAAAFF',
   groupBorder: 'gray',
 
   groupLabel: 'yellow',
@@ -305,9 +306,9 @@ export default class DotBuilder {
     const { ddg } = this;
     const show = force || ddgQueries.isVisible(ddg, node);
     // if (ddgQueries.isExpandedGroupNode(ddg, node)) {
-    if (isControlGroupTimelineNode(node.type)) {
-      console.debug(`node "${node.label}" #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
-    }
+    // if (isControlGroupTimelineNode(node.type)) {
+    //   console.debug(`node "${node.label}" #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
+    // }
     if (ddgQueries.isNodeSummarized(ddg, node)) {
       this.nodeSummary(node);
     }
