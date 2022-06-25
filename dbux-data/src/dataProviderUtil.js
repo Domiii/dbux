@@ -4206,6 +4206,13 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
   getAllMissingDataStaticTraces(dp) {
     return dp.collections.staticTraces.getAllActual()
       .filter(s => containsPurpose(s.purposes, TracePurpose.NoData));
+  },
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   */
+  getAllErroneousDataNodes(dp) {
+    return dp.collections.dataNodes.getAllActual().filter(n => n.error);
   }
 };
 

@@ -81,8 +81,8 @@ export default class PDGGallery {
     const ddgArgs = await this.importOrRunDDGApplication(exercise);
 
     // only pick the middle one for now
-    return [ddgArgs[Math.floor(ddgArgs.length / 2)]];
-    // return ddgs;
+    // return [ddgArgs[Math.floor(ddgArgs.length / 2)]];
+    return ddgArgs;
   }
 
   getPDGRenderDataUniqueId(exercise, renderDataId) {

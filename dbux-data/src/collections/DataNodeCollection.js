@@ -385,6 +385,7 @@ export default class DataNodeCollection extends Collection {
         if (valueId && prev && prev.valueId !== valueId) {
           if (prev.refId !== dataNode.refId) {
             this.logger.error(`invalid DataNodeCollection.accessId logic for n${nodeId} (v${dataNode.refId}): ${JSON.stringify(prev)}`);
+            dataNode.error = 'accessId';
           }
           else {
             // this.logger.warn(`invalid DataNodeCollection.accessId logic for v${dataNode.refId}: ${JSON.stringify(prev)}`);
