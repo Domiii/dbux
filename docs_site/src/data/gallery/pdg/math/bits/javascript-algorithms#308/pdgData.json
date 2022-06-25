@@ -1,0 +1,1072 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "updateBit(1, 0, 1)",
+    "uniqueId": "math_bits_javascript-algorithms#308_1",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "updateBit(1, 0, 0)",
+    "uniqueId": "math_bits_javascript-algorithms#308_2",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "updateBit(1, 1, 1)",
+    "uniqueId": "math_bits_javascript-algorithms#308_3",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-3</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-3</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "updateBit(1, 2, 1)",
+    "uniqueId": "math_bits_javascript-algorithms#308_4",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-5</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-5</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "updateBit(10, 0, 1)",
+    "uniqueId": "math_bits_javascript-algorithms#308_5",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">11</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">11</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "ddgTitle": "updateBit(10, 0, 0)",
+    "uniqueId": "math_bits_javascript-algorithms#308_6",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-2</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "ddgTitle": "updateBit(10, 1, 1)",
+    "uniqueId": "math_bits_javascript-algorithms#308_7",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-3</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-3</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "ddgTitle": "updateBit(10, 1, 0)",
+    "uniqueId": "math_bits_javascript-algorithms#308_8",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-3</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-3</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "ddgTitle": "updateBit(10, 2, 1)",
+    "uniqueId": "math_bits_javascript-algorithms#308_9",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">14</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-5</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-5</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">14</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "ddgTitle": "updateBit(10, 2, 0)",
+    "uniqueId": "math_bits_javascript-algorithms#308_10",
+    "testLoc": {
+      "filePath": "src/algorithms/math/bits/__test__/updateBit.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 53,
+          "index": 125
+        },
+        "end": {
+          "line": 18,
+          "column": 3,
+          "index": 593
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/bits/updateBit.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 65,
+          "index": 208
+        },
+        "end": {
+          "line": 16,
+          "column": 1,
+          "index": 487
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 13 [id=e1];\n  3 -> 13 [id=e2];\n  2 -> 3 -> 4 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitPosition</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValue</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">bitValueNormalized</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  7 [id=7,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  8 [id=8,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"8\" TITLE=\"8\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">~</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">-5</FONT></TD>\n  </TR>\n</TABLE>>];\n  10 [id=10,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">clearMask</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">-5</FONT></TD>\n  </TR>\n</TABLE>>];\n  11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#38;</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">&#60;&#60;</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  7 -> 8 [id=e2];\n  3 -> 8 [id=e3];\n  3 -> 12 [id=e4];\n  8 -> 9 [id=e5];\n  9 -> 10 [id=e6];\n  2 -> 11 [id=e7];\n  10 -> 11 [id=e8];\n  6 -> 12 [id=e9];\n  11 -> 13 [id=e10];\n  12 -> 13 [id=e11];\n  2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  }
+]

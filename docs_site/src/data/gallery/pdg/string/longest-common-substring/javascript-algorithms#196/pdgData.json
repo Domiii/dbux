@@ -1,0 +1,139 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "longestCommonSubstring(, )",
+    "uniqueId": "string_longest-common-substring_javascript-algorithms#196_1",
+    "testLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 71,
+          "index": 182
+        },
+        "end": {
+          "line": 16,
+          "column": 3,
+          "index": 756
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/longestCommonSubstring.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 65,
+          "index": 152
+        },
+        "end": {
+          "line": 69,
+          "column": 1,
+          "index": 2334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">string1</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">string2</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_55 {\n    id=55;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  2 -> 3 -> 56[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">string1</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">string2</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_15 {\n    id=15;\n    label=\"Array&#40;s2.length + 1&#41; .fill&#40;...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"&#91;cb&#93; Array&#40;s2.length + 1&#41; ....\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_26 {\n    id=26;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_29 {\n      id=29;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_35 {\n    id=35;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_38 {\n      id=38;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_50 {\n    id=50;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  subgraph cluster_group_55 {\n    id=55;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  2 -> 3 -> 56[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "longestCommonSubstring(ABC, )",
+    "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 116,\n  \"traceId\": 147,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 145\n  },\n  \"accessId\": 29,\n  \"valueId\": 112,\n  \"valueFromId\": 114,\n  \"inputs\": null,\n  \"value\": \"ABC\",\n  \"hasValue\": true,\n  \"_id\": 116,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97759:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99634:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99667:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99247:106)\n\tat BaseDDG.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97237:25)\n\tat DataDependencyGraph.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101289:177)\n\tat DDGSet.newDataDependencyGraph (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:461)\n\tat DDGSet.getOrCreateDDG (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:140)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75110:35\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "longestCommonSubstring(, ABC)",
+    "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 260,\n  \"traceId\": 298,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 294\n  },\n  \"accessId\": 62,\n  \"valueId\": 254,\n  \"valueFromId\": 256,\n  \"inputs\": null,\n  \"value\": \"ABC\",\n  \"hasValue\": true,\n  \"_id\": 260,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97759:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99634:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99667:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99247:106)\n\tat BaseDDG.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97237:25)\n\tat DataDependencyGraph.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101289:177)\n\tat DDGSet.newDataDependencyGraph (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:461)\n\tat DDGSet.getOrCreateDDG (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:140)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75110:35\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "longestCommonSubstring(ABABC, BABCA)",
+    "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 470,\n  \"traceId\": 527,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 525\n  },\n  \"accessId\": 108,\n  \"valueId\": 466,\n  \"valueFromId\": 468,\n  \"inputs\": null,\n  \"value\": \"ABABC\",\n  \"hasValue\": true,\n  \"_id\": 470,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97759:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99634:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99667:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99247:106)\n\tat BaseDDG.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97237:25)\n\tat DataDependencyGraph.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101289:177)\n\tat DDGSet.newDataDependencyGraph (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:461)\n\tat DDGSet.getOrCreateDDG (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:140)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75110:35\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "longestCommonSubstring(BABCA, ABCBA)",
+    "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 1826,\n  \"traceId\": 1916,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 1914\n  },\n  \"accessId\": 212,\n  \"valueId\": 1822,\n  \"valueFromId\": 1824,\n  \"inputs\": null,\n  \"value\": \"BABCA\",\n  \"hasValue\": true,\n  \"_id\": 1826,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97759:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99634:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99667:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99247:106)\n\tat BaseDDG.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97237:25)\n\tat DataDependencyGraph.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101289:177)\n\tat DDGSet.newDataDependencyGraph (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:461)\n\tat DDGSet.getOrCreateDDG (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:140)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75110:35\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "longestCommonSubstring(Algorithms and data structures implemented in JavaScript, Here you may find Algorithms and data structures that are implemented in JavaScript)",
+    "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3153,\n  \"traceId\": 3276,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3274\n  },\n  \"accessId\": 316,\n  \"valueId\": 3149,\n  \"valueFromId\": 3151,\n  \"inputs\": null,\n  \"value\": \"Algorithms and data structures implemented in JavaScript\",\n  \"hasValue\": true,\n  \"_id\": 3153,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97759:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99634:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99667:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:99247:106)\n\tat BaseDDG.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97237:25)\n\tat DataDependencyGraph.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101289:177)\n\tat DDGSet.newDataDependencyGraph (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:461)\n\tat DDGSet.getOrCreateDDG (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:140)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75110:35\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  }
+]

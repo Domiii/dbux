@@ -1,0 +1,22 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#6) did not return anything.",
+    "ddgTitle": "dot([0], [1])"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#10) did not return anything.",
+    "ddgTitle": "dot([[]], [1])"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#17) did not return anything.",
+    "ddgTitle": "dot([[]], [[]])"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#22) did not return anything.",
+    "ddgTitle": "dot([[]], [[],[]])"
+  }
+]

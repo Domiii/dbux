@@ -1,0 +1,5 @@
+{
+  "succses": false,
+  "failedReason": "error",
+  "error": "Error: Run failed. No application found.\n\tat ChapterListBuilderViewController.runAndExportDDGApplication (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:61465:13)\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async PDGGallery.importOrRunDDGApplication (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75024:7)\n\tat async PDGGallery.getAllExerciseDDGArgs (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75043:21)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75096:27\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+}

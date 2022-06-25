@@ -1,0 +1,1821 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "isPowerOfTwo(-1)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_1",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">-1</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_4 {\n    id=4;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "isPowerOfTwo(0)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_2",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_4 {\n    id=4;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "isPowerOfTwo(1)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_3",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  9 [id=9,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 9[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  9 [id=9,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"9\" TITLE=\"9\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 9[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "isPowerOfTwo(2)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_4",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  16 [id=16,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"16\" TITLE=\"16\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 16[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  16 [id=16,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"16\" TITLE=\"16\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 16[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "isPowerOfTwo(3)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_5",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_12 {\n        id=12;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "ddgTitle": "isPowerOfTwo(4)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_6",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  24 [id=24,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 24[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  24 [id=24,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 24[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "ddgTitle": "isPowerOfTwo(5)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_7",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_12 {\n        id=12;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "ddgTitle": "isPowerOfTwo(6)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_8",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_20 {\n        id=20;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        21 [id=21,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 21[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">while</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">undefined</FONT></TD>\n  </TR>\n</TABLE>>];\n  2[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_20 {\n        id=20;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        21 [id=21,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 21[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_20 {\n        id=20;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        21 [id=21,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 21[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "ddgTitle": "isPowerOfTwo(7)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_9",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_12 {\n        id=12;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "ddgTitle": "isPowerOfTwo(8)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_10",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  32 [id=32,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 32[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  32 [id=32,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 32[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "ddgTitle": "isPowerOfTwo(10)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_11",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_20 {\n        id=20;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        21 [id=21,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 21[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">while</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">undefined</FONT></TD>\n  </TR>\n</TABLE>>];\n  2[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_20 {\n        id=20;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        21 [id=21,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 21[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_20 {\n        id=20;\n        label=\"while#1#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        21 [id=21,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 21[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "ddgTitle": "isPowerOfTwo(12)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_12",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">12</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_28 {\n        id=28;\n        label=\"while#2#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        29 [id=29,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 29[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">12</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">while</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">undefined</FONT></TD>\n  </TR>\n</TABLE>>];\n  2[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">12</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_28 {\n        id=28;\n        label=\"while#2#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        29 [id=29,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 29[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">12</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_28 {\n        id=28;\n        label=\"while#2#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        29 [id=29,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 29[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "ddgTitle": "isPowerOfTwo(16)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_13",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">16</FONT></TD>\n  </TR>\n</TABLE>>];\n  40 [id=40,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"40\" TITLE=\"40\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 40[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">16</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"while#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  40 [id=40,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"40\" TITLE=\"40\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 40[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "ddgTitle": "isPowerOfTwo(31)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_14",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">31</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_12 {\n        id=12;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "ddgTitle": "isPowerOfTwo(64)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_15",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">64</FONT></TD>\n  </TR>\n</TABLE>>];\n  56 [id=56,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 56[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">64</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"while#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_40 {\n      id=40;\n      label=\"while#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_48 {\n      id=48;\n      label=\"while#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  56 [id=56,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 56[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "ddgTitle": "isPowerOfTwo(1024)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_16",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1024</FONT></TD>\n  </TR>\n</TABLE>>];\n  88 [id=88,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"88\" TITLE=\"88\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 88[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1024</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_24 {\n      id=24;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"while#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_40 {\n      id=40;\n      label=\"while#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_48 {\n      id=48;\n      label=\"while#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_56 {\n      id=56;\n      label=\"while#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_64 {\n      id=64;\n      label=\"while#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_72 {\n      id=72;\n      label=\"while#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_80 {\n      id=80;\n      label=\"while#9\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  88 [id=88,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"88\" TITLE=\"88\"><FONT COLOR=\"lightblue\">true</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 88[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "ddgTitle": "isPowerOfTwo(1023)",
+    "uniqueId": "math_is-power-of-two_javascript-algorithms#156_17",
+    "testLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 69,
+          "index": 150
+        },
+        "end": {
+          "line": 22,
+          "column": 3,
+          "index": 875
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/is-power-of-two/isPowerOfTwo.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 45,
+          "index": 104
+        },
+        "end": {
+          "line": 25,
+          "column": 1,
+          "index": 596
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1023</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_6 {\n    id=6;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_8 {\n      id=8;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_12 {\n        id=12;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        13 [id=13,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">false</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  2 -> 13[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "sameAs": 5,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  }
+]

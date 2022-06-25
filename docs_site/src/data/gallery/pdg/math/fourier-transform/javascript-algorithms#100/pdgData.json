@@ -1,0 +1,144 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#8) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#9) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#10) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#11) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#12) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#13) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#14) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#15) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#16) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#17) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#18) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#19) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#20) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#21) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#22) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#23) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#24) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#25) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#26) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#27) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#28) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#29) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#30) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#31) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#32) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#33) did not have any (recorded) parameters.",
+    "ddgTitle": "ComplexNumber.constructor({re,im})"
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "fastFourierTransform([{},{},{},{},{},{},{},{},{},{}])",
+    "error": "TypeError: Cannot read property 're' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101467:40)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101374:90)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101352:323)\n\tat DataDependencyGraph.setSummaryMode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101281:83)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75148:21\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  },
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "fastFourierTransform([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}], true)",
+    "error": "TypeError: Cannot read property 're' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101467:40)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101374:90)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101352:323)\n\tat DataDependencyGraph.setSummaryMode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101281:83)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75148:21\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  }
+]

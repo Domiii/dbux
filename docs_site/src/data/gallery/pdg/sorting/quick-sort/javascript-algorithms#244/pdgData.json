@@ -1,0 +1,216 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "QuickSort.sort([\"bb\",\"aa\",\"c\"])",
+    "uniqueId": "sorting_quick-sort_javascript-algorithms#244_1",
+    "testLoc": {
+      "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+      "loc": {
+        "start": {
+          "line": 25,
+          "column": 39,
+          "index": 633
+        },
+        "end": {
+          "line": 27,
+          "column": 3,
+          "index": 685
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 22,
+          "index": 167
+        },
+        "end": {
+          "line": 47,
+          "column": 3,
+          "index": 1486
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">originalArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"c\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_109 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=109;\n    label=\"\";\n    109 [id=109,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"110\" ROWSPAN=\"2\" PORT=\"110\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"c\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"111\" ROWSPAN=\"2\" PORT=\"111\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"112\" ROWSPAN=\"2\" PORT=\"112\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2 -> 109[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">originalArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"c\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_group_26 {\n    id=26;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_27 {\n      id=27;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_37 {\n        id=37;\n        label=\"Comparator.equal\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_40 {\n          id=40;\n          label=\"SortTester.compareCallback\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_45 {\n            id=45;\n            label=\"SortTester.compareCallback#if\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n      subgraph cluster_group_49 {\n        id=49;\n        label=\"while#0#if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_53 {\n      id=53;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_59 {\n        id=59;\n        label=\"Comparator.equal\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_62 {\n          id=62;\n          label=\"SortTester.compareCallback\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n      subgraph cluster_group_72 {\n        id=72;\n        label=\"while#1#else if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_73 {\n          id=73;\n          label=\"Comparator.lessThan\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_76 {\n            id=76;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n  }\n  subgraph cluster_group_88 {\n    id=88;\n    label=\"QuickSort.sort\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  subgraph cluster_group_97 {\n    id=97;\n    label=\"QuickSort.sort\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  subgraph cluster_ref_105 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=105;\n    label=\"\";\n    105 [id=105,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">leftArraySorted.concat&#40;cent...</TD>\n    <TD TITLE=\"106\" ROWSPAN=\"2\" PORT=\"106\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"c\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"107\" ROWSPAN=\"2\" PORT=\"107\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"108\" ROWSPAN=\"2\" PORT=\"108\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_109 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=109;\n    label=\"\";\n    109 [id=109,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"110\" ROWSPAN=\"2\" PORT=\"110\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"c\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"111\" ROWSPAN=\"2\" PORT=\"111\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"112\" ROWSPAN=\"2\" PORT=\"112\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  105:106 -> 109:110 [id=e1];\n  105:107 -> 109:111 [id=e2];\n  105:108 -> 109:112 [id=e3];\n  105 -> 109 [id=e4];\n  2 -> 105 -> 109[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "QuickSort.sort([\"aa\",\"q\",\"a\",\"bbbb\",\"ccc\"])",
+    "uniqueId": "sorting_quick-sort_javascript-algorithms#244_2",
+    "testLoc": {
+      "filePath": "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js",
+      "loc": {
+        "start": {
+          "line": 25,
+          "column": 39,
+          "index": 633
+        },
+        "end": {
+          "line": 27,
+          "column": 3,
+          "index": 685
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sorting/quick-sort/QuickSort.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 22,
+          "index": 167
+        },
+        "end": {
+          "line": 47,
+          "column": 3,
+          "index": 1486
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">originalArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"q\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"a\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bbbb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"ccc\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_322 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=322;\n    label=\"\";\n    322 [id=322,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"323\" ROWSPAN=\"2\" PORT=\"323\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"q\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"324\" ROWSPAN=\"2\" PORT=\"324\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"a\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"325\" ROWSPAN=\"2\" PORT=\"325\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"326\" ROWSPAN=\"2\" PORT=\"326\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"ccc\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"327\" ROWSPAN=\"2\" PORT=\"327\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bbbb\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  2 -> 322[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">originalArray</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"q\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"a\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bbbb\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"ccc\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_group_32 {\n    id=32;\n    label=\"while\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_33 {\n      id=33;\n      label=\"while#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_45 {\n        id=45;\n        label=\"Comparator.equal\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_48 {\n          id=48;\n          label=\"SortTester.compareCallback\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n      subgraph cluster_group_59 {\n        id=59;\n        label=\"while#0#else if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_60 {\n          id=60;\n          label=\"Comparator.lessThan\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_63 {\n            id=63;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n    subgraph cluster_group_75 {\n      id=75;\n      label=\"while#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_83 {\n        id=83;\n        label=\"Comparator.equal\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_86 {\n          id=86;\n          label=\"SortTester.compareCallback\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n      subgraph cluster_group_96 {\n        id=96;\n        label=\"while#1#else if\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_97 {\n          id=97;\n          label=\"Comparator.lessThan\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_100 {\n            id=100;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n    subgraph cluster_group_112 {\n      id=112;\n      label=\"while#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_119 {\n        id=119;\n        label=\"Comparator.equal\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_122 {\n          id=122;\n          label=\"SortTester.compareCallback\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n      subgraph cluster_group_131 {\n        id=131;\n        label=\"while#2#else\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_132 {\n          id=132;\n          label=\"Comparator.lessThan\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_135 {\n            id=135;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n    subgraph cluster_group_146 {\n      id=146;\n      label=\"while#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_152 {\n        id=152;\n        label=\"Comparator.equal\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_155 {\n          id=155;\n          label=\"SortTester.compareCallback\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n      subgraph cluster_group_164 {\n        id=164;\n        label=\"while#3#else\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_165 {\n          id=165;\n          label=\"Comparator.lessThan\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_168 {\n            id=168;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n  }\n  subgraph cluster_group_179 {\n    id=179;\n    label=\"QuickSort.sort\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_199 {\n      id=199;\n      label=\"QuickSort.sort#while\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_200 {\n        id=200;\n        label=\"QuickSort.sort#while#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_206 {\n          id=206;\n          label=\"Comparator.equal\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_209 {\n            id=209;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n            subgraph cluster_group_212 {\n              id=212;\n              label=\"SortTester.compareCallback#if\";\n              color=\"gray\";\n              fontcolor=\"yellow\";\n            }\n          }\n        }\n        subgraph cluster_group_216 {\n          id=216;\n          label=\"QuickSort.sort#while#0#if\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_220 {\n      id=220;\n      label=\"QuickSort.sort\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_228 {\n      id=228;\n      label=\"QuickSort.sort\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_240 {\n    id=240;\n    label=\"QuickSort.sort\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_260 {\n      id=260;\n      label=\"QuickSort.sort#while\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_261 {\n        id=261;\n        label=\"QuickSort.sort#while#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_267 {\n          id=267;\n          label=\"Comparator.equal\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_270 {\n            id=270;\n            label=\"SortTester.compareCallback\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_279 {\n          id=279;\n          label=\"QuickSort.sort#while#0#else if\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_280 {\n            id=280;\n            label=\"Comparator.lessThan\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n            subgraph cluster_group_283 {\n              id=283;\n              label=\"SortTester.compareCallback\";\n              color=\"gray\";\n              fontcolor=\"yellow\";\n            }\n          }\n        }\n      }\n    }\n    subgraph cluster_group_295 {\n      id=295;\n      label=\"QuickSort.sort\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_304 {\n      id=304;\n      label=\"QuickSort.sort\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_ref_316 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=316;\n    label=\"\";\n    316 [id=316,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">leftArraySorted.concat&#40;cent...</TD>\n    <TD TITLE=\"317\" ROWSPAN=\"2\" PORT=\"317\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"q\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"318\" ROWSPAN=\"2\" PORT=\"318\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"a\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"319\" ROWSPAN=\"2\" PORT=\"319\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"320\" ROWSPAN=\"2\" PORT=\"320\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"ccc\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"321\" ROWSPAN=\"2\" PORT=\"321\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bbbb\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_322 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=322;\n    label=\"\";\n    322 [id=322,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"323\" ROWSPAN=\"2\" PORT=\"323\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"q\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"324\" ROWSPAN=\"2\" PORT=\"324\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"a\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"325\" ROWSPAN=\"2\" PORT=\"325\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"aa\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"326\" ROWSPAN=\"2\" PORT=\"326\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"ccc\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"327\" ROWSPAN=\"2\" PORT=\"327\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">4</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"bbbb\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  316:317 -> 322:323 [id=e1];\n  316:318 -> 322:324 [id=e2];\n  316:319 -> 322:325 [id=e3];\n  316:320 -> 322:326 [id=e4];\n  316:321 -> 322:327 [id=e5];\n  316 -> 322 [id=e6];\n  2 -> 316 -> 322[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  }
+]

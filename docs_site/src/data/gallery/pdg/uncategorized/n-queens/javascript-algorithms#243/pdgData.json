@@ -1,0 +1,119 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#5) did not return anything.",
+    "ddgTitle": "QueenPosition.constructor(0, 0)"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#6) did not return anything.",
+    "ddgTitle": "QueenPosition.constructor(2, 1)"
+  },
+  {
+    "id": 3,
+    "ddgTitle": "QueenPosition.toString()",
+    "uniqueId": "uncategorized_n-queens_javascript-algorithms#243_3",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/n-queens/__test__/QueensPosition.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 56,
+          "index": 140
+        },
+        "end": {
+          "line": 15,
+          "column": 3,
+          "index": 558
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/n-queens/QueenPosition.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 13,
+          "index": 1073
+        },
+        "end": {
+          "line": 38,
+          "column": 3,
+          "index": 1131
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">\"2,1\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">position2</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">rowIndex</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">columnIndex</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">\"2,1\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2:3 -> 5 [id=e1];\n  2:4 -> 5 [id=e2];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  }
+]

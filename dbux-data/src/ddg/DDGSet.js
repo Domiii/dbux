@@ -52,7 +52,7 @@ export default class DDGSet {
       const problematicDataNodes = dp.util.getAllErroneousDataNodes();
       if (problematicDataNodes?.length) {
         const str = dp.util.makeTraceInfo(problematicDataNodes[0].traceId);
-        return `Application contains data flow problems (probably due to missing built-in support), e.g.: ${str}`;
+        return `Application contains data flow problems (probably due to missing built-in support), e.g.near: ${str}`;
       }
 
       const paramTraces = dp.util.getParamTracesOfContext(contextId);

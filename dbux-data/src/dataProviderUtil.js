@@ -17,7 +17,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
-import { renderPath } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative, renderPath } from '@dbux/common-node/src/util/pathUtil';
 import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import DataNodeType, { isDataNodeDelete, isDataNodeModifyType, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
@@ -2736,7 +2736,9 @@ const dataProviderUtil = {
    * @param {RuntimeDataProvider} dp
    */
   makeStaticTraceInfo(dp, staticTraceId) {
-    const fpath = dp.util.getStaticTraceProgramPath(staticTraceId);
+    let fpath = dp.util.getStaticTraceProgramPath(staticTraceId);
+    fpath = dp.application.getPathRelativeToAppAncestorPath(fpath);
+
     const st = dp.collections.staticTraces.getById(staticTraceId);
     const loc = locToString(st.loc);
     const where = `${fpath}:${loc}`;

@@ -1,0 +1,8 @@
+[
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "floydWarshall({vertices,edges,isDirected})",
+    "error": "Error: Don't use shallow clone for snapshot nodes. Use #deepCloneSnapshot instead.\n\tat DataDependencyGraph.cloneNode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97705:13)\n\tat DataDependencyGraph._buildNodeSummarySnapshotsAndVars2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101339:143)\n\tat DataDependencyGraph._buildNodeSummary2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101300:1220)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101361:161)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101368:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101352:323)\n\tat DataDependencyGraph.build (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101289:441)\n\tat DDGSet.newDataDependencyGraph (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:461)\n\tat DDGSet.getOrCreateDDG (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:98556:140)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75110:35\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  }
+]

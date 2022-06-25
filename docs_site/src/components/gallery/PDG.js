@@ -59,8 +59,9 @@ export default function PDG(props) {
   let linksEl;
   if (success) {
     linksEl = <>
-      <p><JSALink loc={testLoc} target="_blank">Test file link</JSALink></p>
-      <p><JSALink loc={algoLoc} target="_blank">Algorithm link</JSALink></p>
+      <JSALink loc={testLoc} target="_blank">Test file link</JSALink>
+      <div className="space-1"></div>
+      <JSALink loc={algoLoc} target="_blank">Algorithm link</JSALink>
     </>;
   }
   else {
@@ -96,11 +97,16 @@ export default function PDG(props) {
   let paginationEl;
   if (success) {
     paginationEl = <div className="d-flex flex-row">
-      <button className="mx-1 p-2" onClick={() => setIndex(index - 1)} disabled={index === 0}>&laquo;</button>
+      <button className="border-gray" onClick={() => setIndex(index - 1)} disabled={index === 0}>
+        &lt;
+      </button>
+      <button className="border-gray" onClick={() => setIndex(index + 1)} disabled={index === screenshots.length - 1}>
+        &gt;
+      </button>
+
       {screenshots.map((v, i) => {
         return <button key={i} className={"mx-1 p-2" + ((i === index) ? " active" : "")} onClick={() => setIndex(i)}>{SummaryModeIcons[i]}</button>;
       })}
-      <button className="mx-1 p-2" onClick={() => setIndex(index + 1)} disabled={index === screenshots.length - 1}>&raquo;</button>
     </div>;
   }
   else {
@@ -110,25 +116,29 @@ export default function PDG(props) {
   const nextPdgId = graphs.getNextId(pdgId);
 
   return <>
-    <div className="container">
-      <h1 className="my-2">
-        <PDGLink title="Previous exercise" pdgId={previousPdgId}>
-          <button className="p-2" disabled={!previousPdgId}>&laquo;</button>
-        </PDGLink>
-        <PDGLink title="Next exercise" pdgId={nextPdgId}>
-          <button className="mx-4 p-2" disabled={!nextPdgId}>&raquo;</button>
-        </PDGLink>
-        {renderData.ddgTitle}
-      </h1>
-      <p>
-        Chapter: {chapterGroup}/{chapter}
-      </p>
-      {linksEl}
-      {paginationEl}
-    </div>
+    <div className="flex flex-col h-full">
+      <div className="container">
+        <h3 className="my-2">
+          <PDGLink title="Previous exercise" pdgId={previousPdgId}>
+            <button className="p-2" disabled={!previousPdgId}>&laquo;</button>
+          </PDGLink>
+          <PDGLink title="Next exercise" pdgId={nextPdgId}>
+            <button className="p-2" disabled={!nextPdgId}>&raquo;</button>
+          </PDGLink>
+          <div className="space-1"></div>
+          {chapterGroup}/{chapter} &gt; {renderData.ddgTitle}
+        </h3>
+        <div className="d-flex flex-row">
+          {paginationEl}
+          <div className="space-1"></div>
+          {linksEl}
+          <div className="space-1"></div>
+        </div>
+      </div>
 
-    <div className="mt-3 vh-100 overflow-hidden border border-white" key={index}>
-      {graphContentEl}
+      <div className="mt-3 border of-hidden border-white" key={index}>
+        {graphContentEl}
+      </div>
     </div>
   </>;
 }

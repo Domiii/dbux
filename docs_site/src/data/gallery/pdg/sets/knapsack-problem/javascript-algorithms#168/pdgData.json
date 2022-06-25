@@ -1,0 +1,32 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#9) did not return anything.",
+    "ddgTitle": "KnapsackItem.constructor({value,weight})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#10) did not return anything.",
+    "ddgTitle": "KnapsackItem.constructor({value,weight})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#11) did not return anything.",
+    "ddgTitle": "KnapsackItem.constructor({value,weight})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#12) did not return anything.",
+    "ddgTitle": "KnapsackItem.constructor({value,weight})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#13) did not return anything.",
+    "ddgTitle": "Knapsack.constructor([{},{},{},{}], 7)"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#14) did not have any (recorded) parameters.",
+    "ddgTitle": "Knapsack.solveZeroOneKnapsackProblem()"
+  }
+]

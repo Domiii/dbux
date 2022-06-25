@@ -1,0 +1,5 @@
+{
+  "succses": false,
+  "failedReason": "error",
+  "error": "Error: Trying to execute command in wrong git repository:\n\"origin\thttps://github.com/trekhleb/javascript-algorithms.git (fetch)\norigin\thttps://github.com/trekhleb/javascript-algorithms.git (push)\"\nSometimes a reset (by using the `Delete project folder` button) can help fix this.\n\tat JavascriptAlgorithmProject.checkCorrectGitRepository (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:125285:380)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async JavascriptAlgorithmProject.gitDoesTagExistLocally (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:126043:5)\n\tat async JavascriptAlgorithmProject.installBug (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:125432:9)\n\tat async wrappedCb (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:86889:23)\n\tat async Timeout._onTimeout (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:86831:15)"
+}

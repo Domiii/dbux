@@ -23,6 +23,11 @@
   padding: 0 var(--ifm-pre-padding);
 }
 
+#__docusaurus {
+  min-height: inherit !important;
+  height: 100%;
+}
+
 html[data-theme="dark"] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
@@ -32,7 +37,7 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
  * ############################################################################*/
 
 /* Override non-category links to be horizonally compact */
-li>a.menu__link {
+li > a.menu__link {
   justify-content: flex-start;
 }
 
@@ -147,6 +152,10 @@ pre {
 
 .p-2px {
   padding: 2px;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .w-full {
@@ -359,4 +368,52 @@ pre {
 button.active {
   background-color: var(--ifm-color-primary-dark);
   border-color: var(--ifm-color-primary-dark);
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.width-fit {
+  width: fit-content;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-horizontal-padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ellipsis-10 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 10rem;
+}
+
+.ellipsis-20 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20rem;
+}
+
+.of-hidden {
+  overflow: hidden;
+}
+
+.space-1 {
+  padding: 0.5rem;
+  display: inline-block;
 }

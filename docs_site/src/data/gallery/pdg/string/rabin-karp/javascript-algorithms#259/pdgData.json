@@ -1,0 +1,5 @@
+{
+  "succses": false,
+  "failedReason": "error",
+  "error": "Error: Abort! (Git command \"checkout __dbux_exercise_javascript-algorithms#259_selected\" failed\n  [Caused By] Process \"javascript-algorithms$ \"git\" --git-dir=C:/Users/domin/code/dbux/dbux_projects/javascript-algorith...\" failed with status code: 1 - error: pathspec '__dbux_exercise_javascript-algorithms#259_selected' did not match any file(s) known to git\n)\n\tat JavascriptAlgorithmProject.installBug (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:125444:17)\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async wrappedCb (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:86889:23)\n\tat async Timeout._onTimeout (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:86831:15)"
+}
