@@ -1,5 +1,8 @@
-{
-  "succses": false,
-  "failedReason": "error",
-  "error": "Error: Run failed. No application found.\n\tat ChapterListBuilderViewController.runAndExportDDGApplication (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:61465:13)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async PDGGallery.importOrRunDDGApplication (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75024:7)\n\tat async PDGGallery.getAllExerciseDDGArgs (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75043:21)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75096:27\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
-}
+[
+  {
+    "success": false,
+    "failedReason": "error",
+    "ddgTitle": "MergeSort.sort([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])",
+    "error": "Error: Don't use shallow clone for snapshot nodes. Use #deepCloneSnapshot instead.\n\tat DataDependencyGraph.cloneNode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:97720:13)\n\tat DataDependencyGraph._buildNodeSummarySnapshotsAndVars2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101332:143)\n\tat DataDependencyGraph._buildNodeSummary2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101293:1220)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101356:161)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101363:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101347:323)\n\tat DataDependencyGraph.setSummaryMode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101274:83)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75148:21\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64312:12"
+  }
+]

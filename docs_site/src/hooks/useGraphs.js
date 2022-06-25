@@ -35,10 +35,17 @@ class Graphs {
   }
 
   makePdgId(renderData) {
-    return encodeURIComponent(`${renderData.ddgTitle}#${++this._lastId}`);
+    // TODO: make this unambiguous between multiple PDGs of same title
+    // TODO: don't ENCODE ids, unless you are building a URL!
+    return encodeURIComponent(`${renderData.ddgTitle}`);
   }
 
   getById(pdgId) {
+    // TODO: fix this
+    if (pdgId.includes(encodeURIComponent('#'))) {
+      // eslint-disable-next-line prefer-destructuring
+      pdgId = pdgId.split(encodeURIComponent('#'), 1)[0];
+    }
     return this._pdgById.get(pdgId);
   }
 
