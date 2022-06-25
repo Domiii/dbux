@@ -2,8 +2,9 @@ function main(a, b, c, d, e) {
   if (true) {
     const arr = [];
 
-    // arr.push(a);
-    // arr.push(b);
+    const a2 = a;
+
+    arr.push(a2, b);
 
     (() => {
       arr.push(c);

@@ -899,7 +899,7 @@ export default class DataDependencyGraph extends BaseDDG {
       }
       else {
         hasOwnSummary = true;
-        const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
+        const dataNode = dp.collections.dataNodes.getById(dataNodeId);
         // link to summaryNode instead of `targetNode`
         targetNode = this.#lookupSummaryNode(dataNode, nodeSummary);
         if (
@@ -915,8 +915,8 @@ export default class DataDependencyGraph extends BaseDDG {
     // add/merge incoming edges
     const incomingEdges = this.og.inEdgesByTimelineId[timelineId] || EmptyArray;
 
-    const dataNode = dp.collections.dataNodes.getById(dataNodeId); // dataNode must exist if summarized
-    if (VerboseSumm && (!this.debugValueId || dataNode?.valueId === this.debugValueId) &&
+    if (VerboseSumm && (
+      !this.debugValueId || dp.collections.dataNodes.getById(dataNodeId)?.valueId === this.debugValueId) &&
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
       this.logger.debug(`Summarizing ${timelineId}, n${targetNode?.dataNodeId}, t=${targetNode?.timelineId}, col=${currentCollapsedAncestor?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
@@ -941,7 +941,8 @@ export default class DataDependencyGraph extends BaseDDG {
           for (const from of allFrom) {
             if (from !== targetNode) {
               summaryState.addEdge(from, targetNode, type);
-              if (VerboseSumm && (!this.debugValueId || dataNode?.valueId === this.debugValueId)) {
+              if (VerboseSumm && (
+                !this.debugValueId || dp.collections.dataNodes.getById(dataNodeId)?.valueId === this.debugValueId)) {
                 this.logger.debug(`  SUMM at ${timelineId}, new edge: ${from.timelineId} -> ${targetNode.timelineId}`);
               }
             }
