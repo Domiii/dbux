@@ -729,7 +729,12 @@ export default class DataDependencyGraph extends BaseDDG {
         //      `dataNodeId`s are not ordered with `timelineId`s.
         //
         const prev = lastModifyNodesByRefId.get(refId) || 0;
-        lastModifyNodesByRefId.set(refId, Math.max(node.dataNodeId, prev));
+        const targetDataNodeId = Math.max(node.dataNodeId, prev);
+        const refName = dp.util.guessAccessedRefVarName(targetDataNodeId);
+        console.debug(`ref summary: n${targetDataNodeId} "${refName}"`);
+        if (refName !== '_ref') { // hackfix: this is to hide stupid `babel` artifacts from destructuring patterns
+          lastModifyNodesByRefId.set(refId, targetDataNodeId);
+        }
       }
       else {
         const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);

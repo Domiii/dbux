@@ -1346,6 +1346,19 @@ const dataProviderUtil = {
   },
 
   /**
+   * Uses some heuristics to get a good name for a ref that was stored in given node.
+   * 
+   * @param {RuntimeDataProvider} dp 
+   */
+  guessAccessedRefVarName(dp, nodeId) {
+    let refId = dp.util.getDataNodeAccessedRefId(nodeId);
+    if (refId) {
+      return dp.util.findRefLastVarName(refId);
+    }
+    return null;
+  },
+
+  /**
    * @param {RuntimeDataProvider} dp 
    */
   _refAccessDataNodeCheck(dp, dataNode) {

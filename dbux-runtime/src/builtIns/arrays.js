@@ -350,6 +350,12 @@ export default function patchArray() {
           }
         }
       }
+
+      // TODO: fixme
+      addPurpose(bceTrace, {
+        type: TracePurpose.NoData
+      });
+
       return resultArr;
     }
   );
@@ -453,7 +459,11 @@ export default function patchArray() {
     "reduceRight"
   ].forEach((m) => {
     // TODO
-    monkeyPatchMethodOverrideDefault(Array, m);
+    monkeyPatchMethodPurpose(Array, m, {
+      type: TracePurpose.NoData,
+      name: m
+    });
+    // monkeyPatchMethodOverrideDefault(Array, m);
   });
 
   // var ign = new Set(['constructor', 'at']);
@@ -471,7 +481,13 @@ export default function patchArray() {
     "entries",
     "values",
     "flat",
-  ].forEach(m => monkeyPatchMethodOverrideDefault(Array, m));
+  // ].forEach(m => monkeyPatchMethodOverrideDefault(Array, m));
+  ].forEach(m => {
+    monkeyPatchMethodPurpose(Array, m, {
+      type: TracePurpose.NoData,
+      name: m
+    });
+  });
 }
 
 [
