@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from '@docusaurus/router';
-import useGraphs from '@src/hooks/useGraphs';
+// import useGraphs from '@src/hooks/useGraphs';
 import GraphvizDot from './GraphvizDot';
 import JSALink from './JSALink';
 import PDGLink from './PDGLink';
@@ -45,7 +45,6 @@ function getSameAsOrigin(screenshots, index) {
 export default function PDG(props) {
   const pdgId = useLocation().hash.substring(1);
   const [index, setIndex] = useState(0);
-  const graphs = useGraphs();
   const { chapterGroup, chapter, exerciseId, renderData } = props;
 
   if (exerciseId === undefined) {
@@ -112,19 +111,22 @@ export default function PDG(props) {
   else {
     paginationEl = null;
   }
-  const previousPdgId = graphs.getPreviousId(pdgId);
-  const nextPdgId = graphs.getNextId(pdgId);
+
+  // TODO: fix this
+  // const graphs = useGraphs();
+  // const previousPdgId = graphs.getPreviousId(pdgId);
+  // const nextPdgId = graphs.getNextId(pdgId);
 
   return <>
     <div className="flex flex-col h-full">
       <div className="container">
         <h3 className="my-2">
-          <PDGLink title="Previous exercise" pdgId={previousPdgId}>
+          {/* <PDGLink title="Previous exercise" pdgId={previousPdgId}>
             <button className="p-2" disabled={!previousPdgId}>&laquo;</button>
           </PDGLink>
           <PDGLink title="Next exercise" pdgId={nextPdgId}>
             <button className="p-2" disabled={!nextPdgId}>&raquo;</button>
-          </PDGLink>
+          </PDGLink> */}
           <div className="space-1"></div>
           {chapterGroup}/{chapter} &gt; {renderData.ddgTitle}
         </h3>
