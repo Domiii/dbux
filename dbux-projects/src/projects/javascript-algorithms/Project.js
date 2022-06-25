@@ -13,7 +13,7 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
  */
 const extraPatches = [
   // 'BubbleSort-baseline',
-  // 'fixDestructing',
+  'fixDestructing',
 ];
 
 export default class JavascriptAlgorithmProject extends Project {
@@ -40,6 +40,7 @@ export default class JavascriptAlgorithmProject extends Project {
   }
 
   async afterInstall() {
+    await this.applyPatches(extraPatches);
   }
 
   canRunExercise(config) {
@@ -47,11 +48,11 @@ export default class JavascriptAlgorithmProject extends Project {
   }
 
   decorateExercise(exercise) {
-    let patches = exercise.patch || [];
-    if (!Array.isArray(patches)) {
-      patches = [patches];
-    }
-    patches.push(...extraPatches);
+    // let patches = exercise.patch || [];
+    // if (!Array.isArray(patches)) {
+    //   patches = [patches];
+    // }
+    // patches.push(...extraPatches);
 
     return {
 
@@ -71,7 +72,7 @@ export default class JavascriptAlgorithmProject extends Project {
       enableSourceMaps: false,
       ...exercise,
 
-      patch: patches
+      // patch: patches
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     };
   }

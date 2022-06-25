@@ -16,16 +16,17 @@ module.exports = [
       'getting-started#ghostlyMatrix/reduce-bad'
     ]
   },
-  // {
-  //   id: 2,
-  //   name: 'javascript-algorithms',
-  //   exercises: [
-  //     'javascript-algorithms#bubbleSort1'
-  //     // 'javascript-algorithms#binarySearch1',
-  //     // 'javascript-algorithms#bubbleSort2',
-  //     // 'javascript-algorithms#binarySearch2'
-  //   ]
-  // },
+  {
+    id: 2,
+    name: 'javascript-algorithms',
+    exercises: [
+      // 'javascript-algorithms#bubbleSort1',
+      'javascript-algorithms#binarySearch1',
+      // 'javascript-algorithms#bubbleSort2',
+      'javascript-algorithms#binarySearch2',
+      'javascript-algorithms#binarySearch-ok'
+    ]
+  },
   {
     id: 2,
     name: 'TODO-MVC (es6)',
