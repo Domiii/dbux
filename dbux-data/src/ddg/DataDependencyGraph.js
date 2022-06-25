@@ -731,7 +731,7 @@ export default class DataDependencyGraph extends BaseDDG {
         const prev = lastModifyNodesByRefId.get(refId) || 0;
         const targetDataNodeId = Math.max(node.dataNodeId, prev);
         const refName = dp.util.guessAccessedRefVarName(targetDataNodeId);
-        console.debug(`ref summary: n${targetDataNodeId} "${refName}"`);
+        // console.debug(`ref summary: n${targetDataNodeId} "${refName}"`);
         if (refName !== '_ref') { // hackfix: this is to hide stupid `babel` artifacts from destructuring patterns
           lastModifyNodesByRefId.set(refId, targetDataNodeId);
         }
