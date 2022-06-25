@@ -201,12 +201,13 @@ export default class DDGTimelineBuilder {
       const { objectNodeId } = dataNode.varAccess;
       const dataNodes = this.dp.indexes.dataNodes.byTrace.get(dataNode.traceId);
       const partialChildren = dataNodes.filter(n =>
-        n.varAccess?.objectNodeId === objectNodeId &&
-        n.traceId >= dataNode.traceId);
+        n.varAccess?.objectNodeId === objectNodeId
+      );
       const refDataNode = this.dp.util.getDataNodeAccessedObjectNode(dataNode.nodeId);
 
       const snapshotCfg = new PDGSnapshotConfig();
       newNode = this.ddg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotCfg, null, partialChildren);
+      // this.logger.debug(`PARTIAL ${newNode.timelineId} n${dataNode.nodeId} tlC=${Object.values(newNode.children).join(',')} nC=${partialChildren.map(n => n.nodeId).join(',')}`);
     }
     else if (this.#shouldBuildRootSnapshot(dataNode)) {
       const snapshotCfg = new PDGSnapshotConfig();
@@ -376,7 +377,25 @@ export default class DDGTimelineBuilder {
    * @param {DataNode[]} dataNodes
    */
   #sortDataNodeGroups(dataNodes) {
-    const byType = groupBy(dataNodes, n => n.type);
+    /**
+     * Order of DataNode groups:
+     * 1. all Reads
+     * 2. Compute, i.e. new object (Creates the snapshot. This is a hackfix: actual order of execution puts the object first.)
+     * 3. all Writes (Writes might already have been consumed by (2) (if (2) exists) and thus might be "skipped")
+     */
+    // NOTE: Ascending order → Bigger number goes down.
+    const typeValue = {
+      [DataNodeType.Read]: 1,
+      [DataNodeType.Compute]: 2,
+      [DataNodeType.ComputeWrite]: 2,
+      [DataNodeType.Write]: 3,
+
+      // NOTE: deletes should generally not be mixed with others?
+      [DataNodeType.Delete]: 3,
+      [DataNodeType.ReadAndDelete]: 3
+    };
+
+    const byType = groupBy(dataNodes, n => typeValue[n.type] || 0);
 
     const byTypeAndObjectNodeId = Object.entries(
       mapValues(
@@ -389,27 +408,9 @@ export default class DDGTimelineBuilder {
             .sort((a, b) => a[0] - b[0])
       )
     );
-
-    /**
-     * Order of DataNode groups:
-     * 1. all Reads
-     * 2. Compute, i.e. new object (Creates the snapshot. This is a hackfix: actual order of execution puts the object first.)
-     * 3. all Writes (Writes might already have been consumed by (2) (if (2) exists) and thus might be "skipped")
-     */
-    // NOTE: Ascending order → Bigger number goes down.
-    const typeOrdering = {
-      [DataNodeType.Read]: 1,
-      [DataNodeType.Compute]: 2,
-      [DataNodeType.ComputeWrite]: 2,
-      [DataNodeType.Write]: 3,
-
-      // NOTE: deletes should generally not be mixed with others?
-      [DataNodeType.Delete]: 3,
-      [DataNodeType.ReadAndDelete]: 3
-    };
     byTypeAndObjectNodeId.sort((a, b) => {
-      const oa = typeOrdering[a[0]] || 0;
-      const ob = typeOrdering[b[0]] || 0;
+      const oa = typeValue[a[0]] || 0;
+      const ob = typeValue[b[0]] || 0;
       return oa - ob;
     });
     return byTypeAndObjectNodeId;

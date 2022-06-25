@@ -15,4 +15,4 @@ function main(n, a) {
   return c;
 }
 
-main(5, 10);
+main(1, 10);

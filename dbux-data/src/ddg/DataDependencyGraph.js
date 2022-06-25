@@ -835,13 +835,7 @@ export default class DataDependencyGraph extends BaseDDG {
       currentCollapsedAncestor = null;
     }
 
-    // TODO: deal with invisible snapshot children?
-    // node.parentNodeId ||  // don't hide snapshot children
-
-    let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
-    let targetNode = currentCollapsedAncestor || node;
-
-    // prep
+    // build summary
     if (!currentCollapsedAncestor) {
       // build node summary (if not already built)
       let summaryCfg = isShallowSummarizedGroup ? ShallowSummaryConfig : DefaultSummaryConfig;
@@ -852,9 +846,7 @@ export default class DataDependencyGraph extends BaseDDG {
       // }
     }
 
-    let isSummarized = (
-      (!!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node))
-    );
+
 
     // DFS recursion
     let hasNestedSummaries = false;
@@ -880,11 +872,18 @@ export default class DataDependencyGraph extends BaseDDG {
       }
     }
 
+    let isVisible = !!currentCollapsedAncestor || ddgQueries.isVisible(this, node);
+    let targetNode = currentCollapsedAncestor || node;
+
     // update `hasNestedSummaries`
     const nodeSummary = this.nodeSummaries[targetNode.timelineId];
     if (nodeSummary && hasNestedSummaries) {
       nodeSummary.hasNestedSummaries = hasNestedSummaries;
     }
+
+    let isSummarized = (
+      (!!currentCollapsedAncestor || ddgQueries.isNodeSummarized(this, node))
+    );
 
     // find summary targetNode (if it has any)
     let hasOwnSummary = false;
@@ -920,7 +919,7 @@ export default class DataDependencyGraph extends BaseDDG {
     if (VerboseSumm && (!this.debugValueId || dataNode?.valueId === this.debugValueId) &&
       (isVisible || isSummarized || incomingEdges?.length)) {
       // eslint-disable-next-line max-len
-      this.logger.debug(`Summarizing ${timelineId}, d=${targetNode?.dataNodeId}, t=${targetNode?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
+      this.logger.debug(`Summarizing ${timelineId}, n${targetNode?.dataNodeId}, t=${targetNode?.timelineId}, col=${currentCollapsedAncestor?.timelineId}, vis=${isVisible}, summarized=${isSummarized}, incoming=${incomingEdges?.join(',')}`);
       // console.debug(`DDG-SUMM: #${timelineId} ${node.label}, sum: ${isSummarized}, c: ${!!children}, vis: ${isVisible}`);
     }
 

@@ -7,7 +7,7 @@
 
 
 function main(a) {
-  const b = a.slice();
+  const b = a.slice(1);
   b[0] = 10;
   return b;
 }

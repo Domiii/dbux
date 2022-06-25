@@ -1,6 +1,6 @@
 
 function main(a) {
-  a.shift();
+  a.shift()
   return a;
 }
 
