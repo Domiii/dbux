@@ -269,7 +269,7 @@ export default class DotBuilder {
     this.command(`bgcolor="${Colors.bg}"`);
     this.command(`node[color="${Colors.nodeOutlineDefault}", fontcolor="${Colors.text}"]`);
     // `node [fontsize=9]`,
-    this.command(`edge[arrowsize=0.5, arrowhead="open", color="${Colors.edge}", fontcolor="${Colors.edgeText}"]`);
+    this.command(`edge[arrowsize=0.9, arrowhead="open", color="${Colors.edge}", fontcolor="${Colors.edgeText}"]`);
     this.command(`labeljust=l`); // graph/cluster label left justified
     this.subgraphAttrs();
 
