@@ -14,6 +14,7 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
 const extraPatches = [
   // 'BubbleSort-baseline',
   'fixDestructing',
+  'sort-simple-sample'
 ];
 
 export default class JavascriptAlgorithmProject extends Project {

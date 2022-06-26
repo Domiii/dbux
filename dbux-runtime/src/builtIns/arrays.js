@@ -5,7 +5,7 @@ import traceCollection from '../data/traceCollection';
 import dataNodeCollection, { ShallowValueRefMeta } from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
-import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault, monkeyPatchMethodPurpose } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault, monkeyPatchMethodPurpose, registerMonkeyPatchedProxy } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -490,8 +490,34 @@ export default function patchArray() {
       name: m
     });
   });
+
+  [
+    'isArray',
+  ].forEach(m => monkeyPatchHolderOverrideDefault(Array, m));
+
+  /** ###########################################################################
+   * override Array ctor
+   * ##########################################################################*/
+  const ctorHandler = (args, result) => {
+    const bceTrace = peekBCEMatchCallee(Array);
+    if (bceTrace) {
+      addPurpose(bceTrace, {
+        type: TracePurpose.Compute,
+        name: 'Array'
+      });
+    }
+    return result;
+  };
+  const p = new Proxy(Array, {
+    apply(target, thisArg, args) {
+      const result = Reflect.apply(target, thisArg, args);
+      return ctorHandler(args, result);
+    },
+    construct(target, args) {
+      const result = Reflect.construct(target, args);
+      return ctorHandler(args, result);
+    }
+  });
+  registerMonkeyPatchedProxy(Array, p);
 }
 
-[
-  'isArray',
-].forEach(m => monkeyPatchHolderOverrideDefault(Array, m));
