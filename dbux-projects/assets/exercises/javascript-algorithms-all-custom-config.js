@@ -621,16 +621,18 @@ module.exports = {
       gallery: {
         ddgSamples: [
           {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
+            exerciseName: "hanoiTower should solve tower of hanoi puzzle with 2 discs@hanoiTower.test.js",
+            ddgTitle: "hanoiTower({numberOfDiscs,moveCallback,fromPole,withPole,toPole})"
           },
           {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
+            exerciseName: "hanoiTower should solve tower of hanoi puzzle with 3 discs@hanoiTower.test.js",
+            ddgTitle: "hanoiTower({numberOfDiscs,moveCallback})"
           }
         ]
       },
-      rerun: true
+      tags: [
+        "summary-broken"
+      ]
     },
     {
       group: "sorting",
@@ -751,12 +753,12 @@ module.exports = {
       gallery: {
         ddgSamples: [
           {
-            "exerciseName": "kMeans should find the nearest neighbour@kMeans.test.js",
-            "ddgTitle": "KMeans([[],[],[]], 2)"
+            exerciseName: "kMeans should find the nearest neighbour@kMeans.test.js",
+            ddgTitle: "KMeans([[],[],[]], 2)"
           },
           {
-            "exerciseName": "kMeans should find the nearest neighbour@kMeans.test.js",
-            "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)"
+            exerciseName: "kMeans should find the nearest neighbour@kMeans.test.js",
+            ddgTitle: "KMeans([[],[],[],[],[],[],[]], 2)"
           }
         ]
       },
@@ -801,12 +803,12 @@ module.exports = {
       gallery: {
         ddgSamples: [
           {
-            "exerciseName": "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
-            "ddgTitle": "knuthMorrisPratt(abcbcglx, abca)"
+            exerciseName: "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
+            ddgTitle: "knuthMorrisPratt(abcbcglx, abca)"
           },
           {
-            "exerciseName": "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
-            "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)"
+            exerciseName: "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
+            ddgTitle: "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)"
           }
         ]
       },

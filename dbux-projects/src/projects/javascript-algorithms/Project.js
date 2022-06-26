@@ -18,6 +18,7 @@ const extraPatches = [
   // 'BubbleSort-baseline',
   // 'hanoiTower0',
   'fixDestructing',
+  'hanoiTower1'
 ];
 
 export default class JavascriptAlgorithmProject extends Project {
