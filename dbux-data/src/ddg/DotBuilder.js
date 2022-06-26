@@ -266,7 +266,7 @@ export default class DotBuilder {
     this.indentLevel += 1;
 
     // global settings
-    this.command(`bgcolor="${Colors.bg}"`);
+    this.command(`bgcolor="#222222"`);
     this.command(`node[color="${Colors.nodeOutlineDefault}", fontcolor="${Colors.text}"]`);
     // `node [fontsize=9]`,
     this.command(`edge[arrowsize=0.9, arrowhead="open", color="${Colors.edge}", fontcolor="${Colors.edgeText}"]`);
