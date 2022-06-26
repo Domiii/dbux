@@ -13,6 +13,7 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
  */
 const extraPatches = [
   // 'BubbleSort-baseline',
+  'hanoiTower0',
   'fixDestructing',
 ];
 

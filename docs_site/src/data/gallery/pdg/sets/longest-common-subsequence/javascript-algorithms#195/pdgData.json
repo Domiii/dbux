@@ -1,102 +1,37 @@
 [
   {
-    "id": 1,
-    "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\"], [\"D\",\"E\",\"F\",\"G\"])",
-    "uniqueId": "sets_longest-common-subsequence_javascript-algorithms#195_1",
-    "testLoc": {
-      "filePath": "src/algorithms/sets/longest-common-subsequence/__test__/longestCommonSubsequence.test.js",
-      "loc": {
-        "start": {
-          "line": 4,
-          "column": 69,
-          "index": 186
-        },
-        "end": {
-          "line": 30,
-          "column": 3,
-          "index": 995
-        }
-      }
-    },
-    "algoLoc": {
-      "filePath": "src/algorithms/sets/longest-common-subsequence/longestCommonSubsequence.js",
-      "loc": {
-        "start": {
-          "line": 6,
-          "column": 61,
-          "index": 148
-        },
-        "end": {
-          "line": 60,
-          "column": 1,
-          "index": 1912
-        }
-      }
-    },
-    "screenshots": [
-      {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">set1</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"A\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"B\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"C\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_6 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=6;\n    label=\"\";\n    6 [id=6,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">set2</TD>\n    <TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"D\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"8\" ROWSPAN=\"2\" PORT=\"8\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"E\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"9\" ROWSPAN=\"2\" PORT=\"9\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"F\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"10\" ROWSPAN=\"2\" PORT=\"10\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"G\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_group_332 {\n    id=332;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_334 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=334;\n      label=\"\";\n      334 [id=334,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"335\" ROWSPAN=\"2\" PORT=\"335\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n  }\n  2 -> 6 -> 334[style=invis,weight=2];\n}",
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      },
-      {
-        "sameAs": 0,
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      },
-      {
-        "sameAs": 1,
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      },
-      {
-        "sameAs": 2,
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      },
-      {
-        "sameAs": 3,
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      },
-      {
-        "sameAs": 4,
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      },
-      {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">set1</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"A\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"B\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"C\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_6 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=6;\n    label=\"\";\n    6 [id=6,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">set2</TD>\n    <TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"D\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"8\" ROWSPAN=\"2\" PORT=\"8\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"E\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"9\" ROWSPAN=\"2\" PORT=\"9\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"F\"</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"10\" ROWSPAN=\"2\" PORT=\"10\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"G\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_group_22 {\n    id=22;\n    label=\"Array&#40;set2.length + 1&#41;.fill...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_23 {\n      id=23;\n      label=\"&#91;cb&#93; Array&#40;set2.length + 1&#41;...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_34 {\n      id=34;\n      label=\"&#91;cb&#93; Array&#40;set2.length + 1&#41;...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_44 {\n      id=44;\n      label=\"&#91;cb&#93; Array&#40;set2.length + 1&#41;...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_54 {\n      id=54;\n      label=\"&#91;cb&#93; Array&#40;set2.length + 1&#41;...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_64 {\n      id=64;\n      label=\"&#91;cb&#93; Array&#40;set2.length + 1&#41;...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_76 {\n    id=76;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_79 {\n      id=79;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_85 {\n      id=85;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_91 {\n      id=91;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_97 {\n      id=97;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_103 {\n    id=103;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_106 {\n      id=106;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_112 {\n      id=112;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_118 {\n      id=118;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_124 {\n      id=124;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_130 {\n      id=130;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_136 {\n    id=136;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_139 {\n      id=139;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_140 {\n        id=140;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_143 {\n          id=143;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_148 {\n            id=148;\n            label=\"for#0#for#0#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_158 {\n          id=158;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_163 {\n            id=163;\n            label=\"for#0#for#1#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_172 {\n          id=172;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_177 {\n            id=177;\n            label=\"for#0#for#2#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n    subgraph cluster_group_188 {\n      id=188;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_189 {\n        id=189;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_192 {\n          id=192;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_197 {\n            id=197;\n            label=\"for#1#for#0#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_206 {\n          id=206;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_211 {\n            id=211;\n            label=\"for#1#for#1#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_220 {\n          id=220;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_225 {\n            id=225;\n            label=\"for#1#for#2#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n    subgraph cluster_group_236 {\n      id=236;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_237 {\n        id=237;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_240 {\n          id=240;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_245 {\n            id=245;\n            label=\"for#2#for#0#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_254 {\n          id=254;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_259 {\n            id=259;\n            label=\"for#2#for#1#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_268 {\n          id=268;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_273 {\n            id=273;\n            label=\"for#2#for#2#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n    subgraph cluster_group_284 {\n      id=284;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_285 {\n        id=285;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_288 {\n          id=288;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_293 {\n            id=293;\n            label=\"for#3#for#0#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_302 {\n          id=302;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_307 {\n            id=307;\n            label=\"for#3#for#1#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n        subgraph cluster_group_316 {\n          id=316;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          subgraph cluster_group_321 {\n            id=321;\n            label=\"for#3#for#2#else\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n          }\n        }\n      }\n    }\n  }\n  subgraph cluster_group_332 {\n    id=332;\n    label=\"if\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    333 [id=333,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">''</TD>\n    <TD ID=\"333\" TITLE=\"333\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_ref_334 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=334;\n      label=\"\";\n      334 [id=334,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"335\" ROWSPAN=\"2\" PORT=\"335\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">\"\"</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n  }\n  333 -> 334:335 [id=e1];\n  2 -> 6 -> 333 -> 334[style=invis,weight=2];\n}",
-        "settings": {
-          "connectedOnly": true,
-          "extraVertical": true,
-          "params": false,
-          "anim": true
-        }
-      }
-    ]
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"\"], [\"\"])"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"\"], [\"A\",\"B\",\"C\"])"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\"], [\"\"])"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\"], [\"D\",\"E\",\"F\",\"G\"])"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\",\"D\",\"G\",\"H\"], [\"A\",\"E\",\"D\",\"F\",\"H\",\"R\"])"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"A\",\"G\",\"G\",\"T\",\"A\",\"B\"], [\"G\",\"X\",\"T\",\"X\",\"A\",\"Y\",\"B\"])"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: longestSequence.unshift(set... (@longestCommonSubsequence.js:50)",
+    "ddgTitle": "longestCommonSubsequence([\"A\",\"B\",\"C\",\"D\",\"A\",\"F\"], [\"A\",\"C\",\"B\",\"C\",\"F\"])"
   }
 ]

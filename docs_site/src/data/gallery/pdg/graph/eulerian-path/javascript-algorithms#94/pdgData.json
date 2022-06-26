@@ -1,5 +1,1 @@
-{
-  "succses": false,
-  "failedReason": "error",
-  "error": "TypeError: Cannot destructure property 'ddgTitle' of 'ddgArg' as it is undefined.\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75059:21\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64267:12"
-}
+[]

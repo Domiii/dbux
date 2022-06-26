@@ -1,8 +1,486 @@
 [
   {
-    "success": false,
-    "failedReason": "error",
+    "id": 1,
+    "ddgTitle": "longestCommonSubstring(𐌵𐌵**ABC, 𐌵𐌵--ABC)",
+    "uniqueId": "string_longest-common-substring_javascript-algorithms#197_1",
+    "testLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js",
+      "loc": {
+        "start": {
+          "line": 18,
+          "column": 46,
+          "index": 808
+        },
+        "end": {
+          "line": 25,
+          "column": 3,
+          "index": 1132
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/longestCommonSubstring.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 65,
+          "index": 152
+        },
+        "end": {
+          "line": 69,
+          "column": 1,
+          "index": 2334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 20,\n  \"traceId\": 35,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 33\n  },\n  \"accessId\": 6,\n  \"valueId\": 16,\n  \"valueFromId\": 18,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**ABC\",\n  \"hasValue\": true,\n  \"_id\": 20,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "longestCommonSubstring(𐌵𐌵**A, 𐌵𐌵--A)",
+    "uniqueId": "string_longest-common-substring_javascript-algorithms#197_2",
+    "testLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js",
+      "loc": {
+        "start": {
+          "line": 18,
+          "column": 46,
+          "index": 808
+        },
+        "end": {
+          "line": 25,
+          "column": 3,
+          "index": 1132
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/longestCommonSubstring.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 65,
+          "index": 152
+        },
+        "end": {
+          "line": 69,
+          "column": 1,
+          "index": 2334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 2179,\n  \"traceId\": 2247,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 2245\n  },\n  \"accessId\": 156,\n  \"valueId\": 2175,\n  \"valueFromId\": 2177,\n  \"inputs\": null,\n  \"value\": \"𐌵𐌵**A\",\n  \"hasValue\": true,\n  \"_id\": 2179,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
     "ddgTitle": "longestCommonSubstring(A买B时, 买B时GD)",
-    "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97645:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99469:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99500:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99083:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97140:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101098:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98417:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98417:140)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75066:35\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64267:12"
+    "uniqueId": "string_longest-common-substring_javascript-algorithms#197_3",
+    "testLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js",
+      "loc": {
+        "start": {
+          "line": 18,
+          "column": 46,
+          "index": 808
+        },
+        "end": {
+          "line": 25,
+          "column": 3,
+          "index": 1132
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/longestCommonSubstring.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 65,
+          "index": 152
+        },
+        "end": {
+          "line": 69,
+          "column": 1,
+          "index": 2334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 3437,\n  \"traceId\": 3538,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 3536\n  },\n  \"accessId\": 260,\n  \"valueId\": 3433,\n  \"valueFromId\": 3435,\n  \"inputs\": null,\n  \"value\": \"A买B时\",\n  \"hasValue\": true,\n  \"_id\": 3437,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "longestCommonSubstring(After test买时 case, another_test买时)",
+    "uniqueId": "string_longest-common-substring_javascript-algorithms#197_4",
+    "testLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js",
+      "loc": {
+        "start": {
+          "line": 18,
+          "column": 46,
+          "index": 808
+        },
+        "end": {
+          "line": 25,
+          "column": 3,
+          "index": 1132
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/longest-common-substring/longestCommonSubstring.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 65,
+          "index": 152
+        },
+        "end": {
+          "line": 69,
+          "column": 1,
+          "index": 2334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}",
+        "error": "Error: missing refId in dataNode: {\n  \"nodeId\": 4534,\n  \"traceId\": 4666,\n  \"type\": 2,\n  \"refId\": 0,\n  \"varAccess\": {\n    \"declarationTid\": 4664\n  },\n  \"accessId\": 356,\n  \"valueId\": 4530,\n  \"valueFromId\": 4532,\n  \"inputs\": null,\n  \"value\": \"After test买时 case\",\n  \"hasValue\": true,\n  \"_id\": 4534,\n  \"applicationId\": 1\n}\n\tat BaseDDG.addNewRefSnapshot (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97815:13)\n\tat DDGTimelineBuilder._addSnapshotOrDataNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99674:670)\n\tat DDGTimelineBuilder._addDataNodeToTimeline2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99705:96)\n\tat DDGTimelineBuilder.addTraceToTimeline (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:99288:104)\n\tat BaseDDG.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:97293:25)\n\tat DataDependencyGraph.build (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101337:177)\n\tat DDGSet.newDataDependencyGraph (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:461)\n\tat DDGSet.getOrCreateDDG (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:98612:140)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75101:29)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75153:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75195:38\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
   }
 ]

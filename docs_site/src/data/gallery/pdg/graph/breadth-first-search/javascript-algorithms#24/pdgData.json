@@ -1,7 +1,0 @@
-[
-  {
-    "success": false,
-    "failedReason": "Selected context (#343) did not return anything.",
-    "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})"
-  }
-]

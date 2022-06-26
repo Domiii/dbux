@@ -5,11 +5,18 @@ export default function Exercise(props) {
   const { chapterGroup, chapter, exercise } = props;
   const { ddgs } = exercise;
 
-  if (!Array.isArray(ddgs)) {
-    return <p>{ddgs.failedReason}</p>;
+  function copyDDGArgs(renderData) {
+    navigator.clipboard.writeText(JSON.stringify({
+      exerciseName: exercise.name,
+      ddgTitle: renderData.ddgTitle
+    }, null, 2));
   }
 
-  return <>
+  if (!Array.isArray(ddgs)) {
+    return <p className="text-danger">{ddgs.failedReason}</p>;
+  }
+
+  return <ul>
     {ddgs.map(renderData => {
       const linkData = {
         chapterGroup,
@@ -19,11 +26,16 @@ export default function Exercise(props) {
       };
 
       if (renderData.success !== false) {
-        return <PDGLink key={renderData.id} linkData={linkData}>{renderData.ddgTitle}</PDGLink>;
+        return <li key={renderData.id}>
+          <PDGLink linkData={linkData}>{renderData.ddgTitle}</PDGLink>
+          <button className="ms-2" onClick={() => copyDDGArgs(renderData)}>copy</button>
+        </li>;
       }
       else {
-        return <PDGLink key={renderData.id} linkData={linkData} className="text-danger">Failed: {renderData.failedReason}</PDGLink>;
+        return <li key={renderData.id}>
+          <PDGLink linkData={linkData} className="text-danger">success: false, {renderData.failedReason}</PDGLink>
+        </li>;
       }
     })}
-  </>;
+  </ul>;
 }

@@ -69,7 +69,19 @@ export default function PDG(props) {
 
   // graphEl
   let graphContentEl;
-  if (success) {
+  if (!success) {
+    graphContentEl = <>
+      <h1 className="mt-4 text-center">{renderData.failedReason}</h1>
+      <pre className="">{renderData.error}</pre>
+    </>;
+  }
+  else if (screenshots?.[index].crash) {
+    graphContentEl = <>
+      <h1 className="mt-4 text-center">crash: true</h1>
+      <pre className="">{screenshots[index].error}</pre>
+    </>;
+  }
+  else {
     const { dot, sameAs } = screenshots[index];
     if (dot) {
       graphContentEl = <GraphvizDot dot={dot} exerciseId={exerciseId} index={index}></GraphvizDot>;
@@ -84,12 +96,6 @@ export default function PDG(props) {
     else {
       throw new Error(`Invalid screenshot missing "dot" or "sameAs", ${JSON.stringify(screenshots[index])}`);
     }
-  }
-  else {
-    graphContentEl = <>
-      <h1 className="mt-4 text-center">{renderData.failedReason}</h1>
-      <pre className="">{renderData.error}</pre>
-    </>;
   }
 
   // paginationEl
@@ -138,7 +144,7 @@ export default function PDG(props) {
         </div>
       </div>
 
-      <div className="mt-3 border of-hidden border-white" key={index}>
+      <div className="mt-3 vh-100 border of-hidden border-white" key={index}>
         {graphContentEl}
       </div>
     </div>
