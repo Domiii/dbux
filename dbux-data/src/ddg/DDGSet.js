@@ -37,24 +37,28 @@ export default class DDGSet {
     return `PDG (${[this.applicationId, ...inputs].join(',')})`;
   }
 
+  getWarning() {
+    const { dp } = this;
+    const problematicStaticTraces = this.dp.util.getAllMissingDataStaticTraces();
+    if (problematicStaticTraces?.length) {
+      const str = problematicStaticTraces
+        .map(s => `${truncateStringShort(`${s.displayName}`)} (@${makeStaticTraceLocLabel(dp, s)})`)
+        .join(',');
+      return `Application contains unsupported syntax: ${str}`;
+    }
+
+    const problematicDataNodes = dp.util.getAllErroneousDataNodes();
+    if (problematicDataNodes?.length) {
+      const str = dp.util.makeTraceInfo(problematicDataNodes[0].traceId);
+      return `Application contains data flow problems (probably due to missing built-in support), e.g. near: ${str}`;
+    }
+    return null;
+  }
+
   getCreateDDGFailureReason({ contextId }) {
     const graphId = this.#makeGraphId(contextId);
     const { dp } = this;
     if (!this.graphsById.get(graphId)) {
-      const problematicStaticTraces = this.dp.util.getAllMissingDataStaticTraces();
-      if (problematicStaticTraces?.length) {
-        const str = problematicStaticTraces
-          .map(s => `${truncateStringShort(`${s.displayName}`)} (@${makeStaticTraceLocLabel(dp, s)})`)
-          .join(',');
-        return `Application contains unsupported syntax: ${str}`;
-      }
-
-      const problematicDataNodes = dp.util.getAllErroneousDataNodes();
-      if (problematicDataNodes?.length) {
-        const str = dp.util.makeTraceInfo(problematicDataNodes[0].traceId);
-        return `Application contains data flow problems (probably due to missing built-in support), e.g. near: ${str}`;
-      }
-
       const paramTraces = dp.util.getParamTracesOfContext(contextId);
       const returnArgumentInputDataNodeId = dp.util.getReturnArgumentInputDataNodeIdOfContext(contextId);
 

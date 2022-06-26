@@ -156,7 +156,8 @@ export async function chooseFile({ title, folder = null, filters, canSelectFolde
 
 export async function showSaveDialog({ title, ...otherOpts } = EmptyObject) {
   const options = {
-    title
+    title,
+    ...otherOpts
   };
   // if (folder) {
   //   options.defaultUri = Uri.file(folder);

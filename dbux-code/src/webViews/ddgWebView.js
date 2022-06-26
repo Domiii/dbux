@@ -1,4 +1,5 @@
 import {
+  Uri,
   ViewColumn
 } from 'vscode';
 import fs from 'fs';
@@ -10,7 +11,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
 import { setTestDDGArgs } from '../testUtil';
-import { confirm, showInformationMessage, showSaveDialog } from '../codeUtil/codeModals';
+import { confirm, showInformationMessage, showSaveDialog, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import RichWebView from './RichWebView';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
@@ -59,9 +60,19 @@ export default class DataDependencyGraphWebView extends RichWebView {
     saveFile: async (fname, data) => {
       // const exportFolder = this.componentManager.externals.getDefaultExportDirectory();
       // hackfix: save them right to where we need em for now
-      // const exportFolder = pathResolve(process.env.DBUX_ROOT, '../scholar-scrape/writing/03-pdg/img/screens');
-      const fpath = await showSaveDialog({ title: 'Save Screenshot', filters: { svg: ['*.svg'] } });
+      const defaultFolder = pathResolve(process.env.DBUX_ROOT, '../scholar-scrape/writing/03-pdg/img/screens');
+      let fpath = await showSaveDialog({ 
+        title: 'Save Screenshot',
+        filters: { svg: ['svg'] },
+        defaultUri: Uri.file(defaultFolder)
+      });
+      if (!fpath) {
+        throw new Error('cancelled');
+      }
       // const exportPath = pathResolve(exportFolder, 'screenshots', `${fname}.svg`);
+      if (!fpath.endsWith('.svg')) {
+        fpath += '.svg';
+      }
       if (fs.existsSync(fpath)) {
         const result = await confirm(`File "${fpath}" already exists, do you want to override?`);
         if (!result) {
@@ -144,7 +155,15 @@ export async function showDDGViewForArgs(ddgArgs) {
     throw new Error(`applicationId not found`);
   }
   const dp = app.dataProvider;
-  const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
+  let failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
+  const warning = dp.ddgs.getWarning(ddgArgs);
+
+  // TODO
+  failureReason ||= warning;
+
+  if (warning) {
+    showWarningMessage(`PDG WARNING: ${warning}`);
+  }
 
   let initialState;
   let hostOnlyState;
