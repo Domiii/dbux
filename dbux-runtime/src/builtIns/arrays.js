@@ -143,10 +143,10 @@ export default function patchArray() {
       const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
 
-      // addPurpose(bceTrace, {
-      //   type: TracePurpose.NoData,
-      //   name: 'shift'
-      // });
+      addPurpose(bceTrace, {
+        type: TracePurpose.NoData,
+        name: 'shift'
+      });
 
       if (!bceTrace) {
         return originalFunction.apply(arr, args);
