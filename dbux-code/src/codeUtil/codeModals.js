@@ -154,6 +154,21 @@ export async function chooseFile({ title, folder = null, filters, canSelectFolde
   return result?.[0]?.fsPath || null;
 }
 
+export async function showSaveDialog({ title, ...otherOpts } = EmptyObject) {
+  const options = {
+    title
+  };
+  // if (folder) {
+  //   options.defaultUri = Uri.file(folder);
+  // }
+  // if (filters) {
+  //   options.filters = filters;
+  // }
+  const result = await window.showSaveDialog(options);
+
+  return result?.fsPath || null;
+}
+
 export async function chooseFolder({ title, folder, filters } = EmptyObject) {
   return await chooseFile({ title, folder, filters, canSelectFolders: true });
 }

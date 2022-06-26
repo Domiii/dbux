@@ -10,9 +10,10 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
 import { setTestDDGArgs } from '../testUtil';
-import { confirm, showInformationMessage } from '../codeUtil/codeModals';
+import { confirm, showInformationMessage, showSaveDialog } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import RichWebView from './RichWebView';
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 
 const defaultColumn = ViewColumn.Two;
@@ -54,21 +55,26 @@ export default class DataDependencyGraphWebView extends RichWebView {
    *  #########################################################################*/
 
   externals = {
-    getDefaultExportDirectory,
-    saveFile: async (filePath, data) => {
-      if (fs.existsSync(filePath)) {
-        const result = await confirm(`File "${filePath}" already exists, do you want to override?`);
+    // getDefaultExportDirectory,
+    saveFile: async (fname, data) => {
+      // const exportFolder = this.componentManager.externals.getDefaultExportDirectory();
+      // hackfix: save them right to where we need em for now
+      // const exportFolder = pathResolve(process.env.DBUX_ROOT, '../scholar-scrape/writing/03-pdg/img/screens');
+      const fpath = await showSaveDialog({ title: 'Save Screenshot', filters: { svg: ['*.svg'] } });
+      // const exportPath = pathResolve(exportFolder, 'screenshots', `${fname}.svg`);
+      if (fs.existsSync(fpath)) {
+        const result = await confirm(`File "${fpath}" already exists, do you want to override?`);
         if (!result) {
           return;
         }
       }
 
-      const folderPath = dirname(filePath);
+      const folderPath = dirname(fpath);
       if (!fs.existsSync(folderPath)) {
         fs.mkdirSync(folderPath);
       }
-      fs.writeFileSync(filePath, data);
-      const msg = translate('savedSuccessfully', { fileName: filePath });
+      fs.writeFileSync(fpath, data);
+      const msg = translate('savedSuccessfully', { fileName: fpath });
       await showInformationMessage(msg, {
         async 'Show File'() {
           await open(folderPath);

@@ -748,7 +748,7 @@ export default class DotBuilder {
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" COLOR="transparent">\
 <FONT COLOR="${Colors.deleteValue}"><S>${prop}</S></FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.deleteValue}"></FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.deleteValue}"> </FONT></TD></TR>
       </TABLE>
     </TD>`;
   }
