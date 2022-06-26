@@ -8,4 +8,4 @@ function main(a, x, y) {
   return b;
 }
 
-console.log(main([1, 2, 3], 4, 5));
+console.log(main([1, 2, 3, 4, 5], 6, 7));

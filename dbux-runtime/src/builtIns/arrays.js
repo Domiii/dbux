@@ -142,6 +142,12 @@ export default function patchArray() {
     (arr, args, originalFunction, patchedFunction) => {
       const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+
+      // addPurpose(bceTrace, {
+      //   type: TracePurpose.NoData,
+      //   name: 'shift'
+      // });
+
       if (!bceTrace) {
         return originalFunction.apply(arr, args);
       }
@@ -172,7 +178,7 @@ export default function patchArray() {
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
 
-      // last element gets deleted (logically speaking; it actually gets just moved to the left)
+      // last element gets deleted (logically speaking; it actually gets moved to the left)
       const deleteVarAccess = {
         objectNodeId: arrNodeId,
         prop: i - 1
