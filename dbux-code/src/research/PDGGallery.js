@@ -98,10 +98,10 @@ export default class PDGGallery {
     if (galleryConfig === false) {
       return null;
     }
-    else if (isPlainObject(galleryConfig)) {
+    else if (galleryConfig?.screenshotConfigs) {
       ({ screenshotConfigs } = galleryConfig);
     }
-    else if (!galleryConfig) {
+    else {
       screenshotConfigs = RootSummaryModes.map((rootSummaryMode) => {
         const settings = new DDGSettings();
         settings.extraVertical = true;
@@ -111,9 +111,9 @@ export default class PDGGallery {
         };
       });
     }
-    else {
-      throw new Error(`Invalid gallery config of exercise "${exercise.id}": ${galleryConfig}`);
-    }
+    // else {
+    //   throw new Error(`Invalid gallery config of exercise "${exercise.id}": ${galleryConfig}`);
+    // }
 
     let lastDot;
     const screenshots = [];

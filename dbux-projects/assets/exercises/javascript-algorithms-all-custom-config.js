@@ -193,7 +193,6 @@ module.exports = {
       success: false,
       failedReason: "bug todo: watch return node is not shown",
       inputConnected: "0",
-      outOfMemory: true,
       gallery: {
         ddgSamples: [
           {
@@ -207,7 +206,8 @@ module.exports = {
         ]
       },
       tags: [
-        "watch-hidden"
+        "watch-hidden",
+        "out-of-memory"
       ]
     },
     {
@@ -745,90 +745,50 @@ module.exports = {
     {
       group: "ml",
       name: "k-means",
-      runFailed: true,
-      crash: true,
       success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
+      failedReason: "control",
+      inputConnected: "0",
       gallery: {
         ddgSamples: [
           {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
+            "exerciseName": "kMeans should find the nearest neighbour@kMeans.test.js",
+            "ddgTitle": "KMeans([[],[],[]], 2)"
           },
           {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
+            "exerciseName": "kMeans should find the nearest neighbour@kMeans.test.js",
+            "ddgTitle": "KMeans([[],[],[],[],[],[],[]], 2)"
           }
         ]
       },
-      TODO: true
+      tags: [
+        "control"
+      ]
     },
     {
       group: "sets",
       name: "knapsack-problem",
-      runFailed: true,
-      crash: true,
       success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      TODO: true
+      failedReason: "reduce",
+      tags: [
+        "missing-data"
+      ]
     },
     {
       group: "uncategorized",
       name: "knight-tour",
       runFailed: true,
-      crash: true,
-      success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      TODO: true
+      tags: [
+        "out-of-memory"
+      ]
     },
     {
       group: "ml",
       name: "knn",
-      runFailed: true,
-      crash: true,
       success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      TODO: true
+      failedReason: "sort",
+      tags: [
+        "missing-data"
+      ]
     },
     {
       group: "string",
@@ -837,16 +797,16 @@ module.exports = {
       crash: true,
       success: false,
       failedReason: "TODO",
-      inputConnected: "TODO",
+      inputConnected: "0",
       gallery: {
         ddgSamples: [
           {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
+            "exerciseName": "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
+            "ddgTitle": "knuthMorrisPratt(abcbcglx, abca)"
           },
           {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
+            "exerciseName": "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
+            "ddgTitle": "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)"
           }
         ]
       },
