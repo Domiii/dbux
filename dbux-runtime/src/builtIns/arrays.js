@@ -85,7 +85,7 @@ export default function patchArray() {
               objectNodeId: inputNodeIds[i],
               prop: j
             };
-            const readNode = dataNodeCollection.createDataNode(args[idx][j], targetTid, DataNodeType.Read, varAccess);
+            const readNode = dataNodeCollection.createDataNode(args[i][j], targetTid, DataNodeType.Read, varAccess);
 
             const varAccessWrite = {
               objectNodeId: arrNodeId,

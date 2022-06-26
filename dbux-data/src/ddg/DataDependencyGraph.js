@@ -687,6 +687,10 @@ export default class DataDependencyGraph extends BaseDDG {
     // add var + compute nodes
     const varNodesByTid = new Map();
     for (const [declarationTid, varOrReturnNodeTimelineId] of varModifyOrReturnDataNodes) {
+      const origNode = this.timelineNodes[varOrReturnNodeTimelineId];
+      if (origNode.refId && lastModifyNodesByRefId.has(origNode.refId)) {
+        continue;
+      }
       const newNode = this.cloneNode(varOrReturnNodeTimelineId);
       // NOTE: we are already cloning `connected` state
       // future-work: consider what it means if a different write of this var is connected, but not this final write in summarized group

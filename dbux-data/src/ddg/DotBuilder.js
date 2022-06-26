@@ -83,6 +83,10 @@ const Colors = {
   value: 'lightblue',
 };
 
+const RenderSettings = {
+  fontSize: 10
+};
+
 const RenderConfig = {
   /**
    * Applies this weight to the invisible edges for `extraVertical` mode.
@@ -170,6 +174,7 @@ export default class DotBuilder {
     return [
       this.nodeIdAttr(timelineId),
       this.nodeOutlineColorAttr(timelineId),
+      `fontsize="${RenderSettings.fontSize}"`,
       ...moreAttrs
     ]
       .filter(Boolean)
@@ -267,8 +272,10 @@ export default class DotBuilder {
 
     // global settings
     this.command(`bgcolor="#222222"`);
+    // hackfix: inkscape does not like a different font size
+    this.command(`fontsize="${RenderSettings.fontSize}"`);
     this.command(`node[color="${Colors.nodeOutlineDefault}", fontcolor="${Colors.text}"]`);
-    // `node [fontsize=9]`,
+    this.command(`node [fontsize="${RenderSettings.fontSize}"]`);
     this.command(`edge[arrowsize=0.9, arrowhead="open", color="${Colors.edge}", fontcolor="${Colors.edgeText}"]`);
     this.command(`labeljust=l`); // graph/cluster label left justified
     this.subgraphAttrs();
@@ -465,6 +472,7 @@ export default class DotBuilder {
       const attrs = [
         this.nodeAttrs(node.timelineId),
         `fontcolor="${colorOverride || Colors.value}"`,
+        `fontsize="${RenderSettings.fontSize}"`,
         this.makeLabel(node.label)
       ].join(',');
       this.command(`${this.makeNodeId(node)} [${attrs}]`);
@@ -740,7 +748,7 @@ export default class DotBuilder {
       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
         <TR><TD BORDER="1" COLOR="transparent">\
 <FONT COLOR="${Colors.deleteValue}"><S>${prop}</S></FONT></TD></TR>
-        <TR><TD><FONT COLOR="${Colors.deleteValue}">&nbsp;</FONT></TD></TR>
+        <TR><TD><FONT COLOR="${Colors.deleteValue}"></FONT></TD></TR>
       </TABLE>
     </TD>`;
   }

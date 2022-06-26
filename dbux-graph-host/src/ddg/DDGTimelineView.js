@@ -148,7 +148,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       const name = makeContextLabel(context, application);
 
       const defaultExportFolder = this.componentManager.externals.getDefaultExportDirectory();
-      const exportPath = pathResolve(defaultExportFolder, 'screenshots', `${name}#${contextId}.svg`);
+      const exportPath = pathResolve(defaultExportFolder, 'screenshots', `${name}_${contextId}.svg`);
       await this.componentManager.externals.saveFile(exportPath, svgString);
     }
   };

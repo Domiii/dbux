@@ -823,8 +823,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // TODO
     // * take screenshot in current mode
     // * add background to top: <rect width="100%" height="100%" fill="#444"/>
-    const lines = this.graphEl.innerHTML.split('\n');
-
-    return lines[0] + `\n<rect width="100%" height="100%" fill="#444"/>\n` + lines.slice(1);
+    // const lines = this.graphEl.innerHTML.split('\n');
+    // return lines[0] + `\n<rect width="100%" height="100%" fill="#444"/>\n` + lines.slice(1);
+    return this.graphEl.innerHTML;
   }
 }
