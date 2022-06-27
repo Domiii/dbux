@@ -1112,21 +1112,24 @@ module.exports = {
     {
       group: "statistics",
       name: "weighted-random",
+      success: true,
+      // don't include in gallery, since it literally generates a thousand samples
       gallery: false,
-      ignoreReason: "too many executions"
+      inputConnected: 'All',
+      tags: [
+        'connected',
+        'control'
+      ]
     },
     {
       group: "cryptography",
       name: "polynomial-hash",
       success: false,
-      tags: ["string"]
+      tags: ["string"],
+      // don't include in gallery, since it runs too many times
+      gallery: false
     }
   ],
   exercises: [
-    // {
-    //   name: "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks@accumulatorBestTimeToBuySellStocks.test.js",
-    //   testProp: "testProp",
-    //   gallery: false,
-    // }
   ]
 };
