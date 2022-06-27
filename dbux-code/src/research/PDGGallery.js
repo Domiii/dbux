@@ -336,6 +336,12 @@ export default class PDGGallery {
   }
 
   generatePDGTable() {
+    // TODO
+    // notAllModes
+    // TODO: `subAlgos` (bits)
+    // inputConnected: Number
+    // notAllModes
+
     const chapterGroupsByName = new Map();
 
     // collect chapter data, add to respective `chapterGroup`
@@ -371,9 +377,6 @@ export default class PDGGallery {
   }
 
   generateEmptyPDGTable() {
-    // TODO
-
-    // TODO: `subAlgos` (bits)
     const result = [];
     for (const chapter of this.controller.chapters) {
       result.push({

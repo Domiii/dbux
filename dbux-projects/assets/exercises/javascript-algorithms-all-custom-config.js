@@ -109,7 +109,8 @@ module.exports = {
     {
       group: "graph",
       name: "travelling-salesman",
-      success: 'some',
+      success: true,
+      notAllModes: true,
       // modes: ['col', 'all'],
       inputConnected: "All",
       tags: [
@@ -141,8 +142,7 @@ module.exports = {
       // NOTE: contains many different algorithms, but most of them are trivial; we only include some
       group: "math",
       name: "bits",
-      success: true,
-      inputConnected: "Some",
+      inputConnected: 3,
       subAlgos: {
         success: [
           'bitLength', // ic=0
@@ -236,27 +236,12 @@ module.exports = {
         ]
       },
     },
-    {x
+    {
       group: "sets",
       name: "cartesian-product",
-      runFailed: true,
-      crash: true,
-      success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      rerun: true
+      success: true,
+      notAllModes: true,
+      inputConnected: "All"
     },
     {
       group: "math",
@@ -264,52 +249,34 @@ module.exports = {
       success: false,
       failedReason: "reduce",
       tags: [
-        "missing-data"
+        'reduce'
       ]
     },
     {
       group: "sets",
       name: "combination-sum",
-      runFailed: true,
-      crash: true,
-      success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      rerun: true
+      success: true,
+      notAllModes: true,
+      inputConnected: "All",
     },
     {
       group: "sets",
       name: "combinations",
-      runFailed: true,
-      crash: true,
-      success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      rerun: true,
+      subAlgos: {
+        combineWithoutRepetitions: {
+          success: true,
+          notAllModes: true,
+          inputConnected: "Some"
+        },
+        factorial: {
+          success: true,
+          inputConnected: "0"
+        },
+        pascalTriangle: {
+          success: true,
+          inputConnected: "All"
+        }
+      }
     },
     {
       group: "math",
@@ -402,20 +369,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       rerun: true,
     },
     {
@@ -494,7 +448,7 @@ module.exports = {
       name: "factorial",
       success: false,
       failedReason: "control(iterative only)",
-      inputConnected: "Some",
+      inputConnected: "TODO",
       gallery: {
         ddgSamples: [
           {
@@ -516,7 +470,7 @@ module.exports = {
       name: "fast-powering",
       success: false,
       failedReason: "control",
-      inputConnected: "Some",
+      inputConnected: "0",
       gallery: {
         ddgSamples: [
           {
@@ -733,7 +687,6 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "0",
       gallery: {
         ddgSamples: [
@@ -806,7 +759,6 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "0",
       gallery: {
         ddgSamples: [
@@ -828,20 +780,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -850,20 +789,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -872,20 +798,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -894,20 +807,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -916,20 +816,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -938,20 +825,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -960,20 +834,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -982,20 +843,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1004,20 +852,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1026,20 +861,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1048,20 +870,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1070,20 +879,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1092,20 +888,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1114,20 +897,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1136,20 +906,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1158,20 +915,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1180,20 +924,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1202,20 +933,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1224,20 +942,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1246,20 +951,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1268,20 +960,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1290,20 +969,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1312,20 +978,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1334,20 +987,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1356,20 +996,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1378,20 +1005,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1400,20 +1014,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1422,20 +1023,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1444,20 +1032,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1466,20 +1041,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1488,20 +1050,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1510,20 +1059,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1532,20 +1068,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
@@ -1554,20 +1077,7 @@ module.exports = {
       runFailed: true,
       crash: true,
       success: false,
-      failedReason: "TODO",
       inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
       TODO: true
     },
     {
