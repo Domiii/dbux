@@ -50,8 +50,12 @@ module.exports = {
     {
       group: "graph",
       name: "bellman-ford",
-      success: true,
-      inputConnected: "All",
+      success: false,
+      tags: [
+        // NOTE: getNeighbors is not connected properly
+        'map'
+      ],
+      // inputConnected: "All",
       gallery: {
         ddgSamples: [
           {
