@@ -1,0 +1,863 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#5) did not have any (recorded) parameters.",
+    "ddgTitle": "SimplePolynomialHash.constructor()"
+  },
+  {
+    "id": 2,
+    "ddgTitle": "SimplePolynomialHash.hash(Test)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_2",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"Test\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  39 [id=39,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"39\" TITLE=\"39\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 39[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"Test\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_40 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=40;\n      label=\"\";\n      40 [id=40,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"41\" ROWSPAN=\"2\" PORT=\"41\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    42 [id=42,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"42\" TITLE=\"42\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  39 [id=39,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"39\" TITLE=\"39\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n  40:41 -> 42 [id=e1];\n  42 -> 39 [id=e2];\n  2 -> 40 -> 42 -> 39[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"Test\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_40 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=40;\n        label=\"\";\n        40 [id=40,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"41\" ROWSPAN=\"2\" PORT=\"41\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      42 [id=42,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"42\" TITLE=\"42\"><FONT COLOR=\"lightblue\">84</FONT></TD>\n  </TR>\n</TABLE>>];\n      43 [id=43,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"43\" TITLE=\"43\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      44 [id=44,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"44\" TITLE=\"44\"><FONT COLOR=\"lightblue\">1801</FONT></TD>\n  </TR>\n</TABLE>>];\n      45 [id=45,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"45\" TITLE=\"45\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_25 {\n      id=25;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      46 [id=46,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"46\" TITLE=\"46\"><FONT COLOR=\"lightblue\">35036</FONT></TD>\n  </TR>\n</TABLE>>];\n      47 [id=47,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"47\" TITLE=\"47\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_32 {\n      id=32;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      48 [id=48,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"48\" TITLE=\"48\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  39 [id=39,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"39\" TITLE=\"39\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n  40:41 -> 42 [id=e1];\n  40:41 -> 44 [id=e2];\n  40:41 -> 46 [id=e3];\n  40:41 -> 48 [id=e4];\n  42 -> 44 [id=e5];\n  43 -> 44 [id=e6];\n  43 -> 45 [id=e7];\n  44 -> 46 [id=e8];\n  45 -> 46 [id=e9];\n  45 -> 47 [id=e10];\n  46 -> 48 [id=e11];\n  47 -> 48 [id=e12];\n  48 -> 39 [id=e13];\n  2 -> 40 -> 42 -> 43 -> 44 -> 45 -> 46 -> 47 -> 48 -> 39[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"Test\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">84</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">84</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">84</FONT></TD>\n  </TR>\n</TABLE>>];\n      16 [id=16,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"16\" TITLE=\"16\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      17 [id=17,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex += 1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      19 [id=19,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"19\" TITLE=\"19\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n      20 [id=20,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"20\" TITLE=\"20\"><FONT COLOR=\"lightblue\">17</FONT></TD>\n  </TR>\n</TABLE>>];\n      21 [id=21,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">1717</FONT></TD>\n  </TR>\n</TABLE>>];\n      22 [id=22,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"22\" TITLE=\"22\"><FONT COLOR=\"lightblue\">1801</FONT></TD>\n  </TR>\n</TABLE>>];\n      23 [id=23,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"23\" TITLE=\"23\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      24 [id=24,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex += 1</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_25 {\n      id=25;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      26 [id=26,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"26\" TITLE=\"26\"><FONT COLOR=\"lightblue\">115</FONT></TD>\n  </TR>\n</TABLE>>];\n      27 [id=27,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"27\" TITLE=\"27\"><FONT COLOR=\"lightblue\">289</FONT></TD>\n  </TR>\n</TABLE>>];\n      28 [id=28,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"28\" TITLE=\"28\"><FONT COLOR=\"lightblue\">33235</FONT></TD>\n  </TR>\n</TABLE>>];\n      29 [id=29,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">35036</FONT></TD>\n  </TR>\n</TABLE>>];\n      30 [id=30,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"30\" TITLE=\"30\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      31 [id=31,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex += 1</TD>\n    <TD ID=\"31\" TITLE=\"31\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      33 [id=33,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"33\" TITLE=\"33\"><FONT COLOR=\"lightblue\">116</FONT></TD>\n  </TR>\n</TABLE>>];\n      34 [id=34,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">4913</FONT></TD>\n  </TR>\n</TABLE>>];\n      35 [id=35,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">569908</FONT></TD>\n  </TR>\n</TABLE>>];\n      36 [id=36,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  39 [id=39,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"39\" TITLE=\"39\"><FONT COLOR=\"lightblue\">604944</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  11:12 -> 20 [id=e4];\n  11:12 -> 27 [id=e5];\n  11:12 -> 34 [id=e6];\n  7 -> 13 [id=e7];\n  7 -> 17 [id=e8];\n  7 -> 24 [id=e9];\n  7 -> 31 [id=e10];\n  10 -> 14 [id=e11];\n  13 -> 14 [id=e12];\n  4 -> 15 [id=e13];\n  4 -> 22 [id=e14];\n  4 -> 29 [id=e15];\n  4 -> 36 [id=e16];\n  14 -> 15 [id=e17];\n  16 -> 17 [id=e18];\n  17 -> 20 [id=e19];\n  17 -> 24 [id=e20];\n  19 -> 21 [id=e21];\n  20 -> 21 [id=e22];\n  15 -> 22 [id=e23];\n  21 -> 22 [id=e24];\n  23 -> 24 [id=e25];\n  24 -> 27 [id=e26];\n  24 -> 31 [id=e27];\n  26 -> 28 [id=e28];\n  27 -> 28 [id=e29];\n  22 -> 29 [id=e30];\n  28 -> 29 [id=e31];\n  30 -> 31 [id=e32];\n  31 -> 34 [id=e33];\n  33 -> 35 [id=e34];\n  34 -> 35 [id=e35];\n  29 -> 36 [id=e36];\n  35 -> 36 [id=e37];\n  36 -> 39 [id=e38];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 16 -> 17 -> 19 -> 20 -> 21 -> 22 -> 23 -> 24 -> 26 -> 27 -> 28 -> 29 -> 30 -> 31 -> 33 -> 34 -> 35 -> 36 -> 39[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "SimplePolynomialHash.hash(a)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_3",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_19 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=19;\n      label=\"\";\n      19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_19 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=19;\n        label=\"\";\n        19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  7 -> 13 [id=e4];\n  10 -> 14 [id=e5];\n  13 -> 14 [id=e6];\n  4 -> 15 [id=e7];\n  14 -> 15 [id=e8];\n  15 -> 18 [id=e9];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "SimplePolynomialHash.hash(b)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_4",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"b\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"b\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_19 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=19;\n      label=\"\";\n      19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"b\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_19 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=19;\n        label=\"\";\n        19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"b\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  7 -> 13 [id=e4];\n  10 -> 14 [id=e5];\n  13 -> 14 [id=e6];\n  4 -> 15 [id=e7];\n  14 -> 15 [id=e8];\n  15 -> 18 [id=e9];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "SimplePolynomialHash.hash(c)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_5",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"c\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"c\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_19 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=19;\n      label=\"\";\n      19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"c\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_19 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=19;\n        label=\"\";\n        19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"c\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  7 -> 13 [id=e4];\n  10 -> 14 [id=e5];\n  13 -> 14 [id=e6];\n  4 -> 15 [id=e7];\n  14 -> 15 [id=e8];\n  15 -> 18 [id=e9];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "ddgTitle": "SimplePolynomialHash.hash(d)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_6",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"d\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"d\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_19 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=19;\n      label=\"\";\n      19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"d\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_19 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=19;\n        label=\"\";\n        19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"d\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  7 -> 13 [id=e4];\n  10 -> 14 [id=e5];\n  13 -> 14 [id=e6];\n  4 -> 15 [id=e7];\n  14 -> 15 [id=e8];\n  15 -> 18 [id=e9];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "ddgTitle": "SimplePolynomialHash.hash(e)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_7",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"e\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"e\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_19 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=19;\n      label=\"\";\n      19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"e\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_19 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=19;\n        label=\"\";\n        19 [id=19,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"20\" ROWSPAN=\"2\" PORT=\"20\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      21 [id=21,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n  19:20 -> 21 [id=e1];\n  21 -> 18 [id=e2];\n  2 -> 19 -> 21 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"e\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  18 [id=18,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">101</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  7 -> 13 [id=e4];\n  10 -> 14 [id=e5];\n  13 -> 14 [id=e6];\n  4 -> 15 [id=e7];\n  14 -> 15 [id=e8];\n  15 -> 18 [id=e9];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 18[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "ddgTitle": "SimplePolynomialHash.hash(ab)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_8",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"ab\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  25 [id=25,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"25\" TITLE=\"25\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 25[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"ab\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_26 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=26;\n      label=\"\";\n      26 [id=26,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"27\" ROWSPAN=\"2\" PORT=\"27\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    28 [id=28,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"28\" TITLE=\"28\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  25 [id=25,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"25\" TITLE=\"25\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n  26:27 -> 28 [id=e1];\n  28 -> 25 [id=e2];\n  2 -> 26 -> 28 -> 25[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"ab\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_26 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=26;\n        label=\"\";\n        26 [id=26,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"27\" ROWSPAN=\"2\" PORT=\"27\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      28 [id=28,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"28\" TITLE=\"28\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      29 [id=29,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      30 [id=30,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"30\" TITLE=\"30\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  25 [id=25,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"25\" TITLE=\"25\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n  26:27 -> 28 [id=e1];\n  26:27 -> 30 [id=e2];\n  28 -> 30 [id=e3];\n  29 -> 30 [id=e4];\n  30 -> 25 [id=e5];\n  2 -> 26 -> 28 -> 29 -> 30 -> 25[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"ab\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      16 [id=16,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"16\" TITLE=\"16\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      17 [id=17,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex += 1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      19 [id=19,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"19\" TITLE=\"19\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n      20 [id=20,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"20\" TITLE=\"20\"><FONT COLOR=\"lightblue\">17</FONT></TD>\n  </TR>\n</TABLE>>];\n      21 [id=21,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">1666</FONT></TD>\n  </TR>\n</TABLE>>];\n      22 [id=22,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"22\" TITLE=\"22\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  25 [id=25,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"25\" TITLE=\"25\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  11:12 -> 20 [id=e4];\n  7 -> 13 [id=e5];\n  7 -> 17 [id=e6];\n  10 -> 14 [id=e7];\n  13 -> 14 [id=e8];\n  4 -> 15 [id=e9];\n  4 -> 22 [id=e10];\n  14 -> 15 [id=e11];\n  16 -> 17 [id=e12];\n  17 -> 20 [id=e13];\n  19 -> 21 [id=e14];\n  20 -> 21 [id=e15];\n  15 -> 22 [id=e16];\n  21 -> 22 [id=e17];\n  22 -> 25 [id=e18];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 16 -> 17 -> 19 -> 20 -> 21 -> 22 -> 25[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "ddgTitle": "SimplePolynomialHash.hash(abc)",
+    "uniqueId": "cryptography_polynomial-hash_javascript-algorithms#236_9",
+    "testLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js",
+      "loc": {
+        "start": {
+          "line": 49,
+          "column": 45,
+          "index": 1837
+        },
+        "end": {
+          "line": 60,
+          "column": 3,
+          "index": 2302
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/cryptography/polynomial-hash/SimplePolynomialHash.js",
+      "loc": {
+        "start": {
+          "line": 28,
+          "column": 13,
+          "index": 840
+        },
+        "end": {
+          "line": 35,
+          "column": 3,
+          "index": 1032
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  32 [id=32,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 32[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_ref_33 {\n      color=\"transparent\";\n      fontcolor=\"yellow\";\n      id=33;\n      label=\"\";\n      33 [id=33,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"34\" ROWSPAN=\"2\" PORT=\"34\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    }\n    35 [id=35,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  32 [id=32,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n  33:34 -> 35 [id=e1];\n  35 -> 32 [id=e2];\n  2 -> 33 -> 35 -> 32[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_summary_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_ref_33 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=33;\n        label=\"\";\n        33 [id=33,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"34\" ROWSPAN=\"2\" PORT=\"34\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      35 [id=35,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      36 [id=36,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      37 [id=37,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n      38 [id=38,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"38\" TITLE=\"38\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_summary_25 {\n      id=25;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      39 [id=39,fontsize=\"10\",shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"39\" TITLE=\"39\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  32 [id=32,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n  33:34 -> 35 [id=e1];\n  33:34 -> 37 [id=e2];\n  33:34 -> 39 [id=e3];\n  35 -> 37 [id=e4];\n  36 -> 37 [id=e5];\n  36 -> 38 [id=e6];\n  37 -> 39 [id=e7];\n  38 -> 39 [id=e8];\n  39 -> 32 [id=e9];\n  2 -> 33 -> 35 -> 36 -> 37 -> 38 -> 39 -> 32[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_5 {\n    id=5;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    6 [id=6,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">0</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    7 [id=7,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex</TD>\n    <TD ID=\"7\" TITLE=\"7\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_9 {\n      id=9;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      10 [id=10,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"10\" TITLE=\"10\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_ref_11 {\n        color=\"transparent\";\n        fontcolor=\"yellow\";\n        id=11;\n        label=\"\";\n        11 [id=11,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">polynomialHash</TD>\n    <TD TITLE=\"12\" ROWSPAN=\"2\" PORT=\"12\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">base</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">17</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n      }\n      13 [id=13,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"13\" TITLE=\"13\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      14 [id=14,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"14\" TITLE=\"14\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      15 [id=15,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"15\" TITLE=\"15\"><FONT COLOR=\"lightblue\">97</FONT></TD>\n  </TR>\n</TABLE>>];\n      16 [id=16,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"16\" TITLE=\"16\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      17 [id=17,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex += 1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_18 {\n      id=18;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      19 [id=19,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"19\" TITLE=\"19\"><FONT COLOR=\"lightblue\">98</FONT></TD>\n  </TR>\n</TABLE>>];\n      20 [id=20,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"20\" TITLE=\"20\"><FONT COLOR=\"lightblue\">17</FONT></TD>\n  </TR>\n</TABLE>>];\n      21 [id=21,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"21\" TITLE=\"21\"><FONT COLOR=\"lightblue\">1666</FONT></TD>\n  </TR>\n</TABLE>>];\n      22 [id=22,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"22\" TITLE=\"22\"><FONT COLOR=\"lightblue\">1763</FONT></TD>\n  </TR>\n</TABLE>>];\n      23 [id=23,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"23\" TITLE=\"23\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      24 [id=24,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">charIndex += 1</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    subgraph cluster_group_25 {\n      id=25;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      26 [id=26,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">word.charCodeAt&#40;charIndex&#41;</TD>\n    <TD ID=\"26\" TITLE=\"26\"><FONT COLOR=\"lightblue\">99</FONT></TD>\n  </TR>\n</TABLE>>];\n      27 [id=27,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">**</TD>\n    <TD ID=\"27\" TITLE=\"27\"><FONT COLOR=\"lightblue\">289</FONT></TD>\n  </TR>\n</TABLE>>];\n      28 [id=28,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"28\" TITLE=\"28\"><FONT COLOR=\"lightblue\">28611</FONT></TD>\n  </TR>\n</TABLE>>];\n      29 [id=29,fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">hash += word.charCodeAt&#40;cha...</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  32 [id=32,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">30374</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 -> 4 [id=e1];\n  6 -> 7 [id=e2];\n  11:12 -> 13 [id=e3];\n  11:12 -> 20 [id=e4];\n  11:12 -> 27 [id=e5];\n  7 -> 13 [id=e6];\n  7 -> 17 [id=e7];\n  7 -> 24 [id=e8];\n  10 -> 14 [id=e9];\n  13 -> 14 [id=e10];\n  4 -> 15 [id=e11];\n  4 -> 22 [id=e12];\n  4 -> 29 [id=e13];\n  14 -> 15 [id=e14];\n  16 -> 17 [id=e15];\n  17 -> 20 [id=e16];\n  17 -> 24 [id=e17];\n  19 -> 21 [id=e18];\n  20 -> 21 [id=e19];\n  15 -> 22 [id=e20];\n  21 -> 22 [id=e21];\n  23 -> 24 [id=e22];\n  24 -> 27 [id=e23];\n  26 -> 28 [id=e24];\n  27 -> 28 [id=e25];\n  22 -> 29 [id=e26];\n  28 -> 29 [id=e27];\n  29 -> 32 [id=e28];\n  2 -> 3 -> 4 -> 6 -> 7 -> 10 -> 11 -> 13 -> 14 -> 15 -> 16 -> 17 -> 19 -> 20 -> 21 -> 22 -> 23 -> 24 -> 26 -> 27 -> 28 -> 29 -> 32[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  }
+]

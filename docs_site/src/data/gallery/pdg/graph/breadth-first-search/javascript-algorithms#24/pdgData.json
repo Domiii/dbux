@@ -1,0 +1,12 @@
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#205) did not return anything.",
+    "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges})"
+  },
+  {
+    "success": false,
+    "failedReason": "Selected context (#343) did not return anything.",
+    "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex})"
+  }
+]

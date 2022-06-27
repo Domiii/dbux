@@ -1,0 +1,644 @@
+[
+  {
+    "id": 1,
+    "ddgTitle": "uniquePaths(3, 2)",
+    "uniqueId": "uncategorized_unique-paths_javascript-algorithms#307_1",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 62,
+          "index": 140
+        },
+        "end": {
+          "line": 11,
+          "column": 3,
+          "index": 398
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/uniquePaths.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 51,
+          "index": 210
+        },
+        "end": {
+          "line": 13,
+          "column": 1,
+          "index": 375
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_13 {\n    id=13;\n    label=\"pascalTriangle\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"pascalTriangle#for\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_25 {\n        id=25;\n        label=\"pascalTriangle#for#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_36 {\n        id=36;\n        label=\"pascalTriangle#for#1\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_47 {\n        id=47;\n        label=\"pascalTriangle#for#2\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "uniquePaths(7, 3)",
+    "uniqueId": "uncategorized_unique-paths_javascript-algorithms#307_2",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 62,
+          "index": 140
+        },
+        "end": {
+          "line": 11,
+          "column": 3,
+          "index": 398
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/uniquePaths.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 51,
+          "index": 210
+        },
+        "end": {
+          "line": 13,
+          "column": 1,
+          "index": 375
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_13 {\n    id=13;\n    label=\"pascalTriangle\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"pascalTriangle#for\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_25 {\n        id=25;\n        label=\"pascalTriangle#for#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_36 {\n        id=36;\n        label=\"pascalTriangle#for#1\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_47 {\n        id=47;\n        label=\"pascalTriangle#for#2\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_58 {\n        id=58;\n        label=\"pascalTriangle#for#3\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_69 {\n        id=69;\n        label=\"pascalTriangle#for#4\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_80 {\n        id=80;\n        label=\"pascalTriangle#for#5\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_91 {\n        id=91;\n        label=\"pascalTriangle#for#6\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_102 {\n        id=102;\n        label=\"pascalTriangle#for#7\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "uniquePaths(3, 7)",
+    "uniqueId": "uncategorized_unique-paths_javascript-algorithms#307_3",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 62,
+          "index": 140
+        },
+        "end": {
+          "line": 11,
+          "column": 3,
+          "index": 398
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/uniquePaths.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 51,
+          "index": 210
+        },
+        "end": {
+          "line": 13,
+          "column": 1,
+          "index": 375
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_13 {\n    id=13;\n    label=\"pascalTriangle\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"pascalTriangle#for\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_25 {\n        id=25;\n        label=\"pascalTriangle#for#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_36 {\n        id=36;\n        label=\"pascalTriangle#for#1\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_47 {\n        id=47;\n        label=\"pascalTriangle#for#2\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_58 {\n        id=58;\n        label=\"pascalTriangle#for#3\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_69 {\n        id=69;\n        label=\"pascalTriangle#for#4\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_80 {\n        id=80;\n        label=\"pascalTriangle#for#5\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_91 {\n        id=91;\n        label=\"pascalTriangle#for#6\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_102 {\n        id=102;\n        label=\"pascalTriangle#for#7\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "uniquePaths(10, 10)",
+    "uniqueId": "uncategorized_unique-paths_javascript-algorithms#307_4",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 62,
+          "index": 140
+        },
+        "end": {
+          "line": 11,
+          "column": 3,
+          "index": 398
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/uniquePaths.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 51,
+          "index": 210
+        },
+        "end": {
+          "line": 13,
+          "column": 1,
+          "index": 375
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_13 {\n    id=13;\n    label=\"pascalTriangle\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"pascalTriangle#for\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_25 {\n        id=25;\n        label=\"pascalTriangle#for#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_36 {\n        id=36;\n        label=\"pascalTriangle#for#1\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_47 {\n        id=47;\n        label=\"pascalTriangle#for#2\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_58 {\n        id=58;\n        label=\"pascalTriangle#for#3\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_69 {\n        id=69;\n        label=\"pascalTriangle#for#4\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_80 {\n        id=80;\n        label=\"pascalTriangle#for#5\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_91 {\n        id=91;\n        label=\"pascalTriangle#for#6\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_102 {\n        id=102;\n        label=\"pascalTriangle#for#7\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_113 {\n        id=113;\n        label=\"pascalTriangle#for#8\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_124 {\n        id=124;\n        label=\"pascalTriangle#for#9\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_135 {\n        id=135;\n        label=\"pascalTriangle#for#10\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_146 {\n        id=146;\n        label=\"pascalTriangle#for#11\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_157 {\n        id=157;\n        label=\"pascalTriangle#for#12\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_168 {\n        id=168;\n        label=\"pascalTriangle#for#13\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_179 {\n        id=179;\n        label=\"pascalTriangle#for#14\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_190 {\n        id=190;\n        label=\"pascalTriangle#for#15\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_201 {\n        id=201;\n        label=\"pascalTriangle#for#16\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_212 {\n        id=212;\n        label=\"pascalTriangle#for#17\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "uniquePaths(100, 1)",
+    "uniqueId": "uncategorized_unique-paths_javascript-algorithms#307_5",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 62,
+          "index": 140
+        },
+        "end": {
+          "line": 11,
+          "column": 3,
+          "index": 398
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/uniquePaths.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 51,
+          "index": 210
+        },
+        "end": {
+          "line": 13,
+          "column": 1,
+          "index": 375
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_13 {\n    id=13;\n    label=\"pascalTriangle\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"pascalTriangle#for\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_25 {\n        id=25;\n        label=\"pascalTriangle#for#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_36 {\n        id=36;\n        label=\"pascalTriangle#for#1\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_47 {\n        id=47;\n        label=\"pascalTriangle#for#2\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_58 {\n        id=58;\n        label=\"pascalTriangle#for#3\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_69 {\n        id=69;\n        label=\"pascalTriangle#for#4\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_80 {\n        id=80;\n        label=\"pascalTriangle#for#5\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_91 {\n        id=91;\n        label=\"pascalTriangle#for#6\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_102 {\n        id=102;\n        label=\"pascalTriangle#for#7\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_113 {\n        id=113;\n        label=\"pascalTriangle#for#8\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_124 {\n        id=124;\n        label=\"pascalTriangle#for#9\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_135 {\n        id=135;\n        label=\"pascalTriangle#for#10\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_146 {\n        id=146;\n        label=\"pascalTriangle#for#11\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_157 {\n        id=157;\n        label=\"pascalTriangle#for#12\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_168 {\n        id=168;\n        label=\"pascalTriangle#for#13\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_179 {\n        id=179;\n        label=\"pascalTriangle#for#14\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_190 {\n        id=190;\n        label=\"pascalTriangle#for#15\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_201 {\n        id=201;\n        label=\"pascalTriangle#for#16\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_212 {\n        id=212;\n        label=\"pascalTriangle#for#17\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_223 {\n        id=223;\n        label=\"pascalTriangle#for#18\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_234 {\n        id=234;\n        label=\"pascalTriangle#for#19\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_245 {\n        id=245;\n        label=\"pascalTriangle#for#20\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_256 {\n        id=256;\n        label=\"pascalTriangle#for#21\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_267 {\n        id=267;\n        label=\"pascalTriangle#for#22\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_278 {\n        id=278;\n        label=\"pascalTriangle#for#23\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_289 {\n        id=289;\n        label=\"pascalTriangle#for#24\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_300 {\n        id=300;\n        label=\"pascalTriangle#for#25\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_311 {\n        id=311;\n        label=\"pascalTriangle#for#26\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_322 {\n        id=322;\n        label=\"pascalTriangle#for#27\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_333 {\n        id=333;\n        label=\"pascalTriangle#for#28\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_344 {\n        id=344;\n        label=\"pascalTriangle#for#29\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_355 {\n        id=355;\n        label=\"pascalTriangle#for#30\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_366 {\n        id=366;\n        label=\"pascalTriangle#for#31\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_377 {\n        id=377;\n        label=\"pascalTriangle#for#32\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_388 {\n        id=388;\n        label=\"pascalTriangle#for#33\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_399 {\n        id=399;\n        label=\"pascalTriangle#for#34\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_410 {\n        id=410;\n        label=\"pascalTriangle#for#35\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_421 {\n        id=421;\n        label=\"pascalTriangle#for#36\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_432 {\n        id=432;\n        label=\"pascalTriangle#for#37\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_443 {\n        id=443;\n        label=\"pascalTriangle#for#38\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_454 {\n        id=454;\n        label=\"pascalTriangle#for#39\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_465 {\n        id=465;\n        label=\"pascalTriangle#for#40\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_476 {\n        id=476;\n        label=\"pascalTriangle#for#41\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_487 {\n        id=487;\n        label=\"pascalTriangle#for#42\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_498 {\n        id=498;\n        label=\"pascalTriangle#for#43\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_509 {\n        id=509;\n        label=\"pascalTriangle#for#44\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_520 {\n        id=520;\n        label=\"pascalTriangle#for#45\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_531 {\n        id=531;\n        label=\"pascalTriangle#for#46\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_542 {\n        id=542;\n        label=\"pascalTriangle#for#47\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_553 {\n        id=553;\n        label=\"pascalTriangle#for#48\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_564 {\n        id=564;\n        label=\"pascalTriangle#for#49\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_575 {\n        id=575;\n        label=\"pascalTriangle#for#50\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_586 {\n        id=586;\n        label=\"pascalTriangle#for#51\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_597 {\n        id=597;\n        label=\"pascalTriangle#for#52\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_608 {\n        id=608;\n        label=\"pascalTriangle#for#53\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_619 {\n        id=619;\n        label=\"pascalTriangle#for#54\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_630 {\n        id=630;\n        label=\"pascalTriangle#for#55\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_641 {\n        id=641;\n        label=\"pascalTriangle#for#56\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_652 {\n        id=652;\n        label=\"pascalTriangle#for#57\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_663 {\n        id=663;\n        label=\"pascalTriangle#for#58\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_674 {\n        id=674;\n        label=\"pascalTriangle#for#59\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_685 {\n        id=685;\n        label=\"pascalTriangle#for#60\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_696 {\n        id=696;\n        label=\"pascalTriangle#for#61\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_707 {\n        id=707;\n        label=\"pascalTriangle#for#62\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_718 {\n        id=718;\n        label=\"pascalTriangle#for#63\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_729 {\n        id=729;\n        label=\"pascalTriangle#for#64\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_740 {\n        id=740;\n        label=\"pascalTriangle#for#65\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_751 {\n        id=751;\n        label=\"pascalTriangle#for#66\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_762 {\n        id=762;\n        label=\"pascalTriangle#for#67\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_773 {\n        id=773;\n        label=\"pascalTriangle#for#68\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_784 {\n        id=784;\n        label=\"pascalTriangle#for#69\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_795 {\n        id=795;\n        label=\"pascalTriangle#for#70\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_806 {\n        id=806;\n        label=\"pascalTriangle#for#71\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_817 {\n        id=817;\n        label=\"pascalTriangle#for#72\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_828 {\n        id=828;\n        label=\"pascalTriangle#for#73\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_839 {\n        id=839;\n        label=\"pascalTriangle#for#74\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_850 {\n        id=850;\n        label=\"pascalTriangle#for#75\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_861 {\n        id=861;\n        label=\"pascalTriangle#for#76\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_872 {\n        id=872;\n        label=\"pascalTriangle#for#77\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_883 {\n        id=883;\n        label=\"pascalTriangle#for#78\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_894 {\n        id=894;\n        label=\"pascalTriangle#for#79\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_905 {\n        id=905;\n        label=\"pascalTriangle#for#80\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_916 {\n        id=916;\n        label=\"pascalTriangle#for#81\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_927 {\n        id=927;\n        label=\"pascalTriangle#for#82\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_938 {\n        id=938;\n        label=\"pascalTriangle#for#83\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_949 {\n        id=949;\n        label=\"pascalTriangle#for#84\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_960 {\n        id=960;\n        label=\"pascalTriangle#for#85\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_971 {\n        id=971;\n        label=\"pascalTriangle#for#86\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_982 {\n        id=982;\n        label=\"pascalTriangle#for#87\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_993 {\n        id=993;\n        label=\"pascalTriangle#for#88\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1004 {\n        id=1004;\n        label=\"pascalTriangle#for#89\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1015 {\n        id=1015;\n        label=\"pascalTriangle#for#90\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1026 {\n        id=1026;\n        label=\"pascalTriangle#for#91\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1037 {\n        id=1037;\n        label=\"pascalTriangle#for#92\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1048 {\n        id=1048;\n        label=\"pascalTriangle#for#93\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1059 {\n        id=1059;\n        label=\"pascalTriangle#for#94\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1070 {\n        id=1070;\n        label=\"pascalTriangle#for#95\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1081 {\n        id=1081;\n        label=\"pascalTriangle#for#96\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1092 {\n        id=1092;\n        label=\"pascalTriangle#for#97\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1103 {\n        id=1103;\n        label=\"pascalTriangle#for#98\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "ddgTitle": "uniquePaths(1, 100)",
+    "uniqueId": "uncategorized_unique-paths_javascript-algorithms#307_6",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 62,
+          "index": 140
+        },
+        "end": {
+          "line": 11,
+          "column": 3,
+          "index": 398
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/unique-paths/uniquePaths.js",
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 51,
+          "index": 210
+        },
+        "end": {
+          "line": 13,
+          "column": 1,
+          "index": 375
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">width</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",fontsize=\"10\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">height</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">100</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_13 {\n    id=13;\n    label=\"pascalTriangle\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_22 {\n      id=22;\n      label=\"pascalTriangle#for\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_25 {\n        id=25;\n        label=\"pascalTriangle#for#0\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_36 {\n        id=36;\n        label=\"pascalTriangle#for#1\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_47 {\n        id=47;\n        label=\"pascalTriangle#for#2\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_58 {\n        id=58;\n        label=\"pascalTriangle#for#3\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_69 {\n        id=69;\n        label=\"pascalTriangle#for#4\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_80 {\n        id=80;\n        label=\"pascalTriangle#for#5\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_91 {\n        id=91;\n        label=\"pascalTriangle#for#6\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_102 {\n        id=102;\n        label=\"pascalTriangle#for#7\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_113 {\n        id=113;\n        label=\"pascalTriangle#for#8\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_124 {\n        id=124;\n        label=\"pascalTriangle#for#9\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_135 {\n        id=135;\n        label=\"pascalTriangle#for#10\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_146 {\n        id=146;\n        label=\"pascalTriangle#for#11\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_157 {\n        id=157;\n        label=\"pascalTriangle#for#12\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_168 {\n        id=168;\n        label=\"pascalTriangle#for#13\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_179 {\n        id=179;\n        label=\"pascalTriangle#for#14\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_190 {\n        id=190;\n        label=\"pascalTriangle#for#15\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_201 {\n        id=201;\n        label=\"pascalTriangle#for#16\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_212 {\n        id=212;\n        label=\"pascalTriangle#for#17\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_223 {\n        id=223;\n        label=\"pascalTriangle#for#18\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_234 {\n        id=234;\n        label=\"pascalTriangle#for#19\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_245 {\n        id=245;\n        label=\"pascalTriangle#for#20\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_256 {\n        id=256;\n        label=\"pascalTriangle#for#21\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_267 {\n        id=267;\n        label=\"pascalTriangle#for#22\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_278 {\n        id=278;\n        label=\"pascalTriangle#for#23\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_289 {\n        id=289;\n        label=\"pascalTriangle#for#24\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_300 {\n        id=300;\n        label=\"pascalTriangle#for#25\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_311 {\n        id=311;\n        label=\"pascalTriangle#for#26\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_322 {\n        id=322;\n        label=\"pascalTriangle#for#27\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_333 {\n        id=333;\n        label=\"pascalTriangle#for#28\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_344 {\n        id=344;\n        label=\"pascalTriangle#for#29\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_355 {\n        id=355;\n        label=\"pascalTriangle#for#30\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_366 {\n        id=366;\n        label=\"pascalTriangle#for#31\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_377 {\n        id=377;\n        label=\"pascalTriangle#for#32\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_388 {\n        id=388;\n        label=\"pascalTriangle#for#33\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_399 {\n        id=399;\n        label=\"pascalTriangle#for#34\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_410 {\n        id=410;\n        label=\"pascalTriangle#for#35\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_421 {\n        id=421;\n        label=\"pascalTriangle#for#36\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_432 {\n        id=432;\n        label=\"pascalTriangle#for#37\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_443 {\n        id=443;\n        label=\"pascalTriangle#for#38\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_454 {\n        id=454;\n        label=\"pascalTriangle#for#39\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_465 {\n        id=465;\n        label=\"pascalTriangle#for#40\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_476 {\n        id=476;\n        label=\"pascalTriangle#for#41\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_487 {\n        id=487;\n        label=\"pascalTriangle#for#42\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_498 {\n        id=498;\n        label=\"pascalTriangle#for#43\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_509 {\n        id=509;\n        label=\"pascalTriangle#for#44\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_520 {\n        id=520;\n        label=\"pascalTriangle#for#45\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_531 {\n        id=531;\n        label=\"pascalTriangle#for#46\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_542 {\n        id=542;\n        label=\"pascalTriangle#for#47\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_553 {\n        id=553;\n        label=\"pascalTriangle#for#48\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_564 {\n        id=564;\n        label=\"pascalTriangle#for#49\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_575 {\n        id=575;\n        label=\"pascalTriangle#for#50\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_586 {\n        id=586;\n        label=\"pascalTriangle#for#51\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_597 {\n        id=597;\n        label=\"pascalTriangle#for#52\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_608 {\n        id=608;\n        label=\"pascalTriangle#for#53\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_619 {\n        id=619;\n        label=\"pascalTriangle#for#54\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_630 {\n        id=630;\n        label=\"pascalTriangle#for#55\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_641 {\n        id=641;\n        label=\"pascalTriangle#for#56\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_652 {\n        id=652;\n        label=\"pascalTriangle#for#57\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_663 {\n        id=663;\n        label=\"pascalTriangle#for#58\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_674 {\n        id=674;\n        label=\"pascalTriangle#for#59\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_685 {\n        id=685;\n        label=\"pascalTriangle#for#60\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_696 {\n        id=696;\n        label=\"pascalTriangle#for#61\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_707 {\n        id=707;\n        label=\"pascalTriangle#for#62\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_718 {\n        id=718;\n        label=\"pascalTriangle#for#63\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_729 {\n        id=729;\n        label=\"pascalTriangle#for#64\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_740 {\n        id=740;\n        label=\"pascalTriangle#for#65\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_751 {\n        id=751;\n        label=\"pascalTriangle#for#66\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_762 {\n        id=762;\n        label=\"pascalTriangle#for#67\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_773 {\n        id=773;\n        label=\"pascalTriangle#for#68\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_784 {\n        id=784;\n        label=\"pascalTriangle#for#69\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_795 {\n        id=795;\n        label=\"pascalTriangle#for#70\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_806 {\n        id=806;\n        label=\"pascalTriangle#for#71\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_817 {\n        id=817;\n        label=\"pascalTriangle#for#72\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_828 {\n        id=828;\n        label=\"pascalTriangle#for#73\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_839 {\n        id=839;\n        label=\"pascalTriangle#for#74\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_850 {\n        id=850;\n        label=\"pascalTriangle#for#75\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_861 {\n        id=861;\n        label=\"pascalTriangle#for#76\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_872 {\n        id=872;\n        label=\"pascalTriangle#for#77\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_883 {\n        id=883;\n        label=\"pascalTriangle#for#78\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_894 {\n        id=894;\n        label=\"pascalTriangle#for#79\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_905 {\n        id=905;\n        label=\"pascalTriangle#for#80\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_916 {\n        id=916;\n        label=\"pascalTriangle#for#81\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_927 {\n        id=927;\n        label=\"pascalTriangle#for#82\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_938 {\n        id=938;\n        label=\"pascalTriangle#for#83\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_949 {\n        id=949;\n        label=\"pascalTriangle#for#84\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_960 {\n        id=960;\n        label=\"pascalTriangle#for#85\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_971 {\n        id=971;\n        label=\"pascalTriangle#for#86\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_982 {\n        id=982;\n        label=\"pascalTriangle#for#87\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_993 {\n        id=993;\n        label=\"pascalTriangle#for#88\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1004 {\n        id=1004;\n        label=\"pascalTriangle#for#89\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1015 {\n        id=1015;\n        label=\"pascalTriangle#for#90\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1026 {\n        id=1026;\n        label=\"pascalTriangle#for#91\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1037 {\n        id=1037;\n        label=\"pascalTriangle#for#92\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1048 {\n        id=1048;\n        label=\"pascalTriangle#for#93\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1059 {\n        id=1059;\n        label=\"pascalTriangle#for#94\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1070 {\n        id=1070;\n        label=\"pascalTriangle#for#95\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1081 {\n        id=1081;\n        label=\"pascalTriangle#for#96\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1092 {\n        id=1092;\n        label=\"pascalTriangle#for#97\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n      subgraph cluster_group_1103 {\n        id=1103;\n        label=\"pascalTriangle#for#98\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  }
+]
