@@ -18,6 +18,7 @@ export const DefaultToolbarBtnClass = 'toolbar-btn btn btn-info';
 const summaryBtnLabelHtml = {
   [DDGSummaryMode.Hide]: '⛒',
   [DDGSummaryMode.HideChildren]: '⛒',
+  [DDGSummaryMode.ExpandSelf]: '☰',
   [DDGSummaryMode.ExpandSelf1]: '1️⃣',
   [DDGSummaryMode.ExpandSelf2]: '2️⃣',
   [DDGSummaryMode.ExpandSelf3]: '3️⃣',

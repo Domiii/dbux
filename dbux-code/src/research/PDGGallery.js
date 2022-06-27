@@ -336,11 +336,6 @@ export default class PDGGallery {
   }
 
   generatePDGTable() {
-    // TODO
-    // notAllModes
-    // TODO: `subAlgos` (bits)
-    // inputConnected: Number
-    // notAllModes
 
     const chapterGroupsByName = new Map();
 

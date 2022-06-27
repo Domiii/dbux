@@ -84,7 +84,7 @@ const Colors = {
 };
 
 const RenderSettings = {
-  fontSize: 9 // 14
+  fontSize: 14
 };
 
 const RenderConfig = {
