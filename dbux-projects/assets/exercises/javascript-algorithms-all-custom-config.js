@@ -181,12 +181,12 @@ module.exports = {
       ]
     },
     {
-      // TODO: crashes when exported but not in VSCode
       group: "sets",
       name: "power-set",
       success: true,
       inputConnected: "All",
       tags: [
+        // NOTE: crashes when exported but not in VSCode
         'export'
       ]
     },
@@ -212,7 +212,7 @@ module.exports = {
         'pdg-bug',
 
         // some: watch return node is not shown
-        "watch-hidden",
+        "bug-watch-hidden",
 
         // some: run out of memory (probably "large input")
         "out-of-memory"
@@ -640,8 +640,8 @@ module.exports = {
       name: "integer-partition",
       success: false,
       tags: [
-        // "bug todo: watch return node is not shown",
-        "watch-hidden"
+        // "bug: watch return node is not shown",
+        "bug-watch-hidden"
       ]
     },
     {
@@ -745,9 +745,11 @@ module.exports = {
     {
       group: "uncategorized",
       name: "knight-tour",
-      runFailed: true,
+      success: false,
       tags: [
-        "out-of-memory"
+        "fill",
+        "map",
+        "out-of-memory" // some are too big
       ]
     },
     {
@@ -871,16 +873,17 @@ module.exports = {
     {
       group: "sorting",
       name: "merge-sort",
-      success: 'TODO',
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All"
     },
     {
       group: "uncategorized",
       name: "n-queens",
-      success: 'TODO',
-      inputConnected: "TODO",
-      TODO: true
+      success: false,
+      tags: [
+        // queens(4) does not work in any summary mode and is too big for ExpandSubgraph
+        'too-slow'
+      ]
     },
     {
       group: "string",
@@ -949,9 +952,13 @@ module.exports = {
     {
       group: "uncategorized",
       name: "recursive-staircase",
-      success: 'TODO',
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "0",
+      tags: [
+        // NOTE: only one of the 4 variants work
+        'control',
+        'bug-watch-hidden'
+      ]
     },
     {
       group: "string",
@@ -979,16 +986,14 @@ module.exports = {
     {
       group: "sorting",
       name: "selection-sort",
-      success: 'TODO',
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All"
     },
     {
       group: "sorting",
       name: "shell-sort",
-      success: 'TODO',
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All"
     },
     {
       group: "sets",
@@ -1010,9 +1015,8 @@ module.exports = {
     {
       group: "uncategorized",
       name: "square-matrix-rotation",
-      success: 'TODO',
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All",
     },
     {
       group: "math",
