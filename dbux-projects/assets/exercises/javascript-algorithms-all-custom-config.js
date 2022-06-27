@@ -511,18 +511,16 @@ module.exports = {
     },
     {
       group: "sets",
-      name: "fisher-yates",x
-      success: false,
-      failedReason: "shift",
+      name: "fisher-yates",
+      success: true,
       tags: [
-        "missing-data"
+        "shift"
       ]
     },
     {
       group: "graph",
       name: "floyd-warshall",
       success: false,
-      failedReason: "control",
       inputConnected: "0",
       gallery: {
         ddgSamples: [
@@ -537,23 +535,27 @@ module.exports = {
         ]
       },
       tags: [
-        "control"
+        "fill",
+        "nested-ME" // maybe causing some trouble?
       ]
     },
     {
       group: "graph",
       name: "bridges",
-      success: false,
-      failedReason: "reduce",
+      success: true,
+      inputsConnected: "All",
       tags: [
-        "missing-data"
+        "reduce"
       ]
     },
     {
       group: "graph",
       name: "hamiltonian-cycle",
       success: false,
-      failedReason: "dataNode error",
+      tags: [
+        "dataNode error",
+        "find" // probably
+      ],
     },
     {
       group: "string",
@@ -579,6 +581,7 @@ module.exports = {
       group: "uncategorized",
       name: "hanoi-tower",
       success: true,
+      notAllModes: true,
       inputConnected: "All",
       gallery: {
         ddgSamples: [
@@ -636,8 +639,8 @@ module.exports = {
       group: "math",
       name: "integer-partition",
       success: false,
-      failedReason: "bug todo: watch return node is not shown",
       tags: [
+        // "bug todo: watch return node is not shown",
         "watch-hidden"
       ]
     },
@@ -645,6 +648,8 @@ module.exports = {
       group: "search",
       name: "interpolation-search",
       success: true,
+      // NOTE: Only exp2 fails for some reason
+      notAllModes: true,
       inputConnected: "All",
       gallery: {
         ddgSamples: [
@@ -663,7 +668,8 @@ module.exports = {
       group: "math",
       name: "is-power-of-two",
       success: true,
-      inputConnected: "0",
+      // NOTE: 2 implementations, one is connected, one is not
+      inputConnected: "some",
       gallery: {
         ddgSamples: [
           {
@@ -678,7 +684,6 @@ module.exports = {
       },
       tags: [
         "control",
-        "connected"
       ]
     },
     {
@@ -730,10 +735,11 @@ module.exports = {
     {
       group: "sets",
       name: "knapsack-problem",
-      success: false,
-      failedReason: "reduce",
+      // success: false,
+      // NOTE: param → return value constraint violated (knapsack is created and evaluated in the test case)
+      ignore: true,
       tags: [
-        "missing-data"
+        "reduce"
       ]
     },
     {
@@ -748,9 +754,9 @@ module.exports = {
       group: "ml",
       name: "knn",
       success: false,
-      failedReason: "sort",
       tags: [
-        "missing-data"
+        "reduce",
+        "sort"
       ]
     },
     {
@@ -772,8 +778,7 @@ module.exports = {
             ddgTitle: "knuthMorrisPratt(abcxabcdabxabcdabcdabcy, abcdabcy)"
           }
         ]
-      },
-      TODO: true
+      }
     },
     {
       group: "graph",
