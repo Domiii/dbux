@@ -1,5 +1,7 @@
-{
-  "succses": false,
-  "failedReason": "error",
-  "error": "Error: Run failed. No application found.\n\tat ChapterListBuilderViewController.runAndExportDDGApplication (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:61420:13)\n\tat runMicrotasks (<anonymous>)\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async PDGGallery.importOrRunDDGApplication (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:74979:7)\n\tat async PDGGallery.getAllExerciseDDGArgs (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:74998:21)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75052:27\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64267:12"
-}
+[
+  {
+    "success": false,
+    "failedReason": "Selected context (#5) did not have any (recorded) parameters.",
+    "ddgTitle": "liuHui(2)"
+  }
+]

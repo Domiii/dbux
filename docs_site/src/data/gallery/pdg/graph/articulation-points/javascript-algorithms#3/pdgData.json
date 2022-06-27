@@ -1,15 +1,12 @@
 [
   {
     "success": false,
-    "failedReason": "missing data traces",
-    "ddgTitle": "articulationPoints({vertices,edges,isDirected})",
-    "traceLocations": [
-      "src/data-structures/linked-list/LinkedList.js#137",
-      "src/algorithms/graph/depth-first-search/depthFirstSearch.js#25",
-      "src/algorithms/graph/articulation-points/articulationPoints.js#7",
-      "src/algorithms/graph/articulation-points/articulationPoints.js#40",
-      "src/algorithms/graph/articulation-points/articulationPoints.js#59",
-      "src/algorithms/graph/articulation-points/articulationPoints.js#104"
-    ]
+    "failedReason": "Application contains unsupported syntax: currentVertex .getNeighbors... (@articulationPoints.js:74)",
+    "ddgTitle": "articulationPoints({vertices,edges,isDirected})"
+  },
+  {
+    "success": false,
+    "failedReason": "Application contains unsupported syntax: currentVertex .getNeighbors... (@articulationPoints.js:74)",
+    "ddgTitle": "articulationPoints({vertices,edges,isDirected})"
   }
 ]

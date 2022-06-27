@@ -1,20 +1,20 @@
 [
   {
     "id": 1,
-    "ddgTitle": "hardyRamanujan(52734)",
+    "ddgTitle": "hardyRamanujan(2)",
     "uniqueId": "math_prime-factors_javascript-algorithms#241_1",
     "testLoc": {
       "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
       "loc": {
         "start": {
-          "line": 39,
+          "line": 36,
           "column": 88,
-          "index": 1647
+          "index": 1637
         },
         "end": {
-          "line": 51,
+          "line": 48,
           "column": 3,
-          "index": 2287
+          "index": 2277
         }
       }
     },
@@ -35,13 +35,14 @@
     },
     "screenshots": [
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">52734</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.3862840948355686</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">-0.36651292058166435</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 16
       },
       {
         "sameAs": 0,
@@ -50,7 +51,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 6
       },
       {
         "sameAs": 1,
@@ -59,7 +61,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 7
       },
       {
         "sameAs": 2,
@@ -68,7 +71,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 8
       },
       {
         "sameAs": 3,
@@ -77,7 +81,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 9
       },
       {
         "sameAs": 4,
@@ -86,16 +91,1088 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 10
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">52734</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">10.8730156877927</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.3862840948355686</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">0.6931471805599453</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">-0.36651292058166435</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "hardyRamanujan(4)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_2",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
         }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">0.32663425997828094</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">1.3862943611198906</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">0.32663425997828094</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "hardyRamanujan(40)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_3",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">40</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1.3053227409632366</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">40</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">3.6888794541139363</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1.3053227409632366</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "hardyRamanujan(156)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_4",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">156</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1.61935972946482</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">156</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">5.049856007249537</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1.61935972946482</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "hardyRamanujan(980)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_5",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">980</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1.9297158073594658</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">980</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">6.887552571664617</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1.9297158073594658</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "ddgTitle": "hardyRamanujan(52734)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_6",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">52734</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.3862840948355686</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">52734</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">10.8730156877927</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.3862840948355686</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "ddgTitle": "hardyRamanujan(343434)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_7",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">343434</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.54527635538628</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">343434</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">12.746750232445345</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.54527635538628</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "ddgTitle": "hardyRamanujan(456745)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_8",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">456745</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.5673987036144457</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">456745</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">13.031880527272836</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.5673987036144457</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "ddgTitle": "hardyRamanujan(510510)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_9",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">510510</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.575901890058003</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">510510</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">13.143165505033592</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.575901890058003</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "ddgTitle": "hardyRamanujan(8735463)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_10",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8735463</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.7715194949009865</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8735463</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">15.98290150529726</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">2.7715194949009865</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "ddgTitle": "hardyRamanujan(873452453)",
+    "uniqueId": "math_prime-factors_javascript-algorithms#241_11",
+    "testLoc": {
+      "filePath": "src/algorithms/math/prime-factors/__test__/primeFactors.test.js",
+      "loc": {
+        "start": {
+          "line": 36,
+          "column": 88,
+          "index": 1637
+        },
+        "end": {
+          "line": 48,
+          "column": 3,
+          "index": 2277
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/prime-factors/primeFactors.js",
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 34,
+          "index": 1126
+        },
+        "end": {
+          "line": 42,
+          "column": 1,
+          "index": 1163
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">873452453</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">3.0247066455016016</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 5 [id=e1];\n  2 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">n</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">873452453</FONT></TD>\n  </TR>\n</TABLE>>];\n  4 [id=4,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">log</TD>\n    <TD ID=\"4\" TITLE=\"4\"><FONT COLOR=\"lightblue\">20.587964253315025</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">3.0247066455016016</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 4 [id=e1];\n  4 -> 5 [id=e2];\n  2 -> 4 -> 5[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
       }
     ]
   }

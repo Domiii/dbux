@@ -208,6 +208,10 @@ export default class ChapterListBuilderViewController {
    * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}`
    */
   isValidDDGFilePath(filePath) {
+    // TODO: use exercise group, chapter to choose files in same chatper folder
+    // const { group, chapter } = exercise;
+    // const pattern = `src/algorithms/${group}/${chapter}/([^/]*.js)`;
+    // const re = new RegExp(pattern);
     const ValidFilePattern = /src\/algorithms\/([^/]*)\/([^/]*)\/([^/]*.js)$/;
     return ValidFilePattern.test(filePath);
   }

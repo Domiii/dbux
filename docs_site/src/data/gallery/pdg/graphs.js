@@ -22,287 +22,279 @@ import pdg21 from './graph/articulation-points/javascript-algorithms#7/pdgData.j
 import pdg22 from './graph/articulation-points/javascript-algorithms#8/pdgData.json';
 import pdg23 from './graph/bellman-ford/javascript-algorithms#10/pdgData.json';
 import pdg24 from './graph/bellman-ford/javascript-algorithms#11/pdgData.json';
-import pdg25 from './graph/breadth-first-search/javascript-algorithms#23/pdgData.json';
-import pdg26 from './graph/breadth-first-search/javascript-algorithms#24/pdgData.json';
-import pdg27 from './graph/bridges/javascript-algorithms#115/pdgData.json';
-import pdg28 from './graph/bridges/javascript-algorithms#116/pdgData.json';
-import pdg29 from './graph/bridges/javascript-algorithms#117/pdgData.json';
-import pdg30 from './graph/bridges/javascript-algorithms#118/pdgData.json';
-import pdg31 from './graph/bridges/javascript-algorithms#119/pdgData.json';
-import pdg32 from './graph/bridges/javascript-algorithms#120/pdgData.json';
-import pdg33 from './graph/depth-first-search/javascript-algorithms#71/pdgData.json';
-import pdg34 from './graph/depth-first-search/javascript-algorithms#72/pdgData.json';
-import pdg35 from './graph/detect-cycle/javascript-algorithms#74/pdgData.json';
-import pdg36 from './graph/detect-cycle/javascript-algorithms#75/pdgData.json';
-import pdg37 from './graph/detect-cycle/javascript-algorithms#76/pdgData.json';
-import pdg38 from './graph/dijkstra/javascript-algorithms#77/pdgData.json';
-import pdg39 from './graph/dijkstra/javascript-algorithms#78/pdgData.json';
-import pdg40 from './graph/eulerian-path/javascript-algorithms#93/pdgData.json';
-import pdg41 from './graph/eulerian-path/javascript-algorithms#94/pdgData.json';
-import pdg42 from './graph/eulerian-path/javascript-algorithms#95/pdgData.json';
-import pdg43 from './graph/floyd-warshall/javascript-algorithms#110/pdgData.json';
-import pdg44 from './graph/floyd-warshall/javascript-algorithms#111/pdgData.json';
-import pdg45 from './graph/floyd-warshall/javascript-algorithms#112/pdgData.json';
-import pdg46 from './graph/hamiltonian-cycle/javascript-algorithms#122/pdgData.json';
-import pdg47 from './graph/hamiltonian-cycle/javascript-algorithms#123/pdgData.json';
-import pdg48 from './graph/kruskal/javascript-algorithms#183/pdgData.json';
-import pdg49 from './graph/kruskal/javascript-algorithms#184/pdgData.json';
-import pdg50 from './graph/kruskal/javascript-algorithms#185/pdgData.json';
-import pdg51 from './graph/prim/javascript-algorithms#237/pdgData.json';
-import pdg52 from './graph/prim/javascript-algorithms#238/pdgData.json';
-import pdg53 from './graph/prim/javascript-algorithms#239/pdgData.json';
-import pdg54 from './graph/strongly-connected-components/javascript-algorithms#301/pdgData.json';
-import pdg55 from './graph/strongly-connected-components/javascript-algorithms#302/pdgData.json';
-import pdg56 from './graph/topological-sorting/javascript-algorithms#304/pdgData.json';
-import pdg57 from './graph/travelling-salesman/javascript-algorithms#14/pdgData.json';
-import pdg58 from './image-processing/seam-carving/javascript-algorithms#275/pdgData.json';
-import pdg59 from './linked-list/reverse-traversal/javascript-algorithms#276/pdgData.json';
-import pdg60 from './linked-list/traversal/javascript-algorithms#305/pdgData.json';
-import pdg61 from './math/binary-floating-point/javascript-algorithms#108/pdgData.json';
-import pdg62 from './math/binary-floating-point/javascript-algorithms#109/pdgData.json';
-import pdg63 from './math/binary-floating-point/javascript-algorithms#19/pdgData.json';
-import pdg64 from './math/binary-floating-point/javascript-algorithms#20/pdgData.json';
-import pdg65 from './math/binary-floating-point/javascript-algorithms#21/pdgData.json';
-import pdg66 from './math/bits/javascript-algorithms#113/pdgData.json';
-import pdg67 from './math/bits/javascript-algorithms#114/pdgData.json';
-import pdg68 from './math/bits/javascript-algorithms#154/pdgData.json';
-import pdg69 from './math/bits/javascript-algorithms#155/pdgData.json';
-import pdg70 from './math/bits/javascript-algorithms#157/pdgData.json';
-import pdg71 from './math/bits/javascript-algorithms#17/pdgData.json';
-import pdg72 from './math/bits/javascript-algorithms#18/pdgData.json';
-import pdg73 from './math/bits/javascript-algorithms#220/pdgData.json';
-import pdg74 from './math/bits/javascript-algorithms#221/pdgData.json';
-import pdg75 from './math/bits/javascript-algorithms#222/pdgData.json';
-import pdg76 from './math/bits/javascript-algorithms#284/pdgData.json';
-import pdg77 from './math/bits/javascript-algorithms#303/pdgData.json';
-import pdg78 from './math/bits/javascript-algorithms#308/pdgData.json';
-import pdg79 from './math/bits/javascript-algorithms#46/pdgData.json';
-import pdg80 from './math/bits/javascript-algorithms#67/pdgData.json';
-import pdg81 from './math/bits/javascript-algorithms#80/pdgData.json';
-import pdg82 from './math/complex-number/javascript-algorithms#50/pdgData.json';
-import pdg83 from './math/complex-number/javascript-algorithms#51/pdgData.json';
-import pdg84 from './math/complex-number/javascript-algorithms#52/pdgData.json';
-import pdg85 from './math/complex-number/javascript-algorithms#53/pdgData.json';
-import pdg86 from './math/complex-number/javascript-algorithms#54/pdgData.json';
-import pdg87 from './math/complex-number/javascript-algorithms#55/pdgData.json';
-import pdg88 from './math/complex-number/javascript-algorithms#56/pdgData.json';
-import pdg89 from './math/complex-number/javascript-algorithms#57/pdgData.json';
-import pdg90 from './math/complex-number/javascript-algorithms#58/pdgData.json';
-import pdg91 from './math/complex-number/javascript-algorithms#59/pdgData.json';
-import pdg92 from './math/euclidean-algorithm/javascript-algorithms#89/pdgData.json';
-import pdg93 from './math/euclidean-algorithm/javascript-algorithms#90/pdgData.json';
-import pdg94 from './math/euclidean-distance/javascript-algorithms#91/pdgData.json';
-import pdg95 from './math/euclidean-distance/javascript-algorithms#92/pdgData.json';
-import pdg96 from './math/factorial/javascript-algorithms#96/pdgData.json';
-import pdg97 from './math/factorial/javascript-algorithms#97/pdgData.json';
-import pdg98 from './math/fast-powering/javascript-algorithms#101/pdgData.json';
-import pdg99 from './math/fibonacci/javascript-algorithms#102/pdgData.json';
-import pdg100 from './math/fibonacci/javascript-algorithms#103/pdgData.json';
-import pdg101 from './math/fibonacci/javascript-algorithms#104/pdgData.json';
-import pdg102 from './math/fibonacci/javascript-algorithms#105/pdgData.json';
-import pdg103 from './math/fourier-transform/javascript-algorithms#100/pdgData.json';
-import pdg104 from './math/fourier-transform/javascript-algorithms#153/pdgData.json';
-import pdg105 from './math/fourier-transform/javascript-algorithms#79/pdgData.json';
-import pdg106 from './math/fourier-transform/javascript-algorithms#98/pdgData.json';
-import pdg107 from './math/fourier-transform/javascript-algorithms#99/pdgData.json';
-import pdg108 from './math/horner-method/javascript-algorithms#141/pdgData.json';
-import pdg109 from './math/horner-method/javascript-algorithms#142/pdgData.json';
-import pdg110 from './math/horner-method/javascript-algorithms#45/pdgData.json';
-import pdg111 from './math/integer-partition/javascript-algorithms#151/pdgData.json';
-import pdg112 from './math/is-power-of-two/javascript-algorithms#156/pdgData.json';
-import pdg113 from './math/is-power-of-two/javascript-algorithms#158/pdgData.json';
-import pdg114 from './math/least-common-multiple/javascript-algorithms#186/pdgData.json';
-import pdg115 from './math/liu-hui/javascript-algorithms#191/pdgData.json';
-import pdg116 from './math/liu-hui/javascript-algorithms#192/pdgData.json';
-import pdg117 from './math/liu-hui/javascript-algorithms#193/pdgData.json';
-import pdg118 from './math/liu-hui/javascript-algorithms#194/pdgData.json';
-import pdg119 from './math/matrix/javascript-algorithms#198/pdgData.json';
-import pdg120 from './math/matrix/javascript-algorithms#199/pdgData.json';
-import pdg121 from './math/matrix/javascript-algorithms#200/pdgData.json';
-import pdg122 from './math/matrix/javascript-algorithms#201/pdgData.json';
-import pdg123 from './math/matrix/javascript-algorithms#202/pdgData.json';
-import pdg124 from './math/matrix/javascript-algorithms#203/pdgData.json';
-import pdg125 from './math/matrix/javascript-algorithms#204/pdgData.json';
-import pdg126 from './math/matrix/javascript-algorithms#205/pdgData.json';
-import pdg127 from './math/matrix/javascript-algorithms#206/pdgData.json';
-import pdg128 from './math/matrix/javascript-algorithms#207/pdgData.json';
-import pdg129 from './math/matrix/javascript-algorithms#208/pdgData.json';
-import pdg130 from './math/matrix/javascript-algorithms#209/pdgData.json';
-import pdg131 from './math/matrix/javascript-algorithms#210/pdgData.json';
-import pdg132 from './math/matrix/javascript-algorithms#211/pdgData.json';
-import pdg133 from './math/pascal-triangle/javascript-algorithms#228/pdgData.json';
-import pdg134 from './math/pascal-triangle/javascript-algorithms#229/pdgData.json';
-import pdg135 from './math/primality-test/javascript-algorithms#306/pdgData.json';
-import pdg136 from './math/prime-factors/javascript-algorithms#240/pdgData.json';
-import pdg137 from './math/prime-factors/javascript-algorithms#241/pdgData.json';
-import pdg138 from './math/prime-factors/javascript-algorithms#242/pdgData.json';
-import pdg139 from './math/radian/javascript-algorithms#262/pdgData.json';
-import pdg140 from './math/radian/javascript-algorithms#69/pdgData.json';
-import pdg141 from './math/sieve-of-eratosthenes/javascript-algorithms#293/pdgData.json';
-import pdg142 from './math/square-root/javascript-algorithms#298/pdgData.json';
-import pdg143 from './math/square-root/javascript-algorithms#299/pdgData.json';
-import pdg144 from './math/square-root/javascript-algorithms#300/pdgData.json';
-import pdg145 from './ml/k-means/javascript-algorithms#161/pdgData.json';
-import pdg146 from './ml/k-means/javascript-algorithms#162/pdgData.json';
-import pdg147 from './ml/k-means/javascript-algorithms#163/pdgData.json';
-import pdg148 from './ml/k-means/javascript-algorithms#164/pdgData.json';
-import pdg149 from './ml/k-means/javascript-algorithms#165/pdgData.json';
-import pdg150 from './ml/knn/javascript-algorithms#176/pdgData.json';
-import pdg151 from './ml/knn/javascript-algorithms#177/pdgData.json';
-import pdg152 from './ml/knn/javascript-algorithms#178/pdgData.json';
-import pdg153 from './ml/knn/javascript-algorithms#179/pdgData.json';
-import pdg154 from './ml/knn/javascript-algorithms#180/pdgData.json';
-import pdg155 from './ml/knn/javascript-algorithms#181/pdgData.json';
-import pdg156 from './search/binary-search/javascript-algorithms#15/pdgData.json';
-import pdg157 from './search/binary-search/javascript-algorithms#16/pdgData.json';
-import pdg158 from './search/interpolation-search/javascript-algorithms#152/pdgData.json';
-import pdg159 from './search/jump-search/javascript-algorithms#159/pdgData.json';
-import pdg160 from './search/jump-search/javascript-algorithms#160/pdgData.json';
-import pdg161 from './search/linear-search/javascript-algorithms#188/pdgData.json';
-import pdg162 from './search/linear-search/javascript-algorithms#189/pdgData.json';
-import pdg163 from './search/linear-search/javascript-algorithms#190/pdgData.json';
-import pdg164 from './sets/cartesian-product/javascript-algorithms#43/pdgData.json';
-import pdg165 from './sets/cartesian-product/javascript-algorithms#44/pdgData.json';
-import pdg166 from './sets/combination-sum/javascript-algorithms#47/pdgData.json';
-import pdg167 from './sets/combinations/javascript-algorithms#48/pdgData.json';
-import pdg168 from './sets/combinations/javascript-algorithms#49/pdgData.json';
-import pdg169 from './sets/fisher-yates/javascript-algorithms#106/pdgData.json';
-import pdg170 from './sets/fisher-yates/javascript-algorithms#107/pdgData.json';
-import pdg171 from './sets/knapsack-problem/javascript-algorithms#166/pdgData.json';
-import pdg172 from './sets/knapsack-problem/javascript-algorithms#167/pdgData.json';
-import pdg173 from './sets/knapsack-problem/javascript-algorithms#168/pdgData.json';
-import pdg174 from './sets/knapsack-problem/javascript-algorithms#169/pdgData.json';
-import pdg175 from './sets/knapsack-problem/javascript-algorithms#170/pdgData.json';
-import pdg176 from './sets/knapsack-problem/javascript-algorithms#171/pdgData.json';
-import pdg177 from './sets/knapsack-problem/javascript-algorithms#172/pdgData.json';
-import pdg178 from './sets/knapsack-problem/javascript-algorithms#173/pdgData.json';
-import pdg179 from './sets/longest-common-subsequence/javascript-algorithms#195/pdgData.json';
-import pdg180 from './sets/longest-increasing-subsequence/javascript-algorithms#83/pdgData.json';
-import pdg181 from './sets/maximum-subarray/javascript-algorithms#12/pdgData.json';
-import pdg182 from './sets/maximum-subarray/javascript-algorithms#68/pdgData.json';
-import pdg183 from './sets/maximum-subarray/javascript-algorithms#84/pdgData.json';
-import pdg184 from './sets/permutations/javascript-algorithms#231/pdgData.json';
-import pdg185 from './sets/permutations/javascript-algorithms#232/pdgData.json';
-import pdg186 from './sets/power-set/javascript-algorithms#26/pdgData.json';
-import pdg187 from './sets/power-set/javascript-algorithms#36/pdgData.json';
-import pdg188 from './sets/shortest-common-supersequence/javascript-algorithms#292/pdgData.json';
-import pdg189 from './sorting/bubble-sort/javascript-algorithms#28/pdgData.json';
-import pdg190 from './sorting/bubble-sort/javascript-algorithms#29/pdgData.json';
-import pdg191 from './sorting/bubble-sort/javascript-algorithms#30/pdgData.json';
-import pdg192 from './sorting/bubble-sort/javascript-algorithms#31/pdgData.json';
-import pdg193 from './sorting/bubble-sort/javascript-algorithms#32/pdgData.json';
-import pdg194 from './sorting/bubble-sort/javascript-algorithms#33/pdgData.json';
-import pdg195 from './sorting/bubble-sort/javascript-algorithms#34/pdgData.json';
-import pdg196 from './sorting/bubble-sort/javascript-algorithms#35/pdgData.json';
-import pdg197 from './sorting/counting-sort/javascript-algorithms#60/pdgData.json';
-import pdg198 from './sorting/counting-sort/javascript-algorithms#61/pdgData.json';
-import pdg199 from './sorting/counting-sort/javascript-algorithms#62/pdgData.json';
-import pdg200 from './sorting/counting-sort/javascript-algorithms#63/pdgData.json';
-import pdg201 from './sorting/counting-sort/javascript-algorithms#64/pdgData.json';
-import pdg202 from './sorting/counting-sort/javascript-algorithms#65/pdgData.json';
-import pdg203 from './sorting/counting-sort/javascript-algorithms#66/pdgData.json';
-import pdg204 from './sorting/heap-sort/javascript-algorithms#129/pdgData.json';
-import pdg205 from './sorting/heap-sort/javascript-algorithms#130/pdgData.json';
-import pdg206 from './sorting/heap-sort/javascript-algorithms#131/pdgData.json';
-import pdg207 from './sorting/heap-sort/javascript-algorithms#132/pdgData.json';
-import pdg208 from './sorting/heap-sort/javascript-algorithms#133/pdgData.json';
-import pdg209 from './sorting/heap-sort/javascript-algorithms#134/pdgData.json';
-import pdg210 from './sorting/heap-sort/javascript-algorithms#135/pdgData.json';
-import pdg211 from './sorting/insertion-sort/javascript-algorithms#143/pdgData.json';
-import pdg212 from './sorting/insertion-sort/javascript-algorithms#144/pdgData.json';
-import pdg213 from './sorting/insertion-sort/javascript-algorithms#145/pdgData.json';
-import pdg214 from './sorting/insertion-sort/javascript-algorithms#146/pdgData.json';
-import pdg215 from './sorting/insertion-sort/javascript-algorithms#147/pdgData.json';
-import pdg216 from './sorting/insertion-sort/javascript-algorithms#148/pdgData.json';
-import pdg217 from './sorting/insertion-sort/javascript-algorithms#149/pdgData.json';
-import pdg218 from './sorting/insertion-sort/javascript-algorithms#150/pdgData.json';
-import pdg219 from './sorting/merge-sort/javascript-algorithms#212/pdgData.json';
-import pdg220 from './sorting/merge-sort/javascript-algorithms#213/pdgData.json';
-import pdg221 from './sorting/merge-sort/javascript-algorithms#214/pdgData.json';
-import pdg222 from './sorting/merge-sort/javascript-algorithms#215/pdgData.json';
-import pdg223 from './sorting/merge-sort/javascript-algorithms#216/pdgData.json';
-import pdg224 from './sorting/merge-sort/javascript-algorithms#217/pdgData.json';
-import pdg225 from './sorting/merge-sort/javascript-algorithms#218/pdgData.json';
-import pdg226 from './sorting/merge-sort/javascript-algorithms#219/pdgData.json';
-import pdg227 from './sorting/quick-sort/javascript-algorithms#244/pdgData.json';
-import pdg228 from './sorting/quick-sort/javascript-algorithms#245/pdgData.json';
-import pdg229 from './sorting/quick-sort/javascript-algorithms#246/pdgData.json';
-import pdg230 from './sorting/quick-sort/javascript-algorithms#247/pdgData.json';
-import pdg231 from './sorting/quick-sort/javascript-algorithms#248/pdgData.json';
-import pdg232 from './sorting/quick-sort/javascript-algorithms#249/pdgData.json';
-import pdg233 from './sorting/quick-sort/javascript-algorithms#250/pdgData.json';
-import pdg234 from './sorting/quick-sort/javascript-algorithms#251/pdgData.json';
-import pdg235 from './sorting/quick-sort/javascript-algorithms#252/pdgData.json';
-import pdg236 from './sorting/quick-sort/javascript-algorithms#253/pdgData.json';
-import pdg237 from './sorting/quick-sort/javascript-algorithms#254/pdgData.json';
-import pdg238 from './sorting/quick-sort/javascript-algorithms#255/pdgData.json';
-import pdg239 from './sorting/quick-sort/javascript-algorithms#256/pdgData.json';
-import pdg240 from './sorting/quick-sort/javascript-algorithms#257/pdgData.json';
-import pdg241 from './sorting/quick-sort/javascript-algorithms#258/pdgData.json';
-import pdg242 from './sorting/radix-sort/javascript-algorithms#263/pdgData.json';
-import pdg243 from './sorting/radix-sort/javascript-algorithms#264/pdgData.json';
-import pdg244 from './sorting/radix-sort/javascript-algorithms#265/pdgData.json';
-import pdg245 from './sorting/selection-sort/javascript-algorithms#277/pdgData.json';
-import pdg246 from './sorting/selection-sort/javascript-algorithms#278/pdgData.json';
-import pdg247 from './sorting/selection-sort/javascript-algorithms#279/pdgData.json';
-import pdg248 from './sorting/selection-sort/javascript-algorithms#280/pdgData.json';
-import pdg249 from './sorting/selection-sort/javascript-algorithms#281/pdgData.json';
-import pdg250 from './sorting/selection-sort/javascript-algorithms#282/pdgData.json';
-import pdg251 from './sorting/selection-sort/javascript-algorithms#283/pdgData.json';
-import pdg252 from './sorting/shell-sort/javascript-algorithms#285/pdgData.json';
-import pdg253 from './sorting/shell-sort/javascript-algorithms#286/pdgData.json';
-import pdg254 from './sorting/shell-sort/javascript-algorithms#287/pdgData.json';
-import pdg255 from './sorting/shell-sort/javascript-algorithms#288/pdgData.json';
-import pdg256 from './sorting/shell-sort/javascript-algorithms#289/pdgData.json';
-import pdg257 from './sorting/shell-sort/javascript-algorithms#290/pdgData.json';
-import pdg258 from './sorting/shell-sort/javascript-algorithms#291/pdgData.json';
-import pdg259 from './string/hamming-distance/javascript-algorithms#124/pdgData.json';
-import pdg260 from './string/hamming-distance/javascript-algorithms#125/pdgData.json';
-import pdg261 from './string/knuth-morris-pratt/javascript-algorithms#182/pdgData.json';
-import pdg262 from './string/levenshtein-distance/javascript-algorithms#187/pdgData.json';
-import pdg263 from './string/longest-common-substring/javascript-algorithms#196/pdgData.json';
-import pdg264 from './string/longest-common-substring/javascript-algorithms#197/pdgData.json';
-import pdg265 from './string/palindrome/javascript-algorithms#227/pdgData.json';
-import pdg266 from './string/rabin-karp/javascript-algorithms#259/pdgData.json';
-import pdg267 from './string/rabin-karp/javascript-algorithms#260/pdgData.json';
-import pdg268 from './string/rabin-karp/javascript-algorithms#261/pdgData.json';
-import pdg269 from './string/regular-expression-matching/javascript-algorithms#274/pdgData.json';
-import pdg270 from './string/z-algorithm/javascript-algorithms#313/pdgData.json';
-import pdg271 from './tree/breadth-first-search/javascript-algorithms#22/pdgData.json';
-import pdg272 from './tree/breadth-first-search/javascript-algorithms#25/pdgData.json';
-import pdg273 from './tree/depth-first-search/javascript-algorithms#70/pdgData.json';
-import pdg274 from './tree/depth-first-search/javascript-algorithms#73/pdgData.json';
-import pdg275 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#1/pdgData.json';
-import pdg276 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#230/pdgData.json';
-import pdg277 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#81/pdgData.json';
-import pdg278 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#88/pdgData.json';
-import pdg279 from './uncategorized/hanoi-tower/javascript-algorithms#126/pdgData.json';
-import pdg280 from './uncategorized/hanoi-tower/javascript-algorithms#127/pdgData.json';
-import pdg281 from './uncategorized/hanoi-tower/javascript-algorithms#128/pdgData.json';
-import pdg282 from './uncategorized/jump-game/javascript-algorithms#121/pdgData.json';
-import pdg283 from './uncategorized/jump-game/javascript-algorithms#82/pdgData.json';
-import pdg284 from './uncategorized/jump-game/javascript-algorithms#86/pdgData.json';
-import pdg285 from './uncategorized/jump-game/javascript-algorithms#9/pdgData.json';
-import pdg286 from './uncategorized/knight-tour/javascript-algorithms#174/pdgData.json';
-import pdg287 from './uncategorized/knight-tour/javascript-algorithms#175/pdgData.json';
-import pdg288 from './uncategorized/n-queens/javascript-algorithms#223/pdgData.json';
-import pdg289 from './uncategorized/n-queens/javascript-algorithms#224/pdgData.json';
-import pdg290 from './uncategorized/n-queens/javascript-algorithms#225/pdgData.json';
-import pdg291 from './uncategorized/n-queens/javascript-algorithms#226/pdgData.json';
-import pdg292 from './uncategorized/n-queens/javascript-algorithms#243/pdgData.json';
-import pdg293 from './uncategorized/rain-terraces/javascript-algorithms#13/pdgData.json';
-import pdg294 from './uncategorized/rain-terraces/javascript-algorithms#85/pdgData.json';
-import pdg295 from './uncategorized/recursive-staircase/javascript-algorithms#270/pdgData.json';
-import pdg296 from './uncategorized/recursive-staircase/javascript-algorithms#271/pdgData.json';
-import pdg297 from './uncategorized/recursive-staircase/javascript-algorithms#272/pdgData.json';
-import pdg298 from './uncategorized/recursive-staircase/javascript-algorithms#273/pdgData.json';
-import pdg299 from './uncategorized/square-matrix-rotation/javascript-algorithms#294/pdgData.json';
-import pdg300 from './uncategorized/square-matrix-rotation/javascript-algorithms#295/pdgData.json';
-import pdg301 from './uncategorized/square-matrix-rotation/javascript-algorithms#296/pdgData.json';
-import pdg302 from './uncategorized/square-matrix-rotation/javascript-algorithms#297/pdgData.json';
-import pdg303 from './uncategorized/unique-paths/javascript-algorithms#27/pdgData.json';
-import pdg304 from './uncategorized/unique-paths/javascript-algorithms#307/pdgData.json';
-import pdg305 from './uncategorized/unique-paths/javascript-algorithms#87/pdgData.json';
+import pdg25 from './graph/bridges/javascript-algorithms#115/pdgData.json';
+import pdg26 from './graph/bridges/javascript-algorithms#116/pdgData.json';
+import pdg27 from './graph/bridges/javascript-algorithms#117/pdgData.json';
+import pdg28 from './graph/bridges/javascript-algorithms#118/pdgData.json';
+import pdg29 from './graph/bridges/javascript-algorithms#119/pdgData.json';
+import pdg30 from './graph/bridges/javascript-algorithms#120/pdgData.json';
+import pdg31 from './graph/detect-cycle/javascript-algorithms#74/pdgData.json';
+import pdg32 from './graph/detect-cycle/javascript-algorithms#75/pdgData.json';
+import pdg33 from './graph/detect-cycle/javascript-algorithms#76/pdgData.json';
+import pdg34 from './graph/dijkstra/javascript-algorithms#77/pdgData.json';
+import pdg35 from './graph/dijkstra/javascript-algorithms#78/pdgData.json';
+import pdg36 from './graph/eulerian-path/javascript-algorithms#93/pdgData.json';
+import pdg37 from './graph/eulerian-path/javascript-algorithms#94/pdgData.json';
+import pdg38 from './graph/eulerian-path/javascript-algorithms#95/pdgData.json';
+import pdg39 from './graph/floyd-warshall/javascript-algorithms#110/pdgData.json';
+import pdg40 from './graph/floyd-warshall/javascript-algorithms#111/pdgData.json';
+import pdg41 from './graph/floyd-warshall/javascript-algorithms#112/pdgData.json';
+import pdg42 from './graph/hamiltonian-cycle/javascript-algorithms#122/pdgData.json';
+import pdg43 from './graph/hamiltonian-cycle/javascript-algorithms#123/pdgData.json';
+import pdg44 from './graph/kruskal/javascript-algorithms#183/pdgData.json';
+import pdg45 from './graph/kruskal/javascript-algorithms#184/pdgData.json';
+import pdg46 from './graph/kruskal/javascript-algorithms#185/pdgData.json';
+import pdg47 from './graph/prim/javascript-algorithms#237/pdgData.json';
+import pdg48 from './graph/prim/javascript-algorithms#238/pdgData.json';
+import pdg49 from './graph/prim/javascript-algorithms#239/pdgData.json';
+import pdg50 from './graph/strongly-connected-components/javascript-algorithms#301/pdgData.json';
+import pdg51 from './graph/strongly-connected-components/javascript-algorithms#302/pdgData.json';
+import pdg52 from './graph/topological-sorting/javascript-algorithms#304/pdgData.json';
+import pdg53 from './graph/travelling-salesman/javascript-algorithms#14/pdgData.json';
+import pdg54 from './image-processing/seam-carving/javascript-algorithms#275/pdgData.json';
+import pdg55 from './linked-list/reverse-traversal/javascript-algorithms#276/pdgData.json';
+import pdg56 from './linked-list/traversal/javascript-algorithms#305/pdgData.json';
+import pdg57 from './math/binary-floating-point/javascript-algorithms#108/pdgData.json';
+import pdg58 from './math/binary-floating-point/javascript-algorithms#109/pdgData.json';
+import pdg59 from './math/binary-floating-point/javascript-algorithms#19/pdgData.json';
+import pdg60 from './math/binary-floating-point/javascript-algorithms#20/pdgData.json';
+import pdg61 from './math/binary-floating-point/javascript-algorithms#21/pdgData.json';
+import pdg62 from './math/bits/javascript-algorithms#113/pdgData.json';
+import pdg63 from './math/bits/javascript-algorithms#114/pdgData.json';
+import pdg64 from './math/bits/javascript-algorithms#154/pdgData.json';
+import pdg65 from './math/bits/javascript-algorithms#155/pdgData.json';
+import pdg66 from './math/bits/javascript-algorithms#157/pdgData.json';
+import pdg67 from './math/bits/javascript-algorithms#17/pdgData.json';
+import pdg68 from './math/bits/javascript-algorithms#18/pdgData.json';
+import pdg69 from './math/bits/javascript-algorithms#220/pdgData.json';
+import pdg70 from './math/bits/javascript-algorithms#221/pdgData.json';
+import pdg71 from './math/bits/javascript-algorithms#222/pdgData.json';
+import pdg72 from './math/bits/javascript-algorithms#284/pdgData.json';
+import pdg73 from './math/bits/javascript-algorithms#303/pdgData.json';
+import pdg74 from './math/bits/javascript-algorithms#308/pdgData.json';
+import pdg75 from './math/bits/javascript-algorithms#46/pdgData.json';
+import pdg76 from './math/bits/javascript-algorithms#67/pdgData.json';
+import pdg77 from './math/bits/javascript-algorithms#80/pdgData.json';
+import pdg78 from './math/complex-number/javascript-algorithms#50/pdgData.json';
+import pdg79 from './math/complex-number/javascript-algorithms#51/pdgData.json';
+import pdg80 from './math/complex-number/javascript-algorithms#52/pdgData.json';
+import pdg81 from './math/complex-number/javascript-algorithms#53/pdgData.json';
+import pdg82 from './math/complex-number/javascript-algorithms#54/pdgData.json';
+import pdg83 from './math/complex-number/javascript-algorithms#55/pdgData.json';
+import pdg84 from './math/complex-number/javascript-algorithms#56/pdgData.json';
+import pdg85 from './math/complex-number/javascript-algorithms#57/pdgData.json';
+import pdg86 from './math/complex-number/javascript-algorithms#58/pdgData.json';
+import pdg87 from './math/complex-number/javascript-algorithms#59/pdgData.json';
+import pdg88 from './math/euclidean-algorithm/javascript-algorithms#89/pdgData.json';
+import pdg89 from './math/euclidean-algorithm/javascript-algorithms#90/pdgData.json';
+import pdg90 from './math/euclidean-distance/javascript-algorithms#91/pdgData.json';
+import pdg91 from './math/euclidean-distance/javascript-algorithms#92/pdgData.json';
+import pdg92 from './math/factorial/javascript-algorithms#96/pdgData.json';
+import pdg93 from './math/factorial/javascript-algorithms#97/pdgData.json';
+import pdg94 from './math/fast-powering/javascript-algorithms#101/pdgData.json';
+import pdg95 from './math/fibonacci/javascript-algorithms#102/pdgData.json';
+import pdg96 from './math/fibonacci/javascript-algorithms#103/pdgData.json';
+import pdg97 from './math/fibonacci/javascript-algorithms#104/pdgData.json';
+import pdg98 from './math/fibonacci/javascript-algorithms#105/pdgData.json';
+import pdg99 from './math/fourier-transform/javascript-algorithms#100/pdgData.json';
+import pdg100 from './math/fourier-transform/javascript-algorithms#153/pdgData.json';
+import pdg101 from './math/fourier-transform/javascript-algorithms#79/pdgData.json';
+import pdg102 from './math/fourier-transform/javascript-algorithms#98/pdgData.json';
+import pdg103 from './math/fourier-transform/javascript-algorithms#99/pdgData.json';
+import pdg104 from './math/horner-method/javascript-algorithms#141/pdgData.json';
+import pdg105 from './math/horner-method/javascript-algorithms#142/pdgData.json';
+import pdg106 from './math/horner-method/javascript-algorithms#45/pdgData.json';
+import pdg107 from './math/integer-partition/javascript-algorithms#151/pdgData.json';
+import pdg108 from './math/is-power-of-two/javascript-algorithms#156/pdgData.json';
+import pdg109 from './math/is-power-of-two/javascript-algorithms#158/pdgData.json';
+import pdg110 from './math/least-common-multiple/javascript-algorithms#186/pdgData.json';
+import pdg111 from './math/liu-hui/javascript-algorithms#191/pdgData.json';
+import pdg112 from './math/liu-hui/javascript-algorithms#192/pdgData.json';
+import pdg113 from './math/liu-hui/javascript-algorithms#193/pdgData.json';
+import pdg114 from './math/liu-hui/javascript-algorithms#194/pdgData.json';
+import pdg115 from './math/matrix/javascript-algorithms#198/pdgData.json';
+import pdg116 from './math/matrix/javascript-algorithms#199/pdgData.json';
+import pdg117 from './math/matrix/javascript-algorithms#200/pdgData.json';
+import pdg118 from './math/matrix/javascript-algorithms#201/pdgData.json';
+import pdg119 from './math/matrix/javascript-algorithms#202/pdgData.json';
+import pdg120 from './math/matrix/javascript-algorithms#203/pdgData.json';
+import pdg121 from './math/matrix/javascript-algorithms#204/pdgData.json';
+import pdg122 from './math/matrix/javascript-algorithms#205/pdgData.json';
+import pdg123 from './math/matrix/javascript-algorithms#206/pdgData.json';
+import pdg124 from './math/matrix/javascript-algorithms#207/pdgData.json';
+import pdg125 from './math/matrix/javascript-algorithms#208/pdgData.json';
+import pdg126 from './math/matrix/javascript-algorithms#209/pdgData.json';
+import pdg127 from './math/matrix/javascript-algorithms#210/pdgData.json';
+import pdg128 from './math/matrix/javascript-algorithms#211/pdgData.json';
+import pdg129 from './math/pascal-triangle/javascript-algorithms#228/pdgData.json';
+import pdg130 from './math/pascal-triangle/javascript-algorithms#229/pdgData.json';
+import pdg131 from './math/primality-test/javascript-algorithms#306/pdgData.json';
+import pdg132 from './math/prime-factors/javascript-algorithms#240/pdgData.json';
+import pdg133 from './math/prime-factors/javascript-algorithms#241/pdgData.json';
+import pdg134 from './math/prime-factors/javascript-algorithms#242/pdgData.json';
+import pdg135 from './math/radian/javascript-algorithms#262/pdgData.json';
+import pdg136 from './math/radian/javascript-algorithms#69/pdgData.json';
+import pdg137 from './math/sieve-of-eratosthenes/javascript-algorithms#293/pdgData.json';
+import pdg138 from './math/square-root/javascript-algorithms#298/pdgData.json';
+import pdg139 from './math/square-root/javascript-algorithms#299/pdgData.json';
+import pdg140 from './math/square-root/javascript-algorithms#300/pdgData.json';
+import pdg141 from './ml/k-means/javascript-algorithms#161/pdgData.json';
+import pdg142 from './ml/k-means/javascript-algorithms#162/pdgData.json';
+import pdg143 from './ml/k-means/javascript-algorithms#163/pdgData.json';
+import pdg144 from './ml/k-means/javascript-algorithms#164/pdgData.json';
+import pdg145 from './ml/k-means/javascript-algorithms#165/pdgData.json';
+import pdg146 from './ml/knn/javascript-algorithms#176/pdgData.json';
+import pdg147 from './ml/knn/javascript-algorithms#177/pdgData.json';
+import pdg148 from './ml/knn/javascript-algorithms#178/pdgData.json';
+import pdg149 from './ml/knn/javascript-algorithms#179/pdgData.json';
+import pdg150 from './ml/knn/javascript-algorithms#180/pdgData.json';
+import pdg151 from './ml/knn/javascript-algorithms#181/pdgData.json';
+import pdg152 from './search/binary-search/javascript-algorithms#15/pdgData.json';
+import pdg153 from './search/binary-search/javascript-algorithms#16/pdgData.json';
+import pdg154 from './search/interpolation-search/javascript-algorithms#152/pdgData.json';
+import pdg155 from './search/jump-search/javascript-algorithms#159/pdgData.json';
+import pdg156 from './search/jump-search/javascript-algorithms#160/pdgData.json';
+import pdg157 from './search/linear-search/javascript-algorithms#188/pdgData.json';
+import pdg158 from './search/linear-search/javascript-algorithms#189/pdgData.json';
+import pdg159 from './search/linear-search/javascript-algorithms#190/pdgData.json';
+import pdg160 from './sets/cartesian-product/javascript-algorithms#43/pdgData.json';
+import pdg161 from './sets/cartesian-product/javascript-algorithms#44/pdgData.json';
+import pdg162 from './sets/combination-sum/javascript-algorithms#47/pdgData.json';
+import pdg163 from './sets/combinations/javascript-algorithms#48/pdgData.json';
+import pdg164 from './sets/combinations/javascript-algorithms#49/pdgData.json';
+import pdg165 from './sets/fisher-yates/javascript-algorithms#106/pdgData.json';
+import pdg166 from './sets/fisher-yates/javascript-algorithms#107/pdgData.json';
+import pdg167 from './sets/knapsack-problem/javascript-algorithms#166/pdgData.json';
+import pdg168 from './sets/knapsack-problem/javascript-algorithms#167/pdgData.json';
+import pdg169 from './sets/knapsack-problem/javascript-algorithms#168/pdgData.json';
+import pdg170 from './sets/knapsack-problem/javascript-algorithms#169/pdgData.json';
+import pdg171 from './sets/knapsack-problem/javascript-algorithms#170/pdgData.json';
+import pdg172 from './sets/knapsack-problem/javascript-algorithms#171/pdgData.json';
+import pdg173 from './sets/knapsack-problem/javascript-algorithms#172/pdgData.json';
+import pdg174 from './sets/knapsack-problem/javascript-algorithms#173/pdgData.json';
+import pdg175 from './sets/longest-common-subsequence/javascript-algorithms#195/pdgData.json';
+import pdg176 from './sets/longest-increasing-subsequence/javascript-algorithms#83/pdgData.json';
+import pdg177 from './sets/maximum-subarray/javascript-algorithms#12/pdgData.json';
+import pdg178 from './sets/maximum-subarray/javascript-algorithms#68/pdgData.json';
+import pdg179 from './sets/maximum-subarray/javascript-algorithms#84/pdgData.json';
+import pdg180 from './sets/permutations/javascript-algorithms#231/pdgData.json';
+import pdg181 from './sets/permutations/javascript-algorithms#232/pdgData.json';
+import pdg182 from './sets/power-set/javascript-algorithms#26/pdgData.json';
+import pdg183 from './sets/power-set/javascript-algorithms#36/pdgData.json';
+import pdg184 from './sets/shortest-common-supersequence/javascript-algorithms#292/pdgData.json';
+import pdg185 from './sorting/bubble-sort/javascript-algorithms#28/pdgData.json';
+import pdg186 from './sorting/bubble-sort/javascript-algorithms#29/pdgData.json';
+import pdg187 from './sorting/bubble-sort/javascript-algorithms#30/pdgData.json';
+import pdg188 from './sorting/bubble-sort/javascript-algorithms#31/pdgData.json';
+import pdg189 from './sorting/bubble-sort/javascript-algorithms#32/pdgData.json';
+import pdg190 from './sorting/bubble-sort/javascript-algorithms#33/pdgData.json';
+import pdg191 from './sorting/bubble-sort/javascript-algorithms#34/pdgData.json';
+import pdg192 from './sorting/bubble-sort/javascript-algorithms#35/pdgData.json';
+import pdg193 from './sorting/counting-sort/javascript-algorithms#60/pdgData.json';
+import pdg194 from './sorting/counting-sort/javascript-algorithms#61/pdgData.json';
+import pdg195 from './sorting/counting-sort/javascript-algorithms#62/pdgData.json';
+import pdg196 from './sorting/counting-sort/javascript-algorithms#63/pdgData.json';
+import pdg197 from './sorting/counting-sort/javascript-algorithms#64/pdgData.json';
+import pdg198 from './sorting/counting-sort/javascript-algorithms#65/pdgData.json';
+import pdg199 from './sorting/counting-sort/javascript-algorithms#66/pdgData.json';
+import pdg200 from './sorting/heap-sort/javascript-algorithms#129/pdgData.json';
+import pdg201 from './sorting/heap-sort/javascript-algorithms#130/pdgData.json';
+import pdg202 from './sorting/heap-sort/javascript-algorithms#131/pdgData.json';
+import pdg203 from './sorting/heap-sort/javascript-algorithms#132/pdgData.json';
+import pdg204 from './sorting/heap-sort/javascript-algorithms#133/pdgData.json';
+import pdg205 from './sorting/heap-sort/javascript-algorithms#134/pdgData.json';
+import pdg206 from './sorting/heap-sort/javascript-algorithms#135/pdgData.json';
+import pdg207 from './sorting/insertion-sort/javascript-algorithms#143/pdgData.json';
+import pdg208 from './sorting/insertion-sort/javascript-algorithms#144/pdgData.json';
+import pdg209 from './sorting/insertion-sort/javascript-algorithms#145/pdgData.json';
+import pdg210 from './sorting/insertion-sort/javascript-algorithms#146/pdgData.json';
+import pdg211 from './sorting/insertion-sort/javascript-algorithms#147/pdgData.json';
+import pdg212 from './sorting/insertion-sort/javascript-algorithms#148/pdgData.json';
+import pdg213 from './sorting/insertion-sort/javascript-algorithms#149/pdgData.json';
+import pdg214 from './sorting/insertion-sort/javascript-algorithms#150/pdgData.json';
+import pdg215 from './sorting/merge-sort/javascript-algorithms#212/pdgData.json';
+import pdg216 from './sorting/merge-sort/javascript-algorithms#213/pdgData.json';
+import pdg217 from './sorting/merge-sort/javascript-algorithms#214/pdgData.json';
+import pdg218 from './sorting/merge-sort/javascript-algorithms#215/pdgData.json';
+import pdg219 from './sorting/merge-sort/javascript-algorithms#216/pdgData.json';
+import pdg220 from './sorting/merge-sort/javascript-algorithms#217/pdgData.json';
+import pdg221 from './sorting/merge-sort/javascript-algorithms#218/pdgData.json';
+import pdg222 from './sorting/merge-sort/javascript-algorithms#219/pdgData.json';
+import pdg223 from './sorting/quick-sort/javascript-algorithms#244/pdgData.json';
+import pdg224 from './sorting/quick-sort/javascript-algorithms#245/pdgData.json';
+import pdg225 from './sorting/quick-sort/javascript-algorithms#246/pdgData.json';
+import pdg226 from './sorting/quick-sort/javascript-algorithms#247/pdgData.json';
+import pdg227 from './sorting/quick-sort/javascript-algorithms#248/pdgData.json';
+import pdg228 from './sorting/quick-sort/javascript-algorithms#249/pdgData.json';
+import pdg229 from './sorting/quick-sort/javascript-algorithms#250/pdgData.json';
+import pdg230 from './sorting/quick-sort/javascript-algorithms#251/pdgData.json';
+import pdg231 from './sorting/quick-sort/javascript-algorithms#252/pdgData.json';
+import pdg232 from './sorting/quick-sort/javascript-algorithms#253/pdgData.json';
+import pdg233 from './sorting/quick-sort/javascript-algorithms#254/pdgData.json';
+import pdg234 from './sorting/quick-sort/javascript-algorithms#255/pdgData.json';
+import pdg235 from './sorting/quick-sort/javascript-algorithms#256/pdgData.json';
+import pdg236 from './sorting/quick-sort/javascript-algorithms#257/pdgData.json';
+import pdg237 from './sorting/quick-sort/javascript-algorithms#258/pdgData.json';
+import pdg238 from './sorting/radix-sort/javascript-algorithms#263/pdgData.json';
+import pdg239 from './sorting/radix-sort/javascript-algorithms#264/pdgData.json';
+import pdg240 from './sorting/radix-sort/javascript-algorithms#265/pdgData.json';
+import pdg241 from './sorting/selection-sort/javascript-algorithms#277/pdgData.json';
+import pdg242 from './sorting/selection-sort/javascript-algorithms#278/pdgData.json';
+import pdg243 from './sorting/selection-sort/javascript-algorithms#279/pdgData.json';
+import pdg244 from './sorting/selection-sort/javascript-algorithms#280/pdgData.json';
+import pdg245 from './sorting/selection-sort/javascript-algorithms#281/pdgData.json';
+import pdg246 from './sorting/selection-sort/javascript-algorithms#282/pdgData.json';
+import pdg247 from './sorting/selection-sort/javascript-algorithms#283/pdgData.json';
+import pdg248 from './sorting/shell-sort/javascript-algorithms#285/pdgData.json';
+import pdg249 from './sorting/shell-sort/javascript-algorithms#286/pdgData.json';
+import pdg250 from './sorting/shell-sort/javascript-algorithms#287/pdgData.json';
+import pdg251 from './sorting/shell-sort/javascript-algorithms#288/pdgData.json';
+import pdg252 from './sorting/shell-sort/javascript-algorithms#289/pdgData.json';
+import pdg253 from './sorting/shell-sort/javascript-algorithms#290/pdgData.json';
+import pdg254 from './sorting/shell-sort/javascript-algorithms#291/pdgData.json';
+import pdg255 from './string/hamming-distance/javascript-algorithms#124/pdgData.json';
+import pdg256 from './string/hamming-distance/javascript-algorithms#125/pdgData.json';
+import pdg257 from './string/knuth-morris-pratt/javascript-algorithms#182/pdgData.json';
+import pdg258 from './string/levenshtein-distance/javascript-algorithms#187/pdgData.json';
+import pdg259 from './string/longest-common-substring/javascript-algorithms#196/pdgData.json';
+import pdg260 from './string/longest-common-substring/javascript-algorithms#197/pdgData.json';
+import pdg261 from './string/palindrome/javascript-algorithms#227/pdgData.json';
+import pdg262 from './string/rabin-karp/javascript-algorithms#259/pdgData.json';
+import pdg263 from './string/rabin-karp/javascript-algorithms#260/pdgData.json';
+import pdg264 from './string/rabin-karp/javascript-algorithms#261/pdgData.json';
+import pdg265 from './string/regular-expression-matching/javascript-algorithms#274/pdgData.json';
+import pdg266 from './string/z-algorithm/javascript-algorithms#313/pdgData.json';
+import pdg267 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#1/pdgData.json';
+import pdg268 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#230/pdgData.json';
+import pdg269 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#81/pdgData.json';
+import pdg270 from './uncategorized/best-time-to-buy-sell-stocks/javascript-algorithms#88/pdgData.json';
+import pdg271 from './uncategorized/hanoi-tower/javascript-algorithms#126/pdgData.json';
+import pdg272 from './uncategorized/hanoi-tower/javascript-algorithms#127/pdgData.json';
+import pdg273 from './uncategorized/hanoi-tower/javascript-algorithms#128/pdgData.json';
+import pdg274 from './uncategorized/jump-game/javascript-algorithms#121/pdgData.json';
+import pdg275 from './uncategorized/jump-game/javascript-algorithms#82/pdgData.json';
+import pdg276 from './uncategorized/jump-game/javascript-algorithms#86/pdgData.json';
+import pdg277 from './uncategorized/jump-game/javascript-algorithms#9/pdgData.json';
+import pdg278 from './uncategorized/knight-tour/javascript-algorithms#174/pdgData.json';
+import pdg279 from './uncategorized/knight-tour/javascript-algorithms#175/pdgData.json';
+import pdg280 from './uncategorized/n-queens/javascript-algorithms#223/pdgData.json';
+import pdg281 from './uncategorized/n-queens/javascript-algorithms#224/pdgData.json';
+import pdg282 from './uncategorized/n-queens/javascript-algorithms#225/pdgData.json';
+import pdg283 from './uncategorized/n-queens/javascript-algorithms#226/pdgData.json';
+import pdg284 from './uncategorized/n-queens/javascript-algorithms#243/pdgData.json';
+import pdg285 from './uncategorized/rain-terraces/javascript-algorithms#13/pdgData.json';
+import pdg286 from './uncategorized/rain-terraces/javascript-algorithms#85/pdgData.json';
+import pdg287 from './uncategorized/recursive-staircase/javascript-algorithms#270/pdgData.json';
+import pdg288 from './uncategorized/recursive-staircase/javascript-algorithms#271/pdgData.json';
+import pdg289 from './uncategorized/recursive-staircase/javascript-algorithms#272/pdgData.json';
+import pdg290 from './uncategorized/recursive-staircase/javascript-algorithms#273/pdgData.json';
+import pdg291 from './uncategorized/square-matrix-rotation/javascript-algorithms#294/pdgData.json';
+import pdg292 from './uncategorized/square-matrix-rotation/javascript-algorithms#295/pdgData.json';
+import pdg293 from './uncategorized/square-matrix-rotation/javascript-algorithms#296/pdgData.json';
+import pdg294 from './uncategorized/square-matrix-rotation/javascript-algorithms#297/pdgData.json';
+import pdg295 from './uncategorized/unique-paths/javascript-algorithms#27/pdgData.json';
+import pdg296 from './uncategorized/unique-paths/javascript-algorithms#307/pdgData.json';
+import pdg297 from './uncategorized/unique-paths/javascript-algorithms#87/pdgData.json';
 
 export default {
   "chapterGroups": [
@@ -314,26 +306,38 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#37",
+              "label": "caesarCipher should be case insensitive",
+              "name": "caesarCipher should be case insensitive@caesarCipher.test.js",
               "ddgs": pdg1
             },
             {
               "id": "javascript-algorithms#38",
+              "label": "caesarCipher should cipher a string with different shifts",
+              "name": "caesarCipher should cipher a string with different shifts@caesarCipher.test.js",
               "ddgs": pdg2
             },
             {
               "id": "javascript-algorithms#39",
+              "label": "caesarCipher should correctly handle an empty strings",
+              "name": "caesarCipher should correctly handle an empty strings@caesarCipher.test.js",
               "ddgs": pdg3
             },
             {
               "id": "javascript-algorithms#40",
+              "label": "caesarCipher should encrypt and decrypt full phrases",
+              "name": "caesarCipher should encrypt and decrypt full phrases@caesarCipher.test.js",
               "ddgs": pdg4
             },
             {
               "id": "javascript-algorithms#41",
+              "label": "caesarCipher should not change a string with zero shift",
+              "name": "caesarCipher should not change a string with zero shift@caesarCipher.test.js",
               "ddgs": pdg5
             },
             {
               "id": "javascript-algorithms#42",
+              "label": "caesarCipher should not cipher unknown chars",
+              "name": "caesarCipher should not cipher unknown chars@caesarCipher.test.js",
               "ddgs": pdg6
             }
           ]
@@ -343,47 +347,61 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#136",
+              "label": "hillCipher should encrypt passed message using Hill Cipher",
+              "name": "hillCipher should encrypt passed message using Hill Cipher@hillCipher.test.js",
               "ddgs": pdg7
             },
             {
               "id": "javascript-algorithms#137",
+              "label": "hillCipher should throw an error when message or keyString contains none letter character",
+              "name": "hillCipher should throw an error when message or keyString contains none letter character@hillCipher.test.js",
               "ddgs": pdg8
             },
             {
               "id": "javascript-algorithms#138",
+              "label": "hillCipher should throw an error when the length of the keyString does not equal to the power of length of the message",
+              "name": "hillCipher should throw an error when the length of the keyString does not equal to the power of length of the message@hillCipher.test.js",
               "ddgs": pdg9
             },
             {
               "id": "javascript-algorithms#139",
+              "label": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
+              "name": "hillCipher should throw an error when the length of the keyString has a square root which is not integer@hillCipher.test.js",
               "ddgs": pdg10
             },
             {
               "id": "javascript-algorithms#140",
+              "label": "hillCipher should throw an exception when trying to decipher",
+              "name": "hillCipher should throw an exception when trying to decipher@hillCipher.test.js",
               "ddgs": pdg11
             }
           ]
-        },
-        {
-          "name": "polynomial-hash",
-          "exercises": []
         },
         {
           "name": "rail-fence-cipher",
           "exercises": [
             {
               "id": "javascript-algorithms#266",
+              "label": "railFenceCipher decodes a string correctly for base=3",
+              "name": "railFenceCipher decodes a string correctly for base=3@railFenceCipher.test.js",
               "ddgs": pdg12
             },
             {
               "id": "javascript-algorithms#267",
+              "label": "railFenceCipher decodes a string correctly for base=4",
+              "name": "railFenceCipher decodes a string correctly for base=4@railFenceCipher.test.js",
               "ddgs": pdg13
             },
             {
               "id": "javascript-algorithms#268",
+              "label": "railFenceCipher encodes a string correctly for base=3",
+              "name": "railFenceCipher encodes a string correctly for base=3@railFenceCipher.test.js",
               "ddgs": pdg14
             },
             {
               "id": "javascript-algorithms#269",
+              "label": "railFenceCipher encodes a string correctly for base=4",
+              "name": "railFenceCipher encodes a string correctly for base=4@railFenceCipher.test.js",
               "ddgs": pdg15
             }
           ]
@@ -398,30 +416,44 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#2",
+              "label": "articulationPoints should find articulation points in graph starting with articulation root vertex",
+              "name": "articulationPoints should find articulation points in graph starting with articulation root vertex@articulationPoints.test.js",
               "ddgs": pdg16
             },
             {
               "id": "javascript-algorithms#3",
+              "label": "articulationPoints should find articulation points in graph",
+              "name": "articulationPoints should find articulation points in graph@articulationPoints.test.js",
               "ddgs": pdg17
             },
             {
               "id": "javascript-algorithms#4",
+              "label": "articulationPoints should find articulation points in simple graph with back edge #2",
+              "name": "articulationPoints should find articulation points in simple graph with back edge #2@articulationPoints.test.js",
               "ddgs": pdg18
             },
             {
               "id": "javascript-algorithms#5",
+              "label": "articulationPoints should find articulation points in simple graph with back edge",
+              "name": "articulationPoints should find articulation points in simple graph with back edge@articulationPoints.test.js",
               "ddgs": pdg19
             },
             {
               "id": "javascript-algorithms#6",
+              "label": "articulationPoints should find articulation points in simple graph",
+              "name": "articulationPoints should find articulation points in simple graph@articulationPoints.test.js",
               "ddgs": pdg20
             },
             {
               "id": "javascript-algorithms#7",
+              "label": "articulationPoints should find articulation points in yet another graph #1",
+              "name": "articulationPoints should find articulation points in yet another graph #1@articulationPoints.test.js",
               "ddgs": pdg21
             },
             {
               "id": "javascript-algorithms#8",
+              "label": "articulationPoints should find articulation points in yet another graph #2",
+              "name": "articulationPoints should find articulation points in yet another graph #2@articulationPoints.test.js",
               "ddgs": pdg22
             }
           ]
@@ -431,24 +463,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#10",
+              "label": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
+              "name": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights@bellmanFord.test.js",
               "ddgs": pdg23
             },
             {
               "id": "javascript-algorithms#11",
+              "label": "bellmanFord should find minimum paths to all vertices for undirected graph",
+              "name": "bellmanFord should find minimum paths to all vertices for undirected graph@bellmanFord.test.js",
               "ddgs": pdg24
-            }
-          ]
-        },
-        {
-          "name": "breadth-first-search",
-          "exercises": [
-            {
-              "id": "javascript-algorithms#23",
-              "ddgs": pdg25
-            },
-            {
-              "id": "javascript-algorithms#24",
-              "ddgs": pdg26
             }
           ]
         },
@@ -457,40 +480,39 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#115",
-              "ddgs": pdg27
+              "label": "graphBridges should find bridges in graph starting with different root vertex",
+              "name": "graphBridges should find bridges in graph starting with different root vertex@graphBridges.test.js",
+              "ddgs": pdg25
             },
             {
               "id": "javascript-algorithms#116",
-              "ddgs": pdg28
+              "label": "graphBridges should find bridges in graph",
+              "name": "graphBridges should find bridges in graph@graphBridges.test.js",
+              "ddgs": pdg26
             },
             {
               "id": "javascript-algorithms#117",
-              "ddgs": pdg29
+              "label": "graphBridges should find bridges in simple graph with back edge",
+              "name": "graphBridges should find bridges in simple graph with back edge@graphBridges.test.js",
+              "ddgs": pdg27
             },
             {
               "id": "javascript-algorithms#118",
-              "ddgs": pdg30
+              "label": "graphBridges should find bridges in simple graph",
+              "name": "graphBridges should find bridges in simple graph@graphBridges.test.js",
+              "ddgs": pdg28
             },
             {
               "id": "javascript-algorithms#119",
-              "ddgs": pdg31
+              "label": "graphBridges should find bridges in yet another graph #1",
+              "name": "graphBridges should find bridges in yet another graph #1@graphBridges.test.js",
+              "ddgs": pdg29
             },
             {
               "id": "javascript-algorithms#120",
-              "ddgs": pdg32
-            }
-          ]
-        },
-        {
-          "name": "depth-first-search",
-          "exercises": [
-            {
-              "id": "javascript-algorithms#71",
-              "ddgs": pdg33
-            },
-            {
-              "id": "javascript-algorithms#72",
-              "ddgs": pdg34
+              "label": "graphBridges should find bridges in yet another graph #2",
+              "name": "graphBridges should find bridges in yet another graph #2@graphBridges.test.js",
+              "ddgs": pdg30
             }
           ]
         },
@@ -499,15 +521,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#74",
-              "ddgs": pdg35
+              "label": "detectDirectedCycle should detect directed cycle",
+              "name": "detectDirectedCycle should detect directed cycle@detectDirectedCycle.test.js",
+              "ddgs": pdg31
             },
             {
               "id": "javascript-algorithms#75",
-              "ddgs": pdg36
+              "label": "detectUndirectedCycle should detect undirected cycle",
+              "name": "detectUndirectedCycle should detect undirected cycle@detectUndirectedCycle.test.js",
+              "ddgs": pdg32
             },
             {
               "id": "javascript-algorithms#76",
-              "ddgs": pdg37
+              "label": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
+              "name": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle@detectUndirectedCycleUsingDisjointSet.test.js",
+              "ddgs": pdg33
             }
           ]
         },
@@ -516,11 +544,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#77",
-              "ddgs": pdg38
+              "label": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
+              "name": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights@dijkstra.test.js",
+              "ddgs": pdg34
             },
             {
               "id": "javascript-algorithms#78",
-              "ddgs": pdg39
+              "label": "dijkstra should find minimum paths to all vertices for undirected graph",
+              "name": "dijkstra should find minimum paths to all vertices for undirected graph@dijkstra.test.js",
+              "ddgs": pdg35
             }
           ]
         },
@@ -529,15 +561,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#93",
-              "ddgs": pdg40
+              "label": "eulerianPath should find Eulerian Circuit in graph",
+              "name": "eulerianPath should find Eulerian Circuit in graph@eulerianPath.test.js",
+              "ddgs": pdg36
             },
             {
               "id": "javascript-algorithms#94",
-              "ddgs": pdg41
+              "label": "eulerianPath should find Eulerian Path in graph",
+              "name": "eulerianPath should find Eulerian Path in graph@eulerianPath.test.js",
+              "ddgs": pdg37
             },
             {
               "id": "javascript-algorithms#95",
-              "ddgs": pdg42
+              "label": "eulerianPath should throw an error when graph is not Eulerian",
+              "name": "eulerianPath should throw an error when graph is not Eulerian@eulerianPath.test.js",
+              "ddgs": pdg38
             }
           ]
         },
@@ -546,15 +584,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#110",
-              "ddgs": pdg43
+              "label": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
+              "name": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights@floydWarshall.test.js",
+              "ddgs": pdg39
             },
             {
               "id": "javascript-algorithms#111",
-              "ddgs": pdg44
+              "label": "floydWarshall should find minimum paths to all vertices for directed graph",
+              "name": "floydWarshall should find minimum paths to all vertices for directed graph@floydWarshall.test.js",
+              "ddgs": pdg40
             },
             {
               "id": "javascript-algorithms#112",
-              "ddgs": pdg45
+              "label": "floydWarshall should find minimum paths to all vertices for undirected graph",
+              "name": "floydWarshall should find minimum paths to all vertices for undirected graph@floydWarshall.test.js",
+              "ddgs": pdg41
             }
           ]
         },
@@ -563,11 +607,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#122",
-              "ddgs": pdg46
+              "label": "hamiltonianCycle should find hamiltonian paths in graph",
+              "name": "hamiltonianCycle should find hamiltonian paths in graph@hamiltonianCycle.test.js",
+              "ddgs": pdg42
             },
             {
               "id": "javascript-algorithms#123",
-              "ddgs": pdg47
+              "label": "hamiltonianCycle should return false for graph without Hamiltonian path",
+              "name": "hamiltonianCycle should return false for graph without Hamiltonian path@hamiltonianCycle.test.js",
+              "ddgs": pdg43
             }
           ]
         },
@@ -576,15 +624,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#183",
-              "ddgs": pdg48
+              "label": "kruskal should find minimum spanning tree for simple graph",
+              "name": "kruskal should find minimum spanning tree for simple graph@kruskal.test.js",
+              "ddgs": pdg44
             },
             {
               "id": "javascript-algorithms#184",
-              "ddgs": pdg49
+              "label": "kruskal should find minimum spanning tree",
+              "name": "kruskal should find minimum spanning tree@kruskal.test.js",
+              "ddgs": pdg45
             },
             {
               "id": "javascript-algorithms#185",
-              "ddgs": pdg50
+              "label": "kruskal should fire an error for directed graph",
+              "name": "kruskal should fire an error for directed graph@kruskal.test.js",
+              "ddgs": pdg46
             }
           ]
         },
@@ -593,15 +647,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#237",
-              "ddgs": pdg51
+              "label": "prim should find minimum spanning tree for simple graph",
+              "name": "prim should find minimum spanning tree for simple graph@prim.test.js",
+              "ddgs": pdg47
             },
             {
               "id": "javascript-algorithms#238",
-              "ddgs": pdg52
+              "label": "prim should find minimum spanning tree",
+              "name": "prim should find minimum spanning tree@prim.test.js",
+              "ddgs": pdg48
             },
             {
               "id": "javascript-algorithms#239",
-              "ddgs": pdg53
+              "label": "prim should fire an error for directed graph",
+              "name": "prim should fire an error for directed graph@prim.test.js",
+              "ddgs": pdg49
             }
           ]
         },
@@ -610,11 +670,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#301",
-              "ddgs": pdg54
+              "label": "stronglyConnectedComponents should detect strongly connected components in graph",
+              "name": "stronglyConnectedComponents should detect strongly connected components in graph@stronglyConnectedComponents.test.js",
+              "ddgs": pdg50
             },
             {
               "id": "javascript-algorithms#302",
-              "ddgs": pdg55
+              "label": "stronglyConnectedComponents should detect strongly connected components in simple graph",
+              "name": "stronglyConnectedComponents should detect strongly connected components in simple graph@stronglyConnectedComponents.test.js",
+              "ddgs": pdg51
             }
           ]
         },
@@ -623,7 +687,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#304",
-              "ddgs": pdg56
+              "label": "topologicalSort should do topological sorting on graph",
+              "name": "topologicalSort should do topological sorting on graph@topologicalSort.test.js",
+              "ddgs": pdg52
             }
           ]
         },
@@ -632,7 +698,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#14",
-              "ddgs": pdg57
+              "label": "bfTravellingSalesman should solve problem for simple graph",
+              "name": "bfTravellingSalesman should solve problem for simple graph@bfTravellingSalesman.test.js",
+              "ddgs": pdg53
             }
           ]
         }
@@ -646,7 +714,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#275",
-              "ddgs": pdg58
+              "label": "resizeImageWidth should perform content-aware image width reduction",
+              "name": "resizeImageWidth should perform content-aware image width reduction@resizeImageWidth.test.js",
+              "ddgs": pdg54
             }
           ]
         }
@@ -660,7 +730,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#276",
-              "ddgs": pdg59
+              "label": "reverseTraversal should traverse linked list in reverse order",
+              "name": "reverseTraversal should traverse linked list in reverse order@reverseTraversal.test.js",
+              "ddgs": pdg55
             }
           ]
         },
@@ -669,7 +741,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#305",
-              "ddgs": pdg60
+              "label": "traversal should traverse linked list",
+              "name": "traversal should traverse linked list@traversal.test.js",
+              "ddgs": pdg56
             }
           ]
         }
@@ -683,23 +757,33 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#108",
-              "ddgs": pdg61
+              "label": "floatAs32Binary should create a binary representation of the floating numbers",
+              "name": "floatAs32Binary should create a binary representation of the floating numbers@floatAsBinaryString.test.js",
+              "ddgs": pdg57
             },
             {
               "id": "javascript-algorithms#109",
-              "ddgs": pdg62
+              "label": "floatAs64Binary should create a binary representation of the floating numbers",
+              "name": "floatAs64Binary should create a binary representation of the floating numbers@floatAsBinaryString.test.js",
+              "ddgs": pdg58
             },
             {
               "id": "javascript-algorithms#19",
-              "ddgs": pdg63
+              "label": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
+              "name": "bitsToFloat16 should convert floating point binary bits to floating point decimal number@bitsToFloat.test.js",
+              "ddgs": pdg59
             },
             {
               "id": "javascript-algorithms#20",
-              "ddgs": pdg64
+              "label": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
+              "name": "bitsToFloat32 should convert floating point binary bits to floating point decimal number@bitsToFloat.test.js",
+              "ddgs": pdg60
             },
             {
               "id": "javascript-algorithms#21",
-              "ddgs": pdg65
+              "label": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
+              "name": "bitsToFloat64 should convert floating point binary bits to floating point decimal number@bitsToFloat.test.js",
+              "ddgs": pdg61
             }
           ]
         },
@@ -708,67 +792,99 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#113",
-              "ddgs": pdg66
+              "label": "fullAdder should add up two numbers",
+              "name": "fullAdder should add up two numbers@fullAdder.test.js",
+              "ddgs": pdg62
             },
             {
               "id": "javascript-algorithms#114",
-              "ddgs": pdg67
+              "label": "getBit should get bit at specific position",
+              "name": "getBit should get bit at specific position@getBit.test.js",
+              "ddgs": pdg63
             },
             {
               "id": "javascript-algorithms#154",
-              "ddgs": pdg68
+              "label": "isEven should detect if a number is even",
+              "name": "isEven should detect if a number is even@isEven.test.js",
+              "ddgs": pdg64
             },
             {
               "id": "javascript-algorithms#155",
-              "ddgs": pdg69
+              "label": "isPositive should detect if a number is positive",
+              "name": "isPositive should detect if a number is positive@isPositive.test.js",
+              "ddgs": pdg65
             },
             {
               "id": "javascript-algorithms#157",
-              "ddgs": pdg70
+              "label": "isPowerOfTwo should detect if the number is power of two",
+              "name": "isPowerOfTwo should detect if the number is power of two@isPowerOfTwo.test.js",
+              "ddgs": pdg66
             },
             {
               "id": "javascript-algorithms#17",
-              "ddgs": pdg71
+              "label": "bitLength should calculate number of bits that the number is consists of",
+              "name": "bitLength should calculate number of bits that the number is consists of@bitLength.test.js",
+              "ddgs": pdg67
             },
             {
               "id": "javascript-algorithms#18",
-              "ddgs": pdg72
+              "label": "bitsDiff should calculate bits difference between two numbers",
+              "name": "bitsDiff should calculate bits difference between two numbers@bitsDiff.test.js",
+              "ddgs": pdg68
             },
             {
               "id": "javascript-algorithms#220",
-              "ddgs": pdg73
+              "label": "multiply should multiply two numbers",
+              "name": "multiply should multiply two numbers@multiply.test.js",
+              "ddgs": pdg69
             },
             {
               "id": "javascript-algorithms#221",
-              "ddgs": pdg74
+              "label": "multiplyByTwo should multiply numbers by two using bitwise operations",
+              "name": "multiplyByTwo should multiply numbers by two using bitwise operations@multiplyByTwo.test.js",
+              "ddgs": pdg70
             },
             {
               "id": "javascript-algorithms#222",
-              "ddgs": pdg75
+              "label": "multiplyUnsigned should multiply two unsigned numbers",
+              "name": "multiplyUnsigned should multiply two unsigned numbers@multiplyUnsigned.test.js",
+              "ddgs": pdg71
             },
             {
               "id": "javascript-algorithms#284",
-              "ddgs": pdg76
+              "label": "setBit should set bit at specific position",
+              "name": "setBit should set bit at specific position@setBit.test.js",
+              "ddgs": pdg72
             },
             {
               "id": "javascript-algorithms#303",
-              "ddgs": pdg77
+              "label": "switchSign should switch the sign of the number using twos complement approach",
+              "name": "switchSign should switch the sign of the number using twos complement approach@switchSign.test.js",
+              "ddgs": pdg73
             },
             {
               "id": "javascript-algorithms#308",
-              "ddgs": pdg78
+              "label": "updateBit should update bit at specific position",
+              "name": "updateBit should update bit at specific position@updateBit.test.js",
+              "ddgs": pdg74
             },
             {
               "id": "javascript-algorithms#46",
-              "ddgs": pdg79
+              "label": "clearBit should clear bit at specific position",
+              "name": "clearBit should clear bit at specific position@clearBit.test.js",
+              "ddgs": pdg75
             },
             {
               "id": "javascript-algorithms#67",
-              "ddgs": pdg80
+              "label": "countSetBits should return number of set bits",
+              "name": "countSetBits should return number of set bits@countSetBits.test.js",
+              "ddgs": pdg76
             },
             {
               "id": "javascript-algorithms#80",
-              "ddgs": pdg81
+              "label": "divideByTwo should divide numbers by two using bitwise operations",
+              "name": "divideByTwo should divide numbers by two using bitwise operations@divideByTwo.test.js",
+              "ddgs": pdg77
             }
           ]
         },
@@ -777,43 +893,63 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#50",
-              "ddgs": pdg82
+              "label": "ComplexNumber should add complex and natural numbers",
+              "name": "ComplexNumber should add complex and natural numbers@ComplexNumber.test.js",
+              "ddgs": pdg78
             },
             {
               "id": "javascript-algorithms#51",
-              "ddgs": pdg83
+              "label": "ComplexNumber should add complex numbers",
+              "name": "ComplexNumber should add complex numbers@ComplexNumber.test.js",
+              "ddgs": pdg79
             },
             {
               "id": "javascript-algorithms#52",
-              "ddgs": pdg84
+              "label": "ComplexNumber should calculate i in power of two",
+              "name": "ComplexNumber should calculate i in power of two@ComplexNumber.test.js",
+              "ddgs": pdg80
             },
             {
               "id": "javascript-algorithms#53",
-              "ddgs": pdg85
+              "label": "ComplexNumber should create complex numbers",
+              "name": "ComplexNumber should create complex numbers@ComplexNumber.test.js",
+              "ddgs": pdg81
             },
             {
               "id": "javascript-algorithms#54",
-              "ddgs": pdg86
+              "label": "ComplexNumber should divide complex numbers",
+              "name": "ComplexNumber should divide complex numbers@ComplexNumber.test.js",
+              "ddgs": pdg82
             },
             {
               "id": "javascript-algorithms#55",
-              "ddgs": pdg87
+              "label": "ComplexNumber should multiply complex numbers by themselves",
+              "name": "ComplexNumber should multiply complex numbers by themselves@ComplexNumber.test.js",
+              "ddgs": pdg83
             },
             {
               "id": "javascript-algorithms#56",
-              "ddgs": pdg88
+              "label": "ComplexNumber should multiply complex numbers",
+              "name": "ComplexNumber should multiply complex numbers@ComplexNumber.test.js",
+              "ddgs": pdg84
             },
             {
               "id": "javascript-algorithms#57",
-              "ddgs": pdg89
+              "label": "ComplexNumber should return complex number in polar form",
+              "name": "ComplexNumber should return complex number in polar form@ComplexNumber.test.js",
+              "ddgs": pdg85
             },
             {
               "id": "javascript-algorithms#58",
-              "ddgs": pdg90
+              "label": "ComplexNumber should subtract complex and natural numbers",
+              "name": "ComplexNumber should subtract complex and natural numbers@ComplexNumber.test.js",
+              "ddgs": pdg86
             },
             {
               "id": "javascript-algorithms#59",
-              "ddgs": pdg91
+              "label": "ComplexNumber should subtract complex numbers",
+              "name": "ComplexNumber should subtract complex numbers@ComplexNumber.test.js",
+              "ddgs": pdg87
             }
           ]
         },
@@ -822,11 +958,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#89",
-              "ddgs": pdg92
+              "label": "euclideanAlgorithm should calculate GCD recursively",
+              "name": "euclideanAlgorithm should calculate GCD recursively@euclideanAlgorithm.test.js",
+              "ddgs": pdg88
             },
             {
               "id": "javascript-algorithms#90",
-              "ddgs": pdg93
+              "label": "euclideanAlgorithmIterative should calculate GCD iteratively",
+              "name": "euclideanAlgorithmIterative should calculate GCD iteratively@euclideanAlgorithmIterative.test.js",
+              "ddgs": pdg89
             }
           ]
         },
@@ -835,11 +975,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#91",
-              "ddgs": pdg94
+              "label": "euclideanDistance should calculate euclidean distance between vectors",
+              "name": "euclideanDistance should calculate euclidean distance between vectors@euclideanDistance.test.js",
+              "ddgs": pdg90
             },
             {
               "id": "javascript-algorithms#92",
-              "ddgs": pdg95
+              "label": "euclideanDistance should throw an error in case if two matrices are of different shapes",
+              "name": "euclideanDistance should throw an error in case if two matrices are of different shapes@euclideanDistance.test.js",
+              "ddgs": pdg91
             }
           ]
         },
@@ -848,11 +992,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#96",
-              "ddgs": pdg96
+              "label": "factorial should calculate factorial",
+              "name": "factorial should calculate factorial@factorial.test.js",
+              "ddgs": pdg92
             },
             {
               "id": "javascript-algorithms#97",
-              "ddgs": pdg97
+              "label": "factorialRecursive should calculate factorial",
+              "name": "factorialRecursive should calculate factorial@factorialRecursive.test.js",
+              "ddgs": pdg93
             }
           ]
         },
@@ -861,7 +1009,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#101",
-              "ddgs": pdg98
+              "label": "fastPowering should compute power in log(n) time",
+              "name": "fastPowering should compute power in log(n) time@fastPowering.test.js",
+              "ddgs": pdg94
             }
           ]
         },
@@ -870,19 +1020,27 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#102",
-              "ddgs": pdg99
+              "label": "fibonacci should calculate fibonacci correctly",
+              "name": "fibonacci should calculate fibonacci correctly@fibonacci.test.js",
+              "ddgs": pdg95
             },
             {
               "id": "javascript-algorithms#103",
-              "ddgs": pdg100
+              "label": "fibonacciClosedForm should calculate fibonacci correctly",
+              "name": "fibonacciClosedForm should calculate fibonacci correctly@fibonacciNthClosedForm.test.js",
+              "ddgs": pdg96
             },
             {
               "id": "javascript-algorithms#104",
-              "ddgs": pdg101
+              "label": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
+              "name": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions@fibonacciNthClosedForm.test.js",
+              "ddgs": pdg97
             },
             {
               "id": "javascript-algorithms#105",
-              "ddgs": pdg102
+              "label": "fibonacciNth should calculate fibonacci correctly",
+              "name": "fibonacciNth should calculate fibonacci correctly@fibonacciNth.test.js",
+              "ddgs": pdg98
             }
           ]
         },
@@ -891,23 +1049,33 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#100",
-              "ddgs": pdg103
+              "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
+              "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3@fastFourierTransform.test.js",
+              "ddgs": pdg99
             },
             {
               "id": "javascript-algorithms#153",
-              "ddgs": pdg104
+              "label": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
+              "name": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies@inverseDiscreteFourierTransform.test.js",
+              "ddgs": pdg100
             },
             {
               "id": "javascript-algorithms#79",
-              "ddgs": pdg105
+              "label": "discreteFourierTransform should split signal into frequencies",
+              "name": "discreteFourierTransform should split signal into frequencies@discreteFourierTransform.test.js",
+              "ddgs": pdg101
             },
             {
               "id": "javascript-algorithms#98",
-              "ddgs": pdg106
+              "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
+              "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1@fastFourierTransform.test.js",
+              "ddgs": pdg102
             },
             {
               "id": "javascript-algorithms#99",
-              "ddgs": pdg107
+              "label": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
+              "name": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2@fastFourierTransform.test.js",
+              "ddgs": pdg103
             }
           ]
         },
@@ -916,15 +1084,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#141",
-              "ddgs": pdg108
+              "label": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
+              "name": "hornerMethod should evaluate the polynomial for the specified value of x correctly@hornerMethod.test.js",
+              "ddgs": pdg104
             },
             {
               "id": "javascript-algorithms#142",
-              "ddgs": pdg109
+              "label": "hornerMethod should evaluate the same polynomial value as classical approach",
+              "name": "hornerMethod should evaluate the same polynomial value as classical approach@hornerMethod.test.js",
+              "ddgs": pdg105
             },
             {
               "id": "javascript-algorithms#45",
-              "ddgs": pdg110
+              "label": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
+              "name": "classicPolynome should evaluate the polynomial for the specified value of x correctly@classicPolynome.test.js",
+              "ddgs": pdg106
             }
           ]
         },
@@ -933,7 +1107,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#151",
-              "ddgs": pdg111
+              "label": "integerPartition should partition the number",
+              "name": "integerPartition should partition the number@integerPartition.test.js",
+              "ddgs": pdg107
             }
           ]
         },
@@ -942,11 +1118,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#156",
-              "ddgs": pdg112
+              "label": "isPowerOfTwo should check if the number is made by multiplying twos",
+              "name": "isPowerOfTwo should check if the number is made by multiplying twos@isPowerOfTwo.test.js",
+              "ddgs": pdg108
             },
             {
               "id": "javascript-algorithms#158",
-              "ddgs": pdg113
+              "label": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
+              "name": "isPowerOfTwoBitwise should check if the number is made by multiplying twos@isPowerOfTwoBitwise.test.js",
+              "ddgs": pdg109
             }
           ]
         },
@@ -955,7 +1135,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#186",
-              "ddgs": pdg114
+              "label": "leastCommonMultiple should find least common multiple",
+              "name": "leastCommonMultiple should find least common multiple@leastCommonMultiple.test.js",
+              "ddgs": pdg110
             }
           ]
         },
@@ -964,19 +1146,27 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#191",
-              "ddgs": pdg115
+              "label": "liuHui should calculate π based on 12-gon",
+              "name": "liuHui should calculate π based on 12-gon@liuHui.test.js",
+              "ddgs": pdg111
             },
             {
               "id": "javascript-algorithms#192",
-              "ddgs": pdg116
+              "label": "liuHui should calculate π based on 201326592-gon",
+              "name": "liuHui should calculate π based on 201326592-gon@liuHui.test.js",
+              "ddgs": pdg112
             },
             {
               "id": "javascript-algorithms#193",
-              "ddgs": pdg117
+              "label": "liuHui should calculate π based on 24-gon",
+              "name": "liuHui should calculate π based on 24-gon@liuHui.test.js",
+              "ddgs": pdg113
             },
             {
               "id": "javascript-algorithms#194",
-              "ddgs": pdg118
+              "label": "liuHui should calculate π based on 6144-gon",
+              "name": "liuHui should calculate π based on 6144-gon@liuHui.test.js",
+              "ddgs": pdg114
             }
           ]
         },
@@ -985,59 +1175,87 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#198",
-              "ddgs": pdg119
+              "label": "Matrix should add two matrices",
+              "name": "Matrix should add two matrices@Matrix.test.js",
+              "ddgs": pdg115
             },
             {
               "id": "javascript-algorithms#199",
-              "ddgs": pdg120
+              "label": "Matrix should calculate matrices dimensions",
+              "name": "Matrix should calculate matrices dimensions@Matrix.test.js",
+              "ddgs": pdg116
             },
             {
               "id": "javascript-algorithms#200",
-              "ddgs": pdg121
+              "label": "Matrix should do element wise multiplication two matrices",
+              "name": "Matrix should do element wise multiplication two matrices@Matrix.test.js",
+              "ddgs": pdg117
             },
             {
               "id": "javascript-algorithms#201",
-              "ddgs": pdg122
+              "label": "Matrix should do element wise subtraction two matrices",
+              "name": "Matrix should do element wise subtraction two matrices@Matrix.test.js",
+              "ddgs": pdg118
             },
             {
               "id": "javascript-algorithms#202",
-              "ddgs": pdg123
+              "label": "Matrix should generate a custom matrix based on specific cell indices",
+              "name": "Matrix should generate a custom matrix based on specific cell indices@Matrix.test.js",
+              "ddgs": pdg119
             },
             {
               "id": "javascript-algorithms#203",
-              "ddgs": pdg124
+              "label": "Matrix should generate the matrix of zeros",
+              "name": "Matrix should generate the matrix of zeros@Matrix.test.js",
+              "ddgs": pdg120
             },
             {
               "id": "javascript-algorithms#204",
-              "ddgs": pdg125
+              "label": "Matrix should generate the matrix with custom values",
+              "name": "Matrix should generate the matrix with custom values@Matrix.test.js",
+              "ddgs": pdg121
             },
             {
               "id": "javascript-algorithms#205",
-              "ddgs": pdg126
+              "label": "Matrix should multiply two matrices",
+              "name": "Matrix should multiply two matrices@Matrix.test.js",
+              "ddgs": pdg122
             },
             {
               "id": "javascript-algorithms#206",
-              "ddgs": pdg127
+              "label": "Matrix should throw when trying to add matrices of different shape",
+              "name": "Matrix should throw when trying to add matrices of different shape@Matrix.test.js",
+              "ddgs": pdg123
             },
             {
               "id": "javascript-algorithms#207",
-              "ddgs": pdg128
+              "label": "Matrix should throw when trying to add matrices of invalid shapes",
+              "name": "Matrix should throw when trying to add matrices of invalid shapes@Matrix.test.js",
+              "ddgs": pdg124
             },
             {
               "id": "javascript-algorithms#208",
-              "ddgs": pdg129
+              "label": "Matrix should throw when trying to multiply matrices element-wise of different shape",
+              "name": "Matrix should throw when trying to multiply matrices element-wise of different shape@Matrix.test.js",
+              "ddgs": pdg125
             },
             {
               "id": "javascript-algorithms#209",
-              "ddgs": pdg130
+              "label": "Matrix should throw when trying to subtract matrices element-wise of different shape",
+              "name": "Matrix should throw when trying to subtract matrices element-wise of different shape@Matrix.test.js",
+              "ddgs": pdg126
             },
             {
               "id": "javascript-algorithms#210",
-              "ddgs": pdg131
+              "label": "Matrix should throw when trying to transpose non 2D matrix",
+              "name": "Matrix should throw when trying to transpose non 2D matrix@Matrix.test.js",
+              "ddgs": pdg127
             },
             {
               "id": "javascript-algorithms#211",
-              "ddgs": pdg132
+              "label": "Matrix should transpose matrices",
+              "name": "Matrix should transpose matrices@Matrix.test.js",
+              "ddgs": pdg128
             }
           ]
         },
@@ -1046,11 +1264,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#228",
-              "ddgs": pdg133
+              "label": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
+              "name": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number@pascalTriangle.test.js",
+              "ddgs": pdg129
             },
             {
               "id": "javascript-algorithms#229",
-              "ddgs": pdg134
+              "label": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
+              "name": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number@pascalTriangleRecursive.test.js",
+              "ddgs": pdg130
             }
           ]
         },
@@ -1059,7 +1281,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#306",
-              "ddgs": pdg135
+              "label": "trialDivision should detect prime numbers",
+              "name": "trialDivision should detect prime numbers@trialDivision.test.js",
+              "ddgs": pdg131
             }
           ]
         },
@@ -1068,15 +1292,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#240",
-              "ddgs": pdg136
+              "label": "primeFactors should find prime factors",
+              "name": "primeFactors should find prime factors@primeFactors.test.js",
+              "ddgs": pdg132
             },
             {
               "id": "javascript-algorithms#241",
-              "ddgs": pdg137
+              "label": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
+              "name": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem@primeFactors.test.js",
+              "ddgs": pdg133
             },
             {
               "id": "javascript-algorithms#242",
-              "ddgs": pdg138
+              "label": "primeFactors should give correct deviation between exact and approx counts",
+              "name": "primeFactors should give correct deviation between exact and approx counts@primeFactors.test.js",
+              "ddgs": pdg134
             }
           ]
         },
@@ -1085,11 +1315,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#262",
-              "ddgs": pdg139
+              "label": "radianToDegree should convert radian to degree",
+              "name": "radianToDegree should convert radian to degree@radianToDegree.test.js",
+              "ddgs": pdg135
             },
             {
               "id": "javascript-algorithms#69",
-              "ddgs": pdg140
+              "label": "degreeToRadian should convert degree to radian",
+              "name": "degreeToRadian should convert degree to radian@degreeToRadian.test.js",
+              "ddgs": pdg136
             }
           ]
         },
@@ -1098,7 +1332,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#293",
-              "ddgs": pdg141
+              "label": "sieveOfEratosthenes should find all primes less than or equal to n",
+              "name": "sieveOfEratosthenes should find all primes less than or equal to n@sieveOfEratosthenes.test.js",
+              "ddgs": pdg137
             }
           ]
         },
@@ -1107,15 +1343,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#298",
-              "ddgs": pdg142
+              "label": "squareRoot should correctly calculate square root for integers with custom tolerance",
+              "name": "squareRoot should correctly calculate square root for integers with custom tolerance@squareRoot.test.js",
+              "ddgs": pdg138
             },
             {
               "id": "javascript-algorithms#299",
-              "ddgs": pdg143
+              "label": "squareRoot should correctly calculate square root with default tolerance",
+              "name": "squareRoot should correctly calculate square root with default tolerance@squareRoot.test.js",
+              "ddgs": pdg139
             },
             {
               "id": "javascript-algorithms#300",
-              "ddgs": pdg144
+              "label": "squareRoot should throw for negative numbers",
+              "name": "squareRoot should throw for negative numbers@squareRoot.test.js",
+              "ddgs": pdg140
             }
           ]
         }
@@ -1129,23 +1371,33 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#161",
-              "ddgs": pdg145
+              "label": "kMeans should find the clusters with equal distances",
+              "name": "kMeans should find the clusters with equal distances@kMeans.test.js",
+              "ddgs": pdg141
             },
             {
               "id": "javascript-algorithms#162",
-              "ddgs": pdg146
+              "label": "kMeans should find the nearest neighbour in 3D space",
+              "name": "kMeans should find the nearest neighbour in 3D space@kMeans.test.js",
+              "ddgs": pdg142
             },
             {
               "id": "javascript-algorithms#163",
-              "ddgs": pdg147
+              "label": "kMeans should find the nearest neighbour",
+              "name": "kMeans should find the nearest neighbour@kMeans.test.js",
+              "ddgs": pdg143
             },
             {
               "id": "javascript-algorithms#164",
-              "ddgs": pdg148
+              "label": "kMeans should throw an error on inconsistent data",
+              "name": "kMeans should throw an error on inconsistent data@kMeans.test.js",
+              "ddgs": pdg144
             },
             {
               "id": "javascript-algorithms#165",
-              "ddgs": pdg149
+              "label": "kMeans should throw an error on invalid data",
+              "name": "kMeans should throw an error on invalid data@kMeans.test.js",
+              "ddgs": pdg145
             }
           ]
         },
@@ -1154,27 +1406,39 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#176",
-              "ddgs": pdg150
+              "label": "kNN should find the nearest neighbour in 3D space",
+              "name": "kNN should find the nearest neighbour in 3D space@knn.test.js",
+              "ddgs": pdg146
             },
             {
               "id": "javascript-algorithms#177",
-              "ddgs": pdg151
+              "label": "kNN should find the nearest neighbour with equal distances",
+              "name": "kNN should find the nearest neighbour with equal distances@knn.test.js",
+              "ddgs": pdg147
             },
             {
               "id": "javascript-algorithms#178",
-              "ddgs": pdg152
+              "label": "kNN should find the nearest neighbour",
+              "name": "kNN should find the nearest neighbour@knn.test.js",
+              "ddgs": pdg148
             },
             {
               "id": "javascript-algorithms#179",
-              "ddgs": pdg153
+              "label": "kNN should throw an error on invalid data",
+              "name": "kNN should throw an error on invalid data@knn.test.js",
+              "ddgs": pdg149
             },
             {
               "id": "javascript-algorithms#180",
-              "ddgs": pdg154
+              "label": "kNN should throw an error on invalid labels",
+              "name": "kNN should throw an error on invalid labels@knn.test.js",
+              "ddgs": pdg150
             },
             {
               "id": "javascript-algorithms#181",
-              "ddgs": pdg155
+              "label": "kNN should throw an error on not giving classification vector",
+              "name": "kNN should throw an error on not giving classification vector@knn.test.js",
+              "ddgs": pdg151
             }
           ]
         }
@@ -1188,11 +1452,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#15",
-              "ddgs": pdg156
+              "label": "binarySearch should search number in sorted array",
+              "name": "binarySearch should search number in sorted array@binarySearch.test.js",
+              "ddgs": pdg152
             },
             {
               "id": "javascript-algorithms#16",
-              "ddgs": pdg157
+              "label": "binarySearch should search object in sorted array",
+              "name": "binarySearch should search object in sorted array@binarySearch.test.js",
+              "ddgs": pdg153
             }
           ]
         },
@@ -1201,7 +1469,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#152",
-              "ddgs": pdg158
+              "label": "interpolationSearch should search elements in sorted array of numbers",
+              "name": "interpolationSearch should search elements in sorted array of numbers@interpolationSearch.test.js",
+              "ddgs": pdg154
             }
           ]
         },
@@ -1210,11 +1480,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#159",
-              "ddgs": pdg159
+              "label": "jumpSearch should search for an element in sorted array",
+              "name": "jumpSearch should search for an element in sorted array@jumpSearch.test.js",
+              "ddgs": pdg155
             },
             {
               "id": "javascript-algorithms#160",
-              "ddgs": pdg160
+              "label": "jumpSearch should search object in sorted array",
+              "name": "jumpSearch should search object in sorted array@jumpSearch.test.js",
+              "ddgs": pdg156
             }
           ]
         },
@@ -1223,15 +1497,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#188",
-              "ddgs": pdg161
+              "label": "linearSearch should search all numbers in array",
+              "name": "linearSearch should search all numbers in array@linearSearch.test.js",
+              "ddgs": pdg157
             },
             {
               "id": "javascript-algorithms#189",
-              "ddgs": pdg162
+              "label": "linearSearch should search all strings in array",
+              "name": "linearSearch should search all strings in array@linearSearch.test.js",
+              "ddgs": pdg158
             },
             {
               "id": "javascript-algorithms#190",
-              "ddgs": pdg163
+              "label": "linearSearch should search through objects as well",
+              "name": "linearSearch should search through objects as well@linearSearch.test.js",
+              "ddgs": pdg159
             }
           ]
         }
@@ -1245,11 +1525,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#43",
-              "ddgs": pdg164
+              "label": "cartesianProduct should calculate the product of two sets",
+              "name": "cartesianProduct should calculate the product of two sets@cartesianProduct.test.js",
+              "ddgs": pdg160
             },
             {
               "id": "javascript-algorithms#44",
-              "ddgs": pdg165
+              "label": "cartesianProduct should return null if there is not enough info for calculation",
+              "name": "cartesianProduct should return null if there is not enough info for calculation@cartesianProduct.test.js",
+              "ddgs": pdg161
             }
           ]
         },
@@ -1258,7 +1542,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#47",
-              "ddgs": pdg166
+              "label": "combinationSum should find all combinations with specific sum",
+              "name": "combinationSum should find all combinations with specific sum@combinationSum.test.js",
+              "ddgs": pdg162
             }
           ]
         },
@@ -1267,11 +1553,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#48",
-              "ddgs": pdg167
+              "label": "combineWithoutRepetitions should combine string without repetitions",
+              "name": "combineWithoutRepetitions should combine string without repetitions@combineWithoutRepetitions.test.js",
+              "ddgs": pdg163
             },
             {
               "id": "javascript-algorithms#49",
-              "ddgs": pdg168
+              "label": "combineWithRepetitions should combine string with repetitions",
+              "name": "combineWithRepetitions should combine string with repetitions@combineWithRepetitions.test.js",
+              "ddgs": pdg164
             }
           ]
         },
@@ -1280,11 +1570,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#106",
-              "ddgs": pdg169
+              "label": "fisherYates should shuffle array randomly",
+              "name": "fisherYates should shuffle array randomly@fisherYates.test.js",
+              "ddgs": pdg165
             },
             {
               "id": "javascript-algorithms#107",
-              "ddgs": pdg170
+              "label": "fisherYates should shuffle small arrays",
+              "name": "fisherYates should shuffle small arrays@fisherYates.test.js",
+              "ddgs": pdg166
             }
           ]
         },
@@ -1293,35 +1587,51 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#166",
-              "ddgs": pdg171
+              "label": "Knapsack should solve 0/1 knapsack problem regardless of items order",
+              "name": "Knapsack should solve 0/1 knapsack problem regardless of items order@Knapsack.test.js",
+              "ddgs": pdg167
             },
             {
               "id": "javascript-algorithms#167",
-              "ddgs": pdg172
+              "label": "Knapsack should solve 0/1 knapsack problem with all equal weights",
+              "name": "Knapsack should solve 0/1 knapsack problem with all equal weights@Knapsack.test.js",
+              "ddgs": pdg168
             },
             {
               "id": "javascript-algorithms#168",
-              "ddgs": pdg173
+              "label": "Knapsack should solve 0/1 knapsack problem with impossible items set",
+              "name": "Knapsack should solve 0/1 knapsack problem with impossible items set@Knapsack.test.js",
+              "ddgs": pdg169
             },
             {
               "id": "javascript-algorithms#169",
-              "ddgs": pdg174
+              "label": "Knapsack should solve 0/1 knapsack problem",
+              "name": "Knapsack should solve 0/1 knapsack problem@Knapsack.test.js",
+              "ddgs": pdg170
             },
             {
               "id": "javascript-algorithms#170",
-              "ddgs": pdg175
+              "label": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
+              "name": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items@Knapsack.test.js",
+              "ddgs": pdg171
             },
             {
               "id": "javascript-algorithms#171",
-              "ddgs": pdg176
+              "label": "Knapsack should solve unbound knapsack problem with items in stock",
+              "name": "Knapsack should solve unbound knapsack problem with items in stock@Knapsack.test.js",
+              "ddgs": pdg172
             },
             {
               "id": "javascript-algorithms#172",
-              "ddgs": pdg177
+              "label": "Knapsack should solve unbound knapsack problem",
+              "name": "Knapsack should solve unbound knapsack problem@Knapsack.test.js",
+              "ddgs": pdg173
             },
             {
               "id": "javascript-algorithms#173",
-              "ddgs": pdg178
+              "label": "KnapsackItem should create knapsack item and count its total weight and value",
+              "name": "KnapsackItem should create knapsack item and count its total weight and value@KnapsackItem.test.js",
+              "ddgs": pdg174
             }
           ]
         },
@@ -1330,7 +1640,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#195",
-              "ddgs": pdg179
+              "label": "longestCommonSubsequence should find longest common subsequence for two strings",
+              "name": "longestCommonSubsequence should find longest common subsequence for two strings@longestCommonSubsequence.test.js",
+              "ddgs": pdg175
             }
           ]
         },
@@ -1339,7 +1651,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#83",
-              "ddgs": pdg180
+              "label": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
+              "name": "dpLongestIncreasingSubsequence should find longest increasing subsequence length@dpLongestIncreasingSubsequence.test.js",
+              "ddgs": pdg176
             }
           ]
         },
@@ -1348,15 +1662,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#12",
-              "ddgs": pdg181
+              "label": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
+              "name": "bfMaximumSubarray should find maximum subarray using the brute force algorithm@bfMaximumSubarray.test.js",
+              "ddgs": pdg177
             },
             {
               "id": "javascript-algorithms#68",
-              "ddgs": pdg182
+              "label": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
+              "name": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm@dcMaximumSubarraySum.test.js",
+              "ddgs": pdg178
             },
             {
               "id": "javascript-algorithms#84",
-              "ddgs": pdg183
+              "label": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
+              "name": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm@dpMaximumSubarray.test.js",
+              "ddgs": pdg179
             }
           ]
         },
@@ -1365,11 +1685,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#231",
-              "ddgs": pdg184
+              "label": "permutateWithoutRepetitions should permutate string",
+              "name": "permutateWithoutRepetitions should permutate string@permutateWithoutRepetitions.test.js",
+              "ddgs": pdg180
             },
             {
               "id": "javascript-algorithms#232",
-              "ddgs": pdg185
+              "label": "permutateWithRepetitions should permutate string with repetition",
+              "name": "permutateWithRepetitions should permutate string with repetition@permutateWithRepetitions.test.js",
+              "ddgs": pdg181
             }
           ]
         },
@@ -1378,11 +1702,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#26",
-              "ddgs": pdg186
+              "label": "btPowerSet should calculate power set of given set using backtracking approach",
+              "name": "btPowerSet should calculate power set of given set using backtracking approach@btPowerSet.test.js",
+              "ddgs": pdg182
             },
             {
               "id": "javascript-algorithms#36",
-              "ddgs": pdg187
+              "label": "bwPowerSet should calculate power set of given set using bitwise approach",
+              "name": "bwPowerSet should calculate power set of given set using bitwise approach@bwPowerSet.test.js",
+              "ddgs": pdg183
             }
           ]
         },
@@ -1391,7 +1719,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#292",
-              "ddgs": pdg188
+              "label": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
+              "name": "shortestCommonSupersequence should find shortest common supersequence of two sequences@shortestCommonSupersequence.test.js",
+              "ddgs": pdg184
             }
           ]
         }
@@ -1405,35 +1735,51 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#28",
-              "ddgs": pdg189
+              "label": "BubbleSort should do stable sorting",
+              "name": "BubbleSort should do stable sorting@BubbleSort.test.js",
+              "ddgs": pdg185
             },
             {
               "id": "javascript-algorithms#29",
-              "ddgs": pdg190
+              "label": "BubbleSort should sort array with custom comparator",
+              "name": "BubbleSort should sort array with custom comparator@BubbleSort.test.js",
+              "ddgs": pdg186
             },
             {
               "id": "javascript-algorithms#30",
-              "ddgs": pdg191
+              "label": "BubbleSort should sort array",
+              "name": "BubbleSort should sort array@BubbleSort.test.js",
+              "ddgs": pdg187
             },
             {
               "id": "javascript-algorithms#31",
-              "ddgs": pdg192
+              "label": "BubbleSort should sort negative numbers",
+              "name": "BubbleSort should sort negative numbers@BubbleSort.test.js",
+              "ddgs": pdg188
             },
             {
               "id": "javascript-algorithms#32",
-              "ddgs": pdg193
+              "label": "BubbleSort should visit EQUAL array element specified number of times",
+              "name": "BubbleSort should visit EQUAL array element specified number of times@BubbleSort.test.js",
+              "ddgs": pdg189
             },
             {
               "id": "javascript-algorithms#33",
-              "ddgs": pdg194
+              "label": "BubbleSort should visit NOT SORTED array element specified number of times",
+              "name": "BubbleSort should visit NOT SORTED array element specified number of times@BubbleSort.test.js",
+              "ddgs": pdg190
             },
             {
               "id": "javascript-algorithms#34",
-              "ddgs": pdg195
+              "label": "BubbleSort should visit REVERSE SORTED array element specified number of times",
+              "name": "BubbleSort should visit REVERSE SORTED array element specified number of times@BubbleSort.test.js",
+              "ddgs": pdg191
             },
             {
               "id": "javascript-algorithms#35",
-              "ddgs": pdg196
+              "label": "BubbleSort should visit SORTED array element specified number of times",
+              "name": "BubbleSort should visit SORTED array element specified number of times@BubbleSort.test.js",
+              "ddgs": pdg192
             }
           ]
         },
@@ -1442,31 +1788,45 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#60",
-              "ddgs": pdg197
+              "label": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
+              "name": "CountingSort should allow to use specify max/min integer value in array to make sorting faster@CountingSort.test.js",
+              "ddgs": pdg193
             },
             {
               "id": "javascript-algorithms#61",
-              "ddgs": pdg198
+              "label": "CountingSort should sort array",
+              "name": "CountingSort should sort array@CountingSort.test.js",
+              "ddgs": pdg194
             },
             {
               "id": "javascript-algorithms#62",
-              "ddgs": pdg199
+              "label": "CountingSort should sort negative numbers",
+              "name": "CountingSort should sort negative numbers@CountingSort.test.js",
+              "ddgs": pdg195
             },
             {
               "id": "javascript-algorithms#63",
-              "ddgs": pdg200
+              "label": "CountingSort should visit EQUAL array element specified number of times",
+              "name": "CountingSort should visit EQUAL array element specified number of times@CountingSort.test.js",
+              "ddgs": pdg196
             },
             {
               "id": "javascript-algorithms#64",
-              "ddgs": pdg201
+              "label": "CountingSort should visit NOT SORTED array element specified number of times",
+              "name": "CountingSort should visit NOT SORTED array element specified number of times@CountingSort.test.js",
+              "ddgs": pdg197
             },
             {
               "id": "javascript-algorithms#65",
-              "ddgs": pdg202
+              "label": "CountingSort should visit REVERSE SORTED array element specified number of times",
+              "name": "CountingSort should visit REVERSE SORTED array element specified number of times@CountingSort.test.js",
+              "ddgs": pdg198
             },
             {
               "id": "javascript-algorithms#66",
-              "ddgs": pdg203
+              "label": "CountingSort should visit SORTED array element specified number of times",
+              "name": "CountingSort should visit SORTED array element specified number of times@CountingSort.test.js",
+              "ddgs": pdg199
             }
           ]
         },
@@ -1475,31 +1835,45 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#129",
-              "ddgs": pdg204
+              "label": "HeapSort should sort array with custom comparator",
+              "name": "HeapSort should sort array with custom comparator@HeapSort.test.js",
+              "ddgs": pdg200
             },
             {
               "id": "javascript-algorithms#130",
-              "ddgs": pdg205
+              "label": "HeapSort should sort array",
+              "name": "HeapSort should sort array@HeapSort.test.js",
+              "ddgs": pdg201
             },
             {
               "id": "javascript-algorithms#131",
-              "ddgs": pdg206
+              "label": "HeapSort should sort negative numbers",
+              "name": "HeapSort should sort negative numbers@HeapSort.test.js",
+              "ddgs": pdg202
             },
             {
               "id": "javascript-algorithms#132",
-              "ddgs": pdg207
+              "label": "HeapSort should visit EQUAL array element specified number of times",
+              "name": "HeapSort should visit EQUAL array element specified number of times@HeapSort.test.js",
+              "ddgs": pdg203
             },
             {
               "id": "javascript-algorithms#133",
-              "ddgs": pdg208
+              "label": "HeapSort should visit NOT SORTED array element specified number of times",
+              "name": "HeapSort should visit NOT SORTED array element specified number of times@HeapSort.test.js",
+              "ddgs": pdg204
             },
             {
               "id": "javascript-algorithms#134",
-              "ddgs": pdg209
+              "label": "HeapSort should visit REVERSE SORTED array element specified number of times",
+              "name": "HeapSort should visit REVERSE SORTED array element specified number of times@HeapSort.test.js",
+              "ddgs": pdg205
             },
             {
               "id": "javascript-algorithms#135",
-              "ddgs": pdg210
+              "label": "HeapSort should visit SORTED array element specified number of times",
+              "name": "HeapSort should visit SORTED array element specified number of times@HeapSort.test.js",
+              "ddgs": pdg206
             }
           ]
         },
@@ -1508,35 +1882,51 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#143",
-              "ddgs": pdg211
+              "label": "InsertionSort should do stable sorting",
+              "name": "InsertionSort should do stable sorting@InsertionSort.test.js",
+              "ddgs": pdg207
             },
             {
               "id": "javascript-algorithms#144",
-              "ddgs": pdg212
+              "label": "InsertionSort should sort array with custom comparator",
+              "name": "InsertionSort should sort array with custom comparator@InsertionSort.test.js",
+              "ddgs": pdg208
             },
             {
               "id": "javascript-algorithms#145",
-              "ddgs": pdg213
+              "label": "InsertionSort should sort array",
+              "name": "InsertionSort should sort array@InsertionSort.test.js",
+              "ddgs": pdg209
             },
             {
               "id": "javascript-algorithms#146",
-              "ddgs": pdg214
+              "label": "InsertionSort should sort negative numbers",
+              "name": "InsertionSort should sort negative numbers@InsertionSort.test.js",
+              "ddgs": pdg210
             },
             {
               "id": "javascript-algorithms#147",
-              "ddgs": pdg215
+              "label": "InsertionSort should visit EQUAL array element specified number of times",
+              "name": "InsertionSort should visit EQUAL array element specified number of times@InsertionSort.test.js",
+              "ddgs": pdg211
             },
             {
               "id": "javascript-algorithms#148",
-              "ddgs": pdg216
+              "label": "InsertionSort should visit NOT SORTED array element specified number of times",
+              "name": "InsertionSort should visit NOT SORTED array element specified number of times@InsertionSort.test.js",
+              "ddgs": pdg212
             },
             {
               "id": "javascript-algorithms#149",
-              "ddgs": pdg217
+              "label": "InsertionSort should visit REVERSE SORTED array element specified number of times",
+              "name": "InsertionSort should visit REVERSE SORTED array element specified number of times@InsertionSort.test.js",
+              "ddgs": pdg213
             },
             {
               "id": "javascript-algorithms#150",
-              "ddgs": pdg218
+              "label": "InsertionSort should visit SORTED array element specified number of times",
+              "name": "InsertionSort should visit SORTED array element specified number of times@InsertionSort.test.js",
+              "ddgs": pdg214
             }
           ]
         },
@@ -1545,35 +1935,51 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#212",
-              "ddgs": pdg219
+              "label": "MergeSort should do stable sorting",
+              "name": "MergeSort should do stable sorting@MergeSort.test.js",
+              "ddgs": pdg215
             },
             {
               "id": "javascript-algorithms#213",
-              "ddgs": pdg220
+              "label": "MergeSort should sort array with custom comparator",
+              "name": "MergeSort should sort array with custom comparator@MergeSort.test.js",
+              "ddgs": pdg216
             },
             {
               "id": "javascript-algorithms#214",
-              "ddgs": pdg221
+              "label": "MergeSort should sort array",
+              "name": "MergeSort should sort array@MergeSort.test.js",
+              "ddgs": pdg217
             },
             {
               "id": "javascript-algorithms#215",
-              "ddgs": pdg222
+              "label": "MergeSort should sort negative numbers",
+              "name": "MergeSort should sort negative numbers@MergeSort.test.js",
+              "ddgs": pdg218
             },
             {
               "id": "javascript-algorithms#216",
-              "ddgs": pdg223
+              "label": "MergeSort should visit EQUAL array element specified number of times",
+              "name": "MergeSort should visit EQUAL array element specified number of times@MergeSort.test.js",
+              "ddgs": pdg219
             },
             {
               "id": "javascript-algorithms#217",
-              "ddgs": pdg224
+              "label": "MergeSort should visit NOT SORTED array element specified number of times",
+              "name": "MergeSort should visit NOT SORTED array element specified number of times@MergeSort.test.js",
+              "ddgs": pdg220
             },
             {
               "id": "javascript-algorithms#218",
-              "ddgs": pdg225
+              "label": "MergeSort should visit REVERSE SORTED array element specified number of times",
+              "name": "MergeSort should visit REVERSE SORTED array element specified number of times@MergeSort.test.js",
+              "ddgs": pdg221
             },
             {
               "id": "javascript-algorithms#219",
-              "ddgs": pdg226
+              "label": "MergeSort should visit SORTED array element specified number of times",
+              "name": "MergeSort should visit SORTED array element specified number of times@MergeSort.test.js",
+              "ddgs": pdg222
             }
           ]
         },
@@ -1582,63 +1988,93 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#244",
-              "ddgs": pdg227
+              "label": "QuickSort should do stable sorting",
+              "name": "QuickSort should do stable sorting@QuickSort.test.js",
+              "ddgs": pdg223
             },
             {
               "id": "javascript-algorithms#245",
-              "ddgs": pdg228
+              "label": "QuickSort should sort array with custom comparator",
+              "name": "QuickSort should sort array with custom comparator@QuickSort.test.js",
+              "ddgs": pdg224
             },
             {
               "id": "javascript-algorithms#246",
-              "ddgs": pdg229
+              "label": "QuickSort should sort array",
+              "name": "QuickSort should sort array@QuickSort.test.js",
+              "ddgs": pdg225
             },
             {
               "id": "javascript-algorithms#247",
-              "ddgs": pdg230
+              "label": "QuickSort should sort negative numbers",
+              "name": "QuickSort should sort negative numbers@QuickSort.test.js",
+              "ddgs": pdg226
             },
             {
               "id": "javascript-algorithms#248",
-              "ddgs": pdg231
+              "label": "QuickSort should visit EQUAL array element specified number of times",
+              "name": "QuickSort should visit EQUAL array element specified number of times@QuickSort.test.js",
+              "ddgs": pdg227
             },
             {
               "id": "javascript-algorithms#249",
-              "ddgs": pdg232
+              "label": "QuickSort should visit NOT SORTED array element specified number of times",
+              "name": "QuickSort should visit NOT SORTED array element specified number of times@QuickSort.test.js",
+              "ddgs": pdg228
             },
             {
               "id": "javascript-algorithms#250",
-              "ddgs": pdg233
+              "label": "QuickSort should visit REVERSE SORTED array element specified number of times",
+              "name": "QuickSort should visit REVERSE SORTED array element specified number of times@QuickSort.test.js",
+              "ddgs": pdg229
             },
             {
               "id": "javascript-algorithms#251",
-              "ddgs": pdg234
+              "label": "QuickSort should visit SORTED array element specified number of times",
+              "name": "QuickSort should visit SORTED array element specified number of times@QuickSort.test.js",
+              "ddgs": pdg230
             },
             {
               "id": "javascript-algorithms#252",
-              "ddgs": pdg235
+              "label": "QuickSortInPlace should sort array with custom comparator",
+              "name": "QuickSortInPlace should sort array with custom comparator@QuickSortInPlace.test.js",
+              "ddgs": pdg231
             },
             {
               "id": "javascript-algorithms#253",
-              "ddgs": pdg236
+              "label": "QuickSortInPlace should sort array",
+              "name": "QuickSortInPlace should sort array@QuickSortInPlace.test.js",
+              "ddgs": pdg232
             },
             {
               "id": "javascript-algorithms#254",
-              "ddgs": pdg237
+              "label": "QuickSortInPlace should sort negative numbers",
+              "name": "QuickSortInPlace should sort negative numbers@QuickSortInPlace.test.js",
+              "ddgs": pdg233
             },
             {
               "id": "javascript-algorithms#255",
-              "ddgs": pdg238
+              "label": "QuickSortInPlace should visit EQUAL array element specified number of times",
+              "name": "QuickSortInPlace should visit EQUAL array element specified number of times@QuickSortInPlace.test.js",
+              "ddgs": pdg234
             },
             {
               "id": "javascript-algorithms#256",
-              "ddgs": pdg239
+              "label": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
+              "name": "QuickSortInPlace should visit NOT SORTED array element specified number of times@QuickSortInPlace.test.js",
+              "ddgs": pdg235
             },
             {
               "id": "javascript-algorithms#257",
-              "ddgs": pdg240
+              "label": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+              "name": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times@QuickSortInPlace.test.js",
+              "ddgs": pdg236
             },
             {
               "id": "javascript-algorithms#258",
-              "ddgs": pdg241
+              "label": "QuickSortInPlace should visit SORTED array element specified number of times",
+              "name": "QuickSortInPlace should visit SORTED array element specified number of times@QuickSortInPlace.test.js",
+              "ddgs": pdg237
             }
           ]
         },
@@ -1647,15 +2083,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#263",
-              "ddgs": pdg242
+              "label": "RadixSort should sort array",
+              "name": "RadixSort should sort array@RadixSort.test.js",
+              "ddgs": pdg238
             },
             {
               "id": "javascript-algorithms#264",
-              "ddgs": pdg243
+              "label": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times",
+              "name": "RadixSort should visit array of integers n (number of elements) x m (length of longest integer) times@RadixSort.test.js",
+              "ddgs": pdg239
             },
             {
               "id": "javascript-algorithms#265",
-              "ddgs": pdg244
+              "label": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times",
+              "name": "RadixSort should visit array of strings n (number of strings) x m (length of longest element) times@RadixSort.test.js",
+              "ddgs": pdg240
             }
           ]
         },
@@ -1664,31 +2106,45 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#277",
-              "ddgs": pdg245
+              "label": "SelectionSort should sort array with custom comparator",
+              "name": "SelectionSort should sort array with custom comparator@SelectionSort.test.js",
+              "ddgs": pdg241
             },
             {
               "id": "javascript-algorithms#278",
-              "ddgs": pdg246
+              "label": "SelectionSort should sort array",
+              "name": "SelectionSort should sort array@SelectionSort.test.js",
+              "ddgs": pdg242
             },
             {
               "id": "javascript-algorithms#279",
-              "ddgs": pdg247
+              "label": "SelectionSort should sort negative numbers",
+              "name": "SelectionSort should sort negative numbers@SelectionSort.test.js",
+              "ddgs": pdg243
             },
             {
               "id": "javascript-algorithms#280",
-              "ddgs": pdg248
+              "label": "SelectionSort should visit EQUAL array element specified number of times",
+              "name": "SelectionSort should visit EQUAL array element specified number of times@SelectionSort.test.js",
+              "ddgs": pdg244
             },
             {
               "id": "javascript-algorithms#281",
-              "ddgs": pdg249
+              "label": "SelectionSort should visit NOT SORTED array element specified number of times",
+              "name": "SelectionSort should visit NOT SORTED array element specified number of times@SelectionSort.test.js",
+              "ddgs": pdg245
             },
             {
               "id": "javascript-algorithms#282",
-              "ddgs": pdg250
+              "label": "SelectionSort should visit REVERSE SORTED array element specified number of times",
+              "name": "SelectionSort should visit REVERSE SORTED array element specified number of times@SelectionSort.test.js",
+              "ddgs": pdg246
             },
             {
               "id": "javascript-algorithms#283",
-              "ddgs": pdg251
+              "label": "SelectionSort should visit SORTED array element specified number of times",
+              "name": "SelectionSort should visit SORTED array element specified number of times@SelectionSort.test.js",
+              "ddgs": pdg247
             }
           ]
         },
@@ -1697,42 +2153,47 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#285",
-              "ddgs": pdg252
+              "label": "ShellSort should sort array with custom comparator",
+              "name": "ShellSort should sort array with custom comparator@ShellSort.test.js",
+              "ddgs": pdg248
             },
             {
               "id": "javascript-algorithms#286",
-              "ddgs": pdg253
+              "label": "ShellSort should sort array",
+              "name": "ShellSort should sort array@ShellSort.test.js",
+              "ddgs": pdg249
             },
             {
               "id": "javascript-algorithms#287",
-              "ddgs": pdg254
+              "label": "ShellSort should sort negative numbers",
+              "name": "ShellSort should sort negative numbers@ShellSort.test.js",
+              "ddgs": pdg250
             },
             {
               "id": "javascript-algorithms#288",
-              "ddgs": pdg255
+              "label": "ShellSort should visit EQUAL array element specified number of times",
+              "name": "ShellSort should visit EQUAL array element specified number of times@ShellSort.test.js",
+              "ddgs": pdg251
             },
             {
               "id": "javascript-algorithms#289",
-              "ddgs": pdg256
+              "label": "ShellSort should visit NOT SORTED array element specified number of times",
+              "name": "ShellSort should visit NOT SORTED array element specified number of times@ShellSort.test.js",
+              "ddgs": pdg252
             },
             {
               "id": "javascript-algorithms#290",
-              "ddgs": pdg257
+              "label": "ShellSort should visit REVERSE SORTED array element specified number of times",
+              "name": "ShellSort should visit REVERSE SORTED array element specified number of times@ShellSort.test.js",
+              "ddgs": pdg253
             },
             {
               "id": "javascript-algorithms#291",
-              "ddgs": pdg258
+              "label": "ShellSort should visit SORTED array element specified number of times",
+              "name": "ShellSort should visit SORTED array element specified number of times@ShellSort.test.js",
+              "ddgs": pdg254
             }
           ]
-        }
-      ]
-    },
-    {
-      "name": "statistics",
-      "chapters": [
-        {
-          "name": "weighted-random",
-          "exercises": []
         }
       ]
     },
@@ -1744,11 +2205,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#124",
-              "ddgs": pdg259
+              "label": "hammingDistance should calculate difference between two strings",
+              "name": "hammingDistance should calculate difference between two strings@hammingDistance.test.js",
+              "ddgs": pdg255
             },
             {
               "id": "javascript-algorithms#125",
-              "ddgs": pdg260
+              "label": "hammingDistance should throw an error when trying to compare the strings of different lengths",
+              "name": "hammingDistance should throw an error when trying to compare the strings of different lengths@hammingDistance.test.js",
+              "ddgs": pdg256
             }
           ]
         },
@@ -1757,7 +2222,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#182",
-              "ddgs": pdg261
+              "label": "knuthMorrisPratt should find word position in given text",
+              "name": "knuthMorrisPratt should find word position in given text@knuthMorrisPratt.test.js",
+              "ddgs": pdg257
             }
           ]
         },
@@ -1766,7 +2233,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#187",
-              "ddgs": pdg262
+              "label": "levenshteinDistance should calculate edit distance between two strings",
+              "name": "levenshteinDistance should calculate edit distance between two strings@levenshteinDistance.test.js",
+              "ddgs": pdg258
             }
           ]
         },
@@ -1775,11 +2244,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#196",
-              "ddgs": pdg263
+              "label": "longestCommonSubstring should find longest common substring between two strings",
+              "name": "longestCommonSubstring should find longest common substring between two strings@longestCommonSubstring.test.js",
+              "ddgs": pdg259
             },
             {
               "id": "javascript-algorithms#197",
-              "ddgs": pdg264
+              "label": "longestCommonSubstring should handle unicode correctly",
+              "name": "longestCommonSubstring should handle unicode correctly@longestCommonSubstring.test.js",
+              "ddgs": pdg260
             }
           ]
         },
@@ -1788,7 +2261,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#227",
-              "ddgs": pdg265
+              "label": "palindromeCheck should return whether or not the string is a palindrome",
+              "name": "palindromeCheck should return whether or not the string is a palindrome@isPalindrome.test.js",
+              "ddgs": pdg261
             }
           ]
         },
@@ -1797,15 +2272,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#259",
-              "ddgs": pdg266
+              "label": "rabinKarp should find substring in a string",
+              "name": "rabinKarp should find substring in a string@rabinKarp.test.js",
+              "ddgs": pdg262
             },
             {
               "id": "javascript-algorithms#260",
-              "ddgs": pdg267
+              "label": "rabinKarp should work with bigger texts",
+              "name": "rabinKarp should work with bigger texts@rabinKarp.test.js",
+              "ddgs": pdg263
             },
             {
               "id": "javascript-algorithms#261",
-              "ddgs": pdg268
+              "label": "rabinKarp should work with UTF symbols",
+              "name": "rabinKarp should work with UTF symbols@rabinKarp.test.js",
+              "ddgs": pdg264
             }
           ]
         },
@@ -1814,7 +2295,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#274",
-              "ddgs": pdg269
+              "label": "regularExpressionMatching should match regular expressions in a string",
+              "name": "regularExpressionMatching should match regular expressions in a string@regularExpressionMatching.test.js",
+              "ddgs": pdg265
             }
           ]
         },
@@ -1823,38 +2306,9 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#313",
-              "ddgs": pdg270
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "tree",
-      "chapters": [
-        {
-          "name": "breadth-first-search",
-          "exercises": [
-            {
-              "id": "javascript-algorithms#22",
-              "ddgs": pdg271
-            },
-            {
-              "id": "javascript-algorithms#25",
-              "ddgs": pdg272
-            }
-          ]
-        },
-        {
-          "name": "depth-first-search",
-          "exercises": [
-            {
-              "id": "javascript-algorithms#70",
-              "ddgs": pdg273
-            },
-            {
-              "id": "javascript-algorithms#73",
-              "ddgs": pdg274
+              "label": "zAlgorithm should find word positions in given text",
+              "name": "zAlgorithm should find word positions in given text@zAlgorithm.test.js",
+              "ddgs": pdg266
             }
           ]
         }
@@ -1868,19 +2322,27 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#1",
-              "ddgs": pdg275
+              "label": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+              "name": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks@accumulatorBestTimeToBuySellStocks.test.js",
+              "ddgs": pdg267
             },
             {
               "id": "javascript-algorithms#230",
-              "ddgs": pdg276
+              "label": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+              "name": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks@peakvalleyBestTimeToBuySellStocks.test.js",
+              "ddgs": pdg268
             },
             {
               "id": "javascript-algorithms#81",
-              "ddgs": pdg277
+              "label": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+              "name": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks@dpBestTimeToBuySellStocks.test.js",
+              "ddgs": pdg269
             },
             {
               "id": "javascript-algorithms#88",
-              "ddgs": pdg278
+              "label": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+              "name": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks@dqBestTimeToBuySellStocks.test.js",
+              "ddgs": pdg270
             }
           ]
         },
@@ -1889,15 +2351,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#126",
-              "ddgs": pdg279
+              "label": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
+              "name": "hanoiTower should solve tower of hanoi puzzle with 2 discs@hanoiTower.test.js",
+              "ddgs": pdg271
             },
             {
               "id": "javascript-algorithms#127",
-              "ddgs": pdg280
+              "label": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
+              "name": "hanoiTower should solve tower of hanoi puzzle with 3 discs@hanoiTower.test.js",
+              "ddgs": pdg272
             },
             {
               "id": "javascript-algorithms#128",
-              "ddgs": pdg281
+              "label": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
+              "name": "hanoiTower should solve tower of hanoi puzzle with 6 discs@hanoiTower.test.js",
+              "ddgs": pdg273
             }
           ]
         },
@@ -1906,19 +2374,27 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#121",
-              "ddgs": pdg282
+              "label": "greedyJumpGame should solve Jump Game problem in greedy manner",
+              "name": "greedyJumpGame should solve Jump Game problem in greedy manner@greedyJumpGame.test.js",
+              "ddgs": pdg274
             },
             {
               "id": "javascript-algorithms#82",
-              "ddgs": pdg283
+              "label": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
+              "name": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner@dpBottomUpJumpGame.test.js",
+              "ddgs": pdg275
             },
             {
               "id": "javascript-algorithms#86",
-              "ddgs": pdg284
+              "label": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
+              "name": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner@dpTopDownJumpGame.test.js",
+              "ddgs": pdg276
             },
             {
               "id": "javascript-algorithms#9",
-              "ddgs": pdg285
+              "label": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
+              "name": "backtrackingJumpGame should solve Jump Game problem in backtracking manner@backtrackingJumpGame.test.js",
+              "ddgs": pdg277
             }
           ]
         },
@@ -1927,11 +2403,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#174",
-              "ddgs": pdg286
+              "label": "knightTour should find one solution to do knight tour on 5x5 board",
+              "name": "knightTour should find one solution to do knight tour on 5x5 board@knightTour.test.js",
+              "ddgs": pdg278
             },
             {
               "id": "javascript-algorithms#175",
-              "ddgs": pdg287
+              "label": "knightTour should not find solution on 3x3 board",
+              "name": "knightTour should not find solution on 3x3 board@knightTour.test.js",
+              "ddgs": pdg279
             }
           ]
         },
@@ -1940,23 +2420,33 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#223",
-              "ddgs": pdg288
+              "label": "nQueens should not hae solution for 3 queens",
+              "name": "nQueens should not hae solution for 3 queens@nQueens.test.js",
+              "ddgs": pdg280
             },
             {
               "id": "javascript-algorithms#224",
-              "ddgs": pdg289
+              "label": "nQueens should solve n-queens problem for 4 queens",
+              "name": "nQueens should solve n-queens problem for 4 queens@nQueens.test.js",
+              "ddgs": pdg281
             },
             {
               "id": "javascript-algorithms#225",
-              "ddgs": pdg290
+              "label": "nQueens should solve n-queens problem for 6 queens",
+              "name": "nQueens should solve n-queens problem for 6 queens@nQueens.test.js",
+              "ddgs": pdg282
             },
             {
               "id": "javascript-algorithms#226",
-              "ddgs": pdg291
+              "label": "nQueensBitwise should have solutions for 4 to N queens",
+              "name": "nQueensBitwise should have solutions for 4 to N queens@nQueensBitwise.test.js",
+              "ddgs": pdg283
             },
             {
               "id": "javascript-algorithms#243",
-              "ddgs": pdg292
+              "label": "QueenPosition should store queen position on chessboard",
+              "name": "QueenPosition should store queen position on chessboard@QueensPosition.test.js",
+              "ddgs": pdg284
             }
           ]
         },
@@ -1965,11 +2455,15 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#13",
-              "ddgs": pdg293
+              "label": "bfRainTerraces should find the amount of water collected after raining",
+              "name": "bfRainTerraces should find the amount of water collected after raining@bfRainTerraces.test.js",
+              "ddgs": pdg285
             },
             {
               "id": "javascript-algorithms#85",
-              "ddgs": pdg294
+              "label": "dpRainTerraces should find the amount of water collected after raining",
+              "name": "dpRainTerraces should find the amount of water collected after raining@dpRainTerraces.test.js",
+              "ddgs": pdg286
             }
           ]
         },
@@ -1978,19 +2472,27 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#270",
-              "ddgs": pdg295
+              "label": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
+              "name": "recursiveStaircaseBF should calculate number of variants using Brute Force solution@recursiveStaircaseBF.test.js",
+              "ddgs": pdg287
             },
             {
               "id": "javascript-algorithms#271",
-              "ddgs": pdg296
+              "label": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
+              "name": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution@recursiveStaircaseDP.test.js",
+              "ddgs": pdg288
             },
             {
               "id": "javascript-algorithms#272",
-              "ddgs": pdg297
+              "label": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
+              "name": "recursiveStaircaseIT should calculate number of variants using Iterative solution@recursiveStaircaseIT.test.js",
+              "ddgs": pdg289
             },
             {
               "id": "javascript-algorithms#273",
-              "ddgs": pdg298
+              "label": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
+              "name": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization@recursiveStaircaseMEM.test.js",
+              "ddgs": pdg290
             }
           ]
         },
@@ -1999,19 +2501,27 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#294",
-              "ddgs": pdg299
+              "label": "squareMatrixRotation should rotate matrix #0 in-place",
+              "name": "squareMatrixRotation should rotate matrix #0 in-place@squareMatrixRotation.test.js",
+              "ddgs": pdg291
             },
             {
               "id": "javascript-algorithms#295",
-              "ddgs": pdg300
+              "label": "squareMatrixRotation should rotate matrix #1 in-place",
+              "name": "squareMatrixRotation should rotate matrix #1 in-place@squareMatrixRotation.test.js",
+              "ddgs": pdg292
             },
             {
               "id": "javascript-algorithms#296",
-              "ddgs": pdg301
+              "label": "squareMatrixRotation should rotate matrix #2 in-place",
+              "name": "squareMatrixRotation should rotate matrix #2 in-place@squareMatrixRotation.test.js",
+              "ddgs": pdg293
             },
             {
               "id": "javascript-algorithms#297",
-              "ddgs": pdg302
+              "label": "squareMatrixRotation should rotate matrix #3 in-place",
+              "name": "squareMatrixRotation should rotate matrix #3 in-place@squareMatrixRotation.test.js",
+              "ddgs": pdg294
             }
           ]
         },
@@ -2020,15 +2530,21 @@ export default {
           "exercises": [
             {
               "id": "javascript-algorithms#27",
-              "ddgs": pdg303
+              "label": "btUniquePaths should find the number of unique paths on board",
+              "name": "btUniquePaths should find the number of unique paths on board@btUniquePaths.test.js",
+              "ddgs": pdg295
             },
             {
               "id": "javascript-algorithms#307",
-              "ddgs": pdg304
+              "label": "uniquePaths should find the number of unique paths on board",
+              "name": "uniquePaths should find the number of unique paths on board@uniquePaths.test.js",
+              "ddgs": pdg296
             },
             {
               "id": "javascript-algorithms#87",
-              "ddgs": pdg305
+              "label": "dpUniquePaths should find the number of unique paths on board",
+              "name": "dpUniquePaths should find the number of unique paths on board@dpUniquePaths.test.js",
+              "ddgs": pdg297
             }
           ]
         }

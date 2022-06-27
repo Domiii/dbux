@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "ddgTitle": "levenshteinDistance(islander, slander)",
+    "ddgTitle": "levenshteinDistance(, )",
     "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_1",
     "testLoc": {
       "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
@@ -27,21 +27,22 @@
           "index": 125
         },
         "end": {
-          "line": 37,
+          "line": 39,
           "column": 1,
-          "index": 1323
+          "index": 1334
         }
       }
     },
     "screenshots": [
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"islander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"slander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 16
       },
       {
         "sameAs": 0,
@@ -50,7 +51,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 6
       },
       {
         "sameAs": 1,
@@ -59,7 +61,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 7
       },
       {
         "sameAs": 2,
@@ -68,7 +71,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 8
       },
       {
         "sameAs": 3,
@@ -77,7 +81,8 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 9
       },
       {
         "sameAs": 4,
@@ -86,16 +91,1088 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 10
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"islander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"slander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_18 {\n    id=18;\n    label=\"Array&#40;b.length + 1&#41;.fill&#40;nu...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_19 {\n      id=19;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_35 {\n      id=35;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_50 {\n      id=50;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_65 {\n      id=65;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_80 {\n      id=80;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_95 {\n      id=95;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_110 {\n      id=110;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_125 {\n      id=125;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41;.fi...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_142 {\n    id=142;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_145 {\n      id=145;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_150 {\n      id=150;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_155 {\n      id=155;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_160 {\n      id=160;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_165 {\n      id=165;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_170 {\n      id=170;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_175 {\n      id=175;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_180 {\n      id=180;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_185 {\n      id=185;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_190 {\n    id=190;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_193 {\n      id=193;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_198 {\n      id=198;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_203 {\n      id=203;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_208 {\n      id=208;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_213 {\n      id=213;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_218 {\n      id=218;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_223 {\n      id=223;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_228 {\n      id=228;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_233 {\n    id=233;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_236 {\n      id=236;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_237 {\n        id=237;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_240 {\n          id=240;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_268 {\n          id=268;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_295 {\n          id=295;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_322 {\n          id=322;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_349 {\n          id=349;\n          label=\"for#0#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_376 {\n          id=376;\n          label=\"for#0#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_403 {\n          id=403;\n          label=\"for#0#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_430 {\n          id=430;\n          label=\"for#0#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_459 {\n      id=459;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_460 {\n        id=460;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_463 {\n          id=463;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_490 {\n          id=490;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_516 {\n          id=516;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_542 {\n          id=542;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_568 {\n          id=568;\n          label=\"for#1#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_594 {\n          id=594;\n          label=\"for#1#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_620 {\n          id=620;\n          label=\"for#1#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_646 {\n          id=646;\n          label=\"for#1#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_674 {\n      id=674;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_675 {\n        id=675;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_678 {\n          id=678;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_705 {\n          id=705;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_731 {\n          id=731;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_757 {\n          id=757;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_783 {\n          id=783;\n          label=\"for#2#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_809 {\n          id=809;\n          label=\"for#2#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_835 {\n          id=835;\n          label=\"for#2#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_861 {\n          id=861;\n          label=\"for#2#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_889 {\n      id=889;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_890 {\n        id=890;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_893 {\n          id=893;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_920 {\n          id=920;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_946 {\n          id=946;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_972 {\n          id=972;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_998 {\n          id=998;\n          label=\"for#3#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1024 {\n          id=1024;\n          label=\"for#3#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1050 {\n          id=1050;\n          label=\"for#3#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1076 {\n          id=1076;\n          label=\"for#3#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1104 {\n      id=1104;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1105 {\n        id=1105;\n        label=\"for#4#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1108 {\n          id=1108;\n          label=\"for#4#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1135 {\n          id=1135;\n          label=\"for#4#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1161 {\n          id=1161;\n          label=\"for#4#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1187 {\n          id=1187;\n          label=\"for#4#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1213 {\n          id=1213;\n          label=\"for#4#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1239 {\n          id=1239;\n          label=\"for#4#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1265 {\n          id=1265;\n          label=\"for#4#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1291 {\n          id=1291;\n          label=\"for#4#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1319 {\n      id=1319;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1320 {\n        id=1320;\n        label=\"for#5#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1323 {\n          id=1323;\n          label=\"for#5#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1350 {\n          id=1350;\n          label=\"for#5#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1376 {\n          id=1376;\n          label=\"for#5#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1402 {\n          id=1402;\n          label=\"for#5#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1428 {\n          id=1428;\n          label=\"for#5#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1454 {\n          id=1454;\n          label=\"for#5#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1480 {\n          id=1480;\n          label=\"for#5#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1506 {\n          id=1506;\n          label=\"for#5#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1534 {\n      id=1534;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1535 {\n        id=1535;\n        label=\"for#6#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1538 {\n          id=1538;\n          label=\"for#6#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1565 {\n          id=1565;\n          label=\"for#6#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1591 {\n          id=1591;\n          label=\"for#6#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1617 {\n          id=1617;\n          label=\"for#6#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1643 {\n          id=1643;\n          label=\"for#6#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1669 {\n          id=1669;\n          label=\"for#6#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1695 {\n          id=1695;\n          label=\"for#6#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1721 {\n          id=1721;\n          label=\"for#6#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_11 {\n    id=11;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_12 {\n      id=12;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_22 {\n    id=22;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_25 {\n      id=25;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_30 {\n    id=30;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_33 {\n      id=33;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_38 {\n    id=38;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  2 -> 3[style=invis,weight=2];\n}",
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "levenshteinDistance(a, )",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_2",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
         }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_11 {\n    id=11;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_12 {\n      id=12;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_23 {\n    id=23;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_26 {\n      id=26;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_31 {\n      id=31;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_36 {\n    id=36;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_39 {\n      id=39;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_44 {\n    id=44;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "levenshteinDistance(, a)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_3",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"a\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_12 {\n    id=12;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_13 {\n      id=13;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_21 {\n      id=21;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_30 {\n    id=30;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_33 {\n      id=33;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_38 {\n    id=38;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_41 {\n      id=41;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_46 {\n      id=46;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_51 {\n    id=51;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_54 {\n      id=54;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_55 {\n        id=55;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "levenshteinDistance(abc, )",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_4",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_11 {\n    id=11;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_12 {\n      id=12;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_25 {\n    id=25;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_28 {\n      id=28;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_33 {\n      id=33;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_38 {\n      id=38;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_43 {\n      id=43;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_48 {\n    id=48;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_51 {\n      id=51;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_56 {\n    id=56;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "levenshteinDistance(, abc)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_5",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"abc\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_14 {\n    id=14;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_15 {\n      id=15;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_23 {\n      id=23;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_30 {\n      id=30;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_37 {\n      id=37;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_46 {\n    id=46;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_49 {\n      id=49;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_54 {\n    id=54;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_57 {\n      id=57;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_62 {\n      id=62;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_67 {\n      id=67;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_72 {\n      id=72;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_77 {\n    id=77;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_80 {\n      id=80;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_81 {\n        id=81;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_87 {\n      id=87;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_88 {\n        id=88;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n    subgraph cluster_group_94 {\n      id=94;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_95 {\n        id=95;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "ddgTitle": "levenshteinDistance(islander, slander)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_6",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"islander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"slander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"islander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"slander\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_18 {\n    id=18;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_19 {\n      id=19;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_35 {\n      id=35;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_50 {\n      id=50;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_65 {\n      id=65;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_80 {\n      id=80;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_95 {\n      id=95;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_110 {\n      id=110;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_125 {\n      id=125;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_142 {\n    id=142;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_145 {\n      id=145;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_150 {\n      id=150;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_155 {\n      id=155;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_160 {\n      id=160;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_165 {\n      id=165;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_170 {\n      id=170;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_175 {\n      id=175;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_180 {\n      id=180;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_185 {\n      id=185;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_190 {\n    id=190;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_193 {\n      id=193;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_198 {\n      id=198;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_203 {\n      id=203;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_208 {\n      id=208;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_213 {\n      id=213;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_218 {\n      id=218;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_223 {\n      id=223;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_228 {\n      id=228;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_233 {\n    id=233;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_236 {\n      id=236;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_237 {\n        id=237;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_240 {\n          id=240;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_268 {\n          id=268;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_295 {\n          id=295;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_322 {\n          id=322;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_349 {\n          id=349;\n          label=\"for#0#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_376 {\n          id=376;\n          label=\"for#0#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_403 {\n          id=403;\n          label=\"for#0#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_430 {\n          id=430;\n          label=\"for#0#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_459 {\n      id=459;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_460 {\n        id=460;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_463 {\n          id=463;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_490 {\n          id=490;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_516 {\n          id=516;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_542 {\n          id=542;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_568 {\n          id=568;\n          label=\"for#1#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_594 {\n          id=594;\n          label=\"for#1#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_620 {\n          id=620;\n          label=\"for#1#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_646 {\n          id=646;\n          label=\"for#1#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_674 {\n      id=674;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_675 {\n        id=675;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_678 {\n          id=678;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_705 {\n          id=705;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_731 {\n          id=731;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_757 {\n          id=757;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_783 {\n          id=783;\n          label=\"for#2#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_809 {\n          id=809;\n          label=\"for#2#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_835 {\n          id=835;\n          label=\"for#2#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_861 {\n          id=861;\n          label=\"for#2#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_889 {\n      id=889;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_890 {\n        id=890;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_893 {\n          id=893;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_920 {\n          id=920;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_946 {\n          id=946;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_972 {\n          id=972;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_998 {\n          id=998;\n          label=\"for#3#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1024 {\n          id=1024;\n          label=\"for#3#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1050 {\n          id=1050;\n          label=\"for#3#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1076 {\n          id=1076;\n          label=\"for#3#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1104 {\n      id=1104;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1105 {\n        id=1105;\n        label=\"for#4#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1108 {\n          id=1108;\n          label=\"for#4#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1135 {\n          id=1135;\n          label=\"for#4#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1161 {\n          id=1161;\n          label=\"for#4#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1187 {\n          id=1187;\n          label=\"for#4#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1213 {\n          id=1213;\n          label=\"for#4#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1239 {\n          id=1239;\n          label=\"for#4#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1265 {\n          id=1265;\n          label=\"for#4#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1291 {\n          id=1291;\n          label=\"for#4#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1319 {\n      id=1319;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1320 {\n        id=1320;\n        label=\"for#5#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1323 {\n          id=1323;\n          label=\"for#5#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1350 {\n          id=1350;\n          label=\"for#5#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1376 {\n          id=1376;\n          label=\"for#5#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1402 {\n          id=1402;\n          label=\"for#5#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1428 {\n          id=1428;\n          label=\"for#5#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1454 {\n          id=1454;\n          label=\"for#5#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1480 {\n          id=1480;\n          label=\"for#5#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1506 {\n          id=1506;\n          label=\"for#5#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1534 {\n      id=1534;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1535 {\n        id=1535;\n        label=\"for#6#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1538 {\n          id=1538;\n          label=\"for#6#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1565 {\n          id=1565;\n          label=\"for#6#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1591 {\n          id=1591;\n          label=\"for#6#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1617 {\n          id=1617;\n          label=\"for#6#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1643 {\n          id=1643;\n          label=\"for#6#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1669 {\n          id=1669;\n          label=\"for#6#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1695 {\n          id=1695;\n          label=\"for#6#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1721 {\n          id=1721;\n          label=\"for#6#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "ddgTitle": "levenshteinDistance(mart, karma)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_7",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"mart\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"karma\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"mart\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"karma\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_16 {\n    id=16;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_17 {\n      id=17;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_29 {\n      id=29;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_40 {\n      id=40;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_51 {\n      id=51;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_62 {\n      id=62;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_73 {\n      id=73;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_86 {\n    id=86;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_89 {\n      id=89;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_94 {\n      id=94;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_99 {\n      id=99;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_104 {\n      id=104;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_109 {\n      id=109;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_114 {\n    id=114;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_117 {\n      id=117;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_122 {\n      id=122;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_127 {\n      id=127;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_132 {\n      id=132;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_137 {\n      id=137;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_142 {\n      id=142;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_147 {\n    id=147;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_150 {\n      id=150;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_151 {\n        id=151;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_154 {\n          id=154;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_182 {\n          id=182;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_208 {\n          id=208;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_234 {\n          id=234;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_262 {\n      id=262;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_263 {\n        id=263;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_266 {\n          id=266;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_292 {\n          id=292;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_318 {\n          id=318;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_344 {\n          id=344;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_372 {\n      id=372;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_373 {\n        id=373;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_376 {\n          id=376;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_403 {\n          id=403;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_429 {\n          id=429;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_455 {\n          id=455;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_483 {\n      id=483;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_484 {\n        id=484;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_487 {\n          id=487;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_514 {\n          id=514;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_540 {\n          id=540;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_566 {\n          id=566;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_594 {\n      id=594;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_595 {\n        id=595;\n        label=\"for#4#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_598 {\n          id=598;\n          label=\"for#4#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_625 {\n          id=625;\n          label=\"for#4#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_651 {\n          id=651;\n          label=\"for#4#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_677 {\n          id=677;\n          label=\"for#4#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "ddgTitle": "levenshteinDistance(kitten, sitting)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_8",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"kitten\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"sitting\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"kitten\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"sitting\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_18 {\n    id=18;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_19 {\n      id=19;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_33 {\n      id=33;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_46 {\n      id=46;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_59 {\n      id=59;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_72 {\n      id=72;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_85 {\n      id=85;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_98 {\n      id=98;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_111 {\n      id=111;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_126 {\n    id=126;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_129 {\n      id=129;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_134 {\n      id=134;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_139 {\n      id=139;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_144 {\n      id=144;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_149 {\n      id=149;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_154 {\n      id=154;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_159 {\n      id=159;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_164 {\n    id=164;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_167 {\n      id=167;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_172 {\n      id=172;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_177 {\n      id=177;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_182 {\n      id=182;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_187 {\n      id=187;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_192 {\n      id=192;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_197 {\n      id=197;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_202 {\n      id=202;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_207 {\n    id=207;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_210 {\n      id=210;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_211 {\n        id=211;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_214 {\n          id=214;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_242 {\n          id=242;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_268 {\n          id=268;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_294 {\n          id=294;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_320 {\n          id=320;\n          label=\"for#0#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_346 {\n          id=346;\n          label=\"for#0#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_374 {\n      id=374;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_375 {\n        id=375;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_378 {\n          id=378;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_404 {\n          id=404;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_430 {\n          id=430;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_456 {\n          id=456;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_482 {\n          id=482;\n          label=\"for#1#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_508 {\n          id=508;\n          label=\"for#1#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_536 {\n      id=536;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_537 {\n        id=537;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_540 {\n          id=540;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_567 {\n          id=567;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_593 {\n          id=593;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_619 {\n          id=619;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_645 {\n          id=645;\n          label=\"for#2#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_671 {\n          id=671;\n          label=\"for#2#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_699 {\n      id=699;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_700 {\n        id=700;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_703 {\n          id=703;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_730 {\n          id=730;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_756 {\n          id=756;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_782 {\n          id=782;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_808 {\n          id=808;\n          label=\"for#3#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_834 {\n          id=834;\n          label=\"for#3#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_862 {\n      id=862;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_863 {\n        id=863;\n        label=\"for#4#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_866 {\n          id=866;\n          label=\"for#4#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_893 {\n          id=893;\n          label=\"for#4#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_919 {\n          id=919;\n          label=\"for#4#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_945 {\n          id=945;\n          label=\"for#4#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_971 {\n          id=971;\n          label=\"for#4#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_997 {\n          id=997;\n          label=\"for#4#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1025 {\n      id=1025;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1026 {\n        id=1026;\n        label=\"for#5#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1029 {\n          id=1029;\n          label=\"for#5#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1056 {\n          id=1056;\n          label=\"for#5#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1082 {\n          id=1082;\n          label=\"for#5#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1108 {\n          id=1108;\n          label=\"for#5#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1134 {\n          id=1134;\n          label=\"for#5#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1160 {\n          id=1160;\n          label=\"for#5#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1188 {\n      id=1188;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1189 {\n        id=1189;\n        label=\"for#6#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1192 {\n          id=1192;\n          label=\"for#6#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1219 {\n          id=1219;\n          label=\"for#6#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1245 {\n          id=1245;\n          label=\"for#6#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1271 {\n          id=1271;\n          label=\"for#6#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1297 {\n          id=1297;\n          label=\"for#6#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1323 {\n          id=1323;\n          label=\"for#6#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "ddgTitle": "levenshteinDistance(ball, football)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_9",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"ball\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"football\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"ball\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"football\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_19 {\n    id=19;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_20 {\n      id=20;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_43 {\n      id=43;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_54 {\n      id=54;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_65 {\n      id=65;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_76 {\n      id=76;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_87 {\n      id=87;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_98 {\n      id=98;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_109 {\n      id=109;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_122 {\n    id=122;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_125 {\n      id=125;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_130 {\n      id=130;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_135 {\n      id=135;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_140 {\n      id=140;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_145 {\n      id=145;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_150 {\n    id=150;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_153 {\n      id=153;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_158 {\n      id=158;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_163 {\n      id=163;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_168 {\n      id=168;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_173 {\n      id=173;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_178 {\n      id=178;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_183 {\n      id=183;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_188 {\n      id=188;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_193 {\n      id=193;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_198 {\n    id=198;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_201 {\n      id=201;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_202 {\n        id=202;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_205 {\n          id=205;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_233 {\n          id=233;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_259 {\n          id=259;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_285 {\n          id=285;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_313 {\n      id=313;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_314 {\n        id=314;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_317 {\n          id=317;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_343 {\n          id=343;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_368 {\n          id=368;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_393 {\n          id=393;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_420 {\n      id=420;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_421 {\n        id=421;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_424 {\n          id=424;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_450 {\n          id=450;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_475 {\n          id=475;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_500 {\n          id=500;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_527 {\n      id=527;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_528 {\n        id=528;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_531 {\n          id=531;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_557 {\n          id=557;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_582 {\n          id=582;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_607 {\n          id=607;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_634 {\n      id=634;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_635 {\n        id=635;\n        label=\"for#4#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_638 {\n          id=638;\n          label=\"for#4#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_665 {\n          id=665;\n          label=\"for#4#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_691 {\n          id=691;\n          label=\"for#4#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_717 {\n          id=717;\n          label=\"for#4#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_745 {\n      id=745;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_746 {\n        id=746;\n        label=\"for#5#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_749 {\n          id=749;\n          label=\"for#5#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_776 {\n          id=776;\n          label=\"for#5#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_802 {\n          id=802;\n          label=\"for#5#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_828 {\n          id=828;\n          label=\"for#5#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_856 {\n      id=856;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_857 {\n        id=857;\n        label=\"for#6#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_860 {\n          id=860;\n          label=\"for#6#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_887 {\n          id=887;\n          label=\"for#6#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_913 {\n          id=913;\n          label=\"for#6#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_939 {\n          id=939;\n          label=\"for#6#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_967 {\n      id=967;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_968 {\n        id=968;\n        label=\"for#7#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_971 {\n          id=971;\n          label=\"for#7#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_998 {\n          id=998;\n          label=\"for#7#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1024 {\n          id=1024;\n          label=\"for#7#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1050 {\n          id=1050;\n          label=\"for#7#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "ddgTitle": "levenshteinDistance(football, foot)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_10",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"football\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"foot\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"football\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"foot\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_15 {\n    id=15;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_16 {\n      id=16;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_32 {\n      id=32;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_47 {\n      id=47;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_62 {\n      id=62;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_77 {\n      id=77;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_94 {\n    id=94;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_97 {\n      id=97;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_102 {\n      id=102;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_107 {\n      id=107;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_112 {\n      id=112;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_117 {\n      id=117;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_122 {\n      id=122;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_127 {\n      id=127;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_132 {\n      id=132;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_137 {\n      id=137;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_142 {\n    id=142;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_145 {\n      id=145;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_150 {\n      id=150;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_155 {\n      id=155;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_160 {\n      id=160;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_165 {\n      id=165;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_170 {\n    id=170;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_173 {\n      id=173;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_174 {\n        id=174;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_177 {\n          id=177;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_205 {\n          id=205;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_232 {\n          id=232;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_259 {\n          id=259;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_286 {\n          id=286;\n          label=\"for#0#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_313 {\n          id=313;\n          label=\"for#0#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_340 {\n          id=340;\n          label=\"for#0#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_367 {\n          id=367;\n          label=\"for#0#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_396 {\n      id=396;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_397 {\n        id=397;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_400 {\n          id=400;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_427 {\n          id=427;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_453 {\n          id=453;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_479 {\n          id=479;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_505 {\n          id=505;\n          label=\"for#1#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_531 {\n          id=531;\n          label=\"for#1#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_557 {\n          id=557;\n          label=\"for#1#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_583 {\n          id=583;\n          label=\"for#1#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_611 {\n      id=611;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_612 {\n        id=612;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_615 {\n          id=615;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_642 {\n          id=642;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_668 {\n          id=668;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_694 {\n          id=694;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_720 {\n          id=720;\n          label=\"for#2#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_746 {\n          id=746;\n          label=\"for#2#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_772 {\n          id=772;\n          label=\"for#2#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_798 {\n          id=798;\n          label=\"for#2#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_826 {\n      id=826;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_827 {\n        id=827;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_830 {\n          id=830;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_857 {\n          id=857;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_883 {\n          id=883;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_909 {\n          id=909;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_935 {\n          id=935;\n          label=\"for#3#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_961 {\n          id=961;\n          label=\"for#3#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_987 {\n          id=987;\n          label=\"for#3#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1013 {\n          id=1013;\n          label=\"for#3#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "ddgTitle": "levenshteinDistance(intention, execution)",
+    "uniqueId": "string_levenshtein-distance_javascript-algorithms#187_11",
+    "testLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 65,
+          "index": 167
+        },
+        "end": {
+          "line": 28,
+          "column": 3,
+          "index": 1161
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/string/levenshtein-distance/levenshteinDistance.js",
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 50,
+          "index": 125
+        },
+        "end": {
+          "line": 39,
+          "column": 1,
+          "index": 1334
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"intention\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"execution\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">a</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">\"intention\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  3 [id=3,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">b</TD>\n    <TD ID=\"3\" TITLE=\"3\"><FONT COLOR=\"lightblue\">\"execution\"</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_20 {\n    id=20;\n    label=\"Array&#40;b.length + 1&#41; .fill&#40;n...\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_21 {\n      id=21;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_38 {\n      id=38;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_54 {\n      id=54;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_70 {\n      id=70;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_86 {\n      id=86;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_102 {\n      id=102;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_118 {\n      id=118;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_134 {\n      id=134;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_150 {\n      id=150;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_166 {\n      id=166;\n      label=\"&#91;cb&#93; Array&#40;b.length + 1&#41; .f...\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_184 {\n    id=184;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_187 {\n      id=187;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_192 {\n      id=192;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_197 {\n      id=197;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_202 {\n      id=202;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_207 {\n      id=207;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_212 {\n      id=212;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_217 {\n      id=217;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_222 {\n      id=222;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_227 {\n      id=227;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_232 {\n      id=232;\n      label=\"for#9\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_237 {\n    id=237;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_240 {\n      id=240;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_245 {\n      id=245;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_250 {\n      id=250;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_255 {\n      id=255;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_260 {\n      id=260;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_265 {\n      id=265;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_270 {\n      id=270;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_275 {\n      id=275;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_280 {\n      id=280;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n    subgraph cluster_group_285 {\n      id=285;\n      label=\"for#9\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n    }\n  }\n  subgraph cluster_group_290 {\n    id=290;\n    label=\"for\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    subgraph cluster_group_293 {\n      id=293;\n      label=\"for#0\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_294 {\n        id=294;\n        label=\"for#0#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_297 {\n          id=297;\n          label=\"for#0#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_325 {\n          id=325;\n          label=\"for#0#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_351 {\n          id=351;\n          label=\"for#0#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_377 {\n          id=377;\n          label=\"for#0#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_404 {\n          id=404;\n          label=\"for#0#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_431 {\n          id=431;\n          label=\"for#0#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_458 {\n          id=458;\n          label=\"for#0#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_485 {\n          id=485;\n          label=\"for#0#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_512 {\n          id=512;\n          label=\"for#0#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_541 {\n      id=541;\n      label=\"for#1\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_542 {\n        id=542;\n        label=\"for#1#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_545 {\n          id=545;\n          label=\"for#1#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_572 {\n          id=572;\n          label=\"for#1#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_598 {\n          id=598;\n          label=\"for#1#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_624 {\n          id=624;\n          label=\"for#1#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_650 {\n          id=650;\n          label=\"for#1#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_676 {\n          id=676;\n          label=\"for#1#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_702 {\n          id=702;\n          label=\"for#1#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_728 {\n          id=728;\n          label=\"for#1#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_754 {\n          id=754;\n          label=\"for#1#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_782 {\n      id=782;\n      label=\"for#2\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_783 {\n        id=783;\n        label=\"for#2#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_786 {\n          id=786;\n          label=\"for#2#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_813 {\n          id=813;\n          label=\"for#2#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_839 {\n          id=839;\n          label=\"for#2#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_865 {\n          id=865;\n          label=\"for#2#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_891 {\n          id=891;\n          label=\"for#2#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_917 {\n          id=917;\n          label=\"for#2#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_943 {\n          id=943;\n          label=\"for#2#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_969 {\n          id=969;\n          label=\"for#2#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_995 {\n          id=995;\n          label=\"for#2#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1023 {\n      id=1023;\n      label=\"for#3\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1024 {\n        id=1024;\n        label=\"for#3#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1027 {\n          id=1027;\n          label=\"for#3#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1054 {\n          id=1054;\n          label=\"for#3#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1080 {\n          id=1080;\n          label=\"for#3#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1106 {\n          id=1106;\n          label=\"for#3#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1132 {\n          id=1132;\n          label=\"for#3#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1158 {\n          id=1158;\n          label=\"for#3#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1184 {\n          id=1184;\n          label=\"for#3#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1210 {\n          id=1210;\n          label=\"for#3#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1236 {\n          id=1236;\n          label=\"for#3#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1264 {\n      id=1264;\n      label=\"for#4\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1265 {\n        id=1265;\n        label=\"for#4#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1268 {\n          id=1268;\n          label=\"for#4#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1295 {\n          id=1295;\n          label=\"for#4#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1321 {\n          id=1321;\n          label=\"for#4#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1347 {\n          id=1347;\n          label=\"for#4#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1373 {\n          id=1373;\n          label=\"for#4#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1399 {\n          id=1399;\n          label=\"for#4#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1425 {\n          id=1425;\n          label=\"for#4#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1451 {\n          id=1451;\n          label=\"for#4#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1477 {\n          id=1477;\n          label=\"for#4#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1505 {\n      id=1505;\n      label=\"for#5\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1506 {\n        id=1506;\n        label=\"for#5#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1509 {\n          id=1509;\n          label=\"for#5#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1536 {\n          id=1536;\n          label=\"for#5#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1562 {\n          id=1562;\n          label=\"for#5#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1588 {\n          id=1588;\n          label=\"for#5#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1614 {\n          id=1614;\n          label=\"for#5#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1640 {\n          id=1640;\n          label=\"for#5#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1666 {\n          id=1666;\n          label=\"for#5#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1692 {\n          id=1692;\n          label=\"for#5#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1718 {\n          id=1718;\n          label=\"for#5#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1746 {\n      id=1746;\n      label=\"for#6\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1747 {\n        id=1747;\n        label=\"for#6#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1750 {\n          id=1750;\n          label=\"for#6#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1777 {\n          id=1777;\n          label=\"for#6#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1803 {\n          id=1803;\n          label=\"for#6#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1829 {\n          id=1829;\n          label=\"for#6#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1855 {\n          id=1855;\n          label=\"for#6#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1881 {\n          id=1881;\n          label=\"for#6#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1907 {\n          id=1907;\n          label=\"for#6#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1933 {\n          id=1933;\n          label=\"for#6#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_1959 {\n          id=1959;\n          label=\"for#6#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_1987 {\n      id=1987;\n      label=\"for#7\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_1988 {\n        id=1988;\n        label=\"for#7#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_1991 {\n          id=1991;\n          label=\"for#7#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2018 {\n          id=2018;\n          label=\"for#7#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2044 {\n          id=2044;\n          label=\"for#7#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2070 {\n          id=2070;\n          label=\"for#7#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2096 {\n          id=2096;\n          label=\"for#7#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2122 {\n          id=2122;\n          label=\"for#7#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2148 {\n          id=2148;\n          label=\"for#7#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2174 {\n          id=2174;\n          label=\"for#7#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2200 {\n          id=2200;\n          label=\"for#7#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n    subgraph cluster_group_2228 {\n      id=2228;\n      label=\"for#8\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      subgraph cluster_group_2229 {\n        id=2229;\n        label=\"for#8#for\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_2232 {\n          id=2232;\n          label=\"for#8#for#0\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2259 {\n          id=2259;\n          label=\"for#8#for#1\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2285 {\n          id=2285;\n          label=\"for#8#for#2\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2311 {\n          id=2311;\n          label=\"for#8#for#3\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2337 {\n          id=2337;\n          label=\"for#8#for#4\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2363 {\n          id=2363;\n          label=\"for#8#for#5\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2389 {\n          id=2389;\n          label=\"for#8#for#6\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2415 {\n          id=2415;\n          label=\"for#8#for#7\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n        subgraph cluster_group_2441 {\n          id=2441;\n          label=\"for#8#for#8\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n        }\n      }\n    }\n  }\n  2 -> 3[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
       }
     ]
   }

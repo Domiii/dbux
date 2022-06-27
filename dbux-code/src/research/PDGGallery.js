@@ -13,6 +13,7 @@ import { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
 import DDGSettings from '@dbux/data/src/ddg/DDGSettings';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../codeUtil/codeModals';
+import { showTextInNewFile } from '../codeUtil/codeNav';
 import { translate } from '../lang';
 import { getCurrentResearch } from './Research';
 
@@ -90,150 +91,142 @@ export default class PDGGallery {
     return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
   }
 
+  getPDGScreenshotData(dp, exercise, ddgArg) {
+    // generate screenshot configs
+    const galleryConfig = exercise.gallery;
+    let screenshotConfigs;
+    if (galleryConfig === false) {
+      return null;
+    }
+    else if (galleryConfig?.screenshotConfigs) {
+      ({ screenshotConfigs } = galleryConfig);
+    }
+    else {
+      screenshotConfigs = RootSummaryModes.map((rootSummaryMode) => {
+        const settings = new DDGSettings();
+        settings.extraVertical = true;
+        return {
+          rootSummaryMode,
+          settings,
+        };
+      });
+    }
+    // else {
+    //   throw new Error(`Invalid gallery config of exercise "${exercise.id}": ${galleryConfig}`);
+    // }
+
+    let lastDot;
+    const screenshots = [];
+
+    for (let k = 0; k < screenshotConfigs.length; k++) {
+      const screenshotConfig = screenshotConfigs[k];
+      const { settings, rootSummaryMode } = screenshotConfig;
+      try {
+        const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
+        ddg.updateSettings(settings);
+        ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
+
+        const dot = buildDot(ddg);
+
+        if (dot === lastDot) {
+          screenshots.push({
+            sameAs: k - 1,
+            settings,
+            rootSummaryMode
+          });
+        }
+        else {
+          lastDot = dot;
+          screenshots.push({ dot, settings, rootSummaryMode });
+        }
+      }
+      catch (err) {
+        screenshots.push({
+          crash: true,
+          failedReason: err.message,
+          error: err.stack,
+          settings,
+          rootSummaryMode,
+        });
+      }
+    }
+    return screenshots;
+  }
+
+  getPDGRenderData(exercise, ddgArgs) {
+    let renderDataId = 0;
+    const PDGRenderData = [];
+
+    for (let j = 0; j < ddgArgs.length; j++) {
+      const ddgArg = ddgArgs[j];
+      const { ddgTitle } = ddgArg;
+      const id = ++renderDataId;
+      const app = allApplications.getById(ddgArg.applicationUuid);
+      const dp = app.dataProvider;
+
+      // check if we can build ddg
+      const failedReason = dp.ddgs.getCreateDDGFailureReason(ddgArg);
+      if (failedReason) {
+        PDGRenderData.push({
+          success: false,
+          failedReason,
+          ddgTitle,
+        });
+      }
+      else {
+        const screenshots = this.getPDGScreenshotData(dp, exercise, ddgArg);
+        PDGRenderData.push({
+          id,
+          ddgTitle,
+          uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
+          testLoc: ddgArg.testLoc,
+          algoLoc: ddgArg.algoLoc,
+          screenshots,
+        });
+      }
+    }
+    return PDGRenderData;
+  }
+
   /**
    * @param {Exercise[]} exercises
    */
   async buildGalleryForExercises(exercises, force = false) {
     await runTaskWithProgressBar(async (progress) => {
-      const failedExerciseIds = [];
       for (let i = 0; i < exercises.length; i++) {
         const exercise = exercises[i];
+        if (exercise.ignore) {
+          continue;
+        }
+        if (exercise.gallery === false) {
+          continue;
+        }
+
         const exerciseFolderPath = this.getExerciseFolder(exercise);
         const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
+        if (!force && fs.existsSync(renderDataJsonFilePath)) {
+          log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
+          continue;
+        }
+        if (!fs.existsSync(exerciseFolderPath)) {
+          fs.mkdirSync(exerciseFolderPath, { recursive: true });
+        }
+
         try {
-          if (!force && fs.existsSync(renderDataJsonFilePath)) {
-            log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
-            continue;
-          }
-          const galleryConfig = exercise.gallery;
-          let screenshotConfigs;
-          if (galleryConfig === false) {
-            continue;
-          }
-          else if (isPlainObject(galleryConfig)) {
-            ({ screenshotConfigs } = galleryConfig);
-          }
-          else if (!galleryConfig) {
-            screenshotConfigs = RootSummaryModes.map((rootSummaryMode) => {
-              const settings = new DDGSettings();
-              settings.extraVertical = true;
-              return {
-                rootSummaryMode,
-                settings,
-              };
-            });
-          }
-          else {
-            logError(`Invalid gallery config of exercise "${exercise.id}": ${galleryConfig}`);
-          }
-
-          if (!fs.existsSync(exerciseFolderPath)) {
-            fs.mkdirSync(exerciseFolderPath, { recursive: true });
-          }
-
           const ddgArgs = await this.getAllExerciseDDGArgs(exercise);
 
-          let renderDataId = 0;
-          const PDGRenderData = [];
-
-          for (let j = 0; j < ddgArgs.length; j++) {
-            const ddgArg = ddgArgs[j];
-            const { ddgTitle } = ddgArg;
-            try {
-              const id = ++renderDataId;
-              let lastDot;
-              const screenshots = [];
-              const app = allApplications.getById(ddgArg.applicationUuid);
-              const dp = app.dataProvider;
-              const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
-
-              // check if ddg build failed
-              const failedReason = dp.ddgs.getCreateDDGFailureReason(ddgArg);
-              if (failedReason) {
-                PDGRenderData.push({
-                  success: false,
-                  failedReason,
-                  ddgTitle,
-                });
-                continue;
-              }
-
-              // check if there are missing data traces
-              const missingDataTraces = dp.util.getAllMissingDataStaticTraces();
-              if (missingDataTraces.length) {
-                const traceLocations = missingDataTraces.map(staticTrace => {
-                  const filePath = dp.util.getStaticTraceProgramPath(staticTrace.staticTraceId);
-                  const relativeFilePath = pathRelative(exercise.project.projectPath, filePath);
-                  const { line } = staticTrace.loc.start;
-                  return `${relativeFilePath}#${line}`;
-                });
-
-                PDGRenderData.push({
-                  success: false,
-                  failedReason: 'missing data traces',
-                  ddgTitle,
-                  traceLocations,
-                });
-                continue;
-              }
-
-              // passed, generate screenshots
-              for (let k = 0; k < screenshotConfigs.length; k++) {
-                progress.report({ message: `Exercise: "${exercise.id}" (${i}/${exercises.length}), DDG: (${k}/${screenshotConfigs.length})` });
-                const screenshotConfig = screenshotConfigs[k];
-                const { settings, rootSummaryMode } = screenshotConfig;
-                ddg.updateSettings(settings);
-                ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
-
-                const dot = buildDot(ddg);
-
-                if (dot === lastDot) {
-                  screenshots.push({
-                    sameAs: k - 1,
-                    settings,
-                    rootSummaryMode
-                  });
-                }
-                else {
-                  lastDot = dot;
-                  screenshots.push({ dot, settings, rootSummaryMode });
-                }
-              }
-              PDGRenderData.push({
-                id,
-                ddgTitle,
-                uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
-                testLoc: ddgArg.testLoc,
-                algoLoc: ddgArg.algoLoc,
-                screenshots,
-              });
-            }
-            catch (err) {
-              // failed to parse renderData
-              failedExerciseIds.push(exercise.id);
-              logError(new NestedError(`Cannot generate pdg render data for exercise: ${exercise.id}`, err));
-              const errData = {
-                success: false,
-                failedReason: 'error',
-                ddgTitle,
-                error: err.stack,
-              };
-              PDGRenderData.push(errData);
-            }
-          }
+          progress.report({ message: `Exercise: "${exercise.label}" (${i}/${exercises.length})` });
+          const PDGRenderData = this.getPDGRenderData(exercise, ddgArgs);
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(PDGRenderData, null, 2));
         }
         catch (err) {
           // failed to execute application
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify({
-            succses: false,
-            failedReason: 'error',
+            runFailed: true,
+            failedReason: err.message,
             error: err.stack
           }, null, 2));
         }
-      }
-      if (failedExerciseIds.length) {
-        logError(`Failed to generate render data for ${failedExerciseIds.length} exercise(s), id: ${failedExerciseIds}`);
       }
     }, { title: `Generating gallery` });
     // log(`gallery.getAllExerciseDDGArgs() = `, args);
@@ -271,11 +264,14 @@ export default class PDGGallery {
             continue;
           }
 
+          const { label, name } = this.controller.exerciseList.getById(exerciseId);
           const pdgFileImportPath = './' + pathRelative(this.galleryDataRoot, pdgFilePath);
           const globalExerciseId = ++lastExerciseId;
           const importVariableName = `pdg${globalExerciseId}`;
           const exercise = {
             id: exerciseId,
+            label,
+            name,
             ddgs: importVariableName
           };
           chapter.exercises.push(exercise);
@@ -308,7 +304,7 @@ export default class PDGGallery {
   getAllJSAFiles() {
     const jsaRoot = pathJoin(this.controller.project.projectPath, 'src');
     const fpaths = getFilesRecursive(jsaRoot);
-    console.log(`${fpaths.length} files found (in "${jsaRoot}"):\n  ${fpaths.map(f => f.replaceAll(jsaRoot + '/', '')).join('\n  ')}`);
+    log(`${fpaths.length} files found (in "${jsaRoot}"):\n  ${fpaths.map(f => f.replaceAll(jsaRoot + '/', '')).join('\n  ')}`);
     return fpaths;
   }
 
@@ -337,6 +333,71 @@ export default class PDGGallery {
       }
     }
     return allFiles;
+  }
+
+  generatePDGTable() {
+    const chapterGroupsByName = new Map();
+
+    // collect chapter data, add to respective `chapterGroup`
+    for (const chapter of this.controller.chapters) {
+      const { group, name, ignore } = chapter;
+      if (!chapterGroupsByName.get(group)) {
+        chapterGroupsByName.set(group, { chapterGroup: name, chapters: [] });
+      }
+
+      const chapterGroup = chapterGroupsByName.get(group);
+      const chatperData = {
+        algoName: name,
+        ignore,
+      };
+      if (!ignore) {
+        // read pdgData.json
+        if (!chapter.ddgSamples) {
+          logError(`chapter "${name}" has not configure ddgSamples yet`);
+          continue;
+        }
+        else {
+          for (const { exerciseName, ddgTitle } of chapter.ddgSamples) {
+            const exercise = this.controller.exerciseList.getByName(exerciseName);
+            const renderDataFilePath = this.getExerciseFolder(exercise, 'pdgData.json');
+            const pdgData = JSON.parse(fs.readFileSync(renderDataFilePath));
+            // TODO: use these data to generate table
+          }
+        }
+      }
+
+      chapterGroup.chapters.push(chatperData);
+    }
+  }
+
+  generateEmptyPDGTable() {
+    const result = [];
+    for (const chapter of this.controller.chapters) {
+      result.push({
+        group: chapter.group,
+        name: chapter.name,
+        runFailed: true,
+        crash: true,
+        success: false,
+        failedReason: 'TODO',
+        gallery: {
+          ddgSamples: [
+            {
+              exerciseName: 'TODO',
+              ddgTitle: 'TODO'
+            },
+            {
+              exerciseName: 'TODO',
+              ddgTitle: 'TODO'
+            },
+          ]
+        },
+        TODO: true,
+      });
+    }
+
+    // count stats in chapterGroups
+    showTextInNewFile('pdgStatsTable.tex', JSON.stringify(result));
   }
 }
 

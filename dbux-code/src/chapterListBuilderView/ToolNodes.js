@@ -111,10 +111,12 @@ class GenerateListNode extends ToolNode {
               continue;
             }
             /**
-             * hackfix: Parentheses in testNamePattern cannot be matched, use '.' to avoid any parentheses in pattern.
+             * hackfix: some character in testNamePattern will cause problem, use '.' to avoid any parentheses in pattern.
+             *    1. parentheses: jest failed to match test name
+             *    2. π: dbux_run failed to serialize this 
              * @see https://jestjs.io/docs/cli#--testmatch-glob1--globn
              */
-            const testNamePattern = fullName.replaceAll('(', '.').replaceAll(')', '.');
+            const testNamePattern = fullName.replaceAll('(', '.').replaceAll(')', '.').replaceAll('π', '.');
             const { chapterGroup, chapter } = testFileData;
             const exerciseConfig = {
               name,
@@ -303,6 +305,26 @@ class GenerateGraphsJSNode extends ToolNode {
   }
 }
 
+class GeneratePDGTable extends ToolNode {
+  static makeLabel() {
+    return `Generate PDGTable`;
+  }
+
+  async handleClick() {
+    this.controller.gallery.generatePDGTable();
+  }
+}
+
+class GenerateEmptyPDGTable extends ToolNode {
+  static makeLabel() {
+    return `Generate Empty PDGTable`;
+  }
+
+  async handleClick() {
+    this.controller.gallery.generateEmptyPDGTable();
+  }
+}
+
 class TransformDestructuringNode extends ToolNode {
   static makeLabel() {
     return `Transform Destructing code`;
@@ -359,6 +381,8 @@ export default class ToolRootNode extends BaseTreeViewNode {
     ExportAllDDGScreenshotNode,
     GenerateGraphsJSNode,
     // InsertDDGTitleNode,
+    GeneratePDGTable,
+    GenerateEmptyPDGTable,
     TransformDestructuringNode,
   ]
 }
