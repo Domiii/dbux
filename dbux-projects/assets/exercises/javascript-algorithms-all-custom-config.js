@@ -152,7 +152,7 @@ module.exports = {
         ],
         bad: [
           'fullAdder' // inf loop when switching modes?
-        ] 
+        ]
       },
       tags: [
         'control'
@@ -213,7 +213,7 @@ module.exports = {
 
         // some: watch return node is not shown
         "watch-hidden",
-        
+
         // some: run out of memory (probably "large input")
         "out-of-memory"
       ]
@@ -790,11 +790,8 @@ module.exports = {
     {
       group: "math",
       name: "least-common-multiple",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All"
     },
     {
       group: "string",
@@ -813,11 +810,13 @@ module.exports = {
     {
       group: "math",
       name: "liu-hui",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      notAllModes: true,
+      inputConnected: "All",
+      tags: [
+        // babel broke default params; had to revert manually
+        'babel-broke-it'
+      ]
     },
     {
       group: "sets",
@@ -836,11 +835,37 @@ module.exports = {
     {
       group: "math",
       name: "matrix",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      subAlgos: {
+        add: {
+          success: true,
+          inputConnected: "All"
+        },
+        shape: {
+          success: true,
+          inputConnected: "0",
+          tags: ["control"]
+        },
+        mul: {
+          success: true,
+          inputConnected: "All"
+        },
+        sub: {
+          success: true,
+          inputConnected: "All"
+        },
+        dot: {
+          success: true,
+          inputConnected: "All"
+        },
+        generate: {
+          success: false,
+          tags: ["map", "fill"] // probably even more
+        },
+        zeros: {
+          success: false,
+          tags: ["dependencies"] // generate
+        },
+      }
     },
     {
       group: "sorting",
@@ -886,11 +911,11 @@ module.exports = {
     {
       group: "graph",
       name: "prim",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All",
+      tags: [
+        "reduce"
+      ]
     },
     {
       group: "math",
@@ -944,19 +969,19 @@ module.exports = {
       group: "image-processing",
       name: "seam-carving",
       runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        // NOTE: instrumentation errored out in face of nested try statement
+        'instrumentation'
+      ]
     },
     {
       group: "linked-list",
       name: "reverse-traversal",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      ignore: true,
+      tags: [
+        'no-return'
+      ]
     },
     {
       group: "sorting",
@@ -1015,29 +1040,23 @@ module.exports = {
     {
       group: "graph",
       name: "strongly-connected-components",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      // crashes in all expand modes
+      notAllModes: true,
     },
     {
       group: "graph",
       name: "topological-sorting",
-      runFailed: true,
-      crash: true,
+      // only gets one vertex, but should get all
       success: false,
-      inputConnected: "TODO",
-      TODO: true
     },
     {
       group: "linked-list",
       name: "traversal",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      ignore: true,
+      tags: [
+        'no-return'
+      ]
     },
     {
       group: "math",
@@ -1100,8 +1119,8 @@ module.exports = {
     {
       group: "cryptography",
       name: "polynomial-hash",
-      gallery: false,
-      ignoreReason: "too many executions"
+      success: false,
+      tags: ["string"]
     }
   ],
   exercises: [
