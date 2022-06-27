@@ -300,6 +300,7 @@ module.exports = {
       group: "sorting",
       name: "counting-sort",
       success: true,
+      inputConnected: "All",
       tags: [
         "unshift"
       ]
@@ -325,8 +326,7 @@ module.exports = {
     {
       group: "graph",
       name: "detect-cycle",
-      success: false,
-      failedReason: "control",
+      success: true,
       inputConnected: "All",
       gallery: {
         ddgSamples: [
@@ -341,9 +341,9 @@ module.exports = {
         ]
       },
       tags: [
+        // NOTE: search problem. will not be connected in case of negative results.
         "control"
-      ],
-      rerun: true,
+      ]
     },
     {
       group: "graph",
@@ -366,18 +366,17 @@ module.exports = {
     {
       group: "math",
       name: "fourier-transform",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      rerun: true,
+      tags: [
+        // `frequencies` input is not connected, and return values seem to be missing important connections
+        'bugs: DataFlow'
+      ]
     },
     {
       group: "sets",
       name: "longest-increasing-subsequence",
-      success: false,
-      failedReason: "control",
-      inputConnected: "false",
+      success: true,
+      inputConnected: "0",
       gallery: {
         ddgSamples: [
           {
@@ -413,6 +412,7 @@ module.exports = {
         ]
       },
       tags: [
+        // has 2 versions, 1 fails at instrumentation
         "instrumentation" // iterative only
       ]
     },
@@ -446,9 +446,8 @@ module.exports = {
     {
       group: "math",
       name: "factorial",
-      success: false,
-      failedReason: "control(iterative only)",
-      inputConnected: "TODO",
+      success: true,
+      inputConnected: "All",
       gallery: {
         ddgSamples: [
           {
@@ -462,15 +461,17 @@ module.exports = {
         ]
       },
       tags: [
+        // shallow summary is buggy in some cases
+        'bug-shallow-summary',
+        // has 1 versions, one (not recursive) is not connected correctly due to only inducing a control dependency
         "control"
       ]
     },
     {
       group: "math",
       name: "fast-powering",
-      success: false,
-      failedReason: "control",
-      inputConnected: "0",
+      success: true,
+      inputConnected: "some",
       gallery: {
         ddgSamples: [
           {
@@ -491,8 +492,6 @@ module.exports = {
       group: "math",
       name: "fibonacci",
       success: true,
-      // TODO
-      failedReason: "control(iterative only)",
       inputConnected: "0",
       gallery: {
         ddgSamples: [
@@ -512,7 +511,7 @@ module.exports = {
     },
     {
       group: "sets",
-      name: "fisher-yates",
+      name: "fisher-yates",x
       success: false,
       failedReason: "shift",
       tags: [
@@ -558,6 +557,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "hamming-distance",
       success: false,
       failedReason: "string",
@@ -755,6 +755,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "knuth-morris-pratt",
       runFailed: true,
       crash: true,
@@ -794,6 +795,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "levenshtein-distance",
       runFailed: true,
       crash: true,
@@ -830,6 +832,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "longest-common-substring",
       runFailed: true,
       crash: true,
@@ -866,6 +869,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "palindrome",
       runFailed: true,
       crash: true,
@@ -920,6 +924,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "rabin-karp",
       runFailed: true,
       crash: true,
@@ -956,6 +961,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "regular-expression-matching",
       runFailed: true,
       crash: true,
@@ -1073,6 +1079,7 @@ module.exports = {
     },
     {
       group: "string",
+      ignore: true,
       name: "z-algorithm",
       runFailed: true,
       crash: true,

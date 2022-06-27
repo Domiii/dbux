@@ -79,7 +79,7 @@ const RenderCfg = {
   },
   forceReinitGraphviz: false,
   // forceReinitGraphviz: true,
-  debugViewEnabled: true
+  // debugViewEnabled: true
 };
 
 /** ###########################################################################
