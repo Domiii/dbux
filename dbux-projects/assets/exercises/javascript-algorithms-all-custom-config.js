@@ -893,11 +893,8 @@ module.exports = {
     {
       group: "math",
       name: "pascal-triangle",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "some"
     },
     {
       group: "sets",
@@ -920,11 +917,14 @@ module.exports = {
     {
       group: "math",
       name: "prime-factors",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        // NOTE: looks like it works at first, but has some important missing edges between
+        //    `factor` and `factors.push(factor)`
+        //    probably because it thinks it is a re-declaration
+        //    (I thought we moved loop iterator declarations to outside the loop, but we have not)
+        'loop-declaration'
+      ]
     },
     {
       group: "sorting",
@@ -1013,11 +1013,10 @@ module.exports = {
     {
       group: "math",
       name: "sieve-of-eratosthenes",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        'loop-declaration'
+      ]
     },
     {
       group: "uncategorized",
