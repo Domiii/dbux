@@ -1,0 +1,38 @@
+diff --git a/src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js b/src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js
+index b081651..a438136 100644
+--- a/src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js
++++ b/src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js
+@@ -40,9 +40,16 @@ describe("hanoiTower", () => {
+     const moveCallback = jest.fn();
+     const numberOfDiscs = 3;
+ 
++    const fromPole = new Stack();
++    const withPole = new Stack();
++    const toPole = new Stack();
++
+     hanoiTower({
+       numberOfDiscs,
+       moveCallback,
++      fromPole,
++      withPole,
++      toPole,
+     });
+ 
+     expect(moveCallback).toHaveBeenCalledTimes(2 ** numberOfDiscs - 1);
+@@ -52,9 +59,16 @@ describe("hanoiTower", () => {
+     const moveCallback = jest.fn();
+     const numberOfDiscs = 6;
+ 
++    const fromPole = new Stack();
++    const withPole = new Stack();
++    const toPole = new Stack();
++
+     hanoiTower({
+       numberOfDiscs,
+       moveCallback,
++      fromPole,
++      withPole,
++      toPole,
+     });
+ 
+     expect(moveCallback).toHaveBeenCalledTimes(2 ** numberOfDiscs - 1);

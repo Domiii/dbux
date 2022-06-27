@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "ddgTitle": "factorialRecursive(5)",
+    "ddgTitle": "factorialRecursive(0)",
     "uniqueId": "math_factorial_javascript-algorithms#97_1",
     "testLoc": {
       "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
@@ -35,22 +35,24 @@
     },
     "screenshots": [
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 34 [id=e1];\n  2 -> 34[style=invis,weight=2];\n}",
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 6[style=invis,weight=2];\n}",
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 16
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 35 [id=e1];\n  2 -> 34 [id=e2];\n  35 -> 34 [id=e3];\n  2 -> 35 -> 34[style=invis,weight=2];\n}",
+        "sameAs": 0,
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 6
       },
       {
         "sameAs": 1,
@@ -59,43 +61,476 @@
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 7
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 36 [id=e1];\n  2 -> 34 [id=e2];\n  36 -> 34 [id=e3];\n  2 -> 35 -> 36 -> 34[style=invis,weight=2];\n}",
+        "sameAs": 2,
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 8
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        37 [id=37,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 37 [id=e1];\n  2 -> 34 [id=e2];\n  37 -> 34 [id=e3];\n  2 -> 35 -> 36 -> 37 -> 34[style=invis,weight=2];\n}",
+        "sameAs": 3,
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 9
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        37 [id=37,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_summary_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          38 [id=38,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"38\" TITLE=\"38\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n      }\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 34 [id=e1];\n  38 -> 34 [id=e2];\n  2 -> 35 -> 36 -> 37 -> 38 -> 34[style=invis,weight=2];\n}",
+        "sameAs": 4,
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
-        }
+        },
+        "rootSummaryMode": 10
       },
       {
-        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.5, arrowhead=\"open\", color=\"#6666FF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      17 [id=17,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      18 [id=18,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_group_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          29 [id=29,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n        30 [id=30,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"30\" TITLE=\"30\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n      31 [id=31,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"31\" TITLE=\"31\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    32 [id=32,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  33 [id=33,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"33\" TITLE=\"33\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 6 [id=e1];\n  2 -> 33 [id=e2];\n  5 -> 6 [id=e3];\n  6 -> 12 [id=e4];\n  6 -> 32 [id=e5];\n  11 -> 12 [id=e6];\n  12 -> 18 [id=e7];\n  12 -> 31 [id=e8];\n  17 -> 18 [id=e9];\n  18 -> 30 [id=e10];\n  29 -> 30 [id=e11];\n  30 -> 31 [id=e12];\n  31 -> 32 [id=e13];\n  32 -> 33 [id=e14];\n  33 -> 34 [id=e15];\n  2 -> 5 -> 6 -> 11 -> 12 -> 17 -> 18 -> 29 -> 30 -> 31 -> 32 -> 33 -> 34[style=invis,weight=2];\n}",
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">0</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  2 -> 5 -> 6[style=invis,weight=2];\n}",
         "settings": {
           "connectedOnly": true,
           "extraVertical": true,
           "params": false,
           "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ddgTitle": "factorialRecursive(1)",
+    "uniqueId": "math_factorial_javascript-algorithms#97_2",
+    "testLoc": {
+      "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 41,
+          "index": 140
+        },
+        "end": {
+          "line": 10,
+          "column": 3,
+          "index": 379
         }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 51,
+          "index": 109
+        },
+        "end": {
+          "line": 7,
+          "column": 1,
+          "index": 181
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 6[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "sameAs": 0,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "sameAs": 1,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "sameAs": 2,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "sameAs": 3,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 -> 6 [id=e1];\n  2 -> 5 -> 6[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ddgTitle": "factorialRecursive(5)",
+    "uniqueId": "math_factorial_javascript-algorithms#97_3",
+    "testLoc": {
+      "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 41,
+          "index": 140
+        },
+        "end": {
+          "line": 10,
+          "column": 3,
+          "index": 379
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 51,
+          "index": 109
+        },
+        "end": {
+          "line": 7,
+          "column": 1,
+          "index": 181
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 34 [id=e1];\n  2 -> 34[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 35 [id=e1];\n  2 -> 34 [id=e2];\n  35 -> 34 [id=e3];\n  2 -> 35 -> 34[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 36 [id=e1];\n  2 -> 34 [id=e2];\n  36 -> 34 [id=e3];\n  2 -> 35 -> 36 -> 34[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        37 [id=37,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 37 [id=e1];\n  2 -> 34 [id=e2];\n  37 -> 34 [id=e3];\n  2 -> 35 -> 36 -> 37 -> 34[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    35 [id=35,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      36 [id=36,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        37 [id=37,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"37\" TITLE=\"37\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_summary_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          38 [id=38,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"38\" TITLE=\"38\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n      }\n    }\n  }\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 34 [id=e1];\n  38 -> 34 [id=e2];\n  2 -> 35 -> 36 -> 37 -> 38 -> 34[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "sameAs": 4,
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      17 [id=17,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      18 [id=18,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_group_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        subgraph cluster_group_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          29 [id=29,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n        30 [id=30,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"30\" TITLE=\"30\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n      31 [id=31,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"31\" TITLE=\"31\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    32 [id=32,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"32\" TITLE=\"32\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  33 [id=33,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"33\" TITLE=\"33\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  34 [id=34,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"34\" TITLE=\"34\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 6 [id=e1];\n  2 -> 33 [id=e2];\n  5 -> 6 [id=e3];\n  6 -> 12 [id=e4];\n  6 -> 32 [id=e5];\n  11 -> 12 [id=e6];\n  12 -> 18 [id=e7];\n  12 -> 31 [id=e8];\n  17 -> 18 [id=e9];\n  18 -> 30 [id=e10];\n  29 -> 30 [id=e11];\n  30 -> 31 [id=e12];\n  31 -> 32 [id=e13];\n  32 -> 33 [id=e14];\n  33 -> 34 [id=e15];\n  2 -> 5 -> 6 -> 11 -> 12 -> 17 -> 18 -> 29 -> 30 -> 31 -> 32 -> 33 -> 34[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ddgTitle": "factorialRecursive(8)",
+    "uniqueId": "math_factorial_javascript-algorithms#97_4",
+    "testLoc": {
+      "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 41,
+          "index": 140
+        },
+        "end": {
+          "line": 10,
+          "column": 3,
+          "index": 379
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 51,
+          "index": 109
+        },
+        "end": {
+          "line": 7,
+          "column": 1,
+          "index": 181
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 55 [id=e1];\n  2 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 56 [id=e1];\n  2 -> 55 [id=e2];\n  56 -> 55 [id=e3];\n  2 -> 56 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      57 [id=57,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"57\" TITLE=\"57\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 57 [id=e1];\n  2 -> 55 [id=e2];\n  57 -> 55 [id=e3];\n  2 -> 56 -> 57 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      57 [id=57,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"57\" TITLE=\"57\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        58 [id=58,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"58\" TITLE=\"58\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 58 [id=e1];\n  2 -> 55 [id=e2];\n  58 -> 55 [id=e3];\n  2 -> 56 -> 57 -> 58 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      57 [id=57,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"57\" TITLE=\"57\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        58 [id=58,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"58\" TITLE=\"58\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_summary_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          59 [id=59,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"59\" TITLE=\"59\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n      }\n    }\n  }\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 59 [id=e1];\n  2 -> 55 [id=e2];\n  59 -> 55 [id=e3];\n  2 -> 56 -> 57 -> 58 -> 59 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    56 [id=56,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"56\" TITLE=\"56\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      57 [id=57,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"57\" TITLE=\"57\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        58 [id=58,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"58\" TITLE=\"58\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_summary_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          59 [id=59,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"59\" TITLE=\"59\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n          subgraph cluster_summary_31 {\n            id=31;\n            label=\"factorialRecursive\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n            60 [id=60,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n          }\n        }\n      }\n    }\n  }\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 60 [id=e1];\n  2 -> 55 [id=e2];\n  60 -> 55 [id=e3];\n  2 -> 56 -> 57 -> 58 -> 59 -> 60 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      17 [id=17,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      18 [id=18,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_group_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        23 [id=23,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"23\" TITLE=\"23\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        24 [id=24,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_group_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          29 [id=29,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n          30 [id=30,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"30\" TITLE=\"30\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n          subgraph cluster_group_31 {\n            id=31;\n            label=\"factorialRecursive\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n            35 [id=35,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n            36 [id=36,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n            subgraph cluster_group_37 {\n              id=37;\n              label=\"factorialRecursive\";\n              color=\"gray\";\n              fontcolor=\"yellow\";\n              subgraph cluster_group_43 {\n                id=43;\n                label=\"factorialRecursive\";\n                color=\"gray\";\n                fontcolor=\"yellow\";\n                47 [id=47,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"47\" TITLE=\"47\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n              }\n              48 [id=48,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"48\" TITLE=\"48\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n            }\n            49 [id=49,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"49\" TITLE=\"49\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n          }\n          50 [id=50,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"50\" TITLE=\"50\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n        51 [id=51,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"51\" TITLE=\"51\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n      52 [id=52,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"52\" TITLE=\"52\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    53 [id=53,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"53\" TITLE=\"53\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  54 [id=54,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"54\" TITLE=\"54\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  55 [id=55,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"55\" TITLE=\"55\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 6 [id=e1];\n  2 -> 54 [id=e2];\n  5 -> 6 [id=e3];\n  6 -> 12 [id=e4];\n  6 -> 53 [id=e5];\n  11 -> 12 [id=e6];\n  12 -> 18 [id=e7];\n  12 -> 52 [id=e8];\n  17 -> 18 [id=e9];\n  18 -> 24 [id=e10];\n  18 -> 51 [id=e11];\n  23 -> 24 [id=e12];\n  24 -> 30 [id=e13];\n  24 -> 50 [id=e14];\n  29 -> 30 [id=e15];\n  30 -> 36 [id=e16];\n  30 -> 49 [id=e17];\n  35 -> 36 [id=e18];\n  36 -> 48 [id=e19];\n  47 -> 48 [id=e20];\n  48 -> 49 [id=e21];\n  49 -> 50 [id=e22];\n  50 -> 51 [id=e23];\n  51 -> 52 [id=e24];\n  52 -> 53 [id=e25];\n  53 -> 54 [id=e26];\n  54 -> 55 [id=e27];\n  2 -> 5 -> 6 -> 11 -> 12 -> 17 -> 18 -> 23 -> 24 -> 29 -> 30 -> 35 -> 36 -> 47 -> 48 -> 49 -> 50 -> 51 -> 52 -> 53 -> 54 -> 55[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ddgTitle": "factorialRecursive(10)",
+    "uniqueId": "math_factorial_javascript-algorithms#97_5",
+    "testLoc": {
+      "filePath": "src/algorithms/math/factorial/__test__/factorialRecursive.test.js",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 41,
+          "index": 140
+        },
+        "end": {
+          "line": 10,
+          "column": 3,
+          "index": 379
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/math/factorial/factorialRecursive.js",
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 51,
+          "index": 109
+        },
+        "end": {
+          "line": 7,
+          "column": 1,
+          "index": 181
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 69 [id=e1];\n  2 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    70 [id=70,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"70\" TITLE=\"70\"><FONT COLOR=\"lightblue\">362880</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 70 [id=e1];\n  2 -> 69 [id=e2];\n  70 -> 69 [id=e3];\n  2 -> 70 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    70 [id=70,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"70\" TITLE=\"70\"><FONT COLOR=\"lightblue\">362880</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      71 [id=71,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"71\" TITLE=\"71\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n  }\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 71 [id=e1];\n  2 -> 69 [id=e2];\n  71 -> 69 [id=e3];\n  2 -> 70 -> 71 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    70 [id=70,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"70\" TITLE=\"70\"><FONT COLOR=\"lightblue\">362880</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      71 [id=71,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"71\" TITLE=\"71\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        72 [id=72,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"72\" TITLE=\"72\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n    }\n  }\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 72 [id=e1];\n  2 -> 69 [id=e2];\n  72 -> 69 [id=e3];\n  2 -> 70 -> 71 -> 72 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    70 [id=70,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"70\" TITLE=\"70\"><FONT COLOR=\"lightblue\">362880</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      71 [id=71,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"71\" TITLE=\"71\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        72 [id=72,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"72\" TITLE=\"72\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_summary_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          73 [id=73,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"73\" TITLE=\"73\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n      }\n    }\n  }\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 73 [id=e1];\n  2 -> 69 [id=e2];\n  73 -> 69 [id=e3];\n  2 -> 70 -> 71 -> 72 -> 73 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_summary_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    70 [id=70,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"70\" TITLE=\"70\"><FONT COLOR=\"lightblue\">362880</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_summary_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      71 [id=71,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"71\" TITLE=\"71\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_summary_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        72 [id=72,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"72\" TITLE=\"72\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_summary_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          73 [id=73,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"73\" TITLE=\"73\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n          subgraph cluster_summary_31 {\n            id=31;\n            label=\"factorialRecursive\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n            74 [id=74,shape=box3d,style=\"bold\",label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"74\" TITLE=\"74\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n          }\n        }\n      }\n    }\n  }\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 74 [id=e1];\n  2 -> 69 [id=e2];\n  74 -> 69 [id=e3];\n  2 -> 70 -> 71 -> 72 -> 73 -> 74 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  2 [id=2,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">number</TD>\n    <TD ID=\"2\" TITLE=\"2\"><FONT COLOR=\"lightblue\">10</FONT></TD>\n  </TR>\n</TABLE>>];\n  5 [id=5,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"5\" TITLE=\"5\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n  6 [id=6,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"6\" TITLE=\"6\"><FONT COLOR=\"lightblue\">9</FONT></TD>\n  </TR>\n</TABLE>>];\n  subgraph cluster_group_7 {\n    id=7;\n    label=\"factorialRecursive\";\n    color=\"gray\";\n    fontcolor=\"yellow\";\n    11 [id=11,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"11\" TITLE=\"11\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n    12 [id=12,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"12\" TITLE=\"12\"><FONT COLOR=\"lightblue\">8</FONT></TD>\n  </TR>\n</TABLE>>];\n    subgraph cluster_group_13 {\n      id=13;\n      label=\"factorialRecursive\";\n      color=\"gray\";\n      fontcolor=\"yellow\";\n      17 [id=17,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"17\" TITLE=\"17\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n      18 [id=18,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"18\" TITLE=\"18\"><FONT COLOR=\"lightblue\">7</FONT></TD>\n  </TR>\n</TABLE>>];\n      subgraph cluster_group_19 {\n        id=19;\n        label=\"factorialRecursive\";\n        color=\"gray\";\n        fontcolor=\"yellow\";\n        23 [id=23,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"23\" TITLE=\"23\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n        24 [id=24,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"24\" TITLE=\"24\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n        subgraph cluster_group_25 {\n          id=25;\n          label=\"factorialRecursive\";\n          color=\"gray\";\n          fontcolor=\"yellow\";\n          29 [id=29,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"29\" TITLE=\"29\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n          30 [id=30,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"30\" TITLE=\"30\"><FONT COLOR=\"lightblue\">5</FONT></TD>\n  </TR>\n</TABLE>>];\n          subgraph cluster_group_31 {\n            id=31;\n            label=\"factorialRecursive\";\n            color=\"gray\";\n            fontcolor=\"yellow\";\n            35 [id=35,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"35\" TITLE=\"35\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n            36 [id=36,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"36\" TITLE=\"36\"><FONT COLOR=\"lightblue\">4</FONT></TD>\n  </TR>\n</TABLE>>];\n            subgraph cluster_group_37 {\n              id=37;\n              label=\"factorialRecursive\";\n              color=\"gray\";\n              fontcolor=\"yellow\";\n              41 [id=41,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"41\" TITLE=\"41\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n              42 [id=42,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"42\" TITLE=\"42\"><FONT COLOR=\"lightblue\">3</FONT></TD>\n  </TR>\n</TABLE>>];\n              subgraph cluster_group_43 {\n                id=43;\n                label=\"factorialRecursive\";\n                color=\"gray\";\n                fontcolor=\"yellow\";\n                47 [id=47,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"47\" TITLE=\"47\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n                48 [id=48,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">-</TD>\n    <TD ID=\"48\" TITLE=\"48\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n                subgraph cluster_group_49 {\n                  id=49;\n                  label=\"factorialRecursive\";\n                  color=\"gray\";\n                  fontcolor=\"yellow\";\n                  subgraph cluster_group_55 {\n                    id=55;\n                    label=\"factorialRecursive\";\n                    color=\"gray\";\n                    fontcolor=\"yellow\";\n                    59 [id=59,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">1</TD>\n    <TD ID=\"59\" TITLE=\"59\"><FONT COLOR=\"lightblue\">1</FONT></TD>\n  </TR>\n</TABLE>>];\n                  }\n                  60 [id=60,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"60\" TITLE=\"60\"><FONT COLOR=\"lightblue\">2</FONT></TD>\n  </TR>\n</TABLE>>];\n                }\n                61 [id=61,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"61\" TITLE=\"61\"><FONT COLOR=\"lightblue\">6</FONT></TD>\n  </TR>\n</TABLE>>];\n              }\n              62 [id=62,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"62\" TITLE=\"62\"><FONT COLOR=\"lightblue\">24</FONT></TD>\n  </TR>\n</TABLE>>];\n            }\n            63 [id=63,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"63\" TITLE=\"63\"><FONT COLOR=\"lightblue\">120</FONT></TD>\n  </TR>\n</TABLE>>];\n          }\n          64 [id=64,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"64\" TITLE=\"64\"><FONT COLOR=\"lightblue\">720</FONT></TD>\n  </TR>\n</TABLE>>];\n        }\n        65 [id=65,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"65\" TITLE=\"65\"><FONT COLOR=\"lightblue\">5040</FONT></TD>\n  </TR>\n</TABLE>>];\n      }\n      66 [id=66,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"66\" TITLE=\"66\"><FONT COLOR=\"lightblue\">40320</FONT></TD>\n  </TR>\n</TABLE>>];\n    }\n    67 [id=67,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"67\" TITLE=\"67\"><FONT COLOR=\"lightblue\">362880</FONT></TD>\n  </TR>\n</TABLE>>];\n  }\n  68 [id=68,shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">*</TD>\n    <TD ID=\"68\" TITLE=\"68\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  69 [id=69,color=\"green\",shape=record,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n  <TR>\n    <TD BORDER=\"1\" SIDES=\"R\">ret</TD>\n    <TD ID=\"69\" TITLE=\"69\"><FONT COLOR=\"lightblue\">3628800</FONT></TD>\n  </TR>\n</TABLE>>];\n  2 -> 6 [id=e1];\n  2 -> 68 [id=e2];\n  5 -> 6 [id=e3];\n  6 -> 12 [id=e4];\n  6 -> 67 [id=e5];\n  11 -> 12 [id=e6];\n  12 -> 18 [id=e7];\n  12 -> 66 [id=e8];\n  17 -> 18 [id=e9];\n  18 -> 24 [id=e10];\n  18 -> 65 [id=e11];\n  23 -> 24 [id=e12];\n  24 -> 30 [id=e13];\n  24 -> 64 [id=e14];\n  29 -> 30 [id=e15];\n  30 -> 36 [id=e16];\n  30 -> 63 [id=e17];\n  35 -> 36 [id=e18];\n  36 -> 42 [id=e19];\n  36 -> 62 [id=e20];\n  41 -> 42 [id=e21];\n  42 -> 48 [id=e22];\n  42 -> 61 [id=e23];\n  47 -> 48 [id=e24];\n  48 -> 60 [id=e25];\n  59 -> 60 [id=e26];\n  60 -> 61 [id=e27];\n  61 -> 62 [id=e28];\n  62 -> 63 [id=e29];\n  63 -> 64 [id=e30];\n  64 -> 65 [id=e31];\n  65 -> 66 [id=e32];\n  66 -> 67 [id=e33];\n  67 -> 68 [id=e34];\n  68 -> 69 [id=e35];\n  2 -> 5 -> 6 -> 11 -> 12 -> 17 -> 18 -> 23 -> 24 -> 29 -> 30 -> 35 -> 36 -> 41 -> 42 -> 47 -> 48 -> 59 -> 60 -> 61 -> 62 -> 63 -> 64 -> 65 -> 66 -> 67 -> 68 -> 69[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
       }
     ]
   }

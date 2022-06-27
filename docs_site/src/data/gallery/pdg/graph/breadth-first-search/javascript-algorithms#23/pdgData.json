@@ -1,7 +1,0 @@
-[
-  {
-    "success": false,
-    "failedReason": "Application contains unsupported syntax: breadthFirstSearch.js:27,breadthFirstSearch.test.js:134",
-    "ddgTitle": "breadthFirstSearch({vertices,edges,isDirected}, {value,edges}, {enterVertex,leaveVertex,allowTraversal})"
-  }
-]

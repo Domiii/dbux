@@ -83,6 +83,14 @@ export const GroupDefaultSummaryModes = [
   DDGSummaryMode.ExpandSubgraph
 ];
 
+const shallowSummaryModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
+shallowSummaryModes[DDGSummaryMode.ExpandSelf1] = true;
+shallowSummaryModes[DDGSummaryMode.ExpandSelf2] = true;
+shallowSummaryModes[DDGSummaryMode.ExpandSelf3] = true;
+shallowSummaryModes[DDGSummaryMode.ExpandSelf4] = true;
+export function isShallowSummaryMode(mode) {
+  return shallowSummaryModes[mode] || false;
+}
 
 const shownModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
 shownModes[DDGSummaryMode.Show] = true;

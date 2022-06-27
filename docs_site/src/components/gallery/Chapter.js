@@ -8,7 +8,10 @@ export default function Chapter(props) {
     <h3>{name}</h3>
     <ul>
       {exercises.map(exercise => {
-        return <li key={exercise.id}><Exercise chapterGroup={chapterGroup} chapter={name} key={exercise.id} exercise={exercise}></Exercise></li>;
+        return <li key={exercise.id}>
+          {exercise.name}
+          <Exercise chapterGroup={chapterGroup} chapter={name} key={exercise.id} exercise={exercise}></Exercise>
+        </li>;
       })}
     </ul>
   </div>;

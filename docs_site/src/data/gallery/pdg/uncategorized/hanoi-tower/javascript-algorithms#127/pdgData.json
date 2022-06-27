@@ -1,7 +1,121 @@
 [
   {
-    "success": false,
-    "failedReason": "Selected context (#28) did not have any (recorded) parameters.",
-    "ddgTitle": "hanoiTowerRecursive({numberOfDiscs,fromPole,withPole,toPole,moveCallback})"
+    "id": 1,
+    "ddgTitle": "hanoiTower({numberOfDiscs,moveCallback})",
+    "uniqueId": "uncategorized_hanoi-tower_javascript-algorithms#127_1",
+    "testLoc": {
+      "filePath": "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js",
+      "loc": {
+        "start": {
+          "line": 39,
+          "column": 62,
+          "index": 1240
+        },
+        "end": {
+          "line": 49,
+          "column": 3,
+          "index": 1460
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/uncategorized/hanoi-tower/hanoiTower.js",
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 42,
+          "index": 1693
+        },
+        "end": {
+          "line": 87,
+          "column": 1,
+          "index": 2616
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#222222\";\n  fontsize=\"10\";\n  node[color=\"white\", fontcolor=\"white\"];\n  node [fontsize=\"10\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">_ref2</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">numberOfDiscs</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_799 {\n    color=\"green\";\n    fontcolor=\"yellow\";\n    id=799;\n    label=\"\";\n    799 [id=799,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"800\" ROWSPAN=\"2\" PORT=\"800\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">linkedList</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#123;&#125;</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    800 [id=800,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"801\" ROWSPAN=\"2\" PORT=\"801\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">head</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#123;1&#125;</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"808\" ROWSPAN=\"2\" PORT=\"808\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">tail</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#123;3&#125;🔃</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"809\" ROWSPAN=\"2\" PORT=\"809\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">compare</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#123;&#125;</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    801 [id=801,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"802\" ROWSPAN=\"2\" PORT=\"802\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">value</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"803\" ROWSPAN=\"2\" PORT=\"803\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">next</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#123;2&#125;</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    803 [id=803,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"804\" ROWSPAN=\"2\" PORT=\"804\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">value</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"805\" ROWSPAN=\"2\" PORT=\"805\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">next</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#123;3&#125;</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    805 [id=805,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"806\" ROWSPAN=\"2\" PORT=\"806\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">value</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"807\" ROWSPAN=\"2\" PORT=\"807\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">next</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">null</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    803:805 -> 805 [arrowhead=\"odot\", color=\"gray\"];\n    801:803 -> 803 [arrowhead=\"odot\", color=\"gray\"];\n    800:801 -> 801 [arrowhead=\"odot\", color=\"gray\"];\n    799:800 -> 800 [arrowhead=\"odot\", color=\"gray\"];\n  }\n  2:3 -> 801:802 [id=e1];\n  2:3 -> 803:804 [id=e2];\n  2:3 -> 805:806 [id=e3];\n  2 -> 799[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property 'head' of undefined",
+        "error": "TypeError: Cannot read property 'head' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101578:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101487:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101465:323)\n\tat DataDependencyGraph.setSummaryMode (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101392:83)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75118:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75168:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75210:38\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64340:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property 'head' of undefined",
+        "error": "TypeError: Cannot read property 'head' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101578:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101487:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101465:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101381:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75117:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75168:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75210:38\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64340:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property 'head' of undefined",
+        "error": "TypeError: Cannot read property 'head' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101578:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101487:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101465:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101381:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75117:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75168:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75210:38\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64340:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property 'head' of undefined",
+        "error": "TypeError: Cannot read property 'head' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101578:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101487:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101465:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101381:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75117:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75168:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75210:38\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64340:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property 'head' of undefined",
+        "error": "TypeError: Cannot read property 'head' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101578:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101487:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101465:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101381:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75117:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75168:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75210:38\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64340:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property 'head' of undefined",
+        "error": "TypeError: Cannot read property 'head' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101578:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101487:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101481:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101465:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101381:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75117:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75168:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75210:38\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64340:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
   }
 ]

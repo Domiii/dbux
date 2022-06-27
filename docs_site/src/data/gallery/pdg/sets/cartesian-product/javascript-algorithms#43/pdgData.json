@@ -1,14 +1,240 @@
 [
   {
-    "success": false,
-    "failedReason": "error",
+    "id": 1,
     "ddgTitle": "cartesianProduct([1], [1])",
-    "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101420:40)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101327:90)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101305:323)\n\tat DataDependencyGraph.setSummaryMode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101234:83)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75143:21\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64307:12"
+    "uniqueId": "sets_cartesian-product_javascript-algorithms#43_1",
+    "testLoc": {
+      "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+      "loc": {
+        "start": {
+          "line": 12,
+          "column": 55,
+          "index": 408
+        },
+        "end": {
+          "line": 23,
+          "column": 3,
+          "index": 664
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 53,
+          "index": 170
+        },
+        "end": {
+          "line": 27,
+          "column": 1,
+          "index": 824
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">setA</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_4 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=4;\n    label=\"\";\n    4 [id=4,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">setB</TD>\n    <TD TITLE=\"5\" ROWSPAN=\"2\" PORT=\"5\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_35 {\n    color=\"green\";\n    fontcolor=\"yellow\";\n    id=35;\n    label=\"\";\n    35 [id=35,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"36\" ROWSPAN=\"2\" PORT=\"36\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#91;1, 1&#93;</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    36 [id=36,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"37\" ROWSPAN=\"2\" PORT=\"37\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"38\" ROWSPAN=\"2\" PORT=\"38\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    35:36 -> 36 [arrowhead=\"odot\", color=\"gray\"];\n  }\n  2:3 -> 36:37 [id=e1];\n  4:5 -> 36:38 [id=e2];\n  2 -> 4 -> 35[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.setSummaryMode (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101330:83)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75104:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
   },
   {
-    "success": false,
-    "failedReason": "error",
+    "id": 2,
     "ddgTitle": "cartesianProduct([1,2], [3,5])",
-    "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101420:40)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101327:90)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._summarizeDFS2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101321:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101305:323)\n\tat DataDependencyGraph.setSummaryMode (c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:101234:83)\n\tat c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:75143:21\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async c:\\Users\\domin\\code\\dbux\\dbux-code\\dist\\bundle.js:64307:12"
+    "uniqueId": "sets_cartesian-product_javascript-algorithms#43_2",
+    "testLoc": {
+      "filePath": "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js",
+      "loc": {
+        "start": {
+          "line": 12,
+          "column": 55,
+          "index": 408
+        },
+        "end": {
+          "line": 23,
+          "column": 3,
+          "index": 664
+        }
+      }
+    },
+    "algoLoc": {
+      "filePath": "src/algorithms/sets/cartesian-product/cartesianProduct.js",
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 53,
+          "index": 170
+        },
+        "end": {
+          "line": 27,
+          "column": 1,
+          "index": 824
+        }
+      }
+    },
+    "screenshots": [
+      {
+        "dot": "digraph {\n  bgcolor=\"#0000001A\";\n  node[color=\"white\", fontcolor=\"white\"];\n  edge[arrowsize=0.9, arrowhead=\"open\", color=\"#AAAAFF\", fontcolor=\"gray\"];\n  labeljust=l;\n  color=\"gray\";\n  fontcolor=\"yellow\";\n  subgraph cluster_ref_2 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=2;\n    label=\"\";\n    2 [id=2,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">setA</TD>\n    <TD TITLE=\"3\" ROWSPAN=\"2\" PORT=\"3\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"4\" ROWSPAN=\"2\" PORT=\"4\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_5 {\n    color=\"transparent\";\n    fontcolor=\"yellow\";\n    id=5;\n    label=\"\";\n    5 [id=5,color=green,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">setB</TD>\n    <TD TITLE=\"6\" ROWSPAN=\"2\" PORT=\"6\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"7\" ROWSPAN=\"2\" PORT=\"7\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n  }\n  subgraph cluster_ref_70 {\n    color=\"green\";\n    fontcolor=\"yellow\";\n    id=70;\n    label=\"\";\n    70 [id=70,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    <TD ROWSPAN=\"2\">ret</TD>\n    <TD TITLE=\"71\" ROWSPAN=\"2\" PORT=\"71\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#91;1, 3&#93;</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"74\" ROWSPAN=\"2\" PORT=\"74\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#91;1, 5&#93;</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"77\" ROWSPAN=\"2\" PORT=\"77\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">2</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#91;2, 3&#93;</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"80\" ROWSPAN=\"2\" PORT=\"80\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">3</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">&#91;2, 5&#93;</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    71 [id=71,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"72\" ROWSPAN=\"2\" PORT=\"72\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"73\" ROWSPAN=\"2\" PORT=\"73\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    70:71 -> 71 [arrowhead=\"odot\", color=\"gray\"];\n    74 [id=74,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"75\" ROWSPAN=\"2\" PORT=\"75\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">1</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"76\" ROWSPAN=\"2\" PORT=\"76\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    70:74 -> 74 [arrowhead=\"odot\", color=\"gray\"];\n    77 [id=77,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"78\" ROWSPAN=\"2\" PORT=\"78\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"79\" ROWSPAN=\"2\" PORT=\"79\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">3</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    70:77 -> 77 [arrowhead=\"odot\", color=\"gray\"];\n    80 [id=80,shape=plaintext,label=<\n<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n  <TR>\n    \n    <TD TITLE=\"81\" ROWSPAN=\"2\" PORT=\"81\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">0</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">2</FONT></TD></TR>\n      </TABLE>\n    </TD><TD TITLE=\"82\" ROWSPAN=\"2\" PORT=\"82\">\n      <TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\">\n        <TR><TD BORDER=\"1\" SIDES=\"B\" COLOR=\"gray\"><FONT COLOR=\"gray\">1</FONT></TD></TR>\n        <TR><TD><FONT COLOR=\"lightblue\">5</FONT></TD></TR>\n      </TABLE>\n    </TD>\n  </TR>\n</TABLE>\n>];\n    70:80 -> 80 [arrowhead=\"odot\", color=\"gray\"];\n  }\n  2:3 -> 71:72 [id=e1];\n  2:3 -> 74:75 [id=e2];\n  5:6 -> 71:73 [id=e3];\n  5:6 -> 77:79 [id=e4];\n  5:7 -> 74:76 [id=e5];\n  5:7 -> 80:82 [id=e6];\n  2:4 -> 77:78 [id=e7];\n  2:4 -> 80:81 [id=e8];\n  2 -> 5 -> 70[style=invis,weight=2];\n}",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 16
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.setSummaryMode (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101330:83)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75104:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 6
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 7
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 8
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 9
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 10
+      },
+      {
+        "crash": true,
+        "failedReason": "Cannot read property '0' of undefined",
+        "error": "TypeError: Cannot read property '0' of undefined\n\tat DataDependencyGraph._lookupSummaryNode2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101516:40)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101425:90)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._summarizeDFS2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101419:299)\n\tat DataDependencyGraph._buildSummarizedGraph2 (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101403:323)\n\tat DataDependencyGraph.updateSettings (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:101319:81)\n\tat PDGGallery.getPDGScreenshotData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75103:13)\n\tat PDGGallery.getPDGRenderData (e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75154:34)\n\tat e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:75196:38\n\tat processTicksAndRejections (internal/process/task_queues.js:93:5)\n\tat async e:\\projects\\dbux\\dbux-code\\dist\\bundle.js:64327:12",
+        "settings": {
+          "connectedOnly": true,
+          "extraVertical": true,
+          "params": false,
+          "anim": true
+        },
+        "rootSummaryMode": 15
+      }
+    ]
   }
 ]

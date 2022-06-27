@@ -13050,7 +13050,7 @@ index d720d18..b081651 100644
  });
 +
 diff --git a/src/algorithms/uncategorized/hanoi-tower/hanoiTower.js b/src/algorithms/uncategorized/hanoi-tower/hanoiTower.js
-index 86d7888..341600c 100644
+index 86d7888..e7aca15 100644
 --- a/src/algorithms/uncategorized/hanoi-tower/hanoiTower.js
 +++ b/src/algorithms/uncategorized/hanoi-tower/hanoiTower.js
 @@ -1,4 +1,4 @@
@@ -13102,9 +13102,12 @@ index 86d7888..341600c 100644
    // Each of three poles of Tower of Hanoi puzzle is represented as a stack
    // that might contain elements (discs). Each disc is represented as a number.
    // Larger discs have bigger number equivalent.
-@@ -82,3 +83,4 @@ export default function hanoiTower({
+@@ -81,4 +82,7 @@ export default function hanoiTower({
+     toPole,
      moveCallback,
    });
++
++  return toPole;
  }
 +
 diff --git a/src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js b/src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js
