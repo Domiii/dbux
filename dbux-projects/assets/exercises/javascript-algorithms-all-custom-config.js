@@ -689,10 +689,10 @@ module.exports = {
     {
       group: "search",
       name: "jump-search",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "0",
+      // NOTE: `jumpSize` only shows up in ExpandSubgraph
+      //  → probably due to direct root children never getting summarized correctly?
+      success: true,
+      notAllModes: true,
       gallery: {
         ddgSamples: [
           {
@@ -801,11 +801,11 @@ module.exports = {
     {
       group: "search",
       name: "linear-search",
-      runFailed: true,
-      crash: true,
+      // NOTE: almost Ok, but using indices, instead of values makes it too meaningless and too disconnected
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        'control'
+      ]
     },
     {
       group: "math",
@@ -821,11 +821,12 @@ module.exports = {
     {
       group: "sets",
       name: "longest-common-subsequence",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        'fill',
+        'map',
+        'unshift'
+      ]
     },
     {
       group: "string",
@@ -870,18 +871,14 @@ module.exports = {
     {
       group: "sorting",
       name: "merge-sort",
-      runFailed: true,
-      crash: true,
-      success: false,
+      success: 'TODO',
       inputConnected: "TODO",
       TODO: true
     },
     {
       group: "uncategorized",
       name: "n-queens",
-      runFailed: true,
-      crash: true,
-      success: false,
+      success: 'TODO',
       inputConnected: "TODO",
       TODO: true
     },
@@ -899,11 +896,9 @@ module.exports = {
     {
       group: "sets",
       name: "permutations",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      notAllModes: true,
+      inputConnected: "All"
     },
     {
       group: "graph",
@@ -954,9 +949,7 @@ module.exports = {
     {
       group: "uncategorized",
       name: "recursive-staircase",
-      runFailed: true,
-      crash: true,
-      success: false,
+      success: 'TODO',
       inputConnected: "TODO",
       TODO: true
     },
@@ -986,29 +979,25 @@ module.exports = {
     {
       group: "sorting",
       name: "selection-sort",
-      runFailed: true,
-      crash: true,
-      success: false,
+      success: 'TODO',
       inputConnected: "TODO",
       TODO: true
     },
     {
       group: "sorting",
       name: "shell-sort",
-      runFailed: true,
-      crash: true,
-      success: false,
+      success: 'TODO',
       inputConnected: "TODO",
       TODO: true
     },
     {
       group: "sets",
       name: "shortest-common-supersequence",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        'dependencies', // depends on failing `longestCommonSubsequence`
+        'unshift'
+      ]
     },
     {
       group: "math",
@@ -1021,20 +1010,15 @@ module.exports = {
     {
       group: "uncategorized",
       name: "square-matrix-rotation",
-      runFailed: true,
-      crash: true,
-      success: false,
+      success: 'TODO',
       inputConnected: "TODO",
       TODO: true
     },
     {
       group: "math",
       name: "square-root",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All",
     },
     {
       group: "graph",
@@ -1060,11 +1044,11 @@ module.exports = {
     {
       group: "math",
       name: "primality-test",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "0",
+      tags: [
+        'connected'
+      ]
     },
     {
       group: "string",
