@@ -158,8 +158,8 @@ export async function showDDGViewForArgs(ddgArgs) {
   let failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
   const warning = dp.ddgs.getWarning(ddgArgs);
 
-  // TODO
-  failureReason ||= warning;
+  // // TODO
+  // failureReason ||= warning;
 
   if (warning) {
     showWarningMessage(`PDG WARNING: ${warning}`);

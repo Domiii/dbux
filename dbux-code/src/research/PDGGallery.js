@@ -371,6 +371,9 @@ export default class PDGGallery {
   }
 
   generateEmptyPDGTable() {
+    // TODO
+
+    // TODO: `subAlgos` (bits)
     const result = [];
     for (const chapter of this.controller.chapters) {
       result.push({

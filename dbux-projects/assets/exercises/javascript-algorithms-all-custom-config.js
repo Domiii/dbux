@@ -16,19 +16,14 @@ module.exports = {
             ddgTitle: "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)"
           }
         ]
-      },
-      tags: [
-        "out-of-memory"
-      ]
+      }
     },
     {
       group: "graph",
       name: "articulation-points",
-      success: false,
-      failedReason: "reduce",
-      tags: [
-        "missing-data"
-      ]
+      success: true,
+      inputConnected: "All",
+      tags: ["reduce"]
     },
     {
       group: "uncategorized",
@@ -114,17 +109,21 @@ module.exports = {
     {
       group: "graph",
       name: "travelling-salesman",
-      success: false,
-      failedReason: "includes",
+      success: 'some',
+      // modes: ['col', 'all'],
+      inputConnected: "All",
       tags: [
-        "missing-data"
+        "includes",
+        "reduce"
       ]
     },
     {
+      // NOTE: searched indices are clearly visible
       group: "search",
       name: "binary-search",
       success: true,
       inputConnected: "0",
+      tags: ['control'],
       gallery: {
         ddgSamples: [
           {
@@ -139,10 +138,25 @@ module.exports = {
       },
     },
     {
+      // NOTE: contains many different algorithms, but most of them are trivial; we only include some
       group: "math",
       name: "bits",
       success: true,
-      inputConnected: "All",
+      inputConnected: "Some",
+      subAlgos: {
+        success: [
+          'bitLength', // ic=0
+          'bitsDiff',
+          'countSetBits',
+          'divideByTwo',
+        ],
+        bad: [
+          'fullAdder' // inf loop when switching modes?
+        ] 
+      },
+      tags: [
+        'control'
+      ],
       gallery: {
         ddgSamples: [
           {
@@ -159,39 +173,28 @@ module.exports = {
     {
       group: "math",
       name: "binary-floating-point",
+      success: false,
       runFailed: true,
-      failedReason: "instrumentation",
       tags: [
-        "instrumentation"
+        // NOTE: instrumentation errored out in face of nested try statement
+        'instrumentation'
       ]
     },
     {
+      // TODO: crashes when exported but not in VSCode
       group: "sets",
       name: "power-set",
-      runFailed: true,
-      crash: true,
-      success: false,
-      failedReason: "TODO",
-      inputConnected: "TODO",
-      gallery: {
-        ddgSamples: [
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          },
-          {
-            exerciseName: "TODO",
-            ddgTitle: "TODO"
-          }
-        ]
-      },
-      rerun: true
+      success: true,
+      inputConnected: "All",
+      tags: [
+        'export'
+      ]
     },
     {
       group: "uncategorized",
       name: "unique-paths",
       success: false,
-      failedReason: "bug todo: watch return node is not shown",
+      failedReason: "PDG bug",
       inputConnected: "0",
       gallery: {
         ddgSamples: [
@@ -206,7 +209,12 @@ module.exports = {
         ]
       },
       tags: [
+        'pdg-bug',
+
+        // some: watch return node is not shown
         "watch-hidden",
+        
+        // some: run out of memory (probably "large input")
         "out-of-memory"
       ]
     },
@@ -228,7 +236,7 @@ module.exports = {
         ]
       },
     },
-    {
+    {x
       group: "sets",
       name: "cartesian-product",
       runFailed: true,
@@ -324,10 +332,9 @@ module.exports = {
     {
       group: "sorting",
       name: "counting-sort",
-      success: false,
-      failedReason: "unshift",
+      success: true,
       tags: [
-        "missing-data"
+        "unshift"
       ]
     },
     {
@@ -529,9 +536,10 @@ module.exports = {
     {
       group: "math",
       name: "fibonacci",
-      success: false,
+      success: true,
+      // TODO
       failedReason: "control(iterative only)",
-      inputConnected: "All",
+      inputConnected: "0",
       gallery: {
         ddgSamples: [
           {
