@@ -513,6 +513,7 @@ module.exports = {
       group: "sets",
       name: "fisher-yates",
       success: true,
+      inputConnected: "All",
       tags: [
         "shift"
       ]
@@ -543,7 +544,7 @@ module.exports = {
       group: "graph",
       name: "bridges",
       success: true,
-      inputsConnected: "All",
+      inputConnected: "All",
       tags: [
         "reduce"
       ]
@@ -559,7 +560,6 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "hamming-distance",
       success: false,
       failedReason: "string",
@@ -761,12 +761,8 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "knuth-morris-pratt",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "0",
       gallery: {
         ddgSamples: [
           {
@@ -783,11 +779,13 @@ module.exports = {
     {
       group: "graph",
       name: "kruskal",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: true,
+      inputConnected: "All",
+      tags: [
+        // dpeends on QuickSort, but does deliver pretty good results nonetheless
+        // probably somewhat buggy?
+        "QuickSort"
+      ]
     },
     {
       group: "math",
@@ -800,13 +798,8 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "levenshtein-distance",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: false
     },
     {
       group: "search",
@@ -837,13 +830,8 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "longest-common-substring",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
     },
     {
       group: "math",
@@ -874,13 +862,8 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "palindrome",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: false
     },
     {
       group: "math",
@@ -921,39 +904,27 @@ module.exports = {
     {
       group: "sorting",
       name: "quick-sort",
-      runFailed: true,
-      crash: true,
+      // NOTE: doesn't work: `shift' broke
       success: false,
-      inputConnected: "TODO",
-      TODO: true
     },
     {
       group: "string",
-      ignore: true,
       name: "rabin-karp",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: false
     },
     {
       group: "sorting",
       name: "radix-sort",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      // NOTE: kinda works, but has reduce; also buckets use `map` which bugs out
+      success: false
     },
     {
       group: "cryptography",
       name: "rail-fence-cipher",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
+      tags: [
+        'string'
+      ]
     },
     {
       group: "uncategorized",
@@ -966,13 +937,8 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "regular-expression-matching",
-      runFailed: true,
-      crash: true,
       success: false,
-      inputConnected: "TODO",
-      TODO: true
     },
     {
       group: "image-processing",
@@ -1084,29 +1050,24 @@ module.exports = {
     },
     {
       group: "string",
-      ignore: true,
       name: "z-algorithm",
-      runFailed: true,
-      crash: true,
-      success: false,
-      inputConnected: "TODO",
-      TODO: true
+      success: false
     },
     {
       group: "cryptography",
       name: "caesar-cipher",
       success: false,
-      failedReason: "reduce",
       tags: [
-        "missing-data"
+        "string"
       ]
     },
     {
       group: "cryptography",
       name: "hill-cipher",
       success: false,
-      failedReason: "string",
-      inputConnected: "0",
+      tags: [
+        "string"
+      ],
       gallery: {
         ddgSamples: [
           {
