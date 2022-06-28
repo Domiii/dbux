@@ -450,7 +450,8 @@ export default class BaseDDG {
       if (
         dataNode.accessId && (
           !accessIdMap[dataNode.accessId] ||
-          (isDataNodeModifyType(dataNode.type) && accessIdMap[dataNode.accessId].traceId < dataNode.traceId)
+          (isDataNodeModifyType(dataNode.type) && 
+            this.dp.util.getDataNode(accessIdMap[dataNode.accessId].dataNodeId).traceId < dataNode.traceId)
         )
       ) {
         VerboseAccess && this.logger.debug(`Register accessId n${dataNode.nodeId}, accessId=${dataNode.accessId}, timelineId=${newNode.timelineId}`);
