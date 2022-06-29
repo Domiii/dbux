@@ -3,7 +3,6 @@ import isRegExp from 'lodash/isRegExp';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { renderPath } from '../util/pathUtil';
 import { parsePackageName } from '../util/moduleUtil';
-// import { requireDynamic } from '../util/requireUtil';
 
 // NOTE: aggressive debugging techniques for when console is not available.
 // import fs from 'fs';

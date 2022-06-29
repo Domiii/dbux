@@ -1,4 +1,4 @@
-import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import requireDynamic from '@dbux/common/src/util/requireDynamic';
 import fs from 'fs';
 import path from 'path';
 

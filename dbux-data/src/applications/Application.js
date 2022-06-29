@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
 import { performance } from '@dbux/common/src/util/universalLib';
 import { pathGetParent, pathSafe } from '@dbux/common/src/util/pathUtil';
 import { getCommonAncestorPath, pathNormalizedForce, pathRelative, renderPath } from '@dbux/common-node/src/util/pathUtil';

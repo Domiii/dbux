@@ -13,7 +13,7 @@ import * as PluginClassesByName from './parse/plugins/_registry';
 
 import ParseRegistry from './parseLib/ParseRegistry';
 
-import { version } from '../package.json';
+import * as pkg from '../package.json';
 
 /** ###########################################################################
  * {@link VerboseSettings}
@@ -69,7 +69,7 @@ export default function injectDbuxState(programPath, programState) {
   }
 
   const dbuxState = {
-    version,
+    version: pkg.version,
     runtimeCfg,
     verbose: new VerboseSettings(),
 

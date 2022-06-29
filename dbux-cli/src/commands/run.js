@@ -2,7 +2,7 @@
 // import path from 'path';
 import { pathToFileURL } from 'url';
 import sleep from '@dbux/common/src/util/sleep';
-import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import requireDynamic from '@dbux/common/src/util/requireDynamic';
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
 import { processEnv } from '../util/processEnv';

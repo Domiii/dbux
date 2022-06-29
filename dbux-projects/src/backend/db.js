@@ -11,7 +11,7 @@ import isDate from 'lodash/isDate';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
-import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import requireDynamic from '@dbux/common/src/util/requireDynamic';
 
 /** @typedef {import('./BackendController').default} BackendController */
 

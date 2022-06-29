@@ -1,7 +1,7 @@
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import makeIgnore from '@dbux/common-node/src/filters/makeIgnore';
-import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import requireDynamic from '@dbux/common/src/util/requireDynamic';
 import colors from 'colors/safe';
 import isString from 'lodash/isString';
 import isPlainObject from 'lodash/isPlainObject';

@@ -1,4 +1,4 @@
-import { requireDynamic } from './requireUtil';
+import requireDynamic from '@dbux/common/src/util/requireDynamic';
 
 /** ###########################################################################
  * write

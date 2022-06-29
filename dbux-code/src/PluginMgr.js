@@ -2,7 +2,7 @@ import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import { getAllFilesInFolders } from '@dbux/common-node/src/util/fileUtil';
-import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import requireDynamic from '@dbux/common/src/util/requireDynamic';
 import { getExtensionPath } from './codeUtil/codePath';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');

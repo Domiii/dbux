@@ -21,7 +21,9 @@ export default class ChapterListBuilderNodeProvider extends BaseTreeViewNodeProv
   buildRoots() {
     const roots = [];
 
-    roots.push(this.buildNode(ToolRootNode));
+    if (process.env.NODE_ENV === 'development') {
+      roots.push(this.buildNode(ToolRootNode));
+    }
 
     if (this.controller.chapters) {
       roots.push(this.buildNode(ChapterListNode, this.controller.chapters, null));

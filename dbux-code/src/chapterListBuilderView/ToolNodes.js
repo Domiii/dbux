@@ -12,7 +12,7 @@ import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 import { showTextInNewFile } from '../codeUtil/codeNav';
 import { confirm, showInformationMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
-import { transformFiles } from '../research/babelUtil';
+import { transformFiles } from '../../../dbux-common-node/src/util/babelUtil';
 import { translate } from '../lang';
 
 /** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
@@ -331,25 +331,11 @@ class TransformDestructuringNode extends ToolNode {
   }
 
   async handleClick() {
-    /**
-     * TODO:
-     *   1. make sure, the project is completely "factory reset" before doing this
-     *   2. make sure, a `babel.config.js` exists (for some reason)
-     *   3. need to store the patch after its generated
-     */
+    if (!await confirm(`Have you made sure, the project is at the right commit and patch before doing this?`)) {
+      return;
+    }
     // const { projectPath } = this.controller.project;
     const fpaths = this.controller.gallery.getAllJSAFiles();
-    // const filesUsingDestructing = new Set();
-    // for (const fpath of fpaths) {
-    //   const pdgData = JSON.parse(fs.readFileSync(fpath));
-    //   if (Array.isArray(pdgData) && pdgData[0].traceLocations) {
-    //     for (const location of pdgData[0].traceLocations) {
-    //       const testFilePath = pathJoin(projectPath, location.split('#')[0]);
-    //       filesUsingDestructing.add(testFilePath);
-    //     }
-    //   }
-    // }
-
     await transformFiles(fpaths);
   }
 }
