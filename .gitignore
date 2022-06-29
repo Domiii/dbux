@@ -25,9 +25,6 @@ node_modules/
 dbux-babel-plugin/src/parse/_registry.js
 dbux-babel-plugin/src/parse/plugins/_registry.js
 
-# research stuff
-dataFolder.lnk
-
 # docs_site/.build folder
 /docs_site/.build
 

@@ -1,7 +1,12 @@
 dist
 dbux_projects
+
+
+# dev/external/research stuff
+/links/
 _analysis
 test/__data
+
 
 # Logs
 logs
@@ -9,7 +14,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-public
 
 # Runtime data
 pids
