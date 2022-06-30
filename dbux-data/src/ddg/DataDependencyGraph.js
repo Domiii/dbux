@@ -1019,11 +1019,17 @@ export default class DataDependencyGraph extends BaseDDG {
     if (accessedRefId) {
       // node is summarized by snapshot child node
       const { prop } = dataNode.varAccess;
-      const snapshotId = nodeSummary.snapshotsByRefId.get(accessedRefId);
-      if (snapshotId) {
-        const snapshot = this.timelineNodes[snapshotId];
-        const childId = snapshot.children[prop];
-        return this.timelineNodes[childId];
+      const timelineId = nodeSummary.snapshotsByRefId.get(accessedRefId);
+      if (timelineId) {
+        const refNode = this.timelineNodes[timelineId];
+        if (refNode.children) {
+          const childId = refNode.children[prop];
+          return this.timelineNodes[childId];
+        }
+        else {
+          // NOTE: snapshotsByRefId might also contains non Snapshot nodes that are reference-typed children of snapshots
+          return refNode;
+        }
       }
     }
 

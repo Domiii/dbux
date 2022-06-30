@@ -5,6 +5,7 @@ export default class DDGNodeSummary {
   timelineId;
 
   /**
+   * TODO: this currently not only contains Snapshots but also reference-typed Snapshot Value children 
    * @type {SnapshotMap}
    */
   snapshotsByRefId;

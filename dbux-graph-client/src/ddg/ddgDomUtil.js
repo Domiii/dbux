@@ -15,7 +15,7 @@ export const DefaultToolbarBtnClass = 'toolbar-btn btn btn-info';
  * Summary Mode
  * ##########################################################################*/
 
-const summaryBtnLabelHtml = {
+const summaryBtnLabelText = {
   [DDGSummaryMode.Hide]: '⛒',
   [DDGSummaryMode.HideChildren]: '⛒',
   [DDGSummaryMode.ExpandSelf]: '☰',
@@ -35,28 +35,35 @@ export function makeSummaryLabelEl(docState, mode) {
 export function makeSummaryLabel(docState, mode) {
   const { summaryIconUris } = docState;
   if (!summaryIconUris[mode]) {
-    return summaryBtnLabelHtml[mode]; // hackfix
+    return summaryBtnLabelText[mode]; // hackfix
   }
   return /*html*/`<img width="${defaultIconSize}" src="${summaryIconUris[mode]}" />`;
 }
 
 export function makeSummaryLabelSvgCompiled(docState, mode, x, y) {
   const { summaryIconUris } = docState;
-  if (!summaryIconUris[mode]) {
-    return compileHtmlElement(`<text>${summaryBtnLabelHtml[mode]}</text>`);
-  }
 
-  /**
-   * @see https://stackoverflow.com/a/10859332
-   */
-  const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-  img.setAttributeNS(null, 'height', defaultIconSize);
-  img.setAttributeNS(null, 'width', defaultIconSize);
-  img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', summaryIconUris[mode]);
-  img.setAttributeNS(null, 'x', x);
-  img.setAttributeNS(null, 'y', y);
-  img.setAttributeNS(null, 'visibility', 'visible');
-  return img;
+  let el;
+  if (!summaryIconUris[mode]) {
+    // return compileHtmlElement(`<text>${summaryBtnLabelHtml[mode]}</text>`);
+    el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    el.setAttributeNS(null, 'fill', 'white');
+    el.textContent = summaryBtnLabelText[mode] || '';
+  }
+  else {
+    /**
+     * @see https://stackoverflow.com/a/10859332
+     */
+    el = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    el.setAttributeNS('http://www.w3.org/1999/xlink', 'href', summaryIconUris[mode]);
+    el.setAttributeNS(null, 'height', defaultIconSize);
+    el.setAttributeNS(null, 'width', defaultIconSize);
+    y -= 10; // hackfix the right position
+  }
+  el.setAttributeNS(null, 'x', x);
+  el.setAttributeNS(null, 'y', y);
+  el.setAttributeNS(null, 'visibility', 'visible');
+  return el;
 }
 
 /**

@@ -442,7 +442,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    *  #########################################################################*/
 
   async toggleSummaryMode(timelineId) {
-    console.debug('toggleSummaryMode', timelineId);
+    // console.debug('toggleSummaryMode', timelineId);
     await this.remote.toggleSummaryMode({ timelineId });
   }
 
@@ -609,7 +609,6 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       const mode = ddgQueries.getNodeSummaryMode(ddg, node);
 
       const xOffset = 14;// hackfix: move label out of the way (off to the right by this much)
-      const yOffset = 10;
       // const rect = labelEl.getBoundingClientRect();
       // const x = rect.left - xOffset;// parseFloat(labelEl.getAttribute('x'));
       // const y = rect.top - yOffset;
@@ -629,7 +628,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       const w = labelEl.textLength.baseVal.value; // magic!
       const cx = parseFloat(labelEl.getAttribute('x'));
       const x = cx - w / 2;
-      const y = parseFloat(labelEl.getAttribute('y')) - yOffset;
+      const y = parseFloat(labelEl.getAttribute('y'));
       const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x, y);
       this.registerDeco(modeEl);
       labelEl.setAttribute('x', cx + xOffset); // move el to the right

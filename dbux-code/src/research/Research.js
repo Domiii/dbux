@@ -20,7 +20,7 @@ const { log, debug, warn, error: logError } = newLogger('Research');
  * Usually, all dbux-projects could contribute data to a single research
  */
 const CurrentResearchName = 'async-js'; // TODO: make this configurable
-const DataFolderLinkName = 'dataFolder.lnk';
+const DataFolderLinkName = 'links/dataFolder.lnk';
 const AppDataZipFileNameSuffix = '.dbuxapp.zip';
 
 export function getDataFolderLink() {
@@ -113,7 +113,7 @@ export class Research {
     else {
       // dataFolder = getLogsDirectory();
       this._researchRootFolder = null;
-      debug(`No data folder link found.`);
+      debug(`No data folder link found at: ${linkPath}`);
     }
     return this._researchRootFolder;
   }
