@@ -10,7 +10,7 @@ import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
 import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
 import { getCurrentResearch } from '../research/Research';
-import PDGGallery from '../research/PDGGallery';
+import PDGGallery from './PDGGallery';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('@dbux/projects/src/projectLib/ExerciseConfig').default} ExerciseConfig */
@@ -332,12 +332,14 @@ export default class ChapterListBuilderViewController {
 // init
 // ###########################################################################
 
-export function initChapterListBuilderView(context) {
+export async function initDbuxPdgView(context) {
   controller = new ChapterListBuilderViewController();
   controller.initOnActivate(context);
 
   // refresh right away
   controller.treeNodeProvider.refresh();
+
+  await controller.init();
 
   return controller;
 }

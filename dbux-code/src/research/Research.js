@@ -32,12 +32,11 @@ export function getDataFolderPath() {
  * ##########################################################################*/
 
 /**
- * future-work: move all data that depends on research name in here
- *    -> and move most of this to dbux-data.
+ * Hackfix: this is a utility class to help hackfixing temporary/research-related code
+ * into Dbux.
  */
 export class Research {
   name;
-  ;
 
   constructor(name) {
     this.name = name;

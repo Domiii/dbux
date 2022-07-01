@@ -21,7 +21,7 @@ import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
-import { initChapterListBuilderView } from './dbuxPdgView/chapterListBuilderViewController';
+import { initDbuxPdgView } from './pdgView/chapterListBuilderViewController';
 // import { initPlugins } from './PluginMgr';
 
 // eslint-disable-next-line no-unused-vars
@@ -50,7 +50,6 @@ export default async function activate(context) {
   initWebviewWrapper(context);
 
   initApplicationsView(context);
-  const chapterListBuilderViewController = initChapterListBuilderView(context);
   const globalAnalysisViewController = initGlobalAnalysisView(context);
   const traceDetailsController = initTraceDetailsView(context);
   const dataFlowController = initDataFlowView(context);
@@ -69,7 +68,8 @@ export default async function activate(context) {
   await initPathwaysView();
 
   await projectViewController.doInitWork();
-  chapterListBuilderViewController.init();
+
+  await initDbuxPdgView(context);
 
   const dialogController = initDialogController();
   maybeStartTutorial(dialogController, context);

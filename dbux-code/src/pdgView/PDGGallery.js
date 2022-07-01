@@ -15,10 +15,10 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { showTextInNewFile } from '../codeUtil/codeNav';
 import { translate } from '../lang';
-import { getCurrentResearch } from './Research';
+import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default}Exercise*/
-/** @typedef {import('../dbuxPdgView/chapterListBuilderViewController').default} ChapterListBuilderViewController */
+/** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PDGGallery');
