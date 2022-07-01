@@ -1,6 +1,6 @@
 import Enum from '../../util/Enum';
 
-const ddgTimelineNodeTypeObj = {
+const pdgTimelineNodeTypeObj = {
   Root: 1,
 
   // single value
@@ -33,11 +33,11 @@ const ddgTimelineNodeTypeObj = {
 };
 
 /**
- * @type {(Enum|typeof ddgTimelineNodeTypeObj)}
+ * @type {(Enum|typeof pdgTimelineNodeTypeObj)}
  */
-const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
+const PDGTimelineNodeType = new Enum(pdgTimelineNodeTypeObj);
 
-/** @typedef { ddgTimelineNodeTypeObj[keyof ddgTimelineNodeTypeObj] } DDGTimelineNodeTypeValues */
+/** @typedef { pdgTimelineNodeTypeObj[keyof pdgTimelineNodeTypeObj] } PDGTimelineNodeTypeValues */
 
 
 // const containerNodeTypes = [...controlGroupTypes];
@@ -46,10 +46,10 @@ const DDGTimelineNodeType = new Enum(ddgTimelineNodeTypeObj);
 // }
 
 
-const dataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-dataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
-dataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
-dataTimelineNodeTypes[DDGTimelineNodeType.DeleteEntry] = true;
+const dataTimelineNodeTypes = new Array(PDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+dataTimelineNodeTypes[PDGTimelineNodeType.Value] = true;
+dataTimelineNodeTypes[PDGTimelineNodeType.Decision] = true;
+dataTimelineNodeTypes[PDGTimelineNodeType.DeleteEntry] = true;
 
 /**
  * 
@@ -58,11 +58,11 @@ export function isDataTimelineNode(timelineNodeType) {
   return dataTimelineNodeTypes[timelineNodeType] || false;
 }
 
-const hasDataTimelineNodeTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-hasDataTimelineNodeTypes[DDGTimelineNodeType.Value] = true;
-hasDataTimelineNodeTypes[DDGTimelineNodeType.Decision] = true;
-hasDataTimelineNodeTypes[DDGTimelineNodeType.RefSnapshot] = true;
-hasDataTimelineNodeTypes[DDGTimelineNodeType.DeleteEntry] = true;
+const hasDataTimelineNodeTypes = new Array(PDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+hasDataTimelineNodeTypes[PDGTimelineNodeType.Value] = true;
+hasDataTimelineNodeTypes[PDGTimelineNodeType.Decision] = true;
+hasDataTimelineNodeTypes[PDGTimelineNodeType.RefSnapshot] = true;
+hasDataTimelineNodeTypes[PDGTimelineNodeType.DeleteEntry] = true;
 
 /**
  * Applies to `DataTimelineNode`s and snapshot nodes (which contain data).
@@ -73,18 +73,18 @@ export function doesTimelineNodeCarryData(timelineNodeType) {
 }
 
 export function isSnapshotTimelineNode(timelineNodeType) {
-  return DDGTimelineNodeType.is.RefSnapshot(timelineNodeType);
+  return PDGTimelineNodeType.is.RefSnapshot(timelineNodeType);
 }
 
-const refTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-refTypes[DDGTimelineNodeType.RefSnapshot] = true;
-refTypes[DDGTimelineNodeType.RepeatedRef] = true;
+const refTypes = new Array(PDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+refTypes[PDGTimelineNodeType.RefSnapshot] = true;
+refTypes[PDGTimelineNodeType.RepeatedRef] = true;
 export function isRefTimelineNode(timelineNodeType) {
   return refTypes[timelineNodeType] || false;
 }
 
 export function isRepeatedRefTimelineNode(timelineNodeType) {
-  return DDGTimelineNodeType.is.RepeatedRef(timelineNodeType);
+  return PDGTimelineNodeType.is.RepeatedRef(timelineNodeType);
 }
 
 
@@ -93,37 +93,37 @@ export function isRepeatedRefTimelineNode(timelineNodeType) {
  * ##########################################################################*/
 
 
-const loopTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-loopTypes[DDGTimelineNodeType.For] = true;
-loopTypes[DDGTimelineNodeType.ForIn] = true;
-loopTypes[DDGTimelineNodeType.ForOf] = true;
-loopTypes[DDGTimelineNodeType.While] = true;
-loopTypes[DDGTimelineNodeType.DoWhile] = true;
+const loopTypes = new Array(PDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+loopTypes[PDGTimelineNodeType.For] = true;
+loopTypes[PDGTimelineNodeType.ForIn] = true;
+loopTypes[PDGTimelineNodeType.ForOf] = true;
+loopTypes[PDGTimelineNodeType.While] = true;
+loopTypes[PDGTimelineNodeType.DoWhile] = true;
 export function isLoopTimelineNode(groupType) {
   return loopTypes[groupType] || false;
 }
 
 const controlGroupTypes = [...loopTypes];
-controlGroupTypes[DDGTimelineNodeType.Root] = true;
-controlGroupTypes[DDGTimelineNodeType.Context] = true;
-controlGroupTypes[DDGTimelineNodeType.Hof] = true;
+controlGroupTypes[PDGTimelineNodeType.Root] = true;
+controlGroupTypes[PDGTimelineNodeType.Context] = true;
+controlGroupTypes[PDGTimelineNodeType.Hof] = true;
 
-controlGroupTypes[DDGTimelineNodeType.If] = true;
-controlGroupTypes[DDGTimelineNodeType.Ternary] = true;
-controlGroupTypes[DDGTimelineNodeType.SwitchCase] = true;
+controlGroupTypes[PDGTimelineNodeType.If] = true;
+controlGroupTypes[PDGTimelineNodeType.Ternary] = true;
+controlGroupTypes[PDGTimelineNodeType.SwitchCase] = true;
 
-controlGroupTypes[DDGTimelineNodeType.Iteration] = true;
+controlGroupTypes[PDGTimelineNodeType.Iteration] = true;
 export function isControlGroupTimelineNode(timelineNodeType) {
   return controlGroupTypes[timelineNodeType] || false;
 }
 
 
 export function isLoopIterationTimelineNode(groupType) {
-  return DDGTimelineNodeType.is.Iteration(groupType);
+  return PDGTimelineNodeType.is.Iteration(groupType);
 }
 
-const firstIterationUnconditionalTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-firstIterationUnconditionalTypes[DDGTimelineNodeType.DoWhile] = true;
+const firstIterationUnconditionalTypes = new Array(PDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+firstIterationUnconditionalTypes[PDGTimelineNodeType.DoWhile] = true;
 
 /**
  * NOTE: control flow of DoWhile is rather different from all other loops
@@ -132,9 +132,9 @@ export function isFirstIterationUnconditional(groupType) {
   return firstIterationUnconditionalTypes[groupType];
 }
 
-const unconditionalTypes = new Array(DDGTimelineNodeType.getValueMaxIndex()).map(() => false);
-unconditionalTypes[DDGTimelineNodeType.Context] = true;
-unconditionalTypes[DDGTimelineNodeType.Root] = true;
+const unconditionalTypes = new Array(PDGTimelineNodeType.getValueMaxIndex()).map(() => false);
+unconditionalTypes[PDGTimelineNodeType.Context] = true;
+unconditionalTypes[PDGTimelineNodeType.Root] = true;
 
 /**
  * These control groups don't have decisions attached to them.
@@ -144,7 +144,7 @@ export function isUnconditionalGroup(groupType) {
 }
 
 export function isDecisionNode(nodeType) {
-  return DDGTimelineNodeType.is.Decision(nodeType);
+  return PDGTimelineNodeType.is.Decision(nodeType);
 }
 
-export default DDGTimelineNodeType;
+export default PDGTimelineNodeType;

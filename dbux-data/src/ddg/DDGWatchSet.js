@@ -1,14 +1,14 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
-/** @typedef {import('./BaseDDG').default} DataDependencyGraph */
+/** @typedef {import('./BasePDG').default} DataDependencyGraph */
 
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import ddgQueries, { ddgHostQueries } from './ddgQueries';
-import { DDGTimelineNode, RefSnapshotTimelineNode } from './DDGTimelineNodes';
+import pdgQueries, { pdgHostQueries } from './pdgQueries';
+import { PDGTimelineNode, RefSnapshotTimelineNode } from './PDGTimelineNodes';
 
 /**
  * 
  */
-export default class DDGWatchSet {
+export default class PDGWatchSet {
   // /**
   //  * actual roots in selected set
   //  * @type {Set<number>}
@@ -50,11 +50,11 @@ export default class DDGWatchSet {
 
   /**
    * 
-   * @param {DataDependencyGraph} ddg 
+   * @param {DataDependencyGraph} pdg 
    * @param {DataNode[]} inputNodes NOTE: input set is actually a set of trees of DataNodes
    */
-  constructor(ddg, watched) {
-    this.ddg = ddg;
+  constructor(pdg, watched) {
+    this.pdg = pdg;
 
     const { dp } = this;
 
@@ -102,11 +102,11 @@ export default class DDGWatchSet {
   }
 
   get dp() {
-    return this.ddg.dp;
+    return this.pdg.dp;
   }
 
   get bounds() {
-    return this.ddg.bounds;
+    return this.pdg.bounds;
   }
 
   isDataNodeInWatchSet(dataNodeId) {
@@ -119,7 +119,7 @@ export default class DDGWatchSet {
    * If given, it allows for some prettier rendering.
    */
   isReturnDataNode(dataNodeId) {
-    // return this.returnTraceId === this.ddg.dp.util.getDataNode(dataNodeId).traceId;
+    // return this.returnTraceId === this.pdg.dp.util.getDataNode(dataNodeId).traceId;
     return this.returnDataNodeId === dataNodeId;
   }
 
@@ -173,13 +173,13 @@ export default class DDGWatchSet {
 
   /**
    * NOTE: snapshot node is watched if its DataNode is watched or its root is already marked as watched.
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    */
   maybeAddWatchedSnapshotNode(node) {
     if (
       node.dataNodeId && (
         this.isWatchedDataNode(node.dataNodeId) ||
-        ddgQueries.getRootTimelineNode(this.ddg, node).watched
+        pdgQueries.getRootTimelineNode(this.pdg, node).watched
       )
     ) {
       this.#addWatchedNode(node);
@@ -187,7 +187,7 @@ export default class DDGWatchSet {
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    */
   maybeAddWatchedNode(node) {
     if (
@@ -202,14 +202,14 @@ export default class DDGWatchSet {
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    */
   #addWatchedNode(node) {
     node.watched = true;
     this.addedWatchedDataNodeIds.add(node.dataNodeId);
     this.watchedNodes.add(node);
     if (node.refId) {
-      const lastDataNodeId = ddgHostQueries.getLastDataNodeIdInRoot(this.ddg, node);
+      const lastDataNodeId = pdgHostQueries.getLastDataNodeIdInRoot(this.pdg, node);
       this.lastDataNodeByWatchedRefs.set(node.refId, lastDataNodeId);
     }
   }

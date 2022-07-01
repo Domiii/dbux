@@ -3,32 +3,32 @@ import PDGLink from './PDGLink';
 
 export default function Exercise(props) {
   const { chapterGroup, chapter, exercise } = props;
-  const { ddgs } = exercise;
+  const { pdgs } = exercise;
 
-  function copyDDGArgs(renderData) {
+  function copyPDGArgs(renderData) {
     navigator.clipboard.writeText(JSON.stringify({
       exerciseName: exercise.name,
-      ddgTitle: renderData.ddgTitle
+      pdgTitle: renderData.pdgTitle
     }, null, 2));
   }
 
-  if (!Array.isArray(ddgs)) {
-    return <p className="text-danger">{ddgs.failedReason}</p>;
+  if (!Array.isArray(pdgs)) {
+    return <p className="text-danger">{pdgs.failedReason}</p>;
   }
 
   return <ul>
-    {ddgs.map(renderData => {
+    {pdgs.map(renderData => {
       const linkData = {
         chapterGroup,
         chapter,
         exercise: exercise.id,
-        ddgTitle: renderData.ddgTitle
+        pdgTitle: renderData.pdgTitle
       };
 
       if (renderData.success !== false) {
         return <li key={renderData.id}>
-          <PDGLink linkData={linkData}>{renderData.ddgTitle}</PDGLink>
-          <button className="ms-2" onClick={() => copyDDGArgs(renderData)}>copy</button>
+          <PDGLink linkData={linkData}>{renderData.pdgTitle}</PDGLink>
+          <button className="ms-2" onClick={() => copyPDGArgs(renderData)}>copy</button>
         </li>;
       }
       else {

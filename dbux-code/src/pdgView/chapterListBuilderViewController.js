@@ -156,10 +156,10 @@ export default class ChapterListBuilderViewController {
   }
 
   /**
-   * Run exercise, parse its DDG args and save it into exercise.js
+   * Run exercise, parse its PDG args and save it into exercise.js
    * @param {Exercise} exercise 
    */
-  async runAndExportDDGApplication(exercise, progress) {
+  async runAndExportPDGApplication(exercise, progress) {
     progress?.report({ message: `Running exercises...` });
     await this.treeNodeProvider.manager.switchAndTestBug(exercise);
 
@@ -180,12 +180,12 @@ export default class ChapterListBuilderViewController {
     if (allApplications.selection.count !== 1) {
       warn(`Ran test, but found more than one application (selecting first).`);
     }
-    const ddgs = this.findDDGContextIdInApp(app, exercise);
-    exercise.ddgs = ddgs;
+    const pdgs = this.findPDGContextIdInApp(app, exercise);
+    exercise.pdgs = pdgs;
 
     progress?.report({ message: `Storing results and exporting application...` });
     const config = this.exerciseConfigsByName.get(exercise.name);
-    config.ddgs = ddgs;
+    config.pdgs = pdgs;
 
     // write exercise file
     this.writeExerciseJs();
@@ -194,7 +194,7 @@ export default class ChapterListBuilderViewController {
     const fpath = getCurrentResearch().getAppZipFilePath(app);
     exportApplicationToFile(app, fpath);
 
-    // showInformationMessage(`Found ${ddgs.length} ddg(s).`);
+    // showInformationMessage(`Found ${pdgs.length} pdg(s).`);
     this.treeNodeProvider.refresh();
 
     return app;
@@ -207,7 +207,7 @@ export default class ChapterListBuilderViewController {
   /**
    * NOTE: Only include files that match `src/algorithms/${chapterGroup}/${chapter}/${fileName}`
    */
-  isValidDDGFilePath(filePath) {
+  isValidPDGFilePath(filePath) {
     // TODO: use exercise group, chapter to choose files in same chatper folder
     // const { group, chapter } = exercise;
     // const pattern = `src/algorithms/${group}/${chapter}/([^/]*.js)`;
@@ -243,21 +243,21 @@ export default class ChapterListBuilderViewController {
    * @param {CodeApplication} app 
    * @param {Exercise} exercise
    */
-  findDDGContextIdInApp(app, exercise) {
+  findPDGContextIdInApp(app, exercise) {
     const { project } = exercise;
     const dp = app.dataProvider;
     const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
-    const validDDGProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
+    const validPDGProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
       const { filePath } = staticProgramContext;
       // const fileDir = dirname(filePath);
       // const readmeFilePath = pathResolve(fileDir, 'README.md');
       // const testFolderPath = pathResolve(fileDir, '__test__');
 
       // return filePath.includes('src/algorithms') && fs.existsSync(readmeFilePath) && fs.existsSync(testFolderPath);
-      return this.isValidDDGFilePath(filePath);
+      return this.isValidPDGFilePath(filePath);
     });
 
-    const staticContexts = validDDGProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
+    const staticContexts = validPDGProgramContexts.flatMap(({ programId }) => dp.indexes.staticContexts.byFile.get(programId) || EmptyArray);
     const contexts = staticContexts
       .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
       .sort((a, b) => a.contextId - b.contextId);
@@ -300,7 +300,7 @@ export default class ChapterListBuilderViewController {
       const params = dp.util.getCallArgValueStrings(callerTrace.callId);
 
       return {
-        ddgTitle: `${functionName}(${params.join(', ')})`,
+        pdgTitle: `${functionName}(${params.join(', ')})`,
         contextId,
         // fullContextFilePath,
         algoLoc: this.getLocOfContext(dp, contextId, project.projectPath),

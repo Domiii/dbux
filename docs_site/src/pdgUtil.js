@@ -3,10 +3,10 @@ export function makePdgLinkId(data) {
     chapterGroup,
     chapter,
     exercise,
-    ddgTitle
+    pdgTitle
   } = data;
 
-  return `${chapterGroup}/${chapter}/${exercise}/${ddgTitle}`;
+  return `${chapterGroup}/${chapter}/${exercise}/${pdgTitle}`;
 }
 
 export function parsePdgLinkId(s) {
@@ -19,13 +19,13 @@ export function parsePdgLinkId(s) {
     chapterGroup,
     chapter,
     exercise,
-    ddgTitle
+    pdgTitle
   ] = arr;
 
   return {
     chapterGroup,
     chapter,
     exercise,
-    ddgTitle
+    pdgTitle
   };
 }

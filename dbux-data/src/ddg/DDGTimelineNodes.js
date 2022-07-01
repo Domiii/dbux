@@ -1,14 +1,14 @@
-// import DDGTimelineNodeType from './DDGTimelineNodeType';
+// import PDGTimelineNodeType from './PDGTimelineNodeType';
 
-import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
-import { DDGRootTimelineId } from './constants';
+import PDGTimelineNodeType from '@dbux/common/src/types/constants/PDGTimelineNodeType';
+import { PDGRootTimelineId } from './constants';
 // import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 
-/** @typedef { import("@dbux/common/src/types/constants/DDGTimelineNodeType").DDGTimelineNodeTypeValues } DDGTimelineNodeTypeValues */
+/** @typedef { import("@dbux/common/src/types/constants/PDGTimelineNodeType").PDGTimelineNodeTypeValues } PDGTimelineNodeTypeValues */
 
-export class DDGTimelineNode {
+export class PDGTimelineNode {
   /**
-   * @type {DDGTimelineNodeTypeValues}
+   * @type {PDGTimelineNodeTypeValues}
    */
   type;
 
@@ -49,7 +49,7 @@ export class DDGTimelineNode {
   traceType;
 
   /**
-   * @param {DDGTimelineNodeTypeValues} type
+   * @param {PDGTimelineNodeTypeValues} type
    */
   constructor(type) {
     this.type = type;
@@ -58,11 +58,11 @@ export class DDGTimelineNode {
   toString() {
     const props = { ...this };
     delete props.children;
-    return `[${DDGTimelineNodeType.nameFrom(this.type)}] ${JSON.stringify(props, null, 2)}`;
+    return `[${PDGTimelineNodeType.nameFrom(this.type)}] ${JSON.stringify(props, null, 2)}`;
   }
 }
 
-export class GroupTimelineNode extends DDGTimelineNode {
+export class GroupTimelineNode extends PDGTimelineNode {
   /**
    * `traceId` that caused this group to be pushed.
    */
@@ -84,12 +84,12 @@ export class GroupTimelineNode extends DDGTimelineNode {
 
 /**
  * Unique outer-most group node.
- * The root holds the entire DDG.
+ * The root holds the entire PDG.
  */
 export class TimelineRoot extends GroupTimelineNode {
   constructor() {
-    super(DDGTimelineNodeType.Root);
-    this.timelineId = DDGRootTimelineId;
+    super(PDGTimelineNodeType.Root);
+    this.timelineId = PDGRootTimelineId;
   }
 }
 
@@ -98,7 +98,7 @@ export class TimelineRoot extends GroupTimelineNode {
  * {@link DataTimelineNode}
  * ##########################################################################*/
 
-export class DataTimelineNode extends DDGTimelineNode {
+export class DataTimelineNode extends PDGTimelineNode {
   /**
    * @type {number}
    */
@@ -124,7 +124,7 @@ export class ValueTimelineNode extends DataTimelineNode {
   prop;
 
   constructor(dataNodeId, label) {
-    super(DDGTimelineNodeType.Value);
+    super(PDGTimelineNodeType.Value);
 
     this.dataNodeId = dataNodeId;
     this.label = label;
@@ -145,7 +145,7 @@ export class IndependentValueTimelineNode extends ValueTimelineNode {
  * future-work: this is actually now basically a `DataTimelineNode`. Need to integrate the two.
  * This node represents a ref value at time t = {@link RefTimelineNode#dataNodeId}.
  */
-export class RefTimelineNode extends DDGTimelineNode {
+export class RefTimelineNode extends PDGTimelineNode {
   traceId;
   dataNodeId;
 
@@ -168,7 +168,7 @@ export class RefTimelineNode extends DDGTimelineNode {
 
 export class DeleteEntryTimelineNode extends DataTimelineNode {
   constructor(dataNodeId, label) {
-    super(DDGTimelineNodeType.DeleteEntry);
+    super(PDGTimelineNodeType.DeleteEntry);
 
     this.dataNodeId = dataNodeId;
     this.label = label;
@@ -189,7 +189,7 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
   // TODO: also represent the refNode itself (→ it needs to be addressable iff it has `declarationTid`)
 
   /**
-   * Array or object of children ids ({@link DDGTimelineNode#timelineId}).
+   * Array or object of children ids ({@link PDGTimelineNode#timelineId}).
    * 
    * @type {Array.<number> | Object.<string, number>}
    */
@@ -209,7 +209,7 @@ export class RefSnapshotTimelineNode extends RefTimelineNode {
    * @param {number} dataNodeId 
    */
   constructor(traceId, dataNodeId, refId) {
-    super(DDGTimelineNodeType.RefSnapshot, traceId, dataNodeId, refId);
+    super(PDGTimelineNodeType.RefSnapshot, traceId, dataNodeId, refId);
   }
 }
 
@@ -231,7 +231,7 @@ export class RepeatedRefTimelineNode extends RefTimelineNode {
    * @param {number} dataNodeId 
    */
   constructor(traceId, dataNodeId, refId, originalTimelineId) {
-    super(DDGTimelineNodeType.RepeatedRef, traceId, dataNodeId, refId);
+    super(PDGTimelineNodeType.RepeatedRef, traceId, dataNodeId, refId);
     this.repeatedTimelineId = originalTimelineId;
   }
 }
@@ -242,7 +242,7 @@ export class RepeatedRefTimelineNode extends RefTimelineNode {
 
 export class DecisionTimelineNode extends DataTimelineNode {
   constructor(dataNodeId, label) {
-    super(DDGTimelineNodeType.Decision);
+    super(PDGTimelineNodeType.Decision);
 
     this.dataNodeId = dataNodeId;
     this.label = label;
@@ -257,7 +257,7 @@ export class ContextTimelineNode extends GroupTimelineNode {
   contextId;
 
   constructor(contextId, label) {
-    super(DDGTimelineNodeType.Context);
+    super(PDGTimelineNodeType.Context);
     this.contextId = contextId;
     this.label = label;
     this.children = [];
@@ -271,7 +271,7 @@ export class HofTimelineNode extends GroupTimelineNode {
   hofCallId;
 
   constructor(hofCallId, label) {
-    super(DDGTimelineNodeType.Hof);
+    super(PDGTimelineNodeType.Hof);
     this.hofCallId = hofCallId;
     this.label = label;
     this.children = [];
@@ -291,19 +291,19 @@ export class BranchTimelineNode extends GroupTimelineNode {
 
 export class IfTimelineNode extends BranchTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.If, controlStatementId);
+    super(PDGTimelineNodeType.If, controlStatementId);
   }
 }
 
 export class TernaryTimelineNode extends BranchTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.Ternary, controlStatementId);
+    super(PDGTimelineNodeType.Ternary, controlStatementId);
   }
 }
 
 export class SwitchTimelineNode extends BranchTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.Switch, controlStatementId);
+    super(PDGTimelineNodeType.Switch, controlStatementId);
   }
 }
 
@@ -322,7 +322,7 @@ export class IterationNode extends GroupTimelineNode {
   i;
 
   constructor(decisionTimelineId, i) {
-    super(DDGTimelineNodeType.Iteration);
+    super(PDGTimelineNodeType.Iteration);
     this.decision = decisionTimelineId;
     this.i = i;
   }
@@ -343,26 +343,26 @@ export class LoopTimelineNode extends GroupTimelineNode {
 
 export class ForTimelineNode extends LoopTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.For, controlStatementId);
+    super(PDGTimelineNodeType.For, controlStatementId);
   }
 }
 export class ForInTimelineNode extends LoopTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.ForIn, controlStatementId);
+    super(PDGTimelineNodeType.ForIn, controlStatementId);
   }
 }
 export class ForOfTimelineNode extends LoopTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.ForOf, controlStatementId);
+    super(PDGTimelineNodeType.ForOf, controlStatementId);
   }
 }
 export class WhileTimelineNode extends LoopTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.While, controlStatementId);
+    super(PDGTimelineNodeType.While, controlStatementId);
   }
 }
 export class DoWhileTimelineNode extends LoopTimelineNode {
   constructor(controlStatementId) {
-    super(DDGTimelineNodeType.DoWhile, controlStatementId);
+    super(PDGTimelineNodeType.DoWhile, controlStatementId);
   }
 }

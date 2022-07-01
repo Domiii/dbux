@@ -1,10 +1,10 @@
-import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import DDGSummaryMode, { } from '@dbux/data/src/ddg/DDGSummaryMode';
+import pdgQueries, { RenderState } from '@dbux/data/src/pdg/pdgQueries';
+import PDGSummaryMode, { } from '@dbux/data/src/pdg/PDGSummaryMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { addElementEventListeners, compileHtmlElement, decorateClasses } from '../util/domUtil';
 
-/** @typedef { import("./DDGTimelineView").default } DDGTimelineView */
-/** @typedef { import("./DDGDocument").default } DDGDocument */
+/** @typedef { import("./PDGTimelineView").default } PDGTimelineView */
+/** @typedef { import("./PDGDocument").default } PDGDocument */
 
 const defaultIconSize = '12px';
 
@@ -16,14 +16,14 @@ export const DefaultToolbarBtnClass = 'toolbar-btn btn btn-info';
  * ##########################################################################*/
 
 const summaryBtnLabelText = {
-  [DDGSummaryMode.Hide]: '⛒',
-  [DDGSummaryMode.HideChildren]: '⛒',
-  [DDGSummaryMode.ExpandSelf]: '☰',
-  [DDGSummaryMode.ExpandSelf1]: '1️⃣',
-  [DDGSummaryMode.ExpandSelf2]: '2️⃣',
-  [DDGSummaryMode.ExpandSelf3]: '3️⃣',
-  [DDGSummaryMode.ExpandSelf4]: '4️⃣',
-  // [DDGSummaryMode.CollapseSummary]: '💢'
+  [PDGSummaryMode.Hide]: '⛒',
+  [PDGSummaryMode.HideChildren]: '⛒',
+  [PDGSummaryMode.ExpandSelf]: '☰',
+  [PDGSummaryMode.ExpandSelf1]: '1️⃣',
+  [PDGSummaryMode.ExpandSelf2]: '2️⃣',
+  [PDGSummaryMode.ExpandSelf3]: '3️⃣',
+  [PDGSummaryMode.ExpandSelf4]: '4️⃣',
+  // [PDGSummaryMode.CollapseSummary]: '💢'
 };
 
 
@@ -67,7 +67,7 @@ export function makeSummaryLabelSvgCompiled(docState, mode, x, y) {
 }
 
 /**
- * @param {DDGDocument} doc
+ * @param {PDGDocument} doc
  * @param {*} timelineId 
  * @param {*} modes 
  * 
@@ -78,7 +78,7 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
   const frag = document.createDocumentFragment();
   const els = modes.map(mode => {
     const label = makeSummaryLabel(doc.state, mode);
-    const modeName = DDGSummaryMode.nameFrom(mode);
+    const modeName = PDGSummaryMode.nameFrom(mode);
     const btnEl = compileHtmlElement(
     /*html*/`<button title="${modeName}" class="${btnClass}">
         ${label}
@@ -106,10 +106,10 @@ export function makeSummaryButtons(doc, timelineId, btnClass, modes, needsToDeco
 /**
  * Apply decorations to `btnEl` that represents given `btnMode` for node of given `timelineId`
  */
-export function decorateSummaryButton(btnEl, btnMode, ddg, timelineId) {
-  const node = ddg.timelineNodes[timelineId];
-  const actualMode = ddg.summaryModes[timelineId];
-  const disabled = !ddgQueries.canApplySummaryMode(ddg, node, btnMode);
+export function decorateSummaryButton(btnEl, btnMode, pdg, timelineId) {
+  const node = pdg.timelineNodes[timelineId];
+  const actualMode = pdg.summaryModes[timelineId];
+  const disabled = !pdgQueries.canApplySummaryMode(pdg, node, btnMode);
   btnEl.disabled = disabled;
   decorateClasses(btnEl, {
     disabled,
@@ -127,12 +127,12 @@ export function updateElDecorations(els) {
  * #######################################*/
 
 /**
- * @param {DDGDocument} doc
+ * @param {PDGDocument} doc
  */
 function addSummaryModeListener(btnEl, doc, timelineId, mode) {
   addDefaultBtnListeners(btnEl, () => {
     /**
-     * @type {DDGTimelineView}
+     * @type {PDGTimelineView}
      */
     // eslint-disable-next-line prefer-destructuring
     const timeline = doc.timeline;
@@ -162,14 +162,14 @@ const settingBtnTitles = {
 };
 
 /**
- * @param {DDGDocument} doc
+ * @param {PDGDocument} doc
  */
 function addSettingsModeListener(doc, btnEl, setting) {
   addDefaultBtnListeners(btnEl, () => {
     // future-work: for now, we can only render bools
     //   → toggle bool
     const timeline = getTimelineOfDoc(doc);
-    const newVal = !timeline.ddg.settings[setting];
+    const newVal = !timeline.pdg.settings[setting];
     timeline.startRenderTimer();
     timeline.setGraphSetting(setting, newVal);
   });
@@ -186,21 +186,21 @@ export function makeSettingBtnLabel(docState, setting) {
 /**
  * 
  */
-export function decorateSettingButton(ddg, btnEl, setting) {
-  const val = getDDGSetting(ddg, setting);
+export function decorateSettingButton(pdg, btnEl, setting) {
+  const val = getPDGSetting(pdg, setting);
   decorateClasses(btnEl, {
     active: !!val
   });
 }
 
 /**
- * @param {DDGDocument} doc
+ * @param {PDGDocument} doc
  */
 export function makeSettingsButtons(doc) {
   const btnClass = DefaultToolbarBtnClass + ' settings-button';
 
-  const ddg = getDDGOfDoc(doc);
-  const allSettingNames = Object.keys(ddg.settings);
+  const pdg = getPDGOfDoc(doc);
+  const allSettingNames = Object.keys(pdg.settings);
 
   const frag = document.createDocumentFragment();
   const els = allSettingNames.map(setting => {
@@ -214,7 +214,7 @@ export function makeSettingsButtons(doc) {
     // hackfix
     btnEl._updateDeco = () => {
       if (doc.state.summaryModes) {
-        decorateSettingButton(ddg, btnEl, setting);
+        decorateSettingButton(pdg, btnEl, setting);
       }
     };
     btnEl._updateDeco();
@@ -235,7 +235,7 @@ export function makeSettingsButtons(doc) {
 
 
 /**
- * @return {DDGTimelineView}
+ * @return {PDGTimelineView}
  */
 function getTimelineOfDoc(doc) {
   const { timeline } = doc;
@@ -245,17 +245,17 @@ function getTimelineOfDoc(doc) {
 /**
  * @return {RenderState}
  */
-function getDDGOfDoc(doc) {
-  // return doc.timeline.ddg;
+function getPDGOfDoc(doc) {
+  // return doc.timeline.pdg;
   return doc.state;
 }
 
-function getDDGSetting(ddg, setting) {
-  return ddg.settings[setting];
+function getPDGSetting(pdg, setting) {
+  return pdg.settings[setting];
 }
 
 /**
- * @param {DDGDocument} doc
+ * @param {PDGDocument} doc
  */
 export function addDefaultBtnListeners(btnEl, cb) {
   const eventCfg = {

@@ -7,7 +7,7 @@ export class EdgeState {
   nByType = {};
 }
 
-export default class DDGEdge {
+export default class PDGEdge {
   /**
    * The amount of edges merged into this edge.
    * Used as a thickness measure.
@@ -16,7 +16,7 @@ export default class DDGEdge {
   nByType;
 
   /**
-   * @param {DDGEdgeTypeValue} type 
+   * @param {PDGEdgeTypeValue} type 
    * @param {number} from → `timelineId`
    * @param {number} to → `timelineId`
    */

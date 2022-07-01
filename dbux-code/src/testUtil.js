@@ -1,12 +1,12 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { get as mementoGet, set as mementoSet } from './memento';
 
-const TestDDGKeyName = 'dbux.command.testDDG.params';
+const TestPDGKeyName = 'dbux.command.testPDG.params';
 
-export async function setTestDDGArgs(args) {
-  await mementoSet(TestDDGKeyName, args);
+export async function setTestPDGArgs(args) {
+  await mementoSet(TestPDGKeyName, args);
 }
 
-export async function getTestDDGArgs() {
-  return mementoGet(TestDDGKeyName, EmptyObject);
+export async function getTestPDGArgs() {
+  return mementoGet(TestPDGKeyName, EmptyObject);
 }

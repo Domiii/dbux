@@ -1,14 +1,14 @@
-// import LayoutAlgorithmType from '@dbux/graph-common/src/ddg/types/LayoutAlgorithmType';
+// import LayoutAlgorithmType from '@dbux/graph-common/src/pdg/types/LayoutAlgorithmType';
 
-import DDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
-import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
+import PDGSummaryMode, { RootSummaryModes } from '@dbux/data/src/pdg/PDGSummaryMode';
+import { PDGRootTimelineId } from '@dbux/data/src/pdg/constants';
 import { BootstrapBtnGroupSeparatorHtml, compileHtmlElement, decorateClasses, makeBootstrapBtnGroupSeparatorEl } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { updateElDecorations, makeSummaryButtons, DefaultToolbarBtnClass, makeSettingsButtons } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, DefaultToolbarBtnClass, makeSettingsButtons } from './pdgDomUtil';
 
 let documentClickHandler;
 
-/** @typedef { import("./DDGDocument").default } DDGDocument */
+/** @typedef { import("./PDGDocument").default } PDGDocument */
 
 
 class Toolbar extends ClientComponentEndpoint {
@@ -41,7 +41,7 @@ class Toolbar extends ClientComponentEndpoint {
     const {
       el: summaryRootButtonDom,
       els: summaryRootButtons
-    } = makeSummaryButtons(this.doc, DDGRootTimelineId, DefaultToolbarBtnClass, RootSummaryModes, true);
+    } = makeSummaryButtons(this.doc, PDGRootTimelineId, DefaultToolbarBtnClass, RootSummaryModes, true);
     btns.appendChild(summaryRootButtonDom);
     this.summaryRootButtons = summaryRootButtons;
 
@@ -85,7 +85,7 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   /**
-   * @type {DDGDocument}
+   * @type {PDGDocument}
    */
   get doc() {
     return this.context.doc;

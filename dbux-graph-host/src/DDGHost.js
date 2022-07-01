@@ -1,9 +1,9 @@
-import DDGDocument from './ddg/DDGDocument';
-import DDGComponents from './ddg/_hostRegistry';
+import PDGDocument from './pdg/PDGDocument';
+import PDGComponents from './pdg/_hostRegistry';
 import HostWrapper from './HostWrapper';
 
-export default class DDGHost extends HostWrapper {
+export default class PDGHost extends HostWrapper {
   constructor() {
-    super('Progam Dependency Graph', DDGComponents, DDGDocument);
+    super('Progam Dependency Graph', PDGComponents, PDGDocument);
   }
 }

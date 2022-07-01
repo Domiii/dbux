@@ -1,13 +1,13 @@
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
-/** @typedef { import("./DDGDocument").default } DDGDocument */
+/** @typedef { import("./PDGDocument").default } PDGDocument */
 
 class Toolbar extends HostComponentEndpoint {
   init() {
   }
 
   /**
-   * @type {DDGDocument}
+   * @type {PDGDocument}
    */
   get doc() {
     return this.parent;

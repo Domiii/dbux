@@ -1,4 +1,4 @@
-import DDGTimelineNodeType from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import PDGTimelineNodeType from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 import SyntaxType from '@dbux/common/src/types/constants/SyntaxType';
 import last from 'lodash/last';
 import { 
@@ -10,7 +10,7 @@ import {
   ForOfTimelineNode,
   WhileTimelineNode,
   DoWhileTimelineNode
-} from './DDGTimelineNodes';
+} from './PDGTimelineNodes';
 
 /** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
@@ -20,15 +20,15 @@ import {
  * ##########################################################################*/
 
 export const syntaxToNodeType = {
-  [SyntaxType.If]: DDGTimelineNodeType.If,
-  [SyntaxType.Switch]: DDGTimelineNodeType.Switch,
-  [SyntaxType.Ternary]: DDGTimelineNodeType.Ternary,
+  [SyntaxType.If]: PDGTimelineNodeType.If,
+  [SyntaxType.Switch]: PDGTimelineNodeType.Switch,
+  [SyntaxType.Ternary]: PDGTimelineNodeType.Ternary,
 
-  [SyntaxType.For]: DDGTimelineNodeType.For,
-  [SyntaxType.ForIn]: DDGTimelineNodeType.ForIn,
-  [SyntaxType.ForOf]: DDGTimelineNodeType.ForOf,
-  [SyntaxType.While]: DDGTimelineNodeType.While,
-  [SyntaxType.DoWhile]: DDGTimelineNodeType.DoWhile
+  [SyntaxType.For]: PDGTimelineNodeType.For,
+  [SyntaxType.ForIn]: PDGTimelineNodeType.ForIn,
+  [SyntaxType.ForOf]: PDGTimelineNodeType.ForOf,
+  [SyntaxType.While]: PDGTimelineNodeType.While,
+  [SyntaxType.DoWhile]: PDGTimelineNodeType.DoWhile
 };
 
 export const branchSyntaxNodeCreators = {
@@ -48,13 +48,13 @@ export const branchSyntaxNodeCreators = {
 
 export const controlGroupLabelMaker = {
   /**
-   * @param {DataDependencyGraph} ddg
+   * @param {DataDependencyGraph} pdg
    * @param {IfTimelineNode} ifNode 
    */
-  [DDGTimelineNodeType.If](ddg, ifNode) {
+  [PDGTimelineNodeType.If](pdg, ifNode) {
     const {
       dp
-    } = ddg;
+    } = pdg;
 
     // compute label based on decision sequence
     const lastDecisionId = last(ifNode.decisions);
@@ -65,7 +65,7 @@ export const controlGroupLabelMaker = {
       label = 'if';
     }
     else {
-      const decisionNode = ddg.decisionTimelineNodes[lastDecisionId];
+      const decisionNode = pdg.decisionTimelineNodes[lastDecisionId];
       const isLastDecisionTruthy = dp.util.isDataNodeValueTruthy(decisionNode.dataNodeId);
       if (isLastDecisionTruthy) {
         if (ifNode.decisions.length === 1) {
@@ -83,11 +83,11 @@ export const controlGroupLabelMaker = {
   },
 
   /**
-   * @param {DataDependencyGraph} ddg
+   * @param {DataDependencyGraph} pdg
    * @param {ForTimelineNode} forNode
    */
-  [DDGTimelineNodeType.For](ddg, branchNode) {
-    // const { dp } = ddg;
+  [PDGTimelineNodeType.For](pdg, branchNode) {
+    // const { dp } = pdg;
 
     return `for`;
   }

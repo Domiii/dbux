@@ -14,10 +14,10 @@ function fixFetch(fixUrl) {
 }
 
 
-export default class DDGDocument extends ClientComponentEndpoint {
+export default class PDGDocument extends ClientComponentEndpoint {
   createEl() {
     const el = document.getElementById('root');
-    el.innerHTML = /*html*/`<div class="root-cont" data-mount="Toolbar,DDGTimelineView">
+    el.innerHTML = /*html*/`<div class="root-cont" data-mount="Toolbar,PDGTimelineView">
     </div>`;
     return el;
   }
@@ -35,7 +35,7 @@ export default class DDGDocument extends ClientComponentEndpoint {
   }
 
   get timeline() {
-    return this.children.getComponent('DDGTimelineView');
+    return this.children.getComponent('PDGTimelineView');
   }
 
   get toolbar() {

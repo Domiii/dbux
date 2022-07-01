@@ -27,18 +27,18 @@ export default function pdg() {
         chapterGroup,
         chapter,
         exercise: exerciseId,
-        ddgTitle
+        pdgTitle
       } = linkData;
       const rawData = await import(`../../../data/gallery/pdg/${chapterGroup}/${chapter}/${exerciseId}/pdgData.json`);
-      const selected = rawData.default.find(d => d.ddgTitle === ddgTitle);
+      const selected = rawData.default.find(d => d.pdgTitle === pdgTitle);
 
-      document.title = 'Dbux-PDG: ' + linkData.ddgTitle;
+      document.title = 'Dbux-PDG: ' + linkData.pdgTitle;
       
       setSampleData({
         chapterGroup: chapterGroup,
         chapter: chapter,
         exerciseId,
-        ddgTitle,
+        pdgTitle,
         renderData: selected,
       });
     })();
@@ -53,7 +53,7 @@ export default function pdg() {
   }
 
   if (!sampleData.renderData) {
-    return <span className="danger">404 - invalid link - could not find PDG of title "{linkData.ddgTitle}"</span>;
+    return <span className="danger">404 - invalid link - could not find PDG of title "{linkData.pdgTitle}"</span>;
   }
 
   // console.log('renderData', sampleData);

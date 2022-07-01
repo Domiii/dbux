@@ -7,7 +7,7 @@ import React, { useEffect, useRef } from 'react';
 // import * as d3Graphviz from 'd3-graphviz';
 
 /**
- * NOTE: Copied from @dbux/graph-client/src/ddg/DDGTimelineView.js
+ * NOTE: Copied from @dbux/graph-client/src/pdg/PDGTimelineView.js
  * @see https://github.com/magjac/d3-graphviz#supported-options
  */
 const GraphVizCfg = {

@@ -95,7 +95,7 @@ const contextVisitor = {
 //     addBinding(path, binding);
 //     // binding.reference(ref);
 //     // } else {
-//     //   programParent.addGlobal(ref.node);
+//     //   programParent.add Global(ref.node);
 //     // }
 //   }
 //   // Function,

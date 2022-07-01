@@ -5,12 +5,12 @@ import {
 import fs from 'fs';
 import { dirname } from 'path';
 import open from 'open';
-import DDGHost from '@dbux/graph-host/src/DDGHost';
-import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
+import PDGHost from '@dbux/graph-host/src/PDGHost';
+import DataDependencyGraph from '@dbux/data/src/pdg/DataDependencyGraph';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
-import { setTestDDGArgs } from '../testUtil';
+import { setTestPDGArgs } from '../testUtil';
 import { confirm, showInformationMessage, showSaveDialog, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import RichWebView from './RichWebView';
@@ -21,15 +21,15 @@ const defaultColumn = ViewColumn.Two;
 
 export default class DataDependencyGraphWebView extends RichWebView {
   /**
-   * @param {DataDependencyGraph} ddg 
+   * @param {DataDependencyGraph} pdg 
    */
-  constructor(ddg, mainComponentInitialState, mainComponentHostOnlyState, handleStarted) {
-    super(DDGHost, 'dbux-data-graph', defaultColumn, mainComponentInitialState, mainComponentHostOnlyState);
+  constructor(pdg, mainComponentInitialState, mainComponentHostOnlyState, handleStarted) {
+    super(PDGHost, 'dbux-data-graph', defaultColumn, mainComponentInitialState, mainComponentHostOnlyState);
     /**
      * hackfix: add a promise-based wait method instead
      */
     this.hostWrapper.handleStarted = handleStarted;
-    this.ddg = ddg;
+    this.pdg = pdg;
   }
 
   getIcon() {
@@ -37,7 +37,7 @@ export default class DataDependencyGraphWebView extends RichWebView {
   }
 
   getMainScriptPath() {
-    return 'dist/web/ddg.client.js';
+    return 'dist/web/pdg.client.js';
   }
 
   // /** ###########################################################################
@@ -45,14 +45,14 @@ export default class DataDependencyGraphWebView extends RichWebView {
   //  *  #########################################################################*/
 
   // /**
-  //  * Provide custom inital state to MainComponent (`DDGDocument`)
+  //  * Provide custom inital state to MainComponent (`PDGDocument`)
   //  */
   // makeInitialState() {
 
   // }
 
   /** ###########################################################################
-   * ddg-specific externals
+   * pdg-specific externals
    *  #########################################################################*/
 
   externals = {
@@ -101,20 +101,20 @@ export default class DataDependencyGraphWebView extends RichWebView {
 let activeWebviews = new Map();
 
 /**
- * @return {DataDependencyGraphWebView} ddg 
+ * @return {DataDependencyGraphWebView} pdg 
  */
-export function getDDGWebview(ddg) {
-  return activeWebviews.get(ddg);
+export function getPDGWebview(pdg) {
+  return activeWebviews.get(pdg);
 }
 
-export async function getDDGDot(ddg) {
-  if (!ddg && activeWebviews.size === 1) {
-    ddg = activeWebviews.keys().next().value;
+export async function getPDGDot(pdg) {
+  if (!pdg && activeWebviews.size === 1) {
+    pdg = activeWebviews.keys().next().value;
   }
-  const webview = getDDGWebview(ddg);
+  const webview = getPDGWebview(pdg);
   if (webview) {
     const doc = webview.hostWrapper.mainComponent;
-    const timelineView = doc.children.getComponent('DDGTimelineView');
+    const timelineView = doc.children.getComponent('PDGTimelineView');
     await timelineView.waitForAll();
     return await timelineView.remote.buildDot();
   }
@@ -125,25 +125,25 @@ export async function getDDGDot(ddg) {
  * show + init
  * ##########################################################################*/
 
-export async function showDDGViewForContextOfSelectedTrace() {
+export async function showPDGViewForContextOfSelectedTrace() {
   let initialState;
   let hostOnlyState;
   let trace = traceSelection.selected;
   if (trace) {
     const { applicationId, contextId } = trace;
     // const context = dp.collections.executionContexts.getById(contextId);
-    const ddgArgs = { applicationId, contextId };
-    return await showDDGViewForArgs(ddgArgs);
+    const pdgArgs = { applicationId, contextId };
+    return await showPDGViewForArgs(pdgArgs);
   }
   else {
-    const failureReason = 'DDG is empty';
+    const failureReason = 'PDG is empty';
     initialState = makeFailureState(failureReason);
-    return await showDDGView(initialState, hostOnlyState);
+    return await showPDGView(initialState, hostOnlyState);
   }
 }
 
-export async function showDDGViewForArgs(ddgArgs) {
-  let { applicationUuid, applicationId } = ddgArgs;
+export async function showPDGViewForArgs(pdgArgs) {
+  let { applicationUuid, applicationId } = pdgArgs;
   if (!applicationUuid) {
     if (!applicationId) {
       throw new Error(`no application given`);
@@ -155,8 +155,8 @@ export async function showDDGViewForArgs(ddgArgs) {
     throw new Error(`applicationId not found`);
   }
   const dp = app.dataProvider;
-  let failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
-  const warning = dp.ddgs.getWarning(ddgArgs);
+  let failureReason = dp.pdgs.getCreatePDGFailureReason(pdgArgs);
+  const warning = dp.pdgs.getWarning(pdgArgs);
 
   // // TODO
   // failureReason ||= warning;
@@ -167,33 +167,33 @@ export async function showDDGViewForArgs(ddgArgs) {
 
   let initialState;
   let hostOnlyState;
-  let ddg;
+  let pdg;
   if (failureReason) {
     initialState = makeFailureState(failureReason);
     hostOnlyState = {};
   }
   else {
-    ddg = dp.ddgs.getOrCreateDDG(ddgArgs);
-    initialState = makeGraphState(ddg);
-    hostOnlyState = { ddg };
+    pdg = dp.pdgs.getOrCreatePDG(pdgArgs);
+    initialState = makeGraphState(pdg);
+    hostOnlyState = { pdg };
   }
 
   // this worked! Hooray! → update memento (and hope that app is already exported)
   const testFilePath = app.getDefaultApplicationExportPath();
-  testFilePath && await setTestDDGArgs({ testFilePath, ...ddgArgs, applicationUuid });
+  testFilePath && await setTestPDGArgs({ testFilePath, ...pdgArgs, applicationUuid });
 
-  return await showDDGView(ddg, initialState, hostOnlyState);
+  return await showPDGView(pdg, initialState, hostOnlyState);
 }
 
 /**
- * @param {DataDependencyGraph} ddg 
+ * @param {DataDependencyGraph} pdg 
  */
-function makeGraphState(ddg) {
+function makeGraphState(pdg) {
   // reset status message
   const failureReason = null;
-  const { applicationId } = ddg.dp.application;
+  const { applicationId } = pdg.dp.application;
 
-  return { failureReason, applicationId, ...ddg.getRenderData() };
+  return { failureReason, applicationId, ...pdg.getRenderData() };
 }
 
 function makeFailureState(failureReason) {
@@ -201,30 +201,30 @@ function makeFailureState(failureReason) {
 }
 
 /**
- * @param {DataDependencyGraph} ddg 
+ * @param {DataDependencyGraph} pdg 
  */
-async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
-  // TODO: we currently don't close window if DDG is gone from set, but this way, it will be out of sync with DDGs treeview
+async function showPDGView(pdg, pdgDocumentInitialState, hostOnlyState) {
+  // TODO: we currently don't close window if PDG is gone from set, but this way, it will be out of sync with PDGs treeview
 
   // future-work: select correct window, based on initial state
   let handleWebviewStarted = null;
   const viewStartedPromise = new Promise((resolve) => handleWebviewStarted = resolve);
-  const dDGWebView = new DataDependencyGraphWebView(ddg, ddgDocumentInitialState, hostOnlyState, handleWebviewStarted);
-  await dDGWebView.init();
-  await dDGWebView.show();
+  const pDGWebView = new DataDependencyGraphWebView(pdg, pdgDocumentInitialState, hostOnlyState, handleWebviewStarted);
+  await pDGWebView.init();
+  await pDGWebView.show();
   // pathways-todo: add new action type
   // emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
-  activeWebviews.set(ddg, dDGWebView);
-  dDGWebView.onDispose(() => {
-    ddg.ddgSet.remove(ddg);
+  activeWebviews.set(pdg, pDGWebView);
+  pDGWebView.onDispose(() => {
+    pdg.pdgSet.remove(pdg);
   });
-  // ddg.ddgSet.onSetChanged(() => {
-  //   if (!ddg.ddgSet.contains(ddg)) {
-  //     // ddg got removed → clean up?
+  // pdg.pdgSet.onSetChanged(() => {
+  //   if (!pdg.pdgSet.contains(pdg)) {
+  //     // pdg got removed → clean up?
   //   }
   // });
   await viewStartedPromise;
-  return dDGWebView;
+  return pDGWebView;
 }
 
 /** ###########################################################################
@@ -232,12 +232,12 @@ async function showDDGView(ddg, ddgDocumentInitialState, hostOnlyState) {
  * future-work: make this non-global?
  * ##########################################################################*/
 
-export function getActiveDDGWebview() {
+export function getActivePDGWebview() {
   return Array.from(activeWebviews.values()).find(w => w.isVisible);
 }
 
 
-export function disposeDDGWebviews() {
+export function disposePDGWebviews() {
   Array.from(activeWebviews.values()).forEach(w => w.dispose());
   activeWebviews = new Map();
 }

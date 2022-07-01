@@ -1,7 +1,7 @@
-/** @typedef { import("./DDGTimelineNodes").RefSnapshotTimelineNode } RefSnapshotTimelineNode */
+/** @typedef { import("./PDGTimelineNodes").RefSnapshotTimelineNode } RefSnapshotTimelineNode */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
-export default class DDGNodeSummary {
+export default class PDGNodeSummary {
   timelineId;
 
   /**

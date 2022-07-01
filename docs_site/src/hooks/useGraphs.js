@@ -12,10 +12,10 @@ class Graphs {
     for (const chapterGroup of graphsData.chapterGroups) {
       for (const chapter of chapterGroup.chapters) {
         for (const exercise of chapter.exercises) {
-          if (!Array.isArray(exercise.ddgs)) {
+          if (!Array.isArray(exercise.pdgs)) {
             continue;
           }
-          for (const rawRenderData of exercise.ddgs) {
+          for (const rawRenderData of exercise.pdgs) {
             const { uniqueId, ...otherProps } = rawRenderData;
             const id = this.makePdgId(rawRenderData);
             rawRenderData.id = id;
@@ -37,7 +37,7 @@ class Graphs {
   makePdgId(renderData) {
     // TODO: make this unambiguous between multiple PDGs of same title
     // TODO: don't ENCODE ids, unless you are building a URL!
-    return encodeURIComponent(`${renderData.ddgTitle}`);
+    return encodeURIComponent(`${renderData.pdgTitle}`);
   }
 
   getById(pdgId) {

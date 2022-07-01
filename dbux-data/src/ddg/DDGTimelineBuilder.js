@@ -5,11 +5,11 @@ import { isTraceControlRolePush } from '@dbux/common/src/types/constants/TraceCo
 import DataNodeType, { isDataNodeDelete, isDataNodeModifyType, isDataNodeRead, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
 import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import PDGTimelineNodeType, { isDataTimelineNode, isLoopIterationTimelineNode, isLoopTimelineNode, isSnapshotTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode, RepeatedRefTimelineNode, HofTimelineNode } from './DDGTimelineNodes';
+import { PDGTimelineNode, ContextTimelineNode, ValueTimelineNode, DataTimelineNode, TimelineRoot, RefSnapshotTimelineNode, GroupTimelineNode, BranchTimelineNode, IfTimelineNode, DecisionTimelineNode, IterationNode, RepeatedRefTimelineNode, HofTimelineNode } from './PDGTimelineNodes';
 import { makeContextLabel, makeTraceLabel } from '../helpers/makeLabels';
-import DDGEdgeType from './DDGEdgeType';
+import PDGEdgeType from './PDGEdgeType';
 import { controlGroupLabelMaker, branchSyntaxNodeCreators } from './timelineControlUtil';
 import PDGSnapshotConfig from './PDGSnapshotConfig';
 
@@ -23,10 +23,10 @@ import PDGSnapshotConfig from './PDGSnapshotConfig';
 const Verbose = 0;
 
 /** ###########################################################################
- * {@link DDGTimelineBuilder}
+ * {@link PDGTimelineBuilder}
  *  #########################################################################*/
 
-export default class DDGTimelineBuilder {
+export default class PDGTimelineBuilder {
   /** ########################################
    * build-time datastructures
    *  ######################################*/
@@ -55,13 +55,13 @@ export default class DDGTimelineBuilder {
    *  ######################################*/
 
   /**
-   * @param {import('./BaseDDG').default} ddg
+   * @param {import('./BasePDG').default} pdg
    */
-  constructor(ddg) {
-    this.ddg = ddg;
+  constructor(pdg) {
+    this.pdg = pdg;
 
     const timelineRoot = new TimelineRoot();
-    this.ddg.addNode(timelineRoot);
+    this.pdg.addNode(timelineRoot);
     this.stack = [timelineRoot];
   }
 
@@ -70,11 +70,11 @@ export default class DDGTimelineBuilder {
    *  #########################################################################*/
 
   get dp() {
-    return this.ddg.dp;
+    return this.pdg.dp;
   }
 
   get logger() {
-    return this.ddg.logger;
+    return this.pdg.logger;
   }
 
   peekStack() {
@@ -94,7 +94,7 @@ export default class DDGTimelineBuilder {
     let inputNode = this.skippedNodesByDataNodeId[dataNodeId];
     if (!inputNode) {
       // 2. DataNode was not skipped → get its DataTimelineNode
-      inputNode = this.ddg.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
+      inputNode = this.pdg.getFirstDataTimelineNodeByDataNodeId(dataNodeId);
     }
     return inputNode;
   }
@@ -108,7 +108,7 @@ export default class DDGTimelineBuilder {
    */
   #getCurrentGroupIterationCount() {
     const group = this.peekStack();
-    return group.children.filter(c => this.ddg.timelineNodes[c] instanceof IterationNode).length;
+    return group.children.filter(c => this.pdg.timelineNodes[c] instanceof IterationNode).length;
   }
 
   /**
@@ -124,13 +124,13 @@ export default class DDGTimelineBuilder {
     const currentGroup = this.peekStack();
     const staticTrace = dp.collections.staticTraces.getById(trace.staticTraceId);
 
-    const label = this.ddg.makeDataNodeLabel(dataNode);
+    const label = this.pdg.makeDataNodeLabel(dataNode);
     const decisionNode = new DecisionTimelineNode(dataNode.nodeId, label);
     // hackfix: need to fix decisions
     //    NOTE: we don't add them, so they don't affect other data flow
-    decisionNode.timelineId = this.ddg.decisionTimelineNodes.length;
-    this.ddg.decisionTimelineNodes[decisionNode.timelineId] = decisionNode;
-    // this.ddg.addDataNode(decisionNode);
+    decisionNode.timelineId = this.pdg.decisionTimelineNodes.length;
+    this.pdg.decisionTimelineNodes[decisionNode.timelineId] = decisionNode;
+    // this.pdg.addDataNode(decisionNode);
 
     if (isLoopIterationTimelineNode(currentGroup.type)) {
       // continued iteration of loop
@@ -203,14 +203,14 @@ export default class DDGTimelineBuilder {
       const refDataNode = this.dp.util.getDataNodeAccessedObjectNode(dataNode.nodeId);
 
       const snapshotCfg = new PDGSnapshotConfig();
-      newNode = this.ddg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotCfg, null, partialChildren);
+      newNode = this.pdg.addNewRefSnapshot(refDataNode, refDataNode.refId, snapshotCfg, null, partialChildren);
     }
     else if (this.#shouldBuildRootSnapshot(dataNode)) {
       const snapshotCfg = new PDGSnapshotConfig();
-      newNode = this.ddg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotCfg, null);
+      newNode = this.pdg.addNewRefSnapshot(dataNode, dataNode.refId, snapshotCfg, null);
     }
     else if (isDataNodeDelete(dataNode.type)) {
-      newNode = this.ddg.addDeleteEntryNode(dataNode);
+      newNode = this.pdg.addDeleteEntryNode(dataNode);
     }
     else {
       // this is not a watched ref
@@ -219,7 +219,7 @@ export default class DDGTimelineBuilder {
       //   // eslint-disable-next-line max-len
       //   this.logger.trace(`NYI: trace has multiple dataNodes but is not ref type (→ rendering first node as primitive) - at trace="${dp.util.makeTraceInfo(ownDataNode.traceId)}"`);
       // }
-      newNode = this.ddg.addValueDataNode(dataNode);
+      newNode = this.pdg.addValueDataNode(dataNode);
     }
 
     // add to parent
@@ -229,7 +229,7 @@ export default class DDGTimelineBuilder {
   }
 
   /**
-   * @param {DDGTimelineNode} newNode 
+   * @param {PDGTimelineNode} newNode 
    */
   #addNodeToGroup(newNode) {
     const group = this.peekStack();
@@ -244,7 +244,7 @@ export default class DDGTimelineBuilder {
 
 
   /** ###########################################################################
-   * {@link DDGTimelineBuilder#updateStack}
+   * {@link PDGTimelineBuilder#updateStack}
    * ##########################################################################*/
 
   /**
@@ -260,7 +260,7 @@ export default class DDGTimelineBuilder {
     const currentGroup = this.peekStack();
     if (currentGroup.controlStatementId !== staticTrace.controlId) {
       // sanity check
-      const groupTag = `[${DDGTimelineNodeType.nameFrom(currentGroup.type)}]`;
+      const groupTag = `[${PDGTimelineNodeType.nameFrom(currentGroup.type)}]`;
       const groupControlInfo = `${currentGroup.controlStatementId && dp.util.makeStaticTraceInfo(currentGroup.controlStatementId)}`;
       this.logger.trace(`Invalid Control Group.\n  ` +
         `${trace && `At trace: ${dp.util.makeTraceInfo(trace)}` || ''}\n  ` +
@@ -274,13 +274,13 @@ export default class DDGTimelineBuilder {
   }
 
   #makeGroupDebugTag(group) {
-    return DDGTimelineNodeType.nameFrom(group.type);
+    return PDGTimelineNodeType.nameFrom(group.type);
   }
 
   #makeRecursiveGroupLabel(group, prev) {
     const ownLabel =
-      controlGroupLabelMaker[group.type]?.(this.ddg, group) ||
-      DDGTimelineNodeType.nameFrom(group.type).toLowerCase();
+      controlGroupLabelMaker[group.type]?.(this.pdg, group) ||
+      PDGTimelineNodeType.nameFrom(group.type).toLowerCase();
     const prevLabel = prev?.label;
     return (prevLabel ? `${prevLabel}#` : '') + ownLabel;
   }
@@ -289,7 +289,7 @@ export default class DDGTimelineBuilder {
    * Keep track of the stack.
    */
   updateStack(traceId) {
-    const { ddg, dp } = this;
+    const { pdg, dp } = this;
     const trace = dp.util.getTrace(traceId);
     const staticTrace = dp.util.getStaticTrace(traceId);
     if (TraceType.is.PushImmediate(staticTrace.type)) {
@@ -323,7 +323,7 @@ export default class DDGTimelineBuilder {
     }
     else if (
       // pop 1: hof
-      (DDGTimelineNodeType.is.Hof(this.peekStack()?.type) && dp.util.isTraceHofBCE(trace.resultCallId)) ||
+      (PDGTimelineNodeType.is.Hof(this.peekStack()?.type) && dp.util.isTraceHofBCE(trace.resultCallId)) ||
       // pop 2: any other pop
       dp.util.isTraceControlGroupPop(traceId)
     ) {
@@ -337,7 +337,7 @@ export default class DDGTimelineBuilder {
           return;
         }
       }
-      else if (DDGTimelineNodeType.is.Hof(currentGroup.type)) {
+      else if (PDGTimelineNodeType.is.Hof(currentGroup.type)) {
         // don't update label
       }
       else {
@@ -355,7 +355,7 @@ export default class DDGTimelineBuilder {
   }
 
   /** ###########################################################################
-   * {@link DDGTimelineBuilder#addTraceToTimeline}
+   * {@link PDGTimelineBuilder#addTraceToTimeline}
    * ##########################################################################*/
 
 
@@ -398,12 +398,12 @@ export default class DDGTimelineBuilder {
   }
 
   /**
-   * NOTE: a trace might induce multiple {@link DDGTimelineNode} in these circumstances:
+   * NOTE: a trace might induce multiple {@link PDGTimelineNode} in these circumstances:
    *   1. if a DataNode reads or writes an object prop, we add the complete snapshot with all its children
    *   2. a Decision node that is also a Write Node (e.g. `if (x = f())`)
    */
   addTraceToTimeline(traceId) {
-    const { dp/* , ddg: { bounds } */ } = this;
+    const { dp/* , pdg: { bounds } */ } = this;
     const trace = dp.util.getTrace(traceId);
     // const dataNodesOfTrace = dp.util.getDataNodesOfTrace(traceId);
     const dataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
@@ -444,7 +444,7 @@ export default class DDGTimelineBuilder {
     else {
       // → this edge has already been registered, meaning there are multiple connections between exactly these two nodes
     }
-    const edgeType = this.ddg.getEdgeTypeOfDataNode(fromNode.dataNodeId, toDataNodeId);
+    const edgeType = this.pdg.getEdgeTypeOfDataNode(fromNode.dataNodeId, toDataNodeId);
     edgeProps.nByType[edgeType] = (edgeProps.nByType[edgeType] || 0) + 1;
   }
 
@@ -454,7 +454,7 @@ export default class DDGTimelineBuilder {
   }
 
   #addDataNodeToTimeline(dataNode, trace) {
-    const { dp, ddg } = this;
+    const { dp, pdg } = this;
 
     if (!dataNode) {
       // this.logger.logTrace(`NYI: trace did not have own DataNode: "${dp.util.makeTraceInfo(traceId)}"`);
@@ -464,8 +464,8 @@ export default class DDGTimelineBuilder {
 
     // check for potential duplicates
     if (
-      ddg.doesDataNodeHaveTimelineNode(dataNode.nodeId) &&
-      !ddg.shouldDuplicateNode(dataNode.nodeId)
+      pdg.doesDataNodeHaveTimelineNode(dataNode.nodeId) &&
+      !pdg.shouldDuplicateNode(dataNode.nodeId)
     ) {
       return null;
     }
@@ -507,7 +507,7 @@ export default class DDGTimelineBuilder {
         if (group.watched) {
           break; // we are already done
         }
-        this.ddg.watchSet.setWatchedGroup(group);
+        this.pdg.watchSet.setWatchedGroup(group);
       }
     }
 
@@ -538,11 +538,11 @@ export default class DDGTimelineBuilder {
 
   /**
    * @param {DataNode} dataNode 
-   * @param {DDGTimelineNode} newNode The node we are gathering for (if it already exists).
+   * @param {PDGTimelineNode} newNode The node we are gathering for (if it already exists).
    * @param {EdgeInfos} edgeInfos 
    */
   #gatherDataNodeEdges(dataNode, newNode, edgeInfos = new Map()) {
-    const prev = this.ddg.getLastDataTimelineNodeByDataNodeId(dataNode.nodeId, newNode);
+    const prev = this.pdg.getLastDataTimelineNodeByDataNodeId(dataNode.nodeId, newNode);
     if (prev && isDataNodeModifyType(this.dp.util.getDataNodeType(prev.dataNodeId))) {
       // node was already added, and it was a modification → connect to that
       this.#gatherNodeEdge(dataNode.nodeId, prev, edgeInfos);
@@ -570,12 +570,12 @@ export default class DDGTimelineBuilder {
   }
 
   /**
-   * @param {DDGTimelineNode} dataNode 
+   * @param {PDGTimelineNode} dataNode 
    * @param {EdgeInfos} edgeInfos 
    */
   #addEdgeSet(toNode, edgeInfos) {
     for (const [inputNode, edgeProps] of edgeInfos) {
-      this.ddg.addEdge(DDGEdgeType.Data, inputNode.timelineId, toNode.timelineId, edgeProps);
+      this.pdg.addEdge(PDGEdgeType.Data, inputNode.timelineId, toNode.timelineId, edgeProps);
     }
   }
 
@@ -588,7 +588,7 @@ export default class DDGTimelineBuilder {
    */
   #addAndPushGroup(newGroup, pushTid) {
     newGroup.pushTid = pushTid;
-    this.ddg.addNode(newGroup);
+    this.pdg.addNode(newGroup);
     this.#addNodeToGroup(newGroup);
 
     Verbose > 1 && this.debug(`PUSH ${this.#makeGroupDebugTag(newGroup)}`);
@@ -630,7 +630,7 @@ export default class DDGTimelineBuilder {
       // don't create partial snapshots for watched nodes.
       //    (→ since this would lead to duplicated nodes)
       //    → create full/deep snapshots instead
-      !this.ddg.watchSet.isWatchedDataNode(dataNode.nodeId)
+      !this.pdg.watchSet.isWatchedDataNode(dataNode.nodeId)
     );
   }
 
@@ -639,7 +639,7 @@ export default class DDGTimelineBuilder {
    * @param {DataNode} dataNode 
    */
   #shouldBuildRootSnapshot(dataNode) {
-    return this.ddg.shouldBuildDeepSnapshotRoot(dataNode);
+    return this.pdg.shouldBuildDeepSnapshotRoot(dataNode);
   }
 
   /** ###########################################################################
@@ -651,7 +651,7 @@ export default class DDGTimelineBuilder {
   }
 
   shouldIgnoreDataNode(dataNodeId) {
-    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+    if (this.pdg.watchSet.isWatchedDataNode(dataNodeId)) {
       return false;
     }
     const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
@@ -682,7 +682,7 @@ export default class DDGTimelineBuilder {
     // future-work: proper, dedicated Compute merge logic (maybe in summarizer tho)
     const dataNode = dp.util.getDataNode(dataNodeId);
 
-    if (this.ddg.watchSet.isWatchedDataNode(dataNodeId)) {
+    if (this.pdg.watchSet.isWatchedDataNode(dataNodeId)) {
       // [watch-skip heuristic]
       // [evil] this heuristic is a constant pain point
       //   → problem w/ `return [a, b]` etc:
@@ -737,7 +737,7 @@ export default class DDGTimelineBuilder {
     if (this.#canSkipOrIgnore(dataNode)) {
       if (this.shouldIgnoreDataNode(dataNode.nodeId)) {
         // ignore entirely
-        Verbose > 1 && this.logger.debug(`IGNORE`, this.ddg.makeDataNodeLabel(dataNode));
+        Verbose > 1 && this.logger.debug(`IGNORE`, this.pdg.makeDataNodeLabel(dataNode));
         return false;
       }
       const skippedBy = this.getSkippedByNode(dataNode);
@@ -755,10 +755,10 @@ export default class DDGTimelineBuilder {
 
   /**
    * Check if given `dataNode` should be skipped.
-   * If so, find and return the last {@link DDGTimelineNode} of same `inputDataNode`'s `accessId`.
+   * If so, find and return the last {@link PDGTimelineNode} of same `inputDataNode`'s `accessId`.
    * 
    * @param {DataNode} dataNode
-   * @return {DDGTimelineNode}
+   * @return {PDGTimelineNode}
    */
   getSkippedByNode(dataNode) {
     if (!this.shouldSkipDataNode(dataNode.nodeId)) {
@@ -783,8 +783,8 @@ export default class DDGTimelineBuilder {
         prev = this.getLastTimelineNodeByAccessId(dataNode.accessId);
       }
     }
-    if (prev && this.ddg.VerboseAccess) {
-      this.ddg.logger.debug(`Skip: n${dataNode.nodeId} by ${prev.timelineId} (n${prev.dataNodeId}), accessId=${dataNode.accessId}`);
+    if (prev && this.pdg.VerboseAccess) {
+      this.pdg.logger.debug(`Skip: n${dataNode.nodeId} by ${prev.timelineId} (n${prev.dataNodeId}), accessId=${dataNode.accessId}`);
     }
     // if (!prev) {
     //   this.logger.trace(`[skipInputDataNode] could not lookup input for (declaration?) DataNode at trace="${this.dp.util.getTraceOfDataNode(dataNode.nodeId)}"`);

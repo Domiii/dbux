@@ -3,12 +3,12 @@ import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
-/** @typedef { import("@dbux/data/src/ddg/DataDependencyGraph").default } DataDependencyGraph */
-/** @typedef { import("./DDGDocument").default } DDGDocument */
+/** @typedef { import("@dbux/data/src/pdg/DataDependencyGraph").default } DataDependencyGraph */
+/** @typedef { import("./PDGDocument").default } PDGDocument */
 
-export default class DDGTimelineView extends HostComponentEndpoint {
+export default class PDGTimelineView extends HostComponentEndpoint {
   /**
-   * @type {DDGDocument}
+   * @type {PDGDocument}
    */
   get doc() {
     return this.context.doc;
@@ -17,8 +17,8 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   /**
    * @type {DataDependencyGraph}
    */
-  get ddg() {
-    return this.context.doc.ddg;
+  get pdg() {
+    return this.context.doc.pdg;
   }
 
   get renderState() {
@@ -30,7 +30,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   }
 
   init() {
-    this.ddg && this.addDisposable(this.ddg.onUpdate(this.#handleGraphUpdate));
+    this.pdg && this.addDisposable(this.pdg.onUpdate(this.#handleGraphUpdate));
   }
 
   update() {
@@ -43,30 +43,30 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   //     const { applicationId, contextId } = trace;
   //     const dp = allApplications.getById(applicationId).dataProvider;
   //     // const context = dp.collections.executionContexts.getById(contextId);
-  //     const ddgArgs = { applicationId, contextId };
-  //     const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
+  //     const pdgArgs = { applicationId, contextId };
+  //     const failureReason = dp.pdgs.getCreatePDGFailureReason(pdgArgs);
   //     if (failureReason) {
   //       this.setFailure(failureReason);
   //     }
   //     else {
-  //       const ddg = dp.ddgs.getOrCreateDDGForContext(ddgArgs);
-  //       this.setGraph(ddg);
+  //       const pdg = dp.pdgs.getOrCreatePDGForContext(pdgArgs);
+  //       this.setGraph(pdg);
   //     }
   //   }
   //   else {
-  //     const failureReason = 'DDG is empty';
+  //     const failureReason = 'PDG is empty';
   //     this.setFailure(failureReason);
   //   }
   // }
 
-  // setGraph(ddg) {
-  //   this.ddg = ddg;
+  // setGraph(pdg) {
+  //   this.pdg = pdg;
 
   //   // reset status message
   //   const failureReason = null;
-  //   const { applicationId } = ddg.dp.application;
+  //   const { applicationId } = pdg.dp.application;
 
-  //   this.setState({ failureReason, applicationId, ...ddg.getRenderData() });
+  //   this.setState({ failureReason, applicationId, ...pdg.getRenderData() });
   // }
 
   // setFailure(failureReason) {
@@ -83,9 +83,9 @@ export default class DDGTimelineView extends HostComponentEndpoint {
   }
 
 
-  #handleGraphUpdate = async (ddg) => {
+  #handleGraphUpdate = async (pdg) => {
     // send update to remote
-    this.doc.setState(ddg.getRenderData());
+    this.doc.setState(pdg.getRenderData());
   }
 
   /** ###########################################################################
@@ -94,20 +94,20 @@ export default class DDGTimelineView extends HostComponentEndpoint {
 
   _public = {
     /**
-     * HACKFIX: we do this, so we can resolve `ddg` in here.
+     * HACKFIX: we do this, so we can resolve `pdg` in here.
      *    → That is necessary b/c VSCode won't resolve the nesting class's prop.
      * @type {DataDependencyGraph}
      */
-    get ddg() { return null; },
+    get pdg() { return null; },
 
     selectNode(timelineId) {
       const { timelineNodes } = this.renderState;
       const node = timelineNodes[timelineId];
       if (node.dataNodeId) {
         let traceId;
-        const { dp } = this.ddg;
+        const { dp } = this.pdg;
         if (node.isPartial) {
-          traceId = this.ddg.getPartialSnapshotTraceId(node);
+          traceId = this.pdg.getPartialSnapshotTraceId(node);
         }
         else {
           const dataNode = dp.collections.dataNodes.getById(node.dataNodeId);
@@ -121,7 +121,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
     },
 
     async toggleSummaryMode(cfg) {
-      this.ddg.toggleSummaryMode(cfg.timelineId);
+      this.pdg.toggleSummaryMode(cfg.timelineId);
     },
 
     /**
@@ -131,18 +131,18 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       const {
         timelineId, summaryMode, settings
       } = cfg;
-      const { ddg } = this;
+      const { pdg } = this;
 
       if (settings) {
-        ddg.updateSettings(settings);
+        pdg.updateSettings(settings);
       }
       if (summaryMode) {
         // update graph
-        ddg.setSummaryMode(timelineId, summaryMode);
+        pdg.setSummaryMode(timelineId, summaryMode);
       }
     },
     async saveScreenshot(svgString) {
-      const { dp, contextId } = this.ddg;
+      const { dp, contextId } = this.pdg;
       const context = dp.collections.executionContexts.getById(contextId);
       const { application } = dp;
       const name = makeContextLabel(context, application);

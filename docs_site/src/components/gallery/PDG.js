@@ -19,8 +19,8 @@ import PDGLink from './PDGLink';
 // }
 
 /**
- * hackfix: hard-coded this since old data does not contain DDGSummaryMode data yet
- * @see @dbux/data/src/ddg/DDGSummaryMode.js
+ * hackfix: hard-coded this since old data does not contain PDGSummaryMode data yet
+ * @see @dbux/data/src/pdg/PDGSummaryMode.js
  */
 const SummaryModeIcons = [
   '⛒',
@@ -134,7 +134,7 @@ export default function PDG(props) {
             <button className="p-2" disabled={!nextPdgId}>&raquo;</button>
           </PDGLink> */}
           <div className="space-1"></div>
-          {chapterGroup}/{chapter} &gt; {renderData.ddgTitle}
+          {chapterGroup}/{chapter} &gt; {renderData.pdgTitle}
         </h3>
         <div className="d-flex flex-row">
           {paginationEl}

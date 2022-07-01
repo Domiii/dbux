@@ -4,8 +4,8 @@
 
 
 
-// TODO: the DDGView parameterizes control of the DDG
-//    Specifically: it allows to easily merge/unmerge DDG subgraphs
+// TODO: the PDGView parameterizes control of the PDG
+//    Specifically: it allows to easily merge/unmerge PDG subgraphs
 
 
 
@@ -13,8 +13,8 @@
 
 // mergeGroups() {
 //   const visited = new Set();
-//   for (let i = allDDGNodes.length-1; i >= 0; --i) {
-//     const n = allDDGNodes[i];
+//   for (let i = allPDGNodes.length-1; i >= 0; --i) {
+//     const n = allPDGNodes[i];
 //     handleVisited;
 
 //     this.mergeComputesFromWrite(n);
@@ -46,7 +46,7 @@
 //       if (mergeState.mergeSet.length > 1) {
 //         remove mergeSet from graph;
 //         for ([f, count] of fringe.entries()) { 
-//           add(new DDGGroupEdge(f, firstInput, count));
+//           add(new PDGGroupEdge(f, firstInput, count));
 //         }
 //       }
 //     }
@@ -54,7 +54,7 @@
 //         remove input from graph;
 //         remove mergeSet from graph;
 //         for ([f, count] of fringe.entries()) { 
-//           add(new DDGGroupEdge(f, n, count));
+//           add(new PDGGroupEdge(f, n, count));
 //         }
 //     }
 //   }

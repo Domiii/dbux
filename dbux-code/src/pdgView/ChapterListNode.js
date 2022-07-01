@@ -10,7 +10,7 @@ import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { confirm } from '../codeUtil/codeModals';
 import { goToCodeLoc } from '../codeUtil/codeNav';
-import { showDDGViewForArgs } from '../webViews/ddgWebView';
+import { showPDGViewForArgs } from '../webViews/pdgWebView';
 import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Chapter').default} Chapter */
@@ -19,12 +19,12 @@ import { getCurrentResearch } from '../research/Research';
 
 
 /** ###########################################################################
- * {@link DDGNode}
+ * {@link PDGNode}
  *  #########################################################################*/
 
-class DDGNode extends BaseTreeViewNode {
+class PDGNode extends BaseTreeViewNode {
   static makeLabel(entry, parent, moreProp) {
-    return moreProp.ddgTitle;
+    return moreProp.pdgTitle;
   }
 
   /**
@@ -51,7 +51,7 @@ class DDGNode extends BaseTreeViewNode {
         const result = await confirm(`No application file found. Do you want to run the exercise?`);
         if (result) {
           // get new application
-          application = await this.treeNodeProvider.controller.runAndExportDDGApplication(this.exercise);
+          application = await this.treeNodeProvider.controller.runAndExportPDGApplication(this.exercise);
 
           const newFilePath = application.dataProvider.util.getContextFilePath(contextId);
           if (newFilePath !== fullContextFilePath) {
@@ -64,19 +64,19 @@ class DDGNode extends BaseTreeViewNode {
         }
       }
     }
-    await showDDGViewForArgs({ applicationUuid, contextId });
+    await showPDGViewForArgs({ applicationUuid, contextId });
     await goToCodeLoc(fullContextFilePath, loc);
   }
 }
 
 
 /** ###########################################################################
- * {@link DDGExerciseNode}
+ * {@link PDGExerciseNode}
  *  #########################################################################*/
 
-class DDGExerciseNode extends ExerciseNode {
+class PDGExerciseNode extends ExerciseNode {
   get contextValue() {
-    return 'dbuxChapterListBuilderView.DDGExerciseNode';
+    return 'dbuxChapterListBuilderView.PDGExerciseNode';
   }
 
   makeIconPath() {
@@ -87,19 +87,19 @@ class DDGExerciseNode extends ExerciseNode {
     return true;
   }
 
-  async runDDG() {
+  async runPDG() {
     const { exercise } = this;
     allApplications.clear();
 
     await runTaskWithProgressBar(async (progress) => {
-      await this.treeNodeProvider.controller.runAndExportDDGApplication(exercise, progress);
-    }, { title: `Run DDG` });
+      await this.treeNodeProvider.controller.runAndExportPDGApplication(exercise, progress);
+    }, { title: `Run PDG` });
   }
 
   buildChildren() {
-    if (this.exercise.ddgs) {
-      return this.exercise.ddgs.map((ddgData) => {
-        return this.treeNodeProvider.buildNode(DDGNode, null, this, ddgData);
+    if (this.exercise.pdgs) {
+      return this.exercise.pdgs.map((pdgData) => {
+        return this.treeNodeProvider.buildNode(PDGNode, null, this, pdgData);
       });
     }
     return EmptyArray;
@@ -112,7 +112,7 @@ class DDGExerciseNode extends ExerciseNode {
 
 class ExerciseChapterNode extends ChapterNode {
   get ExerciseNodeClass() {
-    return DDGExerciseNode;
+    return PDGExerciseNode;
   }
 }
 

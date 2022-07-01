@@ -10,16 +10,16 @@ import isPlainObject from 'lodash/isPlainObject';
 
 import { PrettyTimer } from '@dbux/common/src/util/timeUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
-import DDGSummaryMode, { GroupDefaultSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
-import ddgQueries, { RenderState } from '@dbux/data/src/ddg/ddgQueries';
-import DotBuilder from '@dbux/data/src/ddg/DotBuilder';
-import DDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import { PDGRootTimelineId } from '@dbux/data/src/pdg/constants';
+import PDGSummaryMode, { GroupDefaultSummaryModes } from '@dbux/data/src/pdg/PDGSummaryMode';
+import pdgQueries, { RenderState } from '@dbux/data/src/pdg/pdgQueries';
+import DotBuilder from '@dbux/data/src/pdg/DotBuilder';
+import PDGTimelineNodeType, { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 import { makeStructuredRandomColor } from '@dbux/graph-common/src/shared/contextUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { DDGTimelineNode } from '@dbux/data/src/ddg/DDGTimelineNodes';
+import { PDGTimelineNode } from '@dbux/data/src/pdg/PDGTimelineNodes';
 import { compileHtmlElement } from '../util/domUtil';
-import { updateElDecorations, makeSummaryButtons, makeSummaryLabelSvgCompiled } from './ddgDomUtil';
+import { updateElDecorations, makeSummaryButtons, makeSummaryLabelSvgCompiled } from './pdgDomUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 // const AutoLayoutAnimationDuration = 300;
@@ -126,7 +126,7 @@ class NodeHoverState {
   node;
   hoverEl;
   /**
-   * @type {DDGTimelineView}
+   * @type {PDGTimelineView}
    */
   timeline;
 
@@ -163,7 +163,7 @@ class NodeHoverState {
   #getAllEdges(timelineId) {
     const {
       timeline: {
-        ddg: {
+        pdg: {
           inEdgesByTimelineId,
           outEdgesByTimelineId
         }
@@ -255,10 +255,10 @@ class NodeHoverState {
 }
 
 /** ###########################################################################
- * {@link DDGTimelineView}
+ * {@link PDGTimelineView}
  *  #########################################################################*/
 
-export default class DDGTimelineView extends ClientComponentEndpoint {
+export default class PDGTimelineView extends ClientComponentEndpoint {
   /**
    * @type {NodeHoverState}
    */
@@ -269,7 +269,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   createEl() {
-    return compileHtmlElement(/*html*/`<div id="ddg-timeline" class="timeline-view">
+    return compileHtmlElement(/*html*/`<div id="pdg-timeline" class="timeline-view">
       <div data-el="status"></div>
       <div data-el="graphcont" class="graph-cont">
       </div>
@@ -322,12 +322,12 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   get renderState() {
     return this.context.doc.state;
   }
-  get ddg() {
+  get pdg() {
     return this.renderState;
   }
 
   get root() {
-    return this.renderState.timelineNodes?.[DDGRootTimelineId];
+    return this.renderState.timelineNodes?.[PDGRootTimelineId];
   }
 
   debug(...args) {
@@ -340,7 +340,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   async rebuildGraph(force = false) {
     const isNew = await this.initGraphImplementation(force);
-    // this.debug('new', isNew, this.ddg.settings.anim);
+    // this.debug('new', isNew, this.pdg.settings.anim);
 
     this.buildGraph(isNew);
   }
@@ -362,7 +362,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
     this.startRenderTimer();
 
-    const ShouldAnim = this.ddg.settings.anim;
+    const ShouldAnim = this.pdg.settings.anim;
     if (isNew) {
       this.graphviz
         // NOTE: this `end` event handler is run after anim finished
@@ -377,7 +377,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
               this.graphviz.transition(() => { // transition
                 this.debug(`anim start`);
                 // see https://d3-wiki.readthedocs.io/zh_CN/master/Transitions/#remove
-                // if (!this.ddg.settings.anim) {
+                // if (!this.pdg.settings.anim) {
                 // }
                 return d3transition()
                   .duration(800);
@@ -459,7 +459,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   async setGraphSetting(setting, val) {
     const newSettings = {
-      ...this.ddg.settings,
+      ...this.pdg.settings,
       [setting]: val
     };
     await this.remote.updateGraph({ settings: newSettings });
@@ -596,23 +596,23 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    * ##########################################################################*/
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
   decorateNode(node, nodeEl) {
-    const { ddg } = this;
+    const { pdg } = this;
     let interactionEl = nodeEl;
 
     if (isControlGroupTimelineNode(node.type)) {
       // hackfix: since DOT is very limited, we have to add custom rendering logic here
       const labelEl = this.getSummarizableNodeLabelEl(node, nodeEl);
-      const mode = ddgQueries.getNodeSummaryMode(ddg, node);
+      const mode = pdgQueries.getNodeSummaryMode(pdg, node);
 
       const xOffset = 14;// hackfix: move label out of the way (off to the right by this much)
       // const rect = labelEl.getBoundingClientRect();
       // const x = rect.left - xOffset;// parseFloat(labelEl.getAttribute('x'));
       // const y = rect.top - yOffset;
-      // const modeEl = compileHtmlElement(`<div class="overlay">${makeSummaryLabel(this.ddg, mode)}</div>`);
+      // const modeEl = compileHtmlElement(`<div class="overlay">${makeSummaryLabel(this.pdg, mode)}</div>`);
       // modeEl.style.left = `${x}px`;
       // modeEl.style.top = `${y}px`;
       // this.registerDeco(modeEl);
@@ -629,7 +629,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       const cx = parseFloat(labelEl.getAttribute('x'));
       const x = cx - w / 2;
       const y = parseFloat(labelEl.getAttribute('y'));
-      const modeEl = makeSummaryLabelSvgCompiled(ddg, mode, x, y);
+      const modeEl = makeSummaryLabelSvgCompiled(pdg, mode, x, y);
       this.registerDeco(modeEl);
       labelEl.setAttribute('x', cx + xOffset); // move el to the right
       // labelEl.innerHTML = labelEl.innerHTML;
@@ -658,7 +658,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
   getSummarizableNodeLabelEl(node, nodeEl) {
@@ -687,17 +687,17 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
    *  #########################################################################*/
 
   makeNodeDebugOverlay(node) {
-    const { ddg } = this;
+    const { pdg } = this;
     const o = { ...node };
 
     // fix rendered string
-    o.type = DDGTimelineNodeType.nameFrom(o.type);
+    o.type = PDGTimelineNodeType.nameFrom(o.type);
     o.children = JSON.stringify(o.children); // simplify children
 
-    if (ddgQueries.isNodeSummarizable(ddg, node)) {
-      o.summaryMode = DDGSummaryMode.nameFrom(ddg.summaryModes[node.timelineId]);
-      o.summary = ddg.nodeSummaries[node.timelineId]; // add summary info
-      o.summarizableChildren = ddgQueries.getSummarizableChildren(ddg, node.timelineId).length;
+    if (pdgQueries.isNodeSummarizable(pdg, node)) {
+      o.summaryMode = PDGSummaryMode.nameFrom(pdg.summaryModes[node.timelineId]);
+      o.summary = pdg.nodeSummaries[node.timelineId]; // add summary info
+      o.summarizableChildren = pdgQueries.getSummarizableChildren(pdg, node.timelineId).length;
     }
     else {
       o.summarizable = false;
@@ -714,7 +714,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
   makeNodeButtons(node) {
@@ -748,7 +748,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    * @param {Element} nodeEl 
    */
   startNodeHoverAction(node, nodeEl) {

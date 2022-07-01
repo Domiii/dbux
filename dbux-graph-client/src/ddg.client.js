@@ -1,6 +1,6 @@
 import { startDbuxComponents } from './componentLib/ClientComponentManager';
-import _clientRegistry from './ddg/_clientRegistry';
+import _clientRegistry from './pdg/_clientRegistry';
 
-import './ddg/styles.css';
+import './pdg/styles.css';
 
 window.startDbuxComponents = startDbuxComponents.bind(null, _clientRegistry);

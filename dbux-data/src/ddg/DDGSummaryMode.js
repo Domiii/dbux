@@ -1,7 +1,7 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let dDGSummaryModeConfig = {
+let pDGSummaryModeConfig = {
   /**
    * Non-group (plain) nodes only.
    * Show this node.
@@ -56,96 +56,96 @@ let dDGSummaryModeConfig = {
 };
 
 /**
- * @type {(Enum|typeof dDGSummaryModeConfig)}
+ * @type {(Enum|typeof pDGSummaryModeConfig)}
  */
-const DDGSummaryMode = new Enum(dDGSummaryModeConfig);
+const PDGSummaryMode = new Enum(pDGSummaryModeConfig);
 
 /**
  * SummaryModes that are available to root.
  */
 export const RootSummaryModes = [
-  DDGSummaryMode.HideChildren,
-  DDGSummaryMode.ExpandSelf,
-  DDGSummaryMode.ExpandSelf1,
-  DDGSummaryMode.ExpandSelf2,
-  DDGSummaryMode.ExpandSelf3,
-  DDGSummaryMode.ExpandSelf4,
-  DDGSummaryMode.ExpandSubgraph
+  PDGSummaryMode.HideChildren,
+  PDGSummaryMode.ExpandSelf,
+  PDGSummaryMode.ExpandSelf1,
+  PDGSummaryMode.ExpandSelf2,
+  PDGSummaryMode.ExpandSelf3,
+  PDGSummaryMode.ExpandSelf4,
+  PDGSummaryMode.ExpandSubgraph
 ];
 
 export const GroupDefaultSummaryModes = [
-  DDGSummaryMode.CollapseSummary,
-  DDGSummaryMode.ExpandSelf,
-  DDGSummaryMode.ExpandSelf1,
-  DDGSummaryMode.ExpandSelf2,
-  DDGSummaryMode.ExpandSelf3,
-  DDGSummaryMode.ExpandSelf4,
-  DDGSummaryMode.ExpandSubgraph
+  PDGSummaryMode.CollapseSummary,
+  PDGSummaryMode.ExpandSelf,
+  PDGSummaryMode.ExpandSelf1,
+  PDGSummaryMode.ExpandSelf2,
+  PDGSummaryMode.ExpandSelf3,
+  PDGSummaryMode.ExpandSelf4,
+  PDGSummaryMode.ExpandSubgraph
 ];
 
-const shallowSummaryModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-shallowSummaryModes[DDGSummaryMode.ExpandSelf1] = true;
-shallowSummaryModes[DDGSummaryMode.ExpandSelf2] = true;
-shallowSummaryModes[DDGSummaryMode.ExpandSelf3] = true;
-shallowSummaryModes[DDGSummaryMode.ExpandSelf4] = true;
+const shallowSummaryModes = new Array(PDGSummaryMode.getValueMaxIndex()).map(() => false);
+shallowSummaryModes[PDGSummaryMode.ExpandSelf1] = true;
+shallowSummaryModes[PDGSummaryMode.ExpandSelf2] = true;
+shallowSummaryModes[PDGSummaryMode.ExpandSelf3] = true;
+shallowSummaryModes[PDGSummaryMode.ExpandSelf4] = true;
 export function isShallowSummaryMode(mode) {
   return shallowSummaryModes[mode] || false;
 }
 
-const shownModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-shownModes[DDGSummaryMode.Show] = true;
-shownModes[DDGSummaryMode.ExpandSelf] = true;
-shownModes[DDGSummaryMode.ExpandSelf1] = true;
-shownModes[DDGSummaryMode.ExpandSelf2] = true;
-shownModes[DDGSummaryMode.ExpandSelf3] = true;
-shownModes[DDGSummaryMode.ExpandSelf4] = true;
-shownModes[DDGSummaryMode.ExpandSubgraph] = true;
-shownModes[DDGSummaryMode.CollapseSummary] = true;
-shownModes[DDGSummaryMode.HideChildren] = true;
+const shownModes = new Array(PDGSummaryMode.getValueMaxIndex()).map(() => false);
+shownModes[PDGSummaryMode.Show] = true;
+shownModes[PDGSummaryMode.ExpandSelf] = true;
+shownModes[PDGSummaryMode.ExpandSelf1] = true;
+shownModes[PDGSummaryMode.ExpandSelf2] = true;
+shownModes[PDGSummaryMode.ExpandSelf3] = true;
+shownModes[PDGSummaryMode.ExpandSelf4] = true;
+shownModes[PDGSummaryMode.ExpandSubgraph] = true;
+shownModes[PDGSummaryMode.CollapseSummary] = true;
+shownModes[PDGSummaryMode.HideChildren] = true;
 export function isShownMode(mode) {
   return shownModes[mode] || false;
 }
 
-const collapsedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-collapsedModes[DDGSummaryMode.CollapseSummary] = true;
+const collapsedModes = new Array(PDGSummaryMode.getValueMaxIndex()).map(() => false);
+collapsedModes[PDGSummaryMode.CollapseSummary] = true;
 export function isCollapsedMode(mode) {
   return collapsedModes[mode] || false;
 }
 
-const expandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-expandedModes[DDGSummaryMode.ExpandSelf] = true;
-expandedModes[DDGSummaryMode.ExpandSelf1] = true;
-expandedModes[DDGSummaryMode.ExpandSelf2] = true;
-expandedModes[DDGSummaryMode.ExpandSelf3] = true;
-expandedModes[DDGSummaryMode.ExpandSelf4] = true;
-expandedModes[DDGSummaryMode.ExpandSubgraph] = true;
-expandedModes[DDGSummaryMode.HideChildren] = true;
+const expandedModes = new Array(PDGSummaryMode.getValueMaxIndex()).map(() => false);
+expandedModes[PDGSummaryMode.ExpandSelf] = true;
+expandedModes[PDGSummaryMode.ExpandSelf1] = true;
+expandedModes[PDGSummaryMode.ExpandSelf2] = true;
+expandedModes[PDGSummaryMode.ExpandSelf3] = true;
+expandedModes[PDGSummaryMode.ExpandSelf4] = true;
+expandedModes[PDGSummaryMode.ExpandSubgraph] = true;
+expandedModes[PDGSummaryMode.HideChildren] = true;
 export function isExpandedMode(mode) {
   return expandedModes[mode] || false;
 }
 
-const shallowExpandedModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
+const shallowExpandedModes = new Array(PDGSummaryMode.getValueMaxIndex()).map(() => false);
 /**
  * NOTE: ExpandSelf is shallow summary, and can nest visible CollapseSummary nodes
  */
-shallowExpandedModes[DDGSummaryMode.ExpandSelf] = true;
-shallowExpandedModes[DDGSummaryMode.ExpandSelf1] = true;
-shallowExpandedModes[DDGSummaryMode.ExpandSelf2] = true;
-shallowExpandedModes[DDGSummaryMode.ExpandSelf3] = true;
-shallowExpandedModes[DDGSummaryMode.ExpandSelf4] = true;
+shallowExpandedModes[PDGSummaryMode.ExpandSelf] = true;
+shallowExpandedModes[PDGSummaryMode.ExpandSelf1] = true;
+shallowExpandedModes[PDGSummaryMode.ExpandSelf2] = true;
+shallowExpandedModes[PDGSummaryMode.ExpandSelf3] = true;
+shallowExpandedModes[PDGSummaryMode.ExpandSelf4] = true;
 export function isShallowExpandedMode(mode) {
   return shallowExpandedModes[mode] || false;
 }
 
-const hasSummaryDataModes = new Array(DDGSummaryMode.getValueMaxIndex()).map(() => false);
-hasSummaryDataModes[DDGSummaryMode.CollapseSummary] = true;
-hasSummaryDataModes[DDGSummaryMode.ExpandSelf] = true;
-hasSummaryDataModes[DDGSummaryMode.ExpandSelf1] = true;
-hasSummaryDataModes[DDGSummaryMode.ExpandSelf2] = true;
-hasSummaryDataModes[DDGSummaryMode.ExpandSelf3] = true;
-hasSummaryDataModes[DDGSummaryMode.ExpandSelf4] = true;
+const hasSummaryDataModes = new Array(PDGSummaryMode.getValueMaxIndex()).map(() => false);
+hasSummaryDataModes[PDGSummaryMode.CollapseSummary] = true;
+hasSummaryDataModes[PDGSummaryMode.ExpandSelf] = true;
+hasSummaryDataModes[PDGSummaryMode.ExpandSelf1] = true;
+hasSummaryDataModes[PDGSummaryMode.ExpandSelf2] = true;
+hasSummaryDataModes[PDGSummaryMode.ExpandSelf3] = true;
+hasSummaryDataModes[PDGSummaryMode.ExpandSelf4] = true;
 export function isSummaryMode(mode) {
   return hasSummaryDataModes[mode] || false;
 }
 
-export default DDGSummaryMode;
+export default PDGSummaryMode;

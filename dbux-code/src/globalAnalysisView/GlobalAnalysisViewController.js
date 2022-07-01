@@ -6,7 +6,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
-import GlobalDDGNode from './nodes/GlobalDDGNode';
+import GlobalPDGNode from './nodes/GlobalPDGNode';
 import GlobalErrorsNode from './nodes/GlobalErrorsNode';
 import GlobalSearchNode from './nodes/GlobalSearchNode';
 
@@ -117,21 +117,21 @@ export default class GlobalAnalysisViewController {
    * reveal
    * ##########################################################################*/
 
-  async revealDDG(ddg) {
+  async revealPDG(pdg) {
     try {
-      const ddgsNode = this.treeDataProvider.getRootByClass(GlobalDDGNode);
-      if (ddgsNode) {
-        await this.treeView.reveal(ddgsNode, { expand: true });
+      const pdgsNode = this.treeDataProvider.getRootByClass(GlobalPDGNode);
+      if (pdgsNode) {
+        await this.treeView.reveal(pdgsNode, { expand: true });
         await sleep(100);
 
-        const ddgNode = ddgsNode.children.find(n => n.ddg === ddg);
-        if (ddgNode) {
-          await this.treeView.reveal(ddgNode, { expand: true, select: true });
+        const pdgNode = pdgsNode.children.find(n => n.pdg === pdg);
+        if (pdgNode) {
+          await this.treeView.reveal(pdgNode, { expand: true, select: true });
         }
       }
     }
     catch (err) {
-      this.treeDataProvider.logger.warn(`revealDDG failed: ${err.stack || err}`);
+      this.treeDataProvider.logger.warn(`revealPDG failed: ${err.stack || err}`);
     }
   }
 }

@@ -204,7 +204,7 @@
       },
       {
         "command": "dbux.testDataDependencyGraph",
-        "title": "Dbux Dev: Test DDG",
+        "title": "Dbux Dev: Test PDG",
         "icon": {
           "light": "resources/light/dependency.svg",
           "dark": "resources/dark/dependency.svg"
@@ -275,8 +275,8 @@
         "title": "Dbux: Show output channel"
       },
       {
-        "command": "dbux.showDDGOfContext",
-        "title": "Dbux: Show DDG of context",
+        "command": "dbux.showPDGOfContext",
+        "title": "Dbux: Show PDG of context",
         "icon": {
           "light": "resources/light/dependency.svg",
           "dark": "resources/dark/dependency.svg"
@@ -735,8 +735,8 @@
         }
       },
       {
-        "command": "dbuxChapterListBuilderView.node.runDDG",
-        "title": "Dev: run and show DDG",
+        "command": "dbuxChapterListBuilderView.node.runPDG",
+        "title": "Dev: run and show PDG",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -968,8 +968,8 @@
           "group": "inline"
         },
         {
-          "command": "dbuxChapterListBuilderView.node.runDDG",
-          "when": "viewItem == dbuxChapterListBuilderView.DDGExerciseNode && !dbuxProjectView.context.isBusy",
+          "command": "dbuxChapterListBuilderView.node.runPDG",
+          "when": "viewItem == dbuxChapterListBuilderView.PDGExerciseNode && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
         }
       ],
@@ -1463,7 +1463,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxChapterListBuilderView.node.runDDG",
+          "command": "dbuxChapterListBuilderView.node.runPDG",
           "when": "false"
         }
       ]

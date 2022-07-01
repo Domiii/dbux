@@ -142,7 +142,7 @@ export default class ApplicationSet {
    */
   #handleRemoving(app) {
     // clean things up (and emit clean up events)
-    app.dataProvider.ddgs.clear();
+    app.dataProvider.pdgs.clear();
   }
 
   clear() {

@@ -53,7 +53,7 @@ class GenerateListNode extends ToolNode {
     const { project } = this.controller;
 
     if (this.controller.exerciseList) {
-      const result = await confirm(`This will discard all DDG data in 'javascript-algorithms-all.js', do you want to continue?`);
+      const result = await confirm(`This will discard all PDG data in 'javascript-algorithms-all.js', do you want to continue?`);
       if (!result) {
         return;
       }
@@ -276,7 +276,7 @@ class GeneratePatchNode extends ToolNode {
   }
 }
 
-class ExportAllDDGScreenshotNode extends ToolNode {
+class ExportAllPDGScreenshotNode extends ToolNode {
   static makeLabel() {
     return `Export PDG Gallery`;
   }
@@ -340,13 +340,13 @@ class TransformDestructuringNode extends ToolNode {
   }
 }
 
-// class InsertDDGTitleNode extends ToolNode {
+// class InsertPDGTitleNode extends ToolNode {
 //   static makeLabel() {
-//     return `Insert DDG Title in pdgData.json from exerciseJs`;
+//     return `Insert PDG Title in pdgData.json from exerciseJs`;
 //   }
 
 //   async handleClick() {
-//     await this.controller.gallery.insertDDGTitle();
+//     await this.controller.gallery.insertPDGTitle();
 //   }
 // }
 
@@ -364,9 +364,9 @@ export default class ToolRootNode extends BaseTreeViewNode {
     // ExportApplicationsForceNode,
     DeleteExportedApplicationNode,
     GeneratePatchNode,
-    ExportAllDDGScreenshotNode,
+    ExportAllPDGScreenshotNode,
     GenerateGraphsJSNode,
-    // InsertDDGTitleNode,
+    // InsertPDGTitleNode,
     GeneratePDGTable,
     GenerateEmptyPDGTable,
     TransformDestructuringNode,

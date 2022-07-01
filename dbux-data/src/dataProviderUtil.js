@@ -92,7 +92,7 @@ const DefaultDataSnapshotMods = {
    * @param {string} prop
    */
   writePrimitive(dp, snapshot, modifyNode, prop) {
-    // TODO: possibly keep following valueFrom (see `BaseDDG#addDataNode`)
+    // TODO: possibly keep following valueFrom (see `BasePDG#addDataNode`)
     const inputNodeId = modifyNode.valueFromId;
     const inputNode = !inputNodeId ? modifyNode : dp.collections.dataNodes.getById(inputNodeId);
     snapshot.children[prop] = new RefSnapshot(modifyNode.nodeId, null, inputNode.value);

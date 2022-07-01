@@ -5,9 +5,9 @@ import last from 'lodash/last';
 import find from 'lodash/find';
 import findLast from 'lodash/findLast';
 
-/** @typedef { import("./BaseDDG").default } BaseDDG */
+/** @typedef { import("./BasePDG").default } BasePDG */
 
-export default class DDGBounds {
+export default class PDGBounds {
   minNodeId;
   maxNodeId;
 
@@ -18,12 +18,12 @@ export default class DDGBounds {
   // maxContextId;
 
   /**
-   * @param {BaseDDG} ddg
+   * @param {BasePDG} pdg
    * @param {number[]} watchTraceIds
    */
-  constructor(ddg) {
-    this.ddg = ddg;
-    const { watchTraceIds } = ddg.watchSet;
+  constructor(pdg) {
+    this.pdg = pdg;
+    const { watchTraceIds } = pdg.watchSet;
     this.watchedTraceIds = watchTraceIds.sort((a, b) => a - b);
 
     const { dp } = this;
@@ -49,7 +49,7 @@ export default class DDGBounds {
 
     if (this.maxTraceId < last(this.watchedTraceIds)) {
       // future-work: allow different trace selection methods, not limited to a single context
-      throw new Error(`DDG currently does not support cross-context watching. All watched traces must have a single ancestor context.`);
+      throw new Error(`PDG currently does not support cross-context watching. All watched traces must have a single ancestor context.`);
     }
 
     this.minNodeId = first(dp.util.getDataNodesOfTrace(firstDataTraceId))?.nodeId;
@@ -61,7 +61,7 @@ export default class DDGBounds {
   }
 
   get dp() {
-    return this.ddg.dp;
+    return this.pdg.dp;
   }
 
   containsNode(nodeId) {

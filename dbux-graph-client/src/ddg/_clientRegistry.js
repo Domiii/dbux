@@ -1,9 +1,9 @@
-import DDGDocument from './DDGDocument';
-import DDGTimelineView from './DDGTimelineView';
+import PDGDocument from './PDGDocument';
+import PDGTimelineView from './PDGTimelineView';
 import Toolbar from './Toolbar';
 
 export default {
-  DDGDocument,
-  DDGTimelineView,
+  PDGDocument,
+  PDGTimelineView,
   Toolbar,
 };

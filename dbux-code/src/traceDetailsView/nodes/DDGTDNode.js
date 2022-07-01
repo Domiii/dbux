@@ -1,32 +1,32 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
+import pdgQueries from '@dbux/data/src/pdg/pdgQueries';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
-import { renderDDGNode, renderDDGNodesItem, renderDDGSummaries } from '../../treeViewsShared/ddgTreeViewUtil';
-import { getActiveDDGWebview } from '../../webViews/ddgWebView';
+import { renderPDGNode, renderPDGNodesItem, renderPDGSummaries } from '../../treeViewsShared/pdgTreeViewUtil';
+import { getActivePDGWebview } from '../../webViews/pdgWebView';
 import TraceDetailNode from './TraceDetailNode';
 import { renderDataNode } from '../../treeViewsShared/dataTreeViewUtil';
 import { intersection } from 'lodash';
 
-/** @typedef { import("@dbux/data/src/ddg/DDGTimelineNodes").DDGTimelineNode } DDGTimelineNode */
+/** @typedef { import("@dbux/data/src/pdg/PDGTimelineNodes").PDGTimelineNode } PDGTimelineNode */
 
 
 /** ###########################################################################
- * {@link DDGTDNode}
+ * {@link PDGTDNode}
  * ##########################################################################*/
 
-export default class DDGTDNode extends TraceDetailNode {
+export default class PDGTDNode extends TraceDetailNode {
   static makeLabel() {
-    return 'DDG';
+    return 'PDG';
   }
 
-  get ddgWebview() {
-    return getActiveDDGWebview();
+  get pdgWebview() {
+    return getActivePDGWebview();
   }
 
-  get ddg() {
-    return this.ddgWebview?.ddg;
+  get pdg() {
+    return this.pdgWebview?.pdg;
   }
 
   // makeIconPath() {
@@ -35,9 +35,9 @@ export default class DDGTDNode extends TraceDetailNode {
 
   // eslint-disable-next-line camelcase
   renderTimelineNodes = (dataNode, predicate) => {
-    const { ddg } = this;
+    const { pdg } = this;
     let ignoreSkipNode;
-    const ignoreAndSkippedBy = ddg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
+    const ignoreAndSkippedBy = pdg.timelineBuilder?.getIgnoreAndSkipInfo(dataNode);
     if (ignoreAndSkippedBy) {
       const { ignore, skippedBy } = ignoreAndSkippedBy;
       if (ignore) {
@@ -45,8 +45,8 @@ export default class DDGTDNode extends TraceDetailNode {
       }
       if (skippedBy) {
         const children = skippedBy;
-        ignoreSkipNode = renderDDGNode(
-          ddg,
+        ignoreSkipNode = renderPDGNode(
+          pdg,
           skippedBy,
           children,
           EmptyObject,
@@ -54,7 +54,7 @@ export default class DDGTDNode extends TraceDetailNode {
         );
       }
     }
-    let timelineNodesOfDataNode = ddg.getTimelineNodesOfDataNode(dataNode.nodeId);
+    let timelineNodesOfDataNode = pdg.getTimelineNodesOfDataNode(dataNode.nodeId);
     if (timelineNodesOfDataNode && predicate) {
       timelineNodesOfDataNode = timelineNodesOfDataNode.filter(predicate);
     }
@@ -63,14 +63,14 @@ export default class DDGTDNode extends TraceDetailNode {
     }
 
     // if (timelineNodes.length === 1) {
-    //   return renderDDGNode(
-    //     ddg, timelineNodes[0], timelineNodes[0],
+    //   return renderPDGNode(
+    //     pdg, timelineNodes[0], timelineNodes[0],
     //     { collapsibleState: TreeItemCollapsibleState.Expanded }
     //   );
     // }
 
     const res = timelineNodesOfDataNode.map(
-      timelineNode => renderDDGNode(ddg, timelineNode)
+      timelineNode => renderPDGNode(pdg, timelineNode)
     );
     if (ignoreSkipNode) {
       res.unshift(ignoreSkipNode);
@@ -80,9 +80,9 @@ export default class DDGTDNode extends TraceDetailNode {
 
   // eslint-disable-next-line camelcase
   Visible_TimelineNodes() {
-    const { ddg, dataNodes } = this;
+    const { pdg, dataNodes } = this;
     const visibleTimelineNodes = dataNodes?.flatMap(dataNode => {
-      return this.renderTimelineNodes(dataNode, node => ddgQueries.isVisible(ddg, node));
+      return this.renderTimelineNodes(dataNode, node => pdgQueries.isVisible(pdg, node));
     });
     if (!visibleTimelineNodes?.length) {
       return makeTreeItem('(no visible TimelineNodes)');
@@ -98,7 +98,7 @@ export default class DDGTDNode extends TraceDetailNode {
 
   // eslint-disable-next-line camelcase
   Summaries() {
-    const { ddg, dp, dataNodes } = this;
+    const { pdg, dp, dataNodes } = this;
 
     // const tids = Array.from(new Set(
     //   dataNodes
@@ -113,17 +113,17 @@ export default class DDGTDNode extends TraceDetailNode {
     // TODO: this would pick up a lot of false positives
 
     /**
-     * @type {DDGTimelineNode[]}
+     * @type {PDGTimelineNode[]}
      */
     const timelineNodes = dataNodes
       .flatMap(n =>
-        (ddg.getTimelineNodesOfDataNode(n.nodeId) || EmptyArray)
+        (pdg.getTimelineNodesOfDataNode(n.nodeId) || EmptyArray)
       );
 
-    const allSummaries = Object.values(ddg.nodeSummaries);
+    const allSummaries = Object.values(pdg.nodeSummaries);
     const nodeSummaries = timelineNodes
       // collapsed ancestor summaries
-      .map(node => ddgQueries.getSummarizedGroupOfNode(ddg, node));
+      .map(node => pdgQueries.getSummarizedGroupOfNode(pdg, node));
 
     // summaries which have any DataNode in their root
     const dataNodeSummaries = dataNodes.flatMap(n => allSummaries.filter(
@@ -144,7 +144,7 @@ export default class DDGTDNode extends TraceDetailNode {
 
     return makeTreeItem(() => ({
       label: 'Summaries',
-      children: () => renderDDGSummaries(ddg, summaries),
+      children: () => renderPDGSummaries(pdg, summaries),
       props: {
         description
       }
@@ -153,7 +153,7 @@ export default class DDGTDNode extends TraceDetailNode {
 
   // eslint-disable-next-line camelcase
   All_TimelineNodes() {
-    const { ddg, dataNodes } = this;
+    const { pdg, dataNodes } = this;
     const timelineNodes = dataNodes?.flatMap(dataNode => {
       return this.renderTimelineNodes(dataNode);
     });
@@ -170,14 +170,14 @@ export default class DDGTDNode extends TraceDetailNode {
   }
 
   DataNodes() {
-    const { ddg, dataNodes } = this;
+    const { pdg, dataNodes } = this;
     if (!dataNodes?.length) {
       return makeTreeItem('(no DataNodes)');
     }
 
     return {
       children: () => dataNodes.flatMap(dataNode => {
-        return renderDataNode(ddg.dp, dataNode.nodeId);
+        return renderDataNode(pdg.dp, dataNode.nodeId);
       }),
       props: {
         collapsibleState: TreeItemCollapsibleState.Expanded,
@@ -187,15 +187,15 @@ export default class DDGTDNode extends TraceDetailNode {
   }
 
   async buildChildren() {
-    if (!this.ddg) {
+    if (!this.pdg) {
       return [
-        makeTreeItem('(no DDG active)')
+        makeTreeItem('(no PDG active)')
       ];
     }
-    if (this.ddg.dp !== this.dp) {
-      // → dp comes from selectedTrace, while ddg is the active webview
+    if (this.pdg.dp !== this.dp) {
+      // → dp comes from selectedTrace, while pdg is the active webview
       return [
-        makeTreeItem('(this DDG is not the active DDG)')
+        makeTreeItem('(this PDG is not the active PDG)')
       ];
     }
 

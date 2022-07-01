@@ -16,6 +16,6 @@ const edgeTypeObj = {
 /**
  * @type {(Enum|typeof edgeTypeObj)}
  */
-const DDGEdgeType = new Enum(edgeTypeObj);
+const PDGEdgeType = new Enum(edgeTypeObj);
 
-export default DDGEdgeType;
+export default PDGEdgeType;

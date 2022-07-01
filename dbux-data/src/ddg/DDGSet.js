@@ -6,11 +6,11 @@ import DataDependencyGraph from './DataDependencyGraph';
 import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
 import { makeStaticTraceLocLabel } from '../helpers/makeLabels';
 
-export default class DDGSet {
+export default class PDGSet {
   /**
    * @type {DataDependencyGraph[]}
    */
-  ddgs;
+  pdgs;
 
   /**
    * 
@@ -26,11 +26,11 @@ export default class DDGSet {
   }
 
   getAll() {
-    return this.ddgs;
+    return this.pdgs;
   }
 
-  contains(ddg) {
-    return this.ddgs.includes(ddg);
+  contains(pdg) {
+    return this.pdgs.includes(pdg);
   }
 
   #makeGraphId(...inputs) {
@@ -55,7 +55,7 @@ export default class DDGSet {
     return null;
   }
 
-  getCreateDDGFailureReason({ contextId }) {
+  getCreatePDGFailureReason({ contextId }) {
     const graphId = this.#makeGraphId(contextId);
     const { dp } = this;
     if (!this.graphsById.get(graphId)) {
@@ -75,8 +75,8 @@ export default class DDGSet {
   /**
    * @returns {DataDependencyGraph}
    */
-  getOrCreateDDG(ddgArgs) {
-    let { contextId, watchTraceIds, returnTraceId } = ddgArgs;
+  getOrCreatePDG(pdgArgs) {
+    let { contextId, watchTraceIds, returnTraceId } = pdgArgs;
     const { applicationId } = this;
     const graphId = this.#makeGraphId(contextId);
     if (!this.graphsById.get(graphId)) {
@@ -119,24 +119,24 @@ export default class DDGSet {
   #add(graphId, graph) {
     graph.id = graphId;
     this.graphsById.set(graphId, graph);
-    this.ddgs.push(graph);
+    this.pdgs.push(graph);
 
     this.#notifyChanged();
   }
 
   /**
    * 
-   * @param {DataDependencyGraph} ddg 
+   * @param {DataDependencyGraph} pdg 
    */
-  remove(ddg) {
-    this.graphsById.delete(ddg.graphId);
-    pull(this.ddgs, ddg);
+  remove(pdg) {
+    this.graphsById.delete(pdg.graphId);
+    pull(this.pdgs, pdg);
 
     this.#notifyChanged();
   }
 
   clear() {
-    this.ddgs = [];
+    this.pdgs = [];
     this.graphsById = new Map();
 
     this.#notifyChanged();
@@ -157,11 +157,11 @@ export default class DDGSet {
 
   #notifyChanged() {
     // this.#unsubscribeAll();
-    this.#emitter.emit('setChanged', this.ddgs);
+    this.#emitter.emit('setChanged', this.pdgs);
   }
 
-  _notifyUpdate = throttle((ddg) => {
-    this.#emitter.emit('graph-update', ddg);
+  _notifyUpdate = throttle((pdg) => {
+    this.#emitter.emit('graph-update', pdg);
   });
 
   onGraphUpdate(cb) {

@@ -362,7 +362,7 @@ export default class DataNodeCollection extends Collection {
         // refs have some magic up their sleeves
         const firstRefNode = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
 
-        // get last node before this one instead, to have DDG link up correctly
+        // get last node before this one instead, to have PDG link up correctly
         const { valueId } = firstRefNode;
         const lastNodeByRef = valueId && this.getLastDataNodeByValueId(nodeId, valueId);
         if (lastNodeByRef) {

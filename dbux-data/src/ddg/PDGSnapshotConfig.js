@@ -1,5 +1,5 @@
 import DataNode from '@dbux/common/src/types/DataNode';
-import { RefSnapshotTimelineNode } from './DDGTimelineNodes';
+import { RefSnapshotTimelineNode } from './PDGTimelineNodes';
 
 /**
  * Recurds and allows customizing snapshot creation.

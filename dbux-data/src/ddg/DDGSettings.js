@@ -1,4 +1,4 @@
-export default class DDGSettings {
+export default class PDGSettings {
   connectedOnly = true;
   extraVertical = true;
   /**

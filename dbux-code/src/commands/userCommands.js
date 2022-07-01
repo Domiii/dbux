@@ -21,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { disposeDDGWebviews, getActiveDDGWebview, showDDGViewForArgs, showDDGViewForContextOfSelectedTrace } from '../webViews/ddgWebView';
+import { disposePDGWebviews, getActivePDGWebview, showPDGViewForArgs, showPDGViewForContextOfSelectedTrace } from '../webViews/pdgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -39,7 +39,7 @@ import { runFile } from './runCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { getOrOpenTraceEditor } from '../codeUtil/codeNav';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
-import { getTestDDGArgs } from '../testUtil';
+import { getTestPDGArgs } from '../testUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -132,7 +132,7 @@ export function initUserCommands(extensionContext) {
   });
 
   // ###########################################################################
-  // testing DDG code
+  // testing PDG code
   // ###########################################################################
 
   /**
@@ -140,7 +140,7 @@ export function initUserCommands(extensionContext) {
    * NOTE: this is code for testing → move to test file
    */
   registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
-    let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestDDGArgs();
+    let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestPDGArgs();
 
     if (traceSelection.selected) {
       contextId = traceSelection.selected.contextId;
@@ -179,7 +179,7 @@ export function initUserCommands(extensionContext) {
           };
           testFilePath = await chooseFile(fileDialogOptions);
           if (!testFilePath) {
-            throw new Error(`DDG Test Cancelled - No test file selected`);
+            throw new Error(`PDG Test Cancelled - No test file selected`);
           }
           testFilePath = pathNormalizedForce(testFilePath);
 
@@ -192,13 +192,13 @@ export function initUserCommands(extensionContext) {
     }
 
     if (!app) {
-      throw new Error('Could not run DDG test: No applications running');
+      throw new Error('Could not run PDG test: No applications running');
     }
 
     let trace;
     const dp = app.dataProvider;
     if (!watchTraceIds &&
-      (!contextId || !!dp.ddgs.getCreateDDGFailureReason({ contextId }))
+      (!contextId || !!dp.pdgs.getCreatePDGFailureReason({ contextId }))
     ) {
       // default: select first function context
       // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
@@ -209,13 +209,13 @@ export function initUserCommands(extensionContext) {
         const firstFunctionContext = dp.collections.executionContexts.getAllActual().
           find(context => dp.util.isContextFunctionContext(context.contextId));
         if (!firstFunctionContext) {
-          throw new Error('Could not run DDG test: Could not find a function context in application');
+          throw new Error('Could not run PDG test: Could not find a function context in application');
         }
         contextId = firstFunctionContext.contextId;
         const userInput = await window.showInputBox({
           placeHolder: 'contextId',
           value: contextId,
-          prompt: 'Enter the contextId to test DDG'
+          prompt: 'Enter the contextId to test PDG'
         });
         contextId = parseInt(userInput, 10);
         if (!contextId) {
@@ -238,21 +238,21 @@ export function initUserCommands(extensionContext) {
       // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
       trace && await getOrOpenTraceEditor(trace);
 
-      // clear all previous DDGs
-      dp.ddgs.clear();
-      disposeDDGWebviews();
+      // clear all previous PDGs
+      dp.pdgs.clear();
+      disposePDGWebviews();
 
       // show webview
-      await showDDGViewForArgs({
+      await showPDGViewForArgs({
         applicationUuid: app.applicationUuid,
         watchTraceIds,
         contextId
       });
 
-      // select DDG Debug node
-      const ddg = dp.ddgs.ddgs[0];
-      if (ddg) {
-        await getGlobalAnalysisViewController().revealDDG(ddg);
+      // select PDG Debug node
+      const pdg = dp.pdgs.pdgs[0];
+      if (pdg) {
+        await getGlobalAnalysisViewController().revealPDG(pdg);
       }
     }
   });
@@ -352,19 +352,19 @@ export function initUserCommands(extensionContext) {
     }
     else if (userInput.startsWith('tl')) {
       // timeline
-      const ddgView = getActiveDDGWebview();
-      if (!ddgView) {
-        await showErrorMessage(`DDG is not active.`);
+      const pdgView = getActivePDGWebview();
+      if (!pdgView) {
+        await showErrorMessage(`PDG is not active.`);
         return;
       }
-      if (ddgView.ddg.dp.application !== application) {
-        await showErrorMessage(`Active DDG is not that of current application.`);
+      if (pdgView.pdg.dp.application !== application) {
+        await showErrorMessage(`Active PDG is not that of current application.`);
         return;
       }
       const timelineId = parseInt(userInput.substring(2), 10);
-      const timelineNode = ddgView.ddg.timelineNodes[timelineId];
+      const timelineNode = pdgView.pdg.timelineNodes[timelineId];
       if (!timelineNode) {
-        await showErrorMessage(`Active DDG does not have timelineId=${timelineId}.`);
+        await showErrorMessage(`Active PDG does not have timelineId=${timelineId}.`);
         return;
       }
       const dataNode = dp.util.getDataNode(dataNodeId = timelineNode.dataNodeId);
@@ -472,13 +472,13 @@ export function initUserCommands(extensionContext) {
   });
 
   /** ###########################################################################
-   * DDG
+   * PDG
    *  #########################################################################*/
 
-  registerCommand(extensionContext, 'dbux.showDDGOfContext', async () => {
+  registerCommand(extensionContext, 'dbux.showPDGOfContext', async () => {
     const trace = traceSelection.selected;
     if (trace) {
-      await showDDGViewForContextOfSelectedTrace();
+      await showPDGViewForContextOfSelectedTrace();
     }
     else {
       await showInformationMessage('No trace selected');

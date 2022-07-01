@@ -3,7 +3,7 @@
 /** @typedef { import('@dbux/common/src/types/constants/DataNodeType').DataNodeTypeValue } DataNodeTypeValue */
 
 
-// import DDGTimeline from './DDGTimeline';
+// import PDGTimeline from './PDGTimeline';
 import first from 'lodash/first';
 import last from 'lodash/last';
 import pull from 'lodash/pull';
@@ -13,22 +13,22 @@ import DataNodeType, { isDataNodeDelete, isDataNodeModifyType } from '@dbux/comm
 import RefSnapshot from '@dbux/common/src/types/RefSnapshot';
 import { typedShallowClone } from '@dbux/common/src/util/typedClone';
 // eslint-disable-next-line max-len
-import DDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData, isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import PDGTimelineNodeType, { isRepeatedRefTimelineNode, isDataTimelineNode, isSnapshotTimelineNode, doesTimelineNodeCarryData, isControlGroupTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import DDGWatchSet from './DDGWatchSet';
-import DDGBounds from './DDGBounds';
-import DDGEdge, { EdgeState } from './DDGEdge';
-import DDGTimelineBuilder from './DDGTimelineBuilder';
+import PDGWatchSet from './PDGWatchSet';
+import PDGBounds from './PDGBounds';
+import PDGEdge, { EdgeState } from './PDGEdge';
+import PDGTimelineBuilder from './PDGTimelineBuilder';
 // eslint-disable-next-line max-len
-import { DDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode, IndependentValueTimelineNode } from './DDGTimelineNodes';
-import { DDGRootTimelineId } from './constants';
-import ddgQueries, { ddgHostQueries } from './ddgQueries';
+import { PDGTimelineNode, ValueTimelineNode, DataTimelineNode, RefSnapshotTimelineNode, RepeatedRefTimelineNode, SnapshotEntryDeleteInfo, DeleteEntryTimelineNode, IndependentValueTimelineNode } from './PDGTimelineNodes';
+import { PDGRootTimelineId } from './constants';
+import pdgQueries, { pdgHostQueries } from './pdgQueries';
 import { makeTraceLabel } from '../helpers/makeLabels';
-import DDGEdgeType from './DDGEdgeType';
+import PDGEdgeType from './PDGEdgeType';
 import PDGSnapshotConfig from './PDGSnapshotConfig';
 
-/** @typedef { import("./DDGSet").default } DDGSet */
+/** @typedef { import("./PDGSet").default } PDGSet */
 /** @typedef {import('@dbux/common/src/types/RefSnapshot').ISnapshotChildren} ISnapshotChildren */
 /** @typedef { Map.<number, number> } SnapshotMap */
 
@@ -36,25 +36,25 @@ const VerboseAccess = 0;
 // const VerboseAccess = 2;
 
 /** ###########################################################################
- * {@link BaseDDG}
+ * {@link BasePDG}
  * ##########################################################################*/
 
 /**
- * NOTE: we generally use {@link import(./SummarizedDDG)} instead of this for rendering etc.
+ * NOTE: we generally use {@link import(./SummarizedPDG)} instead of this for rendering etc.
  */
-export default class BaseDDG {
+export default class BasePDG {
   /**
    * @type {string}
    */
   id;
 
   /**
-   * @type {DDGWatchSet}
+   * @type {PDGWatchSet}
    */
   _watchSet;
 
   /**
-   * @type {DDGBounds}
+   * @type {PDGBounds}
    */
   _bounds;
 
@@ -84,8 +84,8 @@ export default class BaseDDG {
    *  ######################################*/
 
   /**
-   * NOTE: {@link DDGTimelineNode#timelineId} indexes this array.
-   * @type {DDGTimelineNode[]}
+   * NOTE: {@link PDGTimelineNode#timelineId} indexes this array.
+   * @type {PDGTimelineNode[]}
    */
   _timelineNodes;
   /**
@@ -94,7 +94,7 @@ export default class BaseDDG {
   _decisionTimelineNodes;
 
   /**
-   * @type {DDGEdge[]}
+   * @type {PDGEdge[]}
    */
   edges;
 
@@ -122,11 +122,11 @@ export default class BaseDDG {
 
   /**
    * 
-   * @param {DDGSet} ddgSet
+   * @param {PDGSet} pdgSet
    */
-  constructor(ddgSet, graphId, applicationId, contextId) {
-    this.logger = newLogger('DDG');
-    this.ddgSet = ddgSet;
+  constructor(pdgSet, graphId, applicationId, contextId) {
+    this.logger = newLogger('PDG');
+    this.pdgSet = pdgSet;
     this.graphId = graphId;
     this.applicationId = applicationId;
     this.contextId = contextId;
@@ -137,7 +137,7 @@ export default class BaseDDG {
    * ##########################################################################*/
 
   get dp() {
-    return this.ddgSet.dp;
+    return this.pdgSet.dp;
   }
 
   get watchSet() {
@@ -183,7 +183,7 @@ export default class BaseDDG {
   }
 
   get root() {
-    return this.timelineNodes[DDGRootTimelineId];
+    return this.timelineNodes[PDGRootTimelineId];
   }
 
   /** ###########################################################################
@@ -199,8 +199,8 @@ export default class BaseDDG {
   }
 
   /**
-   * Warning: does NOT include summarized nodes (i.e. !{@link DDGTimelineNode#og})
-   * @return {DDGTimelineNode[]?}
+   * Warning: does NOT include summarized nodes (i.e. !{@link PDGTimelineNode#og})
+   * @return {PDGTimelineNode[]?}
    */
   getTimelineNodesOfDataNode(dataNodeId) {
     // return this.timelineNodes
@@ -232,8 +232,8 @@ export default class BaseDDG {
    */
   build(watched) {
     // this.selectedSet = inputNodes;
-    this._watchSet = new DDGWatchSet(this, watched);
-    this._bounds = new DDGBounds(this);
+    this._watchSet = new PDGWatchSet(this, watched);
+    this._bounds = new PDGBounds(this);
     this._timelineNodes = [null];
     this._decisionTimelineNodes = [null];
 
@@ -247,7 +247,7 @@ export default class BaseDDG {
     const { bounds } = this;
 
     try {
-      const timelineBuilder = this.timelineBuilder = new DDGTimelineBuilder(this);
+      const timelineBuilder = this.timelineBuilder = new PDGTimelineBuilder(this);
 
       for (let traceId = bounds.minTraceId; traceId <= bounds.maxTraceId; ++traceId) {
         // update control group stack
@@ -426,7 +426,7 @@ export default class BaseDDG {
 
 
   /**
-   * @param {DDGTimelineNode} newNode 
+   * @param {PDGTimelineNode} newNode 
    */
   addNode(newNode) {
     // if (newNode.dataNodeId && this.timelineBuilder.shouldIgnoreDataNode(newNode.dataNodeId)) {
@@ -484,7 +484,7 @@ export default class BaseDDG {
   /**
    * NOTE: this is a hackfix workaround for partial snapshots,
    * since their `dataNodeId` is a hackfix that points to the "wrong" thing.
-   * If you change this, also change {@link BaseDDG#makeSnapshotLabel}!
+   * If you change this, also change {@link BasePDG#makeSnapshotLabel}!
    */
   getPartialSnapshotTraceId(node) {
     const child0Id = node.children[0];
@@ -500,7 +500,7 @@ export default class BaseDDG {
     if (partialChildrenDataNodes) {
       /**
        * Partial snapshots represent a trace → use that for the label.
-       * If you change this, also change {@link BaseDDG#getPartialSnapshotTraceId}!
+       * If you change this, also change {@link BasePDG#getPartialSnapshotTraceId}!
        */
       const trace = this.dp.util.getTrace(partialChildrenDataNodes[0].traceId);
       const label = makeTraceLabel(trace);
@@ -616,7 +616,7 @@ export default class BaseDDG {
     for (const prop of allProps) {
       let dataNode = lastModsByProp[prop];
       /**
-       * @type {DDGTimelineNode}
+       * @type {PDGTimelineNode}
        */
       let newChild;
       if (!dataNode) {
@@ -726,7 +726,7 @@ export default class BaseDDG {
       throw new Error(`Don't use shallow clone for snapshot nodes. Use #deepCloneSnapshot instead.`);
     }
     else {
-      throw new Error(`NYI: cannot clone group or decision nodes - ${DDGTimelineNodeType.nameFrom(originalNode.type)}`);
+      throw new Error(`NYI: cannot clone group or decision nodes - ${PDGTimelineNodeType.nameFrom(originalNode.type)}`);
     }
     return cloned;
   }
@@ -758,7 +758,7 @@ export default class BaseDDG {
    */
   #isIndependentRootNode(potentialRoot, targetNode) {
     const isRoot = !potentialRoot.parentNodeId;
-    if (isRoot && !ddgQueries.isSnapshotDescendant(this, potentialRoot, targetNode)) {
+    if (isRoot && !pdgQueries.isSnapshotDescendant(this, potentialRoot, targetNode)) {
       return true;
     }
     return false;
@@ -769,7 +769,7 @@ export default class BaseDDG {
    * @param {number} refId The refId of the snapshot. For roots, this is `getDataNodeAccessedRefId`, while for children and certain watched roots, it is {@link DataNode.refId}.
    * @param {SnapshotConfig} snapshotCfg
    * @param {RefSnapshotTimelineNode?} parentSnapshot
-   * @param {DDGTimelineNode[]?} partialChildren Optional: partial children of the snapshot to be rendered.
+   * @param {PDGTimelineNode[]?} partialChildren Optional: partial children of the snapshot to be rendered.
    * 
    * @return {RefSnapshotTimelineNode}
    */
@@ -806,7 +806,7 @@ export default class BaseDDG {
     // get modifications on nested refs first
     // → since we are not building upon a previous snapshot, we have to collect everything from scratch
     const fromTraceId = snapshotCfg?.fromTraceId || 0;
-    const rootDataNode = parentSnapshot && ddgHostQueries.getRootDataNode(this, parentSnapshot);
+    const rootDataNode = parentSnapshot && pdgHostQueries.getRootDataNode(this, parentSnapshot);
     const toTraceId = rootDataNode?.traceId || ownDataNode.traceId;
 
     // create snapshot
@@ -842,7 +842,7 @@ export default class BaseDDG {
   /**
    * This is called on any snapshot or snapshot child node.
    * 
-   * @param {DDGTimelineNode} newNode 
+   * @param {PDGTimelineNode} newNode 
    * @param {SnapshotConfig?} snapshotCfg
    * @param {RefSnapshotTimelineNode} parentSnapshot 
    */
@@ -885,7 +885,7 @@ export default class BaseDDG {
   // }
 
   /**
-   * @param {DDGEdge} edge 
+   * @param {PDGEdge} edge 
    */
   #addEdgeToDict(obj, id, edge) {
     let edges = obj[id];
@@ -913,7 +913,7 @@ export default class BaseDDG {
     // if (fromNode.dataNodeId === toNode.dataNodeId) {
     //   this.logger.error(`addEdge problem: ${fromNode.label} → ${toNode.label} (fromNode.dataNodeId === toNode.dataNodeId)`);
     // }
-    const newEdge = new DDGEdge(type, this.edges.length, fromTimelineId, toTimelineId, edgeState);
+    const newEdge = new PDGEdge(type, this.edges.length, fromTimelineId, toTimelineId, edgeState);
     this.edges.push(newEdge);
 
     this.#addEdgeToDict(this.outEdgesByTimelineId, fromTimelineId, newEdge);
@@ -938,15 +938,15 @@ export default class BaseDDG {
   /**
    * future-work: can we move this logic to be used when gathering edges, and not so much later?
    * 
-   * @param {DDGTimelineNode} toNode
-   * @param {DDGTimelineNode} fromNode
+   * @param {PDGTimelineNode} toNode
+   * @param {PDGTimelineNode} fromNode
    */
   shouldAddEdge(fromNode, toNode) {
     // const fromWatched = fromNode.watched;
     const toWatched = toNode.watched;
     // if (fromWatched && toWatched &&
-    //   ddgQueries.isSnapshotRoot(this, fromNode) &&
-    //   ddgQueries.isSnapshotRoot(this, toNode)
+    //   pdgQueries.isSnapshotRoot(this, fromNode) &&
+    //   pdgQueries.isSnapshotRoot(this, toNode)
     // ) {
     //   // don't add edges between watched snapshot ROOTS
     //   return false;
@@ -957,7 +957,7 @@ export default class BaseDDG {
       !fromNode.rootTimelineId ||
 
       // TODO: i forgot why we need to check against root, and not just itself
-      toNode.dataNodeId > ddgHostQueries.getLastDataNodeIdInRoot(this, fromNode) ||
+      toNode.dataNodeId > pdgHostQueries.getLastDataNodeIdInRoot(this, fromNode) ||
 
       // allways allow edges from summary nodes (?)
       !fromNode.og ||
@@ -1029,7 +1029,7 @@ export default class BaseDDG {
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    */
   #shouldTimelineNodeBeAdoptedBySnapshot(node, parentSnapshot) {
     return (
@@ -1066,7 +1066,7 @@ export default class BaseDDG {
    * NOTE: these are very rough heuristics for edge colorization
    */
   getEdgeTypeOfDataNode(fromDataNodeId, toDataNodeId) {
-    // TODO: determine correct DDGEdgeType
+    // TODO: determine correct PDGEdgeType
     let edgeType;
     const fromDataNode = this.dp.util.getDataNode(fromDataNodeId);
     const toDataNode = this.dp.util.getDataNode(toDataNodeId);
@@ -1075,10 +1075,10 @@ export default class BaseDDG {
       isDataNodeDelete(toDataNode.type)
     ) {
       // TODO: this is not very accurate
-      edgeType = DDGEdgeType.Delete;
+      edgeType = PDGEdgeType.Delete;
     }
     else {
-      edgeType = DDGEdgeType.Data;
+      edgeType = PDGEdgeType.Data;
     }
     return edgeType;
   }

@@ -4,17 +4,17 @@ import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import size from 'lodash/size';
 import groupBy from 'lodash/groupBy';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import DataDependencyGraph from '@dbux/data/src/ddg/DataDependencyGraph';
-import ddgQueries from '@dbux/data/src/ddg/ddgQueries';
-import DDGSummaryMode, { isExpandedMode } from '@dbux/data/src/ddg/DDGSummaryMode';
-import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import DataDependencyGraph from '@dbux/data/src/pdg/DataDependencyGraph';
+import pdgQueries from '@dbux/data/src/pdg/pdgQueries';
+import PDGSummaryMode, { isExpandedMode } from '@dbux/data/src/pdg/PDGSummaryMode';
+import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 import { truncateStringDefault, truncateStringShort } from '@dbux/common/src/util/stringUtil';
 import makeTreeItem, { makeTreeChildren, mkTreeItem, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
-import { disposeDDGWebviews, getDDGDot } from '../../webViews/ddgWebView';
+import { disposePDGWebviews, getPDGDot } from '../../webViews/pdgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
 // eslint-disable-next-line max-len
-import { makeDDGNodeDescription, makeDDGNodeLabel, renderEdges, renderDDGNodesItem, renderNodeTree, renderDDGSummaries, renderDDGNode, renderRefGroups, renderVarGroups } from '../../treeViewsShared/ddgTreeViewUtil';
+import { makePDGNodeDescription, makePDGNodeLabel, renderEdges, renderPDGNodesItem, renderNodeTree, renderPDGSummaries, renderPDGNode, renderRefGroups, renderVarGroups } from '../../treeViewsShared/pdgTreeViewUtil';
 import traceSelection from '@dbux/data/src/traceSelection';
 import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 
@@ -30,23 +30,23 @@ function makeArrayLengthLabel(arr, label) {
 }
 
 /** ###########################################################################
- * {@link GlobaDDGNode}
+ * {@link GlobaPDGNode}
  * ##########################################################################*/
 
-export default class GlobaDDGNode extends BaseTreeViewNode {
+export default class GlobaPDGNode extends BaseTreeViewNode {
   static makeLabel(/*app, parent*/) {
     return `PDGs`;
   }
 
-  allDDGs;
+  allPDGs;
 
   init() {
     // hook up events
     allApplications.selection.onApplicationsChanged((selectedApps) => {
       this.refresh();
       for (const app of selectedApps) {
-        allApplications.selection.subscribe(app.dataProvider.ddgs.onSetChanged(this.refresh));
-        allApplications.selection.subscribe(app.dataProvider.ddgs.onGraphUpdate(this.refresh));
+        allApplications.selection.subscribe(app.dataProvider.pdgs.onSetChanged(this.refresh));
+        allApplications.selection.subscribe(app.dataProvider.pdgs.onGraphUpdate(this.refresh));
       }
     });
     this.#handleRefreshOrInit();
@@ -61,10 +61,10 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
     /**
      * @type {DataDependencyGraph[]}
      */
-    this.allDDGs = allApplications.selection.data.collectGlobalStats((dp) => {
-      return dp.ddgs.getAll();
+    this.allPDGs = allApplications.selection.data.collectGlobalStats((dp) => {
+      return dp.pdgs.getAll();
     });
-    this.description = `(${this.allDDGs.length})`;
+    this.description = `(${this.allPDGs.length})`;
   }
 
   handleClick() {
@@ -73,41 +73,41 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    if (!this.allDDGs.length) {
-      return [makeTreeItem('(no DDG is open)')];
+    if (!this.allPDGs.length) {
+      return [makeTreeItem('(no PDG is open)')];
     }
-    return this.allDDGs.map((ddg) => {
-      const ddgItem = this.buildDDGNode(ddg);
-      return ddgItem;
+    return this.allPDGs.map((pdg) => {
+      const pdgItem = this.buildPDGNode(pdg);
+      return pdgItem;
     });
   }
 
   /**
    * 
-   * @param {DataDependencyGraph} ddg 
+   * @param {DataDependencyGraph} pdg 
    */
-  buildDDGNode(ddg) {
-    const { graphId, og } = ddg;
+  buildPDGNode(pdg) {
+    const { graphId, og } = pdg;
     const {
       timelineNodes,
       edges: allEdges,
       nodeSummaries
-    } = ddg.getRenderData();
+    } = pdg.getRenderData();
 
     const self = this; // hackfix
 
-    const ddgItem = makeTreeItem(() => ({
+    const pdgItem = makeTreeItem(() => ({
       label: graphId,
       children: () => (makeTreeItems(
         function Group_Tree() {
           const root = timelineNodes[1];
-          const rootItem = renderNodeTree(ddg, root, {
+          const rootItem = renderNodeTree(pdg, root, {
             predicate: (node) => isControlGroupTimelineNode(node.type),
             propsFactory: (node, children) => {
-              const summaryMode = ddg.summaryModes[node.timelineId];
+              const summaryMode = pdg.summaryModes[node.timelineId];
               const expanded = isExpandedMode(summaryMode) ||
                 Object.values(children).some(c => c.collapsibleState === TreeItemCollapsibleState.Expanded);
-              const cannotExpand = !expanded && !ddgQueries.canNodeExpand(ddg, node);
+              const cannotExpand = !expanded && !pdgQueries.canNodeExpand(pdg, node);
               const collapsibleState = (expanded) ?
                 TreeItemCollapsibleState.Expanded :
                 cannotExpand ?
@@ -115,7 +115,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                   TreeItemCollapsibleState.Collapsed;
               return {
                 handleClick: () => {
-                  ddg.toggleSummaryMode(node.timelineId);
+                  pdg.toggleSummaryMode(node.timelineId);
                 },
                 // collapsibleState: TreeItemCollapsibleState.Expanded
                 collapsibleState
@@ -123,31 +123,31 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
             }
           });
 
-          // console.log(`ROOT EXPANDED ${DDGSummaryMode.nameFrom(ddg.summaryModes[1])} ${rootItem.collapsibleState === TreeItemCollapsibleState.Expanded}`);
+          // console.log(`ROOT EXPANDED ${PDGSummaryMode.nameFrom(pdg.summaryModes[1])} ${rootItem.collapsibleState === TreeItemCollapsibleState.Expanded}`);
           return rootItem;
         },
 
         // function Detailed_Tree() {
         //   const root = timelineNodes[1];
-        //   return renderNodeTree(ddg, root);
+        //   return renderNodeTree(pdg, root);
         // },
 
         function Visible_Nodes() {
-          const visibleNodes = ddgQueries.getAllVisibleNodes(ddg);
-          return renderDDGNodesItem(ddg, visibleNodes, 'Visible Nodes');
+          const visibleNodes = pdgQueries.getAllVisibleNodes(pdg);
+          return renderPDGNodesItem(pdg, visibleNodes, 'Visible Nodes');
         },
         function Visible_Edges() {
           const actualEdges = allEdges.filter(Boolean);
-          return renderEdges(ddg, actualEdges, 'Visible Edges');
+          return renderEdges(pdg, actualEdges, 'Visible Edges');
         },
 
         function All_Nodes() {
           const nodes = timelineNodes.filter(Boolean);
-          return renderDDGNodesItem(ddg, nodes, 'All Nodes');
+          return renderPDGNodesItem(pdg, nodes, 'All Nodes');
         },
         function All_Edges() {
           const actualEdges = og.edges.filter(Boolean);
-          return renderEdges(ddg, actualEdges, 'All Edges');
+          return renderEdges(pdg, actualEdges, 'All Edges');
         },
         function All_In_Edges() {
           return {
@@ -155,9 +155,9 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
               return Object.entries(og.inEdgesByTimelineId)
                 .map(([nodeId, edgeIds]) => {
                   const edges = edgeIds.map(id => og.edges[id]);
-                  return renderEdges(ddg, edges,
-                    makeDDGNodeLabel(ddg, nodeId),
-                    makeDDGNodeDescription(ddg, timelineNodes[nodeId])
+                  return renderEdges(pdg, edges,
+                    makePDGNodeLabel(pdg, nodeId),
+                    makePDGNodeDescription(pdg, timelineNodes[nodeId])
                   );
                 });
             },
@@ -172,9 +172,9 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
               return Object.entries(og.outEdgesByTimelineId)
                 .map(([nodeId, edgeIds]) => {
                   const edges = edgeIds.map(id => og.edges[id]);
-                  return renderEdges(ddg, edges,
-                    makeDDGNodeLabel(ddg, nodeId),
-                    makeDDGNodeDescription(ddg, timelineNodes[nodeId])
+                  return renderEdges(pdg, edges,
+                    makePDGNodeLabel(pdg, nodeId),
+                    makePDGNodeDescription(pdg, timelineNodes[nodeId])
                   );
                 });
             },
@@ -186,7 +186,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
         function Node_Summaries() {
           return {
             children() {
-              return renderDDGSummaries(ddg, nodeSummaries);
+              return renderPDGSummaries(pdg, nodeSummaries);
             },
             props: {
               description: `(${size(nodeSummaries)})`
@@ -197,7 +197,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
          * Summarizable Writes
          * ##########################################################################*/
         function Summarizable_Writes() {
-          const { dp } = ddg;
+          const { dp } = pdg;
 
           return {
             children() {
@@ -206,12 +206,12 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
               const getAccessedRefId = timelineNode => dp.util.getDataNodeAccessedRefId(timelineNode.dataNodeId);
               const accessedRefIds = new Set(summarizableNodes.map(getAccessedRefId));
               const accessedRefGroups = renderRefGroups(
-                ddg,
+                pdg,
                 summarizableNodes,
                 getAccessedRefId
               );
               const otherRefGroups = renderRefGroups(
-                ddg,
+                pdg,
                 summarizableNodes,
                 timelineNode => {
                   const { refId } = dp.util.getDataNode(timelineNode.dataNodeId);
@@ -220,7 +220,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                 }
               );
               let { items: varItems, groups: varGroups } = renderVarGroups(
-                ddg,
+                pdg,
                 summarizableNodes.filter(n => {
                   const { refId } = dp.util.getDataNode(n.dataNodeId);
                   const ref = dp.collections.values.getById(refId);
@@ -228,7 +228,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                 })
               );
               const { items: functionVarItems, groups: functionGroups } = renderVarGroups(
-                ddg,
+                pdg,
                 summarizableNodes.filter(n => {
                   const { refId } = dp.util.getDataNode(n.dataNodeId);
                   const ref = dp.collections.values.getById(refId);
@@ -285,7 +285,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
           return {
             props: {
               async handleClick() {
-                let dot = await getDDGDot(ddg);
+                let dot = await getPDGDot(pdg);
                 if (!dot) {
                   try {
                     this.treeNodeProvider.refresh();
@@ -293,7 +293,7 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
                   catch (err) {
                     // ignore err
                   }
-                  dot = await getDDGDot();
+                  dot = await getPDGDot();
                 }
                 if (dot) {
                   await renderStringInNewEditor('dot', dot);
@@ -307,13 +307,13 @@ export default class GlobaDDGNode extends BaseTreeViewNode {
       )),
       props: {
         /**
-         * Used for reveal magic in `revealDDG`.
+         * Used for reveal magic in `revealPDG`.
          */
-        ddg,
+        pdg,
         collapsibleState: TreeItemCollapsibleState.Expanded
       }
     }));
 
-    return ddgItem;
+    return pdgItem;
   }
 }

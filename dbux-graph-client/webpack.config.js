@@ -187,7 +187,7 @@ module.exports = (env, argv) => {
     entry: {
       'graph.client': path.join(src, 'graph.client.js'),
       'pathways.client': path.join(src, 'pathways.client.js'),
-      'ddg.client': path.join(src, 'ddg.client.js'),
+      'pdg.client': path.join(src, 'pdg.client.js'),
     },
     output: {
       path: webOutputFolder,

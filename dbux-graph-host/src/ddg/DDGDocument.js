@@ -1,15 +1,15 @@
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import NanoEvents from 'nanoevents';
-import DDGSummaryMode from '@dbux/data/src/ddg/DDGSummaryMode';
+import PDGSummaryMode from '@dbux/data/src/pdg/PDGSummaryMode';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // import allApplications from '@dbux/data/src/applications/allApplications';
 
 const lastTraceInfo = {};
 
-export default class DDGDocument extends HostComponentEndpoint {
-  get ddg() {
-    return this.hostOnlyState.ddg;
+export default class PDGDocument extends HostComponentEndpoint {
+  get pdg() {
+    return this.hostOnlyState.pdg;
   }
   
   // ###########################################################################
@@ -49,7 +49,7 @@ export default class DDGDocument extends HostComponentEndpoint {
 
   createOwnComponents() {
     this.toolbar = this.children.createComponent('Toolbar');
-    this.timelineView = this.children.createComponent('DDGTimelineView');
+    this.timelineView = this.children.createComponent('PDGTimelineView');
   }
 
   /** ###########################################################################
@@ -111,11 +111,11 @@ export default class DDGDocument extends HostComponentEndpoint {
 
   makeInitialState(state) {
     const summaryIconUris = {
-      // [DDGSummaryMode.Hide]: this.getIconUri('hide.svg'),
-      [DDGSummaryMode.CollapseSummary]: this.makeSafeIconUri('minus.svg'),
-      // [DDGSummaryMode.ExpandSelf]: this.makeSafeIconUri('stack.svg'),
-      [DDGSummaryMode.ExpandSubgraph]: this.makeSafeIconUri('listItem.svg'),
-      // [DDGSummaryMode.HideChildren]: this.getIconUri('hide-children.svg'),
+      // [PDGSummaryMode.Hide]: this.getIconUri('hide.svg'),
+      [PDGSummaryMode.CollapseSummary]: this.makeSafeIconUri('minus.svg'),
+      // [PDGSummaryMode.ExpandSelf]: this.makeSafeIconUri('stack.svg'),
+      [PDGSummaryMode.ExpandSubgraph]: this.makeSafeIconUri('listItem.svg'),
+      // [PDGSummaryMode.HideChildren]: this.getIconUri('hide-children.svg'),
     };
     const settingIconUris = {
       // TODO?

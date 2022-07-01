@@ -1,14 +1,14 @@
 import isEmpty from 'lodash/isEmpty';
-import { isControlGroupTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/DDGTimelineNodeType';
+import { isControlGroupTimelineNode, isRepeatedRefTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import UniqueRefId from '@dbux/common/src/types/constants/UniqueRefId';
 import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
-import ddgQueries from './ddgQueries';
-import { DDGRootTimelineId } from './constants';
-import DDGEdgeType from './DDGEdgeType';
+import pdgQueries from './pdgQueries';
+import { PDGRootTimelineId } from './constants';
+import PDGEdgeType from './PDGEdgeType';
 
-/** @typedef {import('./ddgQueries').RenderState} RenderState */
+/** @typedef {import('./pdgQueries').RenderState} RenderState */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DotBuilder');
@@ -115,12 +115,12 @@ export default class DotBuilder {
    * getters + generators
    * ##########################################################################*/
 
-  get ddg() {
+  get pdg() {
     return this.renderState;
   }
 
   get root() {
-    return this.renderState.timelineNodes?.[DDGRootTimelineId];
+    return this.renderState.timelineNodes?.[PDGRootTimelineId];
   }
 
   getNode(timelineId) {
@@ -128,14 +128,14 @@ export default class DotBuilder {
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    */
   isRootNode(node) {
     return this.root === node;
   }
 
   /**
-   * @param {DDGTimelineNode} node 
+   * @param {PDGTimelineNode} node 
    */
   makeNodeId(node) {
     if (node.parentNodeId) {
@@ -182,7 +182,7 @@ export default class DotBuilder {
   }
 
   nodeOutlineColor(timelineId) {
-    const node = this.ddg.timelineNodes[timelineId];
+    const node = this.pdg.timelineNodes[timelineId];
     if (node.watched) {
       return `${Colors.watchedNodeOutline}`;
     }
@@ -191,7 +191,7 @@ export default class DotBuilder {
 
 
   nodeOutlineColorAttr(timelineId) {
-    const node = this.ddg.timelineNodes[timelineId];
+    const node = this.pdg.timelineNodes[timelineId];
     if (node.watched) {
       return `color="${Colors.watchedNodeOutline}"`;
     }
@@ -310,23 +310,23 @@ export default class DotBuilder {
   }
 
   node(node, force = false) {
-    const { ddg } = this;
-    const show = force || ddgQueries.isVisible(ddg, node);
-    // if (ddgQueries.isExpandedGroupNode(ddg, node)) {
+    const { pdg } = this;
+    const show = force || pdgQueries.isVisible(pdg, node);
+    // if (pdgQueries.isExpandedGroupNode(pdg, node)) {
     // if (isControlGroupTimelineNode(node.type)) {
-    //   console.debug(`node "${node.label}" #${node.timelineId}, v=${show}, sum=${ddgQueries.isNodeSummarized(ddg, node)}, expgroup=${ddgQueries.isExpandedGroupNode(ddg, node)}`);
+    //   console.debug(`node "${node.label}" #${node.timelineId}, v=${show}, sum=${pdgQueries.isNodeSummarized(pdg, node)}, expgroup=${pdgQueries.isExpandedGroupNode(pdg, node)}`);
     // }
-    if (ddgQueries.isNodeSummarized(ddg, node)) {
+    if (pdgQueries.isNodeSummarized(pdg, node)) {
       this.nodeSummary(node);
     }
     else if (show) {
-      if (ddgQueries.isExpandedGroupNode(ddg, node)) {
+      if (pdgQueries.isExpandedGroupNode(pdg, node)) {
         this.controlGroup(node);
       }
-      else if (ddgQueries.isSnapshot(ddg, node)) {
+      else if (pdgQueries.isSnapshot(pdg, node)) {
         this.refSnapshotRoot(node);
       }
-      else if (ddgQueries.isDeleteNode(ddg, node)) {
+      else if (pdgQueries.isDeleteNode(pdg, node)) {
         this.deleteNode(node);
       }
       else {
@@ -335,21 +335,21 @@ export default class DotBuilder {
       this.addNodeToPullDownStructure(node);
     }
     else if (isControlGroupTimelineNode(node.type)) {
-      // console.log(`Control group: ${node}, show=${show}, summary=${ddgQueries.getNodeSummaryMode(ddg, node)}`);
+      // console.log(`Control group: ${node}, show=${show}, summary=${pdgQueries.getNodeSummaryMode(pdg, node)}`);
       // NOTE: this is to render Watched node inside of hidden groups
       this.nodesByIds(node.children);
     }
   }
 
   _groupAttrs(node) {
-    // const { ddg } = this;
+    // const { pdg } = this;
     const { timelineId, label } = node;
     this.command(this.nodeIdAttr(timelineId));
     // this.label(node.label || '');
     // NOTE: mode is hacked in in `decorateNode`
 
-    // const mode = ddgQueries.getNodeSummaryMode(ddg, node);
-    // const modeEl = makeSummaryLabel(ddg, mode);
+    // const mode = pdgQueries.getNodeSummaryMode(pdg, node);
+    // const modeEl = makeSummaryLabel(pdg, mode);
     // ${modeEl}
     this.label(label || '()');
     this.subgraphAttrs();
@@ -379,8 +379,8 @@ export default class DotBuilder {
   }
 
   nodeSummary(node) {
-    const { ddg } = this;
-    // if (ddgQueries.doesNodeHaveSummary(ddg, node)) {
+    const { pdg } = this;
+    // if (pdgQueries.doesNodeHaveSummary(pdg, node)) {
     // render summary nodes
     this.summaryGroup(node);
     // }
@@ -391,11 +391,11 @@ export default class DotBuilder {
   }
 
   summaryGroup(node) {
-    const { ddg } = this;
-    const { nodeSummaries } = ddg;
+    const { pdg } = this;
+    const { nodeSummaries } = pdg;
 
     const summary = nodeSummaries[node.timelineId];
-    const roots = ddgQueries.getSummaryRoots(ddg, summary);
+    const roots = pdgQueries.getSummaryRoots(pdg, summary);
     const { timelineId } = node;
     this.fragment(`subgraph cluster_summary_${timelineId} {`);
     this.indentLevel += 1;
@@ -423,12 +423,12 @@ export default class DotBuilder {
    * A root of a snapshot
    */
   refSnapshotRoot(node, label = null) {
-    const { ddg } = this;
+    const { pdg } = this;
     const { timelineId } = node;
 
     this.fragment(`subgraph cluster_ref_${timelineId} {`);
     this.indentLevel += 1;
-    const isNesting = ddgQueries.isNestingSnapshot(ddg, node);
+    const isNesting = pdgQueries.isNestingSnapshot(pdg, node);
     const color = !isNesting ?
       'transparent' : // only root has outer border
       node.watched ?
@@ -497,7 +497,7 @@ export default class DotBuilder {
   edge(edge) {
     const from = this.makeNodeId(this.getNode(edge.from));
     const to = this.makeNodeId(this.getNode(edge.to));
-    const colorOverride = edge.type === DDGEdgeType.Delete ? `color=${Colors.deleteEdge}` : '';
+    const colorOverride = edge.type === PDGEdgeType.Delete ? `color=${Colors.deleteEdge}` : '';
     // const debugAttrs = Verbose && `${this.makeLabel(edge.edgeId)}` || '';
     const debugAttrs = '';
     const attrs = this.makeAttrs(
@@ -515,7 +515,7 @@ export default class DotBuilder {
   makeNestedRefValueString(node) {
     if (node.repeatedTimelineId) {
       // render original instead
-      node = this.ddg.timelineNodes[node.repeatedTimelineId];
+      node = this.pdg.timelineNodes[node.repeatedTimelineId];
     }
 
     if (!node.children) {
@@ -524,7 +524,7 @@ export default class DotBuilder {
 
     let s = Object.values(node.children)
       .map(childId => {
-        const child = this.ddg.timelineNodes[childId];
+        const child = this.pdg.timelineNodes[childId];
         if (child.value !== undefined) {
           return child.value;
         }
@@ -539,11 +539,11 @@ export default class DotBuilder {
 
   makeNodeValueString(node) {
     let s;
-    if (ddgQueries.isSnapshot(this.ddg, node)) {
+    if (pdgQueries.isSnapshot(this.pdg, node)) {
       s = this.makeNestedRefValueString(node);
     }
     else if (isRepeatedRefTimelineNode(node.type)) {
-      const linkNode = this.ddg.timelineNodes[node.repeatedTimelineId];
+      const linkNode = this.pdg.timelineNodes[node.repeatedTimelineId];
       s = this.makeNestedRefValueString(linkNode) + node.label;
     }
     else if (node.refId) {
@@ -564,10 +564,10 @@ export default class DotBuilder {
   // }
 
   /**
-   * @param {DDGTimelineNode} node
+   * @param {PDGTimelineNode} node
    */
   isNodeRecordNode(node) {
-    return ddgQueries.isSnapshot(this.ddg, node) ?
+    return pdgQueries.isSnapshot(this.pdg, node) ?
       isEmpty(node.children) :
       (!!node.varAccess || node.value !== node.label); // hackfix heuristic;
   }
@@ -616,7 +616,7 @@ export default class DotBuilder {
   }
 
   // /**
-  //  * @param {DDGTimelineNode} node 
+  //  * @param {PDGTimelineNode} node 
   //  */
   // snapshotRecord(node) {
   //   let { timelineId, label, children } = node;
@@ -639,18 +639,18 @@ export default class DotBuilder {
    * Summary nodes are exempted.
    */
   isDisconnectedSnapshot(node) {
-    const { ddg } = this;
-    return ddgQueries.isSnapshot(ddg, node) &&
+    const { pdg } = this;
+    return pdgQueries.isSnapshot(pdg, node) &&
       !isConnected(node);
   }
 
   /**
    * Produce snapshot table with prop and value for each entry.
-   * @param {DDGTimelineNode} node
+   * @param {PDGTimelineNode} node
    * @see https://graphviz.org/doc/info/shapes.html#html-like-label-examples
    */
   snapshotTable(node, colorOverride) {
-    const { ddg, ddg: { timelineNodes } } = this;
+    const { pdg, pdg: { timelineNodes } } = this;
 
     const { timelineId, label, parentNodeId, children } = node;
     const hasLabel = !parentNodeId && label !== undefined;
@@ -669,7 +669,7 @@ export default class DotBuilder {
         .map(([prop, childId]) => {
           const child = timelineNodes[childId];
           prop = fixProp(prop);
-          if (ddgQueries.isDeleteNode(this.ddg, child)) {
+          if (pdgQueries.isDeleteNode(this.pdg, child)) {
             return this.makeSnapshotDeleteCell(childId, prop);
           }
           return this.makePropValueCell(childId, prop);
@@ -688,7 +688,7 @@ export default class DotBuilder {
       // add child snapshots separately
       for (const [prop, childId] of childEntries) {
         const child = timelineNodes[childId];
-        if (ddgQueries.isSnapshot(ddg, child)) {
+        if (pdgQueries.isSnapshot(pdg, child)) {
           if (
             // not empty
             isEmpty(child.children) ||
@@ -760,7 +760,7 @@ export default class DotBuilder {
   pullNodes = [];
 
   addNodeToPullDownStructure(node) {
-    if (!this.ddg.settings.extraVertical) {
+    if (!this.pdg.settings.extraVertical) {
       return;
     }
     if (!isControlGroupTimelineNode(node.type)) {
@@ -832,7 +832,7 @@ function makePullId(id) {
  * public
  *  #########################################################################*/
 
-export function buildDot(ddg) {
-  const dotBuilder = new DotBuilder(ddg);
+export function buildDot(pdg) {
+  const dotBuilder = new DotBuilder(pdg);
   return dotBuilder.build();
 }

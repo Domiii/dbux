@@ -5,12 +5,12 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { buildDot } from '@dbux/data/src/ddg/DotBuilder';
+import { buildDot } from '@dbux/data/src/pdg/DotBuilder';
 import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import isPlainObject from 'lodash/isPlainObject';
-import { DDGRootTimelineId } from '@dbux/data/src/ddg/constants';
-import { RootSummaryModes } from '@dbux/data/src/ddg/DDGSummaryMode';
-import DDGSettings from '@dbux/data/src/ddg/DDGSettings';
+import { PDGRootTimelineId } from '@dbux/data/src/pdg/constants';
+import { RootSummaryModes } from '@dbux/data/src/pdg/PDGSummaryMode';
+import PDGSettings from '@dbux/data/src/pdg/PDGSettings';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { showTextInNewFile } from '../codeUtil/codeNav';
@@ -47,46 +47,46 @@ export default class PDGGallery {
     return pathResolve(this.galleryDataRoot, chapterGroup, chapter, id, ...segments);
   }
 
-  async importOrRunDDGApplication(exercise) {
+  async importOrRunPDGApplication(exercise) {
     const { id } = exercise;
     const appZipFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: id });
-    let ddgArgs;
+    let pdgArgs;
     if (fs.existsSync(appZipFilePath)) {
       // cannot find parsed data in exercise.js, try to import application and parse again
       const app = await importApplicationFromFile(appZipFilePath);
-      ddgArgs = this.controller.findDDGContextIdInApp(app, exercise);
+      pdgArgs = this.controller.findPDGContextIdInApp(app, exercise);
 
       // store results
       const config = this.controller.exerciseConfigsByName.get(exercise.name);
-      exercise.ddgs = ddgArgs;
-      config.ddgs = ddgArgs;
+      exercise.pdgs = pdgArgs;
+      config.pdgs = pdgArgs;
       this.controller.writeExerciseJs();
     }
     else {
-      await this.controller.runAndExportDDGApplication(exercise);
-      ddgArgs = exercise.ddgs;
+      await this.controller.runAndExportPDGApplication(exercise);
+      pdgArgs = exercise.pdgs;
     }
-    return ddgArgs;
+    return pdgArgs;
   }
 
-  async getAllExerciseDDGArgs(exercise) {
+  async getAllExercisePDGArgs(exercise) {
     allApplications.clear();
-    // let ddgArgs;
-    // // hackfix: old ddg data does not contain testLoc, algoLoc data
-    // // if (exercise.ddgs) {
-    // if (exercise.ddgs && exercise.ddgs[0]?.algoLoc && exercise.ddgs[0]?.testLoc) {
+    // let pdgArgs;
+    // // hackfix: old pdg data does not contain testLoc, algoLoc data
+    // // if (exercise.pdgs) {
+    // if (exercise.pdgs && exercise.pdgs[0]?.algoLoc && exercise.pdgs[0]?.testLoc) {
     //   // use parsed data
-    //   ddgArgs = exercise.ddgs;
+    //   pdgArgs = exercise.pdgs;
     // }
     // else {
-    //   ddgArgs = this.importOrRunDDGApplication(exercise);
+    //   pdgArgs = this.importOrRunPDGApplication(exercise);
     // }
 
-    const ddgArgs = await this.importOrRunDDGApplication(exercise);
+    const pdgArgs = await this.importOrRunPDGApplication(exercise);
 
     // only pick the middle one for now
-    // return [ddgArgs[Math.floor(ddgArgs.length / 2)]];
-    return ddgArgs;
+    // return [pdgArgs[Math.floor(pdgArgs.length / 2)]];
+    return pdgArgs;
   }
 
   getPDGRenderDataUniqueId(exercise, renderDataId) {
@@ -94,7 +94,7 @@ export default class PDGGallery {
     return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
   }
 
-  getPDGScreenshotData(dp, exercise, ddgArg) {
+  getPDGScreenshotData(dp, exercise, pdgArg) {
     // generate screenshot configs
     const galleryConfig = exercise.gallery;
     let screenshotConfigs;
@@ -106,7 +106,7 @@ export default class PDGGallery {
     }
     else {
       screenshotConfigs = RootSummaryModes.map((rootSummaryMode) => {
-        const settings = new DDGSettings();
+        const settings = new PDGSettings();
         settings.extraVertical = true;
         return {
           rootSummaryMode,
@@ -125,11 +125,11 @@ export default class PDGGallery {
       const screenshotConfig = screenshotConfigs[k];
       const { settings, rootSummaryMode } = screenshotConfig;
       try {
-        const ddg = dp.ddgs.getOrCreateDDG(ddgArg);
-        ddg.updateSettings(settings);
-        ddg.setSummaryMode(DDGRootTimelineId, rootSummaryMode);
+        const pdg = dp.pdgs.getOrCreatePDG(pdgArg);
+        pdg.updateSettings(settings);
+        pdg.setSummaryMode(PDGRootTimelineId, rootSummaryMode);
 
-        const dot = buildDot(ddg);
+        const dot = buildDot(pdg);
 
         if (dot === lastDot) {
           screenshots.push({
@@ -156,34 +156,34 @@ export default class PDGGallery {
     return screenshots;
   }
 
-  getPDGRenderData(exercise, ddgArgs) {
+  getPDGRenderData(exercise, pdgArgs) {
     let renderDataId = 0;
     const PDGRenderData = [];
 
-    for (let j = 0; j < ddgArgs.length; j++) {
-      const ddgArg = ddgArgs[j];
-      const { ddgTitle } = ddgArg;
+    for (let j = 0; j < pdgArgs.length; j++) {
+      const pdgArg = pdgArgs[j];
+      const { pdgTitle } = pdgArg;
       const id = ++renderDataId;
-      const app = allApplications.getById(ddgArg.applicationUuid);
+      const app = allApplications.getById(pdgArg.applicationUuid);
       const dp = app.dataProvider;
 
-      // check if we can build ddg
-      const failedReason = dp.ddgs.getCreateDDGFailureReason(ddgArg);
+      // check if we can build pdg
+      const failedReason = dp.pdgs.getCreatePDGFailureReason(pdgArg);
       if (failedReason) {
         PDGRenderData.push({
           success: false,
           failedReason,
-          ddgTitle,
+          pdgTitle,
         });
       }
       else {
-        const screenshots = this.getPDGScreenshotData(dp, exercise, ddgArg);
+        const screenshots = this.getPDGScreenshotData(dp, exercise, pdgArg);
         PDGRenderData.push({
           id,
-          ddgTitle,
+          pdgTitle,
           uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
-          testLoc: ddgArg.testLoc,
-          algoLoc: ddgArg.algoLoc,
+          testLoc: pdgArg.testLoc,
+          algoLoc: pdgArg.algoLoc,
           screenshots,
         });
       }
@@ -216,10 +216,10 @@ export default class PDGGallery {
         }
 
         try {
-          const ddgArgs = await this.getAllExerciseDDGArgs(exercise);
+          const pdgArgs = await this.getAllExercisePDGArgs(exercise);
 
           progress.report({ message: `Exercise: "${exercise.label}" (${i}/${exercises.length})` });
-          const PDGRenderData = this.getPDGRenderData(exercise, ddgArgs);
+          const PDGRenderData = this.getPDGRenderData(exercise, pdgArgs);
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(PDGRenderData, null, 2));
         }
         catch (err) {
@@ -232,7 +232,7 @@ export default class PDGGallery {
         }
       }
     }, { title: `Generating gallery` });
-    // log(`gallery.getAllExerciseDDGArgs() = `, args);
+    // log(`gallery.getAllExercisePDGArgs() = `, args);
   }
 
   generateGraphsJS() {
@@ -275,7 +275,7 @@ export default class PDGGallery {
             id: exerciseId,
             label,
             name,
-            ddgs: importVariableName
+            pdgs: importVariableName
           };
           chapter.exercises.push(exercise);
           importData.push({ importVariableName, importFilePath: pdgFileImportPath });
@@ -290,7 +290,7 @@ export default class PDGGallery {
     importData.forEach(({ importVariableName, importFilePath }) => output += `import ${importVariableName} from '${importFilePath}';\n`);
     output += '\n';
     output += 'export default ';
-    const exportString = JSON.stringify(exportData, null, 2).replaceAll(/"ddgs": "(pdg\d*)"/g, '"ddgs": $1');
+    const exportString = JSON.stringify(exportData, null, 2).replaceAll(/"pdgs": "(pdg\d*)"/g, '"pdgs": $1');
     output += exportString;
 
     const graphJSPath = pathJoin(this.galleryDataRoot, 'graphs.js');
@@ -355,12 +355,12 @@ export default class PDGGallery {
       };
       if (!ignore) {
         // read pdgData.json
-        if (!chapter.ddgSamples) {
-          logError(`chapter "${name}" has not configure ddgSamples yet`);
+        if (!chapter.pdgSamples) {
+          logError(`chapter "${name}" has not configure pdgSamples yet`);
           continue;
         }
         else {
-          for (const { exerciseName, ddgTitle } of chapter.ddgSamples) {
+          for (const { exerciseName, pdgTitle } of chapter.pdgSamples) {
             const exercise = this.controller.exerciseList.getByName(exerciseName);
             const renderDataFilePath = this.getExerciseFolder(exercise, 'pdgData.json');
             const pdgData = JSON.parse(fs.readFileSync(renderDataFilePath));
@@ -384,14 +384,14 @@ export default class PDGGallery {
         success: false,
         failedReason: 'TODO',
         gallery: {
-          ddgSamples: [
+          pdgSamples: [
             {
               exerciseName: 'TODO',
-              ddgTitle: 'TODO'
+              pdgTitle: 'TODO'
             },
             {
               exerciseName: 'TODO',
-              ddgTitle: 'TODO'
+              pdgTitle: 'TODO'
             },
           ]
         },

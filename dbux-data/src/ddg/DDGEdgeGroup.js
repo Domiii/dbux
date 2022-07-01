@@ -1,8 +1,8 @@
-import DDGEdge from './DDGEdge';
+import PDGEdge from './PDGEdge';
 
-export default class DDGEdgeGroup extends DDGEdge {
+export default class PDGEdgeGroup extends PDGEdge {
   /**
-   * @type {DDGEdge[]}
+   * @type {PDGEdge[]}
    */
   edges;
 
