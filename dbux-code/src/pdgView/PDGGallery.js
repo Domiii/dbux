@@ -18,7 +18,7 @@ import { translate } from '../lang';
 import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default}Exercise*/
-/** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
+/** @typedef {import('./pDGViewController').default} PDGViewController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PDGGallery');
@@ -27,7 +27,7 @@ const PDGFileName = 'pdgData.json';
 
 export default class PDGGallery {
   /**
-   * @type {ChapterListBuilderViewController} 
+   * @type {PDGViewController} 
    */
   controller;
 
@@ -52,7 +52,7 @@ export default class PDGGallery {
     const appZipFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: id });
     let pdgArgs;
     if (fs.existsSync(appZipFilePath)) {
-      // cannot find parsed data in exercise.js, try to import application and parse again
+      // get data from application file
       const app = await importApplicationFromFile(appZipFilePath);
       pdgArgs = this.controller.findPDGContextIdInApp(app, exercise);
 
@@ -63,6 +63,7 @@ export default class PDGGallery {
       this.controller.writeExerciseJs();
     }
     else {
+      // run app first
       await this.controller.runAndExportPDGApplication(exercise);
       pdgArgs = exercise.pdgs;
     }
@@ -156,34 +157,45 @@ export default class PDGGallery {
     return screenshots;
   }
 
-  getPDGRenderData(exercise, pdgArgs) {
+  getPDGRenderData(exercise, allPdgArgs) {
     let renderDataId = 0;
     const PDGRenderData = [];
 
-    for (let j = 0; j < pdgArgs.length; j++) {
-      const pdgArg = pdgArgs[j];
-      const { pdgTitle } = pdgArg;
-      const id = ++renderDataId;
-      const app = allApplications.getById(pdgArg.applicationUuid);
+    for (let j = 0; j < allPdgArgs.length; j++) {
+      const pdgArgs = allPdgArgs[j];
+      const { pdgTitle } = pdgArgs;
+      const renderId = ++renderDataId;
+      const app = allApplications.getById(pdgArgs.applicationUuid);
       const dp = app.dataProvider;
 
       // check if we can build pdg
-      const failedReason = dp.pdgs.getCreatePDGFailureReason(pdgArg);
+      const failedReason = dp.pdgs.getCreatePDGFailureReason(pdgArgs);
+      const {
+        chapterGroup,
+        chapter,
+        algo,
+      } = exercise;
       if (failedReason) {
         PDGRenderData.push({
+          chapterGroup,
+          chapter,
+          algo,
           success: false,
           failedReason,
           pdgTitle,
         });
       }
       else {
-        const screenshots = this.getPDGScreenshotData(dp, exercise, pdgArg);
+        const screenshots = this.getPDGScreenshotData(dp, exercise, pdgArgs);
         PDGRenderData.push({
-          id,
+          id: renderId,
           pdgTitle,
-          uniqueId: this.getPDGRenderDataUniqueId(exercise, id),
-          testLoc: pdgArg.testLoc,
-          algoLoc: pdgArg.algoLoc,
+          uniqueId: this.getPDGRenderDataUniqueId(exercise, renderId),
+          chapterGroup,
+          chapter,
+          algo,
+          testLoc: pdgArgs.testLoc,
+          algoLoc: pdgArgs.algoLoc,
           screenshots,
         });
       }
@@ -204,6 +216,7 @@ export default class PDGGallery {
         if (exercise.gallery === false) {
           continue;
         }
+        progress.report({ message: `Exercise ${i + 1}/${exercises.length}: "${exercise.label}"` });
 
         const exerciseFolderPath = this.getExerciseFolder(exercise);
         const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
@@ -217,8 +230,6 @@ export default class PDGGallery {
 
         try {
           const pdgArgs = await this.getAllExercisePDGArgs(exercise);
-
-          progress.report({ message: `Exercise: "${exercise.label}" (${i}/${exercises.length})` });
           const PDGRenderData = this.getPDGRenderData(exercise, pdgArgs);
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(PDGRenderData, null, 2));
         }

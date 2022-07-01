@@ -1,3 +1,4 @@
+import sortBy from 'lodash/sortBy';
 import { commands, TreeItemCollapsibleState, window } from 'vscode';
 import fs from 'fs';
 import { basename, dirname } from 'path';
@@ -15,7 +16,7 @@ import { getCurrentResearch } from '../research/Research';
 import { transformFiles } from '../../../dbux-common-node/src/util/babelUtil';
 import { translate } from '../lang';
 
-/** @typedef {import('./chapterListBuilderViewController').default} ChapterListBuilderViewController */
+/** @typedef {import('./pDGViewController').default} PDGViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
 // eslint-disable-next-line no-unused-vars
@@ -30,7 +31,7 @@ const CustomPatchByChapter = {
 
 class ToolNode extends BaseTreeViewNode {
   /**
-   * @type {ChapterListBuilderViewController}
+   * @type {PDGViewController}
    */
   get controller() {
     return this.treeNodeProvider.controller;
@@ -46,7 +47,7 @@ class ToolNode extends BaseTreeViewNode {
 
 class GenerateListNode extends ToolNode {
   static makeLabel() {
-    return 'Generate Lists';
+    return 'Generate JSA Chapters and Exercises';
   }
 
   async handleClick() {
@@ -68,13 +69,14 @@ class GenerateListNode extends ToolNode {
       await this.manager.externals.initRuntimeServer();
 
       let exerciseConfigs, chapters;
+      const addedExerciseNames = new Set();
 
       try {
         progress.report({ message: 'Disabling dbux-babel-plugin...' });
         await project.gitResetHard();
         await project.applyPatch('disable_dbux');
 
-        progress.report({ message: 'Parsing tests...' });
+        progress.report({ message: 'Gathering test data...' });
         const processOptions = {
           cwd: project.projectPath,
         };
@@ -84,11 +86,19 @@ class GenerateListNode extends ToolNode {
          * @see https://stackoverflow.com/a/69099439/11309695
          */
         const UnusedTestPattern = 'zzzzz';
-        const testDataRaw = await Process.execCaptureOut(`npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, { processOptions });
+        const testDataRaw = await Process.execCaptureOut(
+          `npx jest --json --verbose ${testDirectory} -t "${UnusedTestPattern}"`, 
+          { 
+            logStdout: true,
+            processOptions
+          }
+        );
+        
+        progress.report({ message: 'Parsing test data...' });
+
         const testData = JSON.parse(testDataRaw);
 
         exerciseConfigs = [];
-        const addedExerciseNames = new Set();
 
         for (const testResult of testData.testResults) {
           for (const assertionResult of testResult.assertionResults) {
@@ -117,20 +127,26 @@ class GenerateListNode extends ToolNode {
              * @see https://jestjs.io/docs/cli#--testmatch-glob1--globn
              */
             const testNamePattern = fullName.replaceAll('(', '.').replaceAll(')', '.').replaceAll('π', '.');
-            const { chapterGroup, chapter } = testFileData;
+            const { chapterGroup, chapter, algo } = testFileData;
             const exerciseConfig = {
+              chapterGroup,
+              chapter,
+              algo,
               name,
               label: fullName,
               testNamePattern,
-              chapterGroup,
-              chapter,
               patch: CustomPatchByChapter[chapter],
               testFilePaths: [testFilePath],
             };
             exerciseConfigs.push(exerciseConfig);
           }
         }
-        exerciseConfigs.sort((a, b) => a.name.localeCompare(b.name));
+
+        /**
+         * 
+         * @see https://stackoverflow.com/questions/24111535/how-can-i-use-lodash-underscore-to-sort-by-multiple-nested-fields
+         */
+        exerciseConfigs = sortBy(exerciseConfigs, cfg => [cfg.chapterGroup, cfg.chapter]);
 
         progress.report({ message: `Generating exercise file...` });
         this.controller.writeExerciseJs(exerciseConfigs);
@@ -146,11 +162,20 @@ class GenerateListNode extends ToolNode {
       }
       finally {
         // TODO: add sanity checks when doing anything that depends on dbux to be enabled, in case of this patch is not reverted successfully
-        progress.report({ message: 'Recovering project...' });
+        progress.report({ message: 'Finishing up...' });
+
+        /**
+         * 
+         * @see https://stackoverflow.com/questions/24111535/how-can-i-use-lodash-underscore-to-sort-by-multiple-nested-fields
+         */
+        sortBy(exerciseConfigs, cfg => [cfg.chapterGroup, cfg.chapter]);
         await project.revertPatch('disable_dbux');
       }
 
-      showInformationMessage(`List generated, found ${exerciseConfigs.length} exercise(s) in ${chapters.length} chapter(s).`);
+      const nAlgo = new Set(exerciseConfigs.map(cfg => cfg.algo)).size;
+
+      showInformationMessage(`List generated, found ${nAlgo} algos (${exerciseConfigs.length} exercise(s)) ` +
+        `in ${chapters.length} chapter(s).`);
 
       this.treeNodeProvider.refresh();
     }, { title: 'Generating Chapter List' });

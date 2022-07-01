@@ -1,4 +1,5 @@
 import fs from 'fs';
+import sortBy from 'lodash/sortBy';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -8,7 +9,7 @@ import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
-import ChapterListBuilderNodeProvider from './ChapterListBuilderNodeProvider';
+import PDGViewNodeProvider from './PDGViewNodeProvider';
 import { getCurrentResearch } from '../research/Research';
 import PDGGallery from './PDGGallery';
 
@@ -17,7 +18,7 @@ import PDGGallery from './PDGGallery';
 /** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('ChapterListBuilderViewController');
+const { log, debug, warn, error: logError } = newLogger('PDGViewController');
 
 let controller;
 const ProjectName = 'javascript-algorithms';
@@ -27,14 +28,14 @@ const ChapterListName = ExerciseListName;
 const ExerciseListFileName = `${ExerciseListName}.js`;
 const ChapterListFileName = `${ChapterListName}.js`;
 
-export default class ChapterListBuilderViewController {
+export default class PDGViewController {
   /**
    * @type {Map<string, ExerciseConfig>}
    */
   exerciseConfigsByName;
 
   constructor() {
-    this.treeNodeProvider = new ChapterListBuilderNodeProvider(this);
+    this.treeNodeProvider = new PDGViewNodeProvider(this);
     this.gallery = new PDGGallery(this);
   }
 
@@ -66,14 +67,27 @@ export default class ChapterListBuilderViewController {
       exercisesByChapterName.get(chapter).push(exercise);
     }
 
-    const chapters = Array.from(exercisesByChapterName.entries()).map(([chapterName, exercises], index) => {
-      return {
-        id: index + 1,
-        name: chapterName,
-        group: exercises[0].chapterGroup,
-        exercises: exercises.map(e => e.id),
-      };
-    });
+
+
+    /**
+     * 
+     * @see https://stackoverflow.com/questions/24111535/how-can-i-use-lodash-underscore-to-sort-by-multiple-nested-fields
+     */
+    const sortedEntries = sortBy(
+      Array.from(exercisesByChapterName.entries()),
+      cfg => [cfg.chapterGroup, cfg.chapter]
+    );
+      
+
+    const chapters = sortedEntries
+      .map(([chapterName, exercises], index) => {
+        return {
+          id: index + 1,
+          name: chapterName,
+          group: exercises[0].chapterGroup,
+          exercises: exercises.map(e => e.id),
+        };
+      });
 
     const filePath = this.manager.getAssetPath('chapterLists', ChapterListFileName);
     const content = `module.exports = ${JSON.stringify(chapters, null, 2)} `;
@@ -225,14 +239,17 @@ export default class ChapterListBuilderViewController {
    *    `src/algorithms/sorting/__test__/Sort.test.js`,
    */
   parseTestFilePath(testFilePath) {
-    const ValidTestFilePattern = /src\/algorithms\/([^/]*)\/([^/]*)\/(__test__|_test_|__tests__)\/([^/]*.js)$/;
+    const ValidTestFilePattern = /src\/algorithms\/([^/]*)\/(.+?)\/(?:__test__|_test_|__tests__)\/((.*?)\.test\.js)$/;
     const matchResult = testFilePath.match(ValidTestFilePattern);
     if (matchResult) {
-      return {
+      const chapter = matchResult[2].replaceAll('/', '_');
+      const result = {
         chapterGroup: matchResult[1],
-        chapter: matchResult[2],
+        chapter,
+        algo: chapter + '_' + matchResult[4],
         fileName: matchResult[3],
       };
+      return result;
     }
     else {
       return null;
@@ -305,7 +322,7 @@ export default class ChapterListBuilderViewController {
         // fullContextFilePath,
         algoLoc: this.getLocOfContext(dp, contextId, project.projectPath),
         testLoc: testContextId ? this.getLocOfContext(dp, testContextId, project.projectPath) : null,
-        applicationUuid,
+        // applicationUuid,
       };
     }).filter(x => !!x);
   }
@@ -333,7 +350,7 @@ export default class ChapterListBuilderViewController {
 // ###########################################################################
 
 export async function initDbuxPdgView(context) {
-  controller = new ChapterListBuilderViewController();
+  controller = new PDGViewController();
   controller.initOnActivate(context);
 
   // refresh right away

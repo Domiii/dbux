@@ -29,7 +29,7 @@ function getLinksPath() {
   return pathResolve(getCodeDirectory(), LinkFolderName);
 }
 
-function getDataFolderLinkPath() {
+export function getDataFolderLinkPath() {
   return pathResolve(getLinksPath(), DataFolderLinkName);
 }
 

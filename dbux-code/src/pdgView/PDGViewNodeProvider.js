@@ -2,12 +2,12 @@ import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvi
 import ToolRootNode from './ToolNodes';
 import ChapterListNode from './ChapterListNode';
 
-/** @typedef {import('./ChapterListBuilderViewController').default} ChapterListBuilderViewController */
+/** @typedef {import('./pDGViewController').default} PDGViewController */
 
-export default class ChapterListBuilderNodeProvider extends BaseTreeViewNodeProvider {
+export default class PDGViewNodeProvider extends BaseTreeViewNodeProvider {
   /**
    * 
-   * @param {ChapterListBuilderViewController} treeViewController 
+   * @param {PDGViewController} treeViewController 
    */
   constructor(treeViewController) {
     super('dbuxChapterListBuilderView');

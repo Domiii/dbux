@@ -21,7 +21,7 @@ import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
-import { initDbuxPdgView } from './pdgView/chapterListBuilderViewController';
+import { initDbuxPdgView } from './pdgView/pDGViewController';
 // import { initPlugins } from './PluginMgr';
 
 // eslint-disable-next-line no-unused-vars
