@@ -48,7 +48,7 @@ const DefaultNonExpandableExpandMode = PDGSummaryMode.Hide;
  * We add this to deal with the fact that we do not currently correctly cache
  * `nodeSummaries` (and all summary nodes).
  * Need a new `summariesByConfig` caching solution.
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  */
 function hackfixCleanupBeforeSummary(pdg) {
   const i = findLastIndex(pdg.og._timelineNodes, n => n.og);
@@ -133,13 +133,13 @@ class SummaryState {
 
 
 /** ###########################################################################
- * {@link DataDependencyGraph}
+ * {@link ProgramDependencyGraph}
  *  #########################################################################*/
 
 /**
  * 
  */
-export default class DataDependencyGraph extends BasePDG {
+export default class ProgramDependencyGraph extends BasePDG {
   buildStage = BuildStage.None;
 
   /**
@@ -155,7 +155,7 @@ export default class DataDependencyGraph extends BasePDG {
 
   /**
    * Summary data by `timelineId`.
-   * NOTE: This is built lazily in {@link DataDependencyGraph##buildNodeSummary}.
+   * NOTE: This is built lazily in {@link ProgramDependencyGraph##buildNodeSummary}.
    * 
    * @type {Object.<string, PDGNodeSummary>}
    */

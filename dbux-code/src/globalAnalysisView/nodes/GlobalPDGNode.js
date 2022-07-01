@@ -2,21 +2,18 @@
 
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import size from 'lodash/size';
-import groupBy from 'lodash/groupBy';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import DataDependencyGraph from '@dbux/data/src/pdg/DataDependencyGraph';
+import ProgramDependencyGraph from '@dbux/data/src/pdg/ProgramDependencyGraph';
 import pdgQueries from '@dbux/data/src/pdg/pdgQueries';
 import PDGSummaryMode, { isExpandedMode } from '@dbux/data/src/pdg/PDGSummaryMode';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
-import { truncateStringDefault, truncateStringShort } from '@dbux/common/src/util/stringUtil';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 import makeTreeItem, { makeTreeChildren, mkTreeItem, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { disposePDGWebviews, getPDGDot } from '../../webViews/pdgWebView';
 import { renderStringInNewEditor } from '../../traceDetailsView/valueRender';
 // eslint-disable-next-line max-len
 import { makePDGNodeDescription, makePDGNodeLabel, renderEdges, renderPDGNodesItem, renderNodeTree, renderPDGSummaries, renderPDGNode, renderRefGroups, renderVarGroups } from '../../treeViewsShared/pdgTreeViewUtil';
-import traceSelection from '@dbux/data/src/traceSelection';
-import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
@@ -59,7 +56,7 @@ export default class GlobaPDGNode extends BaseTreeViewNode {
 
   #handleRefreshOrInit() {
     /**
-     * @type {DataDependencyGraph[]}
+     * @type {ProgramDependencyGraph[]}
      */
     this.allPDGs = allApplications.selection.data.collectGlobalStats((dp) => {
       return dp.pdgs.getAll();
@@ -84,7 +81,7 @@ export default class GlobaPDGNode extends BaseTreeViewNode {
 
   /**
    * 
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    */
   buildPDGNode(pdg) {
     const { graphId, og } = pdg;

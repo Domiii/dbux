@@ -139,7 +139,7 @@ export function initUserCommands(extensionContext) {
    * testing + dev-only
    * NOTE: this is code for testing → move to test file
    */
-  registerCommand(extensionContext, 'dbux.testDataDependencyGraph', async () => {
+  registerCommand(extensionContext, 'dbux.testPDG', async () => {
     let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestPDGArgs();
 
     if (traceSelection.selected) {

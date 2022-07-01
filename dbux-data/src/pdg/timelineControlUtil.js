@@ -12,7 +12,7 @@ import {
   DoWhileTimelineNode
 } from './PDGTimelineNodes';
 
-/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
+/** @typedef { import("./ProgramDependencyGraph").ProgramDependencyGraph } ProgramDependencyGraph */
 
 
 /** ###########################################################################
@@ -48,7 +48,7 @@ export const branchSyntaxNodeCreators = {
 
 export const controlGroupLabelMaker = {
   /**
-   * @param {DataDependencyGraph} pdg
+   * @param {ProgramDependencyGraph} pdg
    * @param {IfTimelineNode} ifNode 
    */
   [PDGTimelineNodeType.If](pdg, ifNode) {
@@ -83,7 +83,7 @@ export const controlGroupLabelMaker = {
   },
 
   /**
-   * @param {DataDependencyGraph} pdg
+   * @param {ProgramDependencyGraph} pdg
    * @param {ForTimelineNode} forNode
    */
   [PDGTimelineNodeType.For](pdg, branchNode) {

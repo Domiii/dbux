@@ -302,7 +302,7 @@ export default class PDGTimelineView extends ClientComponentEndpoint {
     if (failureReason) {
       this.els.status.classList.add('alert', 'alert-danger');
       // this.els.status.className = 'alert alert-danger';
-      this.els.status.textContent = 'Cannot build DataDependencyGraph: ' + failureReason;
+      this.els.status.textContent = 'Cannot build ProgramDependencyGraph: ' + failureReason;
     }
     else {
       this.els.status.classList.remove('alert', 'alert-danger');

@@ -203,7 +203,7 @@
         }
       },
       {
-        "command": "dbux.testDataDependencyGraph",
+        "command": "dbux.testPDG",
         "title": "Dbux Dev: Test PDG",
         "icon": {
           "light": "resources/light/dependency.svg",
@@ -1159,7 +1159,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.testDataDependencyGraph",
+          "command": "dbux.testPDG",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {

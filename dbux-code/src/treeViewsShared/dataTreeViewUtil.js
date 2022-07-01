@@ -1,5 +1,5 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import DataDependencyGraph from '@dbux/data/src/pdg/DataDependencyGraph';
+import ProgramDependencyGraph from '@dbux/data/src/pdg/ProgramDependencyGraph';
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItems, objectToTreeItems } from '../helpers/makeTreeItem';
 
@@ -24,7 +24,7 @@ export function makeDataNodeDescription(dp, dataNodeId) {
 }
 
 /**
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  */
 export function renderDataNode(
   dp, dataNodeId,

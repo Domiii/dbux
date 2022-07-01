@@ -209,7 +209,7 @@ export default class BasePDG {
   }
 
   /** ###########################################################################
-   * {@link DataDependencyGraph#build}
+   * {@link ProgramDependencyGraph#build}
    * ##########################################################################*/
 
   resetBuild() {

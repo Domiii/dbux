@@ -1,5 +1,5 @@
 // /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
-// /** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
+// /** @typedef {import('./ProgramDependencyGraph').default} ProgramDependencyGraph */
 
 
 

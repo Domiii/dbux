@@ -6,22 +6,22 @@ import fs from 'fs';
 import { dirname } from 'path';
 import open from 'open';
 import PDGHost from '@dbux/graph-host/src/PDGHost';
-import DataDependencyGraph from '@dbux/data/src/pdg/DataDependencyGraph';
+import ProgramDependencyGraph from '@dbux/data/src/pdg/ProgramDependencyGraph';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
 import { setTestPDGArgs } from '../testUtil';
 import { confirm, showInformationMessage, showSaveDialog, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import RichWebView from './RichWebView';
-import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 
 const defaultColumn = ViewColumn.Two;
 
-export default class DataDependencyGraphWebView extends RichWebView {
+export default class PDGWebView extends RichWebView {
   /**
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    */
   constructor(pdg, mainComponentInitialState, mainComponentHostOnlyState, handleStarted) {
     super(PDGHost, 'dbux-data-graph', defaultColumn, mainComponentInitialState, mainComponentHostOnlyState);
@@ -96,12 +96,12 @@ export default class DataDependencyGraphWebView extends RichWebView {
 }
 
 /**
- * @type {Map.<DataDependencyGraph, DataDependencyGraphWebView>}
+ * @type {Map.<ProgramDependencyGraph, PDGWebView>}
  */
 let activeWebviews = new Map();
 
 /**
- * @return {DataDependencyGraphWebView} pdg 
+ * @return {PDGWebView} pdg 
  */
 export function getPDGWebview(pdg) {
   return activeWebviews.get(pdg);
@@ -186,7 +186,7 @@ export async function showPDGViewForArgs(pdgArgs) {
 }
 
 /**
- * @param {DataDependencyGraph} pdg 
+ * @param {ProgramDependencyGraph} pdg 
  */
 function makeGraphState(pdg) {
   // reset status message
@@ -201,7 +201,7 @@ function makeFailureState(failureReason) {
 }
 
 /**
- * @param {DataDependencyGraph} pdg 
+ * @param {ProgramDependencyGraph} pdg 
  */
 async function showPDGView(pdg, pdgDocumentInitialState, hostOnlyState) {
   // TODO: we currently don't close window if PDG is gone from set, but this way, it will be out of sync with PDGs treeview
@@ -209,7 +209,7 @@ async function showPDGView(pdg, pdgDocumentInitialState, hostOnlyState) {
   // future-work: select correct window, based on initial state
   let handleWebviewStarted = null;
   const viewStartedPromise = new Promise((resolve) => handleWebviewStarted = resolve);
-  const pDGWebView = new DataDependencyGraphWebView(pdg, pdgDocumentInitialState, hostOnlyState, handleWebviewStarted);
+  const pDGWebView = new PDGWebView(pdg, pdgDocumentInitialState, hostOnlyState, handleWebviewStarted);
   await pDGWebView.init();
   await pDGWebView.show();
   // pathways-todo: add new action type

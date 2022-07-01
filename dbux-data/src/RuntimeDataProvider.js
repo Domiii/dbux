@@ -35,7 +35,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
   /**
    * @type {PDGSet}
    */
-  dataDependencyGraphs;
+  programDependencyGraphs;
 
   /**
    * @type {RuntimeDataStatsReporter}
@@ -89,7 +89,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
   }
 
   get pdgs() {
-    return this.dataDependencyGraphs;
+    return this.programDependencyGraphs;
   }
 
   addData(newData, isRaw = true) {

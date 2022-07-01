@@ -3,7 +3,7 @@ import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
-/** @typedef { import("@dbux/data/src/pdg/DataDependencyGraph").default } DataDependencyGraph */
+/** @typedef { import("@dbux/data/src/pdg/ProgramDependencyGraph").default } ProgramDependencyGraph */
 /** @typedef { import("./PDGDocument").default } PDGDocument */
 
 export default class PDGTimelineView extends HostComponentEndpoint {
@@ -15,7 +15,7 @@ export default class PDGTimelineView extends HostComponentEndpoint {
   }
 
   /**
-   * @type {DataDependencyGraph}
+   * @type {ProgramDependencyGraph}
    */
   get pdg() {
     return this.context.doc.pdg;
@@ -96,7 +96,7 @@ export default class PDGTimelineView extends HostComponentEndpoint {
     /**
      * HACKFIX: we do this, so we can resolve `pdg` in here.
      *    → That is necessary b/c VSCode won't resolve the nesting class's prop.
-     * @type {DataDependencyGraph}
+     * @type {ProgramDependencyGraph}
      */
     get pdg() { return null; },
 

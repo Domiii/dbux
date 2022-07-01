@@ -82,7 +82,7 @@ export function newDataProvider(application) {
   dp.callGraph = new CallGraph(dp);
 
   // PDG
-  dp.dataDependencyGraphs = new PDGSet(dp);
+  dp.programDependencyGraphs = new PDGSet(dp);
 
   // indexes
   dp.addIndex(new StaticContextsByFileIndex());

@@ -2,13 +2,13 @@ import pull from 'lodash/pull';
 import { throttle } from '@dbux/common/src/util/scheduling';
 import NanoEvents from 'nanoevents';
 import RuntimeDataProvider from '../RuntimeDataProvider';
-import DataDependencyGraph from './DataDependencyGraph';
+import ProgramDependencyGraph from './ProgramDependencyGraph';
 import { truncateStringShort } from '@dbux/common/src/util/stringUtil';
 import { makeStaticTraceLocLabel } from '../helpers/makeLabels';
 
 export default class PDGSet {
   /**
-   * @type {DataDependencyGraph[]}
+   * @type {ProgramDependencyGraph[]}
    */
   pdgs;
 
@@ -73,7 +73,7 @@ export default class PDGSet {
   }
 
   /**
-   * @returns {DataDependencyGraph}
+   * @returns {ProgramDependencyGraph}
    */
   getOrCreatePDG(pdgArgs) {
     let { contextId, watchTraceIds, returnTraceId } = pdgArgs;
@@ -101,20 +101,20 @@ export default class PDGSet {
         watchTraceIds.push(returnTraceId);
       }
 
-      this.newDataDependencyGraph(graphId, applicationId, contextId, { watchTraceIds, returnTraceId });
+      this.newProgramDependencyGraph(graphId, applicationId, contextId, { watchTraceIds, returnTraceId });
     }
     return this.graphsById.get(graphId);
   }
 
-  newDataDependencyGraph(graphId, applicationId, contextId, watched) {
-    const graph = new DataDependencyGraph(this, graphId, applicationId, contextId);
+  newProgramDependencyGraph(graphId, applicationId, contextId, watched) {
+    const graph = new ProgramDependencyGraph(this, graphId, applicationId, contextId);
     graph.build(watched);
     this.#add(graphId, graph);
     return graph;
   }
 
   /**
-   * @param {DataDependencyGraph} graph 
+   * @param {ProgramDependencyGraph} graph 
    */
   #add(graphId, graph) {
     graph.id = graphId;
@@ -126,7 +126,7 @@ export default class PDGSet {
 
   /**
    * 
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    */
   remove(pdg) {
     this.graphsById.delete(pdg.graphId);

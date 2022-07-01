@@ -5,7 +5,7 @@ import isNumber from 'lodash/isNumber';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import PDGNodeSummary from '@dbux/data/src/pdg/PDGNodeSummary';
-import DataDependencyGraph from '@dbux/data/src/pdg/DataDependencyGraph';
+import ProgramDependencyGraph from '@dbux/data/src/pdg/ProgramDependencyGraph';
 import { isControlGroupTimelineNode } from '@dbux/common/src/types/constants/PDGTimelineNodeType';
 import PDGSummaryMode from '@dbux/data/src/pdg/PDGSummaryMode';
 import pdgQueries from '@dbux/data/src/pdg/pdgQueries';
@@ -81,7 +81,7 @@ export function makePDGNodeLabel(pdg, timelineId) {
 }
 
 /**
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  * @param {PDGTimelineNode} node 
  */
 export function renderPDGNode(pdg, node, children = null, moreProps, labelPrefix = '') {
@@ -206,21 +206,21 @@ export function renderPDGNodesItem(pdg, nodesOrIds, label) {
 // }
 
 /**
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  */
 export function renderEdgeIds(pdg, edgeIds, label) {
   return renderEdges(pdg, edgeIds?.map(edgeId => pdg.edges[edgeId]), label);
 }
 
 /**
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  */
 export function renderOgEdgeIds(pdg, edgeIds, label) {
   return renderEdges(pdg, edgeIds?.map(edgeId => pdg.og.edges[edgeId]), label);
 }
 
 /**
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  */
 export function renderEdges(pdg, edges, label = null, nodeDescription = null) {
   const { timelineNodes, dp } = pdg;
@@ -307,7 +307,7 @@ export function renderPDGSummaries(pdg, summaries) {
  * Groups by:
  * firstVarName → refId → dataNodeId.
  * 
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  * @param {number[]} dataNodeIds
  */
 export function renderRefGroups(pdg, timelineNodes, getRefIdCb) {
@@ -389,7 +389,7 @@ export function renderRefGroups(pdg, timelineNodes, getRefIdCb) {
  * Groups by:
  * firstVarName → refId → dataNodeId.
  * 
- * @param {DataDependencyGraph} pdg
+ * @param {ProgramDependencyGraph} pdg
  * @param {number[]} dataNodeIds
  */
 export function renderVarGroups(pdg, timelineNodes) {

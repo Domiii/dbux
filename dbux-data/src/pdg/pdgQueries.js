@@ -8,7 +8,7 @@ import PDGNodeSummary from './PDGNodeSummary';
 import PDGSettings from './PDGSettings';
 
 /** @typedef { import("./BasePDG").default } BasePDG */
-/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
+/** @typedef { import("./ProgramDependencyGraph").ProgramDependencyGraph } ProgramDependencyGraph */
 
 export class RenderState {
   /**
@@ -487,7 +487,7 @@ const pdgQueries = {
  */
 export const pdgHostQueries = {
   /**
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    * @param {PDGTimelineNode} node
    */
   getRootDataNodeId(pdg, node) {
@@ -496,7 +496,7 @@ export const pdgHostQueries = {
   },
 
   /**
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    * @param {PDGTimelineNode} node
    */
   getRootDataNode(pdg, node) {
@@ -507,7 +507,7 @@ export const pdgHostQueries = {
   /**
    * NOTE: a snapshot (as of now) cannot have children of a later trace than its root.
    * 
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    * @param {PDGTimelineNode} node
    */
   getLastDataNodeIdInRoot(pdg, node) {

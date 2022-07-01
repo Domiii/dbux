@@ -1,5 +1,5 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
-/** @typedef {import('./BasePDG').default} DataDependencyGraph */
+/** @typedef {import('./BasePDG').default} ProgramDependencyGraph */
 
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import pdgQueries, { pdgHostQueries } from './pdgQueries';
@@ -50,7 +50,7 @@ export default class PDGWatchSet {
 
   /**
    * 
-   * @param {DataDependencyGraph} pdg 
+   * @param {ProgramDependencyGraph} pdg 
    * @param {DataNode[]} inputNodes NOTE: input set is actually a set of trees of DataNodes
    */
   constructor(pdg, watched) {
