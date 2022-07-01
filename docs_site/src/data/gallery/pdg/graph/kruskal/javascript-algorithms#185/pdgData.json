@@ -1,7 +1,0 @@
-[
-  {
-    "success": false,
-    "failedReason": "Selected context (#17) did not return anything.",
-    "ddgTitle": "kruskal({vertices,edges,isDirected})"
-  }
-]

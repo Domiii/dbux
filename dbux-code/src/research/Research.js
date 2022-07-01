@@ -20,11 +20,21 @@ const { log, debug, warn, error: logError } = newLogger('Research');
  * Usually, all dbux-projects could contribute data to a single research
  */
 const CurrentResearchName = 'async-js'; // TODO: make this configurable
-const DataFolderLinkName = 'links/dataFolder.lnk';
+const LinkFolderName = 'links';
+const DataFolderLinkName = 'dataFolder.lnk';
+const PdgFolderLinkName = 'pdg.lnk';
 const AppDataZipFileNameSuffix = '.dbuxapp.zip';
 
-export function getDataFolderPath() {
-  return pathResolve(getCodeDirectory(), DataFolderLinkName);
+function getLinksPath() {
+  return pathResolve(getCodeDirectory(), LinkFolderName);
+}
+
+function getDataFolderLinkPath() {
+  return pathResolve(getLinksPath(), DataFolderLinkName);
+}
+
+function getPdgGalleryFolderLinkPath() {
+  return pathResolve(getLinksPath(), PdgFolderLinkName);
 }
 
 /** ###########################################################################
@@ -53,13 +63,17 @@ export class Research {
       throw new Error('CurrentResearchProject missing');
     }
 
-    if (forceLookup || !this._researchRootFolder) {
-      this.lookupDataRootFolder();
+    if (forceLookup || !this._dataRootFolder) {
+      this.getDataFolder();
     }
-    if (!this._researchRootFolder) {
-      throw new Error(`Invalid research folder location - could not find "${getDataFolderPath()}"`);
+    if (!this._dataRootFolder) {
+      throw new Error(`Invalid research folder location - could not find "${getDataFolderLinkPath()}"`);
     }
-    return pathResolve(this._researchRootFolder, CurrentResearchName);
+    return pathResolve(this._dataRootFolder, CurrentResearchName);
+  }
+
+  hasResearchDataRoot() {
+    return !!this._dataRootFolder || !!this.getDataFolder();
   }
 
   getAllResearchFolders() {
@@ -103,21 +117,37 @@ export class Research {
   }
 
   /** ###########################################################################
-   * link folder
+   * manage link folders
    *  #########################################################################*/
 
-  lookupDataRootFolder() {
-    const linkPath = getDataFolderPath();
+  getDataFolder() {
+    if (this._dataRootFolder) {
+      return this._dataRootFolder;
+    }
+    const linkPath = getDataFolderLinkPath();
+    return this._dataRootFolder = this.#lookupLinkFolder(linkPath);
+  }
+
+  getPdgGalleryFolder() {
+    if (this._pdgGalleryFolder) {
+      return this._pdgGalleryFolder;
+    }
+    const linkPath = getPdgGalleryFolderLinkPath();
+    return this._pdgGalleryFolder = this.#lookupLinkFolder(linkPath);
+  }
+
+  #lookupLinkFolder(linkPath) {
+    let target;
     if (existsSync(linkPath)) {
-      this._researchRootFolder = realpathSync(linkPath);
-      debug(`Data folder link found: ${this._researchRootFolder}`);
+      target = realpathSync(linkPath);
+      debug(`Linked folder found: ${target}`);
     }
     else {
       // dataFolder = getLogsDirectory();
-      this._researchRootFolder = null;
-      debug(`No data folder link found at: ${linkPath}`);
+      target = null;
+      warn(`No data folder link found at: ${linkPath}`);
     }
-    return this._researchRootFolder;
+    return target;
   }
 
 

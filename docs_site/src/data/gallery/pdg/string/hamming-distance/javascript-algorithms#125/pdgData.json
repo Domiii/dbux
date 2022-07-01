@@ -1,7 +1,0 @@
-[
-  {
-    "success": false,
-    "failedReason": "Selected context (#6) did not return anything.",
-    "ddgTitle": "hammingDistance(a, aa)"
-  }
-]
