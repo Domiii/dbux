@@ -21,7 +21,7 @@ import NestedError from '@dbux/common/src/NestedError';
 import TraceDetailNode from '../../TraceDetailNode';
 import makeTreeItem from '../../../../helpers/makeTreeItem';
 // eslint-disable-next-line max-len
-import { getCurrentResearch, getDataFolderLink, Research } from '../../../../research/Research';
+import { getCurrentResearch, getDataFolderPath, Research } from '../../../../research/Research';
 import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../../../../codeUtil/runTaskWithProgressBar';
 import { showTextInNewFile } from '../../../../codeUtil/codeNav';
@@ -981,7 +981,7 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
     }
 
     if (!this.controller.research.lookupDataRootFolder()) {
-      logError(`dataFolder at "${getDataFolderLink()}" is not configured. Unable to load or write data.`);
+      logError(`dataFolder at "${getDataFolderPath()}" is not configured. Unable to load or write data.`);
     }
     else {
       this.controller.initOnExpand();

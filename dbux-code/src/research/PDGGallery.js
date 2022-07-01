@@ -18,7 +18,7 @@ import { translate } from '../lang';
 import { getCurrentResearch } from './Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default}Exercise*/
-/** @typedef {import('../chapterListBuilderView/chapterListBuilderViewController').default} ChapterListBuilderViewController */
+/** @typedef {import('../dbuxPdgView/chapterListBuilderViewController').default} ChapterListBuilderViewController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PDGGallery');
@@ -336,7 +336,6 @@ export default class PDGGallery {
   }
 
   generatePDGTable() {
-
     const chapterGroupsByName = new Map();
 
     // collect chapter data, add to respective `chapterGroup`

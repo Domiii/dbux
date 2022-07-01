@@ -23,7 +23,7 @@ const CurrentResearchName = 'async-js'; // TODO: make this configurable
 const DataFolderLinkName = 'links/dataFolder.lnk';
 const AppDataZipFileNameSuffix = '.dbuxapp.zip';
 
-export function getDataFolderLink() {
+export function getDataFolderPath() {
   return pathResolve(getCodeDirectory(), DataFolderLinkName);
 }
 
@@ -56,6 +56,9 @@ export class Research {
 
     if (forceLookup || !this._researchRootFolder) {
       this.lookupDataRootFolder();
+    }
+    if (!this._researchRootFolder) {
+      throw new Error(`Invalid research folder location - could not find "${getDataFolderPath()}"`);
     }
     return pathResolve(this._researchRootFolder, CurrentResearchName);
   }
@@ -105,7 +108,7 @@ export class Research {
    *  #########################################################################*/
 
   lookupDataRootFolder() {
-    const linkPath = getDataFolderLink();
+    const linkPath = getDataFolderPath();
     if (existsSync(linkPath)) {
       this._researchRootFolder = realpathSync(linkPath);
       debug(`Data folder link found: ${this._researchRootFolder}`);
