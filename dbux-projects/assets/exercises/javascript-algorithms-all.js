@@ -9,7 +9,79 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "number": 1
+    "number": 1,
+    "pdgs": [
+      {
+        "pdgTitle": "caesarCipherEncrypt(abcd, 0)",
+        "uniqueTitle": "caesarCipherEncrypt(abcd, 0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 33,
+              "column": 57,
+              "index": 1228
+            },
+            "end": {
+              "line": 45,
+              "column": 1,
+              "index": 1544
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 57,
+              "index": 170
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 292
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "caesarCipherDecrypt(abcd, 0)",
+        "uniqueTitle": "caesarCipherDecrypt(abcd, 0)",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/caesarCipher.js",
+          "loc": {
+            "start": {
+              "line": 53,
+              "column": 57,
+              "index": 1718
+            },
+            "end": {
+              "line": 65,
+              "column": 1,
+              "index": 2035
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 57,
+              "index": 170
+            },
+            "end": {
+              "line": 7,
+              "column": 3,
+              "index": 292
+            }
+          }
+        }
+      }
+    ]
   },
   {
     "chapterGroup": "cryptography",
