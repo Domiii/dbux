@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path, { basename } from 'path';
 import open from 'open';
+import { homedir } from 'os';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
@@ -10,13 +11,14 @@ import isPlainObject from 'lodash/isPlainObject';
 import { PDGRootTimelineId } from '@dbux/data/src/pdg/constants';
 import { RootSummaryModes } from '@dbux/data/src/pdg/PDGSummaryMode';
 import PDGSettings from '@dbux/data/src/pdg/PDGSettings';
+import sleep from '@dbux/common/src/util/sleep';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { showTextInNewFile } from '../codeUtil/codeNav';
 import { translate } from '../lang';
 import { getCurrentResearch } from '../research/Research';
 
-/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default}Exercise*/
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise*/
 /** @typedef {import('./pDGViewController').default} PDGViewController */
 
 // eslint-disable-next-line no-unused-vars
@@ -49,9 +51,17 @@ export default class PDGGallery {
     return getCurrentResearch().getPdgGalleryFolder(true);
   }
 
+  get pdgDataRoot() {
+    return pathJoin(this.galleryDataRoot, 'pdgs');
+  }
+
+  /**
+   * @param {Exercise} exercise 
+   * @param  {...any} segments 
+   */
   getExerciseFolder(exercise, ...segments) {
     const { chapterGroup, chapter, id } = exercise;
-    return pathResolve(this.galleryDataRoot, chapterGroup, chapter, id, ...segments);
+    return pathResolve(this.pdgDataRoot, chapterGroup, chapter, id, ...segments);
   }
 
   /** ###########################################################################
@@ -123,10 +133,11 @@ export default class PDGGallery {
         }
       }
       catch (err) {
+        logError(`[${exercise.chapterGroup}/${exercise.chapter}] PDG screenshot generation failed - ${err.stack}`);
         screenshots.push({
           crash: true,
           failedReason: err.message,
-          error: err.stack,
+          error: err.stack.replaceAll(homedir(), 'USER'),
           settings,
           rootSummaryMode,
         });
@@ -164,9 +175,13 @@ export default class PDGGallery {
      */
     const pdgRenderDataArray = [];
 
+    // const pdgsByTitle = new Map();
+
     for (let j = 0; j < allPdgArgs.length; j++) {
       const pdgArgs = allPdgArgs[j];
-      const app = allApplications.getById(pdgArgs.applicationUuid);
+      // const app = allApplications.getById(pdgArgs.applicationUuid);
+      // TODO: verify that this is the correct application
+      const app = allApplications.getFirst();
       const dp = app.dataProvider;
 
       const failedReason = dp.pdgs.getCreatePDGFailureReason(pdgArgs);
@@ -202,6 +217,7 @@ export default class PDGGallery {
           continue;
         }
         progress.report({ message: `Exercise ${i + 1}/${exercises.length}: "${exercise.label}"` });
+        await sleep(0);
 
         const exerciseFolderPath = this.getExerciseFolder(exercise);
         const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
@@ -220,10 +236,11 @@ export default class PDGGallery {
         }
         catch (err) {
           // failed to execute application
+          logError(`[${exercise.chapterGroup}/${exercise.chapter}] PDG data generation failed - ${err.stack}`);
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify({
             runFailed: true,
             failedReason: err.message,
-            error: err.stack.replaceAll()
+            error: err.stack.replaceAll(homedir(), 'USER')
           }, null, 2));
         }
       }
@@ -236,18 +253,17 @@ export default class PDGGallery {
    * ##########################################################################*/
 
   generateGraphsJS() {
-    let lastExerciseId = 0;
     const exportData = {
       chapterGroups: [],
-    }; 
+    };
 
-    const chapterGroups = fs.readdirSync(this.galleryDataRoot);
+    const chapterGroups = fs.readdirSync(this.pdgDataRoot);
     for (const chapterGroupName of chapterGroups) {
       const chapterGroup = {
         name: chapterGroupName,
         chapters: [],
       };
-      const chapterGroupFolderPath = pathJoin(this.galleryDataRoot, chapterGroupName);
+      const chapterGroupFolderPath = pathJoin(this.pdgDataRoot, chapterGroupName);
       if (!fs.lstatSync(chapterGroupFolderPath).isDirectory()) {
         continue;
       }
@@ -318,9 +334,9 @@ export default class PDGGallery {
    */
   getAllPDGFiles() {
     const allFiles = [];
-    const chapterGroups = fs.readdirSync(this.galleryDataRoot);
+    const chapterGroups = fs.readdirSync(this.pdgDataRoot);
     for (const chapterGroup of chapterGroups) {
-      const chapterGroupFolderPath = pathJoin(this.galleryDataRoot, chapterGroup);
+      const chapterGroupFolderPath = pathJoin(this.pdgDataRoot, chapterGroup);
       if (!fs.lstatSync(chapterGroupFolderPath).isDirectory()) {
         continue;
       }
@@ -333,7 +349,7 @@ export default class PDGGallery {
           if (!fs.existsSync(pdgFilePath)) {
             continue;
           }
-          allFiles.push({ 
+          allFiles.push({
             chapterGroup, chapter, exerciseId, filePath: pdgFilePath
           });
         }

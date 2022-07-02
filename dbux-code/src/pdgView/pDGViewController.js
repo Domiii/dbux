@@ -52,6 +52,14 @@ export default class PDGViewController {
   }
 
   writeExerciseJs(exerciseConfigs = this.exerciseConfigs) {
+    /**
+     * Sort first, then put them in.
+     * 
+     * @see https://stackoverflow.com/questions/24111535/how-can-i-use-lodash-underscore-to-sort-by-multiple-nested-fields
+     */
+    exerciseConfigs = sortBy(exerciseConfigs, cfg => [cfg.chapterGroup, cfg.chapter]);
+    exerciseConfigs.forEach((e, i) => e.number = i + 1);
+
     const filePath = this.manager.getAssetPath('exercises', ExerciseListFileName);
     const content = `module.exports = ${JSON.stringify(exerciseConfigs, null, 2)}`;
     fs.writeFileSync(filePath, content);
@@ -77,7 +85,7 @@ export default class PDGViewController {
       Array.from(exercisesByChapterName.entries()),
       cfg => [cfg.chapterGroup, cfg.chapter]
     );
-      
+
 
     const chapters = sortedEntries
       .map(([chapterName, exercises], index) => {
@@ -102,6 +110,22 @@ export default class PDGViewController {
       this.exerciseConfigsByName = new Map();
       this.exerciseConfigs.forEach(config => this.exerciseConfigsByName.set(config.name, config));
       this.exerciseList = this.project.reloadExercises(ExerciseListName);
+
+      // hackfix pdg stuff
+      this.pdgCountsByPdgTitle = new Map();
+      this.exerciseList.getAll().forEach(e => {
+        if (!e.pdgs) {
+          return;
+        }
+        e.pdgs.forEach(p => {
+          this.pdgCountsByPdgTitle.set(
+            p.pdgTitle,
+            (this.pdgCountsByPdgTitle.get(p.pdgTitle) || 0) + 1
+          );
+        });
+      });
+
+      // apply overrides
       if (fs.existsSync(customExerciseConfigPath)) {
         const customConfigs = this.project.loadExerciseConfigs(CustomConfigName);
         if (customConfigs.chapters) {
@@ -180,7 +204,7 @@ export default class PDGViewController {
     if (fs.existsSync(appZipFilePath)) {
       // get data from application file
       const app = await importApplicationFromFile(appZipFilePath);
-      pdgArgs = this.findPDGContextIdInApp(app, exercise);
+      pdgArgs = this.makeAllPDGArgs(app, exercise);
 
       // store results
       const config = this.exerciseConfigsByName.get(exercise.name);
@@ -206,12 +230,18 @@ export default class PDGViewController {
    */
   async runAndExportPDGApplication(exercise, progress) {
     progress?.report({ message: `Running exercises...` });
-    await this.treeNodeProvider.manager.switchAndTestBug(exercise);
+    const result = await this.treeNodeProvider.manager.switchAndTestBug(exercise);
+
+    if (!result || result.error) {
+      const resultStr = Object.entries(result).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(', ');
+      throw new Error(`Run failed - ${resultStr}`);
+    }
 
     const app = allApplications.selection.getFirst();
 
     if (!app) {
-      throw new Error(`Run failed. No application found.`);
+      const resultStr = Object.entries(result).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(', ');
+      throw new Error(`Run failed (no application found) - ${resultStr}`);
     }
 
     while (app.dataProvider.indexes.dataNodes.byAccessId.getAll().length < 1) {
@@ -225,7 +255,7 @@ export default class PDGViewController {
     if (allApplications.selection.count !== 1) {
       warn(`Ran test, but found more than one application (selecting first).`);
     }
-    const pdgs = this.findPDGContextIdInApp(app, exercise);
+    const pdgs = this.makeAllPDGArgs(app, exercise);
     exercise.pdgs = pdgs;
 
     progress?.report({ message: `Storing results and exporting application...` });
@@ -291,7 +321,7 @@ export default class PDGViewController {
    * @param {CodeApplication} app 
    * @param {Exercise} exercise
    */
-  findPDGContextIdInApp(app, exercise) {
+  makeAllPDGArgs(app, exercise) {
     const { project } = exercise;
     const dp = app.dataProvider;
     const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
@@ -310,9 +340,10 @@ export default class PDGViewController {
       .flatMap(({ staticContextId }) => dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray)
       .sort((a, b) => a.contextId - b.contextId);
     const addedContextIds = new Set();
+
     return contexts.map(context => {
       const { contextId } = context;
-      const { applicationUuid } = app;
+      // const { applicationUuid } = app;
       const functionName = makeContextLabel(context, app);
       const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
       if (!callerTrace) {
@@ -346,9 +377,19 @@ export default class PDGViewController {
       }
 
       const params = dp.util.getCallArgValueStrings(callerTrace.callId);
+      let pdgTitle = `${functionName}(${params.join(', ')})`;
+
+      const pdgCount = (this.pdgCountsByPdgTitle.get(pdgTitle) || 0);
+      let uniqueTitle = pdgTitle;
+      if (pdgCount) {
+        // make sure, title is unique (even though it is not unique)
+        uniqueTitle = `${pdgTitle}#${pdgCount + 1}`;
+      }
+      this.pdgCountsByPdgTitle.set(pdgTitle, pdgCount + 1);
 
       return {
-        pdgTitle: `${functionName}(${params.join(', ')})`,
+        pdgTitle,
+        uniqueTitle,
         contextId,
         // fullContextFilePath,
         algoLoc: this.getLocOfContext(dp, contextId, project.projectPath),

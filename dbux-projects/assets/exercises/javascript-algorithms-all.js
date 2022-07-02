@@ -9,208 +9,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,5])",
-        "contextId": 5,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1], ƒ mockConstructor)",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
-        "contextId": 9,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
-        "contextId": 10,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
-        "contextId": 11,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
-        "contextId": 12,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
-        "contextId": 13,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
-        "contextId": 14,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
-        "contextId": 15,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
-        "contextId": 16,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
-          "loc": {
-            "start": {
-              "line": 9,
-              "column": 61,
-              "index": 378
-            },
-            "end": {
-              "line": 22,
-              "column": 1,
-              "index": 773
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 1
   },
   {
     "chapterGroup": "cryptography",
@@ -222,28 +21,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 231,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 2
   },
   {
     "chapterGroup": "cryptography",
@@ -255,48 +33,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 231,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 734,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 3
   },
   {
     "chapterGroup": "cryptography",
@@ -308,28 +45,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 138,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 4
   },
   {
     "chapterGroup": "cryptography",
@@ -341,48 +57,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 113,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 362,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 5
   },
   {
     "chapterGroup": "cryptography",
@@ -394,68 +69,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 95,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 308,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 557,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 6
   },
   {
     "chapterGroup": "cryptography",
@@ -467,28 +81,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 138,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 7
   },
   {
     "chapterGroup": "cryptography",
@@ -500,28 +93,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 206,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 8
   },
   {
     "chapterGroup": "cryptography",
@@ -533,208 +105,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "backtrackingJumpGame([1,0])",
-        "contextId": 5,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([100,0])",
-        "contextId": 7,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([2,3,1,1,4])",
-        "contextId": 9,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([1,1,1,1,1])",
-        "contextId": 13,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([1,1,1,10,1])",
-        "contextId": 18,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([1,5,2,1,0,2,0])",
-        "contextId": 23,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([1,0,1])",
-        "contextId": 26,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([3,2,1,0,4])",
-        "contextId": 28,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([0,0,0,0,0])",
-        "contextId": 36,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "backtrackingJumpGame([5,4,3,2,1,0,0])",
-        "contextId": 37,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
-          "loc": {
-            "start": {
-              "line": 15,
-              "column": 54,
-              "index": 623
-            },
-            "end": {
-              "line": 56,
-              "column": 1,
-              "index": 1917
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 9
   },
   {
     "chapterGroup": "cryptography",
@@ -746,28 +117,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 179,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
-          "loc": {
-            "start": {
-              "line": 6,
-              "column": 56,
-              "index": 172
-            },
-            "end": {
-              "line": 49,
-              "column": 1,
-              "index": 1599
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 10
   },
   {
     "chapterGroup": "cryptography",
@@ -779,28 +129,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
-        "contextId": 282,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
-          "loc": {
-            "start": {
-              "line": 6,
-              "column": 56,
-              "index": 172
-            },
-            "end": {
-              "line": 49,
-              "column": 1,
-              "index": 1599
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 11
   },
   {
     "chapterGroup": "cryptography",
@@ -812,208 +141,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/PolynomialHash.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bfMaximumSubarray([])",
-        "contextId": 5,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([0,0])",
-        "contextId": 6,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([0,0,1])",
-        "contextId": 7,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([0,0,1,2])",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([0,0,-1,2])",
-        "contextId": 9,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
-        "contextId": 10,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
-        "contextId": 11,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
-        "contextId": 12,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
-        "contextId": 13,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
-        "contextId": 14,
-        "algoLoc": {
-          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
-          "loc": {
-            "start": {
-              "line": 8,
-              "column": 54,
-              "index": 173
-            },
-            "end": {
-              "line": 33,
-              "column": 1,
-              "index": 888
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 12
   },
   {
     "chapterGroup": "cryptography",
@@ -1025,308 +153,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/PolynomialHash.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bfRainTerraces([1])",
-        "contextId": 5,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([1,0])",
-        "contextId": 6,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,1])",
-        "contextId": 7,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,1,0])",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,1,0,0])",
-        "contextId": 9,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,1,0,0,1,0])",
-        "contextId": 10,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,2,0,0,1,0])",
-        "contextId": 11,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([2,0,2])",
-        "contextId": 12,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([2,0,5,1,2])",
-        "contextId": 13,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([3,0,0,2,0,4])",
-        "contextId": 14,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
-        "contextId": 15,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([1,1,1,1,1])",
-        "contextId": 16,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([1,2,3,4,5])",
-        "contextId": 17,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
-        "contextId": 18,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
-        "contextId": 19,
-        "algoLoc": {
-          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 49,
-              "index": 49
-            },
-            "end": {
-              "line": 21,
-              "column": 1,
-              "index": 584
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 13
   },
   {
     "chapterGroup": "cryptography",
@@ -1338,28 +165,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bfTravellingSalesman({vertices,edges,isDirected})",
-        "contextId": 220,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/travelling-salesman/bfTravellingSalesman.js",
-          "loc": {
-            "start": {
-              "line": 77,
-              "column": 52,
-              "index": 2227
-            },
-            "end": {
-              "line": 123,
-              "column": 1,
-              "index": 3688
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 14
   },
   {
     "chapterGroup": "cryptography",
@@ -1371,188 +177,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "binarySearch([], 1)",
-        "contextId": 6,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1], 1)",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,2], 1)",
-        "contextId": 12,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,2], 2)",
-        "contextId": 16,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,5,10,12], 1)",
-        "contextId": 24,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 17)",
-        "contextId": 32,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 1)",
-        "contextId": 40,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 100)",
-        "contextId": 52,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 0)",
-        "contextId": 68,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 15
   },
   {
     "chapterGroup": "cryptography",
@@ -1564,108 +189,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "binarySearch([], {key}, ƒ (anonymous))",
-        "contextId": 6,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
-        "contextId": 18,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
-        "contextId": 26,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
-        "contextId": 30,
-        "algoLoc": {
-          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
-          "loc": {
-            "start": {
-              "line": 16,
-              "column": 2,
-              "index": 337
-            },
-            "end": {
-              "line": 48,
-              "column": 1,
-              "index": 1548
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 16
   },
   {
     "chapterGroup": "cryptography",
@@ -1677,168 +201,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bitLength(0)",
-        "contextId": 5,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(1)",
-        "contextId": 6,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(1)",
-        "contextId": 7,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(5)",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(5)",
-        "contextId": 9,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(21)",
-        "contextId": 10,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(245)",
-        "contextId": 11,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitLength(245)",
-        "contextId": 12,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitLength.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 42,
-              "index": 183
-            },
-            "end": {
-              "line": 15,
-              "column": 1,
-              "index": 306
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 17
   },
   {
     "chapterGroup": "cryptography",
@@ -1850,148 +213,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "bitsDiff(0, 0)",
-        "contextId": 6,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitsDiff(1, 1)",
-        "contextId": 8,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitsDiff(124, 124)",
-        "contextId": 10,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitsDiff(0, 1)",
-        "contextId": 12,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitsDiff(1, 0)",
-        "contextId": 14,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitsDiff(1, 2)",
-        "contextId": 16,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      },
-      {
-        "pdgTitle": "bitsDiff(1, 3)",
-        "contextId": 18,
-        "algoLoc": {
-          "filePath": "src/algorithms/math/bits/bitsDiff.js",
-          "loc": {
-            "start": {
-              "line": 11,
-              "column": 51,
-              "index": 285
-            },
-            "end": {
-              "line": 13,
-              "column": 1,
-              "index": 332
-            }
-          }
-        },
-        "testLoc": null
-      }
-    ]
+    "number": 18
   },
   {
     "chapterGroup": "cryptography",
@@ -2002,7 +224,8 @@ module.exports = [
     "testNamePattern": "railFenceCipher decodes a string correctly for base=4",
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
-    ]
+    ],
+    "number": 19
   },
   {
     "chapterGroup": "graph",
@@ -2014,110 +237,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 95,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
-          "loc": {
-            "start": {
-              "line": 7,
-              "column": 62,
-              "index": 367
-            },
-            "end": {
-              "line": 26,
-              "column": 3,
-              "index": 1076
-            }
-          }
-        }
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 308,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
-          "loc": {
-            "start": {
-              "line": 28,
-              "column": 77,
-              "index": 1159
-            },
-            "end": {
-              "line": 47,
-              "column": 3,
-              "index": 1866
-            }
-          }
-        }
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 557,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
-          "loc": {
-            "start": {
-              "line": 49,
-              "column": 80,
-              "index": 1952
-            },
-            "end": {
-              "line": 75,
-              "column": 3,
-              "index": 2811
-            }
-          }
-        }
-      }
-    ]
+    "number": 20
   },
   {
     "chapterGroup": "graph",
@@ -2129,76 +249,7 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
     ],
-    "pdgs": [
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 113,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
-          "loc": {
-            "start": {
-              "line": 28,
-              "column": 77,
-              "index": 1159
-            },
-            "end": {
-              "line": 47,
-              "column": 3,
-              "index": 1866
-            }
-          }
-        }
-      },
-      {
-        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
-        "contextId": 362,
-        "algoLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
-          "loc": {
-            "start": {
-              "line": 24,
-              "column": 50,
-              "index": 696
-            },
-            "end": {
-              "line": 124,
-              "column": 1,
-              "index": 4517
-            }
-          }
-        },
-        "testLoc": {
-          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
-          "loc": {
-            "start": {
-              "line": 49,
-              "column": 80,
-              "index": 1952
-            },
-            "end": {
-              "line": 75,
-              "column": 3,
-              "index": 2811
-            }
-          }
-        }
-      }
-    ]
+    "number": 21
   },
   {
     "chapterGroup": "graph",
@@ -2209,7 +260,8 @@ module.exports = [
     "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge #2",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
+    ],
+    "number": 22
   },
   {
     "chapterGroup": "graph",
@@ -2220,7 +272,8 @@ module.exports = [
     "testNamePattern": "articulationPoints should find articulation points in graph",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
+    ],
+    "number": 23
   },
   {
     "chapterGroup": "graph",
@@ -2231,7 +284,8 @@ module.exports = [
     "testNamePattern": "articulationPoints should find articulation points in graph starting with articulation root vertex",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
+    ],
+    "number": 24
   },
   {
     "chapterGroup": "graph",
@@ -2242,7 +296,8 @@ module.exports = [
     "testNamePattern": "articulationPoints should find articulation points in yet another graph #1",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
+    ],
+    "number": 25
   },
   {
     "chapterGroup": "graph",
@@ -2253,7 +308,8 @@ module.exports = [
     "testNamePattern": "articulationPoints should find articulation points in yet another graph #2",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
-    ]
+    ],
+    "number": 26
   },
   {
     "chapterGroup": "graph",
@@ -2264,7 +320,8 @@ module.exports = [
     "testNamePattern": "bellmanFord should find minimum paths to all vertices for undirected graph",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
-    ]
+    ],
+    "number": 27
   },
   {
     "chapterGroup": "graph",
@@ -2275,7 +332,8 @@ module.exports = [
     "testNamePattern": "bellmanFord should find minimum paths to all vertices for directed graph with negative edge weights",
     "testFilePaths": [
       "src/algorithms/graph/bellman-ford/__test__/bellmanFord.test.js"
-    ]
+    ],
+    "number": 28
   },
   {
     "chapterGroup": "graph",
@@ -2286,7 +344,8 @@ module.exports = [
     "testNamePattern": "breadthFirstSearch should perform BFS operation on graph",
     "testFilePaths": [
       "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
-    ]
+    ],
+    "number": 29
   },
   {
     "chapterGroup": "graph",
@@ -2297,7 +356,8 @@ module.exports = [
     "testNamePattern": "breadthFirstSearch should allow to create custom vertex visiting logic",
     "testFilePaths": [
       "src/algorithms/graph/breadth-first-search/__test__/breadthFirstSearch.test.js"
-    ]
+    ],
+    "number": 30
   },
   {
     "chapterGroup": "graph",
@@ -2308,7 +368,8 @@ module.exports = [
     "testNamePattern": "graphBridges should find bridges in simple graph",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
+    ],
+    "number": 31
   },
   {
     "chapterGroup": "graph",
@@ -2319,7 +380,8 @@ module.exports = [
     "testNamePattern": "graphBridges should find bridges in simple graph with back edge",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
+    ],
+    "number": 32
   },
   {
     "chapterGroup": "graph",
@@ -2330,7 +392,8 @@ module.exports = [
     "testNamePattern": "graphBridges should find bridges in graph",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
+    ],
+    "number": 33
   },
   {
     "chapterGroup": "graph",
@@ -2341,7 +404,8 @@ module.exports = [
     "testNamePattern": "graphBridges should find bridges in graph starting with different root vertex",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
+    ],
+    "number": 34
   },
   {
     "chapterGroup": "graph",
@@ -2352,7 +416,8 @@ module.exports = [
     "testNamePattern": "graphBridges should find bridges in yet another graph #1",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
+    ],
+    "number": 35
   },
   {
     "chapterGroup": "graph",
@@ -2363,7 +428,8 @@ module.exports = [
     "testNamePattern": "graphBridges should find bridges in yet another graph #2",
     "testFilePaths": [
       "src/algorithms/graph/bridges/__test__/graphBridges.test.js"
-    ]
+    ],
+    "number": 36
   },
   {
     "chapterGroup": "graph",
@@ -2374,7 +440,8 @@ module.exports = [
     "testNamePattern": "depthFirstSearch should perform DFS operation on graph",
     "testFilePaths": [
       "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
-    ]
+    ],
+    "number": 37
   },
   {
     "chapterGroup": "graph",
@@ -2385,7 +452,8 @@ module.exports = [
     "testNamePattern": "depthFirstSearch allow users to redefine vertex visiting logic",
     "testFilePaths": [
       "src/algorithms/graph/depth-first-search/__test__/depthFirstSearch.test.js"
-    ]
+    ],
+    "number": 38
   },
   {
     "chapterGroup": "graph",
@@ -2396,18 +464,8 @@ module.exports = [
     "testNamePattern": "detectDirectedCycle should detect directed cycle",
     "testFilePaths": [
       "src/algorithms/graph/detect-cycle/__test__/detectDirectedCycle.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "graph",
-    "chapter": "detect-cycle",
-    "algo": "detect-cycle_detectUndirectedCycle",
-    "name": "detectUndirectedCycle should detect undirected cycle@detectUndirectedCycle.test.js",
-    "label": "detectUndirectedCycle should detect undirected cycle",
-    "testNamePattern": "detectUndirectedCycle should detect undirected cycle",
-    "testFilePaths": [
-      "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js"
-    ]
+    ],
+    "number": 39
   },
   {
     "chapterGroup": "graph",
@@ -2418,7 +476,20 @@ module.exports = [
     "testNamePattern": "detectUndirectedCycleUsingDisjointSet should detect undirected cycle",
     "testFilePaths": [
       "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycleUsingDisjointSet.test.js"
-    ]
+    ],
+    "number": 40
+  },
+  {
+    "chapterGroup": "graph",
+    "chapter": "detect-cycle",
+    "algo": "detect-cycle_detectUndirectedCycle",
+    "name": "detectUndirectedCycle should detect undirected cycle@detectUndirectedCycle.test.js",
+    "label": "detectUndirectedCycle should detect undirected cycle",
+    "testNamePattern": "detectUndirectedCycle should detect undirected cycle",
+    "testFilePaths": [
+      "src/algorithms/graph/detect-cycle/__test__/detectUndirectedCycle.test.js"
+    ],
+    "number": 41
   },
   {
     "chapterGroup": "graph",
@@ -2429,7 +500,8 @@ module.exports = [
     "testNamePattern": "dijkstra should find minimum paths to all vertices for undirected graph",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
-    ]
+    ],
+    "number": 42
   },
   {
     "chapterGroup": "graph",
@@ -2440,7 +512,8 @@ module.exports = [
     "testNamePattern": "dijkstra should find minimum paths to all vertices for directed graph with negative edge weights",
     "testFilePaths": [
       "src/algorithms/graph/dijkstra/__test__/dijkstra.test.js"
-    ]
+    ],
+    "number": 43
   },
   {
     "chapterGroup": "graph",
@@ -2451,7 +524,8 @@ module.exports = [
     "testNamePattern": "eulerianPath should throw an error when graph is not Eulerian",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
-    ]
+    ],
+    "number": 44
   },
   {
     "chapterGroup": "graph",
@@ -2462,7 +536,8 @@ module.exports = [
     "testNamePattern": "eulerianPath should find Eulerian Circuit in graph",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
-    ]
+    ],
+    "number": 45
   },
   {
     "chapterGroup": "graph",
@@ -2473,7 +548,8 @@ module.exports = [
     "testNamePattern": "eulerianPath should find Eulerian Path in graph",
     "testFilePaths": [
       "src/algorithms/graph/eulerian-path/__test__/eulerianPath.test.js"
-    ]
+    ],
+    "number": 46
   },
   {
     "chapterGroup": "graph",
@@ -2484,7 +560,8 @@ module.exports = [
     "testNamePattern": "floydWarshall should find minimum paths to all vertices for undirected graph",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
-    ]
+    ],
+    "number": 47
   },
   {
     "chapterGroup": "graph",
@@ -2495,7 +572,8 @@ module.exports = [
     "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
-    ]
+    ],
+    "number": 48
   },
   {
     "chapterGroup": "graph",
@@ -2506,7 +584,8 @@ module.exports = [
     "testNamePattern": "floydWarshall should find minimum paths to all vertices for directed graph with negative edge weights",
     "testFilePaths": [
       "src/algorithms/graph/floyd-warshall/__test__/floydWarshall.test.js"
-    ]
+    ],
+    "number": 49
   },
   {
     "chapterGroup": "graph",
@@ -2517,7 +596,8 @@ module.exports = [
     "testNamePattern": "hamiltonianCycle should find hamiltonian paths in graph",
     "testFilePaths": [
       "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
-    ]
+    ],
+    "number": 50
   },
   {
     "chapterGroup": "graph",
@@ -2528,7 +608,8 @@ module.exports = [
     "testNamePattern": "hamiltonianCycle should return false for graph without Hamiltonian path",
     "testFilePaths": [
       "src/algorithms/graph/hamiltonian-cycle/__test__/hamiltonianCycle.test.js"
-    ]
+    ],
+    "number": 51
   },
   {
     "chapterGroup": "graph",
@@ -2539,7 +620,8 @@ module.exports = [
     "testNamePattern": "kruskal should fire an error for directed graph",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
-    ]
+    ],
+    "number": 52
   },
   {
     "chapterGroup": "graph",
@@ -2550,7 +632,8 @@ module.exports = [
     "testNamePattern": "kruskal should find minimum spanning tree",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
-    ]
+    ],
+    "number": 53
   },
   {
     "chapterGroup": "graph",
@@ -2561,7 +644,8 @@ module.exports = [
     "testNamePattern": "kruskal should find minimum spanning tree for simple graph",
     "testFilePaths": [
       "src/algorithms/graph/kruskal/__test__/kruskal.test.js"
-    ]
+    ],
+    "number": 54
   },
   {
     "chapterGroup": "graph",
@@ -2572,7 +656,8 @@ module.exports = [
     "testNamePattern": "prim should fire an error for directed graph",
     "testFilePaths": [
       "src/algorithms/graph/prim/__test__/prim.test.js"
-    ]
+    ],
+    "number": 55
   },
   {
     "chapterGroup": "graph",
@@ -2583,7 +668,8 @@ module.exports = [
     "testNamePattern": "prim should find minimum spanning tree",
     "testFilePaths": [
       "src/algorithms/graph/prim/__test__/prim.test.js"
-    ]
+    ],
+    "number": 56
   },
   {
     "chapterGroup": "graph",
@@ -2594,7 +680,8 @@ module.exports = [
     "testNamePattern": "prim should find minimum spanning tree for simple graph",
     "testFilePaths": [
       "src/algorithms/graph/prim/__test__/prim.test.js"
-    ]
+    ],
+    "number": 57
   },
   {
     "chapterGroup": "graph",
@@ -2605,7 +692,8 @@ module.exports = [
     "testNamePattern": "stronglyConnectedComponents should detect strongly connected components in simple graph",
     "testFilePaths": [
       "src/algorithms/graph/strongly-connected-components/__test__/stronglyConnectedComponents.test.js"
-    ]
+    ],
+    "number": 58
   },
   {
     "chapterGroup": "graph",
@@ -2616,7 +704,8 @@ module.exports = [
     "testNamePattern": "stronglyConnectedComponents should detect strongly connected components in graph",
     "testFilePaths": [
       "src/algorithms/graph/strongly-connected-components/__test__/stronglyConnectedComponents.test.js"
-    ]
+    ],
+    "number": 59
   },
   {
     "chapterGroup": "graph",
@@ -2627,7 +716,8 @@ module.exports = [
     "testNamePattern": "topologicalSort should do topological sorting on graph",
     "testFilePaths": [
       "src/algorithms/graph/topological-sorting/__test__/topologicalSort.test.js"
-    ]
+    ],
+    "number": 60
   },
   {
     "chapterGroup": "graph",
@@ -2638,7 +728,8 @@ module.exports = [
     "testNamePattern": "bfTravellingSalesman should solve problem for simple graph",
     "testFilePaths": [
       "src/algorithms/graph/travelling-salesman/__test__/bfTravellingSalesman.test.js"
-    ]
+    ],
+    "number": 61
   },
   {
     "chapterGroup": "image-processing",
@@ -2649,7 +740,8 @@ module.exports = [
     "testNamePattern": "resizeImageWidth should perform content-aware image width reduction",
     "testFilePaths": [
       "src/algorithms/image-processing/seam-carving/__tests__/resizeImageWidth.test.js"
-    ]
+    ],
+    "number": 62
   },
   {
     "chapterGroup": "linked-list",
@@ -2660,7 +752,8 @@ module.exports = [
     "testNamePattern": "reverseTraversal should traverse linked list in reverse order",
     "testFilePaths": [
       "src/algorithms/linked-list/reverse-traversal/__test__/reverseTraversal.test.js"
-    ]
+    ],
+    "number": 63
   },
   {
     "chapterGroup": "linked-list",
@@ -2671,7 +764,8 @@ module.exports = [
     "testNamePattern": "traversal should traverse linked list",
     "testFilePaths": [
       "src/algorithms/linked-list/traversal/__test__/traversal.test.js"
-    ]
+    ],
+    "number": 64
   },
   {
     "chapterGroup": "math",
@@ -2682,7 +776,8 @@ module.exports = [
     "testNamePattern": "bitsToFloat16 should convert floating point binary bits to floating point decimal number",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
-    ]
+    ],
+    "number": 65
   },
   {
     "chapterGroup": "math",
@@ -2693,7 +788,8 @@ module.exports = [
     "testNamePattern": "bitsToFloat32 should convert floating point binary bits to floating point decimal number",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
-    ]
+    ],
+    "number": 66
   },
   {
     "chapterGroup": "math",
@@ -2704,7 +800,8 @@ module.exports = [
     "testNamePattern": "bitsToFloat64 should convert floating point binary bits to floating point decimal number",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/bitsToFloat.test.js"
-    ]
+    ],
+    "number": 67
   },
   {
     "chapterGroup": "math",
@@ -2715,7 +812,8 @@ module.exports = [
     "testNamePattern": "floatAs32Binary should create a binary representation of the floating numbers",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
-    ]
+    ],
+    "number": 68
   },
   {
     "chapterGroup": "math",
@@ -2726,117 +824,8 @@ module.exports = [
     "testNamePattern": "floatAs64Binary should create a binary representation of the floating numbers",
     "testFilePaths": [
       "src/algorithms/math/binary-floating-point/__tests__/floatAsBinaryString.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_countSetBits",
-    "name": "countSetBits should return number of set bits@countSetBits.test.js",
-    "label": "countSetBits should return number of set bits",
-    "testNamePattern": "countSetBits should return number of set bits",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/countSetBits.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_fullAdder",
-    "name": "fullAdder should add up two numbers@fullAdder.test.js",
-    "label": "fullAdder should add up two numbers",
-    "testNamePattern": "fullAdder should add up two numbers",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/fullAdder.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_getBit",
-    "name": "getBit should get bit at specific position@getBit.test.js",
-    "label": "getBit should get bit at specific position",
-    "testNamePattern": "getBit should get bit at specific position",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/getBit.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_bitsDiff",
-    "name": "bitsDiff should calculate bits difference between two numbers@bitsDiff.test.js",
-    "label": "bitsDiff should calculate bits difference between two numbers",
-    "testNamePattern": "bitsDiff should calculate bits difference between two numbers",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/bitsDiff.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_clearBit",
-    "name": "clearBit should clear bit at specific position@clearBit.test.js",
-    "label": "clearBit should clear bit at specific position",
-    "testNamePattern": "clearBit should clear bit at specific position",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/clearBit.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_isPowerOfTwo",
-    "name": "isPowerOfTwo should detect if the number is power of two@isPowerOfTwo.test.js",
-    "label": "isPowerOfTwo should detect if the number is power of two",
-    "testNamePattern": "isPowerOfTwo should detect if the number is power of two",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_isPositive",
-    "name": "isPositive should detect if a number is positive@isPositive.test.js",
-    "label": "isPositive should detect if a number is positive",
-    "testNamePattern": "isPositive should detect if a number is positive",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isPositive.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_updateBit",
-    "name": "updateBit should update bit at specific position@updateBit.test.js",
-    "label": "updateBit should update bit at specific position",
-    "testNamePattern": "updateBit should update bit at specific position",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/updateBit.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_isEven",
-    "name": "isEven should detect if a number is even@isEven.test.js",
-    "label": "isEven should detect if a number is even",
-    "testNamePattern": "isEven should detect if a number is even",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isEven.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_multiply",
-    "name": "multiply should multiply two numbers@multiply.test.js",
-    "label": "multiply should multiply two numbers",
-    "testNamePattern": "multiply should multiply two numbers",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/multiply.test.js"
-    ]
+    ],
+    "number": 69
   },
   {
     "chapterGroup": "math",
@@ -2847,7 +836,80 @@ module.exports = [
     "testNamePattern": "bitLength should calculate number of bits that the number is consists of",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/bitLength.test.js"
-    ]
+    ],
+    "number": 70
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_isPowerOfTwo",
+    "name": "isPowerOfTwo should detect if the number is power of two@isPowerOfTwo.test.js",
+    "label": "isPowerOfTwo should detect if the number is power of two",
+    "testNamePattern": "isPowerOfTwo should detect if the number is power of two",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
+    ],
+    "number": 71
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_updateBit",
+    "name": "updateBit should update bit at specific position@updateBit.test.js",
+    "label": "updateBit should update bit at specific position",
+    "testNamePattern": "updateBit should update bit at specific position",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/updateBit.test.js"
+    ],
+    "number": 72
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_isPositive",
+    "name": "isPositive should detect if a number is positive@isPositive.test.js",
+    "label": "isPositive should detect if a number is positive",
+    "testNamePattern": "isPositive should detect if a number is positive",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/isPositive.test.js"
+    ],
+    "number": 73
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_isEven",
+    "name": "isEven should detect if a number is even@isEven.test.js",
+    "label": "isEven should detect if a number is even",
+    "testNamePattern": "isEven should detect if a number is even",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/isEven.test.js"
+    ],
+    "number": 74
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_fullAdder",
+    "name": "fullAdder should add up two numbers@fullAdder.test.js",
+    "label": "fullAdder should add up two numbers",
+    "testNamePattern": "fullAdder should add up two numbers",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/fullAdder.test.js"
+    ],
+    "number": 75
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_countSetBits",
+    "name": "countSetBits should return number of set bits@countSetBits.test.js",
+    "label": "countSetBits should return number of set bits",
+    "testNamePattern": "countSetBits should return number of set bits",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/countSetBits.test.js"
+    ],
+    "number": 76
   },
   {
     "chapterGroup": "math",
@@ -2858,29 +920,32 @@ module.exports = [
     "testNamePattern": "multiplyUnsigned should multiply two unsigned numbers",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/multiplyUnsigned.test.js"
-    ]
+    ],
+    "number": 77
   },
   {
     "chapterGroup": "math",
     "chapter": "bits",
-    "algo": "bits_multiplyByTwo",
-    "name": "multiplyByTwo should multiply numbers by two using bitwise operations@multiplyByTwo.test.js",
-    "label": "multiplyByTwo should multiply numbers by two using bitwise operations",
-    "testNamePattern": "multiplyByTwo should multiply numbers by two using bitwise operations",
+    "algo": "bits_getBit",
+    "name": "getBit should get bit at specific position@getBit.test.js",
+    "label": "getBit should get bit at specific position",
+    "testNamePattern": "getBit should get bit at specific position",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/multiplyByTwo.test.js"
-    ]
+      "src/algorithms/math/bits/__test__/getBit.test.js"
+    ],
+    "number": 78
   },
   {
     "chapterGroup": "math",
     "chapter": "bits",
-    "algo": "bits_divideByTwo",
-    "name": "divideByTwo should divide numbers by two using bitwise operations@divideByTwo.test.js",
-    "label": "divideByTwo should divide numbers by two using bitwise operations",
-    "testNamePattern": "divideByTwo should divide numbers by two using bitwise operations",
+    "algo": "bits_multiply",
+    "name": "multiply should multiply two numbers@multiply.test.js",
+    "label": "multiply should multiply two numbers",
+    "testNamePattern": "multiply should multiply two numbers",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/divideByTwo.test.js"
-    ]
+      "src/algorithms/math/bits/__test__/multiply.test.js"
+    ],
+    "number": 79
   },
   {
     "chapterGroup": "math",
@@ -2891,7 +956,56 @@ module.exports = [
     "testNamePattern": "switchSign should switch the sign of the number using twos complement approach",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/switchSign.test.js"
-    ]
+    ],
+    "number": 80
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_bitsDiff",
+    "name": "bitsDiff should calculate bits difference between two numbers@bitsDiff.test.js",
+    "label": "bitsDiff should calculate bits difference between two numbers",
+    "testNamePattern": "bitsDiff should calculate bits difference between two numbers",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/bitsDiff.test.js"
+    ],
+    "number": 81
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_multiplyByTwo",
+    "name": "multiplyByTwo should multiply numbers by two using bitwise operations@multiplyByTwo.test.js",
+    "label": "multiplyByTwo should multiply numbers by two using bitwise operations",
+    "testNamePattern": "multiplyByTwo should multiply numbers by two using bitwise operations",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/multiplyByTwo.test.js"
+    ],
+    "number": 82
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_clearBit",
+    "name": "clearBit should clear bit at specific position@clearBit.test.js",
+    "label": "clearBit should clear bit at specific position",
+    "testNamePattern": "clearBit should clear bit at specific position",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/clearBit.test.js"
+    ],
+    "number": 83
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_divideByTwo",
+    "name": "divideByTwo should divide numbers by two using bitwise operations@divideByTwo.test.js",
+    "label": "divideByTwo should divide numbers by two using bitwise operations",
+    "testNamePattern": "divideByTwo should divide numbers by two using bitwise operations",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/divideByTwo.test.js"
+    ],
+    "number": 84
   },
   {
     "chapterGroup": "math",
@@ -2902,7 +1016,8 @@ module.exports = [
     "testNamePattern": "setBit should set bit at specific position",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/setBit.test.js"
-    ]
+    ],
+    "number": 85
   },
   {
     "chapterGroup": "math",
@@ -2913,7 +1028,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should create complex numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 86
   },
   {
     "chapterGroup": "math",
@@ -2924,7 +1040,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should add complex numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 87
   },
   {
     "chapterGroup": "math",
@@ -2935,7 +1052,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should add complex and natural numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 88
   },
   {
     "chapterGroup": "math",
@@ -2946,7 +1064,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should subtract complex numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 89
   },
   {
     "chapterGroup": "math",
@@ -2957,7 +1076,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should subtract complex and natural numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 90
   },
   {
     "chapterGroup": "math",
@@ -2968,7 +1088,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should multiply complex numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 91
   },
   {
     "chapterGroup": "math",
@@ -2979,7 +1100,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should multiply complex numbers by themselves",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 92
   },
   {
     "chapterGroup": "math",
@@ -2990,7 +1112,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should calculate i in power of two",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 93
   },
   {
     "chapterGroup": "math",
@@ -3001,7 +1124,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should divide complex numbers",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 94
   },
   {
     "chapterGroup": "math",
@@ -3012,7 +1136,8 @@ module.exports = [
     "testNamePattern": "ComplexNumber should return complex number in polar form",
     "testFilePaths": [
       "src/algorithms/math/complex-number/__test__/ComplexNumber.test.js"
-    ]
+    ],
+    "number": 95
   },
   {
     "chapterGroup": "math",
@@ -3023,7 +1148,8 @@ module.exports = [
     "testNamePattern": "euclideanAlgorithmIterative should calculate GCD iteratively",
     "testFilePaths": [
       "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithmIterative.test.js"
-    ]
+    ],
+    "number": 96
   },
   {
     "chapterGroup": "math",
@@ -3034,7 +1160,8 @@ module.exports = [
     "testNamePattern": "euclideanAlgorithm should calculate GCD recursively",
     "testFilePaths": [
       "src/algorithms/math/euclidean-algorithm/__test__/euclideanAlgorithm.test.js"
-    ]
+    ],
+    "number": 97
   },
   {
     "chapterGroup": "math",
@@ -3045,7 +1172,8 @@ module.exports = [
     "testNamePattern": "euclideanDistance should calculate euclidean distance between vectors",
     "testFilePaths": [
       "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
-    ]
+    ],
+    "number": 98
   },
   {
     "chapterGroup": "math",
@@ -3056,7 +1184,8 @@ module.exports = [
     "testNamePattern": "euclideanDistance should throw an error in case if two matrices are of different shapes",
     "testFilePaths": [
       "src/algorithms/math/euclidean-distance/__tests__/euclideanDistance.test.js"
-    ]
+    ],
+    "number": 99
   },
   {
     "chapterGroup": "math",
@@ -3067,7 +1196,8 @@ module.exports = [
     "testNamePattern": "factorialRecursive should calculate factorial",
     "testFilePaths": [
       "src/algorithms/math/factorial/__test__/factorialRecursive.test.js"
-    ]
+    ],
+    "number": 100
   },
   {
     "chapterGroup": "math",
@@ -3078,7 +1208,8 @@ module.exports = [
     "testNamePattern": "factorial should calculate factorial",
     "testFilePaths": [
       "src/algorithms/math/factorial/__test__/factorial.test.js"
-    ]
+    ],
+    "number": 101
   },
   {
     "chapterGroup": "math",
@@ -3089,7 +1220,8 @@ module.exports = [
     "testNamePattern": "fastPowering should compute power in log.n. time",
     "testFilePaths": [
       "src/algorithms/math/fast-powering/__test__/fastPowering.test.js"
-    ]
+    ],
+    "number": 102
   },
   {
     "chapterGroup": "math",
@@ -3100,7 +1232,8 @@ module.exports = [
     "testNamePattern": "fibonacciClosedForm should throw an error when trying to calculate fibonacci for not allowed positions",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
-    ]
+    ],
+    "number": 103
   },
   {
     "chapterGroup": "math",
@@ -3111,7 +1244,8 @@ module.exports = [
     "testNamePattern": "fibonacciClosedForm should calculate fibonacci correctly",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNthClosedForm.test.js"
-    ]
+    ],
+    "number": 104
   },
   {
     "chapterGroup": "math",
@@ -3122,7 +1256,8 @@ module.exports = [
     "testNamePattern": "fibonacciNth should calculate fibonacci correctly",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js"
-    ]
+    ],
+    "number": 105
   },
   {
     "chapterGroup": "math",
@@ -3133,7 +1268,8 @@ module.exports = [
     "testNamePattern": "fibonacci should calculate fibonacci correctly",
     "testFilePaths": [
       "src/algorithms/math/fibonacci/__test__/fibonacci.test.js"
-    ]
+    ],
+    "number": 106
   },
   {
     "chapterGroup": "math",
@@ -3144,7 +1280,8 @@ module.exports = [
     "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #1",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
-    ]
+    ],
+    "number": 107
   },
   {
     "chapterGroup": "math",
@@ -3155,7 +1292,8 @@ module.exports = [
     "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #2",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
-    ]
+    ],
+    "number": 108
   },
   {
     "chapterGroup": "math",
@@ -3166,7 +1304,8 @@ module.exports = [
     "testNamePattern": "fastFourierTransform should calculate the radix-2 discrete fourier transform #3",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/fastFourierTransform.test.js"
-    ]
+    ],
+    "number": 109
   },
   {
     "chapterGroup": "math",
@@ -3177,7 +1316,8 @@ module.exports = [
     "testNamePattern": "inverseDiscreteFourierTransform should calculate output signal out of input frequencies",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/inverseDiscreteFourierTransform.test.js"
-    ]
+    ],
+    "number": 110
   },
   {
     "chapterGroup": "math",
@@ -3188,7 +1328,8 @@ module.exports = [
     "testNamePattern": "discreteFourierTransform should split signal into frequencies",
     "testFilePaths": [
       "src/algorithms/math/fourier-transform/__test__/discreteFourierTransform.test.js"
-    ]
+    ],
+    "number": 111
   },
   {
     "chapterGroup": "math",
@@ -3199,7 +1340,8 @@ module.exports = [
     "testNamePattern": "hornerMethod should evaluate the polynomial for the specified value of x correctly",
     "testFilePaths": [
       "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
-    ]
+    ],
+    "number": 112
   },
   {
     "chapterGroup": "math",
@@ -3210,7 +1352,8 @@ module.exports = [
     "testNamePattern": "hornerMethod should evaluate the same polynomial value as classical approach",
     "testFilePaths": [
       "src/algorithms/math/horner-method/__test__/hornerMethod.test.js"
-    ]
+    ],
+    "number": 113
   },
   {
     "chapterGroup": "math",
@@ -3221,7 +1364,8 @@ module.exports = [
     "testNamePattern": "classicPolynome should evaluate the polynomial for the specified value of x correctly",
     "testFilePaths": [
       "src/algorithms/math/horner-method/__test__/classicPolynome.test.js"
-    ]
+    ],
+    "number": 114
   },
   {
     "chapterGroup": "math",
@@ -3232,7 +1376,8 @@ module.exports = [
     "testNamePattern": "integerPartition should partition the number",
     "testFilePaths": [
       "src/algorithms/math/integer-partition/__test__/integerPartition.test.js"
-    ]
+    ],
+    "number": 115
   },
   {
     "chapterGroup": "math",
@@ -3243,7 +1388,8 @@ module.exports = [
     "testNamePattern": "isPowerOfTwoBitwise should check if the number is made by multiplying twos",
     "testFilePaths": [
       "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwoBitwise.test.js"
-    ]
+    ],
+    "number": 116
   },
   {
     "chapterGroup": "math",
@@ -3254,7 +1400,8 @@ module.exports = [
     "testNamePattern": "isPowerOfTwo should check if the number is made by multiplying twos",
     "testFilePaths": [
       "src/algorithms/math/is-power-of-two/__test__/isPowerOfTwo.test.js"
-    ]
+    ],
+    "number": 117
   },
   {
     "chapterGroup": "math",
@@ -3265,7 +1412,8 @@ module.exports = [
     "testNamePattern": "leastCommonMultiple should find least common multiple",
     "testFilePaths": [
       "src/algorithms/math/least-common-multiple/__test__/leastCommonMultiple.test.js"
-    ]
+    ],
+    "number": 118
   },
   {
     "chapterGroup": "math",
@@ -3276,7 +1424,8 @@ module.exports = [
     "testNamePattern": "liuHui should calculate . based on 12-gon",
     "testFilePaths": [
       "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
+    ],
+    "number": 119
   },
   {
     "chapterGroup": "math",
@@ -3287,7 +1436,8 @@ module.exports = [
     "testNamePattern": "liuHui should calculate . based on 24-gon",
     "testFilePaths": [
       "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
+    ],
+    "number": 120
   },
   {
     "chapterGroup": "math",
@@ -3298,7 +1448,8 @@ module.exports = [
     "testNamePattern": "liuHui should calculate . based on 6144-gon",
     "testFilePaths": [
       "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
+    ],
+    "number": 121
   },
   {
     "chapterGroup": "math",
@@ -3309,7 +1460,8 @@ module.exports = [
     "testNamePattern": "liuHui should calculate . based on 201326592-gon",
     "testFilePaths": [
       "src/algorithms/math/liu-hui/__test__/liuHui.test.js"
-    ]
+    ],
+    "number": 122
   },
   {
     "chapterGroup": "math",
@@ -3320,7 +1472,8 @@ module.exports = [
     "testNamePattern": "Matrix should throw when trying to add matrices of invalid shapes",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 123
   },
   {
     "chapterGroup": "math",
@@ -3331,7 +1484,8 @@ module.exports = [
     "testNamePattern": "Matrix should calculate matrices dimensions",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 124
   },
   {
     "chapterGroup": "math",
@@ -3342,7 +1496,8 @@ module.exports = [
     "testNamePattern": "Matrix should generate the matrix of zeros",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 125
   },
   {
     "chapterGroup": "math",
@@ -3353,7 +1508,8 @@ module.exports = [
     "testNamePattern": "Matrix should generate the matrix with custom values",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 126
   },
   {
     "chapterGroup": "math",
@@ -3364,7 +1520,8 @@ module.exports = [
     "testNamePattern": "Matrix should generate a custom matrix based on specific cell indices",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 127
   },
   {
     "chapterGroup": "math",
@@ -3375,7 +1532,8 @@ module.exports = [
     "testNamePattern": "Matrix should multiply two matrices",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 128
   },
   {
     "chapterGroup": "math",
@@ -3386,7 +1544,8 @@ module.exports = [
     "testNamePattern": "Matrix should transpose matrices",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 129
   },
   {
     "chapterGroup": "math",
@@ -3397,7 +1556,8 @@ module.exports = [
     "testNamePattern": "Matrix should throw when trying to transpose non 2D matrix",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 130
   },
   {
     "chapterGroup": "math",
@@ -3408,7 +1568,8 @@ module.exports = [
     "testNamePattern": "Matrix should add two matrices",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 131
   },
   {
     "chapterGroup": "math",
@@ -3419,7 +1580,8 @@ module.exports = [
     "testNamePattern": "Matrix should throw when trying to add matrices of different shape",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 132
   },
   {
     "chapterGroup": "math",
@@ -3430,7 +1592,8 @@ module.exports = [
     "testNamePattern": "Matrix should do element wise multiplication two matrices",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 133
   },
   {
     "chapterGroup": "math",
@@ -3441,7 +1604,8 @@ module.exports = [
     "testNamePattern": "Matrix should throw when trying to multiply matrices element-wise of different shape",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 134
   },
   {
     "chapterGroup": "math",
@@ -3452,7 +1616,8 @@ module.exports = [
     "testNamePattern": "Matrix should do element wise subtraction two matrices",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 135
   },
   {
     "chapterGroup": "math",
@@ -3463,7 +1628,8 @@ module.exports = [
     "testNamePattern": "Matrix should throw when trying to subtract matrices element-wise of different shape",
     "testFilePaths": [
       "src/algorithms/math/matrix/__tests__/Matrix.test.js"
-    ]
+    ],
+    "number": 136
   },
   {
     "chapterGroup": "math",
@@ -3474,7 +1640,8 @@ module.exports = [
     "testNamePattern": "pascalTriangleRecursive should calculate Pascal Triangle coefficients for specific line number",
     "testFilePaths": [
       "src/algorithms/math/pascal-triangle/__test__/pascalTriangleRecursive.test.js"
-    ]
+    ],
+    "number": 137
   },
   {
     "chapterGroup": "math",
@@ -3485,7 +1652,8 @@ module.exports = [
     "testNamePattern": "pascalTriangle should calculate Pascal Triangle coefficients for specific line number",
     "testFilePaths": [
       "src/algorithms/math/pascal-triangle/__test__/pascalTriangle.test.js"
-    ]
+    ],
+    "number": 138
   },
   {
     "chapterGroup": "math",
@@ -3496,7 +1664,8 @@ module.exports = [
     "testNamePattern": "trialDivision should detect prime numbers",
     "testFilePaths": [
       "src/algorithms/math/primality-test/__test__/trialDivision.test.js"
-    ]
+    ],
+    "number": 139
   },
   {
     "chapterGroup": "math",
@@ -3507,7 +1676,8 @@ module.exports = [
     "testNamePattern": "primeFactors should find prime factors",
     "testFilePaths": [
       "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
-    ]
+    ],
+    "number": 140
   },
   {
     "chapterGroup": "math",
@@ -3518,7 +1688,8 @@ module.exports = [
     "testNamePattern": "primeFactors should give approximate prime factors count using Hardy-Ramanujan theorem",
     "testFilePaths": [
       "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
-    ]
+    ],
+    "number": 141
   },
   {
     "chapterGroup": "math",
@@ -3529,7 +1700,8 @@ module.exports = [
     "testNamePattern": "primeFactors should give correct deviation between exact and approx counts",
     "testFilePaths": [
       "src/algorithms/math/prime-factors/__test__/primeFactors.test.js"
-    ]
+    ],
+    "number": 142
   },
   {
     "chapterGroup": "math",
@@ -3540,7 +1712,8 @@ module.exports = [
     "testNamePattern": "radianToDegree should convert radian to degree",
     "testFilePaths": [
       "src/algorithms/math/radian/__test__/radianToDegree.test.js"
-    ]
+    ],
+    "number": 143
   },
   {
     "chapterGroup": "math",
@@ -3551,7 +1724,8 @@ module.exports = [
     "testNamePattern": "degreeToRadian should convert degree to radian",
     "testFilePaths": [
       "src/algorithms/math/radian/__test__/degreeToRadian.test.js"
-    ]
+    ],
+    "number": 144
   },
   {
     "chapterGroup": "math",
@@ -3562,7 +1736,8 @@ module.exports = [
     "testNamePattern": "sieveOfEratosthenes should find all primes less than or equal to n",
     "testFilePaths": [
       "src/algorithms/math/sieve-of-eratosthenes/__test__/sieveOfEratosthenes.test.js"
-    ]
+    ],
+    "number": 145
   },
   {
     "chapterGroup": "math",
@@ -3573,7 +1748,8 @@ module.exports = [
     "testNamePattern": "squareRoot should throw for negative numbers",
     "testFilePaths": [
       "src/algorithms/math/square-root/__test__/squareRoot.test.js"
-    ]
+    ],
+    "number": 146
   },
   {
     "chapterGroup": "math",
@@ -3584,7 +1760,8 @@ module.exports = [
     "testNamePattern": "squareRoot should correctly calculate square root with default tolerance",
     "testFilePaths": [
       "src/algorithms/math/square-root/__test__/squareRoot.test.js"
-    ]
+    ],
+    "number": 147
   },
   {
     "chapterGroup": "math",
@@ -3595,7 +1772,8 @@ module.exports = [
     "testNamePattern": "squareRoot should correctly calculate square root for integers with custom tolerance",
     "testFilePaths": [
       "src/algorithms/math/square-root/__test__/squareRoot.test.js"
-    ]
+    ],
+    "number": 148
   },
   {
     "chapterGroup": "ml",
@@ -3606,7 +1784,8 @@ module.exports = [
     "testNamePattern": "kMeans should throw an error on invalid data",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ]
+    ],
+    "number": 149
   },
   {
     "chapterGroup": "ml",
@@ -3617,7 +1796,8 @@ module.exports = [
     "testNamePattern": "kMeans should throw an error on inconsistent data",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ]
+    ],
+    "number": 150
   },
   {
     "chapterGroup": "ml",
@@ -3628,7 +1808,8 @@ module.exports = [
     "testNamePattern": "kMeans should find the nearest neighbour",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ]
+    ],
+    "number": 151
   },
   {
     "chapterGroup": "ml",
@@ -3639,7 +1820,8 @@ module.exports = [
     "testNamePattern": "kMeans should find the clusters with equal distances",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ]
+    ],
+    "number": 152
   },
   {
     "chapterGroup": "ml",
@@ -3650,7 +1832,8 @@ module.exports = [
     "testNamePattern": "kMeans should find the nearest neighbour in 3D space",
     "testFilePaths": [
       "src/algorithms/ml/k-means/__test__/kMeans.test.js"
-    ]
+    ],
+    "number": 153
   },
   {
     "chapterGroup": "ml",
@@ -3661,7 +1844,8 @@ module.exports = [
     "testNamePattern": "kNN should throw an error on invalid data",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
+    ],
+    "number": 154
   },
   {
     "chapterGroup": "ml",
@@ -3672,7 +1856,8 @@ module.exports = [
     "testNamePattern": "kNN should throw an error on invalid labels",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
+    ],
+    "number": 155
   },
   {
     "chapterGroup": "ml",
@@ -3683,7 +1868,8 @@ module.exports = [
     "testNamePattern": "kNN should throw an error on not giving classification vector",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
+    ],
+    "number": 156
   },
   {
     "chapterGroup": "ml",
@@ -3694,7 +1880,8 @@ module.exports = [
     "testNamePattern": "kNN should find the nearest neighbour",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
+    ],
+    "number": 157
   },
   {
     "chapterGroup": "ml",
@@ -3705,7 +1892,8 @@ module.exports = [
     "testNamePattern": "kNN should find the nearest neighbour with equal distances",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
+    ],
+    "number": 158
   },
   {
     "chapterGroup": "ml",
@@ -3716,7 +1904,8 @@ module.exports = [
     "testNamePattern": "kNN should find the nearest neighbour in 3D space",
     "testFilePaths": [
       "src/algorithms/ml/knn/__test__/knn.test.js"
-    ]
+    ],
+    "number": 159
   },
   {
     "chapterGroup": "search",
@@ -3727,7 +1916,8 @@ module.exports = [
     "testNamePattern": "binarySearch should search number in sorted array",
     "testFilePaths": [
       "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
-    ]
+    ],
+    "number": 160
   },
   {
     "chapterGroup": "search",
@@ -3738,7 +1928,8 @@ module.exports = [
     "testNamePattern": "binarySearch should search object in sorted array",
     "testFilePaths": [
       "src/algorithms/search/binary-search/__test__/binarySearch.test.js"
-    ]
+    ],
+    "number": 161
   },
   {
     "chapterGroup": "search",
@@ -3749,7 +1940,8 @@ module.exports = [
     "testNamePattern": "interpolationSearch should search elements in sorted array of numbers",
     "testFilePaths": [
       "src/algorithms/search/interpolation-search/__test__/interpolationSearch.test.js"
-    ]
+    ],
+    "number": 162
   },
   {
     "chapterGroup": "search",
@@ -3760,7 +1952,8 @@ module.exports = [
     "testNamePattern": "jumpSearch should search for an element in sorted array",
     "testFilePaths": [
       "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
-    ]
+    ],
+    "number": 163
   },
   {
     "chapterGroup": "search",
@@ -3771,7 +1964,8 @@ module.exports = [
     "testNamePattern": "jumpSearch should search object in sorted array",
     "testFilePaths": [
       "src/algorithms/search/jump-search/__test__/jumpSearch.test.js"
-    ]
+    ],
+    "number": 164
   },
   {
     "chapterGroup": "search",
@@ -3782,7 +1976,8 @@ module.exports = [
     "testNamePattern": "linearSearch should search all numbers in array",
     "testFilePaths": [
       "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
-    ]
+    ],
+    "number": 165
   },
   {
     "chapterGroup": "search",
@@ -3793,7 +1988,8 @@ module.exports = [
     "testNamePattern": "linearSearch should search all strings in array",
     "testFilePaths": [
       "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
-    ]
+    ],
+    "number": 166
   },
   {
     "chapterGroup": "search",
@@ -3804,7 +2000,8 @@ module.exports = [
     "testNamePattern": "linearSearch should search through objects as well",
     "testFilePaths": [
       "src/algorithms/search/linear-search/__test__/linearSearch.test.js"
-    ]
+    ],
+    "number": 167
   },
   {
     "chapterGroup": "sets",
@@ -3815,7 +2012,8 @@ module.exports = [
     "testNamePattern": "cartesianProduct should return null if there is not enough info for calculation",
     "testFilePaths": [
       "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
-    ]
+    ],
+    "number": 168
   },
   {
     "chapterGroup": "sets",
@@ -3826,7 +2024,8 @@ module.exports = [
     "testNamePattern": "cartesianProduct should calculate the product of two sets",
     "testFilePaths": [
       "src/algorithms/sets/cartesian-product/__test__/cartesianProduct.test.js"
-    ]
+    ],
+    "number": 169
   },
   {
     "chapterGroup": "sets",
@@ -3837,7 +2036,8 @@ module.exports = [
     "testNamePattern": "combinationSum should find all combinations with specific sum",
     "testFilePaths": [
       "src/algorithms/sets/combination-sum/__test__/combinationSum.test.js"
-    ]
+    ],
+    "number": 170
   },
   {
     "chapterGroup": "sets",
@@ -3848,7 +2048,8 @@ module.exports = [
     "testNamePattern": "combineWithoutRepetitions should combine string without repetitions",
     "testFilePaths": [
       "src/algorithms/sets/combinations/__test__/combineWithoutRepetitions.test.js"
-    ]
+    ],
+    "number": 171
   },
   {
     "chapterGroup": "sets",
@@ -3859,7 +2060,8 @@ module.exports = [
     "testNamePattern": "combineWithRepetitions should combine string with repetitions",
     "testFilePaths": [
       "src/algorithms/sets/combinations/__test__/combineWithRepetitions.test.js"
-    ]
+    ],
+    "number": 172
   },
   {
     "chapterGroup": "sets",
@@ -3870,7 +2072,8 @@ module.exports = [
     "testNamePattern": "fisherYates should shuffle small arrays",
     "testFilePaths": [
       "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
-    ]
+    ],
+    "number": 173
   },
   {
     "chapterGroup": "sets",
@@ -3881,7 +2084,8 @@ module.exports = [
     "testNamePattern": "fisherYates should shuffle array randomly",
     "testFilePaths": [
       "src/algorithms/sets/fisher-yates/__test__/fisherYates.test.js"
-    ]
+    ],
+    "number": 174
   },
   {
     "chapterGroup": "sets",
@@ -3892,7 +2096,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve 0/1 knapsack problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 175
   },
   {
     "chapterGroup": "sets",
@@ -3903,7 +2108,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve 0/1 knapsack problem regardless of items order",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 176
   },
   {
     "chapterGroup": "sets",
@@ -3914,7 +2120,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve 0/1 knapsack problem with impossible items set",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 177
   },
   {
     "chapterGroup": "sets",
@@ -3925,7 +2132,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve 0/1 knapsack problem with all equal weights",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 178
   },
   {
     "chapterGroup": "sets",
@@ -3936,7 +2144,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve unbound knapsack problem",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 179
   },
   {
     "chapterGroup": "sets",
@@ -3947,7 +2156,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve unbound knapsack problem with items in stock",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 180
   },
   {
     "chapterGroup": "sets",
@@ -3958,7 +2168,8 @@ module.exports = [
     "testNamePattern": "Knapsack should solve unbound knapsack problem with items in stock and max weight more than sum of all items",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/Knapsack.test.js"
-    ]
+    ],
+    "number": 181
   },
   {
     "chapterGroup": "sets",
@@ -3969,7 +2180,8 @@ module.exports = [
     "testNamePattern": "KnapsackItem should create knapsack item and count its total weight and value",
     "testFilePaths": [
       "src/algorithms/sets/knapsack-problem/__test__/KnapsackItem.test.js"
-    ]
+    ],
+    "number": 182
   },
   {
     "chapterGroup": "sets",
@@ -3980,7 +2192,8 @@ module.exports = [
     "testNamePattern": "longestCommonSubsequence should find longest common subsequence for two strings",
     "testFilePaths": [
       "src/algorithms/sets/longest-common-subsequence/__test__/longestCommonSubsequence.test.js"
-    ]
+    ],
+    "number": 183
   },
   {
     "chapterGroup": "sets",
@@ -3991,7 +2204,8 @@ module.exports = [
     "testNamePattern": "dpLongestIncreasingSubsequence should find longest increasing subsequence length",
     "testFilePaths": [
       "src/algorithms/sets/longest-increasing-subsequence/__test__/dpLongestIncreasingSubsequence.test.js"
-    ]
+    ],
+    "number": 184
   },
   {
     "chapterGroup": "sets",
@@ -4002,7 +2216,8 @@ module.exports = [
     "testNamePattern": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js"
-    ]
+    ],
+    "number": 185
   },
   {
     "chapterGroup": "sets",
@@ -4013,7 +2228,8 @@ module.exports = [
     "testNamePattern": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
-    ]
+    ],
+    "number": 186
   },
   {
     "chapterGroup": "sets",
@@ -4024,7 +2240,8 @@ module.exports = [
     "testNamePattern": "dcMaximumSubarraySum should find maximum subarray sum using the divide and conquer algorithm",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/dcMaximumSubarraySum.test.js"
-    ]
+    ],
+    "number": 187
   },
   {
     "chapterGroup": "sets",
@@ -4035,7 +2252,8 @@ module.exports = [
     "testNamePattern": "permutateWithoutRepetitions should permutate string",
     "testFilePaths": [
       "src/algorithms/sets/permutations/__test__/permutateWithoutRepetitions.test.js"
-    ]
+    ],
+    "number": 188
   },
   {
     "chapterGroup": "sets",
@@ -4046,18 +2264,8 @@ module.exports = [
     "testNamePattern": "permutateWithRepetitions should permutate string with repetition",
     "testFilePaths": [
       "src/algorithms/sets/permutations/__test__/permutateWithRepetitions.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sets",
-    "chapter": "power-set",
-    "algo": "power-set_btPowerSet",
-    "name": "btPowerSet should calculate power set of given set using backtracking approach@btPowerSet.test.js",
-    "label": "btPowerSet should calculate power set of given set using backtracking approach",
-    "testNamePattern": "btPowerSet should calculate power set of given set using backtracking approach",
-    "testFilePaths": [
-      "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
-    ]
+    ],
+    "number": 189
   },
   {
     "chapterGroup": "sets",
@@ -4068,7 +2276,20 @@ module.exports = [
     "testNamePattern": "bwPowerSet should calculate power set of given set using bitwise approach",
     "testFilePaths": [
       "src/algorithms/sets/power-set/__test__/bwPowerSet.test.js"
-    ]
+    ],
+    "number": 190
+  },
+  {
+    "chapterGroup": "sets",
+    "chapter": "power-set",
+    "algo": "power-set_btPowerSet",
+    "name": "btPowerSet should calculate power set of given set using backtracking approach@btPowerSet.test.js",
+    "label": "btPowerSet should calculate power set of given set using backtracking approach",
+    "testNamePattern": "btPowerSet should calculate power set of given set using backtracking approach",
+    "testFilePaths": [
+      "src/algorithms/sets/power-set/__test__/btPowerSet.test.js"
+    ],
+    "number": 191
   },
   {
     "chapterGroup": "sets",
@@ -4079,7 +2300,8 @@ module.exports = [
     "testNamePattern": "shortestCommonSupersequence should find shortest common supersequence of two sequences",
     "testFilePaths": [
       "src/algorithms/sets/shortest-common-supersequence/__test__/shortestCommonSupersequence.test.js"
-    ]
+    ],
+    "number": 192
   },
   {
     "chapterGroup": "sorting",
@@ -4090,7 +2312,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 193
   },
   {
     "chapterGroup": "sorting",
@@ -4101,7 +2324,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 194
   },
   {
     "chapterGroup": "sorting",
@@ -4112,7 +2336,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should do stable sorting",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 195
   },
   {
     "chapterGroup": "sorting",
@@ -4123,7 +2348,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 196
   },
   {
     "chapterGroup": "sorting",
@@ -4134,7 +2360,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 197
   },
   {
     "chapterGroup": "sorting",
@@ -4145,7 +2372,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 198
   },
   {
     "chapterGroup": "sorting",
@@ -4156,7 +2384,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 199
   },
   {
     "chapterGroup": "sorting",
@@ -4167,7 +2396,8 @@ module.exports = [
     "testNamePattern": "BubbleSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js"
-    ]
+    ],
+    "number": 200
   },
   {
     "chapterGroup": "sorting",
@@ -4178,7 +2408,8 @@ module.exports = [
     "testNamePattern": "CountingSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 201
   },
   {
     "chapterGroup": "sorting",
@@ -4189,7 +2420,8 @@ module.exports = [
     "testNamePattern": "CountingSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 202
   },
   {
     "chapterGroup": "sorting",
@@ -4200,7 +2432,8 @@ module.exports = [
     "testNamePattern": "CountingSort should allow to use specify max/min integer value in array to make sorting faster",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 203
   },
   {
     "chapterGroup": "sorting",
@@ -4211,7 +2444,8 @@ module.exports = [
     "testNamePattern": "CountingSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 204
   },
   {
     "chapterGroup": "sorting",
@@ -4222,7 +2456,8 @@ module.exports = [
     "testNamePattern": "CountingSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 205
   },
   {
     "chapterGroup": "sorting",
@@ -4233,7 +2468,8 @@ module.exports = [
     "testNamePattern": "CountingSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 206
   },
   {
     "chapterGroup": "sorting",
@@ -4244,7 +2480,8 @@ module.exports = [
     "testNamePattern": "CountingSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/counting-sort/__test__/CountingSort.test.js"
-    ]
+    ],
+    "number": 207
   },
   {
     "chapterGroup": "sorting",
@@ -4255,7 +2492,8 @@ module.exports = [
     "testNamePattern": "HeapSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 208
   },
   {
     "chapterGroup": "sorting",
@@ -4266,7 +2504,8 @@ module.exports = [
     "testNamePattern": "HeapSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 209
   },
   {
     "chapterGroup": "sorting",
@@ -4277,7 +2516,8 @@ module.exports = [
     "testNamePattern": "HeapSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 210
   },
   {
     "chapterGroup": "sorting",
@@ -4288,7 +2528,8 @@ module.exports = [
     "testNamePattern": "HeapSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 211
   },
   {
     "chapterGroup": "sorting",
@@ -4299,7 +2540,8 @@ module.exports = [
     "testNamePattern": "HeapSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 212
   },
   {
     "chapterGroup": "sorting",
@@ -4310,7 +2552,8 @@ module.exports = [
     "testNamePattern": "HeapSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 213
   },
   {
     "chapterGroup": "sorting",
@@ -4321,7 +2564,8 @@ module.exports = [
     "testNamePattern": "HeapSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/heap-sort/__test__/HeapSort.test.js"
-    ]
+    ],
+    "number": 214
   },
   {
     "chapterGroup": "sorting",
@@ -4332,7 +2576,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 215
   },
   {
     "chapterGroup": "sorting",
@@ -4343,7 +2588,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 216
   },
   {
     "chapterGroup": "sorting",
@@ -4354,7 +2600,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should do stable sorting",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 217
   },
   {
     "chapterGroup": "sorting",
@@ -4365,7 +2612,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 218
   },
   {
     "chapterGroup": "sorting",
@@ -4376,7 +2624,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 219
   },
   {
     "chapterGroup": "sorting",
@@ -4387,7 +2636,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 220
   },
   {
     "chapterGroup": "sorting",
@@ -4398,7 +2648,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 221
   },
   {
     "chapterGroup": "sorting",
@@ -4409,7 +2660,8 @@ module.exports = [
     "testNamePattern": "InsertionSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/insertion-sort/__test__/InsertionSort.test.js"
-    ]
+    ],
+    "number": 222
   },
   {
     "chapterGroup": "sorting",
@@ -4420,7 +2672,8 @@ module.exports = [
     "testNamePattern": "MergeSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 223
   },
   {
     "chapterGroup": "sorting",
@@ -4431,7 +2684,8 @@ module.exports = [
     "testNamePattern": "MergeSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 224
   },
   {
     "chapterGroup": "sorting",
@@ -4442,7 +2696,8 @@ module.exports = [
     "testNamePattern": "MergeSort should do stable sorting",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 225
   },
   {
     "chapterGroup": "sorting",
@@ -4453,7 +2708,8 @@ module.exports = [
     "testNamePattern": "MergeSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 226
   },
   {
     "chapterGroup": "sorting",
@@ -4464,7 +2720,8 @@ module.exports = [
     "testNamePattern": "MergeSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 227
   },
   {
     "chapterGroup": "sorting",
@@ -4475,7 +2732,8 @@ module.exports = [
     "testNamePattern": "MergeSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 228
   },
   {
     "chapterGroup": "sorting",
@@ -4486,7 +2744,8 @@ module.exports = [
     "testNamePattern": "MergeSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 229
   },
   {
     "chapterGroup": "sorting",
@@ -4497,7 +2756,8 @@ module.exports = [
     "testNamePattern": "MergeSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/merge-sort/__test__/MergeSort.test.js"
-    ]
+    ],
+    "number": 230
   },
   {
     "chapterGroup": "sorting",
@@ -4508,7 +2768,8 @@ module.exports = [
     "testNamePattern": "QuickSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 231
   },
   {
     "chapterGroup": "sorting",
@@ -4519,7 +2780,8 @@ module.exports = [
     "testNamePattern": "QuickSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 232
   },
   {
     "chapterGroup": "sorting",
@@ -4530,7 +2792,8 @@ module.exports = [
     "testNamePattern": "QuickSort should do stable sorting",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 233
   },
   {
     "chapterGroup": "sorting",
@@ -4541,7 +2804,8 @@ module.exports = [
     "testNamePattern": "QuickSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 234
   },
   {
     "chapterGroup": "sorting",
@@ -4552,7 +2816,8 @@ module.exports = [
     "testNamePattern": "QuickSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 235
   },
   {
     "chapterGroup": "sorting",
@@ -4563,7 +2828,8 @@ module.exports = [
     "testNamePattern": "QuickSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 236
   },
   {
     "chapterGroup": "sorting",
@@ -4574,7 +2840,8 @@ module.exports = [
     "testNamePattern": "QuickSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 237
   },
   {
     "chapterGroup": "sorting",
@@ -4585,7 +2852,8 @@ module.exports = [
     "testNamePattern": "QuickSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
-    ]
+    ],
+    "number": 238
   },
   {
     "chapterGroup": "sorting",
@@ -4596,7 +2864,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 239
   },
   {
     "chapterGroup": "sorting",
@@ -4607,7 +2876,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 240
   },
   {
     "chapterGroup": "sorting",
@@ -4618,7 +2888,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 241
   },
   {
     "chapterGroup": "sorting",
@@ -4629,7 +2900,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 242
   },
   {
     "chapterGroup": "sorting",
@@ -4640,7 +2912,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 243
   },
   {
     "chapterGroup": "sorting",
@@ -4651,7 +2924,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 244
   },
   {
     "chapterGroup": "sorting",
@@ -4662,7 +2936,8 @@ module.exports = [
     "testNamePattern": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
+    ],
+    "number": 245
   },
   {
     "chapterGroup": "sorting",
@@ -4673,7 +2948,8 @@ module.exports = [
     "testNamePattern": "RadixSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
-    ]
+    ],
+    "number": 246
   },
   {
     "chapterGroup": "sorting",
@@ -4684,7 +2960,8 @@ module.exports = [
     "testNamePattern": "RadixSort should visit array of strings n .number of strings. x m .length of longest element. times",
     "testFilePaths": [
       "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
-    ]
+    ],
+    "number": 247
   },
   {
     "chapterGroup": "sorting",
@@ -4695,7 +2972,8 @@ module.exports = [
     "testNamePattern": "RadixSort should visit array of integers n .number of elements. x m .length of longest integer. times",
     "testFilePaths": [
       "src/algorithms/sorting/radix-sort/__test__/RadixSort.test.js"
-    ]
+    ],
+    "number": 248
   },
   {
     "chapterGroup": "sorting",
@@ -4706,7 +2984,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 249
   },
   {
     "chapterGroup": "sorting",
@@ -4717,7 +2996,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 250
   },
   {
     "chapterGroup": "sorting",
@@ -4728,7 +3008,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 251
   },
   {
     "chapterGroup": "sorting",
@@ -4739,7 +3020,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 252
   },
   {
     "chapterGroup": "sorting",
@@ -4750,7 +3032,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 253
   },
   {
     "chapterGroup": "sorting",
@@ -4761,7 +3044,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 254
   },
   {
     "chapterGroup": "sorting",
@@ -4772,7 +3056,8 @@ module.exports = [
     "testNamePattern": "SelectionSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/selection-sort/__test__/SelectionSort.test.js"
-    ]
+    ],
+    "number": 255
   },
   {
     "chapterGroup": "sorting",
@@ -4783,7 +3068,8 @@ module.exports = [
     "testNamePattern": "ShellSort should sort array",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 256
   },
   {
     "chapterGroup": "sorting",
@@ -4794,7 +3080,8 @@ module.exports = [
     "testNamePattern": "ShellSort should sort array with custom comparator",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 257
   },
   {
     "chapterGroup": "sorting",
@@ -4805,7 +3092,8 @@ module.exports = [
     "testNamePattern": "ShellSort should sort negative numbers",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 258
   },
   {
     "chapterGroup": "sorting",
@@ -4816,7 +3104,8 @@ module.exports = [
     "testNamePattern": "ShellSort should visit EQUAL array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 259
   },
   {
     "chapterGroup": "sorting",
@@ -4827,7 +3116,8 @@ module.exports = [
     "testNamePattern": "ShellSort should visit SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 260
   },
   {
     "chapterGroup": "sorting",
@@ -4838,7 +3128,8 @@ module.exports = [
     "testNamePattern": "ShellSort should visit NOT SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 261
   },
   {
     "chapterGroup": "sorting",
@@ -4849,7 +3140,8 @@ module.exports = [
     "testNamePattern": "ShellSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/shell-sort/__test__/ShellSort.test.js"
-    ]
+    ],
+    "number": 262
   },
   {
     "chapterGroup": "statistics",
@@ -4860,7 +3152,8 @@ module.exports = [
     "testNamePattern": "weightedRandom should throw an error when the number of weights does not match the number of items",
     "testFilePaths": [
       "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
+    ],
+    "number": 263
   },
   {
     "chapterGroup": "statistics",
@@ -4871,7 +3164,8 @@ module.exports = [
     "testNamePattern": "weightedRandom should throw an error when the number of weights or items are empty",
     "testFilePaths": [
       "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
+    ],
+    "number": 264
   },
   {
     "chapterGroup": "statistics",
@@ -4882,7 +3176,8 @@ module.exports = [
     "testNamePattern": "weightedRandom should correctly do random selection based on wights in straightforward cases",
     "testFilePaths": [
       "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
+    ],
+    "number": 265
   },
   {
     "chapterGroup": "statistics",
@@ -4893,7 +3188,8 @@ module.exports = [
     "testNamePattern": "weightedRandom should correctly do random selection based on wights",
     "testFilePaths": [
       "src/algorithms/statistics/weighted-random/__test__/weightedRandom.test.js"
-    ]
+    ],
+    "number": 266
   },
   {
     "chapterGroup": "string",
@@ -4904,7 +3200,8 @@ module.exports = [
     "testNamePattern": "hammingDistance should throw an error when trying to compare the strings of different lengths",
     "testFilePaths": [
       "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
-    ]
+    ],
+    "number": 267
   },
   {
     "chapterGroup": "string",
@@ -4915,7 +3212,8 @@ module.exports = [
     "testNamePattern": "hammingDistance should calculate difference between two strings",
     "testFilePaths": [
       "src/algorithms/string/hamming-distance/__test__/hammingDistance.test.js"
-    ]
+    ],
+    "number": 268
   },
   {
     "chapterGroup": "string",
@@ -4926,7 +3224,8 @@ module.exports = [
     "testNamePattern": "knuthMorrisPratt should find word position in given text",
     "testFilePaths": [
       "src/algorithms/string/knuth-morris-pratt/__test__/knuthMorrisPratt.test.js"
-    ]
+    ],
+    "number": 269
   },
   {
     "chapterGroup": "string",
@@ -4937,7 +3236,8 @@ module.exports = [
     "testNamePattern": "levenshteinDistance should calculate edit distance between two strings",
     "testFilePaths": [
       "src/algorithms/string/levenshtein-distance/__test__/levenshteinDistance.test.js"
-    ]
+    ],
+    "number": 270
   },
   {
     "chapterGroup": "string",
@@ -4948,7 +3248,8 @@ module.exports = [
     "testNamePattern": "longestCommonSubstring should find longest common substring between two strings",
     "testFilePaths": [
       "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js"
-    ]
+    ],
+    "number": 271
   },
   {
     "chapterGroup": "string",
@@ -4959,7 +3260,8 @@ module.exports = [
     "testNamePattern": "longestCommonSubstring should handle unicode correctly",
     "testFilePaths": [
       "src/algorithms/string/longest-common-substring/__test__/longestCommonSubstring.test.js"
-    ]
+    ],
+    "number": 272
   },
   {
     "chapterGroup": "string",
@@ -4970,7 +3272,8 @@ module.exports = [
     "testNamePattern": "palindromeCheck should return whether or not the string is a palindrome",
     "testFilePaths": [
       "src/algorithms/string/palindrome/__test__/isPalindrome.test.js"
-    ]
+    ],
+    "number": 273
   },
   {
     "chapterGroup": "string",
@@ -4981,7 +3284,8 @@ module.exports = [
     "testNamePattern": "rabinKarp should find substring in a string",
     "testFilePaths": [
       "src/algorithms/string/rabin-karp/__test__/rabinKarp.test.js"
-    ]
+    ],
+    "number": 274
   },
   {
     "chapterGroup": "string",
@@ -4992,7 +3296,8 @@ module.exports = [
     "testNamePattern": "rabinKarp should work with bigger texts",
     "testFilePaths": [
       "src/algorithms/string/rabin-karp/__test__/rabinKarp.test.js"
-    ]
+    ],
+    "number": 275
   },
   {
     "chapterGroup": "string",
@@ -5003,7 +3308,8 @@ module.exports = [
     "testNamePattern": "rabinKarp should work with UTF symbols",
     "testFilePaths": [
       "src/algorithms/string/rabin-karp/__test__/rabinKarp.test.js"
-    ]
+    ],
+    "number": 276
   },
   {
     "chapterGroup": "string",
@@ -5014,7 +3320,8 @@ module.exports = [
     "testNamePattern": "regularExpressionMatching should match regular expressions in a string",
     "testFilePaths": [
       "src/algorithms/string/regular-expression-matching/__test__/regularExpressionMatching.test.js"
-    ]
+    ],
+    "number": 277
   },
   {
     "chapterGroup": "string",
@@ -5025,7 +3332,8 @@ module.exports = [
     "testNamePattern": "zAlgorithm should find word positions in given text",
     "testFilePaths": [
       "src/algorithms/string/z-algorithm/__test__/zAlgorithm.test.js"
-    ]
+    ],
+    "number": 278
   },
   {
     "chapterGroup": "tree",
@@ -5036,7 +3344,8 @@ module.exports = [
     "testNamePattern": "breadthFirstSearch should perform BFS operation on tree",
     "testFilePaths": [
       "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
-    ]
+    ],
+    "number": 279
   },
   {
     "chapterGroup": "tree",
@@ -5047,7 +3356,8 @@ module.exports = [
     "testNamePattern": "breadthFirstSearch allow users to redefine node visiting logic",
     "testFilePaths": [
       "src/algorithms/tree/breadth-first-search/__test__/breadthFirstSearch.test.js"
-    ]
+    ],
+    "number": 280
   },
   {
     "chapterGroup": "tree",
@@ -5058,7 +3368,8 @@ module.exports = [
     "testNamePattern": "depthFirstSearch should perform DFS operation on tree",
     "testFilePaths": [
       "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
-    ]
+    ],
+    "number": 281
   },
   {
     "chapterGroup": "tree",
@@ -5069,7 +3380,8 @@ module.exports = [
     "testNamePattern": "depthFirstSearch allow users to redefine node visiting logic",
     "testFilePaths": [
       "src/algorithms/tree/depth-first-search/__test__/depthFirstSearch.test.js"
-    ]
+    ],
+    "number": 282
   },
   {
     "chapterGroup": "uncategorized",
@@ -5080,7 +3392,8 @@ module.exports = [
     "testNamePattern": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
-    ]
+    ],
+    "number": 283
   },
   {
     "chapterGroup": "uncategorized",
@@ -5091,7 +3404,8 @@ module.exports = [
     "testNamePattern": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/peakvalleyBestTimeToBuySellStocks.test.js"
-    ]
+    ],
+    "number": 284
   },
   {
     "chapterGroup": "uncategorized",
@@ -5102,7 +3416,8 @@ module.exports = [
     "testNamePattern": "dqBestTimeToBuySellStocks should find the best time to buy and sell stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dqBestTimeToBuySellStocks.test.js"
-    ]
+    ],
+    "number": 285
   },
   {
     "chapterGroup": "uncategorized",
@@ -5113,7 +3428,8 @@ module.exports = [
     "testNamePattern": "dpBestTimeToBuySellStocks should find the best time to buy and sell stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dpBestTimeToBuySellStocks.test.js"
-    ]
+    ],
+    "number": 286
   },
   {
     "chapterGroup": "uncategorized",
@@ -5124,7 +3440,8 @@ module.exports = [
     "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 2 discs",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
-    ]
+    ],
+    "number": 287
   },
   {
     "chapterGroup": "uncategorized",
@@ -5135,7 +3452,8 @@ module.exports = [
     "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 3 discs",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
-    ]
+    ],
+    "number": 288
   },
   {
     "chapterGroup": "uncategorized",
@@ -5146,7 +3464,8 @@ module.exports = [
     "testNamePattern": "hanoiTower should solve tower of hanoi puzzle with 6 discs",
     "testFilePaths": [
       "src/algorithms/uncategorized/hanoi-tower/__test__/hanoiTower.test.js"
-    ]
+    ],
+    "number": 289
   },
   {
     "chapterGroup": "uncategorized",
@@ -5157,7 +3476,8 @@ module.exports = [
     "testNamePattern": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
-    ]
+    ],
+    "number": 290
   },
   {
     "chapterGroup": "uncategorized",
@@ -5168,7 +3488,8 @@ module.exports = [
     "testNamePattern": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js"
-    ]
+    ],
+    "number": 291
   },
   {
     "chapterGroup": "uncategorized",
@@ -5179,7 +3500,8 @@ module.exports = [
     "testNamePattern": "dpTopDownJumpGame should solve Jump Game problem in top-down dynamic programming manner",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/dpTopDownJumpGame.test.js"
-    ]
+    ],
+    "number": 292
   },
   {
     "chapterGroup": "uncategorized",
@@ -5190,7 +3512,8 @@ module.exports = [
     "testNamePattern": "greedyJumpGame should solve Jump Game problem in greedy manner",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/greedyJumpGame.test.js"
-    ]
+    ],
+    "number": 293
   },
   {
     "chapterGroup": "uncategorized",
@@ -5201,7 +3524,8 @@ module.exports = [
     "testNamePattern": "knightTour should not find solution on 3x3 board",
     "testFilePaths": [
       "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
-    ]
+    ],
+    "number": 294
   },
   {
     "chapterGroup": "uncategorized",
@@ -5212,7 +3536,8 @@ module.exports = [
     "testNamePattern": "knightTour should find one solution to do knight tour on 5x5 board",
     "testFilePaths": [
       "src/algorithms/uncategorized/knight-tour/__test__/knightTour.test.js"
-    ]
+    ],
+    "number": 295
   },
   {
     "chapterGroup": "uncategorized",
@@ -5223,7 +3548,8 @@ module.exports = [
     "testNamePattern": "nQueens should not hae solution for 3 queens",
     "testFilePaths": [
       "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
-    ]
+    ],
+    "number": 296
   },
   {
     "chapterGroup": "uncategorized",
@@ -5234,7 +3560,8 @@ module.exports = [
     "testNamePattern": "nQueens should solve n-queens problem for 4 queens",
     "testFilePaths": [
       "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
-    ]
+    ],
+    "number": 297
   },
   {
     "chapterGroup": "uncategorized",
@@ -5245,7 +3572,8 @@ module.exports = [
     "testNamePattern": "nQueens should solve n-queens problem for 6 queens",
     "testFilePaths": [
       "src/algorithms/uncategorized/n-queens/__test__/nQueens.test.js"
-    ]
+    ],
+    "number": 298
   },
   {
     "chapterGroup": "uncategorized",
@@ -5256,7 +3584,8 @@ module.exports = [
     "testNamePattern": "QueenPosition should store queen position on chessboard",
     "testFilePaths": [
       "src/algorithms/uncategorized/n-queens/__test__/QueensPosition.test.js"
-    ]
+    ],
+    "number": 299
   },
   {
     "chapterGroup": "uncategorized",
@@ -5267,7 +3596,8 @@ module.exports = [
     "testNamePattern": "nQueensBitwise should have solutions for 4 to N queens",
     "testFilePaths": [
       "src/algorithms/uncategorized/n-queens/__test__/nQueensBitwise.test.js"
-    ]
+    ],
+    "number": 300
   },
   {
     "chapterGroup": "uncategorized",
@@ -5278,7 +3608,8 @@ module.exports = [
     "testNamePattern": "dpRainTerraces should find the amount of water collected after raining",
     "testFilePaths": [
       "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js"
-    ]
+    ],
+    "number": 301
   },
   {
     "chapterGroup": "uncategorized",
@@ -5289,7 +3620,8 @@ module.exports = [
     "testNamePattern": "bfRainTerraces should find the amount of water collected after raining",
     "testFilePaths": [
       "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js"
-    ]
+    ],
+    "number": 302
   },
   {
     "chapterGroup": "uncategorized",
@@ -5300,29 +3632,8 @@ module.exports = [
     "testNamePattern": "recursiveStaircaseMEM should calculate number of variants using Brute Force with Memoization",
     "testFilePaths": [
       "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseMEM.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "uncategorized",
-    "chapter": "recursive-staircase",
-    "algo": "recursive-staircase_recursiveStaircaseDP",
-    "name": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution@recursiveStaircaseDP.test.js",
-    "label": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
-    "testNamePattern": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseDP.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "uncategorized",
-    "chapter": "recursive-staircase",
-    "algo": "recursive-staircase_recursiveStaircaseBF",
-    "name": "recursiveStaircaseBF should calculate number of variants using Brute Force solution@recursiveStaircaseBF.test.js",
-    "label": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
-    "testNamePattern": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseBF.test.js"
-    ]
+    ],
+    "number": 303
   },
   {
     "chapterGroup": "uncategorized",
@@ -5333,7 +3644,32 @@ module.exports = [
     "testNamePattern": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
     "testFilePaths": [
       "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseIT.test.js"
-    ]
+    ],
+    "number": 304
+  },
+  {
+    "chapterGroup": "uncategorized",
+    "chapter": "recursive-staircase",
+    "algo": "recursive-staircase_recursiveStaircaseDP",
+    "name": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution@recursiveStaircaseDP.test.js",
+    "label": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
+    "testNamePattern": "recursiveStaircaseDP should calculate number of variants using Dynamic Programming solution",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseDP.test.js"
+    ],
+    "number": 305
+  },
+  {
+    "chapterGroup": "uncategorized",
+    "chapter": "recursive-staircase",
+    "algo": "recursive-staircase_recursiveStaircaseBF",
+    "name": "recursiveStaircaseBF should calculate number of variants using Brute Force solution@recursiveStaircaseBF.test.js",
+    "label": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
+    "testNamePattern": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseBF.test.js"
+    ],
+    "number": 306
   },
   {
     "chapterGroup": "uncategorized",
@@ -5344,7 +3680,8 @@ module.exports = [
     "testNamePattern": "squareMatrixRotation should rotate matrix #0 in-place",
     "testFilePaths": [
       "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
+    ],
+    "number": 307
   },
   {
     "chapterGroup": "uncategorized",
@@ -5355,7 +3692,8 @@ module.exports = [
     "testNamePattern": "squareMatrixRotation should rotate matrix #1 in-place",
     "testFilePaths": [
       "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
+    ],
+    "number": 308
   },
   {
     "chapterGroup": "uncategorized",
@@ -5366,7 +3704,8 @@ module.exports = [
     "testNamePattern": "squareMatrixRotation should rotate matrix #2 in-place",
     "testFilePaths": [
       "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
+    ],
+    "number": 309
   },
   {
     "chapterGroup": "uncategorized",
@@ -5377,7 +3716,8 @@ module.exports = [
     "testNamePattern": "squareMatrixRotation should rotate matrix #3 in-place",
     "testFilePaths": [
       "src/algorithms/uncategorized/square-matrix-rotation/__test__/squareMatrixRotation.test.js"
-    ]
+    ],
+    "number": 310
   },
   {
     "chapterGroup": "uncategorized",
@@ -5388,7 +3728,8 @@ module.exports = [
     "testNamePattern": "btUniquePaths should find the number of unique paths on board",
     "testFilePaths": [
       "src/algorithms/uncategorized/unique-paths/__test__/btUniquePaths.test.js"
-    ]
+    ],
+    "number": 311
   },
   {
     "chapterGroup": "uncategorized",
@@ -5399,7 +3740,8 @@ module.exports = [
     "testNamePattern": "dpUniquePaths should find the number of unique paths on board",
     "testFilePaths": [
       "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js"
-    ]
+    ],
+    "number": 312
   },
   {
     "chapterGroup": "uncategorized",
@@ -5410,6 +3752,7 @@ module.exports = [
     "testNamePattern": "uniquePaths should find the number of unique paths on board",
     "testFilePaths": [
       "src/algorithms/uncategorized/unique-paths/__test__/uniquePaths.test.js"
-    ]
+    ],
+    "number": 313
   }
 ]

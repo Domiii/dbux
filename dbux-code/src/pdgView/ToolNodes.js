@@ -142,12 +142,6 @@ class GenerateListNode extends ToolNode {
           }
         }
 
-        /**
-         * 
-         * @see https://stackoverflow.com/questions/24111535/how-can-i-use-lodash-underscore-to-sort-by-multiple-nested-fields
-         */
-        exerciseConfigs = sortBy(exerciseConfigs, cfg => [cfg.chapterGroup, cfg.chapter]);
-
         progress.report({ message: `Generating exercise file...` });
         this.controller.writeExerciseJs(exerciseConfigs);
 

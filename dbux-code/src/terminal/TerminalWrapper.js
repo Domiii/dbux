@@ -7,6 +7,7 @@ import { pathNormalized, pathNormalizedForce, whichNormalized } from '@dbux/comm
 // import sleep from '@dbux/common/src/util/sleep';
 import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { getShellPath, getNodePath, getResourcePath } from '../codeUtil/codePath';
+import NestedError from '@dbux/common/src/NestedError';
 
 // const Verbose = true;
 const Verbose = false;
@@ -104,7 +105,7 @@ export default class TerminalWrapper {
     });
 
     watcher.on('error', (err) => {
-      let newErr = new Error(`FSWatcher error: ${err.message}`);
+      let newErr = new NestedError(`[FSWatcher error while waiting for TerminalWrapper]`, err);
       if (resolved) {
         warn(newErr);
       }

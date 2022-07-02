@@ -272,15 +272,20 @@ export default class ExerciseRunner {
       }
       else {
         // nothing to do
-        project.logger.debug('runCommand did not return anything. Nothing left to do.');
+        const message = 'runCommand did not return anything. Nothing left to do.';
+        project.logger.debug(message);
         // throw new Error(`Invalid runCommand implementation in ${project} - did not return anything.`);
-        return null;
+        return { message };
       }
     }
     catch (err) {
-      project.logger.error(`Test run failed: ${err.message}`);
+      const message = `Test run failed: ${err.message}`;
+      project.logger.error(message);
       project.logger.warn(`  ${err.stack}`);
-      return null;
+      return {
+        error: true,
+        message
+      };
     }
     finally {
       this._updateStatus();
