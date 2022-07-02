@@ -330,26 +330,6 @@ class GenerateGraphsJSNode extends ToolNode {
   }
 }
 
-class GeneratePDGTable extends ToolNode {
-  static makeLabel() {
-    return `Generate PDGTable`;
-  }
-
-  async handleClick() {
-    this.controller.gallery.generatePDGTable();
-  }
-}
-
-class GenerateEmptyPDGTable extends ToolNode {
-  static makeLabel() {
-    return `Generate Empty PDGTable`;
-  }
-
-  async handleClick() {
-    this.controller.gallery.generateEmptyPDGTable();
-  }
-}
-
 class TransformDestructuringNode extends ToolNode {
   static makeLabel() {
     return `Transform Destructing code`;
@@ -391,9 +371,6 @@ export default class ToolRootNode extends BaseTreeViewNode {
     GeneratePatchNode,
     ExportAllPDGScreenshotNode,
     GenerateGraphsJSNode,
-    // InsertPDGTitleNode,
-    GeneratePDGTable,
-    GenerateEmptyPDGTable,
     TransformDestructuringNode,
   ]
 }

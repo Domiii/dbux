@@ -5,7 +5,7 @@ import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
+import { exportApplicationToFile, importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import { getProjectManager } from '../projectViews/projectControl';
@@ -168,6 +168,37 @@ export default class PDGViewController {
     // click event listener
     this.treeNodeProvider.initDefaultClickCommand(context);
   }
+
+  /** ###########################################################################
+   * import
+   * ##########################################################################*/
+
+  async importOrRunPDGApplication(exercise) {
+    const { id } = exercise;
+    const appZipFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: id });
+    let pdgArgs;
+    if (fs.existsSync(appZipFilePath)) {
+      // get data from application file
+      const app = await importApplicationFromFile(appZipFilePath);
+      pdgArgs = this.findPDGContextIdInApp(app, exercise);
+
+      // store results
+      const config = this.exerciseConfigsByName.get(exercise.name);
+      exercise.pdgs = pdgArgs;
+      config.pdgs = pdgArgs;
+      this.writeExerciseJs();
+    }
+    else {
+      // run app first
+      await this.runAndExportPDGApplication(exercise);
+      pdgArgs = exercise.pdgs;
+    }
+    return pdgArgs;
+  }
+
+  /** ###########################################################################
+   * export
+   * ##########################################################################*/
 
   /**
    * Run exercise, parse its PDG args and save it into exercise.js

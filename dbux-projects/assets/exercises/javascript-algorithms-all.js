@@ -8,6 +8,208 @@ module.exports = [
     "testNamePattern": "caesarCipher should not change a string with zero shift",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,5])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1], ƒ mockConstructor)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,5], ƒ mockConstructor)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([5,1], ƒ mockConstructor)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,5,10], ƒ mockConstructor)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([10,1,5,20,15,21], ƒ mockConstructor)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([7,1,5,3,6,4], ƒ mockConstructor)",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5], ƒ mockConstructor)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([7,6,4,3,1], ƒ mockConstructor)",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "accumulatorBestTimeToBuySellStocks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], ƒ mockConstructor)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/accumulatorBestTimeToBuySellStocks.js",
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 61,
+              "index": 378
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 773
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -19,6 +221,28 @@ module.exports = [
     "testNamePattern": "caesarCipher should cipher a string with different shifts",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 231,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -30,6 +254,48 @@ module.exports = [
     "testNamePattern": "caesarCipher should be case insensitive",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 231,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 734,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -41,6 +307,28 @@ module.exports = [
     "testNamePattern": "caesarCipher should correctly handle an empty strings",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 138,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -52,6 +340,48 @@ module.exports = [
     "testNamePattern": "caesarCipher should not cipher unknown chars",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 113,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 362,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -63,6 +393,68 @@ module.exports = [
     "testNamePattern": "caesarCipher should encrypt and decrypt full phrases",
     "testFilePaths": [
       "src/algorithms/cryptography/caesar-cipher/__test__/caesarCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 95,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 308,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 557,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -74,6 +466,28 @@ module.exports = [
     "testNamePattern": "hillCipher should throw an exception when trying to decipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 138,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -85,6 +499,28 @@ module.exports = [
     "testNamePattern": "hillCipher should throw an error when message or keyString contains none letter character",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 206,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -96,6 +532,208 @@ module.exports = [
     "testNamePattern": "hillCipher should throw an error when the length of the keyString has a square root which is not integer",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "backtrackingJumpGame([1,0])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([100,0])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([2,3,1,1,4])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([1,1,1,1,1])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([1,1,1,10,1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([1,5,2,1,0,2,0])",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([1,0,1])",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([3,2,1,0,4])",
+        "contextId": 28,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([0,0,0,0,0])",
+        "contextId": 36,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "backtrackingJumpGame([5,4,3,2,1,0,0])",
+        "contextId": 37,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/jump-game/backtrackingJumpGame.js",
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 54,
+              "index": 623
+            },
+            "end": {
+              "line": 56,
+              "column": 1,
+              "index": 1917
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -107,6 +745,28 @@ module.exports = [
     "testNamePattern": "hillCipher should throw an error when the length of the keyString does not equal to the power of length of the message",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 179,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 172
+            },
+            "end": {
+              "line": 49,
+              "column": 1,
+              "index": 1599
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -118,6 +778,28 @@ module.exports = [
     "testNamePattern": "hillCipher should encrypt passed message using Hill Cipher",
     "testFilePaths": [
       "src/algorithms/cryptography/hill-cipher/_test_/hillCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bellmanFord({vertices,edges,isDirected}, {value,edges})",
+        "contextId": 282,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/bellman-ford/bellmanFord.js",
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 56,
+              "index": 172
+            },
+            "end": {
+              "line": 49,
+              "column": 1,
+              "index": 1599
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -129,6 +811,208 @@ module.exports = [
     "testNamePattern": "PolynomialHash should calculate new hash based on previous one",
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/PolynomialHash.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bfMaximumSubarray([])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([0,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([0,0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([0,0,1,2])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([0,0,-1,2])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([-1,-2,-3,-4,-5])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([1,2,3,2,3,4,5])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([-2,1,-3,4,-1,2,1,-5,4])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([-2,-3,4,-1,-2,1,5,-3])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfMaximumSubarray([1,-3,2,-5,7,6,-1,4,11,-23])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/sets/maximum-subarray/bfMaximumSubarray.js",
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 54,
+              "index": 173
+            },
+            "end": {
+              "line": 33,
+              "column": 1,
+              "index": 888
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -140,6 +1024,308 @@ module.exports = [
     "testNamePattern": "PolynomialHash should generate numeric hashed less than 100",
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/PolynomialHash.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bfRainTerraces([1])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([1,0])",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,1])",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,1,0])",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,1,0,0])",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,1,0,0,1,0])",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,2,0,0,1,0])",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([2,0,2])",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([2,0,5,1,2])",
+        "contextId": 13,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([3,0,0,2,0,4])",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "contextId": 15,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([1,1,1,1,1])",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([1,2,3,4,5])",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
+        "contextId": 19,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 49,
+              "index": 49
+            },
+            "end": {
+              "line": 21,
+              "column": 1,
+              "index": 584
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -151,6 +1337,28 @@ module.exports = [
     "testNamePattern": "PolynomialHash should calculate new hash based on previous one",
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bfTravellingSalesman({vertices,edges,isDirected})",
+        "contextId": 220,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/travelling-salesman/bfTravellingSalesman.js",
+          "loc": {
+            "start": {
+              "line": 77,
+              "column": 52,
+              "index": 2227
+            },
+            "end": {
+              "line": 123,
+              "column": 1,
+              "index": 3688
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -162,6 +1370,188 @@ module.exports = [
     "testNamePattern": "PolynomialHash should generate numeric hashed",
     "testFilePaths": [
       "src/algorithms/cryptography/polynomial-hash/__test__/SimplePolynomialHash.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "binarySearch([], 1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1], 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,2], 1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,2], 2)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,5,10,12], 1)",
+        "contextId": 24,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 17)",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 1)",
+        "contextId": 40,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 100)",
+        "contextId": 52,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([1,5,10,12,14,17,22,100], 0)",
+        "contextId": 68,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -173,6 +1563,108 @@ module.exports = [
     "testNamePattern": "railFenceCipher encodes a string correctly for base=3",
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "binarySearch([], {key}, ƒ (anonymous))",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "binarySearch([{},{},{}], {key}, ƒ (anonymous))",
+        "contextId": 30,
+        "algoLoc": {
+          "filePath": "src/algorithms/search/binary-search/binarySearch.js",
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 2,
+              "index": 337
+            },
+            "end": {
+              "line": 48,
+              "column": 1,
+              "index": 1548
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -184,6 +1676,168 @@ module.exports = [
     "testNamePattern": "railFenceCipher decodes a string correctly for base=3",
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bitLength(0)",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(1)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(1)",
+        "contextId": 7,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(5)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(5)",
+        "contextId": 9,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(21)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(245)",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitLength(245)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitLength.js",
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 42,
+              "index": 183
+            },
+            "end": {
+              "line": 15,
+              "column": 1,
+              "index": 306
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -195,6 +1849,148 @@ module.exports = [
     "testNamePattern": "railFenceCipher encodes a string correctly for base=4",
     "testFilePaths": [
       "src/algorithms/cryptography/rail-fence-cipher/__test__/railFenceCipher.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "bitsDiff(0, 0)",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitsDiff(1, 1)",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitsDiff(124, 124)",
+        "contextId": 10,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitsDiff(0, 1)",
+        "contextId": 12,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitsDiff(1, 0)",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitsDiff(1, 2)",
+        "contextId": 16,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      },
+      {
+        "pdgTitle": "bitsDiff(1, 3)",
+        "contextId": 18,
+        "algoLoc": {
+          "filePath": "src/algorithms/math/bits/bitsDiff.js",
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 51,
+              "index": 285
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 332
+            }
+          }
+        },
+        "testLoc": null
+      }
     ]
   },
   {
@@ -251,8 +2047,7 @@ module.exports = [
               "index": 1076
             }
           }
-        },
-        "applicationUuid": "0.3029702392453655"
+        }
       },
       {
         "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -286,8 +2081,7 @@ module.exports = [
               "index": 1866
             }
           }
-        },
-        "applicationUuid": "0.3029702392453655"
+        }
       },
       {
         "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
@@ -321,8 +2115,7 @@ module.exports = [
               "index": 2811
             }
           }
-        },
-        "applicationUuid": "0.3029702392453655"
+        }
       }
     ]
   },
@@ -335,6 +2128,76 @@ module.exports = [
     "testNamePattern": "articulationPoints should find articulation points in simple graph with back edge",
     "testFilePaths": [
       "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js"
+    ],
+    "pdgs": [
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 113,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 28,
+              "column": 77,
+              "index": 1159
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1866
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "articulationPoints({vertices,edges,isDirected})",
+        "contextId": 362,
+        "algoLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/articulationPoints.js",
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 50,
+              "index": 696
+            },
+            "end": {
+              "line": 124,
+              "column": 1,
+              "index": 4517
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/graph/articulation-points/__test__/articulationPoints.test.js",
+          "loc": {
+            "start": {
+              "line": 49,
+              "column": 80,
+              "index": 1952
+            },
+            "end": {
+              "line": 75,
+              "column": 3,
+              "index": 2811
+            }
+          }
+        }
+      }
     ]
   },
   {
@@ -868,23 +2731,67 @@ module.exports = [
   {
     "chapterGroup": "math",
     "chapter": "bits",
-    "algo": "bits_isPowerOfTwo",
-    "name": "isPowerOfTwo should detect if the number is power of two@isPowerOfTwo.test.js",
-    "label": "isPowerOfTwo should detect if the number is power of two",
-    "testNamePattern": "isPowerOfTwo should detect if the number is power of two",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
     "algo": "bits_countSetBits",
     "name": "countSetBits should return number of set bits@countSetBits.test.js",
     "label": "countSetBits should return number of set bits",
     "testNamePattern": "countSetBits should return number of set bits",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/countSetBits.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_fullAdder",
+    "name": "fullAdder should add up two numbers@fullAdder.test.js",
+    "label": "fullAdder should add up two numbers",
+    "testNamePattern": "fullAdder should add up two numbers",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/fullAdder.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_getBit",
+    "name": "getBit should get bit at specific position@getBit.test.js",
+    "label": "getBit should get bit at specific position",
+    "testNamePattern": "getBit should get bit at specific position",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/getBit.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_bitsDiff",
+    "name": "bitsDiff should calculate bits difference between two numbers@bitsDiff.test.js",
+    "label": "bitsDiff should calculate bits difference between two numbers",
+    "testNamePattern": "bitsDiff should calculate bits difference between two numbers",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/bitsDiff.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_clearBit",
+    "name": "clearBit should clear bit at specific position@clearBit.test.js",
+    "label": "clearBit should clear bit at specific position",
+    "testNamePattern": "clearBit should clear bit at specific position",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/clearBit.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_isPowerOfTwo",
+    "name": "isPowerOfTwo should detect if the number is power of two@isPowerOfTwo.test.js",
+    "label": "isPowerOfTwo should detect if the number is power of two",
+    "testNamePattern": "isPowerOfTwo should detect if the number is power of two",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/isPowerOfTwo.test.js"
     ]
   },
   {
@@ -923,45 +2830,12 @@ module.exports = [
   {
     "chapterGroup": "math",
     "chapter": "bits",
-    "algo": "bits_fullAdder",
-    "name": "fullAdder should add up two numbers@fullAdder.test.js",
-    "label": "fullAdder should add up two numbers",
-    "testNamePattern": "fullAdder should add up two numbers",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/fullAdder.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
     "algo": "bits_multiply",
     "name": "multiply should multiply two numbers@multiply.test.js",
     "label": "multiply should multiply two numbers",
     "testNamePattern": "multiply should multiply two numbers",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/multiply.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_multiplyUnsigned",
-    "name": "multiplyUnsigned should multiply two unsigned numbers@multiplyUnsigned.test.js",
-    "label": "multiplyUnsigned should multiply two unsigned numbers",
-    "testNamePattern": "multiplyUnsigned should multiply two unsigned numbers",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/multiplyUnsigned.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_getBit",
-    "name": "getBit should get bit at specific position@getBit.test.js",
-    "label": "getBit should get bit at specific position",
-    "testNamePattern": "getBit should get bit at specific position",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/getBit.test.js"
     ]
   },
   {
@@ -978,34 +2852,12 @@ module.exports = [
   {
     "chapterGroup": "math",
     "chapter": "bits",
-    "algo": "bits_switchSign",
-    "name": "switchSign should switch the sign of the number using twos complement approach@switchSign.test.js",
-    "label": "switchSign should switch the sign of the number using twos complement approach",
-    "testNamePattern": "switchSign should switch the sign of the number using twos complement approach",
+    "algo": "bits_multiplyUnsigned",
+    "name": "multiplyUnsigned should multiply two unsigned numbers@multiplyUnsigned.test.js",
+    "label": "multiplyUnsigned should multiply two unsigned numbers",
+    "testNamePattern": "multiplyUnsigned should multiply two unsigned numbers",
     "testFilePaths": [
-      "src/algorithms/math/bits/__test__/switchSign.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_bitsDiff",
-    "name": "bitsDiff should calculate bits difference between two numbers@bitsDiff.test.js",
-    "label": "bitsDiff should calculate bits difference between two numbers",
-    "testNamePattern": "bitsDiff should calculate bits difference between two numbers",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/bitsDiff.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "math",
-    "chapter": "bits",
-    "algo": "bits_clearBit",
-    "name": "clearBit should clear bit at specific position@clearBit.test.js",
-    "label": "clearBit should clear bit at specific position",
-    "testNamePattern": "clearBit should clear bit at specific position",
-    "testFilePaths": [
-      "src/algorithms/math/bits/__test__/clearBit.test.js"
+      "src/algorithms/math/bits/__test__/multiplyUnsigned.test.js"
     ]
   },
   {
@@ -1028,6 +2880,17 @@ module.exports = [
     "testNamePattern": "divideByTwo should divide numbers by two using bitwise operations",
     "testFilePaths": [
       "src/algorithms/math/bits/__test__/divideByTwo.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "math",
+    "chapter": "bits",
+    "algo": "bits_switchSign",
+    "name": "switchSign should switch the sign of the number using twos complement approach@switchSign.test.js",
+    "label": "switchSign should switch the sign of the number using twos complement approach",
+    "testNamePattern": "switchSign should switch the sign of the number using twos complement approach",
+    "testFilePaths": [
+      "src/algorithms/math/bits/__test__/switchSign.test.js"
     ]
   },
   {
@@ -2133,23 +3996,23 @@ module.exports = [
   {
     "chapterGroup": "sets",
     "chapter": "maximum-subarray",
-    "algo": "maximum-subarray_bfMaximumSubarray",
-    "name": "bfMaximumSubarray should find maximum subarray using the brute force algorithm@bfMaximumSubarray.test.js",
-    "label": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
-    "testNamePattern": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
-    "testFilePaths": [
-      "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sets",
-    "chapter": "maximum-subarray",
     "algo": "maximum-subarray_dpMaximumSubarray",
     "name": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm@dpMaximumSubarray.test.js",
     "label": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
     "testNamePattern": "dpMaximumSubarray should find maximum subarray using the dynamic programming algorithm",
     "testFilePaths": [
       "src/algorithms/sets/maximum-subarray/__test__/dpMaximumSubarray.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sets",
+    "chapter": "maximum-subarray",
+    "algo": "maximum-subarray_bfMaximumSubarray",
+    "name": "bfMaximumSubarray should find maximum subarray using the brute force algorithm@bfMaximumSubarray.test.js",
+    "label": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
+    "testNamePattern": "bfMaximumSubarray should find maximum subarray using the brute force algorithm",
+    "testFilePaths": [
+      "src/algorithms/sets/maximum-subarray/__test__/bfMaximumSubarray.test.js"
     ]
   },
   {
@@ -2639,83 +4502,6 @@ module.exports = [
   {
     "chapterGroup": "sorting",
     "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should sort array@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should sort array",
-    "testNamePattern": "QuickSortInPlace should sort array",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should sort array with custom comparator@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should sort array with custom comparator",
-    "testNamePattern": "QuickSortInPlace should sort array with custom comparator",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should sort negative numbers@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should sort negative numbers",
-    "testNamePattern": "QuickSortInPlace should sort negative numbers",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should visit EQUAL array element specified number of times@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should visit EQUAL array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit EQUAL array element specified number of times",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should visit SORTED array element specified number of times@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should visit NOT SORTED array element specified number of times@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
-    "algo": "quick-sort_QuickSortInPlace",
-    "name": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times@QuickSortInPlace.test.js",
-    "label": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
-    "testNamePattern": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
-    "testFilePaths": [
-      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "sorting",
-    "chapter": "quick-sort",
     "algo": "quick-sort_QuickSort",
     "name": "QuickSort should sort array@QuickSort.test.js",
     "label": "QuickSort should sort array",
@@ -2799,6 +4585,83 @@ module.exports = [
     "testNamePattern": "QuickSort should visit REVERSE SORTED array element specified number of times",
     "testFilePaths": [
       "src/algorithms/sorting/quick-sort/__test__/QuickSort.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should sort array@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should sort array",
+    "testNamePattern": "QuickSortInPlace should sort array",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should sort array with custom comparator@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should sort array with custom comparator",
+    "testNamePattern": "QuickSortInPlace should sort array with custom comparator",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should sort negative numbers@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should sort negative numbers",
+    "testNamePattern": "QuickSortInPlace should sort negative numbers",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should visit EQUAL array element specified number of times@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should visit EQUAL array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit EQUAL array element specified number of times",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should visit SORTED array element specified number of times@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit SORTED array element specified number of times",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should visit NOT SORTED array element specified number of times@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit NOT SORTED array element specified number of times",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "sorting",
+    "chapter": "quick-sort",
+    "algo": "quick-sort_QuickSortInPlace",
+    "name": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times@QuickSortInPlace.test.js",
+    "label": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+    "testNamePattern": "QuickSortInPlace should visit REVERSE SORTED array element specified number of times",
+    "testFilePaths": [
+      "src/algorithms/sorting/quick-sort/__test__/QuickSortInPlace.test.js"
     ]
   },
   {
@@ -3211,23 +5074,23 @@ module.exports = [
   {
     "chapterGroup": "uncategorized",
     "chapter": "best-time-to-buy-sell-stocks",
-    "algo": "best-time-to-buy-sell-stocks_peakvalleyBestTimeToBuySellStocks",
-    "name": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks@peakvalleyBestTimeToBuySellStocks.test.js",
-    "label": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "testNamePattern": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/peakvalleyBestTimeToBuySellStocks.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "uncategorized",
-    "chapter": "best-time-to-buy-sell-stocks",
     "algo": "best-time-to-buy-sell-stocks_accumulatorBestTimeToBuySellStocks",
     "name": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks@accumulatorBestTimeToBuySellStocks.test.js",
     "label": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
     "testNamePattern": "accumulatorBestTimeToBuySellStocks should find the best time to buy and sell stocks",
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/accumulatorBestTimeToBuySellStocks.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "uncategorized",
+    "chapter": "best-time-to-buy-sell-stocks",
+    "algo": "best-time-to-buy-sell-stocks_peakvalleyBestTimeToBuySellStocks",
+    "name": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks@peakvalleyBestTimeToBuySellStocks.test.js",
+    "label": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "testNamePattern": "peakvalleyBestTimeToBuySellStocks should find the best time to buy and sell stocks",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/peakvalleyBestTimeToBuySellStocks.test.js"
     ]
   },
   {
@@ -3288,23 +5151,23 @@ module.exports = [
   {
     "chapterGroup": "uncategorized",
     "chapter": "jump-game",
-    "algo": "jump-game_dpBottomUpJumpGame",
-    "name": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner@dpBottomUpJumpGame.test.js",
-    "label": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
-    "testNamePattern": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "uncategorized",
-    "chapter": "jump-game",
     "algo": "jump-game_backtrackingJumpGame",
     "name": "backtrackingJumpGame should solve Jump Game problem in backtracking manner@backtrackingJumpGame.test.js",
     "label": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
     "testNamePattern": "backtrackingJumpGame should solve Jump Game problem in backtracking manner",
     "testFilePaths": [
       "src/algorithms/uncategorized/jump-game/__test__/backtrackingJumpGame.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "uncategorized",
+    "chapter": "jump-game",
+    "algo": "jump-game_dpBottomUpJumpGame",
+    "name": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner@dpBottomUpJumpGame.test.js",
+    "label": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
+    "testNamePattern": "dpBottomUpJumpGame should solve Jump Game problem in bottom-up dynamic programming manner",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/jump-game/__test__/dpBottomUpJumpGame.test.js"
     ]
   },
   {
@@ -3453,23 +5316,23 @@ module.exports = [
   {
     "chapterGroup": "uncategorized",
     "chapter": "recursive-staircase",
-    "algo": "recursive-staircase_recursiveStaircaseIT",
-    "name": "recursiveStaircaseIT should calculate number of variants using Iterative solution@recursiveStaircaseIT.test.js",
-    "label": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
-    "testNamePattern": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseIT.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "uncategorized",
-    "chapter": "recursive-staircase",
     "algo": "recursive-staircase_recursiveStaircaseBF",
     "name": "recursiveStaircaseBF should calculate number of variants using Brute Force solution@recursiveStaircaseBF.test.js",
     "label": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
     "testNamePattern": "recursiveStaircaseBF should calculate number of variants using Brute Force solution",
     "testFilePaths": [
       "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseBF.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "uncategorized",
+    "chapter": "recursive-staircase",
+    "algo": "recursive-staircase_recursiveStaircaseIT",
+    "name": "recursiveStaircaseIT should calculate number of variants using Iterative solution@recursiveStaircaseIT.test.js",
+    "label": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
+    "testNamePattern": "recursiveStaircaseIT should calculate number of variants using Iterative solution",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/recursive-staircase/__test__/recursiveStaircaseIT.test.js"
     ]
   },
   {
@@ -3519,23 +5382,23 @@ module.exports = [
   {
     "chapterGroup": "uncategorized",
     "chapter": "unique-paths",
-    "algo": "unique-paths_dpUniquePaths",
-    "name": "dpUniquePaths should find the number of unique paths on board@dpUniquePaths.test.js",
-    "label": "dpUniquePaths should find the number of unique paths on board",
-    "testNamePattern": "dpUniquePaths should find the number of unique paths on board",
-    "testFilePaths": [
-      "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js"
-    ]
-  },
-  {
-    "chapterGroup": "uncategorized",
-    "chapter": "unique-paths",
     "algo": "unique-paths_btUniquePaths",
     "name": "btUniquePaths should find the number of unique paths on board@btUniquePaths.test.js",
     "label": "btUniquePaths should find the number of unique paths on board",
     "testNamePattern": "btUniquePaths should find the number of unique paths on board",
     "testFilePaths": [
       "src/algorithms/uncategorized/unique-paths/__test__/btUniquePaths.test.js"
+    ]
+  },
+  {
+    "chapterGroup": "uncategorized",
+    "chapter": "unique-paths",
+    "algo": "unique-paths_dpUniquePaths",
+    "name": "dpUniquePaths should find the number of unique paths on board@dpUniquePaths.test.js",
+    "label": "dpUniquePaths should find the number of unique paths on board",
+    "testNamePattern": "dpUniquePaths should find the number of unique paths on board",
+    "testFilePaths": [
+      "src/algorithms/uncategorized/unique-paths/__test__/dpUniquePaths.test.js"
     ]
   },
   {

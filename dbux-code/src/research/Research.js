@@ -22,7 +22,7 @@ const { log, debug, warn, error: logError } = newLogger('Research');
 const CurrentResearchName = 'async-js'; // TODO: make this configurable
 const LinkFolderName = 'links';
 const DataFolderLinkName = 'dataFolder.lnk';
-const PdgFolderLinkName = 'pdg.lnk';
+const PdgFolderLinkName = 'pdgGalleryData.lnk';
 const AppDataZipFileNameSuffix = '.dbuxapp.zip';
 
 function getLinksPath() {
@@ -128,12 +128,16 @@ export class Research {
     return this._dataRootFolder = this.#lookupLinkFolder(linkPath);
   }
 
-  getPdgGalleryFolder() {
+  getPdgGalleryFolder(force = false) {
     if (this._pdgGalleryFolder) {
       return this._pdgGalleryFolder;
     }
     const linkPath = getPdgGalleryFolderLinkPath();
-    return this._pdgGalleryFolder = this.#lookupLinkFolder(linkPath);
+    this._pdgGalleryFolder = this.#lookupLinkFolder(linkPath);
+    if (force && !this._pdgGalleryFolder) {
+      throw new Error(`gallery data root does not exist at: "${linkPath}"`);
+    }
+    return this._pdgGalleryFolder;
   }
 
   #lookupLinkFolder(linkPath) {

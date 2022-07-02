@@ -6,7 +6,6 @@ import NestedError from '@dbux/common/src/NestedError';
 import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { buildDot } from '@dbux/data/src/pdg/DotBuilder';
-import { importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import isPlainObject from 'lodash/isPlainObject';
 import { PDGRootTimelineId } from '@dbux/data/src/pdg/constants';
 import { RootSummaryModes } from '@dbux/data/src/pdg/PDGSummaryMode';
@@ -25,6 +24,14 @@ const { log, debug, warn, error: logError } = newLogger('PDGGallery');
 
 const PDGFileName = 'pdgData.json';
 
+class PDGRenderData {
+
+}
+
+/** ###########################################################################
+ * {@link PDGGallery}
+ * ##########################################################################*/
+
 export default class PDGGallery {
   /**
    * @type {PDGViewController} 
@@ -39,7 +46,7 @@ export default class PDGGallery {
   }
 
   get galleryDataRoot() {
-    return getCurrentResearch().getPdgGalleryFolder();
+    return getCurrentResearch().getPdgGalleryFolder(true);
   }
 
   getExerciseFolder(exercise, ...segments) {
@@ -47,53 +54,24 @@ export default class PDGGallery {
     return pathResolve(this.galleryDataRoot, chapterGroup, chapter, id, ...segments);
   }
 
-  async importOrRunPDGApplication(exercise) {
-    const { id } = exercise;
-    const appZipFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: id });
-    let pdgArgs;
-    if (fs.existsSync(appZipFilePath)) {
-      // get data from application file
-      const app = await importApplicationFromFile(appZipFilePath);
-      pdgArgs = this.controller.findPDGContextIdInApp(app, exercise);
-
-      // store results
-      const config = this.controller.exerciseConfigsByName.get(exercise.name);
-      exercise.pdgs = pdgArgs;
-      config.pdgs = pdgArgs;
-      this.controller.writeExerciseJs();
-    }
-    else {
-      // run app first
-      await this.controller.runAndExportPDGApplication(exercise);
-      pdgArgs = exercise.pdgs;
-    }
-    return pdgArgs;
-  }
+  /** ###########################################################################
+   * gallery
+   * ##########################################################################*/
 
   async getAllExercisePDGArgs(exercise) {
     allApplications.clear();
-    // let pdgArgs;
-    // // hackfix: old pdg data does not contain testLoc, algoLoc data
-    // // if (exercise.pdgs) {
-    // if (exercise.pdgs && exercise.pdgs[0]?.algoLoc && exercise.pdgs[0]?.testLoc) {
-    //   // use parsed data
-    //   pdgArgs = exercise.pdgs;
-    // }
-    // else {
-    //   pdgArgs = this.importOrRunPDGApplication(exercise);
-    // }
 
-    const pdgArgs = await this.importOrRunPDGApplication(exercise);
+    const pdgArgs = await this.controller.importOrRunPDGApplication(exercise);
 
     // only pick the middle one for now
     // return [pdgArgs[Math.floor(pdgArgs.length / 2)]];
     return pdgArgs;
   }
 
-  getPDGRenderDataUniqueId(exercise, renderDataId) {
-    const { chapterGroup, chapter, id } = exercise;
-    return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
-  }
+  // makePDGRenderDataUniqueId(exercise, renderDataId) {
+  //   const { chapterGroup, chapter, id } = exercise;
+  //   return `${chapterGroup}_${chapter}_${id}_${renderDataId}`;
+  // }
 
   getPDGScreenshotData(dp, exercise, pdgArg) {
     // generate screenshot configs
@@ -157,50 +135,57 @@ export default class PDGGallery {
     return screenshots;
   }
 
+  /**
+   * @return {PDGRenderData}
+   */
+  makePDGRenderData(exercise, pdgArgs) {
+    const {
+      chapterGroup,
+      chapter,
+      algo,
+    } = exercise;
+    const { pdgTitle } = pdgArgs;
+
+    return {
+      pdgTitle,
+      // uniqueId: this.getPDGRenderDataUniqueId(exercise, renderId),
+      chapterGroup,
+      chapter,
+      algo,
+      testLoc: pdgArgs.testLoc,
+      algoLoc: pdgArgs.algoLoc
+    };
+  }
+
   getPDGRenderData(exercise, allPdgArgs) {
     let renderDataId = 0;
-    const PDGRenderData = [];
+    /**
+     * @type {PDGRenderData[]}
+     */
+    const pdgRenderDataArray = [];
 
     for (let j = 0; j < allPdgArgs.length; j++) {
       const pdgArgs = allPdgArgs[j];
-      const { pdgTitle } = pdgArgs;
-      const renderId = ++renderDataId;
       const app = allApplications.getById(pdgArgs.applicationUuid);
       const dp = app.dataProvider;
 
-      // check if we can build pdg
       const failedReason = dp.pdgs.getCreatePDGFailureReason(pdgArgs);
-      const {
-        chapterGroup,
-        chapter,
-        algo,
-      } = exercise;
+
+      /**
+       * @type {PDGRenderData}
+       */
+      const data = this.makePDGRenderData(exercise, pdgArgs);
+      pdgRenderDataArray.push(data);
+
+      data.renderId = ++renderDataId;
       if (failedReason) {
-        PDGRenderData.push({
-          chapterGroup,
-          chapter,
-          algo,
-          success: false,
-          failedReason,
-          pdgTitle,
-        });
+        data.failedReason = failedReason;
       }
       else {
-        const screenshots = this.getPDGScreenshotData(dp, exercise, pdgArgs);
-        PDGRenderData.push({
-          id: renderId,
-          pdgTitle,
-          uniqueId: this.getPDGRenderDataUniqueId(exercise, renderId),
-          chapterGroup,
-          chapter,
-          algo,
-          testLoc: pdgArgs.testLoc,
-          algoLoc: pdgArgs.algoLoc,
-          screenshots,
-        });
+        data.screenshots = this.getPDGScreenshotData(dp, exercise, pdgArgs);
       }
     }
-    return PDGRenderData;
+    return pdgRenderDataArray;
   }
 
   /**
@@ -230,15 +215,15 @@ export default class PDGGallery {
 
         try {
           const pdgArgs = await this.getAllExercisePDGArgs(exercise);
-          const PDGRenderData = this.getPDGRenderData(exercise, pdgArgs);
-          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(PDGRenderData, null, 2));
+          const pdgRenderDataArray = this.getPDGRenderData(exercise, pdgArgs);
+          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(pdgRenderDataArray, null, 2));
         }
         catch (err) {
           // failed to execute application
           fs.writeFileSync(renderDataJsonFilePath, JSON.stringify({
             runFailed: true,
             failedReason: err.message,
-            error: err.stack
+            error: err.stack.replaceAll()
           }, null, 2));
         }
       }
@@ -246,12 +231,15 @@ export default class PDGGallery {
     // log(`gallery.getAllExercisePDGArgs() = `, args);
   }
 
+  /** ###########################################################################
+   * graphs.js
+   * ##########################################################################*/
+
   generateGraphsJS() {
     let lastExerciseId = 0;
-    const importData = [];
     const exportData = {
       chapterGroups: [],
-    };
+    }; 
 
     const chapterGroups = fs.readdirSync(this.galleryDataRoot);
     for (const chapterGroupName of chapterGroups) {
@@ -278,18 +266,17 @@ export default class PDGGallery {
             continue;
           }
 
-          const { label, name } = this.controller.exerciseList.getById(exerciseId);
-          const pdgFileImportPath = './' + pathRelative(this.galleryDataRoot, pdgFilePath);
-          const globalExerciseId = ++lastExerciseId;
-          const importVariableName = `pdg${globalExerciseId}`;
+          const { label, name, algo, pdgs } = this.controller.exerciseList.getById(exerciseId);
+          // const globalExerciseId = ++lastExerciseId;
+          // const importVariableName = `pdg${globalExerciseId}`;
           const exercise = {
             id: exerciseId,
+            algo,
             label,
             name,
-            pdgs: importVariableName
+            pdgs
           };
           chapter.exercises.push(exercise);
-          importData.push({ importVariableName, importFilePath: pdgFileImportPath });
         }
         chapterGroup.chapters.push(chapter);
       }
@@ -298,10 +285,9 @@ export default class PDGGallery {
     }
 
     let output = '';
-    importData.forEach(({ importVariableName, importFilePath }) => output += `import ${importVariableName} from '${importFilePath}';\n`);
-    output += '\n';
+    // importData.forEach(({ importVariableName, importFilePath }) => output += `import ${importVariableName} from '${importFilePath}';\n`);
     output += 'export default ';
-    const exportString = JSON.stringify(exportData, null, 2).replaceAll(/"pdgs": "(pdg\d*)"/g, '"pdgs": $1');
+    const exportString = JSON.stringify(exportData, null, 2); //.replaceAll(/"pdgs": "(pdg\d*)"/g, '"pdgs": $1');
     output += exportString;
 
     const graphJSPath = pathJoin(this.galleryDataRoot, 'graphs.js');
@@ -314,6 +300,11 @@ export default class PDGGallery {
       }
     });
   }
+
+  /** ###########################################################################
+   * util
+   * ##########################################################################*/
+
 
   getAllJSAFiles() {
     const jsaRoot = pathJoin(this.controller.project.projectPath, 'src');
@@ -342,76 +333,13 @@ export default class PDGGallery {
           if (!fs.existsSync(pdgFilePath)) {
             continue;
           }
-          allFiles.push({ chapterGroup, chapter, exerciseId, filePath: pdgFilePath });
+          allFiles.push({ 
+            chapterGroup, chapter, exerciseId, filePath: pdgFilePath
+          });
         }
       }
     }
     return allFiles;
-  }
-
-  generatePDGTable() {
-    const chapterGroupsByName = new Map();
-
-    // collect chapter data, add to respective `chapterGroup`
-    for (const chapter of this.controller.chapters) {
-      const { group, name, ignore } = chapter;
-      if (!chapterGroupsByName.get(group)) {
-        chapterGroupsByName.set(group, { chapterGroup: name, chapters: [] });
-      }
-
-      const chapterGroup = chapterGroupsByName.get(group);
-      const chatperData = {
-        algoName: name,
-        ignore,
-      };
-      if (!ignore) {
-        // read pdgData.json
-        if (!chapter.pdgSamples) {
-          logError(`chapter "${name}" has not configure pdgSamples yet`);
-          continue;
-        }
-        else {
-          for (const { exerciseName, pdgTitle } of chapter.pdgSamples) {
-            const exercise = this.controller.exerciseList.getByName(exerciseName);
-            const renderDataFilePath = this.getExerciseFolder(exercise, 'pdgData.json');
-            const pdgData = JSON.parse(fs.readFileSync(renderDataFilePath));
-            // TODO: use these data to generate table
-          }
-        }
-      }
-
-      chapterGroup.chapters.push(chatperData);
-    }
-  }
-
-  generateEmptyPDGTable() {
-    const result = [];
-    for (const chapter of this.controller.chapters) {
-      result.push({
-        group: chapter.group,
-        name: chapter.name,
-        runFailed: true,
-        crash: true,
-        success: false,
-        failedReason: 'TODO',
-        gallery: {
-          pdgSamples: [
-            {
-              exerciseName: 'TODO',
-              pdgTitle: 'TODO'
-            },
-            {
-              exerciseName: 'TODO',
-              pdgTitle: 'TODO'
-            },
-          ]
-        },
-        TODO: true,
-      });
-    }
-
-    // count stats in chapterGroups
-    showTextInNewFile('pdgStatsTable.tex', JSON.stringify(result));
   }
 }
 
