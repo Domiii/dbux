@@ -31,6 +31,14 @@ class PDGRenderData {
 }
 
 /** ###########################################################################
+ * util
+ * ##########################################################################*/
+
+function anonymize(s) {
+  return s.replaceAll(homedir(), 'USER');
+}
+
+/** ###########################################################################
  * {@link PDGGallery}
  * ##########################################################################*/
 
@@ -51,8 +59,13 @@ export default class PDGGallery {
     return getCurrentResearch().getPdgGalleryFolder(true);
   }
 
+  get galleryDataCodeRoot() {
+    // hackfix: this should not be in the `public` folder, but in a code folder
+    return pathResolve(this.galleryDataRoot, '../../data');
+  }
+
   get pdgDataRoot() {
-    return pathJoin(this.galleryDataRoot, 'pdgs');
+    return pathResolve(this.galleryDataRoot, 'pdgs');
   }
 
   /**
@@ -203,46 +216,77 @@ export default class PDGGallery {
     return pdgRenderDataArray;
   }
 
+  #failedExercise(exercise, fpath, pdgs) {
+    exercise.pdgs = pdgs;
+    fs.writeFileSync(fpath, JSON.stringify(pdgs, null, 2));
+  }
+
   /**
    * @param {Exercise[]} exercises
    */
   async buildGalleryForExercises(exercises, force = false) {
     await runTaskWithProgressBar(async (progress) => {
-      for (let i = 0; i < exercises.length; i++) {
-        const exercise = exercises[i];
-        if (exercise.ignore) {
-          continue;
-        }
-        if (exercise.gallery === false) {
-          continue;
-        }
-        progress.report({ message: `Exercise ${i + 1}/${exercises.length}: "${exercise.label}"` });
-        await sleep(0);
+      try {
+        for (let i = 0; i < exercises.length; i++) {
+          const exercise = exercises[i];
+          progress.report({ message: `Exercise ${i + 1}/${exercises.length}: "${exercise.label}"` });
+          await sleep(0);
 
-        const exerciseFolderPath = this.getExerciseFolder(exercise);
-        const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
-        if (!force && fs.existsSync(renderDataJsonFilePath)) {
-          log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
-          continue;
-        }
-        if (!fs.existsSync(exerciseFolderPath)) {
+          const exerciseFolderPath = this.getExerciseFolder(exercise);
           fs.mkdirSync(exerciseFolderPath, { recursive: true });
-        }
+          const renderDataJsonFilePath = pathJoin(exerciseFolderPath, PDGFileName);
+          if (!force && fs.existsSync(renderDataJsonFilePath)) {
+            log(`pdgData.json exists for exercise ${exercise.id}, skipped.`);
+            continue;
+          }
+          if (exercise.ignore) {
+            this.#failedExercise(exercise, renderDataJsonFilePath, {
+              runFailed: false,
+              failedReason: exercise.failedReason ?
+                `ignored: ${exercise.failedReason}` :
+                'ignored'
+            });
+            continue;
+          }
 
-        try {
-          const pdgArgs = await this.getAllExercisePDGArgs(exercise);
-          const pdgRenderDataArray = this.getPDGRenderData(exercise, pdgArgs);
-          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify(pdgRenderDataArray, null, 2));
+          try {
+            const pdgArgs = await this.getAllExercisePDGArgs(exercise);
+            if (pdgArgs.failedReason) {
+              this.#failedExercise(exercise, renderDataJsonFilePath, {
+                runFailed: true,
+                failedReason: anonymize(pdgArgs.failedReason)
+              });
+            }
+            else {
+              const pdgRenderDataArray = this.getPDGRenderData(exercise, pdgArgs);
+              const s = JSON.stringify(pdgRenderDataArray, null, 2);
+              if (s.length > 10e6) {
+                // greater 10MB → too large
+                this.#failedExercise(exercise, renderDataJsonFilePath, {
+                  runFailed: false,
+                  failedReason: 'ignored: too large'
+                });
+              }
+              else {
+                fs.writeFileSync(renderDataJsonFilePath, s);
+              }
+            }
+          }
+          catch (err) {
+            // failed to execute application
+            logError(`[${exercise.chapterGroup}/${exercise.chapter}] PDG data generation failed - ${err.stack}`);
+
+            this.#failedExercise(exercise, renderDataJsonFilePath, {
+              runFailed: true,
+              failedReason: anonymize(err.message),
+              error: anonymize(err.stack)
+            });
+          }
         }
-        catch (err) {
-          // failed to execute application
-          logError(`[${exercise.chapterGroup}/${exercise.chapter}] PDG data generation failed - ${err.stack}`);
-          fs.writeFileSync(renderDataJsonFilePath, JSON.stringify({
-            runFailed: true,
-            failedReason: err.message,
-            error: err.stack.replaceAll(homedir(), 'USER')
-          }, null, 2));
-        }
+      }
+      finally {
+        // update exercise.js one last time
+        this.controller.writeExerciseJs();
       }
     }, { title: `Generating gallery` });
     // log(`gallery.getAllExercisePDGArgs() = `, args);
@@ -306,7 +350,7 @@ export default class PDGGallery {
     const exportString = JSON.stringify(exportData, null, 2); //.replaceAll(/"pdgs": "(pdg\d*)"/g, '"pdgs": $1');
     output += exportString;
 
-    const graphJSPath = pathJoin(this.galleryDataRoot, 'graphs.js');
+    const graphJSPath = pathResolve(this.galleryDataCodeRoot, 'graphs.js');
     fs.writeFileSync(graphJSPath, output);
 
     const msg = translate('savedSuccessfully', { fileName: graphJSPath });

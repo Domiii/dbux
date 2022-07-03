@@ -12,6 +12,7 @@ import { getProjectManager } from '../projectViews/projectControl';
 import PDGViewNodeProvider from './PDGViewNodeProvider';
 import { getCurrentResearch } from '../research/Research';
 import PDGGallery from './PDGGallery';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('@dbux/projects/src/projectLib/ExerciseConfig').default} ExerciseConfig */
@@ -114,7 +115,7 @@ export default class PDGViewController {
       // hackfix pdg stuff
       this.pdgCountsByPdgTitle = new Map();
       this.exerciseList.getAll().forEach(e => {
-        if (!e.pdgs) {
+        if (!Array.isArray(e.pdgs)) {
           return;
         }
         e.pdgs.forEach(p => {
@@ -231,31 +232,37 @@ export default class PDGViewController {
   async runAndExportPDGApplication(exercise, progress) {
     progress?.report({ message: `Running exercises...` });
     const result = await this.treeNodeProvider.manager.switchAndTestBug(exercise);
-
-    if (!result || result.error) {
-      const resultStr = Object.entries(result).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(', ');
-      throw new Error(`Run failed - ${resultStr}`);
-    }
+    const resultStr = Object.entries(result || EmptyObject).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(', ');
 
     const app = allApplications.selection.getFirst();
 
-    if (!app) {
-      const resultStr = Object.entries(result).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(', ');
-      throw new Error(`Run failed (no application found) - ${resultStr}`);
-    }
+    if (app) {
+      // const resultStr = Object.entries(result).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(', ');
+      // throw new Error(`Run failed (no application found) - ${resultStr}`);
+      while (app.dataProvider.indexes.dataNodes.byAccessId.getAll().length < 1) {
+        // hackfix race condition prevention: make sure, data has been stored before exporting
+        await sleep(20);
+      }
 
-    while (app.dataProvider.indexes.dataNodes.byAccessId.getAll().length < 1) {
-      // hackfix race condition prevention: make sure, data has been stored before exporting
-      await sleep(20);
+      // export application
+      const fpath = getCurrentResearch().getAppZipFilePath(app);
+      exportApplicationToFile(app, fpath);
     }
 
     // future-work: make sure, this is the right application (add some isApplicationOfExercise function)
 
     progress?.report({ message: `Parsing application` });
-    if (allApplications.selection.count !== 1) {
-      warn(`Ran test, but found more than one application (selecting first).`);
+    if (allApplications.selection.count < 1) {
+      logError(`Test run for ${exercise.label} failed.`);
     }
-    const pdgs = this.makeAllPDGArgs(app, exercise);
+    else if (allApplications.selection.count > 1) {
+      warn(`Ran test, but found more than one application (choosing first).`);
+    }
+    const pdgs = app ?
+      this.makeAllPDGArgs(app, exercise) :
+      {
+        failedReason: `test execution failed: ${resultStr}`
+      };
     exercise.pdgs = pdgs;
 
     progress?.report({ message: `Storing results and exporting application...` });
@@ -264,10 +271,6 @@ export default class PDGViewController {
 
     // write exercise file
     this.writeExerciseJs();
-
-    // export application
-    const fpath = getCurrentResearch().getAppZipFilePath(app);
-    exportApplicationToFile(app, fpath);
 
     // showInformationMessage(`Found ${pdgs.length} pdg(s).`);
     this.treeNodeProvider.refresh();
@@ -323,8 +326,8 @@ export default class PDGViewController {
    */
   makeAllPDGArgs(app, exercise) {
     const { project } = exercise;
-    const dp = app.dataProvider;
     const testFilePath = pathResolve(project.projectPath, exercise.testFilePaths[0]);
+    const dp = app.dataProvider;
     const validPDGProgramContexts = dp.collections.staticProgramContexts.getAllActual().filter((staticProgramContext) => {
       const { filePath } = staticProgramContext;
       // const fileDir = dirname(filePath);
