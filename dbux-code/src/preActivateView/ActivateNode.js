@@ -1,11 +1,14 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 
+/**
+ * The "Activate Dbux" button calls `activate1`.
+ */
 export class ActivateNode extends TreeItem {
   constructor() {
     super('Start Dbux', TreeItemCollapsibleState.None);
 
     this.command = {
-      command: 'dbux.doActivate'
+      command: 'dbux.doActivate1'
     };
   }
 

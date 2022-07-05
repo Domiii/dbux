@@ -4,7 +4,7 @@ import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
 import { initLogging } from './logging';
 import { initCodePath, setCodePathConfig } from './codeUtil/codePath';
-import activate from './activate';
+import activate1 from './activate1';
 import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
 import initLang from './lang';
@@ -40,10 +40,11 @@ export function getActivatedState() {
 // ###########################################################################
 
 /**
- * This will be called right after dbux has been activate and will call `doActivate` when needed
+ * This will be called right after dbux has been activate and will call `doActivate` when needed.
+ * 
  * @param {import('vscode').ExtensionContext} context
  */
-export default async function preActivate(context) {
+export default async function activate0(context) {
   let autoStart;
   try {
     registerErrorHandler();
@@ -71,11 +72,11 @@ export default async function preActivate(context) {
     autoStart = (process.env.NODE_ENV === 'development') ||
       workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {
-      await ensureActivate(context);
+      await ensureActivate1(context);
     }
     else {
       initPreActivateView();
-      initPreActivateCommand(context);
+      initActivate1Command(context);
     }
   }
   catch (err) {
@@ -86,27 +87,27 @@ export default async function preActivate(context) {
   }
 }
 
-async function doActivate(context) {
+async function doActivate1(context) {
   if (getActivatedState()) {
     throw new Error('Trying to activate Dbux twice');
   }
 
   // set state immediately to avoid called twice
   setActivatedState(true);
-  await activate(context);
+  await activate1(context);
 }
 
-async function ensureActivate(context) {
+async function ensureActivate1(context) {
   if (!getActivatedState()) {
-    await doActivate(context);
+    await doActivate1(context);
   }
 }
 
 /**
  * @param {import('vscode').ExtensionContext} context
  */
-function initPreActivateCommand(context) {
-  registerCommand(context, 'dbux.doActivate', async () => ensureActivate(context));
+function initActivate1Command(context) {
+  registerCommand(context, 'dbux.doActivate1', async () => ensureActivate1(context));
 }
 
 function registerErrorHandler() {

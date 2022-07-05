@@ -91,7 +91,7 @@
     },
     "commands": [
       {
-        "command": "dbux.doActivate",
+        "command": "dbux.doActivate1",
         "title": "Dbux: Start Dbux"
       },
       {
@@ -1107,12 +1107,12 @@
       ],
       "commandPalette": [
         {
-          "command": "dbux.doActivate",
+          "command": "dbux.doActivate1",
           "when": "!dbux.context.activated"
         },
         {
           "command": "dbux.backendLogin",
-          "when": "dbux.context.activated"
+          "when": "false && dbux.context.activated"
         },
         {
           "command": "dbux.diagnostics",

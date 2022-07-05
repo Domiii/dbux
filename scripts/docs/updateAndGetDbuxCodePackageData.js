@@ -14,7 +14,7 @@ function getDbuxPath(...segments) {
   return path.resolve(__dirname, '../..', ...segments);
 }
 
-function getDbuxCodePackageJsonPath() {
+function getCommandJsonPath() {
   return getDbuxPath('docs_site/data/commands.json');
 }
 
@@ -34,7 +34,7 @@ function readJsonFile(fpath) {
 
 
 module.exports = function updateAndGetDbuxCodePackageData() {
-  const commandJsonPath = getDbuxCodePackageJsonPath();
+  const commandJsonPath = getCommandJsonPath();
   const packageJson = readCodePackageJson();
   const commandJson = readJsonFile(commandJsonPath);
 
@@ -110,5 +110,5 @@ module.exports = function updateAndGetDbuxCodePackageData() {
 };
 
 // Object.assign(module.exports, {
-//   getDbuxCodePackageJsonPath
+//   getCommandJsonPath
 // });

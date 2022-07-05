@@ -11,10 +11,10 @@ console.debug(`Activating Dbux...`);
 /**
  * Put the whole thing into try/catch, so that activation errors are caught correctly.
  */
-let preActivate, deactivate;
+let activate0, deactivate;
 try {
   // eslint-disable-next-line global-require
-  preActivate = require('./preActivate').default;
+  activate0 = require('./activate0').default;
   // eslint-disable-next-line global-require
   deactivate = require('./deactivate').default;
 }
@@ -23,13 +23,13 @@ catch (err) {
   console.error(`Dbux extension initialization failed:`, err);
   throw err;
 }
+
+/**
+ * VSCode Extension start-up hook.
+ * 
+ * @see https://code.visualstudio.com/api/references/activation-events#Start-up
+ */
 module.exports = {
-  activate: preActivate,
+  activate: activate0,
   deactivate
 };
-// module.exports = {
-//   activate() {
-//     console.log('hi this is Dbux');
-//   },
-//   deactivate
-// };

@@ -30,7 +30,7 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
 /**
  * @param {import('vscode').ExtensionContext} context
  */
-export default async function activate(context) {
+export default async function activate1(context) {
   const dbuxRoot = process.env.DBUX_ROOT ? `, DBUX_ROOT=${process.env.DBUX_ROOT}` : '';
   log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}${dbuxRoot})...`);
 
@@ -73,7 +73,7 @@ export default async function activate(context) {
 
   const dialogController = initDialogController();
   maybeStartTutorial(dialogController, context);
-  maybeStartSurvey1(dialogController, context);
+  // maybeStartSurvey1(dialogController, context);
 
   // await initPlugins();
 }
