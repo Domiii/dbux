@@ -21,7 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
-import { disposePDGWebviews, getActivePDGWebview, showPDGViewForArgs, showPDGViewForContextOfSelectedTrace } from '../webViews/pdgWebView';
+import { disposePDGWebviews, getActivePDGWebview, showPDGViewForArgs, showPDGViewForContextOfSelectedTrace as tryShowPDGViewForContextOfSelectedTrace } from '../webViews/pdgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -129,132 +129,6 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.hidePathwaysView', async () => {
     hidePathwaysView();
-  });
-
-  // ###########################################################################
-  // testing PDG code
-  // ###########################################################################
-
-  /**
-   * testing + dev-only
-   * NOTE: this is code for testing → move to test file
-   */
-  registerCommand(extensionContext, 'dbux.testPDG', async () => {
-    let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestPDGArgs();
-
-    if (traceSelection.selected) {
-      contextId = traceSelection.selected.contextId;
-      watchTraceIds = null;
-      applicationUuid = allApplications.getById(traceSelection.selected.applicationId);
-    }
-
-    let app = allApplications.getById(applicationUuid);
-    if (!allApplications.selection.containsApplication(app)) {
-      // app is there but not active
-      app = null;
-    }
-    if (!app) {
-      if (allApplications.selection.getFirst()) {
-        // select first app instead → reset
-        // contextId = watchTraceIds = null;
-        app = allApplications.selection.getFirst();
-      }
-      else {
-        // try re-import
-        const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
-        // const testFileName = 'data-multi1';
-        // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
-        // await doImportApplication(testFilePath);
-
-        // load an application, if none active
-        const confirmMsg = `Current PDG test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to import it?`;
-        const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
-        if (shouldUpdateTestFilePath) {
-          const fileDialogOptions = {
-            title: 'Select a new test file to read',
-            folder: getDefaultExportDirectory(),
-            filters: {
-              'Dbux Exported Application Data': ['json.zip']
-            },
-          };
-          testFilePath = await chooseFile(fileDialogOptions);
-          if (!testFilePath) {
-            throw new Error(`PDG Test Cancelled - No test file selected`);
-          }
-          testFilePath = pathNormalizedForce(testFilePath);
-
-          // test file changed → reset
-          contextId = watchTraceIds = null;
-        }
-
-        app = await doImportApplication(testFilePath);
-      }
-    }
-
-    if (!app) {
-      throw new Error('Could not run PDG test: No applications running');
-    }
-
-    let trace;
-    const dp = app.dataProvider;
-    if (!watchTraceIds &&
-      (!contextId || !!dp.pdgs.getCreatePDGFailureReason({ contextId }))
-    ) {
-      // default: select first function context
-      // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
-      trace = traceSelection.selected;
-      contextId = trace?.contextId;
-      const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
-      if (needsNewContextId) {
-        const firstFunctionContext = dp.collections.executionContexts.getAllActual().
-          find(context => dp.util.isContextFunctionContext(context.contextId));
-        if (!firstFunctionContext) {
-          throw new Error('Could not run PDG test: Could not find a function context in application');
-        }
-        contextId = firstFunctionContext.contextId;
-        const userInput = await window.showInputBox({
-          placeHolder: 'contextId',
-          value: contextId,
-          prompt: 'Enter the contextId to test PDG'
-        });
-        contextId = parseInt(userInput, 10);
-        if (!contextId) {
-          throw new Error(`Invalid contextId (expected but is not positive integer): ${userInput}`);
-        }
-      }
-
-      // select trace by contextId
-      trace = dp.util.getFirstTraceOfContext(contextId);
-      if (!trace) {
-        throw new Error(`Invalid contextId - context not found: ${contextId}`);
-      }
-
-      // trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
-      traceSelection.selectTrace(trace);
-      // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
-    }
-
-    if (contextId || watchTraceIds) {
-      // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
-      trace && await getOrOpenTraceEditor(trace);
-
-      // clear all previous PDGs
-      dp.pdgs.clear();
-      disposePDGWebviews();
-
-      // show webview
-      await showPDGViewForArgs({
-        applicationUuid: app.applicationUuid,
-        watchTraceIds,
-        contextId
-      });
-
-      // select PDG Debug node
-      const pdg = dp.pdgs.pdgs[0];
-      if (pdg) {
-        await getGlobalAnalysisViewController().revealPDG(pdg);
-      }
-    }
   });
 
   // ###########################################################################
@@ -476,12 +350,133 @@ export function initUserCommands(extensionContext) {
    *  #########################################################################*/
 
   registerCommand(extensionContext, 'dbux.showPDGOfContext', async () => {
-    const trace = traceSelection.selected;
-    if (trace) {
-      await showPDGViewForContextOfSelectedTrace();
+    await tryShowPDGViewForContextOfSelectedTrace();
+  });
+
+
+  // ###########################################################################
+  // PDG dev commands
+  // ###########################################################################
+
+  /**
+   * testing + dev-only
+   * NOTE: this is code for testing → move to test file
+   */
+  registerCommand(extensionContext, 'dbux.testPDG', async () => {
+    let { applicationUuid, testFilePath, contextId, watchTraceIds } = await getTestPDGArgs();
+
+    if (traceSelection.selected) {
+      contextId = traceSelection.selected.contextId;
+      watchTraceIds = null;
+      applicationUuid = allApplications.getById(traceSelection.selected.applicationId);
     }
-    else {
-      await showInformationMessage('No trace selected');
+
+    let app = allApplications.getById(applicationUuid);
+    if (!allApplications.selection.containsApplication(app)) {
+      // app is there but not active
+      app = null;
+    }
+    if (!app) {
+      if (allApplications.selection.getFirst()) {
+        // select first app instead → reset
+        // contextId = watchTraceIds = null;
+        app = allApplications.selection.getFirst();
+      }
+      else {
+        // try re-import
+        const defaultImportDir = pathNormalizedForce(getDefaultExportDirectory());
+        // const testFileName = 'data-multi1';
+        // const testFilePath = pathResolve(defaultImportDir, testFile + '_data.json.zip');
+        // await doImportApplication(testFilePath);
+
+        // load an application, if none active
+        const confirmMsg = `Current PDG test file: "${testFilePath?.replace(defaultImportDir, '')}"\nDo you want to import it?`;
+        const shouldUpdateTestFilePath = !testFilePath || !await confirm(confirmMsg);
+        if (shouldUpdateTestFilePath) {
+          const fileDialogOptions = {
+            title: 'Select a new test file to read',
+            folder: getDefaultExportDirectory(),
+            filters: {
+              'Dbux Exported Application Data': ['json.zip']
+            },
+          };
+          testFilePath = await chooseFile(fileDialogOptions);
+          if (!testFilePath) {
+            throw new Error(`PDG Test Cancelled - No test file selected`);
+          }
+          testFilePath = pathNormalizedForce(testFilePath);
+
+          // test file changed → reset
+          contextId = watchTraceIds = null;
+        }
+
+        app = await doImportApplication(testFilePath);
+      }
+    }
+
+    if (!app) {
+      throw new Error('Could not run PDG test: No applications running');
+    }
+
+    let trace;
+    const dp = app.dataProvider;
+    if (!watchTraceIds &&
+      (!contextId || !!dp.pdgs.getCreatePDGFailureReason({ contextId }))
+    ) {
+      // default: select first function context
+      // if (await this.componentManager.externals.confirm('No trace selected. Automatically select first function context in first application?')) {
+      trace = traceSelection.selected;
+      contextId = trace?.contextId;
+      const needsNewContextId = !contextId || !dp.util.getFirstTraceOfContext(contextId);
+      if (needsNewContextId) {
+        const firstFunctionContext = dp.collections.executionContexts.getAllActual().
+          find(context => dp.util.isContextFunctionContext(context.contextId));
+        if (!firstFunctionContext) {
+          throw new Error('Could not run PDG test: Could not find a function context in application');
+        }
+        contextId = firstFunctionContext.contextId;
+        const userInput = await window.showInputBox({
+          placeHolder: 'contextId',
+          value: contextId,
+          prompt: 'Enter the contextId to test PDG'
+        });
+        contextId = parseInt(userInput, 10);
+        if (!contextId) {
+          throw new Error(`Invalid contextId (expected but is not positive integer): ${userInput}`);
+        }
+      }
+
+      // select trace by contextId
+      trace = dp.util.getFirstTraceOfContext(contextId);
+      if (!trace) {
+        throw new Error(`Invalid contextId - context not found: ${contextId}`);
+      }
+
+      // trace = dp.util.getFirstTraceOfContext(firstFunctionContext.contextId);
+      traceSelection.selectTrace(trace);
+      // await sleep(50); // wait a few ticks for `selectTrace` to start taking effect
+    }
+
+    if (contextId || watchTraceIds) {
+      // wait for trace file's editor to have opened, to avoid a race condition between the two windows opening
+      trace && await getOrOpenTraceEditor(trace);
+
+      // clear all previous PDGs
+      dp.pdgs.clear();
+      disposePDGWebviews();
+
+      // show webview
+      await showPDGViewForArgs({
+        applicationUuid: app.applicationUuid,
+        watchTraceIds,
+        contextId
+      });
+
+      // select PDG Debug node
+      const pdg = dp.pdgs.pdgs[0];
+      if (pdg) {
+        await getGlobalAnalysisViewController().revealPDG(pdg);
+      }
     }
   });
 }

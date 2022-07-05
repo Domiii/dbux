@@ -10,7 +10,7 @@ import { registerCommand } from './commands/commandUtil';
 import initLang from './lang';
 import { getCurrentResearch } from './research/Research';
 
-/** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
+/** @typedef {import('./dialogs/dialogController').default} DialogController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');

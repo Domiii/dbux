@@ -26,12 +26,13 @@ export async function showHelp(message) {
 
   if (isDefaultHelp) {
     btns = {
-      async [translate('showHelp.tutorial')]() {
-        return await dialogController.startDialog('tutorial');
-      },
-      async [translate('showHelp.survey')]() {
-        return await dialogController.startDialog('survey1');
-      },
+      // NOTE: tutorial needs a revamp - need easier bugs and videos to get started.
+      // async [translate('showHelp.tutorial')]() {
+      //   return await dialogController.startDialog('tutorial');
+      // },
+      // async [translate('showHelp.survey')]() {
+      //   return await dialogController.startDialog('survey1');
+      // },
       ...btns
     };
   }

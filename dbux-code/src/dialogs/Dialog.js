@@ -5,7 +5,7 @@ import { get, set } from '../memento';
 import _nodeRegistry from './nodes/_nodeRegistry';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
-/** @typedef {import('./dialogController').DialogController} DialogController */
+/** @typedef {import('./dialogController').default} DialogController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
@@ -13,11 +13,12 @@ const { log, debug, warn, error: logError } = newLogger('Dialog');
 const Verbose = false;
 // const Verbose = true;
 
-export class Dialog {
+export default class Dialog {
   /**
    * @type {DialogController}
    */
   controller;
+  
   constructor(controller, graph) {
     this.controller = controller;
     this.graph = graph;

@@ -10,12 +10,16 @@ import ProgramDependencyGraph from '@dbux/data/src/pdg/ProgramDependencyGraph';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
 import { setTestPDGArgs } from '../testUtil';
 import { confirm, showInformationMessage, showSaveDialog, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import RichWebView from './RichWebView';
 
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('PDG');
 
 const defaultColumn = ViewColumn.Two;
 
@@ -126,8 +130,8 @@ export async function getPDGDot(pdg) {
  * ##########################################################################*/
 
 export async function showPDGViewForContextOfSelectedTrace() {
-  let initialState;
-  let hostOnlyState;
+  // let initialState;
+  // let hostOnlyState;
   let trace = traceSelection.selected;
   if (trace) {
     const { applicationId, contextId } = trace;
@@ -136,9 +140,9 @@ export async function showPDGViewForContextOfSelectedTrace() {
     return await showPDGViewForArgs(pdgArgs);
   }
   else {
-    const failureReason = 'PDG is empty';
-    initialState = makeFailureState(failureReason);
-    return await showPDGView(initialState, hostOnlyState);
+    const message = 'In order to use the PDG, select a trace inside a function first, then try again.';
+    logError(message);
+    return null;
   }
 }
 

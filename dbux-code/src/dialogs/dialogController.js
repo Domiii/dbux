@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import dialogGraphs from './_dialogRegistry';
-import { Dialog } from './Dialog';
+import Dialog from './Dialog';
 import { getProjectManager } from '../projectViews/projectControl';
 import { getInstallId } from '../installId';
 import { setDialogControllerForDefaultHelp } from '../help';
@@ -8,7 +8,7 @@ import { setDialogControllerForDefaultHelp } from '../help';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DialogController');
 
-export class DialogController {
+export default class DialogController {
   constructor() {
     this.graphs = new Map(Object.entries(dialogGraphs));
     this.dialogs = new Map();

@@ -1,5 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
+import sleep from '@dbux/common/src/util/sleep';
+
 import { initCodeDeco } from './codeDeco';
 
 import { initCommands } from './commands/index';
@@ -17,7 +19,7 @@ import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
-import { initDialogController } from './dialogs/dialogController';
+import DialogController, { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
@@ -31,6 +33,8 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
  * @param {import('vscode').ExtensionContext} context
  */
 export default async function activate1(context) {
+  // await sleep(2000); // uncomment this to allow debugging (else, the debugger does not have enough time to latch on)
+
   const dbuxRoot = process.env.DBUX_ROOT ? `, DBUX_ROOT=${process.env.DBUX_ROOT}` : '';
   log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}${dbuxRoot})...`);
 
@@ -71,8 +75,15 @@ export default async function activate1(context) {
 
   await initDbuxPdgView(context);
 
-  const dialogController = initDialogController();
-  maybeStartTutorial(dialogController, context);
+  /* const dialogController = */ initDialogController();
+
+  // TODO:
+  //    0. add PDG to docs and clean up docs
+  //    1. create new intro dialog
+  //    1b. offer instructions on how to get PDG started
+
+  // NOTE: tutorial needs a revamp - need easier bugs and videos to get started.
+  // maybeStartTutorial(dialogController, context);
   // maybeStartSurvey1(dialogController, context);
 
   // await initPlugins();
@@ -91,6 +102,7 @@ async function maybeStartTutorial(dialogController) {
     const firstNode = tutorialDialog.getCurrentNode();
 
     if (!tutorialDialog.started) {
+      // first start
       await showInformationMessage(translate('newOnDbux.message'), {
         async [translate('newOnDbux.yes')]() {
           await tutorialDialog.start();
@@ -101,7 +113,7 @@ async function maybeStartTutorial(dialogController) {
       });
     }
     else if (!firstNode.end) {
-      // dialog unfinished
+      // continue (previously started) tutorial
       if (firstNode.kind === DialogNodeKind.Modal) {
         const confirmResult = await tutorialDialog.askToContinue();
         if (confirmResult === false) {
