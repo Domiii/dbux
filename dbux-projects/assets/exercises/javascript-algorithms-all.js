@@ -58927,7 +58927,10 @@ module.exports = [
     "testFilePaths": [
       "src/algorithms/uncategorized/best-time-to-buy-sell-stocks/__tests__/dqBestTimeToBuySellStocks.test.js"
     ],
-    "number": 285
+    "number": 285,
+    "pdgs": {
+      "failedReason": "test execution failed: code=134"
+    }
   },
   {
     "chapterGroup": "uncategorized",
