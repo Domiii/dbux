@@ -1,4 +1,5 @@
 ---
+title: "ACG: Asynchronous Call Graph"
 sidebar_class_name: sidebar-call-graph
 # IMPORTANT: this link is linked in our ICSE-SEIP 2022 paper. IT SHOULD BE PERMANENT.
 #     If we ever change this, need to add a redirect from /acg!
@@ -74,6 +75,11 @@ The Asynchronous Call Graph (ACG) is the [call graph](./08-call-graph.mdx) in `A
 `Sync` mode allows inspecting children and children of children of file and function executions. However, it simply puts <Term term="call graph roots" /> on a single linear vertical timeline. The ACG, on the other hand, uncovers the hidden connections between those roots on multiple vertical timelines and connections rendered between them.
 In other words, `Sync` mode is great for inspecting control flow **within** individual <Term term="call graph roots" />, while `Async` mode is great for inspecting control flow **between** them.
 In many debugging scenarios, you probably want to toggle between the two modes, as you investigate the control flow of an application.
+
+
+:::tip
+For more in-depth technical information, consult our ICSE-SEIP paper: [An Asynchronous Call Graph for JavaScript](https://ieeexplore.ieee.org/document/9794057).
+:::
 
 
 ## Why?
