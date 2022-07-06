@@ -30,14 +30,12 @@ As of Jan. 2022, Dbux at least requires `node@16+` and `npm@8+`.
 
 If you don't have the right Node version, [please read this](#node-version).
 :::
-
+<!-- 
 The [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx) requires several command line tools to be installed:
 
 * It automatically tries to determine whether those tools are installed.
 * If it is missing anything, it should warn you upon start-up.
 * If nothing is missing, it leaves a positive message in the Dbux Output Channel. E.g.:
-
-<!-- TODO: provide screenshot of output channel instead -->
 
 ```
 Dbux requires the following programs to be installed and available on your system in order to run smoothly. Please make sure, you have all of them installed.
@@ -48,7 +46,7 @@ Dbux requires the following programs to be installed and available on your syste
     found at "C:/PROGRAM FILES/VOLTA/NPM.EXE"
 
 SUCCESS! All system dependencies seem to be in order.
-```
+``` -->
 
 <!-- 
 <details>
@@ -65,7 +63,12 @@ SUCCESS! All system dependencies seem to be in order.
   </div>
 </details> -->
 
-When working through [Dbux Practice exercises](./dbux-practice/01-overview.mdx), more tools might be required for each project. As of Jan. 2022, it at least requires `git` to be installed:
+When working through [Dbux Practice exercises](./dbux-practice/01-overview.mdx), more tools might be required for each project.
+
+* As of Jan. 2022, it at least requires `git` to be installed.
+* It automatically tries to determine whether required tools are installed.
+* If it is missing anything, it should warn you upon starting a project or exercise.
+* If nothing is missing, it leaves a positive message in the Dbux Output Channel. E.g.:
 
 ```
 ✓  node

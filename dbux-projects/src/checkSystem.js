@@ -64,6 +64,8 @@ function isWindows() {
 
 /**
  * Check system with requirements
+ * future-work: don't have this depend on `dbux-projects`.
+ * 
  * @param {ProjectsManager} manager
  * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
  * @param {boolean} fullCheck if false, skip checking `git` (or more generally: skip all projects-specific settings).

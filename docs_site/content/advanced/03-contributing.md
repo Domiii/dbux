@@ -101,14 +101,12 @@ When you want to debug a local project with a local Dbux dev build, we recommend
   * E.g. when using `webpack` and `babel`: `rm -rf ./node_modules/.cache/babel-loader`
 
 
-* TODO: test the `workspace` and `pure` options (described [here](https://github.com/wclr/yalc/issues/180))
-
 :::caution
 This will not work with `yarn@1`.
 
-While generally linking the local dev build using `yalc` works, it will not be able to install dependencies, and in general, `yarn add` and `yarn install` will always fail from now on, if you use `yarn@1`. [This is a well-known bug that was fixed for `yarn@>=2`.](https://github.com/yarnpkg/yarn/issues/2611)
+While generally linking the local dev build using `yalc` works, it will not be able to install dependencies, and in general, `yarn add` and `yarn install` will always fail from now on, if you use `yarn@1`. [This is a well-known bug that was fixed for `yarn@>=2`](https://github.com/yarnpkg/yarn/issues/2611).
 
-One way to hackfix this with `yarn@1`:
+Hackfix workaround for `yarn@1`:
 * After `yalc add...`:
   * (If you use `yarn workspaces`: remove linkage to other workspace packages.)
   * Use `npm install` once, then remove `package-lock.json`.
@@ -256,7 +254,6 @@ NOTE: VSCode's buttons are representation of commands, you must add a command be
    - If you remove `"group": "navigation"`, the button will be listed in a dropdown menu, see [Sorting of groups](https://code.visualstudio.com/api/references/contribution-points#Sorting-of-groups) for more information
    - The `when` property defines when should the button be visible, see ['when' clause contexts](https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts) for more available condition
 
-<!-- TODO: more to be said here in the future (e.g., consider https://gist.github.com/PurpleBooth/b24679402957c63ec426) -->
 
 ## How to use Dbux on Dbux?
 

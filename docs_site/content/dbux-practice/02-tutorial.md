@@ -6,6 +6,5 @@ As [mentioned here](./01-overview.mdx), this is still [WIP](https://www.google.c
 
 <!-- 
 TODO: improve this
-TODO: add data flow
-TODO: add javascript-algorithms
+TODO: add PDG
 * -->
