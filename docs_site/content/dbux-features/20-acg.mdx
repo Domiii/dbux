@@ -36,8 +36,8 @@ This example demonstrates the ACG of a sample program:
 
 The ACG (right) renders the program <Term term="CGRs" /> and the [asynchronous event edges](#ae) that connect them. The vertical axis is time (pointing downwards) and the horizontal dimension is a new experimental measure of "virtual threads" or "degree of concurrency".
 
-* Code: The red solid border around the `done()` call expression indicates that it is [selected](./05-select-trace.mdx).
-* In the ACG, the `await Promise.all(...)` node is also selected (due to [follow mode](./08-call-graph.mdx#follow)), indicated by a yellow solid border.
+* Code: The red solid border around the `done()` call expression indicates that it is [selected](./06-select-trace.mdx).
+* In the ACG, the `await Promise.all(...)` node is also selected (due to [follow mode](./10-call-graph.mdx#follow)), indicated by a yellow solid border.
   * &rarr; This means that `done()` is in the CGR of that corresponding asynchronous continuation (or "virtual/resume context"). 
   * &rarr; This also means that `done()`'s CGR executed after the awaited promise settled.
 * The dashed (red) border around the nodes on the left (`f1`, `sleep1s`, `f2`) indicate that the selected node "[synchronizes](https://en.wikipedia.org/wiki/Synchronization_(computer_science))" against them.
@@ -56,7 +56,7 @@ This example demonstrates the ACG of [todomvc (vanilla-es6)](https://github.com/
 
 <Img screen src="todomvc-sample-acg1.png" />
 
-* In this example, `val` (aka [value mode](./08-call-graph.mdx#value)) is enabled.
+* In this example, `val` (aka [value mode](./10-call-graph.mdx#value)) is enabled.
   * This option renders the value of the first execution of the currently selected trace in each <Term term="CGR" />.
   * In the ACG, we can see the value of `selector` for each <Term term="CGR" />, allowing us to see where/when the corresponding event (of this particular event handler) for each selector were handled.
   * We can click into each individual node to get us to the relevant execution of that event handler.
@@ -79,7 +79,11 @@ With the ACG we hope to make asynchronous JavaScript a lot easier to understand 
 
 ## How does the ACG work?
 
-The Asynchronous Call Graph (ACG) is the [call graph](./08-call-graph.mdx) in `Async` mode. You can see the ACG by opening the [call graph](./08-call-graph.mdx) and switching to `Async` mode (by clicking the `Sync` button in the [toolbar](./08-call-graph.mdx#toolbar)). The two call graph modes share many features, including the toolbar buttons, coloring and more, as explained [here](./08-call-graph.mdx#toolbar).
+The Dbux introduction video features several examples of the Asynchronous Call Graph (ACG):
+
+[![Video Introduction](https://img.youtube.com/vi/N9W6rhHMKbA/0.jpg)](https://youtu.be/N9W6rhHMKbA?t=621)
+
+The Asynchronous Call Graph (ACG) is the [call graph](./10-call-graph.mdx) in `Async` mode. You can see the ACG by opening the [call graph](./10-call-graph.mdx) and switching to `Async` mode (by clicking the `Sync` button in the [toolbar](./10-call-graph.mdx#toolbar)). The two call graph modes share many features, including the toolbar buttons, coloring and more, as explained [here](./10-call-graph.mdx#toolbar).
 
 `Sync` mode allows inspecting children and children of children of file and function executions. However, it simply puts <Term term="call graph roots" /> on a single linear vertical timeline. The ACG, on the other hand, uncovers the hidden connections between those roots on multiple vertical timelines and connections rendered between them.
 In other words, `Sync` mode is great for inspecting control flow **within** individual <Term term="call graph roots" />, while `Async` mode is great for inspecting control flow **between** them.
@@ -87,5 +91,5 @@ In many debugging scenarios, you probably want to toggle between the two modes, 
 
 
 :::tip
-For more in-depth technical information, consult our ICSE-SEIP paper: [An Asynchronous Call Graph for JavaScript (ACM, 2022)](https://ieeexplore.ieee.org/document/9794057).
+For more in-depth technical information, consult our paper: [An Asynchronous Call Graph for JavaScript (ICSE-SEIP, ACM, 2022)](https://ieeexplore.ieee.org/document/9794057).
 :::

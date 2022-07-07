@@ -14,10 +14,22 @@ import TOC from '@comp/TOC';
 
 ## Why do we need a PDG?
 
-
+We designed the Program Dependency Graph (PDG) to allow the developer stay oriented while seeking answers to questions about data flow and data dependencies between memory addresses, statements and control blocks, with a specific focus on data structures and algorithms.
 
 
 ## How does the PDG work?
 
+We illustrate using the PDG on two algorithms (`BubbleSort` and `Dijkstra`) in this video:
+
+[![Video Introduction](https://img.youtube.com/vi/dgXj3VoQJZQ/0.jpg)](https://www.youtube.com/watch?v=dgXj3VoQJZQ)
+
+In its fully summarized form, the PDG only shows a selected function's inputs, outputs and their dependency relationships. Many bugs become obvious on this level already. To understand causality, you can further zoom into or out of nested control flow blocks, all the way down to the statement level.
+
+The immense complexity of dynamic execution behavior of even simple applications presents a major design challenge standing in the way of widespread adoption of novel developer tools such as this.
+Visualizing everything can help identify high-level patterns, but makes it inherently difficult to investigate causality. 
+We argue that it is important to allow the developer zoom out to see a complete representation of the system in a single screen, but also be able to zoom in on regions of interest, in order to investigate exactly what the recorded control flow is and where each value is computed or accessed, and where it is moved.
+
+Thus, you start at a fully zoomed out view, where all relevant data flow is fully summarized into only the watched nodes and the connections between them.
+While you can also choose to fully expand the graph, in most scenarios, this view would obstruct comprehension due to the immense amount of detail presented at once. Instead, when looking for details, you can first investigate the summarized top-level of control flow blocks and then zoom in on individual blocks, all the way down to the individual statement level. You can (and probably should) do this incrementally, one step at a time, as you are honing in on a particular point of interest.
 
 
