@@ -4,7 +4,7 @@ import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import { upload } from '@dbux/projects/src/firestore/upload';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
-import DialogNodeKind from './DialogNodeKind';
+import DialogNodeKind from '../dialogLib/DialogNodeKind';
 import { getProjectManager } from '../projectViews/projectControl';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';

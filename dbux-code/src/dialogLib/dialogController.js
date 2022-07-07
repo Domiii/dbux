@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import dialogGraphs from './_dialogRegistry';
+import dialogTemplates from '../dialogs/_dialogRegistry';
 import Dialog from './Dialog';
 import { getProjectManager } from '../projectViews/projectControl';
 import { getInstallId } from '../installId';
@@ -10,7 +10,7 @@ const { log, debug, warn, error: logError } = newLogger('DialogController');
 
 export default class DialogController {
   constructor() {
-    this.graphs = new Map(Object.entries(dialogGraphs));
+    this.templates = new Map(Object.entries(dialogTemplates));
     this.dialogs = new Map();
 
     setDialogControllerForDefaultHelp(this);
@@ -33,7 +33,7 @@ export default class DialogController {
   getDialog(dialogName) {
     let dialog = this.dialogs.get(dialogName);
     if (!dialog) {
-      dialog = new Dialog(this, this.graphs.get(dialogName));
+      dialog = new Dialog(this, this.templates.get(dialogName));
       this.dialogs.set(dialogName, dialog);
     }
     return dialog;

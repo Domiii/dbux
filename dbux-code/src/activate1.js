@@ -19,8 +19,8 @@ import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
-import DialogController, { initDialogController } from './dialogs/dialogController';
-import DialogNodeKind from './dialogs/DialogNodeKind';
+import DialogController, { initDialogController } from './dialogLib/dialogController';
+import DialogNodeKind from './dialogLib/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
 import { initDbuxPdgView } from './pdgView/pDGViewController';
@@ -75,7 +75,9 @@ export default async function activate1(context) {
 
   await initDbuxPdgView(context);
 
-  /* const dialogController = */ initDialogController();
+  const dialogController = initDialogController();
+
+  maybeStartDialog(dialogController, 'intro');
 
   // TODO:
   //    0. add PDG to docs and clean up docs
@@ -92,6 +94,45 @@ export default async function activate1(context) {
 // ###########################################################################
 // Maybe start dialog on pre-activate
 // ###########################################################################
+
+/**
+ * @param {DialogController} dialogController 
+ */
+async function maybeStartDialog(dialogController, name) {
+  const dialog = dialogController.getDialog(name);
+  try {
+    const firstNode = dialog.getCurrentNode();
+
+    if (!dialog.started) {
+      // first start
+      await dialog.start('waitToStart');
+    }
+    else if (!firstNode?.end) {
+      // continue (previously started) dialog
+      if (firstNode.kind === DialogNodeKind.Modal) {
+        const confirmResult = await dialog.askToContinue();
+        if (confirmResult === false) {
+          await dialog.setState('cancel');
+        }
+        else if (confirmResult) {
+          await dialog.start();
+        }
+        else {
+          // dialog was cancelled → nothing happens. We will ask again at next start-up.
+        }
+      }
+      else {
+        await dialog.start();
+      }
+    }
+    else {
+      // dialog finished, do nothing
+    }
+  }
+  catch (err) {
+    dialog.logger.error(new NestedError('Dialog error.', err));
+  }
+}
 
 /**
  * @param {DialogController} dialogController 

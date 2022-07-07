@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { env, Uri } from 'vscode';
 import { showHelp } from '../help';
-import DialogNodeKind from './DialogNodeKind';
+import DialogNodeKind from '../dialogLib/DialogNodeKind';
 
 const introMessage = `We prepared some example code (with a bug in it) for people to play around with Dbux's features. Do you want to try that?
 
