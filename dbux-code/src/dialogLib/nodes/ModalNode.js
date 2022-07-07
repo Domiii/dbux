@@ -10,7 +10,7 @@ export default class MessageNode extends DialogNode {
     const { nodeName } = dialog.graphState;
 
     let { end = false, edges = [] } = node;
-    if (nodeName !== 'start' && !end) {
+    if (!end) {
       edges = edges.concat(dialog.graph.defaultEdges);
     }
 

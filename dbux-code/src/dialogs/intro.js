@@ -1,11 +1,13 @@
 /* eslint-disable max-len */
-import { env, Uri } from 'vscode';
+
+import { env, Uri, window } from 'vscode';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialogLib/DialogNodeKind';
 
 
 const intro = {
   name: 'intro',
+  displayName: 'the Introduction',
 
   /**
    * These edges are added to all states, except for `start` and `end`.
@@ -26,18 +28,53 @@ const intro = {
   nodes: {
     start: {
       kind: DialogNodeKind.Modal,
-      text: `Welcome to Dbux! Here are some pointers:\n\n1. TODO`,
+      text: `Welcome to Dbux! Do you need help?`,
       edges: [
         {
-          text: 'Ok',
-          node: 'start2'
+          text: 'Maybe later',
+          node: null // dismiss → will come back again upon next restart
+        },
+        {
+          text: 'No. Don\'t ask me again.',
+          node: 'end'
+        },
+        {
+          text: 'No. Don\'t ask me again.',
+          node: 'end'
         }
       ]
     },
     
-    start2: {
+    basics: {
       kind: DialogNodeKind.Modal,
-      text: 'TODO'
+      text: 'TODO',
+      edges: [
+        {
+          text: 'Watch the intro video',
+          node: 'basics',
+          click() {
+
+          }
+          // https://youtu.be/N9W6rhHMKbA?t=145
+        },
+        {
+          text: 'Read the Docs',
+          node: 'basics',
+          async click() {
+            return env.openExternal(Uri.parse('https://domiii.github.io/dbux'));
+          }
+        },
+        {
+          text: 'Ask on Discord',
+          async click() {
+            return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
+          }
+        },
+        {
+          text: 'Go back',
+          node: 'start'
+        }
+      ]
     },
 
     // ###########################################################################

@@ -19,7 +19,7 @@ import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
-import DialogController, { initDialogController } from './dialogLib/dialogController';
+import DialogController, { initDialogController } from './dialogLib/DialogController';
 import DialogNodeKind from './dialogLib/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
@@ -105,25 +105,11 @@ async function maybeStartDialog(dialogController, name) {
 
     if (!dialog.started) {
       // first start
-      await dialog.start('waitToStart');
+      await dialog.start();
     }
     else if (!firstNode?.end) {
-      // continue (previously started) dialog
-      if (firstNode.kind === DialogNodeKind.Modal) {
-        const confirmResult = await dialog.askToContinue();
-        if (confirmResult === false) {
-          await dialog.setState('cancel');
-        }
-        else if (confirmResult) {
-          await dialog.start();
-        }
-        else {
-          // dialog was cancelled → nothing happens. We will ask again at next start-up.
-        }
-      }
-      else {
-        await dialog.start();
-      }
+      // continue (previously started) tutorial → always start from the beginning (for now)
+      await dialog.start('start');
     }
     else {
       // dialog finished, do nothing
@@ -134,73 +120,73 @@ async function maybeStartDialog(dialogController, name) {
   }
 }
 
-/**
- * @param {DialogController} dialogController 
- */
-async function maybeStartTutorial(dialogController) {
-  const tutorialDialog = dialogController.getDialog('tutorial');
-  try {
-    const firstNode = tutorialDialog.getCurrentNode();
+// /**
+//  * @param {DialogController} dialogController 
+//  */
+// async function maybeStartTutorial(dialogController) {
+//   const tutorialDialog = dialogController.getDialog('tutorial');
+//   try {
+//     const firstNode = tutorialDialog.getCurrentNode();
 
-    if (!tutorialDialog.started) {
-      // first start
-      await showInformationMessage(translate('newOnDbux.message'), {
-        async [translate('newOnDbux.yes')]() {
-          await tutorialDialog.start();
-        },
-        async [translate('newOnDbux.no')]() {
-          await tutorialDialog.setState('end');
-        }
-      });
-    }
-    else if (!firstNode.end) {
-      // continue (previously started) tutorial
-      if (firstNode.kind === DialogNodeKind.Modal) {
-        const confirmResult = await tutorialDialog.askToContinue();
-        if (confirmResult === false) {
-          await tutorialDialog.setState('cancel');
-        }
-        else if (confirmResult) {
-          await tutorialDialog.start();
-        }
-      }
-      else {
-        await tutorialDialog.start();
-      }
-    }
-    else {
-      // dialog finished, do nothing
-    }
-  }
-  catch (err) {
-    tutorialDialog.logger.error(new NestedError('Dialog error.', err));
-  }
-}
+//     if (!tutorialDialog.started) {
+//       // first start
+//       await showInformationMessage(translate('newOnDbux.message'), {
+//         async [translate('newOnDbux.yes')]() {
+//           await tutorialDialog.start();
+//         },
+//         async [translate('newOnDbux.no')]() {
+//           await tutorialDialog.setState('end');
+//         }
+//       });
+//     }
+//     else if (!firstNode.end) {
+//       // continue (previously started) tutorial
+//       if (firstNode.kind === DialogNodeKind.Modal) {
+//         const confirmResult = await tutorialDialog.askToContinue();
+//         if (confirmResult === false) {
+//           await tutorialDialog.setState('cancel');
+//         }
+//         else if (confirmResult) {
+//           await tutorialDialog.start();
+//         }
+//       }
+//       else {
+//         await tutorialDialog.start();
+//       }
+//     }
+//     else {
+//       // dialog finished, do nothing
+//     }
+//   }
+//   catch (err) {
+//     tutorialDialog.logger.error(new NestedError('Dialog error.', err));
+//   }
+// }
 
-/**
- * @param {DialogController} dialogController 
- */
-async function maybeStartSurvey1(dialogController) {
-  const surveyDialog = dialogController.getDialog('survey1');
+// /**
+//  * @param {DialogController} dialogController 
+//  */
+// async function maybeStartSurvey1(dialogController) {
+//   const surveyDialog = dialogController.getDialog('survey1');
 
-  try {
-    if (surveyDialog.started) {
-      const firstNode = surveyDialog.getCurrentNode();
-      if (!firstNode.end) {
-        const confirmResult = await surveyDialog.askToContinue();
-        if (confirmResult === false) {
-          await surveyDialog.setState('cancel');
-        }
-        else if (confirmResult) {
-          await surveyDialog.start();
-        }
-      }
-    }
-    else {
-      await surveyDialog.start('waitToStart');
-    }
-  }
-  catch (err) {
-    surveyDialog.logger.error(new NestedError('Dialog error.', err));
-  }
-}
+//   try {
+//     if (surveyDialog.started) {
+//       const firstNode = surveyDialog.getCurrentNode();
+//       if (!firstNode.end) {
+//         const confirmResult = await surveyDialog.askToContinue();
+//         if (confirmResult === false) {
+//           await surveyDialog.setState('cancel');
+//         }
+//         else if (confirmResult) {
+//           await surveyDialog.start();
+//         }
+//       }
+//     }
+//     else {
+//       await surveyDialog.start('waitToStart');
+//     }
+//   }
+//   catch (err) {
+//     surveyDialog.logger.error(new NestedError('Dialog error.', err));
+//   }
+// }

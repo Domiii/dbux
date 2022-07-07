@@ -16,12 +16,16 @@ export default class DialogController {
     setDialogControllerForDefaultHelp(this);
   }
 
+  async restartDialog(dialogName) {
+    return this.startDialog(dialogName, 'start');
+  }
+
   /**
    * Start a dialog, will create one if not exist
    * @param {string} dialogName 
    * @param {string} [startState] start dialog with the given state
    */
-  async startDialog(dialogName, startState) {
+  async startDialog(dialogName, startState = null) {
     let dialog = this.getDialog(dialogName);
     await dialog.start(startState);
   }

@@ -28,7 +28,7 @@ const Verbose = false;
 const VerboseErrors = Verbose || true;
 
 const SerializationLimits = {
-  maxDepth: 8,          // applies to arrays and object
+  maxDepth: 4,          // applies to arrays and object
   maxObjectSize: 30,    // applies to arrays and object
   maxStringLength: 1000
 };

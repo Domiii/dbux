@@ -27,7 +27,10 @@ export async function showInformationMessage(message, btnConfig, messageCfg = Em
   btnConfig = btnConfig || EmptyObject;
   const buttons = Object.keys(btnConfig);
   if (messageCfg?.modal && process.platform === 'darwin') {
-    // for some reason, on MAC, modal buttons are reversed :(
+    /**
+     * for some reason, on MAC, modal buttons are reversed :(
+     * @see https://github.com/microsoft/vscode/issues/71251
+     */
     buttons.reverse();
   }
   message = `[Dbux] ${message}`;

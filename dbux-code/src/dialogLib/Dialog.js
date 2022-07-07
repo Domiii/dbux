@@ -5,7 +5,7 @@ import { get, set } from '../memento';
 import _nodeRegistry from './nodes/_nodeRegistry';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
-/** @typedef {import('./dialogController').default} DialogController */
+/** @typedef {import('./DialogController').default} DialogController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
@@ -47,6 +47,10 @@ export default class Dialog {
       return false;
     }
     return !!this.graphState.nodeName;
+  }
+
+  get currentGraphDisplayName() {
+    return this.graph.displayName || this.graph.name;
   }
 
   async start(startState) {
@@ -123,7 +127,11 @@ export default class Dialog {
             this._gotoState = null;
           }
           else {
-            nextState = await this.maybeGetByFunction(edgeData.edge.node, node) || nodeName;
+            nextState = await this.getValue(edgeData.edge.node, node);
+            if (nextState === undefined) {
+              // no node specified → stay on same node
+              nextState = nodeName;
+            }
             edgeLabel = edgeData.edgeLabel;
           }
         }
@@ -140,7 +148,7 @@ export default class Dialog {
           this._setState(nextState);
         }
         else {
-          // nextState === null means user dismiss the message box, no further state transition
+          // nextState === null means: (1) user dismissed message box or (2) explicit null edge → no further state transition
           break;
         }
       }
@@ -231,7 +239,7 @@ export default class Dialog {
   // private utils
   // ########################################
 
-  async maybeGetByFunction(valueOrFunction, node) {
+  async getValue(valueOrFunction, node) {
     if (isFunction(valueOrFunction)) {
       return await valueOrFunction(...this._getUserCbArguments(node));
     }
@@ -242,11 +250,11 @@ export default class Dialog {
 
   async makeButtonsByEdges(node, edges) {
     const availableEdges = (await Promise.all(edges.map((e) => {
-      return this.maybeGetByFunction(e, node);
+      return this.getValue(e, node);
     }))).filter(x => !!x);
 
     const buttonEntries = await Promise.all(availableEdges.map(async (edge) => {
-      const edgeLabel = await this.maybeGetByFunction(edge.text, node);
+      const edgeLabel = await this.getValue(edge.text, node);
       return [edgeLabel, () => ({ edge, edgeLabel })];
     }));
 
@@ -282,14 +290,14 @@ export default class Dialog {
    */
   async askToContinue() {
     // TOTRANSLATE
-    return await showInformationMessage(`You have previously started ${this.graph.name}, would you like to continue?`, {
+    return await showInformationMessage(`You have previously started ${this.currentGraphDisplayName}, would you like to continue?`, {
       'Continue'() {
         return true;
       },
       'Don\'t ask me again'() {
         return false;
       }
-    });
+    }, { modal: true });
   }
 
   _getUserCbArguments(node) {
@@ -312,7 +320,7 @@ export default class Dialog {
       // this._pushStack(null);
     }
     else {
-      throw new Error(`Trying to setState of dialog '${this.graph.name}' with unexpected falsy value ${nodeName}`);
+      throw new Error(`Trying to setState of dialog '${this.currentGraphDisplayName}' with unexpected falsy value ${nodeName}`);
     }
   }
 

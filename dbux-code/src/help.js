@@ -3,6 +3,11 @@ import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
 import { emitShowHelpAction } from './userEvents';
 
+/** @typedef { import("./dialogLib/DialogController").default } DialogController */
+
+/**
+ * @type {DialogController}
+ */
 let dialogController;
 
 export async function showHelp(message) {
@@ -10,11 +15,14 @@ export async function showHelp(message) {
   message = message || translate('showHelp.defaultMessage');
 
   let btns = {
-    async [translate('showHelp.discord')]() {
-      return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
+    async 'Start the Intro'() {
+      return await dialogController.restartDialog('intro');
     },
     async [translate('showHelp.manual')]() {
       return env.openExternal(Uri.parse('https://domiii.github.io/dbux/'));
+    },
+    async [translate('showHelp.discord')]() {
+      return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
     },
     // async [translate('showHelp.readDbux')]() {
     //   return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#known-limitations'));
@@ -37,7 +45,7 @@ export async function showHelp(message) {
     };
   }
 
-  
+
   const result = showInformationMessage(message, btns, { modal: true });
   emitShowHelpAction();
   return result;
