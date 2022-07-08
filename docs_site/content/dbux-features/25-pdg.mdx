@@ -13,17 +13,17 @@ import TOC from '@comp/TOC';
 
 ## How to use the PDG? {#how-to}
 
-First make sure that [Dbux is installed and activated](../dbux-features/01-using-dbux.mdx).
+First, make sure that [Dbux is installed and activated](../dbux-features/01-using-dbux.mdx).
 
 There are currently two ways of using the PDG. Both can be accessed via [VSCode commands](./tools-and-configuration/01-dbux-code.mdx#commands):
-
-<Img screen src="pdg-commands.png" />
 
 1. [Open the PDG View → pick an algorithm → open its PDG](#pdg-view)
 2. [Show PDG of your own algorithm (function)](#any-pdg)
 
+<Img screen width={500} src="pdg-commands.png" />
 
-## PDG View
+
+### Option 1: PDG View
 
 <Img screen src="pdg-view1.png" />
 
@@ -43,13 +43,14 @@ Notes:
 * Running most test cases with Dbux takes around 10s, while importing feels almost instantaneous.
 
 
-## Show PDG of any function {#any-pdg}
+### Option 2: Show PDG of any function {#any-pdg}
 
-<Img screen src="pdg-commands.png" />
+If you want to roll
 
 1. [Run Application with Dbux Enabled](./02-enable-dbux.mdx)
 2. [Select a trace of any function](./06-select-trace.mdx)
-3. Use the `Dbux: Open PDG for Selected Function` [command](./tools-and-configuration/01-dbux-code.mdx#commands) (see screenshot above)
+3. Use the `Dbux: Open PDG for Selected Function` [command](./tools-and-configuration/01-dbux-code.mdx#commands)
+   * <Img screen width={500} src="pdg-commands.png" />
 
 
 ## Examples
