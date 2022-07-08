@@ -95,12 +95,20 @@ export function buildUpdateExpressionVar(state, traceCfg) {
  */
 export function buildUpdateExpressionME(state, traceCfg) {
   const { ids: { aliases: { traceUpdateExpressionME } } } = state;
-  let { path, data: { readTraceCfg, objectTid } } = traceCfg;
+  let {
+    path,
+    data: {
+      readTraceCfg
+    }
+  } = traceCfg;
   const {
     tidIdentifier: readTid,
     data: {
-      objectVar: objectVar,
-      propertyVar: propertyVar
+      objectTid,
+      dontTraceObject,
+      objectVar,
+      propertyVar,
+      propTid
     }
   } = readTraceCfg;
   const meNode = path.node.argument;
@@ -122,7 +130,7 @@ export function buildUpdateExpressionME(state, traceCfg) {
     );
   }
 
-  const lval = t.memberExpression(objectNode, propertyVar || propertyNode, computed, false);
+  const lval = t.memberExpression(objectVar, propertyVar || propertyNode, computed, false);
   const rval = buildtraceExpressionME(state, readTraceCfg);
   const returnValue = generateDeclaredIdentifier(path);
   const updateValue = buildUpdatedValue(state, path, lval, rval, returnValue);

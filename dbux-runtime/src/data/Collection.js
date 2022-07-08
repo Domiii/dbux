@@ -4,6 +4,8 @@ import { getDefaultClient } from '../client/index';
 /**
  * dbux-runtime implementation of collection.
  * (responsible for sending data)
+ * 
+ * @template T
  */
 export default class Collection {
   _all = [null];
@@ -21,10 +23,16 @@ export default class Collection {
     this._all.push(entry);
   }
 
+  /**
+   * @return {T}
+   */
   getById(id) {
     return this._all[id];
   }
 
+  /**
+   * @return {T[]}
+   */
   getAll() {
     return this._all;
   }
@@ -33,6 +41,9 @@ export default class Collection {
     return this._all.slice(startId);
   }
 
+  /**
+   * @return {T}
+   */
   getLast() {
     return this._all[this.getLastId()];
   }
@@ -45,6 +56,9 @@ export default class Collection {
     return this.getLastId();    // id is index
   }
 
+  /**
+   * @return {T}
+   */
   getByIndex(i) {
     return this.getById(i);     // id is index
   }

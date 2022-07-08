@@ -1,6 +1,8 @@
-import isFunction from 'lodash/isFunction';
+// import isFunction from 'lodash/isFunction';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import DataNode from '@dbux/common/src/types/DataNode';
 import Trace from '@dbux/common/src/types/Trace';
+import { isFunction } from 'lodash';
 import Collection from './Collection';
 import pools from './pools';
 import staticTraceCollection from './staticTraceCollection';
@@ -14,6 +16,9 @@ export const ShallowValueRefMeta = {
   shallow: true
 };
 
+/**
+ * @extends {Collection<DataNode>}
+ */
 export class DataNodeCollection extends Collection {
   constructor() {
     super('dataNodes');
@@ -125,9 +130,8 @@ export class DataNodeCollection extends Collection {
 
     // console.log(`createDataNode ${dataNode.nodeId}, input: ${inputs?.join(',')}`);
 
-    // if (inputs?.[0] === null) {
-    //   // sanity check: it just creeped right in
-    //   throw new Error(`Invalid createDataNode call has "null" input, at "${traceCollection.makeTraceInfo(traceId)}"`);
+    // if (isFunction(varAccess?.prop)) {
+    //   throw new Error(`invalid varAccess.prop must not be function`);
     // }
 
     this.push(dataNode);

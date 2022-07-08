@@ -144,6 +144,8 @@ export const buildTraceWriteME = buildTraceCall(
       rvalAstNode
     );
 
+    // console.debug(`[Dbux Instrument][TWME] tid=${tid.name} propValue=${propValue}`);
+
     return {
       trace,
       object: o,

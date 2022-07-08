@@ -515,3 +515,17 @@ export function getAsyncFunctionCallerPromiseId(realContextId) {
   const context = executionContextCollection.getById(realContextId);
   return context?.data?.callerPromiseId;
 }
+
+export function dataNode2String(dataNode) {
+  let valString = '';
+  if (dataNode.value !== null && dataNode.value !== undefined) {
+    valString = dataNode.value.toString() + ' ';
+  }
+  if (dataNode.refId) {
+    const ref = valueCollection.getById(dataNode.refId);
+    const refString = `${ref.typeName}`;
+    valString += `ref #${dataNode.refId} (${refString})`;
+  }
+
+  return `DataNode #${dataNode.nodeId} "${valString}"`;
+}

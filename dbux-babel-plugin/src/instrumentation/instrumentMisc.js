@@ -54,7 +54,14 @@ export function insertAfterBody(state, traceCfg) {
   if (!Array.isArray(bodyPath) && !bodyPath.isBlock()) {
     bodyPath.ensureBlock();
   }
-  bodyPath.pushContainer('body', resultNode);
+  
+  // hackfix: babel seems to force us to handle array and non-array separately
+  if (Array.isArray(bodyPath.node)) {
+    bodyPath.insertAfter(resultNode);
+  }
+  else {
+    path.pushContainer('body', resultNode);
+  }
 
   postInstrument(traceCfg, resultNode);
 }

@@ -77,6 +77,7 @@ export class VirtualRef {
 
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
+ * @extends Collection<ValueRef>
  */
 class ValueCollection extends Collection {
   /**

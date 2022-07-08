@@ -30,6 +30,10 @@ export default class DataNodeCollection extends Collection {
     }
   }
 
+  logDataProblem(...args) {
+    return this.logger.error(...args);
+  }
+
   /** ###########################################################################
    * purpose
    * ##########################################################################*/
@@ -39,7 +43,7 @@ export default class DataNodeCollection extends Collection {
       const { dp } = this;
       const callId = trace.traceId;
       if (!TraceType.is.BeforeCallExpression(dp.util.getTraceType(callId))) {
-        this.logger.error(`Invalid TracePurpose.Compute for trace (should be BCE but is not): ${dp.util.makeTraceInfo(trace)}`);
+        this.logDataProblem(`Invalid TracePurpose.Compute for trace (should be BCE but is not): ${dp.util.makeTraceInfo(trace)}`);
         return;
       }
 
@@ -50,7 +54,7 @@ export default class DataNodeCollection extends Collection {
         // resultDataNode.inputs ||= [];
         // resultDataNode.inputs.push(...argDataNodes.map(n => n.nodeId));
         if (resultDataNode.inputs?.length) {
-          this.logger.error(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
+          this.logDataProblem(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
         }
         else {
           resultDataNode.type = DataNodeType.Compute;
@@ -76,7 +80,7 @@ export default class DataNodeCollection extends Collection {
       const { dp } = this;
       const callId = trace.traceId;
       if (!TraceType.is.BeforeCallExpression(dp.util.getTraceType(callId))) {
-        this.logger.error(`Invalid TracePurpose.Compute for trace (should be BCE but is not): ${dp.util.makeTraceInfo(trace)}`);
+        this.logDataProblem(`Invalid TracePurpose.Compute for trace (should be BCE but is not): ${dp.util.makeTraceInfo(trace)}`);
         return;
       }
 
@@ -87,7 +91,7 @@ export default class DataNodeCollection extends Collection {
         // resultDataNode.inputs ||= [];
         // resultDataNode.inputs.push(...argDataNodes.map(n => n.nodeId));
         if (resultDataNode.inputs?.length) {
-          this.logger.error(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
+          this.logDataProblem(`Invalid TracePurpose.Compute for trace (result trace already has inputs): ${dp.util.makeTraceInfo(trace.resultId)}`);
         }
         else {
           resultDataNode.type = DataNodeType.Compute;
@@ -152,7 +156,7 @@ export default class DataNodeCollection extends Collection {
     if (handler) {
       handler(trace, purpose);
     }
-    // this.logger.error(`Invalid TracePurpose ${JSON.stringify(purpose)} not handled in resolveDataNodeLinks for trace: ${dp.util.makeTraceInfo(trace)}`);
+    // this.logDataProblem(`Invalid TracePurpose ${JSON.stringify(purpose)} not handled in resolveDataNodeLinks for trace: ${dp.util.makeTraceInfo(trace)}`);
   }
 
   /** ###########################################################################
@@ -384,7 +388,7 @@ export default class DataNodeCollection extends Collection {
         }
         if (valueId && prev && prev.valueId !== valueId) {
           if (prev.refId !== dataNode.refId) {
-            this.logger.error(`invalid DataNodeCollection.accessId logic for n${nodeId} (v${dataNode.refId}): ${JSON.stringify(prev)}`);
+            this.logDataProblem(`invalid DataNodeCollection.accessId logic for n${nodeId} (v${dataNode.refId}): ${JSON.stringify(prev)}`);
             dataNode.error = 'accessId';
           }
           else {
@@ -499,6 +503,6 @@ export default class DataNodeCollection extends Collection {
   _reportInvalidId(idx, faultyEntry, recoverable) {
     const { traceId } = faultyEntry || EmptyObject;
     const traceInfo = traceId && this.dp.util.makeTraceInfo(traceId) || '(no trace)';
-    this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${traceInfo} ${JSON.stringify(faultyEntry)}`);
+    this.logDataProblem(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${traceInfo} ${JSON.stringify(faultyEntry)}`);
   }
 }

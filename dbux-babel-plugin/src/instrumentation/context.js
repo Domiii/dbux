@@ -11,7 +11,7 @@ export function buildContextEndTrace(path, state) {
  * to allow us more accurately guess whether and where errors have.
  * Buggy: Does not work as intended. Tends to fail silently for `async` functions?
  * 
- * @deprecated Use `addToEndOfBody` instead.
+ * @deprecated Use `insertAfterBody` instead.
  */
 export function injectContextEndTrace(path, state) {
   // trace `EndOfContext` at the end of program or function body
@@ -21,7 +21,7 @@ export function injectContextEndTrace(path, state) {
   // console.debug('[injectContextEndTrace]', astNodeToString(endOfContext));
 
   // hackfix: babel seems to force us to handle array and non-array separately
-  if (bodyPath.node) {
+  if (Array.isArray(bodyPath.node)) {
     bodyPath.insertAfter(endOfContext);
   }
   else

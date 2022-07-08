@@ -15,10 +15,10 @@ function getParamDefaultInitializerPath(paramPath) {
 }
 
 function isSupported(paramPath) {
-  // TODO: `RestElement` (good news: never has default initializer)
   // TODO: `{Object,Array}Pattern
 
   return paramPath.isIdentifier() ||
+    // TODO: paramPath.isRestElement() ||
     (paramPath.isAssignmentPattern() && paramPath.get('left').isIdentifier());
 }
 
@@ -58,7 +58,7 @@ export default class Params extends BasePlugin {
 
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
     if (!isSupported(paramPath)) {
-      this.node.addStaticNoDataPurpose(paramPath, 'DestructuringParam');
+      this.node.addStaticNoDataPurpose(paramPath, 'UnsupportedParam');
       if (this.node.state.verbose.nyi) {
         this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       }

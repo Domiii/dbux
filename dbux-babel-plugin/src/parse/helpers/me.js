@@ -13,7 +13,7 @@ const ThisNode = t.thisExpression();
  * @param {BaseNode} parseNode 
  * @param {AstNode} objectVar
  */
-export function makeMETraceData(parseNode, objectVar = null) {
+export function makeMETraceData(parseNode, objectVar = null, objectTid = null) {
   const { path, Traces } = parseNode;
   const [objectNode, propertyNode] = parseNode.getChildNodes();
   const {
@@ -33,7 +33,7 @@ export function makeMETraceData(parseNode, objectVar = null) {
 
   // prepare object
   const objectTraceCfg = objectNode.addDefaultTrace();
-  let objectTid = objectTraceCfg?.tidIdentifier;
+  objectTid ||= objectTraceCfg?.tidIdentifier;
   let dontTraceObject = alreadyTracedObject;
   if (!objectTid) {
     objectTid = ZeroNode;
@@ -44,12 +44,14 @@ export function makeMETraceData(parseNode, objectVar = null) {
       dontTraceObject = true;
     }
     else {
-    // parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+      // parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
       objectVar = null;
     }
   }
   else {
-    objectVar = objectVar || Traces.generateDeclaredUidIdentifier('o');
+    if (!objectVar || objectVar === true) {
+      objectVar = Traces.generateDeclaredUidIdentifier('o');
+    }
   }
 
   // prepare property

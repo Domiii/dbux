@@ -24,7 +24,7 @@ import valueCollection from './data/valueCollection';
 import initPatchBuiltins from './builtIns/index';
 import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
-import { getTraceStaticTrace } from './data/dataUtil';
+import { dataNode2String, getTraceStaticTrace } from './data/dataUtil';
 import { getDefaultClient } from './client/index';
 import { _slicedToArray } from './util/builtinUtil';
 import { addPurpose } from './builtIns/builtin-util';
@@ -812,7 +812,13 @@ export default class RuntimeMonitor {
     // this.registerTrace(value, tid);
     if (isFunction(propValue)) {
       // sanity check
+      // NOTE: this is often caused by missing cache flushing *yargs*
       debugger;
+      const trace = traceCollection.getById(tid);
+      const propTrace = propTid && traceCollection.getById(propTid);
+      const objectDataNode = dataNodeCollection.getById(objectNodeId);
+      // eslint-disable-next-line max-len
+      throw new Error(`invalid prop at #${trace?.staticTraceId || '?'} (#${propTrace?.staticTraceId || '?'}) - must not be function: ${propValue.name || propValue}\n   value=${value}\n   object=${objectDataNode && dataNode2String(objectDataNode) || `#${objectNodeId}`}`);
     }
     const varAccess = {
       objectNodeId,
@@ -945,7 +951,7 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   /**
-   * This is `i++` etc.
+   * This is `i++`, `++o.x` etc.
    */
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
     // const trace = traceCollection.getById(tid);
@@ -981,7 +987,7 @@ export default class RuntimeMonitor {
 
     const varAccess = {
       objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
-      prop: prop
+      prop
     };
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }

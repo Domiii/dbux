@@ -42,15 +42,14 @@ export default class UpdateLValME extends BasePlugin {
     meNode.handler = this;
   }
 
-  addReadTrace(data) {
-    const [argumentNode] = this.node.getChildNodes();
+  addReadTrace(meNode) {
     return this.node.Traces.addTrace({
-      path: argumentNode.path,
-      node: argumentNode,
+      path: meNode.path,
+      node: meNode,
       staticTraceData: {
         type: TraceType.ME
       },
-      data,
+      data: {},
       meta: {
         // will be instrumented by `buildUpdateExpressionME`
         instrument: null
@@ -61,11 +60,13 @@ export default class UpdateLValME extends BasePlugin {
   exit() {
     const { node } = this;
     const { path, Traces } = node;
+    const [meNode] = node.getChildNodes();
 
-    const meData = makeMETraceData(node);
-
-    // add read trace
-    const readTraceCfg = this.addReadTrace(meData);
+    /**
+     * NOTE: we pass {@link readTraceCfg} down to the ME builder, so it needs to have all the data
+     */
+    const readTraceCfg = this.addReadTrace(meNode);
+    readTraceCfg.data = makeMETraceData(meNode, true);
 
     // add actual WriteME trace
     const traceData = {
@@ -78,8 +79,7 @@ export default class UpdateLValME extends BasePlugin {
         }
       },
       data: {
-        readTraceCfg,
-        objectTid: meData.objectTid
+        readTraceCfg
       },
       meta: {
         build: buildUpdateExpressionME
