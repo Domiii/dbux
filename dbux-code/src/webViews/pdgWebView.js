@@ -183,7 +183,7 @@ export async function showPDGViewForArgs(pdgArgs) {
   }
 
   // this worked! Hooray! → update memento (and hope that app is already exported)
-  const testFilePath = app.getDefaultApplicationExportPath();
+  const testFilePath = app.getApplicationDataPath();
   testFilePath && await setTestPDGArgs({ testFilePath, ...pdgArgs, applicationUuid });
 
   return await showPDGView(pdg, initialState, hostOnlyState);

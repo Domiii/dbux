@@ -8,11 +8,11 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { exportApplicationToFile, importApplicationFromFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getProjectManager } from '../projectViews/projectControl';
 import PDGViewNodeProvider from './PDGViewNodeProvider';
-import { getCurrentResearch } from '../research/Research';
 import PDGGallery from './PDGGallery';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { getApplicationDataPath } from '../codeUtil/codePath';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('@dbux/projects/src/projectLib/ExerciseConfig').default} ExerciseConfig */
@@ -200,11 +200,12 @@ export default class PDGViewController {
 
   async importOrRunPDGApplication(exercise) {
     const { id } = exercise;
-    const appZipFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: id });
+    // const appZipFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: id });
+    const appFilePath = getApplicationDataPath(id);
     let pdgArgs;
-    if (fs.existsSync(appZipFilePath)) {
+    if (fs.existsSync(appFilePath)) {
       // get data from application file
-      const app = await importApplicationFromFile(appZipFilePath);
+      const app = await importApplicationFromFile(appFilePath);
       pdgArgs = this.makeAllPDGArgs(app, exercise);
 
       // store results
@@ -245,7 +246,7 @@ export default class PDGViewController {
       }
 
       // export application
-      const fpath = getCurrentResearch().getAppZipFilePath(app);
+      const fpath = getApplicationDataPath(exercise.id);
       exportApplicationToFile(app, fpath);
     }
 

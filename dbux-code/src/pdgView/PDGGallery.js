@@ -19,7 +19,7 @@ import { translate } from '../lang';
 import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise*/
-/** @typedef {import('./pDGViewController').default} PDGViewController */
+/** @typedef {import('./PDGViewController').default} PDGViewController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PDGGallery');

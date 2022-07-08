@@ -101,6 +101,7 @@ export class Research {
   }
 
   /**
+   * @deprecated Use `getApplicationDataDefaultPath` and friends instead.
    * @return The given app's zip file path, stored for the CurrentResearchProject
    */
   getAppZipFilePath(appLike) {

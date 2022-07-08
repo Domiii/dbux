@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { performance } from '@dbux/common/src/util/universalLib';
-import { pathGetParent, pathSafe } from '@dbux/common/src/util/pathUtil';
+import { pathGetParent, pathSafeSegment } from '@dbux/common/src/util/pathUtil';
 import { getCommonAncestorPath, pathNormalizedForce, pathRelative, renderPath } from '@dbux/common-node/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
@@ -188,7 +188,7 @@ export default class Application {
 
   getSafeFileName() {
     const name = this.getPreferredName();
-    return name && pathSafe(name);
+    return name && pathSafeSegment(name);
   }
 
   toString() {

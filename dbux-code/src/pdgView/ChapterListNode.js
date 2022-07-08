@@ -11,11 +11,12 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { confirm } from '../codeUtil/codeModals';
 import { goToCodeLoc } from '../codeUtil/codeNav';
 import { showPDGViewForArgs } from '../webViews/pdgWebView';
-import { getCurrentResearch } from '../research/Research';
+import { getApplicationDataPath } from '../codeUtil/codePath';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Chapter').default} Chapter */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
+/** @typedef {import('./PDGViewController').default} PDGViewController */
 
 
 /** ###########################################################################
@@ -34,6 +35,13 @@ class PDGNode extends BaseTreeViewNode {
     return this.parent.exercise;
   }
 
+  /**
+   * @type {PDGViewController}
+   */
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
   makeIconPath() {
     return '';
   }
@@ -43,26 +51,31 @@ class PDGNode extends BaseTreeViewNode {
     let application = allApplications.getById(applicationUuid);
     const fullContextFilePath = pathResolve(this.exercise.project.projectPath, filePath);
     if (!application) {
-      const appFilePath = getCurrentResearch().getAppZipFilePath({ experimentId: this.exercise.id });
+      // pathSafeSegment
+      const appFilePath = getApplicationDataPath(this.exercise.id);
       if (fs.existsSync(appFilePath)) {
-        await importApplicationFromFile(appFilePath);
+        application = await importApplicationFromFile(appFilePath);
       }
-      else {
+      if (!application) {
         const result = await confirm(`No application file found. Do you want to run the exercise?`);
         if (result) {
           // get new application
-          application = await this.treeNodeProvider.controller.runAndExportPDGApplication(this.exercise);
+          application = await this.controller.runAndExportPDGApplication(this.exercise);
+
+          if (!application) {
+            throw new Error(`Running application failed`);
+          }
 
           const newFilePath = application.dataProvider.util.getContextFilePath(contextId);
           if (newFilePath !== fullContextFilePath) {
-            this.treeNodeProvider.logger.error(`Ran test, but context is not in original file anymore. Test data probably outdated.`);
+            this.treeNodeProvider.logger.error(`Ran test, but code is not in original file anymore. Test data probably outdated.`);
           }
-          ({ applicationUuid } = application);
         }
         else {
           return;
         }
       }
+      ({ applicationUuid } = application);
     }
     await showPDGViewForArgs({ applicationUuid, contextId });
     await goToCodeLoc(fullContextFilePath, loc);
@@ -92,7 +105,7 @@ class PDGExerciseNode extends ExerciseNode {
     allApplications.clear();
 
     await runTaskWithProgressBar(async (progress) => {
-      await this.treeNodeProvider.controller.runAndExportPDGApplication(exercise, progress);
+      return await this.treeNodeProvider.controller.runAndExportPDGApplication(exercise, progress);
     }, { title: `Run PDG` });
   }
 

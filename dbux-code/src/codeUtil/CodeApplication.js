@@ -5,10 +5,10 @@ import {
 } from 'vscode';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { pathSafe } from '@dbux/common/src/util/pathUtil';
+import { pathSafeSegment } from '@dbux/common/src/util/pathUtil';
 import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import { getProjectManager } from '../projectViews/projectControl';
-import { getCodeDirectory, getDefaultExportDirectory } from './codePath';
+import { getApplicationDataPath, getCodeDirectory, getDefaultExportDirectory } from './codePath';
 
 /**
  * Add some cool stuff to `dbux-data/src/applications/Application`s for
@@ -21,13 +21,17 @@ export class CodeApplication extends Application {
     projectManager._handleNewApplication(this);
   }
 
-  getDefaultApplicationExportPath(zip = true) {
+  getApplicationDataPath(zip = true) {
     if (this.filePath && this.filePath.endsWith('.zip') === zip) {
       return this.filePath;
     }
     const applicationName = this.getSafeFileName();
-    const projectName = this.projectName && pathSafe(this.projectName) || '';
-    let exportPath = pathJoin(getDefaultExportDirectory(), projectName, `${applicationName || '(unknown)'}_data.json`);
+    const projectName = this.projectName && pathSafeSegment(this.projectName) || '';
+    
+    let exportPath = getApplicationDataPath(
+      pathJoin(projectName, `${applicationName || '(unknown)'}`)
+    );
+    
     if (zip) {
       exportPath += '.zip';
     }

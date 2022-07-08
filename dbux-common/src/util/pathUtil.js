@@ -62,7 +62,11 @@ export function pathGetParent(path) {
   return path.substring(0, last);
 }
 
-export function pathSafe(fpath) {
+/**
+ * Somewhat safe-ish (safer than not doing this) path.
+ * This is not actually safe, but it can help sometimes.
+ */
+export function pathSafeSegment(fpath) {
   return fpath.replace(/[:\\/]+/g, '-');
 }
 

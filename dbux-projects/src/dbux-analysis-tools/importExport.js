@@ -10,6 +10,7 @@ import { getDbuxManager } from './DbuxManager';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
+
 /**
  * @param {string} fpath 
  * @param {Application} application 

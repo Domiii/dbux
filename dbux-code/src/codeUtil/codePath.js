@@ -7,6 +7,9 @@ import {
   Uri,
   workspace
 } from 'vscode';
+import { pathSafeSegment } from '@dbux/common/src/util/pathUtil';
+
+export const AppDataFileNameSuffix = '.dbuxapp';
 
 /** @typedef { { exportDirectoryOverride: string, nodePath: string } } CodePathConfig  */
 
@@ -47,6 +50,18 @@ export function getLogsDirectory() {
 export function getDefaultExportDirectory() {
   const dir = pathResolve(getUserDataDirectory(), 'exports');
   return cfg.exportDirectoryOverride || dir;
+}
+
+
+export function getApplicationDataPath(basePath, zip = true) {
+  let exportPath = pathJoin(
+    getDefaultExportDirectory(),
+    `${basePath}${AppDataFileNameSuffix}`
+  );
+  if (zip) {
+    exportPath += '.zip';
+  }
+  return exportPath;
 }
 
 /**

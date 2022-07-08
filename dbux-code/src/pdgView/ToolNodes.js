@@ -16,7 +16,7 @@ import { getCurrentResearch } from '../research/Research';
 import { transformFiles } from '../../../dbux-common-node/src/util/babelUtil';
 import { translate } from '../lang';
 
-/** @typedef {import('./pDGViewController').default} PDGViewController */
+/** @typedef {import('./PDGViewController').default} PDGViewController */
 /** @typedef {import('@dbux/projects/src/projectLib/Project').ProjectsManager} ProjectsManager */
 
 // eslint-disable-next-line no-unused-vars

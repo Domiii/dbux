@@ -2,7 +2,7 @@ import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvi
 import ToolRootNode from './ToolNodes';
 import ChapterListNode from './ChapterListNode';
 
-/** @typedef {import('./pDGViewController').default} PDGViewController */
+/** @typedef {import('./PDGViewController').default} PDGViewController */
 
 export default class PDGViewNodeProvider extends BaseTreeViewNodeProvider {
   /**
@@ -21,9 +21,9 @@ export default class PDGViewNodeProvider extends BaseTreeViewNodeProvider {
   buildRoots() {
     const roots = [];
 
-    if (process.env.NODE_ENV === 'development') {
-      roots.push(this.buildNode(ToolRootNode));
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   roots.push(this.buildNode(ToolRootNode));
+    // }
 
     if (this.controller.chapters) {
       roots.push(this.buildNode(ChapterListNode, this.controller.chapters, null));

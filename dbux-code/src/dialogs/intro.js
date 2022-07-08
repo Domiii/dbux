@@ -59,6 +59,10 @@ const intro = {
       text: 'Here are some resources to get you familiar with the Dbux basics:',
       edges: [
         {
+          text: '↩ Go back',
+          node: 'start'
+        },
+        {
           text: 'Watch the Intro Video',
           click() {
             return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=145'));
@@ -75,10 +79,6 @@ const intro = {
           click() {
             return env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-practice/tutorial'));
           }
-        },
-        {
-          text: '↩ Go back',
-          node: 'start'
         }
       ]
     },
@@ -87,6 +87,10 @@ const intro = {
       kind: DialogNodeKind.Modal,
       text: 'The ACG (Asynchronous Call Graph) allows investigating asynchronous concurrent control flow. Here are some relevant resources:',
       edges: [
+        {
+          text: '↩ Go back',
+          node: 'start'
+        },
         {
           text: 'ACG Documentation',
           click() {
@@ -98,10 +102,6 @@ const intro = {
           click() {
             return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=621'));
           }
-        },
-        {
-          text: '↩ Go back',
-          node: 'start'
         }
       ]
     },
@@ -110,6 +110,10 @@ const intro = {
       kind: DialogNodeKind.Modal,
       text: 'The PDG (Program Dependency Graph) allows investigating program dependencies (specifically designed to help understand data structures and algorithms). Here are some relevant resources:',
       edges: [
+        {
+          text: '↩ Go back',
+          node: 'start'
+        },
         {
           text: 'PDG Documentation',
           click() {
@@ -121,10 +125,6 @@ const intro = {
           click() {
             return env.openExternal(Uri.parse('https://www.youtube.com/watch?v=dgXj3VoQJZQ'));
           }
-        },
-        {
-          text: '↩ Go back',
-          node: 'start'
         }
       ]
     },

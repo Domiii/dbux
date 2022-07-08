@@ -20,7 +20,7 @@ import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
 import DialogController, { initDialogController } from './dialogLib/DialogController';
-import { initDbuxPdgView } from './pdgView/pDGViewController';
+import { initDbuxPdgView } from './pdgView/PDGViewController';
 // import { initPlugins } from './PluginMgr';
 
 // eslint-disable-next-line no-unused-vars

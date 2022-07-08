@@ -70,7 +70,7 @@ export function initUserCommands(extensionContext) {
 
     const zip = ZipDefault;
     // const zip = await confirm('Zip?', true, true);
-    let exportFpath = application.getDefaultApplicationExportPath(zip);
+    let exportFpath = application.getApplicationDataPath(zip);
     if (existsSync(exportFpath)) {
       if (!await confirm(`File already exists: "${exportFpath}" - Overwrite?`, true, true)) {
         return;
