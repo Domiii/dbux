@@ -18,7 +18,7 @@ export default class Dialog {
    * @type {DialogController}
    */
   controller;
-  
+
   constructor(controller, graph) {
     this.controller = controller;
     this.graph = graph;
@@ -120,6 +120,11 @@ export default class Dialog {
         if (edgeData) {
           this.handleNewEdge(edgeData.edge);
           await edgeData.edge.click?.(...this._getUserCbArguments(node));
+
+          if (edgeData.edge.click) {
+            await sleep(300); // NOTE: sleeping here helps with "focus stealing"
+          }
+
           if (this._gotoState) {
             // handle goTo passed to enter
             nextState = this._gotoState;

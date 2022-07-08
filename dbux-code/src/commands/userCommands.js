@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { window } from 'vscode';
+import { env, Uri, window } from 'vscode';
 import path from 'path';
 
 import open from 'open';
@@ -21,6 +21,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
+// eslint-disable-next-line max-len
 import { disposePDGWebviews, getActivePDGWebview, showPDGViewForArgs, showPDGViewForContextOfSelectedTrace as tryShowPDGViewForContextOfSelectedTrace } from '../webViews/pdgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
@@ -36,7 +37,6 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import searchController from '../search/searchController';
 import { emitSelectTraceAction, emitShowOutputChannelAction } from '../userEvents';
 import { runFile } from './runCommands';
-import { get as mementoGet, set as mementoSet } from '../memento';
 import { getOrOpenTraceEditor } from '../codeUtil/codeNav';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
 import { getTestPDGArgs } from '../testUtil';
@@ -62,7 +62,7 @@ async function doImportApplication(filePath) {
 
 export function initUserCommands(extensionContext) {
   // ###########################################################################
-  // exportApplicationData
+  // import/export
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
@@ -106,6 +106,14 @@ export function initUserCommands(extensionContext) {
       await doImportApplication(filePath);
     }
   });
+
+  registerCommand(extensionContext, 'dbux.openExportFolder', async () => {
+    let defaultImportDir = getDefaultExportDirectory();
+
+    await env.openExternal(Uri.parse(defaultImportDir));
+  });
+
+
 
   // ###########################################################################
   // show/hide graph view

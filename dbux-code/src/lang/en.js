@@ -10,7 +10,7 @@ const translation = {
   },
   onError: {
     show: 'Show Log',
-    suck: 'This sucks! (❔)',
+    suck: 'This sucks!',
     // eslint-disable-next-line max-len
     suckMessage: `If this error is causing you trouble, you can:\n→ Join Discord and ask for help\n→ Check out the Dbux website for more information\n→ If this is an unexpected error, grab the log, your system's basic information and report an issue on Github`,
   },

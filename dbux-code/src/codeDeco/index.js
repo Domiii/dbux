@@ -77,7 +77,7 @@ export function initCodeDeco(context) {
   // start rendering
   activeEditor = window.activeTextEditor;
 
-  if (!allApplications.selection.isEmpty() && activeEditor) {
+  if (!allApplications.selection.isEmpty && activeEditor) {
     // initial render
     renderDecorations();
   }

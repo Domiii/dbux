@@ -31,6 +31,10 @@ export default class ApplicationSet {
     return this._applicationIds.size;
   }
 
+  get isEmpty() {
+    return !this._applications.length;
+  }
+
   // ###########################################################################
   // Bookkeeping
   // ###########################################################################
@@ -56,10 +60,6 @@ export default class ApplicationSet {
   // guessUniqueName(application) {
   //   throw new Error('Not Yet Implemented');
   // }
-
-  isEmpty() {
-    return !this._applications.length;
-  }
 
   containsApplication(applicationOrIdOrEntryPointPath) {
     const application = this.allApplications.tryGetApplication(applicationOrIdOrEntryPointPath);

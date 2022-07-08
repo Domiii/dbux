@@ -13,7 +13,7 @@ const intro = {
    */
   defaultEdges: [
     {
-      text: '(Don\'t show this again)',
+      text: `Done`,
       node: 'end'
     }
   ],
@@ -38,13 +38,13 @@ const intro = {
         {
           text: 'Ask on Discord',
           async click() {
-            return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
+            await env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
           }
         },
         {
           text: 'Report Issue',
           async click() {
-            return env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
+            await env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
           }
         },
         {
@@ -53,7 +53,7 @@ const intro = {
         }
       ]
     },
-    
+
     basics: {
       kind: DialogNodeKind.Modal,
       text: 'Here are some resources to get you familiar with the Dbux basics:',
@@ -64,20 +64,20 @@ const intro = {
         },
         {
           text: 'Watch the Intro Video',
-          click() {
-            return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=145'));
+          async click() {
+            await env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=145'));
           }
         },
         {
           text: 'Read the Docs',
           async click() {
-            return env.openExternal(Uri.parse('https://domiii.github.io/dbux'));
+            await env.openExternal(Uri.parse('https://domiii.github.io/dbux'));
           }
         },
         {
           text: 'Tutorial',
-          click() {
-            return env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-practice/tutorial'));
+          async click() {
+            await env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-practice/tutorial'));
           }
         }
       ]
@@ -93,14 +93,14 @@ const intro = {
         },
         {
           text: 'ACG Documentation',
-          click() {
-            return env.openExternal(Uri.parse('https://domiii.github.io/dbux/acg'));
+          async click() {
+            await env.openExternal(Uri.parse('https://domiii.github.io/dbux/acg'));
           }
         },
         {
           text: 'Video: Examples of the ACG',
-          click() {
-            return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=621'));
+          async click() {
+            await env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=621'));
           }
         }
       ]
@@ -116,13 +116,13 @@ const intro = {
         },
         {
           text: 'PDG Documentation',
-          click() {
+          async click() {
             return env.openExternal(Uri.parse('https://domiii.github.io/dbux/pdg'));
           }
         },
         {
           text: 'Video: Examples of the PDG',
-          click() {
+          async click() {
             return env.openExternal(Uri.parse('https://www.youtube.com/watch?v=dgXj3VoQJZQ'));
           }
         }

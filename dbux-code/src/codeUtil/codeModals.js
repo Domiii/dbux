@@ -8,6 +8,9 @@ import isString from 'lodash/isString';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getPrettyFunctionName } from '@dbux/common/src/util/functionUtil';
+import { showHelp } from '../help';
+import { translate } from '../lang';
+import { showOutputChannel } from '../OutputChannel';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Notifications');
@@ -64,22 +67,47 @@ export async function showWarningMessage(message, btnConfig, messageCfg = EmptyO
   return cbResult === undefined ? null : cbResult;
 }
 
-export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject, moreConfig = EmptyObject) {
-  btnConfig = btnConfig || EmptyObject;
+
+/** ###########################################################################
+ * {@link showErrorMessage}
+ * ##########################################################################*/
+
+function makeDefaultErrorButtons() {
+  return {
+    'Help (❔)': async () => {
+      await showHelp();
+    },
+    [translate('onError.suck')]: async () => {
+      return showHelp(translate('onError.suckMessage'));
+    },
+    [translate('onError.show')]: async () => {
+      await showOutputChannel();
+    }
+  };
+}
+
+export async function showErrorMessage(message, moreButtons, messageCfg = EmptyObject, moreConfig = EmptyObject) {
+  const btns = makeDefaultErrorButtons();
+  Object.assign(btns, moreButtons);
+
   const prefix = moreConfig.noPrefix ? '' : '[Dbux] ';
-  btnConfig = btnConfig || EmptyObject;
 
   // IMPORTANT: don't log explicitely, since that is already hooked up to call this instead!
   //    -> if we called logError(), we would get an inf loop.
 
-  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
+  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btns));
   if (messageCfg?.modal) {
     debug(`  > User responded with "${result}"`);
   }
 
-  const cbResult = await btnConfig[result]?.();
+  const cbResult = await btns[result]?.();
   return cbResult === undefined ? null : cbResult;
 }
+
+
+/** ###########################################################################
+ * {@link confirm}
+ * ##########################################################################*/
 
 /**
  * @param {string} msg 
@@ -104,9 +132,19 @@ export async function confirm(msg, modal = true, throwOnCancel = false) {
   }
 }
 
+
+/** ###########################################################################
+ * {@link alert}
+ * ##########################################################################*/
+
 export async function alert(msg, modal = true) {
   return await showInformationMessage(msg, undefined, { modal });
 }
+
+
+/** ###########################################################################
+ * {@link showQuickPick}
+ * ##########################################################################*/
 
 /**
  * @param {[string|function|import('vscode').QuickPickItem]} items 
@@ -138,6 +176,11 @@ export async function showQuickPick(items, options) {
   return window.showQuickPick(items, options);
 }
 
+
+/** ###########################################################################
+ * {@link chooseFile} {@link chooseFolder}
+ * ##########################################################################*/
+
 export async function chooseFile({ title, folder = null, filters, canSelectFolders = false } = EmptyObject) {
   const options = {
     title,
@@ -157,6 +200,16 @@ export async function chooseFile({ title, folder = null, filters, canSelectFolde
   return result?.[0]?.fsPath || null;
 }
 
+export async function chooseFolder({ title, folder, filters } = EmptyObject) {
+  return await chooseFile({ title, folder, filters, canSelectFolders: true });
+}
+
+
+
+/** ###########################################################################
+ * {@link showSaveDialog}
+ * ##########################################################################*/
+
 export async function showSaveDialog({ title, ...otherOpts } = EmptyObject) {
   const options = {
     title,
@@ -171,8 +224,4 @@ export async function showSaveDialog({ title, ...otherOpts } = EmptyObject) {
   const result = await window.showSaveDialog(options);
 
   return result?.fsPath || null;
-}
-
-export async function chooseFolder({ title, folder, filters } = EmptyObject) {
-  return await chooseFile({ title, folder, filters, canSelectFolders: true });
 }

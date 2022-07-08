@@ -1,4 +1,5 @@
 import {
+  env,
   Uri,
   ViewColumn
 } from 'vscode';
@@ -13,7 +14,7 @@ import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePathUri, getDefaultExportDirectory } from '../codeUtil/codePath';
 import { setTestPDGArgs } from '../testUtil';
-import { confirm, showInformationMessage, showSaveDialog, showWarningMessage } from '../codeUtil/codeModals';
+import { confirm, showErrorMessage, showInformationMessage, showSaveDialog, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import RichWebView from './RichWebView';
 
@@ -140,8 +141,27 @@ export async function showPDGViewForContextOfSelectedTrace() {
     return await showPDGViewForArgs(pdgArgs);
   }
   else {
-    const message = 'In order to use the PDG, select a trace inside a function first, then try again.';
-    logError(message);
+    let message;
+    if (allApplications.selection.isEmpty) {
+      message = 'Cannot open PDG: No recorded application (with Dbux enabled) found.';
+    }
+    else {
+      message = 'Cannot open PDG: You need to select a trace inside a function first.';
+    }
+
+    const btns = {
+      async 'How to use the PDG?'() {
+        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/pdg#how-to'));
+      },
+      async 'How to "enable Dbux"?'() {
+        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-features/enable-dbux'));
+      },
+      async 'How to select a trace?'() {
+        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-features/select-trace'));
+      }
+    };
+
+    showErrorMessage(message, btns, { modal: true });
     return null;
   }
 }

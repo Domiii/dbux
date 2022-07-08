@@ -1,8 +1,8 @@
 import NanoEvents from 'nanoevents';
 import isString from 'lodash/isString';
 import size from 'lodash/size';
+import isEmpty from 'lodash/isEmpty';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { crypto } from '@dbux/common/src/util/universalLib';
 
 import Application from './Application';
 import ApplicationSelection from './ApplicationSelection';
@@ -216,12 +216,20 @@ export class AllApplications {
     throw new Error('NYI');
   }
 
+  /**
+   * The set of currently selected and enabled applications.
+   * @type {ApplicationSelection}
+   */
   get selection() {
     return this.applicationSelection;
   }
 
+  get isEmpty() {
+    return isEmpty(this._all);
+  }
+
   get length() {
-    return size(this._all) / 2; // hackfix: because we store by id and uuid
+    return size(this._all) / 2; // hackfix: divide by 2 because we store by id and uuid
   }
 
   // ###########################################################################

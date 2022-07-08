@@ -18,7 +18,7 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
     return null;
   }
 
-  if (allApplications.selection.isEmpty()) {
+  if (allApplications.selection.isEmpty) {
     showWarningMessage('Failed. You have not selected any Dbux-enabled application in the "Applications" view.');
     return null;
   }

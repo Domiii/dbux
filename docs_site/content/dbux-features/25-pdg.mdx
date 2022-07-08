@@ -11,14 +11,52 @@ import Img from '@comp/Img';
 import TOC from '@comp/TOC';
 
 
-## How to use the PDG?
+## How to use the PDG? {#how-to}
 
-TODO
+First make sure that [Dbux is installed and activated](../dbux-features/01-using-dbux.mdx).
+
+There are currently two ways of using the PDG. Both can be accessed via [VSCode commands](./tools-and-configuration/01-dbux-code.mdx#commands):
+
+<Img screen src="pdg-commands.png" />
+
+1. [Open the PDG View → pick an algorithm → open its PDG](#pdg-view)
+2. [Show PDG of your own algorithm (function)](#any-pdg)
+
+
+## PDG View
+
+<Img screen src="pdg-view1.png" />
+
+The PDG view currently lists all test cases of [all algorithms](https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms) of the [`javascript-algorithms` repository](https://github.com/trekhleb/javascript-algorithms).
+
+The PDG view lists all potential PDGs by algorithm category, then algorithm, then test case, then algorithm invocation (see screenshot above). You can:
+
+1. Click a test case to open the test location in the VSCode code editor.
+2. Click an algorithm sample to open its PDG.
+3. You can re-run any test using the little button next to each test case (see screenshot above).
+4. You can find all exported files via the `Dbux: Open Export Folder` [command](./tools-and-configuration/01-dbux-code.mdx#commands).
+
+Notes:
+
+* If `javascript-algorithms` was not previously installed, it will be cloned and installed upon clicking.
+* If it was not previously executed, it will first ask to run the test case and export the application file.
+* Running most test cases with Dbux takes around 10s, while importing feels almost instantaneous.
+
+
+## Show PDG of any function {#any-pdg}
+
+<Img screen src="pdg-commands.png" />
+
+1. [Run Application with Dbux Enabled](./02-enable-dbux.mdx)
+2. [Select a trace of any function](./06-select-trace.mdx)
+3. Use the `Dbux: Open PDG for Selected Function` [command](./tools-and-configuration/01-dbux-code.mdx#commands) (see screenshot above)
 
 
 ## Examples
 
-TODO
+We illustrate using the PDG on two algorithms (`BubbleSort` and `Dijkstra`) in this video:
+
+[![Video: PDG](https://img.youtube.com/vi/dgXj3VoQJZQ/0.jpg)](https://www.youtube.com/watch?v=dgXj3VoQJZQ)
 
 
 ## Why do we need a PDG?

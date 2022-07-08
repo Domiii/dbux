@@ -111,6 +111,10 @@
         "title": "Dbux: Import Application Data"
       },
       {
+        "command": "dbux.openExportFolder",
+        "title": "Dbux: Open Export Folder"
+      },
+      {
         "command": "dbux.reloadExerciseList",
         "title": "Dbux: Reload Exercise List"
       },
@@ -276,7 +280,7 @@
       },
       {
         "command": "dbux.showPDGOfContext",
-        "title": "Dbux: Show PDG of context",
+        "title": "Dbux: Open PDG for Selected Function",
         "icon": {
           "light": "resources/light/dependency.svg",
           "dark": "resources/dark/dependency.svg"
@@ -736,7 +740,7 @@
       },
       {
         "command": "dbuxPdgView.node.runPDG",
-        "title": "Dev: run and show PDG",
+        "title": "Run Test and Show PDG",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -1131,6 +1135,10 @@
           "when": "dbux.context.activated"
         },
         {
+          "command": "dbux.openExportFolder",
+          "when": "dbux.context.activated"
+        },
+        {
           "command": "dbux.reloadExerciseList",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
@@ -1160,7 +1168,7 @@
         },
         {
           "command": "dbux.testPDG",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development && false"
         },
         {
           "command": "dbux.showPathwaysView",
