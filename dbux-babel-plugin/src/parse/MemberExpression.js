@@ -189,10 +189,10 @@ export default class MemberExpression extends BaseNode {
 
   /**
    * Certain lval MEs should not be traced.
-   * E.g.: `exports.X`, `module.exports`.
+   * E.g.: `exports.X`, `module.exports`, `process.env.X`
    */
   shouldIgnoreThisLVal() {
-    return this.hasObjectExports() || this.isModuleExports() || this.containsModuleExports();
+    return this.hasObjectExports() || this.isModuleExports() || this.containsModuleExports() || this.isProcessEnvChain();
   }
 
   // ###########################################################################

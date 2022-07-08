@@ -31,7 +31,8 @@ export default class DataNodeCollection extends Collection {
   }
 
   logDataProblem(...args) {
-    return this.logger.error(...args);
+    // return this.logger.error(...args);
+    return this.logger.warn(...args);
   }
 
   /** ###########################################################################

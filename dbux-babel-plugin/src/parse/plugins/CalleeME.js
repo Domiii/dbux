@@ -14,7 +14,18 @@ export default class CalleeME extends BasePlugin {
     return this.node.calleeNode;
   }
 
+  get canTraceCalleeObject() {
+    const [objectNode] = this.calleeNode.getChildNodes();
+    return !this.calleeNode.shouldIgnoreThisRVal() && !objectNode.shouldIgnoreThisRVal?.();
+  }
+
   get instrumentCallExpression() {
+    // this.node.logger.debug(`[CalleeME] ${this.calleeNode.debugTag} ${this.calleeNode.shouldIgnoreThisRVal()}`);
+    
+    if (!this.canTraceCalleeObject) {
+      // TODO: we can't do this, because it will end up calling a method without thisArg
+      return null;
+    }
     return traceCallExpressionME;
   }
 
@@ -24,6 +35,10 @@ export default class CalleeME extends BasePlugin {
   }
 
   decorateCallTrace(traceCfg) {
+    if (!this.canTraceCalleeObject) {
+      return;
+    }
+
     const {
       calleeNode,
       // node,
