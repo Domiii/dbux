@@ -1,6 +1,3 @@
-import { Uri, env } from 'vscode';
-import { showInformationMessage } from './codeUtil/codeModals';
-import { translate } from './lang';
 import { emitShowHelpAction } from './userEvents';
 
 /** @typedef { import("./dialogLib/DialogController").default } DialogController */
@@ -10,45 +7,22 @@ import { emitShowHelpAction } from './userEvents';
  */
 let dialogController;
 
-export async function showHelp(message) {
-  const isDefaultHelp = !message;
-  message = message || translate('showHelp.defaultMessage');
+export async function showHelp(/* message */) {
+  // if(isDefaultHelp) {
+  //   btns = {
+  //     // NOTE: tutorial needs a revamp - need easier bugs and videos to get started.
+  //     // async [translate('showHelp.tutorial')]() {
+  //     //   return await dialogController.startDialog('tutorial');
+  //     // },
+  //     // async [translate('showHelp.survey')]() {
+  //     //   return await dialogController.startDialog('survey1');
+  //     // },
+  //     ...btns
+  //   };
+  // }
 
-  let btns = {
-    async 'Start the Intro'() {
-      return await dialogController.restartDialog('intro');
-    },
-    async [translate('showHelp.manual')]() {
-      return env.openExternal(Uri.parse('https://domiii.github.io/dbux/'));
-    },
-    async [translate('showHelp.discord')]() {
-      return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
-    },
-    // async [translate('showHelp.readDbux')]() {
-    //   return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#known-limitations'));
-    // },
-    async [translate('showHelp.report')]() {
-      return env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
-    }
-  };
-
-  if (isDefaultHelp) {
-    btns = {
-      // NOTE: tutorial needs a revamp - need easier bugs and videos to get started.
-      // async [translate('showHelp.tutorial')]() {
-      //   return await dialogController.startDialog('tutorial');
-      // },
-      // async [translate('showHelp.survey')]() {
-      //   return await dialogController.startDialog('survey1');
-      // },
-      ...btns
-    };
-  }
-
-
-  const result = showInformationMessage(message, btns, { modal: true });
   emitShowHelpAction();
-  return result;
+  return await dialogController.restartDialog('intro');
 }
 
 export function setDialogControllerForDefaultHelp(controller) {

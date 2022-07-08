@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
 import { env, Uri, window } from 'vscode';
+import { translate } from '@dbux/projects/src/lang';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialogLib/DialogNodeKind';
 
@@ -35,6 +36,12 @@ const intro = {
           node: null // dismiss → will come back again upon next restart
         },
         {
+          text: 'Ask on Discord',
+          async click() {
+            return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
+          }
+        },
+        {
           text: 'I need help with the basics.',
           node: 'basics'
         },
@@ -47,6 +54,13 @@ const intro = {
           node: 'pdg'
         },
         {
+          text: 'Report Issue',
+          node: 'pdg',
+          async click() {
+            return env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
+          }
+        },
+        {
           text: 'No. Don\'t ask me again.',
           node: 'end'
         }
@@ -54,7 +68,6 @@ const intro = {
     },
     
     basics: {
-      // TODO: merge all this into `start`
       kind: DialogNodeKind.Modal,
       text: 'Here are some resources to get you familiar with the Dbux basics:',
       edges: [
@@ -80,12 +93,6 @@ const intro = {
           }
         },
         {
-          text: 'Ask on Discord',
-          async click() {
-            return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
-          }
-        },
-        {
           text: '↩ Go back',
           node: 'start'
         }
@@ -94,15 +101,43 @@ const intro = {
 
     acg: {
       kind: DialogNodeKind.Modal,
-      text: 'Here are some resources to get you familiar with the Dbux basics:',
+      text: 'Here are some resources for the ACG (Asynchronous Call Graph):',
       edges: [
+        {
+          text: 'ACG Documentation',
+          node: 'acg',
+          click() {
+            return env.openExternal(Uri.parse('https://domiii.github.io/dbux/acg'));
+          }
+        },
+        {
+          text: 'Video: Examples of the ACG',
+          node: 'acg',
+          click() {
+            return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=621'));
+          }
+        },
       ]
     },
 
     pdg: {
       kind: DialogNodeKind.Modal,
-      text: 'Here are some resources to get you familiar with the Dbux basics:',
+      text: 'Here are some resources for the PDG (Program Dependency Graph):',
       edges: [
+        {
+          text: 'PDG Documentation',
+          node: 'acg',
+          click() {
+            return env.openExternal(Uri.parse('https://domiii.github.io/dbux/pdg'));
+          }
+        },
+        {
+          text: 'Video: Examples of the PCG',
+          node: 'acg',
+          click() {
+            return env.openExternal(Uri.parse('https://www.youtube.com/watch?v=dgXj3VoQJZQ'));
+          }
+        },
       ]
     },
 
