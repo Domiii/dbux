@@ -1,25 +1,17 @@
 /* eslint-disable max-len */
 
 import { env, Uri, window } from 'vscode';
-import { translate } from '@dbux/projects/src/lang';
-import { showHelp } from '../help';
 import DialogNodeKind from '../dialogLib/DialogNodeKind';
 
 
 const intro = {
   name: 'intro',
-  displayName: 'the Introduction',
+  displayName: 'Help',
 
   /**
    * These edges are added to all states, except for `start` and `end`.
    */
   defaultEdges: [
-    {
-      text: '(Help)',
-      async click() {
-        return showHelp();
-      }
-    },
     {
       text: '(Don\'t show this again)',
       node: 'end'
@@ -29,11 +21,19 @@ const intro = {
   nodes: {
     start: {
       kind: DialogNodeKind.Modal,
-      text: `Welcome to Dbux! Do you need help?`,
+      text: `Welcome to Dbux! What do you need help with?`,
       edges: [
         {
-          text: 'Maybe later',
-          node: null // dismiss → will come back again upon next restart
+          text: '(1) Basics',
+          node: 'basics'
+        },
+        {
+          text: '(2) ACG',
+          node: 'acg'
+        },
+        {
+          text: '(3) PDG',
+          node: 'pdg'
         },
         {
           text: 'Ask on Discord',
@@ -42,27 +42,14 @@ const intro = {
           }
         },
         {
-          text: 'I need help with the basics.',
-          node: 'basics'
-        },
-        {
-          text: 'I am interested in the ACG (Asynchronous Call Graph).',
-          node: 'acg'
-        },
-        {
-          text: 'I am interested in the PDG (Program Dependency Graph).',
-          node: 'pdg'
-        },
-        {
           text: 'Report Issue',
-          node: 'pdg',
           async click() {
             return env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
           }
         },
         {
-          text: 'No. Don\'t ask me again.',
-          node: 'end'
+          text: '(Ask Me Again Later)',
+          node: null // dismiss → will come back again upon next restart
         }
       ]
     },
@@ -73,21 +60,18 @@ const intro = {
       edges: [
         {
           text: 'Watch the Intro Video',
-          node: 'basics',
           click() {
             return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=145'));
           }
         },
         {
           text: 'Read the Docs',
-          node: 'basics',
           async click() {
             return env.openExternal(Uri.parse('https://domiii.github.io/dbux'));
           }
         },
         {
           text: 'Tutorial',
-          node: 'basics',
           click() {
             return env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-practice/tutorial'));
           }
@@ -101,43 +85,47 @@ const intro = {
 
     acg: {
       kind: DialogNodeKind.Modal,
-      text: 'Here are some resources for the ACG (Asynchronous Call Graph):',
+      text: 'The ACG (Asynchronous Call Graph) allows investigating asynchronous concurrent control flow. Here are some relevant resources:',
       edges: [
         {
           text: 'ACG Documentation',
-          node: 'acg',
           click() {
             return env.openExternal(Uri.parse('https://domiii.github.io/dbux/acg'));
           }
         },
         {
           text: 'Video: Examples of the ACG',
-          node: 'acg',
           click() {
             return env.openExternal(Uri.parse('https://youtu.be/N9W6rhHMKbA?t=621'));
           }
         },
+        {
+          text: '↩ Go back',
+          node: 'start'
+        }
       ]
     },
 
     pdg: {
       kind: DialogNodeKind.Modal,
-      text: 'Here are some resources for the PDG (Program Dependency Graph):',
+      text: 'The PDG (Program Dependency Graph) allows investigating program dependencies (specifically designed to help understand data structures and algorithms). Here are some relevant resources:',
       edges: [
         {
           text: 'PDG Documentation',
-          node: 'acg',
           click() {
             return env.openExternal(Uri.parse('https://domiii.github.io/dbux/pdg'));
           }
         },
         {
-          text: 'Video: Examples of the PCG',
-          node: 'acg',
+          text: 'Video: Examples of the PDG',
           click() {
             return env.openExternal(Uri.parse('https://www.youtube.com/watch?v=dgXj3VoQJZQ'));
           }
         },
+        {
+          text: '↩ Go back',
+          node: 'start'
+        }
       ]
     },
 
@@ -147,17 +135,7 @@ const intro = {
 
     end: {
       end: true,
-      kind: DialogNodeKind.Message,
-      text: 'That\'s it. Have fun!'
-    },
-    endSilent: {
-      end: true,
       kind: DialogNodeKind.None
-    },
-    cancel: {
-      end: true,
-      kind: DialogNodeKind.Message,
-      text: 'Introduction cancelled. Have fun!'
     }
   }
 };

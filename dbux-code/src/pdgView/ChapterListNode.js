@@ -76,7 +76,7 @@ class PDGNode extends BaseTreeViewNode {
 
 class PDGExerciseNode extends ExerciseNode {
   get contextValue() {
-    return 'dbuxChapterListBuilderView.PDGExerciseNode';
+    return 'dbuxPdgView.PDGExerciseNode';
   }
 
   makeIconPath() {
@@ -140,7 +140,7 @@ class ExerciseChapterGroupNode extends BaseTreeViewNode {
 
 export default class ChapterListNode extends BaseTreeViewNode {
   static makeLabel() {
-    return 'Chapters';
+    return 'javascript-algorithms';
   }
 
   get defaultCollapsibleState() {

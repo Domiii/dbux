@@ -234,7 +234,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
    *  #########################################################################*/
 
 
-  registerCommand(extensionContext, 'dbuxChapterListBuilderView.node.runPDG', async (node) => {
+  registerCommand(extensionContext, 'dbuxPdgView.node.runPDG', async (node) => {
     return await node.runPDG();
   });
 }

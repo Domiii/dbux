@@ -20,9 +20,6 @@ import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
 import DialogController, { initDialogController } from './dialogLib/DialogController';
-import DialogNodeKind from './dialogLib/DialogNodeKind';
-import { showInformationMessage } from './codeUtil/codeModals';
-import { translate } from './lang';
 import { initDbuxPdgView } from './pdgView/pDGViewController';
 // import { initPlugins } from './PluginMgr';
 

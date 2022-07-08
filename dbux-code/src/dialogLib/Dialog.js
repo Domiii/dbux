@@ -32,9 +32,9 @@ export default class Dialog {
     this.logger = newLogger(`Dialog ${graph.name}`);
     this.load();
 
-    if (!this.getNode('cancel')) {
-      throw new Error(`Dialog ${graph.name} needs to contain a cancel state`);
-    }
+    // if (!this.getNode('cancel')) {
+    //   throw new Error(`Dialog ${graph.name} needs to contain a cancel state`);
+    // }
   }
 
   // ###########################################################################

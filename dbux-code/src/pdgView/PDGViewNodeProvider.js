@@ -10,7 +10,7 @@ export default class PDGViewNodeProvider extends BaseTreeViewNodeProvider {
    * @param {PDGViewController} treeViewController 
    */
   constructor(treeViewController) {
-    super('dbuxChapterListBuilderView');
+    super('dbuxPdgView');
     this.controller = treeViewController;
   }
 

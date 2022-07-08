@@ -14,7 +14,7 @@ export default class MessageNode extends DialogNode {
       edges = edges.concat(dialog.graph.defaultEdges);
     }
 
-    const text = await dialog.maybeGetByFunction(node.text, node);
+    const text = await dialog.getValue(node.text, node);
     const buttons = await dialog.makeButtonsByEdges(node, edges, nodeName);
     const edgeData = await showInformationMessage(text, buttons);      
     return edgeData;

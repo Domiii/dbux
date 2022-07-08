@@ -83,9 +83,9 @@
           "when": "dbux.context.activated && dbux.context.showPracticeViews && dbux.context.hasPracticeSession"
         },
         {
-          "id": "dbuxChapterListBuilderView",
-          "name": "JavaScript Algorithms",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "id": "dbuxPdgView",
+          "name": "PDG",
+          "when": "dbux.context.activated"
         }
       ]
     },
@@ -735,7 +735,7 @@
         }
       },
       {
-        "command": "dbuxChapterListBuilderView.node.runPDG",
+        "command": "dbuxPdgView.node.runPDG",
         "title": "Dev: run and show PDG",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -968,8 +968,8 @@
           "group": "inline"
         },
         {
-          "command": "dbuxChapterListBuilderView.node.runPDG",
-          "when": "viewItem == dbuxChapterListBuilderView.PDGExerciseNode && !dbuxProjectView.context.isBusy",
+          "command": "dbuxPdgView.node.runPDG",
+          "when": "viewItem == dbuxPdgView.PDGExerciseNode && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
         }
       ],
@@ -1463,7 +1463,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxChapterListBuilderView.node.runPDG",
+          "command": "dbuxPdgView.node.runPDG",
           "when": "false"
         }
       ]
