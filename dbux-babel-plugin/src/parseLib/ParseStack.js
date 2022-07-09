@@ -351,7 +351,7 @@ export default class ParseStack {
       const loc = parseNode.path.node?.loc || parseNode.path.parentPath?.node?.loc;
       const where = `${this.state.filePath}${loc ? `:${locToString(loc)}` : ''}`;
       const s = parseNode.getParseNodeStackToString();
-      throw new NestedError(`Node phase "${ParsePhase.nameFromForce(phase)}" failed at ${where}${s}\n`, err);
+      throw new NestedError(`Dbux Phase "${ParsePhase.nameFromForce(phase)}" failed at ${where}${s}\n`, err);
     }
   }
 }

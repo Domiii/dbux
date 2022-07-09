@@ -109,9 +109,15 @@ export default class CallExpression extends BaseNode {
     // return calleePath.node.name || 'func';
   }
 
+  checkIsCalleeTraceable() {
+    const { calleeNode } = this;
+    return !isNotCalleeTraceableNode(calleeNode) && 
+      !this.plugins.callee?.cannotTraceCallee;
+  }
+
   exit1() {
     const { calleeNode } = this;
-    this.isCalleeTraceable = !isNotCalleeTraceableNode(calleeNode);
+    this.isCalleeTraceable = this.checkIsCalleeTraceable();
 
     if (!this.isCalleeTraceable) {
       // NOTE: we do this here, since `CalleeME` will not always get initialized
