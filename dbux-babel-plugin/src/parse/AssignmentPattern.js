@@ -30,7 +30,7 @@ function isSupported(paramPath) {
  */
 const buildDefaultInitializerAccessor = template(
   // `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultInitializer%% : arguments[%%i%%]`
-  `%%var%% === %%DefaultInitializerIndicator%% ? %%defaultInitializer%% : %%var%%`
+  `%%var%% === %%DefaultInitializerPlaceholder%% ? %%defaultInitializer%% : %%var%%`
 );
 
 /**
@@ -70,23 +70,24 @@ export default class AssignmentPattern extends BaseNode {
   }
 
   /**
-   * NOTE: called by {@link Params}
+   * NOTE: called by {@link Params}.
+   * Adds the placeholder.
    */
   buildAndReplaceParam(state) {
     // const { path: paramPath } = this;
     // if (paramPath.parentKey === 'params') {
-    const { ids: { aliases: { DefaultInitializerIndicator } } } = state;
+    const { ids: { aliases: { DefaultInitializerPlaceholder } } } = state;
     const [, rightPath] = this.getChildPaths();
 
     const args = {
       // i: t.numericLiteral(paramPath.key),
       var: this.varId,
-      DefaultInitializerIndicator,
+      DefaultInitializerPlaceholder,
       defaultInitializer: this.defaultInitializerPath.node
     };
     const repl = buildDefaultInitializerAccessor(args).expression;
 
-    rightPath.replaceWith(DefaultInitializerIndicator);
+    rightPath.replaceWith(DefaultInitializerPlaceholder);
 
     return repl;
   }

@@ -67,6 +67,9 @@ export default class Params extends BasePlugin {
       }
       if (defaultInitializerNode) {
         // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
+        // TODO: instead of this:
+        //    (1) add tmp and (2) use `DefaultInitializerPlaceholder`
+        //    (3) fix `ArrowFunctionExpression` afterwards
         defaultInitializerNode.Traces.ignoreThis = true;
       }
       return null;

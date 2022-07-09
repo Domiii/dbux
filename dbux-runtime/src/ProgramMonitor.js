@@ -14,7 +14,7 @@ const ProgramStartTraceId = 1;
  */
 const ProgramEndTraceId = 2;
 
-const DefaultInitializerIndicator = {};
+const DefaultInitializerPlaceholder = {};
 
 /**
  * In Babel-lingo, a "Program" is one *.js file.
@@ -91,8 +91,8 @@ export default class ProgramMonitor {
    * NOTE: We use this to dynamically determine whether a parameter was not provided,
    * and thus should be assigned its default value.
    */
-  get DefaultInitializerIndicator() {
-    return DefaultInitializerIndicator;
+  get DefaultInitializerPlaceholder() {
+    return DefaultInitializerPlaceholder;
   }
 
 

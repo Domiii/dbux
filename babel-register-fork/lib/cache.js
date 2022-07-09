@@ -206,7 +206,8 @@ function reportCacheMiss(reason, srcFilename, cacheFilename, message) {
   if (!CACHE_VERBOSE) {
     return;
   }
-  console.debug(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}" (cached at "${cacheFilename}")${message && ` - ${message}` || ''}`);
+  const details = ''; //` (cached at "${cacheFilename}")${message && ` - ${message}` || ''}`;
+  console.debug(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}"${details}`);
 }
 
 function diffString(msg, aStr, bStr) {

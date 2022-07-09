@@ -31,7 +31,7 @@ export default class ArrowFunctionExpression extends BaseNode {
     do {
       // NOTE: this is to prevent adding `definitionTid` to own body
       // hackfix for edge cases: we are a default parameter inside a method's assignment pattern etc.
-    // future-work: move things, so the  function and its `definitionTid` are both in the same scope
+      // future-work: move things, so the  function and its `definitionTid` are both in the same scope
       scopePath = scopePath.parentPath;
     } while (scopePath && !scopePath.isBlock());
     const scope = scopePath?.scope || path.parentPath.scope;

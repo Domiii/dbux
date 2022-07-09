@@ -1299,7 +1299,7 @@ export default class RuntimeMonitor {
   /**
    * NOTE: Pattern trace is attached to its rval.
    * 
-   * TODO: default values (see DefaultInitializerIndicator)
+   * TODO: default values (see DefaultInitializerPlaceholder)
    * 
    * @param {*} programId 
    * @param {*} rval 
