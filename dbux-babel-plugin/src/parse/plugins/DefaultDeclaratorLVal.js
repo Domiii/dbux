@@ -6,6 +6,8 @@ import { addLValVarTrace } from '../helpers/lvalUtil';
 
 export default class DefaultDeclaratorLVal extends BasePlugin {
   /**
+   * hackfix: add type for {@link BasePlugin#node}
+   * 
    * @type {LValHolderNode}
    */
   node;

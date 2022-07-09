@@ -33,6 +33,12 @@ export default class Traces extends BasePlugin {
 
   declaredIdentifiers = [];
 
+  /**
+   * hackfix: allow nodes to tell other nodes not to instrument anything.
+   * TODO: this NEEDS to be recursive, so the entire subtree is ignored.
+   */
+  ignoreThis = false;
+
   // ###########################################################################
   // simplified declarations
   // ###########################################################################
@@ -349,6 +355,11 @@ export default class Traces extends BasePlugin {
    * Since this is a Plugin, it will run BEFORE {@link ParseNode#instrument}, but after {@link ParseNode#instrument1}.
    */
   instrument() {
+    if (this.ignoreThis) {
+      // hackfix: don't do anything
+      return;
+    }
+
     const { node, traces, hoistedTraces } = this;
 
     for (const id of this.declaredIdentifiers) {

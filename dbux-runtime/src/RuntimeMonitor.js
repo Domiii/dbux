@@ -1254,8 +1254,8 @@ export default class RuntimeMonitor {
     for (let i = 0; i < entries.length; i++) {
       const propTid = propTids[i];
       if (!propTid) {
-        const traceInfo = traceCollection.makeTraceInfo(objectTid);
-        warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
+        // const traceInfo = traceCollection.makeTraceInfo(objectTid);
+        // warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
         continue;
       }
       // const targetTid = propTid;

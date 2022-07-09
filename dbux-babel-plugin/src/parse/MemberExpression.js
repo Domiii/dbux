@@ -183,8 +183,8 @@ export default class MemberExpression extends BaseNode {
    * NOTE: `module.exports` of `module.exports.X = ...` is treated as rval when the whole thing is not treated as lval.
    */
   shouldIgnoreThisRVal() {
-    return this.isProcessEnvChain() ||
-      this.isModuleExports();
+    return this.isProcessEnvChain();
+    // || this.isModuleExports();
   }
 
   /**

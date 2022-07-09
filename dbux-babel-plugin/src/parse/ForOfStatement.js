@@ -22,13 +22,20 @@ export default class ForOfStatement extends BaseNode {
 
     // insert trace in `body` to track write to `left` variable(s)
     // TODO: move corresponding logic to `ForDeclaratorLVal`
-    // TODO: `hoisted` logic is decided in 
-    const moreTraceData = {
-      meta: {
-        hoisted: false
-      }
-    };
-    this.Params.addParamTrace(leftNode.path, TraceType.DeclareAndWriteVar, moreTraceData);
+
+    if (leftNode.path.isDeclaration()) {
+      // e.g.: `for (var x of y) {}`
+      const moreTraceData = {
+        meta: {
+          hoisted: false
+        }
+      };
+      this.Params.addParamTrace(leftNode.path, TraceType.DeclareAndWriteVar, moreTraceData);
+    }
+    else {
+      // e.g.: `for (x of y) {}`
+      // TODO: support all the different cases here
+    }
 
     rightNode.addDefaultTrace();
   }

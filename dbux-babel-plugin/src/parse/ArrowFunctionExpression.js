@@ -26,7 +26,16 @@ export default class ArrowFunctionExpression extends BaseNode {
       // body is lambda expression -> wrap body with "return trace"
       this.data.returnTraceCfg = this.Traces.addReturnTrace(func, null, bodyPath, bodyPath);
     }
-    const { scope } = path.parentPath; // prevent adding `tid` variable to own body
+
+    let scopePath = path;
+    do {
+      // NOTE: this is to prevent adding `definitionTid` to own body
+      // hackfix for edge cases: we are a default parameter inside a method's assignment pattern etc.
+    // future-work: move things, so the  function and its `definitionTid` are both in the same scope
+      scopePath = scopePath.parentPath;
+    } while (scopePath && !scopePath.isBlock());
+    const scope = scopePath?.scope || path.parentPath.scope;
+
 
     const traceData = {
       node: this,

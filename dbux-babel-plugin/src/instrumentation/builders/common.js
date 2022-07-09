@@ -64,7 +64,15 @@ export function wrapPushPopBlock(bodyPath, pushes, pops) {
   bodyPath.replaceWith(newBody);
 }
 
+/**
+ * @param {NodePath} path 
+ * @param {AstNode[]} pops 
+ */
 export function replaceNodeTryFinallyPop(path, pops) {
+  if (path.parentPath.isLabeledStatement()) {
+    // hackfix: don't separate label from loop
+    path = path.parentPath;
+  }
   const tryNode = buildWrapTryFinally(path.node, pops);
   // bodyPath.context.create(bodyNode, bodyNode, 'xx')
   path.replaceWith(tryNode);

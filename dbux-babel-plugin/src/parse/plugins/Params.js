@@ -57,10 +57,17 @@ export default class Params extends BasePlugin {
   }
 
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
+    const defaultInitializerPath = getParamDefaultInitializerPath(paramPath);
+    const defaultInitializerNode = defaultInitializerPath && this.node.getNodeOfPath(defaultInitializerPath);
+
     if (!isSupported(paramPath)) {
       this.node.addStaticNoDataPurpose(paramPath, 'UnsupportedParam');
       if (this.node.state.verbose.nyi) {
         this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
+      }
+      if (defaultInitializerNode) {
+        // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
+        defaultInitializerNode.Traces.ignoreThis = true;
       }
       return null;
     }
@@ -81,8 +88,6 @@ export default class Params extends BasePlugin {
     const idNode = this.node.getNodeOfPath(idPath);
 
     const paramNode = this.node.getNodeOfPath(paramPath);
-    const defaultInitializerPath = getParamDefaultInitializerPath(paramPath);
-    const defaultInitializerNode = defaultInitializerPath && this.node.getNodeOfPath(defaultInitializerPath);
 
     // parameter declaration (without defaultInitializer)
     const paramTraceData = {

@@ -209,11 +209,15 @@ export default class BaseNode extends ParseNode {
         type: TraceType.Meta
       });
       this.state.traces.addPurpose(traceId, purpose);
-      console.warn('NO DATA PURPOSE (new trace)', traceId, JSON.stringify(purpose));
+      if (this.state.verbose.data) {
+        this.logger.warn('NO DATA PURPOSE (new trace)', traceId, JSON.stringify(purpose));
+      }
     }
     else {
       targetNode.addStaticTracePurpose(purpose);
-      console.warn('NO DATA PURPOSE', this._traceCfg.inProgramStaticTraceId, JSON.stringify(purpose));
+      if (this.state.verbose.data) {
+        this.logger.warn('NO DATA PURPOSE', this._traceCfg.inProgramStaticTraceId, JSON.stringify(purpose));
+      }
     }
   }
 

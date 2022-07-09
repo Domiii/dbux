@@ -29,55 +29,59 @@ export default class AssignmentLValPattern extends BasePlugin {
     const patternCfg = this.patternCfg = new PatternBuildConfig(this);
 
     // add rval trace
-    const rvalTrace = rvalNode.addDefaultTrace();
+    const rvalTrace = rvalNode?.addDefaultTrace();
 
-    /**
-     * PatternTree DSF traversal
-     */
-    lvalNode.addPatternNode(patternCfg, null);
+    // if (rvalTrace) { // NOTE: if rval is not traceable, we can't really do much here
+    //   /**
+    //    * PatternTree DSF traversal
+    //    */
+    //   lvalNode.addPatternNode(patternCfg, null);
 
-    // add final trace
-    node.Traces.addTrace({
-      node,
-      path: node.path,
-      staticTraceData: {
-        type: TraceType.PatternAssignment
-      },
-      meta: {
-        build: buildTraceExpressionNoInput,
-        traceCall: 'tracePattern',
-        /**
-         * Replace rval
-         */
-        targetPath: rvalNode.path,
-        // targetNode() { return rvalNode.path.node; },
+    //   // add final trace
+    //   node.Traces.addTrace({
+    //     node,
+    //     path: node.path,
+    //     staticTraceData: {
+    //       type: TraceType.PatternAssignment
+    //     },
+    //     meta: {
+    //       build: buildTraceExpressionNoInput,
+    //       traceCall: 'tracePattern',
+    //       /**
+    //        * Replace rval
+    //        */
+    //       targetPath: rvalNode.path,
+    //       // targetNode() { return rvalNode.path.node; },
 
-        moreTraceCallArgs() {
-          // add `treeNodes` array
-          const rvalTid = rvalTrace?.tidIdentifier;
-          const treeNodes = t.arrayExpression(
-            patternCfg.lvalTreeNodeBuilders.map(build => build())
-          );
-          return [
-            rvalTid,
-            treeNodes
-          ];
-        }
-      }
-    });
+    //       moreTraceCallArgs() {
+    //         // add `treeNodes` array
+    //         const rvalTid = rvalTrace.tidIdentifier;
+    //         const treeNodes = t.arrayExpression(
+    //           patternCfg.lvalTreeNodeBuilders.map(build => build())
+    //         );
+    //         return [
+    //           rvalTid,
+    //           treeNodes
+    //         ];
+    //       }
+    //     }
+    //   });
+    // }
 
-    // TODO: this does not work yet (so we flag it as not working)
+    // WARNING: this whole thing does not quite work 100% yet (so we flag it as not working)
     this.node.addStaticNoDataPurpose(node.path, 'DestructuringAssignment');
   }
 
   instrument1() {
-    const { preInitNodeBuilders } = this.patternCfg;
-    if (this.patternCfg.preInitNodeBuilders.length) {
-      // Nested ME lvals need extra work done before the lval.
-      // → Replace assignment with sequence → add assignment to end of sequence → replace self with sequence
-      const sequenceNodes = preInitNodeBuilders.flatMap(fn => fn());
-      sequenceNodes.push(this.node.path.node);
-      this.sequence = t.sequenceExpression(sequenceNodes);
+    if (this.patternCfg) {
+      const { preInitNodeBuilders } = this.patternCfg;
+      if (preInitNodeBuilders.length) {
+        // Nested ME lvals need extra work done before the lval.
+        // → Replace assignment with sequence → add assignment to end of sequence → replace self with sequence
+        const sequenceNodes = preInitNodeBuilders.flatMap(fn => fn());
+        sequenceNodes.push(this.node.path.node);
+        this.sequence = t.sequenceExpression(sequenceNodes);
+      }
     }
   }
 

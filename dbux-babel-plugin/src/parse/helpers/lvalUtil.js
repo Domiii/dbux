@@ -43,6 +43,8 @@ export function getAssignmentLValPlugin(node) {
 const DefaultLValPlugin = 'DefaultDeclaratorLVal';
 
 /**
+ * NOTE: this is called by the declarator
+ * 
  * @param {VariableDeclarator} node 
  */
 export function getDeclaratorLValPlugin(node) {
@@ -57,7 +59,7 @@ export function getDeclaratorLValPlugin(node) {
   // ForX
   const declaration = node.path.parentPath;
   const grandParent = declaration.parentPath;
-  if (grandParent.isForXStatement() && grandParent.get('left') === declaration) {
+  if (grandParent.isForXStatement()) {
     /**
      * `ForXStatement`
      * @see https://babeljs.io/docs/en/babel-types#forxstatement

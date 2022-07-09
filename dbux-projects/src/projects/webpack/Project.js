@@ -151,7 +151,9 @@ export default class WebpackProject extends Project {
   decorateExercise(config) {
     config.mainEntryPoint = [this.cliBin];
     // config.dbuxArgs = config.dbuxArgs || '--pw=webpack.*,tapable,graceful-fs,enhanced-resolve,babel-loader';
-    config.dbuxArgs = config.dbuxArgs || '--pw=webpack.*,tapable,enhanced-resolve,babel-loader';
+    config.dbuxArgs = config.dbuxArgs || 
+      '--pw=webpack.*,tapable,enhanced-resolve,babel-loader ' +
+      '--pb=WebpackOptions\\.check\\.js';  // large, auto-generated file
     return config;
   }
 
