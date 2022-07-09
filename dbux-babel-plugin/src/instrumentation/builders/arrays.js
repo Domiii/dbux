@@ -20,9 +20,6 @@ export function buildGetI(argsVar, i) {
  * NOTE: This is usually used in tandem with `makeSpreadableArgumentArrayCfg`.
  */
 export function buildSpreadableArgArrayNoSpread(argPaths) {
-  // const { ids: { aliases: {
-  //   arrayFrom
-  // } } } = state;
   return t.arrayExpression(argPaths
     .map(argPath => argPath.isSpreadElement() ?
       // t.callExpression(

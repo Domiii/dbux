@@ -110,9 +110,9 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     }
 
     this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
-    if (disableFollowMode) {
-      this.context.graphDocument.setFollowMode(false);
-    }
+    // if (disableFollowMode) {
+    //   this.context.graphDocument.setFollowMode(false);
+    // }
 
     const contexts = FindContextsByMode[mode](selector, this);
 
