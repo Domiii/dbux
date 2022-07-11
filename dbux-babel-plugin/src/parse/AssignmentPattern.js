@@ -1,4 +1,5 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
+import * as t from "@babel/types";
 import template from '@babel/template';
 import { LValHolderNode } from './_types';
 import BaseNode from './BaseNode';
@@ -64,31 +65,46 @@ export default class AssignmentPattern extends BaseNode {
   }
 
   exit1() {
-    const [leftNode, rightNode] = this.getChildNodes();
-    this.varId = leftNode.path.node;
-    this.defaultInitializerPath = rightNode?.path;
+    const [, rightNode] = this.getChildNodes();
+    this.defaultInitializerAstNode = rightNode?.path?.node;
   }
 
   /**
    * NOTE: called by {@link Params}.
-   * Adds the placeholder.
+   * Adds a placeholder and returns placeholder replacement expression.
+   * 
+   * E.g.: `f(x = g()) { }` becomes `f(x = PLACEHOLDER) { x = isPlaceholder ? g() : ...; }`
+   * @return {AstNode}
    */
-  buildAndReplaceParam(state) {
+  buildAndReplaceParam(newVar = null) {
     // const { path: paramPath } = this;
     // if (paramPath.parentKey === 'params') {
-    const { ids: { aliases: { DefaultInitializerPlaceholder } } } = state;
-    const [, rightPath] = this.getChildPaths();
+    const { ids: { aliases: { DefaultInitializerPlaceholder } } } = this.state;
+    const [leftNode] = this.getChildNodes();
+    const [leftPath, rightPath] = this.getChildPaths();
+
+    const varId = newVar || leftNode.path.node;
 
     const args = {
       // i: t.numericLiteral(paramPath.key),
-      var: this.varId,
+      var: varId,
       DefaultInitializerPlaceholder,
-      defaultInitializer: this.defaultInitializerPath.node
+      defaultInitializer: this.defaultInitializerAstNode
     };
-    const repl = buildDefaultInitializerAccessor(args).expression;
 
+    const repl = t.assignmentExpression('=',
+      varId,
+      buildDefaultInitializerAccessor(args).expression
+    );
+
+
+    // 0. (maybe replace lval)
+    newVar && leftPath.replaceWith(newVar);
+
+    // 1. replace default value with placeholder
     rightPath.replaceWith(DefaultInitializerPlaceholder);
 
+    // 2. return the decision for replacement later
     return repl;
   }
 }

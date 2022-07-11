@@ -1,9 +1,14 @@
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { NodePath } from '@babel/traverse';
 import BasePlugin from './BasePlugin';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 import BindingIdentifier from '../BindingIdentifier';
+import BaseNode from '../BaseNode';
+import { TraceCfgMeta } from '../../definitions/TraceCfg';
+import { unshiftScopeBlock } from '../../instrumentation/scope';
+import AssignmentPattern from '../AssignmentPattern';
 
 
 function getParamDefaultInitializerPath(paramPath) {
@@ -56,7 +61,69 @@ export default class Params extends BasePlugin {
     return paramsPath.map(paramPath => this.addParamTrace(paramPath));
   }
 
+  /** 
+   * Dynamic {@link TraceCfgMeta#targetNode} function for default initializer (Identifier).
+   * 
+   * @param {AssignmentPattern} paramNode 
+   * @param {NodePath} idPath 
+   */
+  #makeDefaultTargetNodeId = (paramNode) => {
+    // move (conditional) default value to hoisted parameter declaration
+    return paramNode.buildAndReplaceParam();
+  };
+
+  /**
+   * Handle default initializer (not Identifier).
+   * 
+   * @param {AssignmentPattern} paramNode 
+   * @param {BaseNode} defaultInitializerNode
+   */
+  #handleDefaultInitializerOther(paramNode, defaultInitializerNode, moreTraceData) {
+    // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
+    const paramPath = paramNode.path;
+    const paramTraceData = {
+      path: paramPath,
+      node: paramNode,
+      staticTraceData: {
+        type: TraceType.Param
+      },
+      ...moreTraceData,
+      meta: {
+        instrument(state, traceCfg) {
+          // buildAndReplaceParam();
+          // TODO: fix this
+          const tmp = paramNode.Traces.generateDeclaredUidIdentifier('tmp', false);
+          // const paramAstNode = paramPath.node;
+          const [lvalPath] = paramNode.getChildPaths();
+          const lvalAstNode = lvalPath.node;
+          const resolverAstNode = paramNode.buildAndReplaceParam(tmp);
+
+          // NOTE: unshifts apply in reverse order
+
+          // 2. read actual values from tmp
+          unshiftScopeBlock(paramPath, t.variableDeclaration(
+            'var',
+            [t.variableDeclarator(
+              lvalAstNode,
+              tmp
+            )]
+          ));
+
+          // 1. resolve default value
+          unshiftScopeBlock(paramPath, t.expressionStatement(resolverAstNode));
+        },
+        ...moreTraceData?.meta
+      }
+    };
+    paramNode.Traces.addTrace(paramTraceData);
+
+    // TODO: instead of this:
+    //    (1) add tmp and (2) use `DefaultInitializerPlaceholder`
+    //    (3) fix `ArrowFunctionExpression` afterwards
+  }
+
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
+    const paramNode = this.node.getNodeOfPath(paramPath);
     const defaultInitializerPath = getParamDefaultInitializerPath(paramPath);
     const defaultInitializerNode = defaultInitializerPath && this.node.getNodeOfPath(defaultInitializerPath);
 
@@ -66,11 +133,10 @@ export default class Params extends BasePlugin {
         this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       }
       if (defaultInitializerNode) {
-        // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
-        // TODO: instead of this:
-        //    (1) add tmp and (2) use `DefaultInitializerPlaceholder`
-        //    (3) fix `ArrowFunctionExpression` afterwards
-        defaultInitializerNode.Traces.ignoreThis = true;
+        this.#handleDefaultInitializerOther(paramNode, defaultInitializerNode);
+        // else {
+        //   defaultInitializerNode.Traces.ignoreThis = true;
+        // }
       }
       return null;
     }
@@ -90,9 +156,7 @@ export default class Params extends BasePlugin {
      */
     const idNode = this.node.getNodeOfPath(idPath);
 
-    const paramNode = this.node.getNodeOfPath(paramPath);
-
-    // parameter declaration (without defaultInitializer)
+    // parameter declaration
     const paramTraceData = {
       path: paramNode.path,
       node: paramNode,
@@ -105,16 +169,10 @@ export default class Params extends BasePlugin {
     // ########################################
     // parameter declaration (with defaultInitializer) [v2]
     // ########################################
-    let value;
+    let targetNode;  // input for the build function
     if (defaultInitializerNode) {
-      value = () => {
-        // move (conditional) default value to hoisted parameter declaration
-        const valueAstNode = t.assignmentExpression('=',
-          idPath.node,
-          paramNode.buildAndReplaceParam(this.node.state)
-        );
-        return valueAstNode;
-      };
+      // NOTE: `instrumentHoisted` will move the replacement decision expression to the top of the function
+      targetNode = () => this.#makeDefaultTargetNodeId(paramNode, idPath);
 
       // add default value as input to param trace
       // NOTE: will be overwritten by `ExecutionContextCollection.setParamInputs`, if not default
@@ -123,10 +181,10 @@ export default class Params extends BasePlugin {
       ]);
     }
     else {
-      value = idPath;
+      targetNode = idPath.node;
     }
 
-    const declarationOnlyTrace = idNode.addOwnDeclarationTrace(value, paramTraceData);
+    const declarationOnlyTrace = idNode.addOwnDeclarationTrace(targetNode, paramTraceData);
     return declarationOnlyTrace;
   }
 }

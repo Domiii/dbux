@@ -62,13 +62,13 @@ export default class Traces extends BasePlugin {
     return contextNode;
   }
 
-  generateDeclaredUidIdentifier(name) {
+  generateDeclaredUidIdentifier(name, createVar = true) {
     const contextNode = this.getAncestorContextNode();
     const { scope } = contextNode.path;
 
     const id = scope.generateUidIdentifier(name);
 
-    contextNode.Traces.declaredIdentifiers.push(id);
+    createVar && contextNode.Traces.declaredIdentifiers.push(id);
     // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
   }

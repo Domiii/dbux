@@ -147,7 +147,7 @@ export function buildTraceDeclarationVar(state, traceCfg) {
   targetNode && args.push(targetNode);
 
   const inputs = makeInputs(traceCfg);
-  if (args.moreTraceCallArgs) {
+  if (traceCfg.meta?.moreTraceCallArgs) {
     if (inputs) {
       throw new Error(`Invalid var declaration: has "moreTraceCallArgs" and "inputs", but should only have either/or.`);
     }

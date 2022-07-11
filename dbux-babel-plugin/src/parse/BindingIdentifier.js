@@ -109,7 +109,7 @@ export default class BindingIdentifier extends BaseId {
    * Not `hoisted` declarations as:
    *    `te(value, tid)`
    * 
-   * @param {NodePath?} definitionPathOrNode Initialization occurs upon declaration. Only used if `hoisted`.
+   * @param {NodePath?} definitionPathOrNode Initialization occurs upon declaration. Only used if `hoisted`. Will be set to `targetPath`.
    */
   addOwnDeclarationTrace(definitionPathOrNode = null, moreTraceData = null) {
     // if (this.binding?.path.node.id !== this.path.node) {

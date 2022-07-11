@@ -11,6 +11,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "npm-which": "^3.0.1"
   }
 }
