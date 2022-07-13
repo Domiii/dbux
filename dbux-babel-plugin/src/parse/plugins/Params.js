@@ -69,58 +69,9 @@ export default class Params extends BasePlugin {
    */
   #makeDefaultTargetNodeId = (paramNode) => {
     // move (conditional) default value to hoisted parameter declaration
+    paramNode.handler = this;
     return paramNode.buildAndReplaceParam();
   };
-
-  /**
-   * Handle default initializer (not Identifier).
-   * 
-   * @param {AssignmentPattern} paramNode 
-   * @param {BaseNode} defaultInitializerNode
-   */
-  #handleDefaultInitializerOther(paramNode, defaultInitializerNode, moreTraceData) {
-    // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
-    const paramPath = paramNode.path;
-    const paramTraceData = {
-      path: paramPath,
-      node: paramNode,
-      staticTraceData: {
-        type: TraceType.Param
-      },
-      ...moreTraceData,
-      meta: {
-        instrument(state, traceCfg) {
-          // buildAndReplaceParam();
-          // TODO: fix this
-          const tmp = paramNode.Traces.generateDeclaredUidIdentifier('tmp', false);
-          // const paramAstNode = paramPath.node;
-          const [lvalPath] = paramNode.getChildPaths();
-          const lvalAstNode = lvalPath.node;
-          const resolverAstNode = paramNode.buildAndReplaceParam(tmp);
-
-          // NOTE: unshifts apply in reverse order
-
-          // 2. read actual values from tmp
-          unshiftScopeBlock(paramPath, t.variableDeclaration(
-            'var',
-            [t.variableDeclarator(
-              lvalAstNode,
-              tmp
-            )]
-          ));
-
-          // 1. resolve default value
-          unshiftScopeBlock(paramPath, t.expressionStatement(resolverAstNode));
-        },
-        ...moreTraceData?.meta
-      }
-    };
-    paramNode.Traces.addTrace(paramTraceData);
-
-    // TODO: instead of this:
-    //    (1) add tmp and (2) use `DefaultInitializerPlaceholder`
-    //    (3) fix `ArrowFunctionExpression` afterwards
-  }
 
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
     const paramNode = this.node.getNodeOfPath(paramPath);
@@ -133,10 +84,9 @@ export default class Params extends BasePlugin {
         this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       }
       if (defaultInitializerNode) {
-        this.#handleDefaultInitializerOther(paramNode, defaultInitializerNode);
-        // else {
-        //   defaultInitializerNode.Traces.ignoreThis = true;
-        // }
+        /**
+         * NOTE: this case is handled in {@link AssignmentPattern}
+         */
       }
       return null;
     }

@@ -4,6 +4,8 @@ import template from '@babel/template';
 import { LValHolderNode } from './_types';
 import BaseNode from './BaseNode';
 import { skipPath } from '../helpers/traversalHelpers';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { unshiftScopeBlock } from '../instrumentation/scope';
 // import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
 /** @typedef { import("./plugins/Params").default } Params */
@@ -42,6 +44,12 @@ const buildDefaultInitializerAccessor = template(
 export default class AssignmentPattern extends BaseNode {
   static children = ['left', 'right'];
 
+  handler;
+
+  get shouldInstrumentDefault() {
+    return !this.handler;
+  }
+
   enter() {
     // const [leftPath, rightPath] = this.getChildPaths();
 
@@ -67,6 +75,55 @@ export default class AssignmentPattern extends BaseNode {
   exit1() {
     const [, rightNode] = this.getChildNodes();
     this.defaultInitializerAstNode = rightNode?.path?.node;
+  }
+
+  exit() {
+    if (this.shouldInstrumentDefault) {
+      this.#addTraceDefault();
+    }
+  }
+
+
+  /**
+   * Handle default initializer (not Identifier).
+   */
+  #addTraceDefault() {
+    // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
+    const paramNode = this;
+    const paramPath = paramNode.path;
+    const paramTraceData = {
+      path: paramPath,
+      node: paramNode,
+      staticTraceData: {
+        type: TraceType.Param
+      },
+      meta: {
+        instrument(state, traceCfg) {
+          const tmp = paramNode.Traces.generateDeclaredUidIdentifier('tmp', false);
+          // const paramAstNode = paramPath.node;
+          const [lvalPath] = paramNode.getChildPaths();
+          const lvalAstNode = lvalPath.node;
+
+          // NOTE: unshift applies in reverse order
+
+          // 0. put `tmp` in
+          const resolverAstNode = paramNode.buildAndReplaceParam(tmp);
+
+          // 2. read actual values from tmp
+          unshiftScopeBlock(paramPath, t.variableDeclaration(
+            'var',
+            [t.variableDeclarator(
+              lvalAstNode,
+              tmp
+            )]
+          ));
+
+          // 1. resolve default value
+          unshiftScopeBlock(paramPath, t.expressionStatement(resolverAstNode));
+        }
+      }
+    };
+    paramNode.Traces.addTrace(paramTraceData);
   }
 
   /**
