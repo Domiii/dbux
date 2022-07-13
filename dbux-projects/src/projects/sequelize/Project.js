@@ -95,11 +95,17 @@ export default class SequelizeProject extends Project {
       }
     };
 
+    cfg = {
+      ...cfg,
+      program: bug.testFilePaths[0]
+    };
+
+    // if (!cfg.dbuxArgs) {
+    //   cfg.dbuxArgs = '--pb=';
+    // }
+
     return [
-      buildNodeCommand({
-        ...cfg,
-        program: bug.testFilePaths[0]
-      }),
+      buildNodeCommand(cfg),
       runCfg
     ];
 

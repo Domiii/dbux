@@ -6,6 +6,8 @@ import BaseNode from './BaseNode';
 import { skipPath } from '../helpers/traversalHelpers';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { unshiftScopeBlock } from '../instrumentation/scope';
+import { getClosestAssignmentOrDeclaration, getClosestBlockParentChild } from '../helpers/pathHierarchyUtil';
+import { pathToString } from '../helpers/pathHelpers';
 // import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
 /** @typedef { import("./plugins/Params").default } Params */
@@ -37,9 +39,11 @@ const buildDefaultInitializerAccessor = template(
 );
 
 /**
- * Found in {@link Params} and in {@link PatternTree} for default values.
- * 
- * @implements {LValHolderNode}
+ * Four cases:
+ * 1. AssignmentExpression (with pattern + ExpressionStatement)
+ * 2. VariableDeclaration (with pattern + ExpressionStatement)
+ * 3. Params (direct or nested w/ pattern)
+ * 4. ForXStatement (with pattern)
  */
 export default class AssignmentPattern extends BaseNode {
   static children = ['left', 'right'];
@@ -48,6 +52,8 @@ export default class AssignmentPattern extends BaseNode {
 
   get shouldInstrumentDefault() {
     return !this.handler;
+    // const isHandledByParam = blockParentChild.listKey === 'params' &&
+    //   this.peekPlugin('Params')?.canHandleParam(blockParentChild);
   }
 
   enter() {
@@ -89,41 +95,82 @@ export default class AssignmentPattern extends BaseNode {
    */
   #addTraceDefault() {
     // this.node.logger.debug(`PARAM default initializer: ${defaultInitializerNode.debugTag}`);
-    const paramNode = this;
-    const paramPath = paramNode.path;
+    const node = this;
+    const { path } = node;
+
+
+    // NOTE: if isInBody, assignmentOrDeclaration must exist.
+    const assignmentOrDeclarationPath = getClosestAssignmentOrDeclaration(path);
+    const isAssignment = assignmentOrDeclarationPath?.isAssignmentExpression() || false;
+
+    const blockParentChild = getClosestBlockParentChild(path);
+    const isInBody =
+      // statement directly in body
+      blockParentChild.listKey === 'body' &&
+      // inline assignment, that is part of something else
+      (!isAssignment || assignmentOrDeclarationPath.parentPath.isExpressionStatement());
+
+
+    this.logger.debug(`${this.debugTag} isInBody=${isInBody}, isAssignment=${isAssignment} in - [${blockParentChild.listKey}] ${pathToString(blockParentChild)}`);
+
+    if (isInBody || isAssignment) {
+      // NOTE: we don't need to fix these, since they won't cause issues of execution order
+      return;
+    }
+
     const paramTraceData = {
-      path: paramPath,
-      node: paramNode,
+      path: path,
+      node,
       staticTraceData: {
         type: TraceType.Param
       },
       meta: {
-        instrument(state, traceCfg) {
-          const tmp = paramNode.Traces.generateDeclaredUidIdentifier('tmp', false);
+        instrument: (state, traceCfg) => {
+          // declare `tmp` var, if this is AssignmentExpression (else it will be placed into a declaration)
+          const shouldDeclareTmp = isAssignment;
+          const tmp = node.Traces.generateDeclaredUidIdentifier('tmp', shouldDeclareTmp);
+
           // const paramAstNode = paramPath.node;
-          const [lvalPath] = paramNode.getChildPaths();
+          const [lvalPath] = node.getChildPaths();
           const lvalAstNode = lvalPath.node;
 
-          // NOTE: unshift applies in reverse order
+          // Put `tmp` in, and get the `resolverExpression`
+          const resolverExpression = node.buildAndReplaceParam(tmp);
 
-          // 0. put `tmp` in
-          const resolverAstNode = paramNode.buildAndReplaceParam(tmp);
+          const shouldAddToBlock = !isInBody;
 
-          // 2. read actual values from tmp
-          unshiftScopeBlock(paramPath, t.variableDeclaration(
-            'var',
-            [t.variableDeclarator(
-              lvalAstNode,
-              tmp
-            )]
-          ));
 
-          // 1. resolve default value
-          unshiftScopeBlock(paramPath, t.expressionStatement(resolverAstNode));
+          if (shouldAddToBlock && !isAssignment) {
+            const newNodes = [
+              t.variableDeclaration(
+                'var',
+                [t.variableDeclarator(
+                  lvalAstNode,
+                  resolverExpression
+                )]
+              )
+            ];
+            if (shouldAddToBlock) {
+              // not in body → add to body
+              unshiftScopeBlock(path, newNodes);
+            }
+            else {
+              // VariableDeclaration (in body) → insertAfter
+              assignmentOrDeclarationPath.insertAfter(newNodes);
+            }
+          }
+          else {
+            // AssignmentExpression (not in body) → inline it
+            // future-work: handle this case
+            // E.g.: `class A {  x = ({a = 3, b = { ba = 4, bb = 5 }} = {}); }`
+            // assignmentOrDeclarationPath.replaceWith(t.sequenceExpression(
+            //   ...
+            // ));
+          }
         }
       }
     };
-    paramNode.Traces.addTrace(paramTraceData);
+    node.Traces.addTrace(paramTraceData);
   }
 
   /**
@@ -149,10 +196,7 @@ export default class AssignmentPattern extends BaseNode {
       defaultInitializer: this.defaultInitializerAstNode
     };
 
-    const repl = t.assignmentExpression('=',
-      varId,
-      buildDefaultInitializerAccessor(args).expression
-    );
+    const repl = buildDefaultInitializerAccessor(args).expression;
 
 
     // 0. (maybe replace lval)

@@ -43,16 +43,16 @@ export function getAssignmentLValPlugin(node) {
 const DefaultLValPlugin = 'DefaultDeclaratorLVal';
 
 /**
- * NOTE: this is called by the declarator
+ * NOTE: this is called by the declarator.
  * 
  * @param {VariableDeclarator} node 
  */
 export function getDeclaratorLValPlugin(node) {
   // NOTE: this will run very early, so we don't have access to `getChildNodes`
-  const [idPath] = node.getChildPaths();
+  const [lvalPath] = node.getChildPaths();
 
   // Pattern
-  if (idPath.isPattern()) {
+  if (lvalPath.isPattern()) {
     return 'DeclaratorLValPattern';
   }
 

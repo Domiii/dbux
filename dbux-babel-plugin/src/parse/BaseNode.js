@@ -1,11 +1,10 @@
 import serializeObj from 'serialize-javascript';
 import NestedError from '@dbux/common/src/NestedError';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
 import TraceCfg from '../definitions/TraceCfg';
-import { pathToStringAnnotated } from '../helpers/pathHelpers';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 
 const Verbose = 2;

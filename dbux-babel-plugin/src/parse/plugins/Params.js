@@ -3,11 +3,9 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { NodePath } from '@babel/traverse';
 import BasePlugin from './BasePlugin';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
-import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
+import { astNodeToString, pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 import BindingIdentifier from '../BindingIdentifier';
-import BaseNode from '../BaseNode';
 import { TraceCfgMeta } from '../../definitions/TraceCfg';
-import { unshiftScopeBlock } from '../../instrumentation/scope';
 import AssignmentPattern from '../AssignmentPattern';
 
 
@@ -61,16 +59,29 @@ export default class Params extends BasePlugin {
     return paramsPath.map(paramPath => this.addParamTrace(paramPath));
   }
 
+  exit1() {
+    const { paramsPath } = this;
+    if (Array.isArray(paramsPath)) {
+      for (const paramPath of paramsPath) {
+        const paramNode = this.node.getNodeOfPath(paramPath);
+        paramNode && (paramNode.handler = this);
+        // console.debug('PARAM', pathToString(paramPath), paramNode?.debugTag);
+      }
+    }
+  }
+
   /** 
    * Dynamic {@link TraceCfgMeta#targetNode} function for default initializer (Identifier).
    * 
    * @param {AssignmentPattern} paramNode 
    * @param {NodePath} idPath 
    */
-  #makeDefaultTargetNodeId = (paramNode) => {
+  #makeDefaultTargetNodeId = (paramNode, idPath) => {
     // move (conditional) default value to hoisted parameter declaration
-    paramNode.handler = this;
-    return paramNode.buildAndReplaceParam();
+    return t.assignmentExpression('=',
+      idPath.node,
+      paramNode.buildAndReplaceParam()
+    );
   };
 
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
@@ -122,7 +133,11 @@ export default class Params extends BasePlugin {
     let targetNode;  // input for the build function
     if (defaultInitializerNode) {
       // NOTE: `instrumentHoisted` will move the replacement decision expression to the top of the function
-      targetNode = () => this.#makeDefaultTargetNodeId(paramNode, idPath);
+      targetNode = () => {
+        const newNode = this.#makeDefaultTargetNodeId(paramNode, idPath);
+        // console.log('PARAM default', astNodeToString(newNode));
+        return newNode;
+      };
 
       // add default value as input to param trace
       // NOTE: will be overwritten by `ExecutionContextCollection.setParamInputs`, if not default
