@@ -31,7 +31,10 @@ export function determineValueTypeCategory(value) {
   if (isArray(value)) {
     return ValueTypeCategory.Array;
   }
-  if (isObject(value)) {
+  if (
+    isObject(value)
+    // !(typeof value === 'bigint') // hackfix
+  ) {
     return ValueTypeCategory.Object;
   }
   return ValueTypeCategory.Primitive;

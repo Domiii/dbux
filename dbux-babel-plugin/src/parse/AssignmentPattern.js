@@ -111,7 +111,7 @@ export default class AssignmentPattern extends BaseNode {
       (!isAssignment || assignmentOrDeclarationPath.parentPath.isExpressionStatement());
 
 
-    this.logger.debug(`${this.debugTag} isInBody=${isInBody}, isAssignment=${isAssignment} in - [${blockParentChild.listKey}] ${pathToString(blockParentChild)}`);
+    // this.logger.debug(`${this.debugTag} isInBody=${isInBody}, isAssignment=${isAssignment} in - [${blockParentChild.listKey}] ${pathToString(blockParentChild)}`);
 
     if (isInBody || isAssignment) {
       // NOTE: we don't need to fix these, since they won't cause issues of execution order

@@ -130,9 +130,10 @@ export class DataNodeCollection extends Collection {
 
     // console.log(`createDataNode ${dataNode.nodeId}, input: ${inputs?.join(',')}`);
 
-    // if (isFunction(varAccess?.prop)) {
-    //   throw new Error(`invalid varAccess.prop must not be function`);
-    // }
+    if (varAccess?.prop !== undefined) {
+      // varAccess.prop = varAccess.prop + '';
+      varAccess.prop = valueCollection.serializeNonTrackable(varAccess.prop) + '';
+    }
 
     this.push(dataNode);
 

@@ -245,7 +245,7 @@ class ValueCollection extends Collection {
     else if (!isTrackableCategory(category)) {
       // console.log('valuieCollection [notTrackable]', dataNode.nodeId, value);
       valueRef = null;
-      dataNode.value = this._serializeNonTrackable(value, category);
+      dataNode.value = this.serializeNonTrackable(value, category);
       dataNode.hasValue = dataNode.value !== undefined;
     }
     else {
@@ -571,7 +571,7 @@ class ValueCollection extends Collection {
 
     serialized[key] = [
       childValueRef && childValueRef.refId,
-      !childValueRef && this._serializeNonTrackable(childValue)
+      !childValueRef && this.serializeNonTrackable(childValue)
     ];
   }
 
@@ -579,7 +579,7 @@ class ValueCollection extends Collection {
     return x; // future-work: improve
   }
 
-  _serializeNonTrackable(value, category) {
+  serializeNonTrackable(value) {
     // category = value || this.determineValueTypeCategory(value);
 
     let serialized;
@@ -766,7 +766,7 @@ class ValueCollection extends Collection {
           }
           Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
 
-          serialized.push([childRef?.refId, !childRef && this._serializeNonTrackable(childValue)]);
+          serialized.push([childRef?.refId, !childRef && this.serializeNonTrackable(childValue)]);
         }
         break;
       }

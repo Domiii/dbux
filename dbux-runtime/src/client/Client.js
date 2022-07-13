@@ -219,8 +219,11 @@ export default class Client {
     return new Promise((resolve, reject) => {
       const errorListener = err => {
         // NOTE: we had a bug where sometimes functions were accidentally sent. This helps check for that possibility.
-        const functionPath = findPathInObject(data, val => isFunction(val));
-        reject(new NestedError(`sendWithAck failed - possibly caused by non-serializable function at "${functionPath}"`, err));
+        const unserializablePathGuess = findPathInObject(data, val =>
+          isFunction(val) || 
+          typeof val === 'bigint'
+        );
+        reject(new NestedError(`sendWithAck failed - possibly caused by non-serializable value at "${unserializablePathGuess}"`, err));
       };
       try {
         // debug(`SEND`, this._sending, msg);
