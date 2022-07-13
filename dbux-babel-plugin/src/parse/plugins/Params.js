@@ -17,7 +17,7 @@ function getParamDefaultInitializerPath(paramPath) {
   return null;
 }
 
-function isSupported(paramPath) {
+function isPathSupported(paramPath) {
   // TODO: `{Object,Array}Pattern
 
   return paramPath.isIdentifier() ||
@@ -64,7 +64,9 @@ export default class Params extends BasePlugin {
     if (Array.isArray(paramsPath)) {
       for (const paramPath of paramsPath) {
         const paramNode = this.node.getNodeOfPath(paramPath);
-        paramNode && (paramNode.handler = this);
+        if (paramNode && isPathSupported(paramPath)) {
+          paramNode.handler = this;
+        }
         // console.debug('PARAM', pathToString(paramPath), paramNode?.debugTag);
       }
     }
@@ -89,7 +91,7 @@ export default class Params extends BasePlugin {
     const defaultInitializerPath = getParamDefaultInitializerPath(paramPath);
     const defaultInitializerNode = defaultInitializerPath && this.node.getNodeOfPath(defaultInitializerPath);
 
-    if (!isSupported(paramPath)) {
+    if (!isPathSupported(paramPath)) {
       this.node.addStaticNoDataPurpose(paramPath, 'UnsupportedParam');
       if (this.node.state.verbose.nyi) {
         this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
