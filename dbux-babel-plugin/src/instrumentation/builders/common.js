@@ -11,6 +11,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { UndefinedNode } from './buildUtil';
 import { astNodeToString } from '../../helpers/pathHelpers';
 import TraceCfg from '../../definitions/TraceCfg';
+import { finishAllScopeBlocks, moveScopeBlock } from '../scope';
 // import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
@@ -53,11 +54,11 @@ export function buildProgram(origPathOrNode, bodyNodes) {
  *  #########################################################################*/
 
 
-export function wrapPushPopBlock(bodyPath, pushes, pops) {
+export function wrapPushPopBlock(bodyPath, pre, post) {
   const newBody = buildBlock([
-    ...pushes,
+    ...pre,
     // ...recordParams,
-    buildWrapTryFinally(bodyPath.node, pops)
+    buildWrapTryFinally(bodyPath.node, post)
   ]);
 
   // bodyPath.context.create(bodyNode, bodyNode, 'xx')
@@ -69,6 +70,9 @@ export function wrapPushPopBlock(bodyPath, pushes, pops) {
  * @param {AstNode[]} pops 
  */
 export function replaceNodeTryFinallyPop(path, pops) {
+  // hackfix: finish scopes first
+  finishAllScopeBlocks();
+
   if (path.parentPath.isLabeledStatement()) {
     // hackfix: don't separate label from loop
     path = path.parentPath;
@@ -76,6 +80,7 @@ export function replaceNodeTryFinallyPop(path, pops) {
   const tryNode = buildWrapTryFinally(path.node, pops);
   // bodyPath.context.create(bodyNode, bodyNode, 'xx')
   path.replaceWith(tryNode);
+  // moveScopeBlock(path, path.get('block'));
 }
 
 /**
