@@ -27,7 +27,28 @@ valueCollection.getPatchedFunctionOrSelf = getPatchedFunctionOrSelf;
  * {@link makeProxy}
  * ##########################################################################*/
 
-function makeProxy(originalFunction, patchedFunction) {
+const defaultProxyHandler = {
+  defineProperty(target, prop, attributes) {
+    return Reflect.defineProperty(target, prop, attributes);
+  },
+  deleteProperty(target, prop, attributes) {
+    return Reflect.deleteProperty(target, prop, attributes);
+  },
+  has(target, prop) {
+    return Reflect.has(target, prop);
+  },
+  get(target, prop, receiver) {
+    return Reflect.get(target, prop, receiver);
+  },
+  set(target, prop, value) {
+    return Reflect.set(target, prop, value);
+  },
+  ownKeys(target) {
+    return Reflect.ownKeys(target);
+  }
+};
+
+export function makeProxy(originalFunction, patchedFunction) {
   // TODO: add missing data nodes
   return new Proxy(originalFunction, {
     apply(target, thisArg, args) {
@@ -37,24 +58,21 @@ function makeProxy(originalFunction, patchedFunction) {
       // TODO: also trace construct calls (but requires removing and fully integrating the "patchedFunction" code with this)
       return Reflect.construct(patchedFunction, args, newTarget);
     },
-    defineProperty(target, prop, attributes) {
-      return Reflect.defineProperty(target, prop, attributes);
+    ...defaultProxyHandler
+  });
+}
+
+export function makeCtorProxy(ctor, ctorHandler) {
+  return new Proxy(ctor, {
+    apply(target, thisArg, args) {
+      const result = Reflect.apply(target, thisArg, args);
+      return ctorHandler(args, result);
     },
-    deleteProperty(target, prop, attributes) {
-      return Reflect.deleteProperty(target, prop, attributes);
+    construct(target, args) {
+      const result = Reflect.construct(target, args);
+      return ctorHandler(args, result);
     },
-    has(target, prop) {
-      return Reflect.has(target, prop);
-    },
-    get(target, prop, receiver) {
-      return Reflect.get(target, prop, receiver);
-    },
-    set(target, prop, value) {
-      return Reflect.set(target, prop, value);
-    },
-    ownKeys(target) {
-      return Reflect.ownKeys(target);
-    }
+    ...defaultProxyHandler
   });
 }
 

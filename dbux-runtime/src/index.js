@@ -128,7 +128,7 @@ function handleShutdown() {
      * shutdown, process.exit + shutdown delay logic
      * ##########################################################################*/
 
-    const shutdownDelayMs = 10000;
+    const shutdownDelayMs = 60000;
     let errorTime;
     let shutdownDelayTimer;
 

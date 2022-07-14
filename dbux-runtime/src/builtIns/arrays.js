@@ -5,7 +5,7 @@ import traceCollection from '../data/traceCollection';
 import dataNodeCollection, { ShallowValueRefMeta } from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
-import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault, monkeyPatchMethodPurpose, registerMonkeyPatchedProxy } from '../util/monkeyPatchUtil';
+import { makeCtorProxy, monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault, monkeyPatchMethodPurpose, registerMonkeyPatchedProxy } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -508,16 +508,7 @@ export default function patchArray() {
     }
     return result;
   };
-  const p = new Proxy(Array, {
-    apply(target, thisArg, args) {
-      const result = Reflect.apply(target, thisArg, args);
-      return ctorHandler(args, result);
-    },
-    construct(target, args) {
-      const result = Reflect.construct(target, args);
-      return ctorHandler(args, result);
-    }
-  });
+  const p = makeCtorProxy(Array, ctorHandler);
   registerMonkeyPatchedProxy(Array, p);
 }
 

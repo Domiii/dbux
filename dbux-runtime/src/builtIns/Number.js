@@ -1,6 +1,6 @@
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { peekBCEMatchCallee } from '../data/dataUtil';
-import { monkeyPatchFunctionHolder, monkeyPatchFunctionHolderPurpose, monkeyPatchMethod, monkeyPatchMethodPurpose, registerMonkeyPatchedProxy } from '../util/monkeyPatchUtil';
+import { makeCtorProxy, monkeyPatchFunctionHolder, monkeyPatchFunctionHolderPurpose, monkeyPatchMethod, monkeyPatchMethodPurpose, registerMonkeyPatchedProxy } from '../util/monkeyPatchUtil';
 import { addPurpose } from './builtin-util';
 
 
@@ -45,15 +45,6 @@ export default function patchNumber() {
     }
     return result;
   };
-  const p = new Proxy(Number, {
-    apply(target, thisArg, args) {
-      const result = Reflect.apply(target, thisArg, args);
-      return ctorHandler(args, result);
-    },
-    construct(target, args) {
-      const result = Reflect.construct(target, args);
-      return ctorHandler(args, result);
-    }
-  });
+  const p = makeCtorProxy(Number, ctorHandler);
   registerMonkeyPatchedProxy(Number, p);
 }

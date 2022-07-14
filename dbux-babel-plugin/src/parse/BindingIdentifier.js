@@ -135,7 +135,7 @@ export default class BindingIdentifier extends BaseId {
       moreTraceData.scope = bindingScopeNode.path.scope;
     }
 
-    // this.warn(`addOwnDeclarationTrace(), [${this.path.parentPath.node.type}] ${this.path.toString()}, ${declarationNode}`);
+    this.warn(`addOwnDeclarationTrace(), [${this.path.parentPath.node.type}] ${this.path.toString()} @ ${bindingScopeNode}`);
 
     return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPathOrNode, moreTraceData);
   }

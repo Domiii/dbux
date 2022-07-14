@@ -118,6 +118,13 @@ export default class AssignmentPattern extends BaseNode {
       return;
     }
 
+    const isParam = !isInBody && blockParentChild.listKey === 'params';
+
+    // Fix exectuon order:
+    //    if it is inside a `param`: add trace there instead, so its nodes are placed after `params` own traces
+    const traceTargetNode = isParam ? node.peekPluginForce('Params').node : node;
+    // console.debug(`[AssignmentPattern] "${pathToString(path)}", param=${isParam}, target=${traceTargetNode}`);
+
     const paramTraceData = {
       path: path,
       node,
@@ -151,8 +158,8 @@ export default class AssignmentPattern extends BaseNode {
               )
             ];
             if (shouldAddToBlock) {
-              // not in body → add to body
-              unshiftScopeBlock(path, newNodes);
+              // not in body → add to body (but in reverse order of execution, so outer assignments go first)
+              unshiftScopeBlock(path, newNodes, false);
             }
             else {
               // VariableDeclaration (in body) → insertAfter
@@ -170,7 +177,7 @@ export default class AssignmentPattern extends BaseNode {
         }
       }
     };
-    node.Traces.addTrace(paramTraceData);
+    traceTargetNode.Traces.addTrace(paramTraceData);
   }
 
   /**
