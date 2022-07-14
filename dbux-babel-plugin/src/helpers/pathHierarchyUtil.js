@@ -33,6 +33,25 @@ export function getClosestAssignmentOrDeclaration(path) {
   );
 }
 
+/**
+ * 
+ * 
+ * @param {NodePath} path
+ * 
+ * @see https://babeljs.io/docs/en/babel-types#patternlike
+ */
+export function getPatternRootPath(path) {
+  const sameScope = true;
+  return findClosestPath(
+    path,
+    /**
+     * @see https://babeljs.io/docs/en/babel-types#patternlike
+     */
+    (p) => p.isPatternLike(),
+    sameScope
+  );
+}
+
 
 /**
  * BlockParents define the scope of let and const declarations.

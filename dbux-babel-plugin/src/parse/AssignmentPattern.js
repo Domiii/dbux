@@ -6,7 +6,7 @@ import BaseNode from './BaseNode';
 import { skipPath } from '../helpers/traversalHelpers';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { unshiftScopeBlock } from '../instrumentation/scope';
-import { getClosestAssignmentOrDeclaration, getClosestBlockParentChild } from '../helpers/pathHierarchyUtil';
+import { getClosestAssignmentOrDeclaration, getClosestBlockParentChild, getPatternRootPath } from '../helpers/pathHierarchyUtil';
 import { pathToString } from '../helpers/pathHelpers';
 // import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
@@ -102,6 +102,7 @@ export default class AssignmentPattern extends BaseNode {
     // NOTE: if isInBody, assignmentOrDeclaration must exist.
     const assignmentOrDeclarationPath = getClosestAssignmentOrDeclaration(path);
     const isAssignment = assignmentOrDeclarationPath?.isAssignmentExpression() || false;
+    const patternRootPath = getPatternRootPath(path);
 
     const blockParentChild = getClosestBlockParentChild(path);
     const isInBody =
@@ -118,11 +119,16 @@ export default class AssignmentPattern extends BaseNode {
       return;
     }
 
-    const isParam = !isInBody && blockParentChild.listKey === 'params';
+    // const isParam = !isInBody && blockParentChild.listKey === 'params';
 
     // Fix exectuon order:
     //    if it is inside a `param`: add trace there instead, so its nodes are placed after `params` own traces
-    const traceTargetNode = isParam ? node.peekPluginForce('Params').node : node;
+    // const traceTargetNode = isParam ? node.peekPluginForce('Params').node : node;
+
+    const traceTargetNode = this.getNodeOfPath(patternRootPath);
+
+    // TODO: sort by depth and order within same parent
+
     // console.debug(`[AssignmentPattern] "${pathToString(path)}", param=${isParam}, target=${traceTargetNode}`);
 
     const paramTraceData = {
@@ -158,8 +164,8 @@ export default class AssignmentPattern extends BaseNode {
               )
             ];
             if (shouldAddToBlock) {
-              // not in body → add to body (but in reverse order of execution, so outer assignments go first)
-              unshiftScopeBlock(path, newNodes, false);
+              // not in body → add to body
+              unshiftScopeBlock(path, newNodes);
             }
             else {
               // VariableDeclaration (in body) → insertAfter

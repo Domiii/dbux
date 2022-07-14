@@ -3,7 +3,7 @@
 function main() {
   console.log(ff());
 
-  function ff() { 
+  function ff() {
     return 42;
   }
 }

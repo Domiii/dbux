@@ -3,6 +3,7 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import merge from 'lodash/merge';
+import groupBy from 'lodash/groupBy';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -346,7 +347,11 @@ export default class Traces extends BasePlugin {
     const { state } = node;
 
     if (traceCfgs.length) {
-      instrumentHoisted(node.path, state, traceCfgs);
+      const traceGroups = groupBy(traceCfgs, 'scope');
+      for (const [scope, ofScope] of Object.entries(traceGroups)) {
+        const targetPath = scope?.path || node.path;
+        instrumentHoisted(targetPath, state, ofScope);
+      }
     }
   }
 

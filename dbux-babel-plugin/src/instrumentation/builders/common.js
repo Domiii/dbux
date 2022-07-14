@@ -63,6 +63,9 @@ export function wrapPushPopBlock(bodyPath, pre, post) {
 
   // bodyPath.context.create(bodyNode, bodyNode, 'xx')
   bodyPath.replaceWith(newBody);
+
+  // hackfix: fix up scope "hoisting"
+  moveScopeBlock(bodyPath, bodyPath.get(`body.${pre.length}.block`));
 }
 
 /**
@@ -70,9 +73,6 @@ export function wrapPushPopBlock(bodyPath, pre, post) {
  * @param {AstNode[]} pops 
  */
 export function replaceNodeTryFinallyPop(path, pops) {
-  // hackfix: finish scopes first
-  finishAllScopeBlocks();
-
   if (path.parentPath.isLabeledStatement()) {
     // hackfix: don't separate label from loop
     path = path.parentPath;
@@ -80,7 +80,9 @@ export function replaceNodeTryFinallyPop(path, pops) {
   const tryNode = buildWrapTryFinally(path.node, pops);
   // bodyPath.context.create(bodyNode, bodyNode, 'xx')
   path.replaceWith(tryNode);
-  // moveScopeBlock(path, path.get('block'));
+
+  // hackfix: fix up scope "hoisting"
+  moveScopeBlock(path, path.get('block'));
 }
 
 /**

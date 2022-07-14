@@ -125,25 +125,25 @@ export default class Program extends BaseNode {
     // this.StaticContext.addInterruptableContextArgs(moreTraceCallArgs);
   }
 
-  /**
-   * NOTE: we remove strict mode since it leads to different versions of "correctness".
-   * In strict mode -
-   * 
-   * 1. FunctionDeclaration inside of Function is not hoisted, but should only be moved to top of scope block.
-   *    * → But it is hoisted in non-strict mode.
-   * 
-   * 
-   * @see https://github.com/genify/babel-plugin-transform-remove-strict-mode/blob/master/lib/index.js
-   */
-  removeStrictMode() {
-    let list = this.path.node.directives;
-    for (let i = list.length - 1, it; i >= 0; i--) {
-      it = list[i];
-      if (it.value.value === 'use strict') {
-        list.splice(i, 1);
-      }
-    }
-  }
+  // /**
+  //  * NOTE: we remove strict mode since it leads to different versions of "correctness".
+  //  * In strict mode -
+  //  * 
+  //  * 1. FunctionDeclaration inside of Function is not hoisted, but should only be moved to top of scope block.
+  //  *    * → But it is hoisted in non-strict mode.
+  //  * 
+  //  * 
+  //  * @see https://github.com/genify/babel-plugin-transform-remove-strict-mode/blob/master/lib/index.js
+  //  */
+  // removeStrictMode() {
+  //   let list = this.path.node.directives;
+  //   for (let i = list.length - 1, it; i >= 0; i--) {
+  //     it = list[i];
+  //     if (it.value.value === 'use strict') {
+  //       list.splice(i, 1);
+  //     }
+  //   }
+  // }
 
   /**
    * NOTE: this is called last.
@@ -151,8 +151,8 @@ export default class Program extends BaseNode {
   instrument() {
     const { path, state } = this;
 
-    // hackfix1: remove strict mode
-    this.removeStrictMode();
+    // // hackfix1: remove strict mode
+    // this.removeStrictMode();
 
     // hackfix2: some final instrumentation
     finishAllScopeBlocks();

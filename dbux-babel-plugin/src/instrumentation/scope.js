@@ -1,4 +1,13 @@
+import { newLogger } from '@dbux/common/src/log/logger';
+import { astNodeToString, pathToString } from '../helpers/pathHelpers';
 import { getScopeBlockPathInstrument } from '../helpers/scopeHelpers';
+
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('inst-scope');
+
+// const Verbose = 2;
+const Verbose = 2;
 
 /**
  * Hackfix: store all nodes to be hoisted, and finally add them all in order, to keep order of execution.
@@ -25,16 +34,20 @@ export function unshiftScopeBlock(targetPath, newNodes, append = true) {
   else {
     nodes.unshift(...newNodes);
   }
+
+  Verbose && debug(`unshiftScopeBlock @"${pathToString(targetPath)}": ${newNodes.map(n => astNodeToString(n)).join(', ')}`);
   // return scopeBlockPath.unshiftContainer("body", newNodes);
 }
 
 export function moveScopeBlock(oldPath, newPath) {
-  oldPath = getScopeBlockPathInstrument(oldPath);
+  // oldPath = getScopeBlockPathInstrument(oldPath);
   newPath = getScopeBlockPathInstrument(newPath);
   
   const nodes = hoistedNodesByBlock.get(oldPath);
   hoistedNodesByBlock.delete(oldPath);
   hoistedNodesByBlock.set(newPath, nodes);
+
+  Verbose && debug(`moveScopeBlock "${pathToString(oldPath)}" to "${pathToString(newPath)}"`);
 }
 
 
