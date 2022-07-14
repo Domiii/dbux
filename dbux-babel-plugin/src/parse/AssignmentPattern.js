@@ -1,13 +1,12 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 import * as t from "@babel/types";
 import template from '@babel/template';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { LValHolderNode } from './_types';
 import BaseNode from './BaseNode';
 import { skipPath } from '../helpers/traversalHelpers';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { unshiftScopeBlock } from '../instrumentation/scope';
+import { addHoistedNodesToScope } from '../instrumentation/scope';
 import { getClosestAssignmentOrDeclaration, getClosestBlockParentChild, getPatternRootPath } from '../helpers/pathHierarchyUtil';
-import { pathToString } from '../helpers/pathHelpers';
 // import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
 /** @typedef { import("./plugins/Params").default } Params */
@@ -89,6 +88,34 @@ export default class AssignmentPattern extends BaseNode {
     }
   }
 
+  /** ###########################################################################
+   * ordering
+   *  #########################################################################*/
+
+  #makeNodeOrderEntry = n => {
+    return {
+      node: n,
+      comparator: this.#compareNodeOrder,
+      entryNode: this
+    };
+  };
+
+  #compareNodeOrder = (a, b) => {
+    const da = a.entryNode.depth;
+    const db = b.entryNode.depth;
+    if (da !== db) {
+      // deeper goes later
+      return da - db;
+    }
+    // the key is the index in parent node
+    const aKey = a.entryNode.path.key;
+    const bKey = b.entryNode.path.key;
+    return aKey - bKey;
+  };
+
+  /** ###########################################################################
+   * addTraceDefault
+   *  #########################################################################*/
 
   /**
    * Handle default initializer (not Identifier).
@@ -102,7 +129,6 @@ export default class AssignmentPattern extends BaseNode {
     // NOTE: if isInBody, assignmentOrDeclaration must exist.
     const assignmentOrDeclarationPath = getClosestAssignmentOrDeclaration(path);
     const isAssignment = assignmentOrDeclarationPath?.isAssignmentExpression() || false;
-    const patternRootPath = getPatternRootPath(path);
 
     const blockParentChild = getClosestBlockParentChild(path);
     const isInBody =
@@ -125,6 +151,7 @@ export default class AssignmentPattern extends BaseNode {
     //    if it is inside a `param`: add trace there instead, so its nodes are placed after `params` own traces
     // const traceTargetNode = isParam ? node.peekPluginForce('Params').node : node;
 
+    const patternRootPath = getPatternRootPath(path);
     const traceTargetNode = this.getNodeOfPath(patternRootPath);
 
     // TODO: sort by depth and order within same parent
@@ -149,9 +176,7 @@ export default class AssignmentPattern extends BaseNode {
 
           // Put `tmp` in, and get the `resolverExpression`
           const resolverExpression = node.buildAndReplaceParam(tmp);
-
           const shouldAddToBlock = !isInBody;
-
 
           if (shouldAddToBlock && !isAssignment) {
             const newNodes = [
@@ -163,9 +188,10 @@ export default class AssignmentPattern extends BaseNode {
                 )]
               )
             ];
+
             if (shouldAddToBlock) {
               // not in body → add to body
-              unshiftScopeBlock(path, newNodes);
+              addHoistedNodesToScope(path, newNodes.map(n => this.#makeNodeOrderEntry(n)));
             }
             else {
               // VariableDeclaration (in body) → insertAfter

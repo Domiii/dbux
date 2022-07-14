@@ -3,7 +3,7 @@
 import { pathToString } from '../helpers/pathHelpers';
 import { getInstrumentPath, getBuildTargetPath } from './builders/common';
 import { doBuild, buildAll, buildTraceDeclarationVar } from './builders/misc';
-import { unshiftScopeBlock } from './scope';
+import { addHoistedNodesToScope } from './scope';
 
 export function instrumentInPlace(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
@@ -98,5 +98,5 @@ export function postInstrument(traceCfg, resultNode) {
 
 export function instrumentHoisted(targetPath, state, traceCfgs) {
   const resultNodes = buildAll(state, traceCfgs, buildTraceDeclarationVar);
-  unshiftScopeBlock(targetPath, resultNodes);
+  addHoistedNodesToScope(targetPath, resultNodes);
 }

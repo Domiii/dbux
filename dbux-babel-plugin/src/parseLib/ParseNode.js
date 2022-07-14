@@ -56,6 +56,10 @@ export default class ParseNode {
     this.nodeId = ++stack.lastId;
   }
 
+  get depth() {
+    return this.recordedDepth;
+  }
+
   getAllClassPlugins() {
     // if (!this.constructor._pluginConfigs) {
     //   const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor, this);
