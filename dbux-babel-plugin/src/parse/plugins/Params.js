@@ -7,6 +7,7 @@ import { astNodeToString, pathToString, pathToStringAnnotated } from '../../help
 import BindingIdentifier from '../BindingIdentifier';
 import { TraceCfgMeta } from '../../definitions/TraceCfg';
 import AssignmentPattern from '../AssignmentPattern';
+import { instrumentHoisted } from '../../instrumentation/instrumentMisc';
 
 
 function getParamDefaultInitializerPath(paramPath) {
@@ -134,7 +135,9 @@ export default class Params extends BasePlugin {
     // ########################################
     let targetNode;  // input for the build function
     if (defaultInitializerNode) {
-      // NOTE: `instrumentHoisted` will move the replacement decision expression to the top of the function
+      /**
+       * NOTE: {@link instrumentHoisted} will add the replacement decision expression to the top of the function.
+       */
       targetNode = () => {
         const newNode = this.#makeDefaultTargetNodeId(paramNode, idPath);
         // console.log('PARAM default', astNodeToString(newNode));

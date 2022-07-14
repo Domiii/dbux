@@ -135,16 +135,16 @@ export default function patchMapAndSet() {
   patchGet(Map);
   patchMapSet(Map);
   patchDelete(Map);
-  
-  patchGet(WeakMap);
-  patchMapSet(WeakMap);
-  patchDelete(WeakMap);
 
   patchSetAdd(Set);
   patchDelete(Set);
 
-  patchSetAdd(WeakSet);
-  patchDelete(WeakSet);
+  // patchGet(WeakMap);
+  // patchMapSet(WeakMap);
+  // patchDelete(WeakMap);
+
+  // patchSetAdd(WeakSet);
+  // patchDelete(WeakSet);
   
 
   [
@@ -152,8 +152,8 @@ export default function patchMapAndSet() {
     'forEach'
   ].forEach(m => monkeyPatchMethodOverrideDefault(Map, m));
 
-  [
-    'has'
-  ].forEach(m => monkeyPatchMethodOverrideDefault(WeakMap, m));
+  // [
+  //   'has'
+  // ].forEach(m => monkeyPatchMethodOverrideDefault(WeakMap, m));
 }
 

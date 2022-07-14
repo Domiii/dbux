@@ -98,5 +98,5 @@ export function postInstrument(traceCfg, resultNode) {
 
 export function instrumentHoisted(targetPath, state, traceCfgs) {
   const resultNodes = buildAll(state, traceCfgs, buildTraceDeclarationVar);
-  unshiftScopeBlock(targetPath, resultNodes)[0];
+  unshiftScopeBlock(targetPath, resultNodes);
 }

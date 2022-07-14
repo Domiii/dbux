@@ -5,6 +5,7 @@ import { replaceProgramBody } from '../helpers/program';
 import { buildContextEndTrace } from '../instrumentation/context';
 import { buildDbuxInit } from '../data/staticData';
 import BaseNode from './BaseNode';
+import { finishAllScopeBlocks } from '../instrumentation/scope';
 
 
 /**
@@ -124,8 +125,15 @@ export default class Program extends BaseNode {
     // this.StaticContext.addInterruptableContextArgs(moreTraceCallArgs);
   }
 
+  /**
+   * NOTE: this is called last.
+   */
   instrument() {
     const { path, state } = this;
+
+    // hackfix: some final instrumentation
+    finishAllScopeBlocks();
+
     // instrument Program itself
     wrapProgram(path, state);
 

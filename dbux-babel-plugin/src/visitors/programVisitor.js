@@ -7,6 +7,7 @@ import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
 import nameVisitors, { clearNames } from './nameVisitors';
+import { finishAllScopeBlocks } from '../instrumentation/scope';
 
 /** @typedef {import('@dbux/common-node/src/filters/moduleFilter').ModuleFilterOptions} ModuleFilterOptions */
 

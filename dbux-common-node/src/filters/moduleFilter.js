@@ -1,7 +1,8 @@
+import { inspect } from 'util';
 import isString from 'lodash/isString';
 import isRegExp from 'lodash/isRegExp';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { renderPath } from '../util/pathUtil';
+import { pathNormalized, renderPath } from '../util/pathUtil';
 import { parsePackageName } from '../util/moduleUtil';
 
 // NOTE: aggressive debugging techniques for when console is not available.
@@ -35,10 +36,10 @@ function traceLog(...args) {
 }
 
 function shouldInstrument(input, whitelist, blacklist) {
-  const white = (!whitelist || whitelist.some(regexp => regexp.test(input)));
-  const black = (!blacklist || !blacklist.some(regexp => regexp.test(input)));
+  const white = (!whitelist?.length || whitelist.some(regexp => regexp.test(input)));
+  const black = (!blacklist?.length || !blacklist.some(regexp => regexp.test(input)));
   const result = white && black;
-  Verbose > 1 && debugLog('shouldInstrument', input, result, '\n  ',
+  Verbose > 1 && debugLog('shouldInstrument', input, result, '\n  --',
     JSON.stringify({ white, black, whitelist: whitelist?.map(x => x.toString()), blacklist: blacklist?.map(x => x.toString()) })
   );
   return result;
@@ -112,6 +113,7 @@ export default function moduleFilter(options, includeDefault) {
       return undefined;
     }
 
+    modulePath = pathNormalized(modulePath);
 
     const unwanted =
       // 1. internal stuff + *.dbux.* files
@@ -190,6 +192,8 @@ function makeRegExps(list, toRegexp = defaultRegexpCreator) {
     list = Array.from(list)
       .map(s => makeRegExps(s, toRegexp));
   }
+
+  // Verbose > 2 && debugLog('RegExps:', inspect(list));
 
   return list.flat();
 }

@@ -151,9 +151,11 @@ export default class WebpackProject extends Project {
   decorateExercise(config) {
     config.mainEntryPoint = [this.cliBin];
     // config.dbuxArgs = config.dbuxArgs || '--pw=webpack.*,tapable,graceful-fs,enhanced-resolve,babel-loader';
-    config.dbuxArgs = config.dbuxArgs || 
-      '--pw=webpack.*,tapable,enhanced-resolve,babel-loader ' +
-      '--pb=WebpackOptions\\.check\\.js';  // large, auto-generated file
+    config.dbuxArgs = config.dbuxArgs ||
+      '--pb=.* ' +
+      '--fb=webpack/schemas'; // large, auto-generated files
+    // '--pw=webpack.*,tapable,enhanced-resolve,babel-loader ' +
+    // '--pb=WebpackOptions\\.check\\.js';  // large, auto-generated file
     return config;
   }
 
@@ -166,6 +168,13 @@ export default class WebpackProject extends Project {
     function p(...f) {
       return pathResolve(projectPath, ...f);
     }
+
+    /**
+     * Original commands:
+     * 
+     * cd dbux_projects\webpack\examples\commonjs
+     * "node" --stack-trace-limit=100   --max-old-space-size=8192 "../../webpack-cli/packages/webpack-cli/bin/cli.js" -- --mode none --env none --entry ./example.js --output-path output
+     */
 
     return [
       buildNodeCommand({

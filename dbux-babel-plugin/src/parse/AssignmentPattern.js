@@ -208,4 +208,7 @@ export default class AssignmentPattern extends BaseNode {
     // 2. return the decision for replacement later
     return repl;
   }
+
+  instrument() {
+  }
 }

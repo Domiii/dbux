@@ -63,24 +63,26 @@ class SearchBar extends HostComponentEndpoint {
   }
 
   handleSearch = async () => {
-    const { searchController } = this;
-    const { contexts, searchTerm, mode } = searchController;
+    // NOTE: this can be super slow for large applications, so let's not do this for now.
+    
+    // const { searchController } = this;
+    // const { contexts, searchTerm, mode } = searchController;
 
-    // highlight in callgraph
-    const selector = (mode !== SearchMode.None && searchTerm) ? { searchController } : null;
-    await this.contextNodeManager.highlight(SelectorType.Search, selector, false);
+    // // highlight in callgraph
+    // const selector = (mode !== SearchMode.None && searchTerm) ? { searchController } : null;
+    // await this.contextNodeManager.highlight(SelectorType.Search, selector, false);
 
-    // select first match
-    let index = -1;
-    if (contexts.length) {
-      index = 0;
-      this.selectContextByIndex(index);
-    }
-    this.setState({
-      searchTerm,
-      index,
-      count: contexts.length,
-    });
+    // // select first match
+    // let index = -1;
+    // if (contexts.length) {
+    //   index = 0;
+    //   this.selectContextByIndex(index);
+    // }
+    // this.setState({
+    //   searchTerm,
+    //   index,
+    //   count: contexts.length,
+    // });
   }
 
   public = {
