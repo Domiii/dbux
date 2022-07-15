@@ -28,6 +28,7 @@ export default class JavascriptAlgorithmProject extends Project {
 
   rmFiles = [
     'package-lock.json',
+    '.eslintrc',    // unwanted eslint'ing
     '.babelrc',       // we need babel.config.js instead
     '.husky'   // unwanted commit hooks
   ];

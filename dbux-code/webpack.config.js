@@ -38,8 +38,8 @@ module.exports = (env, argv) => {
       NODE_ENV: mode,
       DBUX_VERSION,
       DBUX_ROOT,
-      // RESEARCH_ENABLED: '' // NOTE: all env vars are converted to strings
-      RESEARCH_ENABLED: '1' // NOTE: all env vars are converted to strings
+      RESEARCH_ENABLED: '' // NOTE: all env vars are converted to strings
+      // RESEARCH_ENABLED: '1' // NOTE: all env vars are converted to strings
     }),
     new CopyPlugin({
       // NOTE: there is more copying in dbux-graph-client/webpack.config.js

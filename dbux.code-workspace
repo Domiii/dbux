@@ -2,6 +2,9 @@
   "folders": [
     {
       "path": "."
+    },
+    {
+      "path": "..\\..\\.vscode\\extensions\\domi.dbux-code-0.7.6\\dbux_projects\\javascript-algorithms"
     }
   ],
   "settings": {

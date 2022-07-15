@@ -1532,6 +1532,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     let exerciseConfigs = this.loadExerciseConfigs(exerciseFileName)
       .filter(this.canRunExercise.bind(this))
       .map(this.decorateExercise.bind(this));
+    this.logger.debug(`[reloadExercises] found ${exerciseConfigs.length} in "${exerciseFileName}"`);
     const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
     let lastExercise = 0;
 

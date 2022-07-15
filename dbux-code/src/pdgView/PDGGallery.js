@@ -50,9 +50,9 @@ export default class PDGGallery {
 
   constructor(controller) {
     this.controller = controller;
-    if (!process.env.DBUX_ROOT) {
-      throw new Error(`Cannot find DBUX_ROOT and RESEARCH_ENABLED missing (but required) for PDGGallery to work`);
-    }
+    // if (!process.env.DBUX_ROOT) {
+    //   throw new Error(`Cannot find DBUX_ROOT and RESEARCH_ENABLED missing (but required) for PDGGallery to work`);
+    // }
   }
 
   get galleryDataRoot() {
