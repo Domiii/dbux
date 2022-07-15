@@ -21,6 +21,19 @@ function isSupported(paramPath) {
     (paramPath.isAssignmentPattern() && paramPath.get('left').isIdentifier());
 }
 
+function _compareNodeOrder(a, b) {
+  const da = a.entryNode.depth;
+  const db = b.entryNode.depth;
+  if (da !== db) {
+    // deeper goes later
+    return da - db;
+  }
+  // the key is the index in parent node
+  const aKey = a.entryNode.path.key;
+  const bKey = b.entryNode.path.key;
+  return aKey - bKey;
+}
+
 
 // ###########################################################################
 // AssignmentExpression
@@ -92,26 +105,14 @@ export default class AssignmentPattern extends BaseNode {
    * ordering
    *  #########################################################################*/
 
-  #makeNodeOrderEntry = n => {
+  #makeNodeOrderEntry = (entryNode, astNode) => {
     return {
-      node: n,
-      comparator: this.#compareNodeOrder,
-      entryNode: this
+      entryNode,
+      node: astNode,
+      comparator: _compareNodeOrder
     };
   };
 
-  #compareNodeOrder = (a, b) => {
-    const da = a.entryNode.depth;
-    const db = b.entryNode.depth;
-    if (da !== db) {
-      // deeper goes later
-      return da - db;
-    }
-    // the key is the index in parent node
-    const aKey = a.entryNode.path.key;
-    const bKey = b.entryNode.path.key;
-    return aKey - bKey;
-  };
 
   /** ###########################################################################
    * addTraceDefault
@@ -167,7 +168,8 @@ export default class AssignmentPattern extends BaseNode {
       meta: {
         instrument: (state, traceCfg) => {
           // declare `tmp` var, if this is AssignmentExpression (else it will be placed into a declaration)
-          const shouldDeclareTmp = isAssignment;
+          // const shouldDeclareTmp = isAssignment;
+          const shouldDeclareTmp = false;
           const tmp = node.Traces.generateDeclaredUidIdentifier('tmp', shouldDeclareTmp);
 
           // const paramAstNode = paramPath.node;
@@ -191,7 +193,7 @@ export default class AssignmentPattern extends BaseNode {
 
             if (shouldAddToBlock) {
               // not in body → add to body
-              addHoistedNodesToScope(path, newNodes.map(n => this.#makeNodeOrderEntry(n)));
+              addHoistedNodesToScope(path, newNodes.map(n => this.#makeNodeOrderEntry(this, n)));
             }
             else {
               // VariableDeclaration (in body) → insertAfter

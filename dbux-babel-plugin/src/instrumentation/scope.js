@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import { NodePath } from '@babel/traverse';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString, pathToString } from '../helpers/pathHelpers';
@@ -9,7 +10,7 @@ import { getScopeBlockPathInstrument } from '../helpers/scopeHelpers';
 const { log, debug, warn, error: logError } = newLogger('inst-scope');
 
 // const Verbose = 2;
-const Verbose = 2;
+const Verbose = 0;
 
 class BlockEntry {
   /**
@@ -26,13 +27,15 @@ class BlockEntry {
 /** @typedef { BlockEntry | AstNode } AnyBlockEntry  */
 
 function anyEntryToString(n) {
-  if (n instanceof BlockEntry) {
+  if (n.comparator) {
     return astNodeToString(n.node);
   }
   if (n.type) {
     return astNodeToString(n);
   }
-  return JSON.stringify(n) + '';
+  // return JSON.stringify(n) + '';
+  // return inspect(n);
+  return `[${typeof n}] ${n}`;
 }
 
 /**
@@ -89,8 +92,10 @@ export function moveScopeBlock(oldPath, newPath) {
   newPath = getScopeBlockPathInstrument(newPath);
 
   const nodes = hoistedNodesByBlock.get(oldPath);
-  hoistedNodesByBlock.delete(oldPath);
-  hoistedNodesByBlock.set(newPath, nodes);
+  if (nodes) {
+    hoistedNodesByBlock.delete(oldPath);
+    hoistedNodesByBlock.set(newPath, nodes);
+  }
 
   Verbose && debug(`moveScopeBlock "${pathToString(oldPath)}" to "${pathToString(newPath)}"`);
 }
@@ -118,10 +123,10 @@ function sortNodes(nodes) {
 }
 
 export function finishAllScopeBlocks() {
-  for (const [scopeBlockPath, nodes] of hoistedNodesByBlock) {
-    sortNodes(nodes);
-    // TODO: get actual nodes here
-    Verbose && debug(`Added ${nodes.length} nodes:\n  ${nodes.map((n, i) => `${i}) ` + anyEntryToString(n)).join('\n  ')}`);
+  for (const [scopeBlockPath, entries] of hoistedNodesByBlock) {
+    sortNodes(entries);
+    Verbose && debug(`Added ${entries.length} nodes:\n  ${entries.map((n, i) => `${i}) ` + anyEntryToString(n)).join('\n  ')}`);
+    const nodes = entries.map(e => e.node || e);
     scopeBlockPath.unshiftContainer("body", nodes);
   }
   hoistedNodesByBlock.clear();
