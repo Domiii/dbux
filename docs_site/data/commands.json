@@ -20,7 +20,7 @@
     "description": ""
   },
   {
-    "command": "dbux.doActivate",
+    "command": "dbux.doActivate1",
     "title": "Dbux: Start Dbux",
     "description": ""
   },
@@ -57,6 +57,11 @@
   {
     "command": "dbux.loadResearchSession",
     "title": "Dbux: Load research session",
+    "description": ""
+  },
+  {
+    "command": "dbux.openExportFolder",
+    "title": "Dbux: Open Export Folder",
     "description": ""
   },
   {
@@ -125,6 +130,11 @@
     "description": ""
   },
   {
+    "command": "dbux.showPDGOfContext",
+    "title": "Dbux: Open PDG for Selected Function",
+    "description": ""
+  },
+  {
     "command": "dbux.showPathwaysView",
     "title": "Dbux: Show Pathways View",
     "description": ""
@@ -153,6 +163,11 @@
     "command": "dbux.systemCheck",
     "title": "Dbux: Check System Dependencies",
     "description": "Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command."
+  },
+  {
+    "command": "dbux.testPDG",
+    "title": "Dbux Dev: Test PDG",
+    "description": ""
   },
   {
     "command": "dbux.toggleErrorLog",

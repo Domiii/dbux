@@ -45,7 +45,8 @@ export function makeMETraceData(parseNode, objectVar = null, objectTid = null) {
     }
     else {
       // parseNode.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
-      objectVar = null;
+      // objectVar = null;
+      objectVar = Traces.generateDeclaredUidIdentifier('o');
     }
   }
   else {

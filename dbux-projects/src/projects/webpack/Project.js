@@ -152,10 +152,9 @@ export default class WebpackProject extends Project {
     config.mainEntryPoint = [this.cliBin];
     // config.dbuxArgs = config.dbuxArgs || '--pw=webpack.*,tapable,graceful-fs,enhanced-resolve,babel-loader';
     config.dbuxArgs = config.dbuxArgs ||
-      '--pb=.* ' +
+      // '--pb=.* ' +
+      '--pw=webpack.*,tapable,enhanced-resolve,babel-loader ' +
       '--fb=webpack/schemas'; // large, auto-generated files
-    // '--pw=webpack.*,tapable,enhanced-resolve,babel-loader ' +
-    // '--pb=WebpackOptions\\.check\\.js';  // large, auto-generated file
     return config;
   }
 
