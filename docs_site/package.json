@@ -8,6 +8,7 @@
     "docs": "yarn start",
     "update-docs": "cd .. && yarn update-dbux-code-docs",
     "build": "yarn update-docs && docusaurus build --out-dir=./.build",
+    "build:prod": "yarn update-docs && docusaurus build --out-dir=../docs",
     "serve": "docusaurus serve --dir=./.build",
     "deploy": "bash ./scripts/deploy_docs.sh",
     "_deploy_orig": "yarn update-docs && docusaurus deploy --out-dir ../docs",

@@ -12,7 +12,7 @@ fi
 echo "Building Docs..."
 
 # yarn update-docs # "yarn build" already runs update-docs
-yarn build
+yarn build:prod
 
 
 # TODO: get user input first

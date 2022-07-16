@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdbux_docs=self.webpackChunkdbux_docs||[]).push([[99],{2421:function(e,n,a){a.r(n),a.d(n,{default:function(){return c}});var t=a(7294),u=a(6775);function c(){var e=(0,u.TH)().pathname.replace("runtime-analysis","dynamic-analysis");return t.createElement(u.l_,{to:e})}}}]);
