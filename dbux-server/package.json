@@ -1,7 +1,7 @@
 {
   "name": "@dbux/server",
   "private": true,
-  "version": "0.7.7-dev.1",
+  "version": "0.7.7",
   "license": "Apache-2.0",
   "scripts": {
     "clean": "rm -rf ./dist",

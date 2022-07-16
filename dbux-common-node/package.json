@@ -1,6 +1,6 @@
 {
   "name": "@dbux/common-node",
-  "version": "0.7.7-dev.1",
+  "version": "0.7.7",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -9,7 +9,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.7.7-dev.1",
+    "@dbux/common": "^0.7.7",
     "adm-zip": "^0.5.9",
     "colors": "1.4.0",
     "common-ancestor-path": "^1.0.1",

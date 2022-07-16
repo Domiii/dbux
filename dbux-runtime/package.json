@@ -1,6 +1,6 @@
 {
   "name": "@dbux/runtime",
-  "version": "0.7.7-dev.1",
+  "version": "0.7.7",
   "description": "",
   "module": "dist/index-node.js",
   "main": "dist/index-node.js",
@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@dbux/common": "^0.7.7-dev.1",
+    "@dbux/common": "^0.7.7",
     "core-js": "^3.15",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",

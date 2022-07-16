@@ -1,6 +1,6 @@
 {
   "name": "@dbux/common",
-  "version": "0.7.7-dev.1",
+  "version": "0.7.7",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
