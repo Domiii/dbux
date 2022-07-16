@@ -12,7 +12,7 @@
     "omniscient debugger",
     "dynamic analysis"
   ],
-  "version": "0.7.8",
+  "version": "0.7.9-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -1638,14 +1638,14 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn  --baseImagesUrl https://github.com/Domiii/dbux/dbux-code --baseContentUrl https://github.com/Domiii/dbux/dbux-code"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.7.8",
-    "@dbux/common": "^0.7.8",
-    "@dbux/common-node": "^0.7.8",
-    "@dbux/data": "^0.7.8",
-    "@dbux/graph-common": "^0.7.8",
-    "@dbux/graph-host": "^0.7.8",
-    "@dbux/projects": "^0.7.8",
-    "@dbux/runtime": "^0.7.8",
+    "@dbux/babel-plugin": "^0.7.9-dev.0",
+    "@dbux/common": "^0.7.9-dev.0",
+    "@dbux/common-node": "^0.7.9-dev.0",
+    "@dbux/data": "^0.7.9-dev.0",
+    "@dbux/graph-common": "^0.7.9-dev.0",
+    "@dbux/graph-host": "^0.7.9-dev.0",
+    "@dbux/projects": "^0.7.9-dev.0",
+    "@dbux/runtime": "^0.7.9-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",
