@@ -8,11 +8,11 @@ import TOC from '@src/components/TOC';
 
 ## Why don't My Applications Show Up?
 
-In order to analyze an application, it first needs to be [recorded](./dbux-features/02-enable-dbux.mdx) and sub-sequently show up in [the application view](./dbux-features/05-applications.mdx).
+In order to analyze an application, it first needs to be [recorded](./features/02-enable-dbux.mdx) and sub-sequently show up in [the application view](./features/05-applications.mdx).
 
 There can be a multitude of possible reasons for this to go wrong:
 
-1. You did not instrument the application. Make sure to use one of the four methods of [Running a JavaScript Application w/ Dbux Enabled](./dbux-features/02-enable-dbux.mdx).
+1. You did not instrument the application. Make sure to use one of the four methods of [Running a JavaScript Application w/ Dbux Enabled](./features/02-enable-dbux.mdx).
 2. Your application exited prematurely due to a crash or `process.exit` being called. In that case, Dbux might not have been able to send out the data on time. Usually, this is accompanied by a console message that reads a little like `"Process exiting but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or because process.exit was called manually."`.
    * Note that some environments (such as `Jest`) might swallow important console messages, which would explain why you were not able to see the message.
    * In order to prevent this situation, Dbux tries (rather aggressively) to keep an instrumented application alive. If it does, it would accompany its moves with further log messages. Look for the hints.
@@ -39,7 +39,7 @@ You can bind commands to keys. [This official documentation explains how to easi
 
 ## Why is someFile.js not Traced?
 
-If you are certain that a file executed in a [Dbux-enabled application](./dbux-features/02-enable-dbux.mdx), make sure your [configuration is not accidentally excluding the file, package or folder](./guides/01-runtime-trace-filtering.mdx).
+If you are certain that a file executed in a [Dbux-enabled application](./features/02-enable-dbux.mdx), make sure your [configuration is not accidentally excluding the file, package or folder](./guides/01-runtime-trace-filtering.mdx).
 
 
 ## How can I debug code remotely?

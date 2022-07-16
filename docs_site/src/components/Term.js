@@ -11,7 +11,7 @@ import useBaseUrl from '../hooks/useBaseUrl';
 
 // const acg = 'TODO';
 
-// const AcgPath = 'dbux-features/asynchronous-call-graph';
+// const AcgPath = 'features/asynchronous-call-graph';
 const AcgPath = 'acg';
 
 const DebuggingBackgroundPath = 'background/debugging';
@@ -31,7 +31,7 @@ const aliases = {
 };
 
 const PathByTerm = {
-  'call graph': 'dbux-features/call-graph',
+  'call graph': 'features/call-graph',
   acg: AcgPath,
   cgr: AcgPath,
   ae: AcgPath,

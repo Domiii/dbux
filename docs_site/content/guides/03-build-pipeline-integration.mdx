@@ -7,7 +7,7 @@ import TOC from '@src/components/TOC';
 <TOC toc={toc} />
 
 
-As explained in [the "Dynamic Analysis" chapter](../dbux-features/02-enable-dbux.mdx): for Dbux to work, it first needs to record JavaScript application behavior. To that end, your program must be instrumented with <CodeLink path="dbux-babel-plugin" /> (i.e.: you need to "[babel](https://babeljs.io/) your program" with `@dbux/babel-plugin` enabled).
+As explained in [the "Dynamic Analysis" chapter](../features/02-enable-dbux.mdx): for Dbux to work, it first needs to record JavaScript application behavior. To that end, your program must be instrumented with <CodeLink path="dbux-babel-plugin" /> (i.e.: you need to "[babel](https://babeljs.io/) your program" with `@dbux/babel-plugin` enabled).
 
 Once running, the injected `@dbux/runtime` will send collected data to the [runtime server](../tools-and-configuration/01-dbux-code.mdx#runtime-server).
 

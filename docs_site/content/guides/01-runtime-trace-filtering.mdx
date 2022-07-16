@@ -9,7 +9,7 @@ import TOC from '@src/components/TOC';
 
 This article explains how Dbux determines which files and lines of code to trace.
 
-When [Dbux is enabled](../dbux-features/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. This can be configured. However, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything, but tracing *everything* can slow things down significantly.
+When [Dbux is enabled](../features/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. This can be configured. However, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything, but tracing *everything* can slow things down significantly.
 
 :::tip
 If you know that some packages do not contribute to your dynamic analysis, do not `whitelist` them or explicitly `blacklist` them. This can improve [performance](./02-performance.mdx), especially if they contain many lines of code or many <Term term="trace" /> event records.
@@ -41,7 +41,7 @@ Some notes:
 
 ### Run Button + @dbux/cli
 
-When using [the Run Button](../dbux-features/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
+When using [the Run Button](../features/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
 
 * Example: `npx dbux run --pw=.* --pb=lodash ./test.js`
   * -> Traces all libraries, but `lodash`.

@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, useLocation } from '@docusaurus/router';
 
 const oldRoute = 'runtime-analysis';
-const newRoute = 'dbux-features';
+const newRoute = 'features';
 
 // This page re-routes any request of `page-x/a/b/c` to `page-y/a/b/c`.
 

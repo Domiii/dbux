@@ -154,10 +154,10 @@ export async function showPDGViewForContextOfSelectedTrace() {
         await env.openExternal(Uri.parse('https://domiii.github.io/dbux/pdg#how-to'));
       },
       async 'How to "enable Dbux"?'() {
-        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-features/enable-dbux'));
+        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/features/enable-dbux'));
       },
       async 'How to select a trace?'() {
-        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/dbux-features/select-trace'));
+        await env.openExternal(Uri.parse('https://domiii.github.io/dbux/features/select-trace'));
       }
     };
 

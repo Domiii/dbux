@@ -8,10 +8,12 @@
 
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript dynamic analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
-# Quick links:
+# Quick links
 
 * [Dbux Documentation](https://domiii.github.io/dbux)
-* [Dbux for Dynamic Analysis](https://domiii.github.io/dbux/dynamic-analysis)
+* [Dbux Features](https://domiii.github.io/dbux/features)
+* [Dbux-ACG](https://domiii.github.io/dbux/acg)
+* [Dbux-PDG](https://domiii.github.io/dbux/pdg)
 
 
 # Video Introduction

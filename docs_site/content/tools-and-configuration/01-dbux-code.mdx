@@ -13,17 +13,17 @@ import TOC from '@src/components/TOC';
 The Dbux VSCode Extension is available on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code). It is currently the only GUI implementation for Dbux.
 
 :::tip
-This page goes into some lower level details while [the Dynamic Analysis manual](../dbux-features/) explains the GUI and all analysis features in detail.
+This page goes into some lower level details while [the Dynamic Analysis manual](../features/) explains the GUI and all analysis features in detail.
 :::
 
 
 ## Runtime Server
 
-Currently, the VSCode Extension is the only implementation of the <DarkLightImg src="antenna_green.svg" /><DarkLightImg src="antenna_red.svg" /> Dbux Runtime Server. If enabled, it receives data from [Dbux-enabled applications](../dbux-features/02-enable-dbux.mdx) running on `localhost`[^1]. Once a first batch of data is received, the application will show up in the [Application View](../dbux-features/applications).
+Currently, the VSCode Extension is the only implementation of the <DarkLightImg src="antenna_green.svg" /><DarkLightImg src="antenna_red.svg" /> Dbux Runtime Server. If enabled, it receives data from [Dbux-enabled applications](../features/02-enable-dbux.mdx) running on `localhost`[^1]. Once a first batch of data is received, the application will show up in the [Application View](../features/applications).
 
-The Runtime Server is turned off by default. It turns on automatically the first time you use [the Run Button](../dbux-features/03-the-run-button.mdx) or run a [Dbux Practice exercise](../dbux-practice/01-overview.mdx).
+The Runtime Server is turned off by default. It turns on automatically the first time you use [the Run Button](../features/03-the-run-button.mdx) or run a [Dbux Practice exercise](../dbux-practice/01-overview.mdx).
 
-You can manually turn it on or off via "the Runtime Server button" at the top of [the Applications view](../dbux-features/05-applications.mdx)[^2]:
+You can manually turn it on or off via "the Runtime Server button" at the top of [the Applications view](../features/05-applications.mdx)[^2]:
 <Img screen src="runtime-server-button.png" />
 
 :::note
