@@ -13,7 +13,7 @@ import { parsePackageName } from '../util/moduleUtil';
 // }
 
 let Verbose;
-const DefaultVerbose = 1;
+const DefaultVerbose = 3;
 // const DefaultVerbose = 2;
 // const DefaultVerbose = 10;
 

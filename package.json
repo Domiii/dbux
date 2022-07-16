@@ -73,7 +73,7 @@
     "prepublishOnly": "yarn run build:prod",
     "i": "npx lerna bootstrap --force-local && npx lerna link --force-local",
     "start": "yarn run build:clean && yarn run version:dev && yarn runall:dev",
-    "start:prod": "yarn run build:clean && yarn run version:prod && yarn runall:prod",
+    "start:prod": "yarn run build:clean && yarn runall:prod",
     "pub": "node scripts/publish.js n",
     "marketplace": "node scripts/publish.js marketplace",
     "marketplace:minor": "node scripts/publish.js marketplace minor",
