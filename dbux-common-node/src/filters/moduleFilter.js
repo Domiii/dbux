@@ -13,7 +13,7 @@ import { parsePackageName } from '../util/moduleUtil';
 // }
 
 let Verbose;
-const DefaultVerbose = 3;
+const DefaultVerbose = 1;
 // const DefaultVerbose = 2;
 // const DefaultVerbose = 10;
 
@@ -81,7 +81,7 @@ export class ModuleFilterOptions {
  */
 export default function moduleFilter(options, includeDefault) {
   let {
-    verbose,
+    verbose = -1,
     packageWhitelist,
     packageBlacklist,
     fileWhitelist,
@@ -118,13 +118,14 @@ export default function moduleFilter(options, includeDefault) {
     const unwanted =
       // 1. internal stuff + *.dbux.* files
       // NOTE: this could cause problems, if dbux or babel tries to instrument itself.
+      // NOTE2: this specifically allows files inside the dbux-code extension folder ('domi.dbux-code-VERSION').
       // future-work: allow including these paths so we can debug Dbux with Dbux.
       // modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]|(\.dbux\.)/) ||
-      modulePath.match(/(dbux[-])|(@dbux[/\\])|(\.dbux\.)/) ||
+      modulePath.match(/([/]dbux[-])|([/]@dbux[/])|(\.dbux\.)/) ||
 
       // 2. some stuff we want to ignore by default
       // TODO: make `.mjs` and @babel path settings configurable
-      modulePath.match(/(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
+      modulePath.match(/(\.mjs$)|([/]@babel[/])|([/]babel[-]plugin.*[/])/);
 
     Verbose > 3 && debugLog(`CHECK: "${parsePackageName(modulePath)}" in "${modulePath}"`);
 

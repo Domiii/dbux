@@ -929,7 +929,7 @@ export default class ProjectsManager {
   // ###########################################################################
 
   getDevPackageRoot() {
-    // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
+    // NOTE: __dirname is actually "../../dbux-code/dist", because of webpack
     return realPathSyncNormalized(path.join(__dirname, '..', '..'));
   }
 

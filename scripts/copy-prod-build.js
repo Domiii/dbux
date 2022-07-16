@@ -1,10 +1,10 @@
-const { resolve } = require('path');
 const { readFileSync } = require('fs');
 const os = require('os');
 
 require('./dbux-register-self');    // add babel-register, so we can import dbux src files
 require('../dbux-common/src/util/prettyLogs');    // make console log pretty
 
+const { pathResolve: resolve } = require('../dbux-common-node/src/util/pathUtil');
 const NestedError = require(`../dbux-common/src/NestedError`);
 const Process = require('../dbux-projects/src/util/Process').default;
 const { newLogger } = require('../dbux-common/src/log/logger');
@@ -29,7 +29,8 @@ async function cp(src, dst) {
      * 
      * @see https://man7.org/linux/man-pages/man1/cp.1.html
      */
-    await exec(`cp -Tvr ${src} ${dst}`);
+    const flags = ''; // 'v';
+    await exec(`cp -Tr${flags} ${src} ${dst}`);
     console.log('  → Done.');
   }
   catch (err) {
@@ -60,10 +61,10 @@ async function cpDep(name) {
     resolve(codeFolder, distPath)
   );
 
-  await cpDep('common');
+  // await cpDep('common');
   await cpDep('common-node');
-  await cpDep('data');
-  await cpDep('projects');
+  // await cpDep('data');
+  // await cpDep('projects');
   await cpDep('runtime');
   await cpDep('babel-plugin');
   await cpDep('cli');
