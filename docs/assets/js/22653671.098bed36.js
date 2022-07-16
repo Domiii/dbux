@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdbux_docs=self.webpackChunkdbux_docs||[]).push([[621],{3662:function(e,n,u){u.r(n),u.d(n,{default:function(){return c}});var a=u(7294),t=u(6775);function c(){var e=(0,t.TH)().pathname.replace("dynamic-analysis","dbux-features");return a.createElement(t.l_,{to:e})}}}]);
