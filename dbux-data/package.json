@@ -1,6 +1,6 @@
 {
   "name": "@dbux/data",
-  "version": "0.7.8-dev.0",
+  "version": "0.7.8",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -12,8 +12,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@datastructures-js/priority-queue": "^5.2.0",
-    "@dbux/common": "^0.7.8-dev.0",
-    "@dbux/common-node": "^0.7.8-dev.0",
+    "@dbux/common": "^0.7.8",
+    "@dbux/common-node": "^0.7.8",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
     "nanoevents": "^2.0.0",
