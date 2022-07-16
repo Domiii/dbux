@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-host",
-  "version": "0.7.9",
+  "version": "0.7.10-dev.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,10 +11,10 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.7.9",
-    "@dbux/common-node": "^0.7.9",
-    "@dbux/data": "^0.7.9",
-    "@dbux/graph-common": "^0.7.9",
+    "@dbux/common": "^0.7.10-dev.0",
+    "@dbux/common-node": "^0.7.10-dev.0",
+    "@dbux/data": "^0.7.10-dev.0",
+    "@dbux/graph-common": "^0.7.10-dev.0",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
     "nanoevents": "^2.0.0",

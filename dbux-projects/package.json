@@ -1,16 +1,16 @@
 {
   "name": "@dbux/projects",
-  "version": "0.7.9",
+  "version": "0.7.10-dev.0",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@dbux/cli": "^0.7.9",
-    "@dbux/common": "^0.7.9",
-    "@dbux/common-node": "^0.7.9",
-    "@dbux/data": "^0.7.9",
+    "@dbux/cli": "^0.7.10-dev.0",
+    "@dbux/common": "^0.7.10-dev.0",
+    "@dbux/common-node": "^0.7.10-dev.0",
+    "@dbux/data": "^0.7.10-dev.0",
     "cross-spawn": "^7.0.3",
     "firestore-rest-serdes": "^1.0.3",
     "glob": "^7.1.6",
