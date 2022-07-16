@@ -4,6 +4,11 @@
       "path": "."
     },
     {
+      "name": "getting-started",
+      "path": "..\\..\\.vscode\\extensions\\domi.dbux-code-0.7.6\\dbux_projects\\getting-started"
+    },
+    {
+      "name": "javascript-algorithms",
       "path": "..\\..\\.vscode\\extensions\\domi.dbux-code-0.7.6\\dbux_projects\\javascript-algorithms"
     }
   ],

@@ -26,11 +26,11 @@ const LineReader = require('./LineReader');
 require('./dbux-register-self');    // add babel-register, so we can import dbux src files
 require('../dbux-common/src/util/prettyLogs');    // make console log pretty
 
-const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
 
 const { readPackageJsonVersion } = require('../dbux-cli/lib/package-util');
 const { downgradeProdVersion } = require('./fix-versions');
+const { newLogger } = require('../dbux-common/src/log/logger');
 
 // go!
 const logger = newLogger();

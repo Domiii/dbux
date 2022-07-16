@@ -12,6 +12,7 @@ import { confirm } from '../codeUtil/codeModals';
 import { goToCodeLoc } from '../codeUtil/codeNav';
 import { showPDGViewForArgs } from '../webViews/pdgWebView';
 import { getApplicationDataPath } from '../codeUtil/codePath';
+import { getProjectViewController } from '../projectViews/projectViewsController';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Chapter').default} Chapter */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
@@ -47,7 +48,10 @@ class PDGNode extends BaseTreeViewNode {
   }
 
   async handleClick() {
-    let { applicationUuid, contextId, algoLoc: { filePath, loc } } = this;
+    let { 
+      applicationUuid, contextId, algoLoc: { filePath, loc },
+      exercise, exercise: { project }
+    } = this;
     let application = allApplications.getById(applicationUuid);
     const fullContextFilePath = pathResolve(this.exercise.project.projectPath, filePath);
     if (!application) {
@@ -59,7 +63,12 @@ class PDGNode extends BaseTreeViewNode {
       if (!application) {
         const result = await confirm(`No application file found. Do you want to run the exercise?`);
         if (result) {
-          // get new application
+          // hackfix: we should not depend on `ProjectViewController` here
+          if (!await getProjectViewController().maybeAskForOpenProjectWorkspace(project, exercise)) {
+            return;
+          }
+
+          // run → then get new application
           application = await this.controller.runAndExportPDGApplication(this.exercise);
 
           if (!application) {

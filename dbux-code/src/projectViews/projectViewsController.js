@@ -337,3 +337,7 @@ export function initProjectView(context) {
 
   return controller;
 }
+
+export function getProjectViewController() {
+  return controller;
+}
