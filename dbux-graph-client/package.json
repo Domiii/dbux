@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-client",
-  "version": "0.7.6",
+  "version": "0.7.7-dev.1",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -22,10 +22,10 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.7.6",
-    "@dbux/data": "^0.7.6",
-    "@dbux/graph-common": "^0.7.6",
-    "@dbux/panzoom": "^0.7.6",
+    "@dbux/common": "^0.7.7-dev.1",
+    "@dbux/data": "^0.7.7-dev.1",
+    "@dbux/graph-common": "^0.7.7-dev.1",
+    "@dbux/panzoom": "^0.7.7-dev.1",
     "@jsplumb/browser-ui": "^5.6.2",
     "@jsplumb/common": "^5.6.2",
     "@jsplumb/connector-bezier": "^5.6.2",

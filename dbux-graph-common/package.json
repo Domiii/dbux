@@ -1,13 +1,13 @@
 {
   "name": "@dbux/graph-common",
-  "version": "0.7.6",
+  "version": "0.7.7-dev.1",
   "description": "",
   "scripts": {},
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.7.6",
+    "@dbux/common": "^0.7.7-dev.1",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
     "nanoevents": "^2.0.0",
