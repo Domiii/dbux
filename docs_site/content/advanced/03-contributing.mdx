@@ -7,7 +7,9 @@ import TOC from '@src/components/TOC';
 
 ## Code of Conduct
 
-TODO
+Be good™️.
+
+TODO: more info
 
 ## Development + Contributing: Getting Started
 
@@ -50,7 +52,7 @@ Of course, we don't recommend this, unless absolutely necessary. It will delete 
 3. Inside the new window, you can then use [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) as usual (but in debug mode).
 
 
-### Contribute to Docs
+## Contribute to Docs
 
 We use `docusaurus` for documentation.
 
@@ -62,7 +64,7 @@ We use `docusaurus` for documentation.
 6. If `yarn build` succeeds, feel free to send out a PR.
 
 
-#### Build + Deploy docs
+### Build + Deploy docs
 
 Inside of the `docs_site` folder:
 
@@ -74,7 +76,7 @@ Inside of the `docs_site` folder:
 * `yarn deploy`
   * Make the changes go live.
 
-#### Documentation: Related Issues
+### Documentation: Related Issues
 
 * https://github.com/Domiii/dbux/labels/documentation.
 
@@ -83,11 +85,12 @@ Inside of the `docs_site` folder:
 
 While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
 
-## Local Development Build
+
+## Use Dbux Dev Build on Local Projects
 
 When you want to debug a local project with a local Dbux dev build, we recommend using `yalc`:
 
-* Make sure you have the right `npm` and/or `yarn` versions, as explained [here](https://github.com/wclr/yalc/issues/187).
+* Make sure you have compatible `npm` and/or `yarn` versions, as explained [here](https://github.com/wclr/yalc/issues/187).
 * In your local Dbux folder:
   * run `yarn yalc`
 * Inside your target project folder:
@@ -102,7 +105,7 @@ When you want to debug a local project with a local Dbux dev build, we recommend
 
 
 :::caution
-This will not work with `yarn@1`.
+This will not work (smoothly) with `yarn@1`.
 
 While generally linking the local dev build using `yalc` works, it will not be able to install dependencies, and in general, `yarn add` and `yarn install` will always fail from now on, if you use `yarn@1`. [This is a well-known bug that was fixed for `yarn@>=2`](https://github.com/yarnpkg/yarn/issues/2611).
 
@@ -121,10 +124,31 @@ Hackfix workaround for `yarn@1`:
 PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also might undo (some) deduplication, your dependencies might get real messy real fast. That is especially due to libraries often not following the convention of only introducing breaking changes with major releases. Meaning that all libraries that were added with (usual default of) [caret (^)](https://www.google.com/search?q=semver+caret+meaning) can potentially break due to this.
 :::
 
-
-#### Related
+#### More References
 
 * [Issue: Propose a local development workflow](https://github.com/Domiii/dbux/issues/661).
+
+
+## Test the Production Build
+
+Before submitting a PR, make sure to test it in `prod` as well. This is important, especially if your changes are related to the parts of Dbux that juggle projects, file paths and/or system dependencies:
+
+1. Start production build (in `watch` mode): `yarn start:prod`
+   * IMPORTANT: Make sure only one build/watch mode is running at the same time.
+2. Install (and re-install) local build locally: `yarn code:install`
+   * Uninstall: `yarn code:uninstall`
+3. Incremental update: `yarn code:copy`, then `Reload Window` (VSCode command)
+   * NOTE: This copies all built `.js` files to the installed extension folder.
+   * NOTE2: This is to save yourself time. You don't want to re-install the extension every time you make a change.
+
+
+## Deployment
+
+If you have deployment privileges:
+
+* Build production build and publish to `npm` and `VSCode` Marketplace: `yarn marketplace`
+  * IMPORTANT: again, make sure, only one build/watch mode is running at the same time.
+  * `yarn pub` if you only want to publish to `npm` (not the marketplace)
 
 
 
