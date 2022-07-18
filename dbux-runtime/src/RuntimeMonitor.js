@@ -812,13 +812,13 @@ export default class RuntimeMonitor {
     // this.registerTrace(value, tid);
     if (isFunction(propValue)) {
       // sanity check
-      // NOTE: this is often caused by missing cache flushing *yargs*
+      // NOTE: this is often fixed by flushing your cache *yargs*
       debugger;
       const trace = traceCollection.getById(tid);
       const propTrace = propTid && traceCollection.getById(propTid);
       const objectDataNode = dataNodeCollection.getById(objectNodeId);
       // eslint-disable-next-line max-len
-      throw new Error(`invalid prop at #${trace?.staticTraceId || '?'} (#${propTrace?.staticTraceId || '?'}) - must not be function: ${propValue.name || propValue}\n   value=${value}\n   object=${objectDataNode && dataNode2String(objectDataNode) || `#${objectNodeId}`}`);
+      throw new Error(`invalid prop at #${trace?.staticTraceId || '?'} (#${propTrace?.staticTraceId || '?'}) - must not be function: ${propValue.name || propValue}\n   value=${value}\n   object=${objectDataNode && dataNode2String(objectDataNode) || `#${objectNodeId}`}\n  NOTE: this is often fixed by flushing your cache.`);
     }
     const varAccess = {
       objectNodeId,
