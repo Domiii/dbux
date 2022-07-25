@@ -6,7 +6,8 @@ async function f() {
 
 function p() {
   const p = new Promise((resolve) =>
-    setTimeout(resolve, 1000)
+    setTimeout(() => resolve(), 1000)
+    // setTimeout(resolve, 1000)
   )
   p.then(async (a) => {
     console.log(2);
