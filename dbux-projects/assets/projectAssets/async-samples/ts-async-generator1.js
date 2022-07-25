@@ -1,11 +1,6 @@
 /**
- * @see https://www.typescriptlang.org/play?target=1&ssl=6&ssc=9&pln=1&pc=1#code/IYZwngdgxgBAZgV2gFwJYHsLwBTAFwzARgA0MARgUWAJQwDeAUDC4QO7CrKEDczrwDlwp8Avo0ZxsARjIAmGjyA
- * @example
- *  async function f(a: any, b: any) {
-      await a;
-      await b;
-    }
-    f(1, 2);
+ * @see https://www.typescriptlang.org/play?target=1#code/IYZwngdgxgBAZgV2gFwJYHsLwBTAFwzARgA0MARgUWAJQwDeAUDCzFJiOgDYCmAdF3QBzbAHI4ARlE0A3M1bAA7sFTJCc1mw7d+gkeIBM0jQuWqKJluwideA4WLgBmY4wC+jRohQYsIukya1ra6DqJCrh5e2BJkBjR8yAAWPBDYQrJAA
+ * 
  */
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -48,16 +43,22 @@ function f(a, b) {
   return __awaiter(this, void 0, void 0, function () {
     return __generator(this, function (_a) {
       switch (_a.label) {
-        case 0: return [4 /*yield*/, a];
+        case 0:
+          console.log('f1');
+          return [4 /*yield*/, a];
         case 1:
           _a.sent();
+          console.log('f2');
           return [4 /*yield*/, b];
         case 2:
           _a.sent();
+          console.log('f3');
           return [2 /*return*/];
       }
     });
   });
 }
-
-f(1, 2);
+function g() {
+  console.log('g');
+}
+f(1, 2).then(g);

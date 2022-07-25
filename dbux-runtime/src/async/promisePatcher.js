@@ -20,8 +20,8 @@ const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = true;
+// const Verbose = false;
 
 const PromiseInstrumentationDisabled = false;
 
@@ -487,17 +487,17 @@ function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, 
     const isAsync = (executorRealRootId !== resolveRealRootId || executorRootId !== thenRef.rootId);
     const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
 
+    const innerPromise = valueCollection.getIsThenable(inner) && inner || null;
+
     // eslint-disable-next-line max-len
     if (Verbose) {
       const stack = RuntimeMonitorInstance.runtime._executingStack?.humanReadableString();
       debug(
         // eslint-disable-next-line max-len
-        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). executorRealRootId=${executorRealRootId}, resolveRealRootId=${resolveRealRootId}, thenRef.rootId=${thenRef.rootId}. stack:` +
+        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}), from=${getPromiseId(innerPromise)} executorRealRootId=${executorRealRootId}, resolveRealRootId=${resolveRealRootId}, thenRef.rootId=${thenRef.rootId}. stack:` +
         `${stack || '(empty)'}`
       );
     }
-
-    const innerPromise = valueCollection.getIsThenable(inner) && inner || null;
 
     RuntimeMonitorInstance._runtime.async.resolve(
       innerPromise, promise, resolveRealRootId, PromiseLinkType.PromisifyResolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
