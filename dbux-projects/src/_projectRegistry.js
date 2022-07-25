@@ -15,6 +15,7 @@ import AsyncJsProject from './projects/async-js/Project';
 import SocketIOProject from './projects/socket.io/Project';
 import ReactProject from './projects/react-tic-tac-toe/Project';
 import GettingStartedProject from './projects/getting-started/Project';
+import AsyncSamples from './projects/async-samples/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
@@ -45,6 +46,7 @@ if (process.env.NODE_ENV === 'development') {
     hexo: Hexo,
     'realworld-web-components': RealworldWebComponentsProject,
 
+    'async-samples': AsyncSamples,
     bluebird: BluebirdProject,
 
     eslint: Eslint

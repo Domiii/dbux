@@ -4,15 +4,15 @@ const exercises = [];
 function add(cfgs) {
   for (let { number, problemName, label, fname, ...moreProps } of cfgs) {
     const name = `${problemName}/${fname}`;
-    fname += '.js';
-    const fpath = `${problemName}/${fname}`;
+    // const fpath = `${problemName}/${fname}.js`;
+    const fpath = `${fname}.js`;
     const exercise = {
       number,
       name,
       label: `${problemName} - ${label}`,
-      assets: [
-        fpath
-      ],
+      // assets: [
+      //   fpath
+      // ],
       testFilePaths: [fpath],
       ...moreProps
     };
