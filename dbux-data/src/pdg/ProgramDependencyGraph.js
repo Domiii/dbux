@@ -822,6 +822,15 @@ export default class ProgramDependencyGraph extends BasePDG {
    * @return {boolean} Whether `node` has own or nested summaries.
    */
   #summarizeDFS(node, summaryState) {
+    /**
+     * TODO: summary bugs
+     * 
+     * 1. in for2.js, a[0] is not connected in summary mode [1]
+     *    → because a[0] is coming from a previous node (before summary), and we don't currently have a way of arbitrarily re-routing snapshot children to any possible summary node. (in case of shallow snapshots, the potential target set would also make this rather difficult)
+     * 2. shallow summary mode is broken because a single node requires multiple representations at different points in the timeline. However, it only currently represents itself at the end of the function. This makes it hard (and would also not look good if we decided) to link nested summary nodes with earlier occurrences of outer nodes that have summaries.
+     * 
+     */
+
     const { dp } = this;
     let {
       nodeRouteMap,
@@ -1001,7 +1010,7 @@ export default class ProgramDependencyGraph extends BasePDG {
     if (VerboseSumm && (
       !this.debugValueId || dp.util.getDataNode(this.timelineNodes[timelineId]?.dataNodeId)?.valueId === this.debugValueId)
     ) {
-      reroutes.size && this.logger.debug(`SUMM at ${timelineId}, added re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
+      reroutes.size && this.logger.debug(`SUMM at ${timelineId}, added ${reroutes.size} re-routes:\n  ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`);
       // VerboseSumm && this.logger.debug(`SUMM at ${timelineId}, nodeRouteMap:\n  ${Array.from(nodeRouteMap.entries())
       //   .map(([timelineId, reroutes]) =>
       //     `${timelineId} → ${Array.from(reroutes).map(n => `${n.timelineId} (${n.label})`).join(',')}`).join('\n  ')}`);

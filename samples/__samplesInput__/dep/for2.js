@@ -2,16 +2,21 @@
  * @file
  */
 
-function main(n, a) {
-  var c = 1;
+function main(x, y) {
+  var a = [0];
+  var b = [0];
+  // var n = 3;
+  var n = 2;
 
-  for (let i = n; i >= 0; --i) {
-    // if (i % 2) {
-    c += i * a;
-    // }
+  for (let i = 1; i < n; ++i) {
+    a[i] = a[i - 1] + x;
   }
 
-  return c;
+  // for (let i = 1; i < n; ++i) {
+  //   b[i] = b[i - 1] + y;
+  // }
+
+  return [...a, ...b];
 }
 
-main(3, 10);
+main(10, 100);

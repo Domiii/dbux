@@ -963,6 +963,9 @@ export default class RuntimeMonitor {
     if (updateValue !== returnValue) {
       // add separate expression value node
       const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, inputs);
+      // TODO: Why did we comment out the next line? `updateNode` should be own node.
+      //    → Probably has to do with the fact that we previously used the first DataNode to be the "own node", and this went against the grain.
+      //    → We probably don't experience this to be a problem because it is rare that this makes a difference.
       // trace.nodeId = updateNode.nodeId;
     }
     // else {
