@@ -1,5 +1,6 @@
 /**
  * @file
+ * bug: this summarization is somewhat inadequate due to a[0] (see notes in `summarizeDfs`)
  */
 
 function main(x, y) {
