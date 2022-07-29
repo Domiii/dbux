@@ -46879,12 +46879,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -46914,12 +46922,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -46949,12 +46965,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -46984,12 +47008,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47019,12 +47051,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47054,12 +47094,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47089,12 +47137,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47124,12 +47180,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47159,13 +47223,31 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
-            }
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
+            },
+            "_range": [
+              {
+                "line": 4,
+                "character": 22
+              },
+              {
+                "line": 28,
+                "character": 3
+              }
+            ]
           }
         },
         "testLoc": {
@@ -47194,12 +47276,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47229,12 +47319,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47264,12 +47362,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47299,12 +47405,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -47334,12 +47448,20 @@ module.exports = [
             "start": {
               "line": 5,
               "column": 22,
-              "index": 161
+              "index": 161,
+              "_pos": {
+                "line": 4,
+                "character": 22
+              }
             },
             "end": {
               "line": 29,
               "column": 3,
-              "index": 875
+              "index": 875,
+              "_pos": {
+                "line": 28,
+                "character": 3
+              }
             }
           }
         },
@@ -61745,9 +61867,834 @@ module.exports = [
       "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js"
     ],
     "number": 301,
-    "pdgs": {
-      "failedReason": "test execution failed: code=1"
-    }
+    "pdgs": [
+      {
+        "pdgTitle": "dpRainTerraces([2,0,3,1,3])",
+        "uniqueTitle": "dpRainTerraces([2,0,3,1,3])",
+        "contextId": 5,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            },
+            "_range": [
+              {
+                "line": 64,
+                "character": 49
+              },
+              {
+                "line": 117,
+                "character": 1
+              }
+            ]
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([1])",
+        "uniqueTitle": "dpRainTerraces([1])#2",
+        "contextId": 8,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([1,0])",
+        "uniqueTitle": "dpRainTerraces([1,0])#2",
+        "contextId": 11,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,1])",
+        "uniqueTitle": "dpRainTerraces([0,1])#2",
+        "contextId": 14,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,1,0])",
+        "uniqueTitle": "dpRainTerraces([0,1,0])#2",
+        "contextId": 17,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,1,0,0])",
+        "uniqueTitle": "dpRainTerraces([0,1,0,0])#2",
+        "contextId": 20,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,1,0,0,1,0])",
+        "uniqueTitle": "dpRainTerraces([0,1,0,0,1,0])#2",
+        "contextId": 23,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,2,0,0,1,0])",
+        "uniqueTitle": "dpRainTerraces([0,2,0,0,1,0])#2",
+        "contextId": 26,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([2,0,2])",
+        "uniqueTitle": "dpRainTerraces([2,0,2])#2",
+        "contextId": 29,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([2,0,5])",
+        "uniqueTitle": "dpRainTerraces([2,0,5])#2",
+        "contextId": 32,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([3,0,0,2,0,4])",
+        "uniqueTitle": "dpRainTerraces([3,0,0,2,0,4])#2",
+        "contextId": 35,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "uniqueTitle": "dpRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])#2",
+        "contextId": 38,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([1,1,1,1,1])",
+        "uniqueTitle": "dpRainTerraces([1,1,1,1,1])#2",
+        "contextId": 41,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([1,2,3,4,5])",
+        "uniqueTitle": "dpRainTerraces([1,2,3,4,5])#2",
+        "contextId": 44,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([4,1,3,1,2,1,2,1])",
+        "uniqueTitle": "dpRainTerraces([4,1,3,1,2,1,2,1])#2",
+        "contextId": 47,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "dpRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
+        "uniqueTitle": "dpRainTerraces([0,2,4,3,4,2,4,0,8,7,0])#2",
+        "contextId": 50,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/dpRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 65,
+              "column": 49,
+              "index": 1938,
+              "_pos": {
+                "line": 64,
+                "character": 49
+              }
+            },
+            "end": {
+              "line": 118,
+              "column": 1,
+              "index": 3614,
+              "_pos": {
+                "line": 117,
+                "character": 1
+              }
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/dpRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157,
+              "_pos": {
+                "line": 3,
+                "character": 70
+              }
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034,
+              "_pos": {
+                "line": 20,
+                "character": 3
+              }
+            }
+          }
+        }
+      }
+    ]
   },
   {
     "chapterGroup": "uncategorized",
@@ -61762,21 +62709,21 @@ module.exports = [
     "number": 302,
     "pdgs": [
       {
-        "pdgTitle": "bfRainTerraces([1])",
-        "uniqueTitle": "bfRainTerraces([1])#2",
+        "pdgTitle": "bfRainTerraces([2,0,3,1,3])",
+        "uniqueTitle": "bfRainTerraces([2,0,3,1,3])#3",
         "contextId": 5,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61789,29 +62736,64 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
+            }
+          }
+        }
+      },
+      {
+        "pdgTitle": "bfRainTerraces([1])",
+        "uniqueTitle": "bfRainTerraces([1])#4",
+        "contextId": 6,
+        "algoLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 34,
+              "index": 51
+            },
+            "end": {
+              "line": 22,
+              "column": 1,
+              "index": 586
+            }
+          }
+        },
+        "testLoc": {
+          "filePath": "src/algorithms/uncategorized/rain-terraces/__test__/bfRainTerraces.test.js",
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 70,
+              "index": 157
+            },
+            "end": {
+              "line": 21,
+              "column": 3,
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([1,0])",
-        "uniqueTitle": "bfRainTerraces([1,0])#2",
-        "contextId": 6,
+        "uniqueTitle": "bfRainTerraces([1,0])#4",
+        "contextId": 7,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61824,29 +62806,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,1])",
-        "uniqueTitle": "bfRainTerraces([0,1])#2",
-        "contextId": 7,
+        "uniqueTitle": "bfRainTerraces([0,1])#4",
+        "contextId": 8,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61859,29 +62841,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,1,0])",
-        "uniqueTitle": "bfRainTerraces([0,1,0])#2",
-        "contextId": 8,
+        "uniqueTitle": "bfRainTerraces([0,1,0])#4",
+        "contextId": 9,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61894,29 +62876,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,1,0,0])",
-        "uniqueTitle": "bfRainTerraces([0,1,0,0])#2",
-        "contextId": 9,
+        "uniqueTitle": "bfRainTerraces([0,1,0,0])#4",
+        "contextId": 10,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61929,29 +62911,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,1,0,0,1,0])",
-        "uniqueTitle": "bfRainTerraces([0,1,0,0,1,0])#2",
-        "contextId": 10,
+        "uniqueTitle": "bfRainTerraces([0,1,0,0,1,0])#4",
+        "contextId": 11,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61964,29 +62946,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,2,0,0,1,0])",
-        "uniqueTitle": "bfRainTerraces([0,2,0,0,1,0])#2",
-        "contextId": 11,
+        "uniqueTitle": "bfRainTerraces([0,2,0,0,1,0])#4",
+        "contextId": 12,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -61999,29 +62981,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([2,0,2])",
-        "uniqueTitle": "bfRainTerraces([2,0,2])#2",
-        "contextId": 12,
+        "uniqueTitle": "bfRainTerraces([2,0,2])#4",
+        "contextId": 13,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62034,29 +63016,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([2,0,5])",
-        "uniqueTitle": "bfRainTerraces([2,0,5])#2",
-        "contextId": 13,
+        "uniqueTitle": "bfRainTerraces([2,0,5])#4",
+        "contextId": 14,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62069,29 +63051,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([3,0,0,2,0,4])",
-        "uniqueTitle": "bfRainTerraces([3,0,0,2,0,4])#2",
-        "contextId": 14,
+        "uniqueTitle": "bfRainTerraces([3,0,0,2,0,4])#4",
+        "contextId": 15,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62104,29 +63086,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])",
-        "uniqueTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])#2",
-        "contextId": 15,
+        "uniqueTitle": "bfRainTerraces([0,1,0,2,1,0,1,3,2,1,2,1])#4",
+        "contextId": 16,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62139,29 +63121,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([1,1,1,1,1])",
-        "uniqueTitle": "bfRainTerraces([1,1,1,1,1])#2",
-        "contextId": 16,
+        "uniqueTitle": "bfRainTerraces([1,1,1,1,1])#4",
+        "contextId": 17,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62174,29 +63156,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([1,2,3,4,5])",
-        "uniqueTitle": "bfRainTerraces([1,2,3,4,5])#2",
-        "contextId": 17,
+        "uniqueTitle": "bfRainTerraces([1,2,3,4,5])#4",
+        "contextId": 18,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62209,29 +63191,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])",
-        "uniqueTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])#2",
-        "contextId": 18,
+        "uniqueTitle": "bfRainTerraces([4,1,3,1,2,1,2,1])#4",
+        "contextId": 19,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62244,29 +63226,29 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }
       },
       {
         "pdgTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])",
-        "uniqueTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])#2",
-        "contextId": 19,
+        "uniqueTitle": "bfRainTerraces([0,2,4,3,4,2,4,0,8,7,0])#4",
+        "contextId": 20,
         "algoLoc": {
           "filePath": "src/algorithms/uncategorized/rain-terraces/bfRainTerraces.js",
           "loc": {
             "start": {
-              "line": 7,
-              "column": 49,
-              "index": 180
+              "line": 2,
+              "column": 34,
+              "index": 51
             },
             "end": {
-              "line": 41,
+              "line": 22,
               "column": 1,
-              "index": 1259
+              "index": 586
             }
           }
         },
@@ -62279,9 +63261,9 @@ module.exports = [
               "index": 157
             },
             "end": {
-              "line": 20,
+              "line": 21,
               "column": 3,
-              "index": 980
+              "index": 1034
             }
           }
         }

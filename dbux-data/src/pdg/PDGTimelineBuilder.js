@@ -678,8 +678,6 @@ export default class PDGTimelineBuilder {
   shouldSkipDataNode(dataNodeId) {
     const { dp } = this;
 
-    // NOTE: this logic is not ideal. Single-input Compute nodes will not show, but multi-input Compute nodes will.
-    // future-work: proper, dedicated Compute merge logic (maybe in summarizer tho)
     const dataNode = dp.util.getDataNode(dataNodeId);
 
     if (this.pdg.watchSet.isWatchedDataNode(dataNodeId)) {
