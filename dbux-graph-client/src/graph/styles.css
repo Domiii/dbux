@@ -154,8 +154,12 @@ div {
   width: fit-content;
   height: fit-content;
   transform-origin: 0 0;
+
   /* this way, the viewport will (usually) not move when working on nodes near the bottom of the graph */
-  margin-bottom: calc(100vh - 20px);
+  padding-bottom: calc(100vh - 20px);
+
+  /* allow user to have some distance to right scrollbar */
+  padding-right: 50px;
   /* overflow: auto; */
 }
 
@@ -380,6 +384,16 @@ div {
 
 .hide-values .value-label {
   display: none !important;
+}
+
+.lesser-label {
+  /* background-color: rgb(93, 93, 93); */
+  color: rgb(88, 88, 88);
+}
+
+.theme-mode-dark .lesser-label {
+  /* background-color: rgb(93, 93, 93); */
+  color: rgb(140, 140, 140);
 }
 
 .depth-label {
@@ -687,69 +701,70 @@ body:not(.theme-mode-dark) .highlight {
 
 
 /** ###########################################################################
- * screenShotMode(.research-mode)
+ * screenShotMode
  * ############################################################################*/
 
-.theme-mode-dark .research-mode .async-node {
+.theme-mode-dark .screenshot-mode .async-node {
   color: #333;
 }
 
-.research-mode .async-context-label {
+.screenshot-mode .async-context-label {
   font-weight: 600;
 }
 
-.research-mode .async-cell .left-label {
+.screenshot-mode .async-cell .left-label {
   display: none !important;
 }
 
-/* .research-mode .async-cell .async-context-label {
+/* .screenshot-mode .async-cell .async-context-label {
   display: none !important;
 }
 
-.research-mode .async-cell .loc-label {
+.screenshot-mode .async-cell .loc-label {
   display: none !important;
 }
 
-.research-mode .async-cell .right-label {
+.screenshot-mode .async-cell .right-label {
   display: none !important;
 } */
 
-.research-mode .hz-d {
+.screenshot-mode .hz-d {
   border-color: #fff
 }
 
-.research-mode .vt {
+.screenshot-mode .vt {
   border-color: #fff
 }
 
-.research-mode .vt-d {
+.screenshot-mode .vt-d {
   border-color: #fff
 }
 
-.research-mode .cn-d {
+.screenshot-mode .cn-d {
   border-color: #fff
 }
 
-.research-mode .t-d {
+.screenshot-mode .t-d {
   border-color: #fff
 }
 
-.research-mode .async-error {
+.screenshot-mode .async-error {
   /* border-color: red; */
   background-blend-mode: darken;
   /* background: unset !important; */
 }
 
-.research-mode .async-error .async-brief {
+.screenshot-mode .async-error .async-brief {
   background: unset;
   transform: translateX(100%);
 }
 
-.research-mode .context-stats {
+/* 
+.screenshot-mode .context-stats {
   display: none !important;
-}
+} */
 
-.research-mode .left-label {
+.screenshot-mode .depth-label {
   display: none !important;
 }
 

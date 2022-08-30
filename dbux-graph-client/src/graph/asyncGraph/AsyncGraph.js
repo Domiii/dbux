@@ -177,13 +177,16 @@ class AsyncGraph extends GraphBase {
       shortLabel = '';
       // fullLabel = '';
     }
+    if (shortLabel) {
+      shortLabel = /*html*/`<span class="lesser-label">${shortLabel}</span>`;
+    }
     const classes = [];
     if (hasError) {
       classes.push('async-error');
       errorLabel = '🔥';
     }
     if (nestingDepth) {
-      const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
+      const depthLabel = /*html*/`<span class="depth-label lesser-label">${nestingDepth}</span>`;
       leftLabel = depthLabel;
       // shortLabel = `${depthLabel}${shortLabel}`;
       // fullLabel = `${depthLabel}${fullLabel}`;

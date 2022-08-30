@@ -9,14 +9,6 @@ function random(isProducer, id) {
   return rng();
 }
 
-/** ###########################################################################
- * util (copied from asyncUtil)
- * ##########################################################################*/
-
-export function randomInt(n, isProducer, item) {
-  return Math.floor(random(isProducer, item) * n);
-}
-
 // ###########################################################################
 //  States & Constants
 // ###########################################################################
@@ -26,7 +18,7 @@ export function randomInt(n, isProducer, item) {
 export const N = 3;
 const ProducerTime = 1;
 const ProducerTimeVar = 2;
-const ConsumerTime = 1;
+const ConsumerTime = 3;
 const ConsumerTimeVar = 2;
 const MaxItems = 2;
 
@@ -39,6 +31,15 @@ let lastProducingItem = 0;
 let lastConsumingItem = 0;
 let consuming = 0;
 let producing = 0;
+
+
+/** ###########################################################################
+ * util (copied from asyncUtil)
+ * ##########################################################################*/
+
+export function randomInt(n, isProducer, item) {
+  return Math.floor(random(isProducer, item) * n);
+}
 
 // ###########################################################################
 //  Buffer control

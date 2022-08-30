@@ -4,26 +4,30 @@
  * * g2 and g3 SYNC against f
  */
 
-(async function main() {
+async function main() {
+  await start();
   const p = f();
-  // await p;
-  g(1, p);
-  g(2, p);
-  g(3, p);
-})();
+  await 0;
+  g(p);
+  g(p);
+  g(null);
+};
 
 async function f() {
-  console.log('fA');
   await 0;
-  console.log('fB');
   await 1;
-  console.log('fC');
+  await 2;
 }
 
-async function g(x, p) {
-  console.log('gA', x);
-  await p;
-  console.log('gB', x);
-  await 0;
-  console.log('gc', x);
+async function g(p) {
+  if (p) {
+    await p;
+  }
+  await 1;
 }
+
+function start() {
+  return Promise.resolve();
+}
+
+main();

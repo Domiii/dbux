@@ -3408,9 +3408,12 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
     return !preEventUpdates.length;
   },
 
-  /** 
+  /**
+   * Get the array of all contexts that the given CGR synchronizes against (i.e. waits for).
+   * Based on `syncPromiseIds`.
+   * 
    * @param {RuntimeDataProvider} dp
-   * @return {Set<ExecutionContext>}
+   * @return {ExecutionContext[]}
    */
   getAllSyncRoots(dp, rootId) {
     const { syncPromiseIds } = dp.util.getAsyncNode(rootId);

@@ -9,8 +9,8 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 /** @typedef {import('./GraphContainer').default} GraphContainer */
 
-// const screenshotMode = true;
-const screenshotMode = false;
+const screenshotMode = true;
+// const screenshotMode = false;
 
 class GraphDocument extends HostComponentEndpoint {
   init() {
