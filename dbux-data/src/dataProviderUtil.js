@@ -3683,7 +3683,7 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
    * ##########################################################################*/
 
   /** 
-   * `getNestedPromiseUpdate`.
+   * GNPU = `getNestedPromiseUpdate`.
    * Returns the inner most nested promise that has a Post* update, nested by `toPromiseId`.
    * NOTE: `nestingPromiseId` is already settled.
    * 

@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import noop from 'lodash/noop';
 import seedrandom from 'seedrandom';
+
 const seed = 'dbux';
 function random(isProducer, id) {
   const user = isProducer ? 'producer' : 'consumer';
@@ -76,7 +78,7 @@ function getBufferString() {
     else {
       return 'null';
     }
-  })
+  });
   return `[${str}]`;
 }
 
@@ -169,7 +171,7 @@ export function finishConsume(index) {
 
 function normalizeCondition(condition) {
   if (!(condition instanceof Function)) {
-    var n = condition;
+    let n = condition;
     // console.trace('normalizeCondition', condition);
     condition = () => {
       const oldN = n;
@@ -220,7 +222,7 @@ export function waitTicksCallback(t, task) {
 export function repeatCallback(condition, task = noop) {
   condition = normalizeCondition(condition);
   if (condition()) {
-    schedule(function nestedRepeat() { repeatCallback(condition, task) });
+    schedule(function nestedRepeat() { repeatCallback(condition, task); });
   }
   else {
     task();

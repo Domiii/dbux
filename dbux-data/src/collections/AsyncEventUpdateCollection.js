@@ -134,8 +134,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     const {
       // runId: postEventRunId,
       // rootId: postEventRootId,
-      // NOTE: the last active root is also the `context` of the `then` callback
-      // contextId,
       schedulerTraceId
     } = postEventUpdate;
 

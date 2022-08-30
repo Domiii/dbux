@@ -44,7 +44,7 @@ function producer(n) {
   const next = () => {
     schedule(tryProduce);
     // tryProduce();
-  }
+  };
   function tryProduce() {
     if (n) {
       if (hasSpace()) {
@@ -64,7 +64,7 @@ function consumer(n) {
   const next = () => {
     schedule(tryConsume);
     // tryConsume();
-  }
+  };
   function tryConsume() {
     if (n) {
       if (hasItems()) {

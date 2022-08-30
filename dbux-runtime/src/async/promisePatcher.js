@@ -20,8 +20,8 @@ const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = true;
+const Verbose = false;
 
 const PromiseInstrumentationDisabled = false;
 
