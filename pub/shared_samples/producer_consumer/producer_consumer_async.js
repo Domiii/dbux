@@ -41,10 +41,9 @@ async function produce() {
     // await work(i);
     await work;
   }
-  await finish;
   finishProduce(index);
   notify(consumerQueue);
-  // await end;
+  await finish;
 }
 
 async function waitForSpace() {
