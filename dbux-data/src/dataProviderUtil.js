@@ -3411,6 +3411,8 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
   /**
    * Get the array of all contexts that the given CGR synchronizes against (i.e. waits for).
    * Based on `syncPromiseIds`.
+   * TODO: syncPromiseId is not enough information.
+   *    → We generally (especially when asyncPromisifyPromiseId?) want to know the "triggerer", not just the promise.
    * 
    * @param {RuntimeDataProvider} dp
    * @return {ExecutionContext[]}

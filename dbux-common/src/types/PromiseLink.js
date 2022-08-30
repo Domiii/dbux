@@ -48,7 +48,7 @@ export default class PromiseLink {
    * Only used for promisification via promise ctors.
    * The promiseId that the `resolve` call is "tethered" to.
    * NOTE: This is only set if `resolve` was called asynchronously.
-   * NOTE2: There might be no recorded root when this function is called.
+   * NOTE2: There might be no recorded root when this function is called (e.g. `setTimeout(resolve)`).
    */
   asyncPromisifyPromiseId;
 }

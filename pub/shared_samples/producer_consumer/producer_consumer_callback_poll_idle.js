@@ -1,7 +1,10 @@
-import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { schedule, waitTicksCallback } from '../../../util/asyncUtil';
+import {
+  N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime,
+  schedule, waitTicksCallback, useItem
+} from './producer_consumer_base';
 
-const IdleTime = 3;
+// const IdleTime = 3;
+const IdleTime = 0;
 
 /** ###########################################################################
  * Basic functions
@@ -11,20 +14,34 @@ function idle(next) {
   return waitTicksCallback(IdleTime, next);
 }
 
+/**
+ * Hackfix: add an extra "completion" CGR to make
+ * CB ACG look closer to the other two.
+ */
+function correctTicks(ticks) {
+  return ticks + 1;
+}
+
 function consume(next) {
   const [index, item, ticks] = startConsume();
-  return waitTicksCallback(ticks, function _finishConsume() {
-    finishConsume(index);
-    next();
-  });
+  return waitTicksCallback(
+    correctTicks(ticks),
+    function _finishConsume() {
+      finishConsume(index);
+      next();
+    }
+  );
 }
 
 function produce(next) {
   const [index, item, ticks] = startProduce();
-  return waitTicksCallback(ticks, function _finishProduce() {
-    finishProduce(index);
-    next();
-  });
+  return waitTicksCallback(
+    correctTicks(ticks),
+    function _finishProduce() {
+      finishProduce(index);
+      next();
+    }
+  );
 }
 
 function producer(n) {

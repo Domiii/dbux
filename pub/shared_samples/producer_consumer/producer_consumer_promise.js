@@ -1,4 +1,4 @@
-import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, waitTicksPromise } from './producer_consumer_base';
+import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, workTicksPromise } from './producer_consumer_base';
 
 /** ###########################################################################
  * wait/notify
@@ -23,8 +23,8 @@ function wait(queue) {
 
 function consume(index, ticks) {
   // simulate work by waiting
-  return waitTicksPromise(ticks)
-    .then(function _finishConsume() {
+  return workTicksPromise(ticks)
+    .then(function finishConsumeAndNotify() {
       finishConsume(index);
       notify(producerQueue);
     });
@@ -32,8 +32,8 @@ function consume(index, ticks) {
 
 function produce(index, ticks) {
   // simulate work by waiting
-  return waitTicksPromise(ticks)
-    .then(function _finishProduce() {
+  return workTicksPromise(ticks)
+    .then(function finishProduceAndNotify() {
       finishProduce(index);
       notify(consumerQueue);
     });

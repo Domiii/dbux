@@ -4,7 +4,7 @@
 import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, } from './producer_consumer_base';
 // import { waitTicksAsync, repeatAsync, sleep } from '../../../util/asyncUtil';
 
-const start = 0, end = 0, work = 0;
+const start = 0, work = 0, finish = 0;
 
 /** ###########################################################################
  * wait/notify
@@ -41,6 +41,7 @@ async function produce() {
     // await work(i);
     await work;
   }
+  await finish;
   finishProduce(index);
   notify(consumerQueue);
   // await end;
@@ -75,6 +76,7 @@ async function consume() {
     // await work(i);
     await work; // keep this
   }
+  await finish;
   finishConsume(index);
   notify(producerQueue);
   // await end;

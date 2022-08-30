@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "pub\\shared_samples"
+		},
+		{
+			"path": "samples\\__samplesInput__"
+		},
+		{
+			"path": "samples\\case-studies"
+		},
+		{
+			"path": "samples\\experiments"
+		}
+	],
+	"settings": {}
+}

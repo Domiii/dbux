@@ -184,24 +184,17 @@ function normalizeCondition(condition) {
   return condition;
 }
 
-export function waitTicksPromise(t) {
-  return repeatPromise(t);
-}
-
-export function repeatPromise(condition, _nextTick = noop) {
+export function workTicksPromise(condition) {
   condition = normalizeCondition(condition);
-  return _repeatPromise(condition, _nextTick);
+  return workUntil(condition);
 }
 
-function _repeatPromise(condition, tickHandler) {
+function workUntil(condition) {
   let p = Promise.resolve();
   if (condition()) {
-    if (tickHandler !== noop) {
-      // idle tick
-      p = p.then(tickHandler);
-    }
-    return p.then(function nextTick() {
-      return _repeatPromise(condition, tickHandler);
+    // keep repeating
+    return p.then(function workOne() {
+      return workUntil(condition);
     });
   }
   return p;
@@ -213,7 +206,12 @@ export function pt(cb) {
 
 
 export function schedule(cb) {
-  setImmediate(() => cb());
+  // NOTE: we wrap `cb` to make sure that the same static context is used for all schedule calls.
+  function callbackDriver() {
+    cb();
+  }
+  setImmediate(callbackDriver);
+  // setImmediate(cb);
 }
 
 export function waitTicksCallback(t, task) {
