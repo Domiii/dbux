@@ -704,7 +704,7 @@ body:not(.theme-mode-dark) .highlight {
  * screenShotMode
  * ############################################################################*/
 
-.theme-mode-dark .screenshot-mode .async-node {
+.theme-mode-dark .screenshot-mode .async-context-label,.loc-label {
   color: #333;
 }
 

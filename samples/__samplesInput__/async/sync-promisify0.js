@@ -7,12 +7,11 @@ import { P } from '../../util/asyncUtil';
 
 let cb;
 
-const p = P('S1', () => new Promise((r) => {
-  'S2';
+const p = new Promise((r) => {
   cb = () => {
     r();
   };
-}));
+});
 
 
 // queue user
@@ -28,6 +27,6 @@ P(
   'B1',
   'B2',
   'B3',
-  () => ('B4', setImmediate(cb)),
+  () => ('B4', cb()),
   'B5'
 );
