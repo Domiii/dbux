@@ -39,6 +39,11 @@ function produce(index, ticks) {
     });
 }
 
+
+function waitForSpace() {
+  return wait(producerQueue);
+}
+
 function producer(n) {
   function tryProduce() {
     if (!n) {
@@ -51,11 +56,17 @@ function producer(n) {
       return produce(index, ticks).then(tryProduce);
     }
     else {
-      return wait(producerQueue).then(tryProduce);
+      return Promise.resolve()
+        .then(waitForSpace)
+        .then(tryProduce);
     }
   }
 
   return Promise.resolve().then(tryProduce);
+}
+
+function waitForItems() {
+  return wait(consumerQueue);
 }
 
 function consumer(n) {
@@ -70,7 +81,9 @@ function consumer(n) {
       return consume(index, ticks).then(tryConsume);
     }
     else {
-      return wait(consumerQueue).then(tryConsume);
+      return Promise.resolve()
+        .then(waitForItems)
+        .then(tryConsume);
     }
   }
   return Promise.resolve().then(tryConsume);

@@ -38,12 +38,11 @@ async function produce() {
   const [index, item, n] = startProduce();  // WARNING: must start before first await to avoid race condition
   // await start;
   for (let i = 0; i < n; ++i) {
-    // await work(i);
     await work;
   }
+  await finish;
   finishProduce(index);
   notify(consumerQueue);
-  await finish;
 }
 
 async function waitForSpace() {
