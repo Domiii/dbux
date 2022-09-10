@@ -18,7 +18,7 @@ class AsyncStack extends SyncGraphBase {
             </button>
           </div>
         </div>
-        <div data-el="nodeChildren" data-mount="ContextNode,HoleNode" class="node-children flex-column"></div>
+        <div data-el="nodeChildren" data-mount="ContextNode,HoleNode" class="graph-body node-children flex-column"></div>
         <p data-el="label"></p>
       </div>
     `);

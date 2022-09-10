@@ -5,7 +5,12 @@
  * 
  */
 async function screen() {
-  await takeScreenshot('.graph-container:not(.hidden) .graph-body');
+  try {
+    await takeScreenshot('.graph-container:not(.hidden) .graph-body');
+  }
+  catch (err) {
+    console.error(`SCREENSHOT FAILED:`, err);
+  }
 }
 
 /** ###########################################################################
@@ -65,6 +70,9 @@ async function copyScreen() {
  */
 async function takeScreenshot(selector) {
   let targetEl = document.querySelector(selector);
+  if (!targetEl) {
+    throw new Error(`tragetEl not found for "${selector}"`);
+  }
   await getOrLoadLibraries();
 
   // eslint-disable-next-line no-undef
