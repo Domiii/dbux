@@ -633,7 +633,8 @@ export default class RuntimeMonitor {
   _ensureExecuting() {
     if (!this._runtime._executingStack) {
       // eslint-disable-next-line no-console
-      console.trace('Encountered trace when stack is empty');
+      // TODO
+      // console.trace('Encountered trace when stack is empty');
       return false;
     }
     return true;

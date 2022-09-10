@@ -73,14 +73,18 @@ div {
 
 .selected-trace {
   color: darkred;
-  border: 1px solid darkred;
+  border: 2px solid darkred;
   margin: -1px;
 }
 
 .theme-mode-dark .selected-trace {
-  color: yellow;
-  border: 1px solid yellow;
-  margin: -1px;
+  color: rgb(120, 120, 0);
+  border: 2px solid yellow;
+}
+
+.screenshot-mode .selected-trace {
+  color: darkred;
+  border: 3px solid darkred;
 }
 
 /** ###########################################################################
@@ -218,16 +222,33 @@ div {
 }
 
 .async-cell-selected {
-  color: darkred;
-  border: 1px solid darkred !important;
   overflow: hidden;
 }
 
-.theme-mode-dark .async-cell-selected {
-  color: yellow;
-  border: 1px solid yellow !important;
-  overflow: hidden;
+.async-cell-selected {
+  border: 2px solid darkred !important;
 }
+
+.async-cell-selected * {
+  color: darkred !important;
+}
+
+.theme-mode-dark .async-cell-selected {
+  border: 2px solid yellow !important;
+}
+
+.theme-mode-dark .async-cell-selected * {
+  color: yellow !important;
+}
+
+.screenshot-mode .async-cell-selected {
+  border: 2px solid darkred !important;
+}
+
+.screenshot-mode .async-cell-selected * {
+  color: darkred !important;
+}
+
 
 .async-cell-stack-highlight {
   border: 1px dotted rgba(0, 0, 0, 0.5);
@@ -704,8 +725,15 @@ body:not(.theme-mode-dark) .highlight {
  * screenShotMode
  * ############################################################################*/
 
-.theme-mode-dark .screenshot-mode .async-context-label,.loc-label {
+.theme-mode-dark .screenshot-mode .async-context-label,.loc-label,.context-node {
   color: #333;
+}
+
+.theme-mode-dark .screenshot-mode
+.async-context-label img,
+.loc-label img,
+.context-node img {
+  filter: brightness(30%);
 }
 
 .screenshot-mode .async-context-label {

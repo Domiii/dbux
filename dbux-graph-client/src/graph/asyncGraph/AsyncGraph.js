@@ -145,11 +145,11 @@ class AsyncGraph extends GraphBase {
     } = nodeData;
 
     const { themeMode, screenshotMode } = this.context;
-    // const highContractMode = screenshotMode && !asyncDetailMode;
-    const highContractMode = screenshotMode;
+    // const highContrastMode = screenshotMode && !asyncDetailMode;
+    const highContrastMode = screenshotMode;
     // const moduleLabel = packageName ? `${packageName} | ` : '';
 
-    const backgroundColor = makeStructuredRandomColor(themeMode, realStaticContextid, { bland: !!packageName, highContractMode });
+    const backgroundColor = makeStructuredRandomColor(themeMode, realStaticContextid, { bland: !!packageName, highContrastMode });
 
     let leftLabel = '', errorLabel = '', statsRawEl = '';
     let shortLabel, fullLabel = displayName;

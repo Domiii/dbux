@@ -20,12 +20,12 @@ export function getStructuredRandomAngle(i, start = 0) {
  * 
  * @param {number} i input seed
  */
-export function makeStructuredRandomColor(themeMode, i, { start = 0, sat, bland = false, highContractMode = false } = EmptyObject) {
+export function makeStructuredRandomColor(themeMode, i, { start = 0, sat, bland = false, highContrastMode = false } = EmptyObject) {
   const hue = getStructuredRandomAngle(i, start);
   let saturation = sat || (bland ? 5 : 35);
   let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
 
-  if (highContractMode) {
+  if (highContrastMode) {
     saturation = 80;
     lightness = 80;
   }

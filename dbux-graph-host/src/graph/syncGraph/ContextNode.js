@@ -84,7 +84,7 @@ class ContextNode extends HostComponentEndpoint {
     const realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
     this.state.backgroundStyle = makeStructuredRandomColor(themeMode, realStaticContextid, {
       bland: !!packageName,
-      screenshotMode
+      highContrastMode: screenshotMode
     });
   }
 

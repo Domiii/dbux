@@ -11,6 +11,14 @@
 		},
 		{
 			"path": "samples\\experiments"
+		},
+		{
+			"name": "async-js",
+			"path": "dbux_projects\\async-js"
+		},
+		{
+			"name": "sequelize",
+			"path": "dbux_projects\\sequelize"
 		}
 	],
 	"settings": {}
