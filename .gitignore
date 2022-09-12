@@ -15,6 +15,7 @@ lerna.debug.log
 _testOut
 __data__
 userdata
+/cloc.txt
 
 # node_modules in asset folder are allowed
 node_modules/
