@@ -19,6 +19,14 @@
 		{
 			"name": "sequelize",
 			"path": "dbux_projects\\sequelize"
+		},
+		{
+			"name": "getting-started",
+			"path": "dbux_projects\\getting-started"
+		},
+		{
+			"name": "express",
+			"path": "dbux_projects\\express"
 		}
 	],
 	"settings": {}
