@@ -264,6 +264,7 @@ export default class ProjectsManager {
     ));
 
     this._projects = list;
+    debug('Projects loaded: ', ...list._list.map(p => p.gitRemote ? p.gitRemote : `[NO GIT] ${p.name}`));
 
     return this._projects;
   }

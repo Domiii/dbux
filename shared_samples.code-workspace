@@ -27,6 +27,10 @@
 		{
 			"name": "express",
 			"path": "dbux_projects\\express"
+		},
+		{
+			"name": "hexo",
+			"path": "dbux_projects\\hexo"
 		}
 	],
 	"settings": {}

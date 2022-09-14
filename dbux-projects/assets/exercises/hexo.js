@@ -1,6 +1,7 @@
 const configs = [
   {
-    // not a challenge to find the bug
+    // → not a challenge to find the bug (?)
+    // → runs too many tests, resulting in a ginormous, messy ACG
     // https://github.com/BugsJS/hexo/releases/tag/Bug-1-test
     // https://github.com/BugsJS/hexo/commit/257794e187864a18cefec5f83e03f1cf2d48331e
     id: 1,
@@ -22,7 +23,7 @@ const configs = [
   // }
 
   {
-    // 
+    // → probably a good bug candidate
     id: 4,
     testRe: 'asset_img.*with space',
     testFilePaths: ['test/scripts/tags/asset_img.js'],

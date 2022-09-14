@@ -36,7 +36,7 @@ export default class HoleNode extends GroupNode {
     // let saturation = 5;
     // let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
     // this.state.backgroundStyle = `hsl(${hue},${saturation}%,${lightness}%)`;
-    const gray = ThemeMode.is.Dark(themeMode) ? '33' : 'CC';
+    const gray = ThemeMode.is.Dark(themeMode) ? '75' : 'CC';
     this.state.backgroundStyle = `#${gray}${gray}${gray}`;
   }
 

@@ -18,10 +18,10 @@ export default class ExpressProject extends Project {
     return `Bug-${exerciseNumber}-${tagCategory}`;
   }
 
-  async selectExercise(bug) {
+  async selectExercise(exercise) {
     const {
       number, name
-    } = bug;
+    } = exercise;
     const tagCategory = "test"; // "test", "fix" or "full"
     const tag = this.getExerciseGitTag(number, tagCategory);
 
@@ -29,7 +29,6 @@ export default class ExpressProject extends Project {
       // do not checkout bug, if we already on the right tag
       return;
     }
-
     // checkout the bug branch
     sh.cd(this.projectPath);
     this.log(`Checking out bug ${name || number}...`);
@@ -93,7 +92,7 @@ export default class ExpressProject extends Project {
       ],
       require: config.require || ['./test/support/env.js'],
       // dbuxArgs: '--pw=superagent',
-      dbuxArgs: '--pw=.*',
+      dbuxArgs: '--pw=.* --pb=mocha',
       ...config,
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     };
