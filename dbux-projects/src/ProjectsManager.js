@@ -349,11 +349,11 @@ export default class ProjectsManager {
       // start a `PracticeSession`
       const exerciseProgress = this.bdp.getExerciseProgress(exercise.id);
       if (!exerciseProgress) {
-        const stopwatchEnabled = await this.askForStopwatch(exercise);
-        if (stopwatchEnabled === null) {
-          // user canceled
-          return null;
-        }
+        const stopwatchEnabled = !!await this.askForStopwatch(exercise);
+        // if (stopwatchEnabled === null) {
+        //   // user canceled
+        //   return null;
+        // }
         this.bdp.addExerciseProgress(exercise, stopwatchEnabled, { startedAt: Date.now() });
         await this.bdp.save();
       }

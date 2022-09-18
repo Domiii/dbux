@@ -202,7 +202,11 @@ const configs = [
     ]
   },
   {
-    // NOTE: shutdown delayed for 2 mins
+    /**
+     * NOTE: shutdown delayed for 2 mins
+     * 
+     * https://github.com/BugsJS/express/releases/tag/Bug-15-full
+     */
     id: 15,
     label: 'default Content-Type',
     testRe: [

@@ -92,7 +92,8 @@ export default class ExpressProject extends Project {
       ],
       require: config.require || ['./test/support/env.js'],
       // dbuxArgs: '--pw=superagent',
-      dbuxArgs: '--pw=.* --pb=mocha',
+      // dbuxArgs: '--pw=.* --pb=mocha',
+      dbuxArgs: '--pb=.*',
       ...config,
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     };
