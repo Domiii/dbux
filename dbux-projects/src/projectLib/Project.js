@@ -18,7 +18,7 @@ import ExerciseList from './ExerciseList';
 import Process, { ProcessOptions } from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import { buildNodeCommand } from '../util/nodeUtil';
-import { checkSystem, getDefaultRequirement } from '../checkSystem';
+import { checkSystem, DefaultNodeVersion, getDefaultRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
 import Exercise from './Exercise';
@@ -101,11 +101,11 @@ export default class Project extends ProjectBase {
   }
 
   get systemRequirements() {
-    if (this.nodeVersion) {
-      return {
-        node: { version: this.nodeVersion }
-      };
-    }
+    // if (this.nodeVersion) {
+    //   return {
+    //     node: { version: this.nodeVersion }
+    //   };
+    // }
     return null;
   }
 
@@ -286,8 +286,8 @@ export default class Project extends ProjectBase {
     return pathResolve(this.sharedRoot, 'node_modules', relativePath);
   }
 
-  getNodeVersion(bug) {
-    return bug.nodeVersion || this.nodeVersion || '14';
+  getCustomNodeVersion(exercise) {
+    return exercise.nodeVersion || this.nodeVersion;
   }
 
   doesProjectGitFolderExist() {
@@ -1213,11 +1213,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     // make sure, we have node at given version and node@lts
-    if (this.nodeVersion) {
+    const nodeVersion = this.getCustomNodeVersion(exercise);
+    if (nodeVersion) {
       // TODO: future-work user with dialog about needing volta
       this.logger.warn(`This project requires a specific node version. Trying to use volta to install and pin it...`);
-      await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
-      await this.exec(`volta pin node@${this.nodeVersion}`);
+      await this.exec(`volta fetch node@${nodeVersion} node@lts npm@lts`);
+      await this.exec(`volta pin node@${nodeVersion}`);
     }
   }
 

@@ -31,6 +31,10 @@
 		{
 			"name": "hexo",
 			"path": "dbux_projects\\hexo"
+		},
+		{
+			"name": "eslint",
+			"path": "dbux_projects\\eslint"
 		}
 	],
 	"settings": {}

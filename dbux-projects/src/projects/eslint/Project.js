@@ -3,6 +3,7 @@ import sh from 'shelljs';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
+import { DefaultNodeVersion } from '../../checkSystem';
 
 /** @typedef {import('../../projectLib/Exercise').default} Bug */
 /** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
@@ -84,8 +85,7 @@ export default class EslintProject extends Project {
       '-t 10000' // timeout
     ]);
     const files = cfg.dbuxEnabled ? exercise.watchFilePaths : exercise.runFilePaths;
-    const nodeVersion = this.getNodeVersion(exercise);
-
+    const nodeVersion = this.getCustomNodeVersion(exercise) || DefaultNodeVersion;
 
     const mochaCfg = {
       cwd: projectPath,
