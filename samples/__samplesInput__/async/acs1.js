@@ -1,23 +1,29 @@
-// acs1.js
 async function f() {
-  await 0;
-  await 1;
-  await 2;
-  debugger;
+  fA;
+  await f2();
+  fB;
 }
-
-async function g() {
-  await 0;
-  Promise.resolve()
-    .then(() => {
-      return Promise.resolve()
-        .then(() => {
-          // this is not on the stack, but maybe it should be
-          return Promise.resolve();
-        });
+async function main() {
+  A;
+  await start;
+  B;
+  await Promise.resolve()
+    .then(async function g() {
+      C;
+      await f();
+      D;
     })
-    .then(() => { f(); });
+    .then(function h() {
+      E;
+    });
   await 2;
 }
 
-setTimeout(g);
+
+let fA, fB, fC, fD, gA, gB;
+let start;
+let A, B, C, D, E;
+function f2() { }
+main();
+
+// TODO: produce a version with forks for more tests in different environments.
