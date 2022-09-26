@@ -12,6 +12,9 @@ async function main() {
     });
   await 2;
 }
+function j() {
+  return E;
+}
 
 
 let fA, fB, fC, fD, gA, gB;
@@ -22,9 +25,6 @@ function h() {
 }
 function i() {
   return j();
-}
-function j() {
-  return 'k';
 }
 main();
 
