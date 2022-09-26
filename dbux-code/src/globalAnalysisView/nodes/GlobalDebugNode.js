@@ -7,6 +7,7 @@ import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/dat
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import makeTreeItem, { makeTreeChildren, makeTreeItems, objectToTreeItems } from '../../helpers/makeTreeItem';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
+import DataDependenciesNode from '../../traceDetailsView/nodes/research/DataDependenciesNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -165,8 +166,15 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
     ];
   }
 
+  childClasses = [
+    DataDependenciesNode
+  ];
+
   buildChildren() {
     // TODO: don't build individual node children unless expanded
-    return makeTreeItems(...this.nodes());
+    return [
+      ...makeTreeItems(...this.nodes()),
+      ...this.buildChildrenDefault()
+    ];
   }
 }

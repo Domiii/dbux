@@ -2,7 +2,6 @@ async function f() {
   await 0;
   await 1;
   await 2;
-  debugger;
 }
 
 async function g() {
@@ -10,8 +9,8 @@ async function g() {
   Promise.resolve()
     .then(() => {
       return Promise.resolve()
-        .then(() => {
-          // this is not on the stack, but maybe it should be
+        .then(function fff() {
+          debugger;
           return Promise.resolve();
         });
     })

@@ -17,7 +17,6 @@ class ResearchNode extends TraceDetailNode {
   
   childClasses = [
     EdgeAnalysisNode,
-    DataDependenciesNode,
   ];
 }
 
