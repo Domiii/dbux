@@ -1,20 +1,14 @@
-async function f() {
-  fA;
-  await f2();
-  fB;
-}
 async function main() {
   A;
   await start;
   B;
   await Promise.resolve()
-    .then(async function g() {
+    .then(function f() {
       C;
-      await f();
-      D;
     })
-    .then(function h() {
-      E;
+    .then(function g() {
+      D;
+      return h();
     });
   await 2;
 }
@@ -23,7 +17,15 @@ async function main() {
 let fA, fB, fC, fD, gA, gB;
 let start;
 let A, B, C, D, E;
-function f2() { }
+function h() {
+  i();
+}
+function i() {
+  return j();
+}
+function j() {
+  return 'k';
+}
 main();
 
 // TODO: produce a version with forks for more tests in different environments.

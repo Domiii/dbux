@@ -244,7 +244,7 @@ export function makeContextLabel(context, app) {
           virtualLabel = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
         }
         else {
-          virtualLabel = '(async start)';
+          virtualLabel = '';
         }
       }
       else {
@@ -254,10 +254,10 @@ export function makeContextLabel(context, app) {
           virtualLabel = staticTrace.displayName.replace('yield ', '').replace(/;$/, '');
         }
         else {
-          virtualLabel = '(gen start)';
+          virtualLabel = '*';
         }
       }
-      return `${makeStaticContextLabel(realStaticContextId, app)} | ${virtualLabel}`;
+      return `${makeStaticContextLabel(realStaticContextId, app)}${virtualLabel ? `| ${virtualLabel}` : ''}`;
     }
     else {
       // bug: could not find any of the context's traces
