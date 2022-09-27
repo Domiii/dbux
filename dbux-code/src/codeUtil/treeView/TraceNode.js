@@ -43,6 +43,7 @@ export default class TraceNode extends BaseTreeViewNode {
     // NOTE: description MUST be a string or it won't be properly displayed
     // const dt = getTraceCreatedAt(this.trace);
     const loc = makeTraceLocLabel(this.trace);
+    // this.description ||= loc;
     this.description = loc;
   }
 

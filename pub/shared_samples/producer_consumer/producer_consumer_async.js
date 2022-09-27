@@ -35,9 +35,9 @@ async function wait(queue) {
 // }
 
 async function produce() {
-  const [index, item, n] = startProduce();  // WARNING: must start before first await to avoid race condition
+  const [index, item, ticks] = startProduce();  // WARNING: must start before first await to avoid race condition
   // await start;
-  for (let i = 0; i < n; ++i) {
+  for (let i = 0; i < ticks; ++i) {
     await work;
   }
   await finish;
@@ -52,10 +52,10 @@ async function waitForSpace() {
 
 async function P(n) {
   await start;
-  for (let i = 0; i < n;) {
+  while (n) {
     if (hasSpace()) {
       await produce();
-      ++i;
+      --n;
     }
     else {
       await waitForSpace();
@@ -87,10 +87,10 @@ async function waitForItems() {
 
 async function C(n) {
   await start;
-  for (let i = 0; i < n;) {
+  while (n) {
     if (hasItems()) {
       await consume();
-      ++i;
+      --n;
     }
     else {
       await waitForItems();

@@ -1,84 +1,94 @@
-import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeRead, isDataNodeWrite } from '@dbux/common/src/types/constants/DataNodeType';
-import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
+import { makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import TraceDetailNode from '../TraceDetailNode';
 import TraceNode from '../../../codeUtil/treeView/TraceNode';
 
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('DataDependencies');
-
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
-
-/** ###########################################################################
- * main node
- * ##########################################################################*/
 
 export default class DataDependenciesNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
     return 'CrossThreadDataDependencies';
   }
-
   buildChildren() {
     const selectedTrace = traceSelection.selected;
     const emptySet = new Set();
 
     if (selectedTrace) {
       const dp = allApplications.getById(selectedTrace.applicationId).dataProvider;
-      const writtenThreadsByAccessId = new Map();
-      const globalAccessIds = new Set();
+      /** @type {Map<number, Set<number>>} */ const resultsByTargetTraceId = new Map();
+      const results = [];
+      const addedStaticTraceIds = new Set();
       for (const dataNode of dp.collections.dataNodes.getAllActual()) {
-        const { type, accessId, traceId } = dataNode;
-        if (!accessId) {
-          continue;
-        }
-        const rootContext = dp.util.getRootContextOfTrace(traceId);
-        const staticContext = dp.collections.staticContexts.getById(rootContext.staticContextId);
-        if (staticContext.type === StaticContextType.Program) {
-          continue;
-        }
+        const { nodeId, type, refId, traceId: accessTraceId } = dataNode;
+
+        // get threadId of access
+        const rootContext = dp.util.getRootContextOfTrace(accessTraceId);
         const { threadId } = dp.util.getAsyncNode(rootContext.contextId);
-        if (isDataNodeWrite(type)) {
-          if (!writtenThreadsByAccessId.get(accessId)) {
-            writtenThreadsByAccessId.set(accessId, new Set());
+
+        // ignore functions (for now)
+        if (refId) {
+          const ref = dp.collections.values.getById(refId);
+          if (ValueTypeCategory.is.Function(ref?.category)) {
+            continue;
           }
-          writtenThreadsByAccessId.get(accessId).add(threadId);
+        }
+
+        // get target trace
+        const accessedObjectNode = dp.util.getDataNodeAccessedObjectNode(nodeId);
+        let targetTraceId, targetNode = accessedObjectNode || dataNode;
+        if (targetNode.refId) {
+          // reference type → find first occurrence of reference
+          targetNode = dp.indexes.dataNodes.byRefId.getFirst(targetNode.refId);
+          ({ traceId: targetTraceId } = targetNode);
+        }
+        else {
+          if (targetNode.varAccess?.declarationTid) {
+            targetTraceId = targetNode.varAccess?.declarationTid;
+          }
+          else {
+            targetTraceId = targetNode.traceId;
+          }
+        }
+        if (!targetTraceId) {
+          continue;
+        }
+
+        if (isDataNodeWrite(type)) {
+          if (!resultsByTargetTraceId.get(targetTraceId)) {
+            resultsByTargetTraceId.set(targetTraceId, new Set());
+          }
+          resultsByTargetTraceId.get(targetTraceId).add(threadId);
         }
         else if (isDataNodeRead(type)) {
-          const writtenThreads = writtenThreadsByAccessId.get(accessId) || emptySet;
+          const writtenThreads = resultsByTargetTraceId.get(targetTraceId) || emptySet;
           if ((writtenThreads.size - writtenThreads.has(threadId)) > 0) {
-            globalAccessIds.add(accessId);
+            // first read after write
+            const trace = dp.collections.traces.getById(targetTraceId);
+            if (!addedStaticTraceIds.has(trace.staticTraceId)) { // only add one per staticTraceId
+              addedStaticTraceIds.add(trace.staticTraceId);
+              let labelOverride = targetNode.refId ?
+                dp.util.findRefFirstVarName(targetNode.refId) :
+                makeTraceLabel(trace);
+              results.push({ trace, labelOverride/* , firstReadTid: accessTraceId */ });
+            }
           }
         }
       }
-      const globalTraceIds = new Set();
-      const addedStaticTraceIds = new Set();
-      for (const accessId of globalAccessIds.values()) {
-        const { varAccess } = dp.indexes.dataNodes.byAccessId.getFirst(accessId);
-        let _traceId;
-        if (varAccess.objectNodeId) {
-          _traceId = dp.collections.dataNodes.getById(varAccess.objectNodeId).traceId;
-        }
-        else if (varAccess.declarationTid) {
-          _traceId = varAccess.declarationTid;
-        }
-        const t = dp.collections.traces.getById(_traceId);
-        if (!addedStaticTraceIds.has(t.staticTraceId)) {
-          addedStaticTraceIds.add(t.staticTraceId);
-          globalTraceIds.add(t);
-        }
-      }
-      return Array.from(globalTraceIds.values()).map(trace => {
-        const dataNode = dp.collections.dataNodes.getById(trace.nodeId);
-        if (!dataNode.varAccess) {
-          const dataNodesByValueId = dp.indexes.dataNodes.byValueId.get(dataNode.valueId) || EmptyArray;
-          const nextDataNode = dataNodesByValueId[dataNodesByValueId.indexOf(dataNode) + 1];
-          trace = dp.collections.traces.getById(nextDataNode.traceId);
-        }
-        return this.treeNodeProvider.buildNode(TraceNode, trace, this);
-      });
+
+      return results
+        .filter(({ trace: { traceId } }) => {
+          const writtenThreads = resultsByTargetTraceId.get(traceId);
+          // ignore results that were only written in entry point thread (for now) → removes a lot of const vars
+          return writtenThreads.size > 1 || writtenThreads.values().next().value > 1;
+        })
+        .map(({ trace, labelOverride }) => {
+          const writtenThreads = Array.from(resultsByTargetTraceId.get(trace.traceId));
+          return this.treeNodeProvider.buildNode(TraceNode, trace, this, { labelOverride });
+        });
     }
     else {
       return EmptyArray;

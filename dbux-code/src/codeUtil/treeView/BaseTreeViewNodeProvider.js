@@ -272,7 +272,7 @@ export default class BaseTreeViewNodeProvider {
       ...moreProps,
       ...newProps
     };
-    const label = NodeClass.makeLabel(entry, parent, moreProps, this);
+    const label = moreProps.labelOverride || NodeClass.makeLabel(entry, parent, moreProps, this);
     return new NodeClass(this, label, entry, parent, moreProps);
   }
 

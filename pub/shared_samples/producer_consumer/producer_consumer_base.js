@@ -23,10 +23,10 @@ const ConsumerTimeVar = 2;
 const MaxItems = 2;
 
 // global queue
-const buffer = [];
+const items = [];
+let nItems = 0;
 const producingBuffer = [];
 const consumingBuffer = [];
-let nItems = 0;
 let lastProducingItem = 0;
 let lastConsumingItem = 0;
 let consuming = 0;
@@ -47,7 +47,7 @@ export function randomInt(n, isProducer, item) {
 
 function getFreeSpaceIndex() {
   for (let i = 0; i < MaxItems; ++i) {
-    if (!buffer[i]) {
+    if (!items[i]) {
       return i;
     }
   }
@@ -56,7 +56,7 @@ function getFreeSpaceIndex() {
 
 function getConsumableIndex() {
   for (let i = 0; i < MaxItems; ++i) {
-    if (buffer[i] && !producingBuffer[i] && !consumingBuffer[i]) {
+    if (items[i] && !producingBuffer[i] && !consumingBuffer[i]) {
       return i;
     }
   }
@@ -64,7 +64,7 @@ function getConsumableIndex() {
 }
 
 function getBufferString() {
-  const str = buffer.map((val, index) => {
+  const str = items.map((val, index) => {
     if (val) {
       if (producingBuffer[index]) {
         return `${val}(producing)`;
@@ -112,7 +112,7 @@ export function startProduce() {
   const item = ++lastProducingItem;
   const index = getFreeSpaceIndex();
   const produceTime = getProduceTime(item);
-  buffer[index] = item;
+  items[index] = item;
   producingBuffer[index] = item;
   if (index === null) {
     throw new Error(`tried to produce when full`);
@@ -142,7 +142,7 @@ export function getConsumeTime(item) {
 export function startConsume() {
   ++consuming;
   const index = getConsumableIndex();
-  const item = buffer[index];
+  const item = items[index];
   const consumeTime = getConsumeTime(item);
   if (index === null) {
     throw new Error(`tried to consume when empty`);
@@ -154,8 +154,8 @@ export function startConsume() {
 }
 
 export function finishConsume(index) {
-  const item = buffer[index];
-  delete buffer[index];
+  const item = items[index];
+  delete items[index];
   delete consumingBuffer[index];
   --nItems;
   --consuming;
