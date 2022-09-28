@@ -174,6 +174,10 @@ class EdgeAnalysisController {
     return rootId && this.getEdge(rootId) || null;
   }
 
+  get dataFolder() {
+    return this.research.getResearchDataRoot();
+  }
+
   get hasProjectAppData() {
     return !!this.experimentId && !!this.dataFolder;
   }
@@ -776,33 +780,31 @@ class EdgeAnalysisController {
 
     if (missingExperiments.length) {
       const msg = `Missing ${missingExperiments.length} experiments - Proceed (will process them first)?\n${missingExperiments.join('\n')}`;
-      if (!await confirm(msg)) {
-        return;
-      }
+      if (await confirm(msg)) {
+        // make sure all experiments are ready
+        const progressIncrement = 1 / missingExperiments.length * 100; // percentage
+        await runTaskWithProgressBar(async (progress, cancelToken) => {
+          for (const experimentId of missingExperiments) {
+            try {
+              const message = `preparing "${experimentId}" data...`;
+              progress.report({
+                message,
+                increment: progressIncrement
+              });
+              debug(message);
+              await this.prepareExperimentData(experimentId);
 
-      // make sure all experiments are ready
-      const progressIncrement = 1 / missingExperiments.length * 100; // percentage
-      await runTaskWithProgressBar(async (progress, cancelToken) => {
-        for (const experimentId of missingExperiments) {
-          try {
-            const message = `preparing "${experimentId}" data...`;
-            progress.report({
-              message,
-              increment: progressIncrement
-            });
-            debug(message);
-            await this.prepareExperimentData(experimentId);
-
-            if (cancelToken.isCancellationRequested) {
-              break;
+              if (cancelToken.isCancellationRequested) {
+                break;
+              }
+            }
+            catch (err) {
+              throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
+              // break;
             }
           }
-          catch (err) {
-            throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
-            // break;
-          }
-        }
-      }, { cancellable: true });
+        }, { cancellable: true });
+      }
     }
 
     // finally, generate table

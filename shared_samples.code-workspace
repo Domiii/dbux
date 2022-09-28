@@ -35,6 +35,10 @@
 		{
 			"name": "eslint",
 			"path": "dbux_projects\\eslint"
+		},
+		{
+			"name": "webpack",
+			"path": "dbux_projects\\webpack"
 		}
 	],
 	"settings": {}
