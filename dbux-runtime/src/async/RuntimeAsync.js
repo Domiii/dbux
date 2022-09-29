@@ -215,7 +215,7 @@ export default class RuntimeAsync {
 
       // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
 
-      // future-work: make this configurable, as it is extremely bad for performance, especially if source maps are enabled
+      // future-work: make ↓ configurable (extremely bad for performance, especially if source maps are enabled)
       // context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
     }
 

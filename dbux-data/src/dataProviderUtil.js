@@ -226,9 +226,14 @@ const dataProviderUtil = {
   // contexts
   // ###########################################################################
 
-  /** @param {RuntimeDataProvider} dp */
+  /** 
+   * All CGRs.
+   * 
+   * @param {RuntimeDataProvider} dp
+   * @return {Array.<ExecutionContext>}
+   */
   getAllRootContexts(dp) {
-    return dp.indexes.executionContexts.roots.get(1) || EmptyArray;
+    return dp.indexes.executionContexts.roots.getAllRoots();
   },
 
   /** @param {RuntimeDataProvider} dp */
@@ -266,6 +271,8 @@ const dataProviderUtil = {
 
   /** @param {RuntimeDataProvider} dp */
   isRootContext(dp, contextId) {
+    // NOTE: remove `Await` contexts?
+    //    → !ExecutionContextType.is.Await(context.contextType)
     const context = dp.collections.executionContexts.getById(contextId);
     if (!context.parentContextId || context.isVirtualRoot) {
       return true;

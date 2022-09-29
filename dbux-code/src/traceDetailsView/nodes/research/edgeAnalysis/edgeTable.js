@@ -58,7 +58,7 @@ function tableRow(folder, experimentId, nameCount) {
     const s = readFileSync(fpath);
     const data = JSON.parse(s);
     const { appStats = {}/* , annotations = {} */ } = data;
-    let { traceCount, aeCounts, edgeTypeCounts, files } = appStats;
+    let { traceCount, aeCounts, edgeTypeCounts, ...moreStats } = appStats;
 
     traceCount = traceCount.toLocaleString('en-us');
     aeCounts = [...aeCounts];
@@ -102,7 +102,7 @@ function tableRow(folder, experimentId, nameCount) {
     return {
       name,
       iName,
-      raw: { name, iName, traceCount/* , aeEdgeCount */, aeCounts, edgeTypeCounts, files },
+      raw: { name, iName, traceCount/* , aeEdgeCount */, aeCounts, edgeTypeCounts, ...moreStats },
       /* & ${aeEdgeCount} */
       row: ` & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.join(' & ')} `
     };

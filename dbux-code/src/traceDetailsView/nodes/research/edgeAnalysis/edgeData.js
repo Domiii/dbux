@@ -7,14 +7,15 @@ import { getCurrentResearch } from '../../../../research/Research';
  * EdgeTypeCount
  * ##########################################################################*/
 export const ETC = {
-  C: 0,  // Chain
-  F: 1,  // Multi-Chain
-  MC: 2,  // Multi-Chain
-  O: 3,  // Orphan
+  C: 0,  // Chains
+  F: 1,  // Forks
+  O: 2,  // Orphans
+  Sync: 3,
   TT: 4, // Total Threads
-  RT: 5, // Real Threads
-  Acc: 6, // Accuracy
-  N: 7,  // Nested count average
+  // MC: 5
+  // RT: 5, // Real Threads
+  // Acc: 6, // Accuracy
+  // N: 7,  // Nested count average
 };
 
 /** ###########################################################################

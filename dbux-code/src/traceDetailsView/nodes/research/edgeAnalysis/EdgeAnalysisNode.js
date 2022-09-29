@@ -4,6 +4,7 @@ import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
 import differenceBy from 'lodash/differenceBy';
 import isEqual from 'lodash/isEqual';
+import difference from 'lodash/difference';
 import NanoEvents from 'nanoevents';
 import sleep from '@dbux/common/src/util/sleep';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
@@ -335,13 +336,22 @@ class EdgeAnalysisController {
     }, [0, 0, 0, 0, 0, 0, 0, 0]);
 
     const allNodes = dp.collections.asyncNodes.getAllActual();
+    
+    // each CGR should have one asyncNode; if not, something went wrong.
+    const allCgrs = dp.util.getAllRootContexts();
+    const missingCGRs = difference(allCgrs.map(c => c.contextId), allNodes.map(n => n.rootContextId));
+    if (missingCGRs.length) {
+      logError(`Missing CGRs: ${missingCGRs}`);
+    }
+
+    // sync
+    const syncingCGRs = allNodes.filter(asyncNode => !!asyncNode.syncPromiseIds?.length);
+    edgeTypeCounts[ETC.Sync] = syncingCGRs.length;
+
+    // orphans
     const orphans = allNodes
       .filter(an => !dp.util.getAsyncEdgesTo(an.rootContextId)?.length);
-    const nonFileOrphans = orphans
-      .filter(an => !dp.util.isContextProgramContext(an.rootContextId));
-
-    // orphan count
-    edgeTypeCounts[ETC.O] = nonFileOrphans.length;
+    edgeTypeCounts[ETC.O] = orphans.length;
 
 
     // keep track of file-related data

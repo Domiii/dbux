@@ -166,26 +166,28 @@ export default class RuntimeDataStatsReporter {
         }]))
     );
 
-    this.statsInstances.forEach(stats => stats.preData());
+    // NOTE: disabled for performance reasons ↓
+    // this.statsInstances.forEach(stats => stats.preData());
   }
 
   reportNewData(newData) {
-    const { collectionStats } = this;
+    // NOTE: disabled for performance reasons ↓
+    // const { collectionStats } = this;
 
-    // collection stats
-    const collectionInfo = Object.entries(collectionStats)
-      .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
-      .join(', ');
+    // // collection stats
+    // const collectionInfo = Object.entries(collectionStats)
+    //   .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
+    //   .join(', ');
 
-    // final messages
-    const msgs = [
-      `##### Data received ##### ${collectionInfo}`,
-      ...this.statsInstances
-        .map(stats => stats.collect(newData)?.join(''))
-        .filter(s => !!s)
-    ];
+    // // final messages
+    // const msgs = [
+    //   `##### Data received ##### ${collectionInfo}`,
+    //   ...this.statsInstances
+    //     .map(stats => stats.collect(newData)?.join(''))
+    //     .filter(s => !!s)
+    // ];
 
-    this.dp.logger.debug(msgs.join('\n '));
+    // this.dp.logger.debug(msgs.join('\n '));
   }
 
   reportAllData() {
