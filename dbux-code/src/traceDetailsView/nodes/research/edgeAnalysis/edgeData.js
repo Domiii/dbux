@@ -1,5 +1,6 @@
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import Enum from '@dbux/common/src/util/Enum';
+import size from 'lodash/size';
 import { getCurrentResearch } from '../../../../research/Research';
 
 
@@ -12,11 +13,17 @@ export const ETC = {
   O: 2,  // Orphans
   Sync: 3,
   TT: 4, // Total Threads
-  // MC: 5
+  MC: 5
   // RT: 5, // Real Threads
   // Acc: 6, // Accuracy
   // N: 7,  // Nested count average
 };
+
+export const ETCCount = size(ETC);
+/**
+ * NOTE: we ignore all types beyond this
+ */
+export const ETCMaxCount = ETC.TT + 1; // (+1 because we start at 0)
 
 /** ###########################################################################
  * EdgeStatus

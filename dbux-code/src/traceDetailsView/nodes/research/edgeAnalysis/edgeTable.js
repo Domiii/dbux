@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'fs';
 import mean from 'lodash/mean';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
+import { EdgeStatus, ETC, ETCMax, ETCMaxCount, getExperimentDataFilePath } from './edgeData';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('edgeTable');
@@ -37,8 +37,9 @@ export function makeEdgeTable(folder, experimentIds) {
 
   // finish up
   return [
+    `% sorted result:\n`,
     tableString(sorted),
-    tableString(unsorted),
+    // tableString(unsorted),
     `% ${JSON.stringify(allRaw)}`
   ].join('\n\n\n\n');
 }
@@ -62,26 +63,24 @@ function tableRow(folder, experimentId, nameCount) {
 
     traceCount = traceCount.toLocaleString('en-us');
     aeCounts = [...aeCounts];
+    delete edgeTypeCounts[undefined];  // little hackfix (in case unused EdgeTypes were assigned)
     edgeTypeCounts = [...edgeTypeCounts];
     /* if (!aeCounts.length)  */aeCounts.splice(3, 1);
 
-    // total threads = multi-chains + forks
-    // edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
-    edgeTypeCounts[ETC.TT] = edgeTypeCounts[ETC.F] + edgeTypeCounts[ETC.O];
-    const rt = getRt(experimentId);
-    if (!Array.isArray(rt)) {
-      edgeTypeCounts[ETC.RT] = rt;
-      edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.RT] / edgeTypeCounts[ETC.TT];
-    }
-    else {
-      edgeTypeCounts[ETC.RT] = rt.join('-');
-      edgeTypeCounts[ETC.Acc] = mean(rt) / edgeTypeCounts[ETC.TT];
-    }
+    // const rt = getRt(experimentId);
+    // if (!Array.isArray(rt)) {
+    //   edgeTypeCounts[ETC.RT] = rt;
+    //   edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.RT] / edgeTypeCounts[ETC.TT];
+    // }
+    // else {
+    //   edgeTypeCounts[ETC.RT] = rt.join('-');
+    //   edgeTypeCounts[ETC.Acc] = mean(rt) / edgeTypeCounts[ETC.TT];
+    // }
 
-    // fix formatting
-    // edgeTypeCounts[ETC.O] = `\\corr{${edgeTypeCounts[ETC.O]}}`;
-    edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.Acc].toFixed(2);
-    edgeTypeCounts[ETC.N] = Math.round(edgeTypeCounts[ETC.N]); // edgeTypeCounts[5].toFixed(1);
+    // // fix formatting
+    // // edgeTypeCounts[ETC.O] = `\\corr{${edgeTypeCounts[ETC.O]}}`;
+    // edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.Acc].toFixed(2);
+    // edgeTypeCounts[ETC.N] = Math.round(edgeTypeCounts[ETC.N]); // edgeTypeCounts[5].toFixed(1);
 
     // const aeEdgeCount = sum(aeCounts);
 
@@ -104,7 +103,13 @@ function tableRow(folder, experimentId, nameCount) {
       iName,
       raw: { name, iName, traceCount/* , aeEdgeCount */, aeCounts, edgeTypeCounts, ...moreStats },
       /* & ${aeEdgeCount} */
-      row: ` & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.join(' & ')} `
+
+      /** ####################################################################################################
+       * Final row output
+       * ###################################################################################################*/
+      row: ` & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.slice(0, ETCMaxCount).join(' & ')} `
+      /** ####################################################################################################
+       * ###################################################################################################*/
     };
   }
   catch (err) {

@@ -5,6 +5,7 @@ import merge from 'lodash/merge';
 import differenceBy from 'lodash/differenceBy';
 import isEqual from 'lodash/isEqual';
 import difference from 'lodash/difference';
+import max from 'lodash/max';
 import NanoEvents from 'nanoevents';
 import sleep from '@dbux/common/src/util/sleep';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
@@ -27,7 +28,7 @@ import { confirm, showErrorMessage, showInformationMessage, showWarningMessage }
 import { runTaskWithProgressBar } from '../../../../codeUtil/runTaskWithProgressBar';
 import { showTextInNewFile } from '../../../../codeUtil/codeNav';
 import { makeEdgeTable } from './edgeTable';
-import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
+import { EdgeStatus, ETC, ETCCount, ETCMax, getExperimentDataFilePath } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -333,7 +334,7 @@ class EdgeAnalysisController {
       // }
       counts[ETC.N] += dp.util.getNestedDepth(to) || 0;
       return counts;
-    }, [0, 0, 0, 0, 0, 0, 0, 0]);
+    }, new Array(ETCCount).fill(0));
 
     const allNodes = dp.collections.asyncNodes.getAllActual();
     
@@ -352,6 +353,10 @@ class EdgeAnalysisController {
     const orphans = allNodes
       .filter(an => !dp.util.getAsyncEdgesTo(an.rootContextId)?.length);
     edgeTypeCounts[ETC.O] = orphans.length;
+
+    // total threads
+    // TODO: multi-chain is entirely handled in render code o_X
+    edgeTypeCounts[ETC.TT] = max(allNodes.map(n => n.threadId));
 
 
     // keep track of file-related data
