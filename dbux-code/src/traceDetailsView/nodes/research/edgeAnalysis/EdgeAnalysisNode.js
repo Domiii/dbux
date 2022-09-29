@@ -292,6 +292,8 @@ class EdgeAnalysisController {
       [AsyncEventType.None]: 3
     };
 
+    // TODO: AE count in sequelize = nodeCount + 1 (should be nodeCount - 1)
+
     const aeCounts = edges.reduce((counts, edge) => {
       const type = dp.util.getAsyncRootEventType(edge.toRootContextId);
       const idx = edgeTypeIndexes[type];
@@ -313,7 +315,8 @@ class EdgeAnalysisController {
       const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
       const chainIndex = fromParentChains && fromParentChains.indexOf(edge);
 
-      // TODO: why exclude "hasMultipleParents"? Can multi-chain and multiple parents not co-exist?
+      // Q: why exclude "hasMultipleParents"? Can multi-chain and multiple parents not co-exist?
+      //  → probably to remove extra MC counts (since C + MC = total chains)
       const isMulti = !hasMultipleParents && chainIndex > 0;
 
       counts[ETC.C] += isChain && !isMulti;
