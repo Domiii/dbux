@@ -17,6 +17,7 @@ export default class _2048Project extends Project {
       projectRoot, // NOTE: this is also used as `context`
       websitePort: 3843,
       entryPattern: 'js/*',
+      copy: ['index.html', 'style'],
       webpackConfig: {
         devServer: {
           devMiddleware: {

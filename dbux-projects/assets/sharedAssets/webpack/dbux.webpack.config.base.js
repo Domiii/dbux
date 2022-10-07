@@ -227,7 +227,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     );
 
     if (copyFiles) {
-      plugins.push(copyPlugin(ProjectRoot, copyFiles));
+      plugins.push(copyPlugin(ProjectRoot, copyFiles, distFolderName));
     }
 
     // see https://stackoverflow.com/questions/40755149/how-to-keep-my-shebang-in-place-using-webpack
@@ -415,7 +415,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 // ###########################################################################
 // copyPlugin
 // ###########################################################################
-function copyPlugin(ProjectRoot, files) {
+function copyPlugin(ProjectRoot, files, distFolderName) {
   const distFolder = path.join(ProjectRoot, distFolderName);
   return new CopyPlugin({
     patterns: files.map(f => ({

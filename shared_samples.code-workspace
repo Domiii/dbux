@@ -55,6 +55,18 @@
 		{
 			"name": "socket.io",
 			"path": "dbux_projects\\socket.io"
+		},
+		{
+			"name": "2048",
+			"path": "dbux_projects\\2048"
+		},
+		{
+			"name": "todomvc-es6",
+			"path": "dbux_projects\\todomvc-es6"
+		},
+		{
+			"name": "Editor.md",
+			"path": "dbux_projects\\Editor.md"
 		}
 	],
 	"settings": {}

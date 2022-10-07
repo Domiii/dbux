@@ -12,7 +12,6 @@ const customCfg = {
     //   template: './index.html',
     //   inject: 'head',
     // }),
-    copyPlugin(ProjectRoot, ['index.html', 'style'])
   ]
 };
 
