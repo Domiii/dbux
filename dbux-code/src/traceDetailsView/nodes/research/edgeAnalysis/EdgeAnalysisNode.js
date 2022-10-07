@@ -315,11 +315,9 @@ class EdgeAnalysisController {
       const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
       const chainIndex = fromParentChains && fromParentChains.indexOf(edge);
 
-      // Q: why exclude "hasMultipleParents"? Can multi-chain and multiple parents not co-exist?
-      //  → probably to remove extra MC counts (since C + MC = total chains)
       const isMulti = !hasMultipleParents && chainIndex > 0;
 
-      counts[ETC.C] += isChain && !isMulti;
+      counts[ETC.C] += isChain; // && !isMulti
       counts[ETC.F] += isFork; // FORK
       counts[ETC.MC] += isChain && isMulti; // Multi-Chain
       // counts[ETC.O] += !from;
@@ -340,7 +338,7 @@ class EdgeAnalysisController {
     }, new Array(ETCCount).fill(0));
 
     const allNodes = dp.collections.asyncNodes.getAllActual();
-    
+
     // each CGR should have one asyncNode; if not, something went wrong.
     const allCgrs = dp.util.getAllRootContexts();
     const missingCGRs = difference(allCgrs.map(c => c.contextId), allNodes.map(n => n.rootContextId));
@@ -351,6 +349,7 @@ class EdgeAnalysisController {
     // sync
     const syncingCGRs = allNodes.filter(asyncNode => !!asyncNode.syncPromiseIds?.length);
     edgeTypeCounts[ETC.Sync] = syncingCGRs.length;
+    const syncInfo = syncingCGRs.map(r => ({ rootContextId: r.rootContextId }));
 
     // orphans
     const orphans = allNodes
@@ -358,8 +357,8 @@ class EdgeAnalysisController {
     edgeTypeCounts[ETC.O] = orphans.length;
 
     // total threads
-    // TODO: multi-chain is entirely handled in render code o_X
-    edgeTypeCounts[ETC.TT] = max(allNodes.map(n => n.threadId));
+    // TODO: multi-chain threads are not counted, since they are entirely handled in render code :(
+    edgeTypeCounts[ETC.TT] = new Set(allNodes.map(n => n.threadId)).size;
 
 
     // keep track of file-related data
@@ -377,7 +376,12 @@ class EdgeAnalysisController {
     const fileCount = allFiles.length;
     const fileRootCount = fileRootsUnique.length;
     const files = fixFiles(app, {
-      fileCount, fileRootCount, fileEdges, fileRoots, allFileRoots: fileRootsUnique, allFiles
+      fileCount,
+      fileRootCount,
+      fileEdges,
+      fileRoots,
+      allFileRoots: fileRootsUnique,
+      allFiles: allFiles.length
     });
 
     // take average
@@ -396,6 +400,7 @@ class EdgeAnalysisController {
       traceCount,
       aeCounts,
       edgeTypeCounts,
+      syncInfo,
       files
     };
   }
@@ -798,31 +803,33 @@ class EdgeAnalysisController {
 
     if (missingExperiments.length) {
       const msg = `Missing ${missingExperiments.length} experiments - Proceed (will process them first)?\n${missingExperiments.join('\n')}`;
-      if (await confirm(msg)) {
-        // make sure all experiments are ready
-        const progressIncrement = 1 / missingExperiments.length * 100; // percentage
-        await runTaskWithProgressBar(async (progress, cancelToken) => {
-          for (const experimentId of missingExperiments) {
-            try {
-              const message = `preparing "${experimentId}" data...`;
-              progress.report({
-                message,
-                increment: progressIncrement
-              });
-              debug(message);
-              await this.prepareExperimentData(experimentId);
+      if (!await confirm(msg)) {
+        throw new Error(`Cannot start, unless all experiments from experiment folder have been processed -\n\n${research.getExperimentAppFileRoot()}`);
+      }
 
-              if (cancelToken.isCancellationRequested) {
-                break;
-              }
-            }
-            catch (err) {
-              throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
-              // break;
+      // make sure all experiments are ready
+      const progressIncrement = 1 / missingExperiments.length * 100; // percentage
+      await runTaskWithProgressBar(async (progress, cancelToken) => {
+        for (const experimentId of missingExperiments) {
+          try {
+            const message = `preparing "${experimentId}" data...`;
+            progress.report({
+              message,
+              increment: progressIncrement
+            });
+            debug(message);
+            await this.prepareExperimentData(experimentId);
+
+            if (cancelToken.isCancellationRequested) {
+              break;
             }
           }
-        }, { cancellable: true });
-      }
+          catch (err) {
+            throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
+            // break;
+          }
+        }
+      }, { cancellable: true });
     }
 
     // finally, generate table

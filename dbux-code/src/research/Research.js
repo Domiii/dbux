@@ -96,8 +96,15 @@ export class Research {
     return readdirSync(this.getExperimentRoot());
   }
 
+  /**
+   * TODO: wrong folder logic
+   */
+  getExperimentAppFileRoot() {
+    return this.getDataRootLfs();
+  }
+
   getAllExperimentAppFiles() {
-    return readdirSync(this.getDataRootLfs());
+    return readdirSync(this.getExperimentAppFileRoot());
   }
 
   /**

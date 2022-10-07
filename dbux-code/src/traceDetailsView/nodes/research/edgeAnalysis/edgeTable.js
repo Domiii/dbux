@@ -14,7 +14,7 @@ const { log, debug, warn, error: logError } = newLogger('edgeTable');
 function tableString(data) {
   const rows = data.map(x => x.row);
   // return `${headers}\n${rows.join('\n')}`;
-  return `${rows.join('\\\\\n')} \\\\\n`;
+  return `${rows.join('\n')}\n`;
 }
 
 export function makeEdgeTable(folder, experimentIds) {
@@ -40,7 +40,7 @@ export function makeEdgeTable(folder, experimentIds) {
     `% sorted result:\n`,
     tableString(sorted),
     // tableString(unsorted),
-    `% ${JSON.stringify(allRaw)}`
+    `% ${JSON.stringify(allRaw, null, 2)}`
   ].join('\n\n\n\n');
 }
 
@@ -98,6 +98,17 @@ function tableRow(folder, experimentId, nameCount) {
     const iName = nameCount.get(name) || 0;
     nameCount.set(name, iName + 1);
 
+    let comments = [];
+    if (edgeTypeCounts[ETC.MC]) {
+      comments.push(`MC=${edgeTypeCounts[ETC.MC]}`);
+    }
+    if (edgeTypeCounts[ETC.Sync]) {
+      comments.push(`Sync=${edgeTypeCounts[ETC.Sync]}`);
+    }
+    const commentStr = comments.length ?
+      `% ${comments.join(', ')}` : 
+      '';
+
     return {
       name,
       iName,
@@ -107,7 +118,7 @@ function tableRow(folder, experimentId, nameCount) {
       /** ####################################################################################################
        * Final row output
        * ###################################################################################################*/
-      row: ` & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.slice(0, ETCMaxCount).join(' & ')} `
+      row: ` & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.slice(0, ETCMaxCount).join(' & ')}\\\\${commentStr}`
       /** ####################################################################################################
        * ###################################################################################################*/
     };

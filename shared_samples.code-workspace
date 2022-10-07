@@ -39,6 +39,14 @@
 		{
 			"name": "webpack",
 			"path": "dbux_projects\\webpack"
+		},
+		{
+			"name": "javascript-algorithms",
+			"path": "dbux_projects\\javascript-algorithms"
+		},
+		{
+			"name": "bluebird",
+			"path": "dbux_projects\\bluebird"
 		}
 	],
 	"settings": {}

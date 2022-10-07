@@ -11,9 +11,12 @@ export const ETC = {
   C: 0,  // Chains
   F: 1,  // Forks
   O: 2,  // Orphans
-  Sync: 3,
-  TT: 4, // Total Threads
-  MC: 5
+  TT: 3, // Total Threads
+  MC: 4,
+  /**
+   * Sync does not work too well yet (since it also qualifies missing CHAINs as sync-against edges (e.g. in sequelize#5)).
+   */
+  Sync: 5
   // RT: 5, // Real Threads
   // Acc: 6, // Accuracy
   // N: 7,  // Nested count average
