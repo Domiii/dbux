@@ -47,6 +47,14 @@
 		{
 			"name": "bluebird",
 			"path": "dbux_projects\\bluebird"
+		},
+		{
+			"name": "node-fetch",
+			"path": "dbux_projects\\node-fetch"
+		},
+		{
+			"name": "socket.io",
+			"path": "dbux_projects\\socket.io"
 		}
 	],
 	"settings": {}

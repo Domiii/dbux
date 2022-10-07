@@ -23,7 +23,7 @@ export default class HexoProject extends Project {
       // NOTE: timeout cannot be disabled (maybe because it's an old version) - https://mochajs.org/#timeouts
       // runArgs: ['-t', '0'],
       // dbuxArgs: '--pw=.*',
-      dbuxArgs: '--pw=.* --pb=lodash,bluebird',
+      dbuxArgs: '--pw=.* --pb=lodash,bluebird,graceful-fs',
     });
     return config;
   }

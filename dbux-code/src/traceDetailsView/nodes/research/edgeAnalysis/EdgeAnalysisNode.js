@@ -795,8 +795,7 @@ class EdgeAnalysisController {
     const folder = research.getExperimentRoot();
     // const experimentIds = research.getAllExperimentFolders();
     // const experimentAppFiles = experimentIds.map(experimentId => this.research.getAppZipFilePath({ experimentId }));
-    const experimentIds = research.getAllExperimentAppFiles()
-      .map(f => research.getAppFileExperimentId(f));
+    const experimentIds = research.getAllExperimentFolders();
     // const experimentFiles = experimentIds.map();
     const missingExperiments = experimentIds
       .filter(experimentId => !existsSync(getExperimentDataFilePath(experimentId)));

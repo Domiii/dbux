@@ -124,6 +124,11 @@ export class Research {
     return file.substring(0, file.length - AppDataZipFileNameSuffix.length);
   }
 
+  getExperimentFileExperimentId(fpath) {
+    const file = basename(fpath);
+    return file.substring(0, file.length - 'json'.length);
+  }
+
   /** ###########################################################################
    * manage link folders
    *  #########################################################################*/

@@ -1213,7 +1213,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     // make sure, we have node at given version and node@lts
-    const nodeVersion = this.getCustomNodeVersion(exercise);
+    const nodeVersion = exercise && this.getCustomNodeVersion(exercise);
     if (nodeVersion) {
       // TODO: future-work user with dialog about needing volta
       this.logger.warn(`This project requires a specific node version. Trying to use volta to install and pin it...`);

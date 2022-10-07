@@ -166,7 +166,7 @@ function getRt(experimentId) {
 }
 
 const projectOrder = [
-  'getting-started',
+  // 'getting-started',
 
   'express',
   'hexo',
