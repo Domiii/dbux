@@ -8,13 +8,21 @@ import { DefaultNodeVersion } from '../../checkSystem';
 /** @typedef {import('../../projectLib/Exercise').default} Bug */
 /** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
+/**
+ * @see https://eslint.org/docs/latest/developer-guide/architecture/
+ */
 export default class EslintProject extends Project {
-  gitRemote = 'BugsJS/eslint.git';
+  // gitRemote = 'BugsJS/eslint.git';
+  gitRemote = 'eslint/eslint';
+  /**
+   * @see https://github.com/eslint/eslint/releases/tag/v8.25.0
+   */
+  gitCommit = 'tags/v8.25.0';
 
   packageManager = 'npm';
 
   // TODO: get nodeVersion by bug instead
-  nodeVersion = '7';
+  // nodeVersion = '7';
 
   async installDependencies() {
     throw new Error(`TODO: don't use webpack (or use WebpackBuilder if webpack is preferrable)`);
@@ -50,16 +58,16 @@ export default class EslintProject extends Project {
       ],
       runFilePaths,
       watchFilePaths,
-      tag: this._getExerciseGitTag(config.id, tagCategory),
+      // tag: this._getExerciseGitTag(config.id, tagCategory),
       // require: ['test/support/env'],
       ...config,
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     };
   }
 
-  _getExerciseGitTag(exerciseNumber, tagCategory) {
-    return `Bug-${exerciseNumber}-${tagCategory}`;
-  }
+  // _getExerciseGitTag(exerciseNumber, tagCategory) {
+  //   return `Bug-${exerciseNumber}-${tagCategory}`;
+  // }
 
 
   // ###########################################################################
