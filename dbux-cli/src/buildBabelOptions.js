@@ -82,13 +82,13 @@ export default function buildBabelOptions(options) {
   // }
 
   // future-work: use Webpack5 magic comments instead
-  verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
-    requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
+  // verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
+  //   requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
   // Build ignore config using whitelist/blacklist options
   const moduleFilterOptions = {
     ...options,
-    verbose: -1
+    // verbose: -1
   };
   const ignore = [
     makeIgnore(moduleFilterOptions)
