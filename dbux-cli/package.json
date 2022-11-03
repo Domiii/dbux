@@ -41,5 +41,8 @@
     "serialize-javascript": "^5.0.1",
     "shelljs": "0.8.4",
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-typescript": "^7.20.0"
   }
 }

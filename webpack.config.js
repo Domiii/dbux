@@ -73,7 +73,6 @@ module.exports = (env, argv) => {
     // const outFile = 'bundle.js';
     const defaultEntryPoint = 'src/index.js';
 
-    // TODO: add `src` alias to every build
     // resolve.alias.src = 
 
     // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));

@@ -1,5 +1,7 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 
+// TODO: use _sharedPlugins instead
+
 const babelConfigEs6 = {
   plugins: [
     '@babel/plugin-proposal-optional-chaining',

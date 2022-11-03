@@ -28,7 +28,7 @@ export default function dbuxRegister(options) {
   //  (https://github.com/ariporad/pirates/blob/5223d20e54f724780eb73d4d4918f70004d9d8dc/src/index.js#L20)
   // "All subsequent files required by node with the extensions .es6, .es, .jsx, .mjs, and .js will be transformed by Babel."
   //  (see https://babeljs.io/docs/en/babel-register#usage)
-  babelOptions.extensions = ['.es6', '.es', '.jsx', '.mjs', '.js', ''];
+  babelOptions.extensions = ['.es6', '.es', '.jsx', '.mjs', '.js', '.ts', '.tsx', ''];
 
   // console.debug('[@dbux/cli] dbuxRegister:', JSON.stringify(options));
   // console.debug('[@dbux/cli] babel-register:', !!babelOptions.ignore, JSON.stringify(babelOptions));

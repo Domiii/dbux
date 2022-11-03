@@ -20,6 +20,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.10.4",
     "@babel/plugin-transform-parameters": "^7.17.12",
     "@babel/plugin-transform-runtime": "^7.10.1",
+    "@babel/plugin-transform-typescript": "^7.20.0",
     "@babel/preset-env": "^7.10.1",
     "@msgpack/msgpack": "^2.7.1",
     "babel-loader": "^8.2.2",
