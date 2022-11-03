@@ -1,4 +1,4 @@
-import requireDynamic, { getRequire } from '@dbux/common/src/util/requireDynamic';
+import requireDynamic, { getRequireDynamic } from '@dbux/common/src/util/requireDynamic';
 import glob from 'glob';
 import path from 'path';
 import toString from 'serialize-javascript';
@@ -26,7 +26,7 @@ export function requireAllGlob(pattern, propName = 'name') {
  */
 export function requireUncached(moduleName) {
   // eslint-disable-next-line camelcase
-  const requireFunc = getRequire();
+  const requireFunc = getRequireDynamic();
   const modulePath = requireFunc.resolve(moduleName);
   delete requireFunc.cache[modulePath];
   return requireFunc(moduleName);

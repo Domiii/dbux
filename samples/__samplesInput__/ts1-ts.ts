@@ -2,4 +2,9 @@ import './test.js';
 
 var x: number = 1;
 
-export default x;
+function f() {
+}
+
+(f as any)();
+
+export default f;

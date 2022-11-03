@@ -6,7 +6,7 @@ let __Module;
  * 
  * @see https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
  */
-export function getRequire() {
+export function getRequireDynamic() {
   // NOTE: use eval to suppress meaningless webpack warning.
   // eslint-disable-next-line no-eval
   return __r || (__r = eval(`
@@ -19,7 +19,7 @@ export function getRequire() {
  * Returns the `Module` class on platforms where it is available.
  */
 export function getModule() {
-  return __Module || (__Module = getRequire()('module'));
+  return __Module || (__Module = getRequireDynamic()('module'));
 }
 
 
@@ -27,7 +27,7 @@ export function getModule() {
  * Custom require function to make webpack "happy".
  */
 export default function requireDynamic(name) {
-  const r = getRequire();
+  const r = getRequireDynamic();
   if (!r) {
     return null;
   }

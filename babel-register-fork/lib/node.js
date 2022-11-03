@@ -7,7 +7,8 @@ const { addHook } = require("pirates");
 const path = require("path");
 const Module = require("module");
 
-const Verbose = 1;
+// const Verbose = 1;
+const Verbose = 0;
 
 exports.revert = revert;
 exports.default = register;
@@ -42,12 +43,16 @@ function compile(code, srcFilename) {
   // merge in base options and resolve all the plugins and presets relative to this file
   // sourceRoot can be overwritten
   const sourceRootOverride = path.dirname(srcFilename) + path.sep;
+
   const options = {
     ...cloneDeep(transformOpts),
     sourceRoot: sourceRootOverride,
     filename: srcFilename,
   };
   const opts = new OptionManager().init(options);
+
+
+  Verbose && console.log(`[@babel/register] TRANSFORM: ${srcFilename} --`, opts?.plugins?.map(p => p.key));
 
   // Bail out ASAP if the file has been ignored.
   if (opts === null) return code;
@@ -68,6 +73,7 @@ function compile(code, srcFilename) {
     cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
   }
 
+  
   const sourceMaps = opts.sourceMaps === undefined ? false : opts.sourceMaps;
   if (!cached) {
     // transform

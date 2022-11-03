@@ -30,6 +30,13 @@ const { log, debug, warn, error: logError } = newLogger('visitors');
 // ###########################################################################
 
 /**
+ * [ts-hackfix] remove (some) types
+ */
+function fixTypes(path) {
+  // TODO: hackfix types away without losing sourcemapping?
+}
+
+/**
  * See {@link ParsePhase} for phase ordering.
  */
 function visitEnter(ParserNodeClazz, path, state) {

@@ -6,6 +6,7 @@ import colors from 'colors/safe';
 import isString from 'lodash/isString';
 import isPlainObject from 'lodash/isPlainObject';
 import NestedError from '@dbux/common/src/NestedError';
+import loadBabel from '../../config/loadBabel';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 // import '@babel/preset-env';
