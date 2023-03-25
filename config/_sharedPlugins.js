@@ -1,7 +1,6 @@
 const loadBabel = require('./loadBabel');
 
 module.exports = [
-  loadBabel('@babel/plugin-proposal-optional-chaining'),
   [
     loadBabel('@babel/plugin-proposal-decorators'),
     {
@@ -13,7 +12,8 @@ module.exports = [
   loadBabel('@babel/plugin-syntax-dynamic-import'),
   loadBabel('@babel/plugin-transform-runtime'),
   loadBabel('@babel/plugin-syntax-top-level-await'),
-  
+
+  loadBabel('@babel/plugin-proposal-optional-chaining'),
   /**
    * @see https://blog.saeloun.com/2021/06/24/babel-enables-class-field-and-private-methods.html
    */

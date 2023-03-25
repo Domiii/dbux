@@ -229,7 +229,7 @@ TODO: Clean this up
              if (!babelOptions.plugins) {
                babelOptions.plugins = [];
              }
-             // NOTE: weird bug with a class having public fields (in @dbux/runtime) that Babel complains about
+             // NOTE: Webpack parser does not some modern syntax yet
              babelOptions.plugins.push(['@babel/plugin-proposal-class-properties', { loose: true }]);
              babelOptions.plugins.push(['@dbux/babel-plugin', dbuxOptions]);
            });
