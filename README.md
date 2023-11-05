@@ -32,6 +32,11 @@ To get a good first impression of Dbux, we recommend this video. It...:
 ![Dbux Architecture](./docs_site/dbux_img/dbux-architecture.png)
 
 
+# Contributing
+
+* → https://domiii.github.io/dbux/advanced/contributing
+
+
 # Call to Action
 
 If you are so inclined, please check out Dbux, and feel free to bombard me with any questions, complaints, any kind of feedback. I would greatly appreciate it!

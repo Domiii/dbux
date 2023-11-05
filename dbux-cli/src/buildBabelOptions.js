@@ -166,7 +166,7 @@ function makeTargets(targets) {
   }
   if (!targets) {
     targets = {
-      node: 16
+      node: 18
     };
   }
   return targets;

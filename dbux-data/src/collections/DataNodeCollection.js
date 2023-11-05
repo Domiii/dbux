@@ -333,8 +333,13 @@ export default class DataNodeCollection extends Collection {
       else {
         // sanity check
         const { traceId } = dataNode;
-        const traceInfo = this.dp.util.makeTraceInfo(traceId);
-        this.logger.warn(`[getAccessId] DataNode has varAccess but neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
+        if (!traceId) {
+          this.logger.warn(`[getAccessId] DataNode has varAccess but is missing traceId: ${JSON.stringify(dataNode)}`);
+        }
+        else {
+          const traceInfo = this.dp.util.makeTraceInfo(traceId);
+          this.logger.warn(`[getAccessId] DataNode has varAccess but neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
+        }
         return null;
       }
 

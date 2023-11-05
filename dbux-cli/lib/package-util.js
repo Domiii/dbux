@@ -16,6 +16,9 @@ function makeAbsolutePaths(root, relativePaths) {
 
 function readJsonFile(fpath) {
   const content = fs.readFileSync(fpath);
+  if (!content) {
+    return null;
+  }
   return JSON.parse(content);
 }
 

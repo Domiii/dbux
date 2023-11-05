@@ -203,7 +203,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
 /**
  * @see https://github.com/Domiii/dbux/issues/593
  */
-export const DefaultNodeVersion = '16';
+export const DefaultNodeVersion = '>=16';
 export function getDefaultRequirement(fullCheck) {
   const defaultReq = {
     shell: {},

@@ -67,6 +67,10 @@
 		{
 			"name": "Editor.md",
 			"path": "dbux_projects\\Editor.md"
+		},
+		{
+			"name": "react-tic-tac-toe",
+			"path": "dbux_projects/react-tic-tac-toe"
 		}
 	],
 	"settings": {}

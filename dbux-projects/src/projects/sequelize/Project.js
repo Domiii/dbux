@@ -15,11 +15,19 @@ export default class SequelizeProject extends Project {
   packageManager = 'yarn';
 
   _fixPackageJson() {
+    // TODO: We try to install before checking out the target commit. Need to prevent that from happening :shrug:
+    // TODO2: This package.json is in packages/core/package.json in latest.
+
     /**
      * NOTE: `yarn add` won't work as expected here
      * @see https://github.com/yarnpkg/yarn/issues/3270
      */
     const pkg = readPackageJson(this.projectPath);
+
+    if (!pkg) {
+      this.logger.warn(`_fixPackageJson could not read package.json in: ${this.projectPath}`);
+      return;
+    }
 
     /** ########################################
      * for old sequelize only
@@ -40,8 +48,8 @@ export default class SequelizeProject extends Project {
       'tedious'   // used for mssql
     ];
     for (const dep of unwanted) {
-      delete pkg.dependencies[dep];
-      delete pkg.devDependencies[dep];
+      delete pkg.dependencies?.[dep];
+      delete pkg.devDependencies?.[dep];
     }
 
     /** ########################################
@@ -52,7 +60,7 @@ export default class SequelizeProject extends Project {
      * Also: fix `sqlite3` version to `^5` to avoid node-pre-gyp build errors
      * @see https://stackoverflow.com/a/68526977/2228771
      */
-    pkg.dependencies.sqlite3 = '^5';
+    pkg.dependencies && (pkg.dependencies.sqlite3 = '^5');
 
     // write `package.json`
     writePackageJson(this.projectPath, pkg);

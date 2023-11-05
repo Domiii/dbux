@@ -43,7 +43,7 @@ function getNodeRunArgs(debugMode) {
   const config = workspace.getConfiguration('');
 
   // WARNING: For some reason, --enable-source-maps is very slow with Node@14.
-  //          Good news: things are way better with Node@16.
+  //          Good news: things are way better with Node@16+.
   //          But with old Node, adding it when in debugger becomes unbearable (so we don't mix the two for now).
   //          Angular reported similar issues: https://github.com/angular/angular-cli/issues/5423
   //          In addition to being slow, sourcemaps can sometimes be inaccurate and make debugging more difficult as a result.

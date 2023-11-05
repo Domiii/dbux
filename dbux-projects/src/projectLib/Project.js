@@ -422,7 +422,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
             const branchArg = target ? ` --branch=${target}` : '';
             moreArgs = `${branchArg} --single-branch --depth=1`;
           }
-          const cmd = `"${this.manager.paths.git}" clone${moreArgs} "${githubUrl}" "${projectPath}"`;
+          const cmd = `${this.manager.paths.git} clone${moreArgs} "${githubUrl}" "${projectPath}"`;
           const cwd = projectsRoot;
           // }
           // else {

@@ -1647,7 +1647,7 @@
     "@dbux/projects": "^0.7.10-dev.0",
     "@dbux/runtime": "^0.7.10-dev.0",
     "@types/glob": "^7.1.1",
-    "@types/node": "^16",
+    "@types/node": "^18",
     "@types/vscode": "^1.41.0",
     "firebase": "^9",
     "glob": "^7.1.5",
@@ -1668,7 +1668,7 @@
   },
   "_moduleAliases": {},
   "volta": {
-    "node": "16.13.0",
+    "node": "18.18.2",
     "yarn": "1.22.17"
   }
 }
