@@ -8,6 +8,15 @@
 
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript dynamic analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
+# A Word on Dbux and Debugging Research
+
+Dbux is explained, analyzed and evaluated in my Ph.D. Dissertation: `Uncovering the Dark Matter of Debugging with Dbux, an Omniscient Debugger for JavaScript`
+* Link: [Direct download](https://github.com/Domiii/dbux/blob/master/pub/dominik-seifert-dissertation-final-2022.pdf) (PDF)
+* DOI: https://doi.org/10.6342/NTU202210012
+* The dissertation takes a closer look at the state of the art in modern debuggers, debugging processes and introduces several new types of debugger features, all implemented as part of Dbux.
+* Note: I am currently not actively working on Dbux. I am now contributing to [Replay](https://replay.io), a collaborative time-travel debugger for JS/TS.
+
+
 # Quick links
 
 * [Dbux Documentation](https://domiii.github.io/dbux)
