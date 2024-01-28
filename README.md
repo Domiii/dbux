@@ -17,7 +17,7 @@ Uncovering the Dark Matter of Debugging with Dbux, an Omniscient Debugger for Ja
 ```
 * Link: [Direct download](https://github.com/Domiii/dbux/blob/master/pub/dominik-seifert-dissertation-final-2022.pdf) (PDF)
 * DOI: https://doi.org/10.6342/NTU202210012
-* The dissertation takes a closer look at the state of the art in modern debuggers, debugging processes and introduces several new types of debugger features, all implemented as part of Dbux.
+* The dissertation discusses the state of the art in debugging, proposes a new debugging process model and introduces several new types of debugger features, all implemented as part of Dbux.
 * Note: I am currently not actively working on Dbux. I am now contributing to [Replay](https://replay.io), a collaborative time-travel debugger for JS/TS.
 
 
