@@ -18,7 +18,7 @@ Uncovering the Dark Matter of Debugging with Dbux, an Omniscient Debugger for Ja
 * Link: [Direct download](https://github.com/Domiii/dbux/blob/master/pub/dominik-seifert-dissertation-final-2022.pdf) (PDF)
 * Citation:
   ```
-  D. Seifert. Uncovering the Dark Matter of Debugging with Dbux, an Omniscient Debugger for JavaScript, Oct 2022. doi:10.6342/NTU202210012
+  Dominik Seifert. Uncovering the Dark Matter of Debugging with Dbux, an Omniscient Debugger for JavaScript, Oct 2022. https://doi.org/10.6342/NTU202210012
   ```
 * DOI: https://doi.org/10.6342/NTU202210012
 * The dissertation discusses the state of the art in debugging, proposes a new debugging process model and introduces several new types of debugger features, all implemented as part of Dbux.
