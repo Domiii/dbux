@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "colors": "1.4.0",
+    "component-emitter": "^1",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
     "nanoevents": "^2.0.0",

@@ -184,14 +184,19 @@ function handleShutdown() {
  * util
  * ##########################################################################*/
 
-// eslint-disable-next-line no-inner-declarations
+/**
+ * The default for Error.toString is to simply return `Error.message`.
+ * That is terrible. This gets a stack instead.
+ * 
+ * NOTE: Error.stack might be array of `CallSite`.
+ * NOTE2: This is just a few heuristics, since the stack trace can be customized arbitrarily.
+ * This is usually provided from the `Error.prepareStackTrace` hook.
+ * @see https://v8.dev/docs/stack-trace-api#customizing-stack-traces
+ */
 function err2String(err) {
   if (Array.isArray(err?.stack)) {
     /**
      * Stack is array of `CallSite`.
-     * This is usually provided from the `Error.prepareStackTrace` hook.
-     * NOTE: this is just a heuristic, since the stack trace can be arbitrarily customized.
-     * @see https://v8.dev/docs/stack-trace-api#customizing-stack-traces
      */
     return `${err.message}\n    ${err.stack.map(callSite2String).join('\n    ')}`;
   }
@@ -205,6 +210,7 @@ function err2String(err) {
  * 
  * @see https://v8.dev/docs/stack-trace-api#customizing-stack-traces
  * @see https://microsoft.github.io/PowerBI-JavaScript/interfaces/_node_modules__types_node_globals_d_.nodejs.callsite.html
+ * @see https://github.com/dougwilson/nodejs-depd/blob/master/index.js#L267
  */
 function callSite2String(callSite) {
   var file = callSite.getFileName() || '<anonymous>';

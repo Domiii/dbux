@@ -347,7 +347,7 @@ export default class Client {
        */
       timeout: 1e6,
 
-      parser: msgpackParser
+      // parser: msgpackParser
     });
     Verbose && debug('<- connecting...');
 

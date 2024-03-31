@@ -1,13 +1,12 @@
 import path from 'path';
 import { isWindows } from '@dbux/common-node/src/util/osUtil';
-import { pathJoin, pathNormalizedForce, pathResolve, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalizedForce, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 import {
   ExtensionContext,
   Uri,
   workspace
 } from 'vscode';
-import { pathSafeSegment } from '@dbux/common/src/util/pathUtil';
 
 export const AppDataFileNameSuffix = '.dbuxapp';
 

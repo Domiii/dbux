@@ -3,7 +3,7 @@ import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
-export default class ProjectNode extends BaseTreeViewNode {
+export default class ApplicationNode extends BaseTreeViewNode {
   /**
    * @param {Application} app
    */

@@ -20,7 +20,7 @@ export function makeHttpServer(port) {
 
   return new Promise((resolve, reject) => {
     httpServer.listen(port, () => {
-      debug(`server listening on port ${address}:${port}...`);
+      debug(`server listening on ${address}:${port}...`);
 
       resolve(httpServer);
     });
@@ -59,7 +59,7 @@ export async function makeListenSocket(port) {
 
     // const server = require('socket.io')(httpServer, {
     serveClient: false,
-    allowUpgrades: false,
+    allowUpgrades: true,
     /**
      * NOTE: 100MB was the default in v2
      * @see https://socket.io/docs/v4/server-initialization/#maxHttpBufferSize
@@ -71,7 +71,7 @@ export async function makeListenSocket(port) {
      */
     pingTimeout: 1e6,
 
-    parser: msgpackParser
+    // parser: msgpackParser
   });
 
   return listenSocket;
